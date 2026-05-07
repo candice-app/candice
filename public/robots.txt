@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Private onboarding pages — not meant for indexing
+Disallow: /profil-partage/

@@ -1,0 +1,62 @@
+import Link from "next/link";
+import { Contact, QuestionnaireResponse } from "@/types";
+
+const RELATIONSHIP_LABEL: Record<string, string> = {
+  partner: "Partenaire",
+  friend: "Ami(e)",
+  family: "Famille",
+  colleague: "Collègue",
+  other: "Autre",
+};
+
+const AVATAR_COLORS = [
+  "linear-gradient(135deg,#C47A4A,#8A4020)",
+  "linear-gradient(135deg,#4A7C59,#2A5C39)",
+  "linear-gradient(135deg,#534AB7,#3C3489)",
+  "linear-gradient(135deg,#9A3556,#72243E)",
+  "linear-gradient(135deg,#BA7517,#854F0B)",
+];
+
+function getColor(name: string) {
+  let h = 0;
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) % AVATAR_COLORS.length;
+  return AVATAR_COLORS[h];
+}
+
+interface Props {
+  contact: Contact & { questionnaire_responses: QuestionnaireResponse[] };
+}
+
+export default function ContactCard({ contact }: Props) {
+  const profile = contact.questionnaire_responses?.[0];
+  const hasProfile = !!profile;
+
+  return (
+    <Link href={`/contacts/${contact.id}`} style={{ display: "block" }}>
+      <div className="contact-row">
+        <div
+          className="contact-avatar"
+          style={{ background: getColor(contact.name) }}
+        >
+          {contact.name.charAt(0).toUpperCase()}
+        </div>
+
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p className="contact-name">{contact.name}</p>
+          <p className="contact-meta">
+            {RELATIONSHIP_LABEL[contact.relationship] ?? contact.relationship}
+            {contact.email && <span style={{ marginLeft: 8, opacity: 0.6 }}>· {contact.email}</span>}
+          </p>
+        </div>
+
+        {hasProfile ? (
+          <span className="badge badge-green">Profil complet</span>
+        ) : (
+          <span className="badge badge-neutral">À compléter</span>
+        )}
+
+        <span style={{ fontSize: 12, color: "var(--cond)", opacity: 0.5, flexShrink: 0 }}>→</span>
+      </div>
+    </Link>
+  );
+}

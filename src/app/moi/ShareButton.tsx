@@ -1,0 +1,52 @@
+"use client";
+
+import { useState, useEffect } from "react";
+
+interface Props {
+  userId: string;
+  variant?: "icon" | "full";
+}
+
+export default function ShareButton({ userId, variant = "icon" }: Props) {
+  const [copied, setCopied] = useState(false);
+  const [url, setUrl] = useState("");
+
+  useEffect(() => {
+    setUrl(`${window.location.origin}/partage/${userId}`);
+  }, [userId]);
+
+  const copy = async () => {
+    if (!url) return;
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  if (variant === "full") {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <div style={{ border: "0.5px solid var(--brd2)", borderRadius: "var(--r-sm)", padding: "10px 14px", background: "rgba(255,255,255,0.03)" }}>
+          <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--conb)", marginBottom: 4 }}>
+            Ton lien
+          </p>
+          <p style={{ fontSize: 11, fontWeight: 300, color: "var(--conf)", fontFamily: "monospace", wordBreak: "break-all" }}>
+            {url || "…"}
+          </p>
+        </div>
+        <button onClick={copy} className="btn-primary" style={{ width: "100%" }}>
+          {copied ? "Lien copié ✓" : "Copier le lien de partage"}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <button
+      onClick={copy}
+      className="btn-ghost"
+      style={{ fontSize: 11, padding: "5px 12px", color: "var(--terra)", borderColor: "var(--terra)", flexShrink: 0 }}
+    >
+      {copied ? "Copié ✓" : "Partager ma fiche"}
+    </button>
+  );
+}
