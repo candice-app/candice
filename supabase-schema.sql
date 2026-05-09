@@ -82,6 +82,9 @@ CREATE TABLE my_profile (
 -- Migration: add additional_notes to my_profile if table already exists
 ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS additional_notes TEXT;
 
+-- Migration: onboarding tracking
+ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS onboarding_completed BOOLEAN DEFAULT FALSE;
+
 -- Migration: new profile fields (run these in Supabase SQL editor)
 ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS disliked_activities TEXT;
 ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS disliked_foods TEXT;

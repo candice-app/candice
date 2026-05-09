@@ -4,6 +4,8 @@ import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
 import ContactCard from "@/components/dashboard/ContactCard";
 import CagnotteWidget from "@/components/dashboard/CagnotteWidget";
+import DashboardActions from "@/components/dashboard/DashboardActions";
+import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
 import { Contact, QuestionnaireResponse, UserPoint } from "@/types";
 
 export default async function DashboardPage() {
@@ -20,7 +22,7 @@ export default async function DashboardPage() {
       .order("created_at", { ascending: false }),
     supabase
       .from("my_profile")
-      .select("id")
+      .select("id, onboarding_completed")
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase
@@ -38,11 +40,15 @@ export default async function DashboardPage() {
   const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
   const userPoints = (pointRows ?? []) as UserPoint[];
   const hasMyProfile = !!myProfile;
+  const onboardingDone = !!(myProfile as { onboarding_completed?: boolean } | null)?.onboarding_completed;
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
   const isFirstVisit = typedContacts.length === 0;
 
   return (
     <DashboardShell>
+      {!onboardingDone && (
+        <OnboardingOverlay userId={user.id} userName={firstName} />
+      )}
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 28 }}>
         <div>
@@ -80,6 +86,9 @@ export default async function DashboardPage() {
           </Link>
         </div>
       )}
+
+      {/* Idea button */}
+      <DashboardActions contacts={typedContacts} />
 
       {/* Contact list or empty state */}
       {typedContacts.length === 0 ? (

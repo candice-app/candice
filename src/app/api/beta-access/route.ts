@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BETA_PASSWORD = process.env.BETA_PASSWORD ?? "candice2024";
+const BETA_PASSWORD = process.env.BETA_PASSWORD ?? "Candice2026!";
 
 export async function POST(request: NextRequest) {
   let password: string;
