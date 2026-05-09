@@ -8,6 +8,7 @@ import DashboardActions from "@/components/dashboard/DashboardActions";
 import CandiceInput from "@/components/dashboard/CandiceInput";
 import WeeklyCheckin from "@/components/dashboard/WeeklyCheckin";
 import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
+import TourReplay from "@/components/onboarding/TourReplay";
 import OnboardingProgressCard from "@/components/dashboard/OnboardingProgressCard";
 import { Contact, QuestionnaireResponse, UserPoint, ProfileNote } from "@/types";
 
@@ -60,6 +61,7 @@ export default async function DashboardPage() {
       {!onboardingDone && (
         <OnboardingOverlay userId={user.id} userName={firstName} />
       )}
+      <TourReplay />
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 28 }}>
         <div>

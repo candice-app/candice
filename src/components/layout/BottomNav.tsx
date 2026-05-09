@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const NAV = [
   {
@@ -30,6 +30,12 @@ const NAV = [
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleReplayTour = () => {
+    try { localStorage.setItem("candice_replay_tour", "true"); } catch { /* storage unavailable */ }
+    router.push("/dashboard");
+  };
 
   return (
     <aside className="sidebar">
@@ -46,13 +52,13 @@ export default function BottomNav() {
               >
                 {href === "/aide" ? (
                   <svg width="10" height="10" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }} aria-hidden="true">
-                    <circle cx="8" cy="8" r="7" stroke={active ? "var(--terra)" : "var(--br4)"} strokeWidth="1.5" />
-                    <text x="8" y="11.5" textAnchor="middle" fontSize="9" fontWeight="500" fill={active ? "var(--terra)" : "var(--br4)"} fontFamily="sans-serif">?</text>
+                    <circle cx="8" cy="8" r="7" stroke={active ? "var(--terra)" : "rgba(239,231,220,0.48)"} strokeWidth="1.5" />
+                    <text x="8" y="11.5" textAnchor="middle" fontSize="9" fontWeight="500" fill={active ? "var(--terra)" : "rgba(239,231,220,0.48)"} fontFamily="sans-serif">?</text>
                   </svg>
                 ) : (
                   <span
                     className="sidebar-item-dot"
-                    style={{ background: active ? "var(--terra)" : "var(--br4)" }}
+                    style={{ background: active ? "var(--terra)" : "rgba(239,231,220,0.35)" }}
                   />
                 )}
                 {label}
@@ -61,6 +67,22 @@ export default function BottomNav() {
           })}
         </div>
       ))}
+
+      {/* Revoir l'introduction */}
+      <div>
+        <p className="sidebar-section-label">Guide</p>
+        <button
+          onClick={handleReplayTour}
+          className="sidebar-item"
+          style={{ background: "none", border: "none", width: "100%", textAlign: "left", cursor: "pointer" }}
+        >
+          <svg width="10" height="10" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }} aria-hidden="true">
+            <circle cx="8" cy="8" r="7" stroke="rgba(239,231,220,0.35)" strokeWidth="1.5" />
+            <text x="8" y="11.5" textAnchor="middle" fontSize="9" fontWeight="500" fill="rgba(239,231,220,0.35)" fontFamily="sans-serif">▶</text>
+          </svg>
+          Revoir l&apos;introduction
+        </button>
+      </div>
 
       <div style={{ marginTop: "auto", paddingTop: 16 }}>
         <Link href="/contacts/new" style={{ display: "block", marginBottom: 8 }}>

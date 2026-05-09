@@ -19,6 +19,8 @@ const BORDER = "rgba(44,26,14,0.1)";
 const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
 const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
+const LS_KEY = "candice_onboarding_complete";
+
 const POINTS = [
   { label: "Compléter ton profil", pts: "+500 pts" },
   { label: "Ajouter un proche", pts: "+200 pts" },
@@ -82,11 +84,7 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
     await supabase
       .from("my_profile")
       .upsert({ user_id: userId, onboarding_completed: true }, { onConflict: "user_id" });
-  };
-
-  const handleSkip = async () => {
-    await markComplete();
-    onComplete();
+    try { localStorage.setItem(LS_KEY, "true"); } catch { /* storage unavailable */ }
   };
 
   const handleFinish = async () => {
@@ -102,6 +100,13 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
     }
     await markComplete();
     router.push("/moi/questionnaire");
+  };
+
+  const handleDashboard = async () => {
+    setLoading(true);
+    await markComplete();
+    setLoading(false);
+    onComplete();
   };
 
   const isLast = slide === SLIDES.length - 1;
@@ -143,7 +148,7 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
 
           {/* Pill highlight */}
           {current.pill && !isLast && (
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: isLast ? 24 : 0 }}>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 0 }}>
               <span style={{
                 display: "inline-block",
                 background: TERRA,
@@ -180,7 +185,7 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
         </div>
 
         {/* Bottom nav */}
-        <div style={{ padding: "0 36px 36px", display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+        <div style={{ padding: "0 36px 36px", display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
 
           {/* Dots */}
           <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
@@ -203,31 +208,30 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
             ))}
           </div>
 
-          {/* Primary button */}
+          {/* CTAs */}
           {isLast ? (
-            <button
-              onClick={handleFinish}
-              disabled={loading}
-              style={{ width: "100%", background: TERRA, color: "#fff", border: "none", borderRadius: 10, padding: "15px", fontSize: 15, fontWeight: 500, cursor: loading ? "default" : "pointer", fontFamily: DM, opacity: loading ? 0.7 : 1 }}
-            >
-              {loading ? "Chargement…" : "Je complète mon profil →"}
-            </button>
+            <>
+              <button
+                onClick={handleFinish}
+                disabled={loading}
+                style={{ width: "100%", background: TERRA, color: "#fff", border: "none", borderRadius: 10, padding: "15px", fontSize: 15, fontWeight: 500, cursor: loading ? "default" : "pointer", fontFamily: DM, opacity: loading ? 0.7 : 1 }}
+              >
+                {loading ? "Chargement…" : "Je complète mon profil →"}
+              </button>
+              <button
+                onClick={handleDashboard}
+                disabled={loading}
+                style={{ width: "100%", background: "transparent", color: TERRA, border: `1.5px solid ${TERRA}`, borderRadius: 10, padding: "13px", fontSize: 14, fontWeight: 400, cursor: loading ? "default" : "pointer", fontFamily: DM, opacity: loading ? 0.7 : 1 }}
+              >
+                Accéder à mon dashboard
+              </button>
+            </>
           ) : (
             <button
               onClick={() => setSlide(slide + 1)}
               style={{ width: "100%", background: TERRA, color: "#fff", border: "none", borderRadius: 10, padding: "15px", fontSize: 15, fontWeight: 500, cursor: "pointer", fontFamily: DM }}
             >
               Suivant
-            </button>
-          )}
-
-          {/* Skip link */}
-          {!isLast && (
-            <button
-              onClick={handleSkip}
-              style={{ background: "none", border: "none", fontFamily: DM, fontSize: 11, fontWeight: 300, color: COND, cursor: "pointer", padding: 0, opacity: 0.5 }}
-            >
-              Passer l&apos;introduction
             </button>
           )}
         </div>
