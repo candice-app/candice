@@ -5,7 +5,7 @@ const protectedRoutes = ["/dashboard", "/contacts"];
 const authRoutes = ["/login", "/register"];
 
 // Routes that bypass the beta gate entirely
-const BETA_EXEMPT_EXACT = new Set(["/", "/beta-access"]);
+const BETA_EXEMPT_EXACT = new Set(["/beta-access"]);
 const BETA_EXEMPT_PREFIXES = ["/api/beta-access", "/api/auth/callback", "/beta-access"];
 
 export async function proxy(request: NextRequest) {

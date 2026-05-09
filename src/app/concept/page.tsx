@@ -6,76 +6,92 @@ export const metadata: Metadata = {
   description: "On a tous quelqu'un à qui on tient. On n'a juste plus le temps de le montrer.",
 };
 
+const BG = "#FAF7F2";
+const WHITE = "#FFFFFF";
 const TERRA = "#C47A4A";
 const CON = "#1E1208";
 const COND = "#7A5E44";
+const BORDER = "rgba(30,18,8,0.1)";
+const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
+const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
 export default function ConceptPage() {
   return (
-    <main style={{ background: "#FAF7F2", fontFamily: "'Plus Jakarta Sans', sans-serif", color: CON, minHeight: "100vh" }}>
+    <main style={{ background: BG, fontFamily: DM, color: CON, minHeight: "100vh" }}>
+
       {/* Nav */}
-      <nav style={{ height: 60, padding: "0 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "0.5px solid rgba(30,18,8,0.1)", background: "#FAF7F2", position: "sticky", top: 0, zIndex: 100 }}>
+      <nav style={{ height: 60, padding: "0 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `0.5px solid ${BORDER}`, background: BG, position: "sticky", top: 0, zIndex: 100 }}>
         <Link href="/" style={{ display: "flex", alignItems: "flex-start", gap: 4, textDecoration: "none" }}>
-          <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON }}>Candice</span>
+          <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON, fontFamily: DM }}>Candice</span>
           <span style={{ width: 7, height: 7, background: TERRA, borderRadius: "50%", marginTop: 3, flexShrink: 0, display: "inline-block" }} />
         </Link>
         <div style={{ display: "flex", gap: 28 }}>
-          <Link href="/concept" style={{ fontSize: 12, fontWeight: 400, color: TERRA }}>Le concept</Link>
+          <Link href="/concept" style={{ fontSize: 12, fontWeight: 400, color: TERRA, textDecoration: "none" }}>Le concept</Link>
           <Link href="/comment-ca-marche" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Comment ça marche</Link>
           <Link href="/offre" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>L&apos;offre</Link>
-        </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <Link href="/login" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Se connecter</Link>
-          <Link href="/register">
-            <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "8px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer" }}>Commencer</button>
-          </Link>
         </div>
+        <Link href="/register">
+          <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "8px 18px", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Commencer</button>
+        </Link>
       </nav>
 
-      {/* Hero text */}
+      {/* Hero */}
       <section style={{ padding: "96px 52px 72px", maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
-        <p style={{ fontSize: 11, fontWeight: 400, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Le concept</p>
-        <h1 style={{ fontSize: 48, fontWeight: 300, lineHeight: 1.1, letterSpacing: -1.5, color: CON, marginBottom: 32, fontFamily: "'Playfair Display', Georgia, serif" }}>
+        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Le concept</p>
+        <h1 style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, lineHeight: 1.1, letterSpacing: -1.5, color: CON, marginBottom: 0 }}>
           On a tous quelqu&apos;un à qui on tient.<br />
           <span style={{ color: TERRA }}>On n&apos;a juste plus le temps de le montrer.</span>
         </h1>
-        <p style={{ fontSize: 18, fontWeight: 300, color: COND, lineHeight: 1.8, maxWidth: 600, margin: "0 auto" }}>
-          La vie va vite. Trop vite. Entre le boulot, les enfants, les obligations — les petites attentions qu&apos;on voulait faire finissent dans un coin de notre tête, et n&apos;en ressortent jamais. Ce n&apos;est pas un manque d&apos;amour. C&apos;est un manque de temps, d&apos;organisation, et parfois juste d&apos;idées.
-        </p>
+      </section>
+
+      {/* Body — 3 paragraphs */}
+      <section style={{ background: WHITE, borderTop: `0.5px solid ${BORDER}`, borderBottom: `0.5px solid ${BORDER}`, padding: "72px 52px" }}>
+        <div style={{ maxWidth: 680, margin: "0 auto", display: "flex", flexDirection: "column", gap: 28 }}>
+          <p style={{ fontSize: 17, fontWeight: 300, color: CON, lineHeight: 1.85 }}>
+            Vous avez du mal à vous en souvenir, mais vous y pensez tout le temps. L&apos;anniversaire de votre meilleur ami, la date d&apos;anniversaire de vos parents, l&apos;allergie de votre collègue — ces petits détails qui font toute la différence entre un geste qui touche et un geste qui rate. La vie va vite, trop vite. Entre le travail, les enfants, les obligations du quotidien, les petites attentions qu&apos;on voulait faire finissent dans un coin de la tête, et n&apos;en ressortent jamais. Ce n&apos;est pas un manque d&apos;amour. C&apos;est un manque de temps, d&apos;organisation, et parfois juste d&apos;idées.
+          </p>
+          <p style={{ fontSize: 17, fontWeight: 300, color: CON, lineHeight: 1.85 }}>
+            Candice est votre copilote relationnel. Elle retient tout ce que vous apprenez sur vos proches — leurs goûts, leurs habitudes, leurs dates importantes, leurs moments difficiles. Elle croise ces informations avec le contexte du moment et vous propose la bonne attention, pour la bonne personne, au bon moment. Vous approuvez. Elle s&apos;occupe du reste — commande, réservation, message rédigé, livraison planifiée. L&apos;intention reste la vôtre. L&apos;effort, non.
+          </p>
+          <p style={{ fontSize: 17, fontWeight: 300, color: CON, lineHeight: 1.85 }}>
+            Le résultat ? Des relations qui s&apos;approfondissent naturellement. Votre mère qui reçoit des fleurs le jour de sa retraite. Votre ami qui sait que vous pensiez à lui pendant son marathon. Votre collègue qui comprend que vous avez retenu qu&apos;elle est allergique aux noix. Des petits gestes qui changent tout — sans que vous ayez à tout porter seul.
+          </p>
+        </div>
       </section>
 
       {/* Stats */}
-      <section style={{ background: "#2C1A0E", padding: "64px 52px" }}>
-        <div style={{ maxWidth: 900, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, background: "rgba(255,255,255,0.08)", border: "0.5px solid rgba(255,255,255,0.08)", borderRadius: 12, overflow: "hidden" }}>
+      <section style={{ padding: "72px 52px" }}>
+        <div style={{ maxWidth: 820, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           {[
             { stat: "66%", text: "des gens oublient régulièrement de marquer les moments importants de leurs proches." },
             { stat: "54%", text: "aimeraient faire plus d'attentions mais ne savent pas comment s'organiser." },
           ].map((s, i) => (
-            <div key={i} style={{ padding: "48px 44px", background: "rgba(255,255,255,0.03)" }}>
-              <p style={{ fontSize: 72, fontWeight: 300, color: TERRA, lineHeight: 1, marginBottom: 16, fontFamily: "'Playfair Display', Georgia, serif", letterSpacing: -2 }}>{s.stat}</p>
-              <p style={{ fontSize: 16, fontWeight: 300, color: "rgba(250,247,242,0.75)", lineHeight: 1.7 }}>{s.text}</p>
+            <div key={i} style={{ background: WHITE, border: `0.5px solid ${BORDER}`, borderRadius: 16, padding: "48px 44px" }}>
+              <p style={{ fontFamily: PLAYFAIR, fontSize: 72, fontWeight: 400, color: TERRA, lineHeight: 1, marginBottom: 16, letterSpacing: -2 }}>{s.stat}</p>
+              <p style={{ fontSize: 16, fontWeight: 300, color: COND, lineHeight: 1.7 }}>{s.text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Section: Candice vit avec toi */}
-      <section style={{ padding: "88px 52px" }}>
+      {/* Candice vit avec toi */}
+      <section style={{ background: WHITE, borderTop: `0.5px solid ${BORDER}`, borderBottom: `0.5px solid ${BORDER}`, padding: "88px 52px" }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
-          <p style={{ fontSize: 11, fontWeight: 400, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 16, textAlign: "center" }}>Candice vit avec toi</p>
-          <h2 style={{ fontSize: 36, fontWeight: 300, color: CON, letterSpacing: -1, lineHeight: 1.15, marginBottom: 56, textAlign: "center", maxWidth: 560, margin: "0 auto 56px", fontFamily: "'Playfair Display', Georgia, serif" }}>
+          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 16, textAlign: "center" }}>Candice vit avec toi</p>
+          <h2 style={{ fontFamily: PLAYFAIR, fontSize: 36, fontWeight: 400, color: CON, letterSpacing: -1, lineHeight: 1.15, marginBottom: 56, textAlign: "center", maxWidth: 560, margin: "0 auto 56px" }}>
             Des vraies situations. Des vraies attentions.
           </h2>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
             {[
-              { emoji: "🍽️", text: "Tu sors du resto. Manon avait l'air de ne pas aller fort ce soir. Tu dis à Candice : 'Manon est à plat, son boulot la dévore.' Le lendemain, Candice te propose d'organiser un week-end surprise pour elle — spa, hôtel, dîner. Tu valides. Elle réserve." },
+              { emoji: "🍽️", text: "Tu sors du resto. Manon avait l'air de ne pas aller fort ce soir. Tu dis à Candice. Le lendemain, Candice te propose d'organiser un week-end surprise pour elle — spa, hôtel, dîner. Tu valides. Elle réserve." },
               { emoji: "👗", text: "Thomas se balade avec Julie devant une boutique. Julie s'arrête : 'Oh j'adore cette robe.' Thomas prend une photo avec Candice. La robe est ajoutée à la liste de souhaits de Julie. Son anniversaire est dans 6 semaines. Candice s'en souvient." },
-              { emoji: "🍼", text: "Tu viens de raccrocher avec Camille. Elle vient d'accoucher à Dubaï. Tu le dis à Candice. En 3 minutes, elle te propose une livraison de fleurs et un coffret naissance à son adresse à Dubaï. Tu valides. C'est parti." },
-              { emoji: "✈️", text: "Julie part au Japon la semaine prochaine. Candice lui prépare un carnet de voyage personnalisé — ses adresses préférées dans ses quartiers, une playlist pour le vol, un message de ta part. Elle rentre avec des souvenirs. Toi tu n'as rien fait, sauf y penser." },
+              { emoji: "🍼", text: "Tu viens de raccrocher avec Camille. Elle vient d'accoucher à Dubaï. Tu le dis à Candice. En 3 minutes, elle te propose une livraison de fleurs et un coffret naissance à son adresse. Tu valides. C'est parti." },
+              { emoji: "✈️", text: "Julie part au Japon la semaine prochaine. Candice lui prépare un carnet de voyage personnalisé — ses adresses dans ses quartiers, une playlist pour le vol, un message de ta part. Elle rentre avec des souvenirs." },
               { emoji: "👴", text: "Papa semble seul depuis quelques semaines. Candice te propose d'organiser un week-end père-enfant — itinéraire, hôtel, activité selon ce qu'il aime. Tu dis oui. Elle gère tout." },
               { emoji: "🥂", text: "Tu sors d'une réunion. Ton associé vient de décrocher le plus gros contrat de sa vie. Tu le dis à Candice. Elle commande une bouteille de champagne livrée à son bureau dans l'heure." },
             ].map((card, i) => (
-              <div key={i} style={{ background: "#fff", border: "0.5px solid rgba(30,18,8,0.1)", borderRadius: 12, padding: "28px 24px" }}>
+              <div key={i} style={{ background: BG, border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: "28px 24px" }}>
                 <div style={{ fontSize: 32, marginBottom: 16 }}>{card.emoji}</div>
                 <p style={{ fontSize: 14, fontWeight: 300, color: COND, lineHeight: 1.75 }}>{card.text}</p>
               </div>
@@ -85,18 +101,18 @@ export default function ConceptPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ background: "#2C1A0E", padding: "72px 52px", textAlign: "center" }}>
-        <h2 style={{ fontSize: 32, fontWeight: 300, color: "#FAF7F2", letterSpacing: -0.8, marginBottom: 20, fontFamily: "'Playfair Display', Georgia, serif" }}>
+      <section style={{ padding: "88px 52px", textAlign: "center" }}>
+        <h2 style={{ fontFamily: PLAYFAIR, fontSize: 36, fontWeight: 400, color: CON, letterSpacing: -0.8, marginBottom: 20 }}>
           Prêt à ne plus jamais rater ce qui compte ?
         </h2>
         <Link href="/register">
-          <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "15px 32px", fontSize: 15, fontWeight: 500, cursor: "pointer" }}>
+          <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "15px 36px", fontSize: 15, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
             Essayer Candice gratuitement →
           </button>
         </Link>
       </section>
 
-      <footer style={{ background: "#FAF7F2", padding: "20px 52px", display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: "0.5px solid rgba(30,18,8,0.08)" }}>
+      <footer style={{ background: WHITE, padding: "20px 52px", display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `0.5px solid ${BORDER}` }}>
         <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: "rgba(30,18,8,0.2)" }}>Candice ·</span>
         <div style={{ display: "flex", gap: 24 }}>
           {["Confidentialité", "Conditions générales", "Contact"].map(l => (
