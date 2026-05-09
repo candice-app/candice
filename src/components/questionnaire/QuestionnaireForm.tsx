@@ -399,7 +399,7 @@ export default function QuestionnaireForm() {
         {step === 1 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
             <div>
-              <h2 style={{ fontSize: 18, fontWeight: 400, color: "var(--iv)", marginBottom: 6 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
                 Comment créer le profil de {name} ?
               </h2>
               <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)" }}>
@@ -417,7 +417,7 @@ export default function QuestionnaireForm() {
                   display: "flex", flexDirection: "column",
                 }}
               >
-                <h3 style={{ fontSize: 14, fontWeight: 400, color: "var(--iv)", marginBottom: 8 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 400, color: "var(--con)", marginBottom: 8 }}>
                   Je remplis moi-même
                 </h3>
                 <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5, marginBottom: 10 }}>
@@ -442,7 +442,7 @@ export default function QuestionnaireForm() {
                   opacity: linkLoading ? 0.6 : 1,
                 }}
               >
-                <h3 style={{ fontSize: 14, fontWeight: 400, color: "var(--iv)", marginBottom: 8 }}>
+                <h3 style={{ fontSize: 14, fontWeight: 400, color: "var(--con)", marginBottom: 8 }}>
                   Il/elle remplit son profil
                 </h3>
                 <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5, marginBottom: 10 }}>
@@ -466,7 +466,7 @@ export default function QuestionnaireForm() {
               <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 3, textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
                 Lien généré
               </p>
-              <h2 style={{ fontSize: 18, fontWeight: 400, color: "var(--iv)", marginBottom: 6 }}>
+              <h2 style={{ fontSize: 18, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
                 Envoie ce lien à {name}.
               </h2>
               <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5 }}>
@@ -474,11 +474,11 @@ export default function QuestionnaireForm() {
               </p>
             </div>
 
-            <div style={{ border: "0.5px solid var(--brd2)", borderRadius: "var(--r-sm)", padding: "14px 16px", background: "rgba(255,255,255,0.03)" }}>
-              <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--conf)", marginBottom: 6 }}>
+            <div style={{ border: "1px solid #E8C4A0", borderRadius: "var(--r-sm)", padding: "14px 16px", background: "#F8F4EE" }}>
+              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "#9E7B5A", marginBottom: 6 }}>
                 Lien à partager
               </p>
-              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", wordBreak: "break-all", fontFamily: "monospace" }}>
+              <p style={{ fontSize: 12, fontWeight: 300, color: "#7A5E44", wordBreak: "break-all", fontFamily: "monospace" }}>
                 {profileUrl || `…/profil/${linkContactId}`}
               </p>
             </div>

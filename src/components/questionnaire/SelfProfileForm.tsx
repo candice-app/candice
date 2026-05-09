@@ -405,26 +405,26 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       {/* ── Main confidentiality + benefits banner ── */}
       <div style={{ borderRadius: 12, overflow: "hidden", marginBottom: 28 }}>
 
-        {/* Section A — dark */}
-        <div style={{ background: "#2C1A0E", padding: "28px 28px 24px" }}>
+        {/* Section A — confidentiality */}
+        <div style={{ background: "#FFFFFF", padding: "28px 28px 24px", borderBottom: "1px solid #E8C4A0" }}>
           <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 16 }}>
             <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>🔒</span>
-            <h2 style={{ fontSize: 22, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#FAF7F2", lineHeight: 1.25, margin: 0 }}>
+            <h2 style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#2C1A0E", lineHeight: 1.25, margin: 0 }}>
               Tes réponses restent 100% confidentielles
             </h2>
           </div>
-          <p style={{ fontSize: 16, fontWeight: 300, color: "rgba(250,247,242,0.85)", lineHeight: 1.75, marginBottom: 16 }}>
-            Ce que tu écris ici ne sera jamais lu par personne — ni par tes proches, ni par quiconque. Tes réponses servent uniquement à construire ton profil personnel. Candice les analyse en silence pour comprendre qui tu es vraiment : ce qui te touche, ce qui te fait sourire, ce dont tu as besoin sans jamais le demander.
+          <p style={{ fontSize: 14, fontWeight: 300, color: "#7A5E44", lineHeight: 1.75, marginBottom: 14 }}>
+            Ce que tu écris ici ne sera jamais lu par personne — ni par tes proches, ni par quiconque. Tes réponses servent uniquement à construire ton profil personnel. Candice les analyse en silence pour comprendre qui tu es vraiment.
           </p>
-          <p style={{ fontSize: 15, fontWeight: 500, color: "#FAF7F2", lineHeight: 1.65, marginBottom: 14 }}>
-            Ce qui est partagé avec tes proches : uniquement ton profil — une synthèse de tes préférences, jamais tes réponses brutes. Tu peux revenir ici quand tu veux pour modifier ou ajuster.
+          <p style={{ fontSize: 13, fontWeight: 400, color: "#2C1A0E", lineHeight: 1.65, marginBottom: 12 }}>
+            Ce qui est partagé avec tes proches : uniquement ton profil — une synthèse de tes préférences, jamais tes réponses brutes.
           </p>
-          <p style={{ fontSize: 14, fontWeight: 300, fontStyle: "italic", color: "rgba(250,247,242,0.7)", lineHeight: 1.7 }}>
-            Plus ta fiche est honnête et complète, plus ton profil sera précis — et plus les attentions que tu recevras seront vraiment faites pour toi. Sois totalement honnête(e).
+          <p style={{ fontSize: 13, fontWeight: 300, fontStyle: "italic", color: "#9E7B5A", lineHeight: 1.7 }}>
+            Plus ta fiche est honnête et complète, plus les attentions que tu recevras seront vraiment faites pour toi.
           </p>
         </div>
 
-        {/* Section B — cream */}
+        {/* Section B — benefits */}
         <div style={{ background: "#FAF7F2", padding: "24px 28px" }}>
           <p style={{ fontSize: 18, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 16, lineHeight: 1.3 }}>
             🎁 Ce que tu gagnes en complétant ta fiche

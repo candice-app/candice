@@ -112,9 +112,9 @@ export default async function MoiPage() {
           </div>
 
           {/* Share CTA */}
-          <div style={{ background: "var(--br)", border: "0.5px solid var(--brd2)", borderRadius: "var(--r-md)", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
+          <div style={{ background: "#F2EBE0", border: "1px solid #E8C4A0", borderRadius: "var(--r-md)", padding: "20px 24px", display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
-              <p style={{ fontSize: 13, fontWeight: 400, color: "var(--iv)", marginBottom: 4 }}>Partage ta fiche.</p>
+              <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 4 }}>Partage ta fiche.</p>
               <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5 }}>
                 Envoie le lien à tes proches pour qu&apos;ils sachent exactement comment te faire plaisir.
               </p>

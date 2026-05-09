@@ -18,8 +18,8 @@ export default function DashboardActions({ contacts }: Props) {
       <button
         onClick={() => setShowIdea(true)}
         style={{
-          background: "#2C1A0E",
-          color: "#FAF7F2",
+          background: "#C47A4A",
+          color: "#fff",
           border: "none",
           borderRadius: 8,
           padding: "12px 18px",
@@ -29,7 +29,7 @@ export default function DashboardActions({ contacts }: Props) {
           display: "flex",
           alignItems: "center",
           gap: 8,
-          fontFamily: "'Plus Jakarta Sans', sans-serif",
+          fontFamily: "'DM Sans', 'Plus Jakarta Sans', sans-serif",
           marginBottom: 20,
           width: "100%",
           justifyContent: "center",
