@@ -20,6 +20,12 @@ const NAV = [
       { label: "Archivés", href: "/dashboard/archives", activeOn: (p: string) => p === "/dashboard/archives" },
     ],
   },
+  {
+    section: "Support",
+    items: [
+      { label: "Aide", href: "/aide", activeOn: (p: string) => p === "/aide" },
+    ],
+  },
 ];
 
 export default function BottomNav() {
@@ -38,10 +44,17 @@ export default function BottomNav() {
                 href={href}
                 className={`sidebar-item${active ? " active" : ""}`}
               >
-                <span
-                  className="sidebar-item-dot"
-                  style={{ background: active ? "var(--terra)" : "var(--br4)" }}
-                />
+                {href === "/aide" ? (
+                  <svg width="10" height="10" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }} aria-hidden="true">
+                    <circle cx="8" cy="8" r="7" stroke={active ? "var(--terra)" : "var(--br4)"} strokeWidth="1.5" />
+                    <text x="8" y="11.5" textAnchor="middle" fontSize="9" fontWeight="500" fill={active ? "var(--terra)" : "var(--br4)"} fontFamily="sans-serif">?</text>
+                  </svg>
+                ) : (
+                  <span
+                    className="sidebar-item-dot"
+                    style={{ background: active ? "var(--terra)" : "var(--br4)" }}
+                  />
+                )}
                 {label}
               </Link>
             );

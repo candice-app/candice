@@ -8,6 +8,7 @@ import DashboardActions from "@/components/dashboard/DashboardActions";
 import CandiceInput from "@/components/dashboard/CandiceInput";
 import WeeklyCheckin from "@/components/dashboard/WeeklyCheckin";
 import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
+import OnboardingProgressCard from "@/components/dashboard/OnboardingProgressCard";
 import { Contact, QuestionnaireResponse, UserPoint, ProfileNote } from "@/types";
 
 export default async function DashboardPage() {
@@ -73,6 +74,9 @@ export default async function DashboardPage() {
           </span>
         )}
       </div>
+
+      {/* Progress card */}
+      <OnboardingProgressCard />
 
       {/* Candice input */}
       {typedContacts.length > 0 && (
