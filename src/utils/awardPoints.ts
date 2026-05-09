@@ -13,7 +13,7 @@ export type PointActionType =
 
 const POINT_VALUES: Record<PointActionType, number> = {
   registration: 500,
-  profile_complete: 1000,
+  profile_complete: 500,
   profile_update: 50,
   contact_created: 200,
   friend_invited: 200,

@@ -288,7 +288,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     pct < 25  ? "Bien ! Continue — chaque réponse affine ton profil." :
     pct < 50  ? "À mi-chemin ! Plus que quelques questions avant de découvrir ton profil." :
     pct < 75  ? "Tu y es presque — les meilleures suggestions arrivent avec une fiche complète." :
-    "Dernière ligne droite ! 🎁 Tes 1 000 points arrivent dès que tu valides.";
+    "Dernière ligne droite ! 🎁 Tes 500 points arrivent dès que tu valides.";
 
   // ── Handlers ──────────────────────────────────────────────────────────────────
   const join = (arr: string[]) => arr.join(",") || null;
@@ -431,7 +431,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
             {[
-              "1 000 points Candice offerts — soit 10€ utilisables dès 5 000 points cumulés (50€)",
+              "500 points Candice offerts — soit 5€ utilisables dès 5 000 points cumulés (50€)",
               "Ton profil personnel détaillé — une analyse de qui tu es, ton style d'attachement, tes vrais besoins",
               "Des attentions ultra-personnalisées — tes proches auront enfin les bons gestes, au bon moment",
             ].map((line, i) => (

@@ -32,7 +32,7 @@ export default function CagnotteWidget({ points }: Props) {
 
   const motivationalMsg =
     pct < 20
-      ? "Complète ta fiche pour gagner 1 000 points d'un coup 🎯"
+      ? "Complète ta fiche pour gagner 500 points d'un coup 🎯"
       : pct < 50
       ? "Tu avances bien ! Continue pour débloquer tes premières réductions."
       : pct < 80

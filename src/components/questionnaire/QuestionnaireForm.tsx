@@ -402,57 +402,62 @@ export default function QuestionnaireForm() {
               <h2 style={{ fontSize: 18, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
                 Comment créer le profil de {name} ?
               </h2>
-              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)" }}>
+              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--conf)" }}>
                 Choisis une option pour continuer.
               </p>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              <button
-                onClick={handleChooseIncognito}
-                style={{
-                  textAlign: "left", borderRadius: "var(--r-md)",
-                  border: "0.5px solid var(--brd2)", padding: "24px",
-                  background: "transparent", cursor: "pointer",
-                  display: "flex", flexDirection: "column",
-                }}
-              >
-                <h3 style={{ fontSize: 14, fontWeight: 400, color: "var(--con)", marginBottom: 8 }}>
-                  Je remplis moi-même
-                </h3>
-                <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5, marginBottom: 10 }}>
-                  Tu réponds à sa place, selon ce que tu sais de lui/elle. Discret, rapide.
-                </p>
-                <p style={{ fontSize: 11, fontWeight: 300, color: "var(--conb)", lineHeight: 1.5, marginBottom: 16 }}>
-                  Idéal pour les proches peu à l&apos;aise avec le numérique — mamie, papi, ou ceux qui n&apos;ont pas accès à internet.
-                </p>
-                <span style={{ fontSize: 11, fontWeight: 400, color: "var(--terra)" }}>
-                  Continuer en mode incognito →
-                </span>
-              </button>
-
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {/* PRIMARY: Il/elle remplit son profil */}
               <button
                 onClick={handleGenerateLink}
                 disabled={linkLoading}
                 style={{
                   textAlign: "left", borderRadius: "var(--r-md)",
-                  border: "0.5px solid var(--brd2)", padding: "24px",
-                  background: "transparent", cursor: "pointer",
+                  border: "1.5px solid var(--terra)", padding: "32px",
+                  background: "var(--t1)", cursor: "pointer",
                   display: "flex", flexDirection: "column",
                   opacity: linkLoading ? 0.6 : 1,
+                  position: "relative",
                 }}
               >
-                <h3 style={{ fontSize: 14, fontWeight: 400, color: "var(--con)", marginBottom: 8 }}>
+                <span style={{
+                  position: "absolute", top: 16, right: 16,
+                  background: "var(--terra)", color: "#fff",
+                  fontSize: 10, fontWeight: 600, letterSpacing: 1,
+                  padding: "4px 10px", borderRadius: 20,
+                }}>
+                  Recommandé ✦
+                </span>
+                <h3 style={{ fontSize: 20, fontWeight: 500, color: "var(--con)", marginBottom: 10 }}>
                   Il/elle remplit son profil
                 </h3>
-                <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5, marginBottom: 10 }}>
-                  Tu envoies un lien par WhatsApp. Il/elle répond en 5 minutes. Profil ultra-précis.
+                <p style={{ fontSize: 15, fontWeight: 300, color: "var(--con)", lineHeight: 1.6, marginBottom: 20 }}>
+                  La méthode la plus précise. Ton proche répond en 5 minutes — Candice apprend vraiment qui il est.
                 </p>
-                <p style={{ fontSize: 11, fontWeight: 300, color: "var(--conb)", lineHeight: 1.5, marginBottom: 16 }}>
-                  C&apos;est toi qui fais la démarche. Envoyer un lien, c&apos;est déjà une attention en soi.
-                </p>
-                <span style={{ fontSize: 11, fontWeight: 400, color: "var(--terra)" }}>
+                <span style={{ fontSize: 16, fontWeight: 500, color: "var(--terra)" }}>
                   {linkLoading ? "Génération du lien…" : "Générer le lien à envoyer →"}
+                </span>
+              </button>
+
+              {/* SECONDARY: Je remplis moi-même */}
+              <button
+                onClick={handleChooseIncognito}
+                style={{
+                  textAlign: "left", borderRadius: "var(--r-md)",
+                  border: "0.5px solid var(--brd2)", padding: "32px",
+                  background: "transparent", cursor: "pointer",
+                  display: "flex", flexDirection: "column",
+                }}
+              >
+                <h3 style={{ fontSize: 20, fontWeight: 400, color: "var(--cond)", marginBottom: 10 }}>
+                  Je remplis moi-même
+                </h3>
+                <p style={{ fontSize: 15, fontWeight: 300, color: "var(--conf)", lineHeight: 1.6, marginBottom: 20 }}>
+                  Tu réponds à sa place, selon ce que tu sais de lui/elle. Idéal pour ceux peu à l&apos;aise avec le numérique.
+                </p>
+                <span style={{ fontSize: 16, fontWeight: 400, color: "var(--cond)" }}>
+                  Continuer en mode incognito →
                 </span>
               </button>
             </div>
