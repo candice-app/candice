@@ -25,12 +25,12 @@ export default function HomePage() {
           <span aria-hidden="true" style={{ width: 7, height: 7, background: "var(--terra)", borderRadius: "50%", marginTop: 3, boxShadow: "0 0 8px rgba(196,122,74,0.6)", flexShrink: 0, display: "inline-block" }} />
         </div>
         <div style={{ display: "flex", gap: 32 }}>
-          {["Le concept", "Fonctionnement", "Tarifs", "À propos"].map(l => (
-            <a key={l} href="#" style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)" }}>{l}</a>
-          ))}
+          <Link href="/concept" style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", textDecoration: "none" }}>Le concept</Link>
+          <Link href="/comment-ca-marche" style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", textDecoration: "none" }}>Comment ça marche</Link>
+          <Link href="/offre" style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", textDecoration: "none" }}>L&apos;offre</Link>
+          <Link href="/login" style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", textDecoration: "none" }}>Se connecter</Link>
         </div>
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <Link href="/login" style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)" }}>Se connecter</Link>
           <Link href="/register"><button className="btn-primary">Commencer</button></Link>
         </div>
       </nav>

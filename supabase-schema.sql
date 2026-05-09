@@ -154,3 +154,28 @@ CREATE TABLE shared_profile_responses (
 
 ALTER TABLE shared_profile_responses ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "users_own_shared_responses" ON shared_profile_responses FOR ALL USING (auth.uid() = user_id);
+
+-- Physical measurements — questionnaire_responses (shared profile form)
+ALTER TABLE questionnaire_responses ADD COLUMN IF NOT EXISTS clothing_size TEXT;
+ALTER TABLE questionnaire_responses ADD COLUMN IF NOT EXISTS shoe_size TEXT;
+ALTER TABLE questionnaire_responses ADD COLUMN IF NOT EXISTS ring_size TEXT;
+ALTER TABLE questionnaire_responses ADD COLUMN IF NOT EXISTS pants_size TEXT;
+ALTER TABLE questionnaire_responses ADD COLUMN IF NOT EXISTS pets TEXT;
+
+-- Physical measurements — my_profile (self profile form)
+ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS clothing_size TEXT;
+ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS shoe_size TEXT;
+ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS ring_size TEXT;
+ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS pants_size TEXT;
+ALTER TABLE my_profile ADD COLUMN IF NOT EXISTS pets TEXT;
+
+-- Profile notes: free-text notes about contacts (Candice input + check-ins)
+CREATE TABLE IF NOT EXISTS profile_notes (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  contact_id UUID REFERENCES contacts(id) ON DELETE CASCADE,
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+  note TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+ALTER TABLE profile_notes ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "users_own_profile_notes" ON profile_notes FOR ALL USING (auth.uid() = user_id);

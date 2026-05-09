@@ -14,6 +14,7 @@ interface Suggestion {
 interface Props {
   contacts: (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
   onClose: () => void;
+  initialContactId?: string;
 }
 
 const OCCASIONS = [
@@ -67,9 +68,9 @@ const PLAYFAIR: React.CSSProperties = {
   fontWeight: 400,
 };
 
-export default function IdeaModal({ contacts, onClose }: Props) {
-  const [step, setStep] = useState<1 | 2 | 3 | "results">(1);
-  const [selectedContact, setSelectedContact] = useState<string>("");
+export default function IdeaModal({ contacts, onClose, initialContactId }: Props) {
+  const [step, setStep] = useState<1 | 2 | 3 | "results">(initialContactId ? 2 : 1);
+  const [selectedContact, setSelectedContact] = useState<string>(initialContactId ?? "");
   const [selectedOccasion, setSelectedOccasion] = useState<string>("");
   const [occasionOther, setOccasionOther] = useState<string>("");
   const [selectedBudget, setSelectedBudget] = useState<string>("");

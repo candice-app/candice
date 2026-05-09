@@ -5,15 +5,17 @@ import DashboardShell from "@/components/layout/DashboardShell";
 import ContactCard from "@/components/dashboard/ContactCard";
 import CagnotteWidget from "@/components/dashboard/CagnotteWidget";
 import DashboardActions from "@/components/dashboard/DashboardActions";
+import CandiceInput from "@/components/dashboard/CandiceInput";
+import WeeklyCheckin from "@/components/dashboard/WeeklyCheckin";
 import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
-import { Contact, QuestionnaireResponse, UserPoint } from "@/types";
+import { Contact, QuestionnaireResponse, UserPoint, ProfileNote } from "@/types";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: contacts }, { data: myProfile }, { count: archivedCount }, { data: pointRows }] = await Promise.all([
+  const [{ data: contacts }, { data: myProfile }, { count: archivedCount }, { data: pointRows }, { data: recentNoteData }] = await Promise.all([
     supabase
       .from("contacts")
       .select("*, questionnaire_responses(*)")
@@ -35,10 +37,18 @@ export default async function DashboardPage() {
       .select("*")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("profile_notes")
+      .select("id, contact_id, user_id, note, created_at")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
   const userPoints = (pointRows ?? []) as UserPoint[];
+  const recentNote = recentNoteData as ProfileNote | null;
   const hasMyProfile = !!myProfile;
   const onboardingDone = !!(myProfile as { onboarding_completed?: boolean } | null)?.onboarding_completed;
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
@@ -63,6 +73,14 @@ export default async function DashboardPage() {
           </span>
         )}
       </div>
+
+      {/* Candice input */}
+      {typedContacts.length > 0 && (
+        <CandiceInput contacts={typedContacts} recentNote={recentNote} />
+      )}
+
+      {/* Weekly check-in */}
+      <WeeklyCheckin contacts={typedContacts} />
 
       {/* Cagnotte widget */}
       <CagnotteWidget points={userPoints} />

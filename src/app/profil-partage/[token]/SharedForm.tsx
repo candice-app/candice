@@ -206,12 +206,18 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
   const [characterEmotions, setCharacterEmotions] = useState("");
   const [cannotStand, setCannotStand] = useState("");
   const [fewKnow, setFewKnow] = useState("");
-  // Practical (5)
-  const [foodAllergies, setFoodAllergies] = useState("");
+  // Practical
+  const [foodAllergies, setFoodAllergies] = useState<string[]>([]);
   const [diet, setDiet] = useState<string[]>([]);
   const [religion, setReligion] = useState("");
   const [disability, setDisability] = useState("");
   const [postalAddress, setPostalAddress] = useState("");
+  // Physical measurements
+  const [clothingSize, setClothingSize] = useState("");
+  const [shoeSize, setShoeSize] = useState("");
+  const [ringSize, setRingSize] = useState("");
+  const [pantsSize, setPantsSize] = useState("");
+  const [pets, setPets] = useState("");
 
   // ── Draft restore ──────────────────────────────────────────────────────────
 
@@ -253,11 +259,16 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
       setCharacterEmotions(str(d.characterEmotions));
       setCannotStand(str(d.cannotStand));
       setFewKnow(str(d.fewKnow));
-      setFoodAllergies(str(d.foodAllergies));
+      setFoodAllergies(arr(d.foodAllergies));
       setDiet(arr(d.diet));
       setReligion(str(d.religion));
       setDisability(str(d.disability));
       setPostalAddress(str(d.postalAddress));
+      setClothingSize(str(d.clothingSize));
+      setShoeSize(str(d.shoeSize));
+      setRingSize(str(d.ringSize));
+      setPantsSize(str(d.pantsSize));
+      setPets(str(d.pets));
       if (d.savedAt) setDraftSavedAt(new Date(d.savedAt));
     } catch { /* ignore corrupt draft */ }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -279,7 +290,7 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
           tactility, conversationTopics, thingsToAvoid, bestContactMethod,
           importantDatesList, healthComfort, familyLife, characterEmotions,
           cannotStand, fewKnow, foodAllergies, diet, religion, disability,
-          postalAddress, savedAt,
+          postalAddress, clothingSize, shoeSize, ringSize, pantsSize, pets, savedAt,
         }));
         setDraftSavedAt(new Date(savedAt));
       } catch { /* storage unavailable */ }
@@ -294,6 +305,7 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
     tactility, conversationTopics, thingsToAvoid, bestContactMethod,
     importantDatesList, healthComfort, familyLife, characterEmotions,
     cannotStand, fewKnow, foodAllergies, diet, religion, disability, postalAddress,
+    clothingSize, shoeSize, ringSize, pantsSize, pets,
   ]);
 
   // ── Progress ───────────────────────────────────────────────────────────────
@@ -303,11 +315,12 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
       appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
       coreValues, recognitionPreference, boundaries, growthMindset,
       giftPreference, standing, gastronomy, accommodation, giftStyle,
-      tactility, bestContactMethod, diet,
+      tactility, bestContactMethod, diet, foodAllergies,
     ].filter((a) => a.length > 0).length +
     [hobbies, dislikedActivities, favoriteFoods, dislikedFoods,
       conversationTopics, thingsToAvoid, healthComfort, familyLife,
-      characterEmotions, cannotStand, fewKnow, foodAllergies, religion, disability, postalAddress,
+      characterEmotions, cannotStand, fewKnow, religion, disability, postalAddress,
+      clothingSize, shoeSize, ringSize, pantsSize, pets,
     ].filter((s) => s.trim().length > 0).length +
     (importantDatesList.some((d) => d.date) ? 1 : 0);
 
@@ -356,11 +369,16 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
     character_emotions: characterEmotions || null,
     cannot_stand: cannotStand || null,
     few_know: fewKnow || null,
-    food_allergies: foodAllergies || null,
+    food_allergies: join(foodAllergies),
     diet: join(diet),
     religion: religion || null,
     disability: disability || null,
     postal_address: postalAddress || null,
+    clothing_size: clothingSize || null,
+    shoe_size: shoeSize || null,
+    ring_size: ringSize || null,
+    pants_size: pantsSize || null,
+    pets: pets || null,
   });
 
   const handleSaveLater = () => {
@@ -369,6 +387,7 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({ ...buildPayload(), savedAt: new Date().toISOString() }));
     } catch { /* ignore */ }
     setStickyToast(true);
+    // no redirect for SharedForm (it's a public form)
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -798,21 +817,54 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
               <p style={{ fontSize: 12, fontWeight: 300, color: "rgba(196,122,74,0.7)", fontStyle: "italic" }}>Pour que les attentions soient parfaitement adaptées à toi.</p>
             </div>
             <div>
+              <label style={FIELD_LABEL}>Taille vêtements</label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {["XS", "S", "M", "L", "XL", "XXL"].map(size => (
+                  <label key={size} style={{ padding: "8px 18px", borderRadius: 8, border: clothingSize === size ? "1px solid #C47A4A" : "1px solid rgba(30,18,8,0.12)", background: clothingSize === size ? "#C47A4A" : "#fff", color: clothingSize === size ? "#fff" : "#1E1208", cursor: "pointer", fontSize: 14, fontWeight: clothingSize === size ? 500 : 300, userSelect: "none" as const }}>
+                    <input type="radio" name="clothingSize" value={size} checked={clothingSize === size} onChange={() => setClothingSize(size)} style={{ display: "none" }} />
+                    {size}
+                  </label>
+                ))}
+                {clothingSize && <button type="button" onClick={() => setClothingSize("")} style={{ fontSize: 12, color: "#A08060", background: "none", border: "none", cursor: "pointer" }}>Effacer</button>}
+              </div>
+            </div>
+            <div>
+              <label style={FIELD_LABEL}>Pointure chaussures</label>
+              <input type="number" value={shoeSize} onChange={e => setShoeSize(e.target.value)} placeholder="ex. 42" min={28} max={50} style={{ ...INPUT, width: 120 }} />
+            </div>
+            <div>
+              <label style={FIELD_LABEL}>Taille bague (optionnel)</label>
+              <input type="text" value={ringSize} onChange={e => setRingSize(e.target.value)} placeholder="ex. 54, 56…" style={{ ...INPUT, width: 160 }} />
+            </div>
+            <div>
+              <label style={FIELD_LABEL}>Taille pantalon (optionnel)</label>
+              <input type="text" value={pantsSize} onChange={e => setPantsSize(e.target.value)} placeholder="ex. 36/32, Slim 34…" style={{ ...INPUT, width: 200 }} />
+            </div>
+            <div>
               <label style={FIELD_LABEL}>Allergies alimentaires</label>
-              <textarea value={foodAllergies} onChange={(e) => setFoodAllergies(e.target.value)} rows={2} style={INPUT} placeholder="ex. arachides, gluten, lactose, fruits de mer…" />
+              <MultiSelect values={foodAllergies} onChange={setFoodAllergies} max={6} options={[
+                { value: "aucune", label: "Aucune allergie" },
+                { value: "gluten", label: "Gluten" },
+                { value: "lactose", label: "Lactose" },
+                { value: "noix", label: "Noix & fruits à coque" },
+                { value: "fruits_mer", label: "Fruits de mer" },
+                { value: "autre", label: "Autre" },
+              ]} />
             </div>
             <div>
               <label style={FIELD_LABEL}>Régime alimentaire</label>
               <MultiSelect values={diet} onChange={setDiet} max={4} options={[
-                { value: "no_restriction", label: "Pas de restriction particulière", description: "Je mange de tout sans contrainte" },
+                { value: "omnivore", label: "Omnivore", description: "Je mange de tout sans contrainte" },
                 { value: "vegetarian", label: "Végétarien(ne)", description: "Pas de viande ni poisson" },
                 { value: "vegan", label: "Vegan", description: "Aucun produit d'origine animale" },
-                { value: "pescatarian", label: "Pescétarien(ne)", description: "Pas de viande, mais poisson OK" },
                 { value: "halal", label: "Halal", description: "Alimentation conforme aux règles halal" },
                 { value: "kosher", label: "Casher", description: "Alimentation conforme aux règles casher" },
-                { value: "gluten_free", label: "Sans gluten", description: "Intolérance ou allergie au gluten" },
-                { value: "lactose_free", label: "Sans lactose", description: "Intolérance ou allergie au lactose" },
+                { value: "no_preference", label: "Sans préférence", description: "Pas de contrainte particulière" },
               ]} />
+            </div>
+            <div>
+              <label style={FIELD_LABEL}>Animaux de compagnie (optionnel)</label>
+              <input type="text" value={pets} onChange={e => setPets(e.target.value)} placeholder="ex. un chat roux, deux chiens, des poissons tropicaux…" style={INPUT} />
             </div>
             <div>
               <label style={FIELD_LABEL}>Religion & convictions (optionnel)</label>

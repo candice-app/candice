@@ -41,6 +41,11 @@ export interface QuestionnaireResponse {
   best_contact_method: string | null;
   important_dates: string | null;
   additional_notes: string | null;
+  clothing_size: string | null;
+  shoe_size: string | null;
+  ring_size: string | null;
+  pants_size: string | null;
+  pets: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -96,8 +101,21 @@ export interface MyProfile {
   disability: string | null;
   postal_address: string | null;
   additional_notes: string | null;
+  clothing_size: string | null;
+  shoe_size: string | null;
+  ring_size: string | null;
+  pants_size: string | null;
+  pets: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ProfileNote {
+  id: string;
+  contact_id: string | null;
+  user_id: string;
+  note: string;
+  created_at: string;
 }
 
 export interface ProfileShareRequest {

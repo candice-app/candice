@@ -14,7 +14,10 @@ export const createClient = async () => {
       setAll(cookiesToSet) {
         try {
           cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
+            cookieStore.set(name, value, {
+              ...options,
+              maxAge: options?.maxAge ?? 60 * 60 * 24 * 30,
+            })
           );
         } catch {
           // Called from a Server Component — session refresh middleware handles this.

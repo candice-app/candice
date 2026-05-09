@@ -4,8 +4,9 @@ import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
 import SuggestionsPanel from "./SuggestionsPanel";
 import AnalysisPanel from "./AnalysisPanel";
-import { Contact, QuestionnaireResponse } from "@/types";
+import { Contact, QuestionnaireResponse, ProfileNote } from "@/types";
 import ContactActions from "./ContactActions";
+import ContactNotes from "@/components/dashboard/ContactNotes";
 
 const LABEL: Record<string, Record<string, string>> = {
   love_language: { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité", touch: "Toucher physique" },
@@ -96,7 +97,7 @@ export default async function ContactPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: contact }, { data: cachedSuggestions }, { data: myProfile }] = await Promise.all([
+  const [{ data: contact }, { data: cachedSuggestions }, { data: myProfile }, { data: notesData }] = await Promise.all([
     supabase
       .from("contacts")
       .select("*, questionnaire_responses(*)")
@@ -114,6 +115,13 @@ export default async function ContactPage({
       .select("id")
       .eq("user_id", user.id)
       .maybeSingle(),
+    supabase
+      .from("profile_notes")
+      .select("id, contact_id, user_id, note, created_at")
+      .eq("contact_id", id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
 
   if (!contact) notFound();
@@ -121,11 +129,19 @@ export default async function ContactPage({
   const typedContact = contact as Contact & { questionnaire_responses: QuestionnaireResponse[] };
   const profile = typedContact.questionnaire_responses?.[0];
   const userHasProfile = !!myProfile;
+  const contactNotes = (notesData ?? []) as ProfileNote[];
 
   const tabBase = `/contacts/${id}`;
 
   return (
     <DashboardShell>
+      {/* Notes quick-add */}
+      <ContactNotes
+        contactId={id}
+        contactName={typedContact.name}
+        initialNotes={contactNotes}
+      />
+
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 28 }}>
         <div
