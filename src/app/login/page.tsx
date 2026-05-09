@@ -5,10 +5,27 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 
-const SHORT_LABEL: React.CSSProperties = {
-  fontSize: 10, fontWeight: 400, letterSpacing: 2,
-  textTransform: "uppercase", color: "var(--cond)",
+const BG = "#FAF7F2";
+const WHITE = "#FFFFFF";
+const TERRA = "#C47A4A";
+const CON = "#2C1A0E";
+const COND = "#7A5E44";
+const BORDER_INPUT = "#E8C4A0";
+const BORDER_CARD = "rgba(44,26,14,0.1)";
+const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
+
+const LABEL: React.CSSProperties = {
+  fontSize: 10, fontWeight: 500, letterSpacing: 2,
+  textTransform: "uppercase", color: COND,
   marginBottom: 6, display: "block",
+};
+
+const INPUT: React.CSSProperties = {
+  width: "100%", boxSizing: "border-box",
+  padding: "10px 12px", fontSize: 14, fontWeight: 300,
+  background: BG, border: `1px solid ${BORDER_INPUT}`,
+  borderRadius: 6, color: CON, fontFamily: DM,
+  outline: "none",
 };
 
 export default function LoginPage() {
@@ -34,25 +51,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--br)" }}>
-      <header style={{ padding: "16px 24px", borderBottom: "0.5px solid var(--brd)" }}>
-        <Link href="/" style={{ fontSize: 18, fontWeight: 400, color: "var(--iv)", textDecoration: "none", letterSpacing: -0.5 }}>
-          candice
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: BG, fontFamily: DM }}>
+      <header style={{ padding: "16px 24px", borderBottom: `0.5px solid ${BORDER_CARD}` }}>
+        <Link href="/" style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON, textDecoration: "none" }}>
+          Candice
         </Link>
       </header>
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
         <div style={{ width: "100%", maxWidth: 360 }}>
           <div style={{ marginBottom: 28 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>Bon retour.</h1>
-            <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)" }}>Connectez-vous à votre compte</p>
+            <h1 style={{ fontSize: 22, fontWeight: 400, color: CON, marginBottom: 6 }}>Bon retour.</h1>
+            <p style={{ fontSize: 12, fontWeight: 300, color: COND }}>Connectez-vous à votre compte</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="card" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            {error && <p style={{ fontSize: 12, color: "#E05252" }}>{error}</p>}
+          <form onSubmit={handleSubmit} style={{ background: WHITE, border: `0.5px solid ${BORDER_CARD}`, borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+            {error && <p style={{ fontSize: 12, color: "#D04040", margin: 0 }}>{error}</p>}
 
             <div>
-              <label htmlFor="email" style={SHORT_LABEL}>E-mail</label>
+              <label htmlFor="email" style={LABEL}>E-mail</label>
               <input
                 id="email"
                 type="email"
@@ -60,11 +77,12 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="vous@exemple.com"
+                style={INPUT}
               />
             </div>
 
             <div>
-              <label htmlFor="password" style={SHORT_LABEL}>Mot de passe</label>
+              <label htmlFor="password" style={LABEL}>Mot de passe</label>
               <input
                 id="password"
                 type="password"
@@ -72,17 +90,22 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
+                style={INPUT}
               />
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary" style={{ width: "100%", marginTop: 4 }}>
+            <button
+              type="submit"
+              disabled={loading}
+              style={{ width: "100%", marginTop: 4, background: loading ? "#D4956A" : TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "12px", fontSize: 14, fontWeight: 500, cursor: loading ? "default" : "pointer", fontFamily: DM }}
+            >
               {loading ? "Connexion en cours…" : "Se connecter"}
             </button>
           </form>
 
-          <p style={{ textAlign: "center", fontSize: 12, fontWeight: 300, color: "var(--cond)", marginTop: 20 }}>
+          <p style={{ textAlign: "center", fontSize: 12, fontWeight: 300, color: COND, marginTop: 20 }}>
             Pas encore de compte ?{" "}
-            <Link href="/register" style={{ color: "var(--terra)", fontWeight: 400, textDecoration: "none" }}>
+            <Link href="/register" style={{ color: TERRA, fontWeight: 400, textDecoration: "none" }}>
               En créer un
             </Link>
           </p>
