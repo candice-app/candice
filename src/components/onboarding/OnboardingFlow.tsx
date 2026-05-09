@@ -113,8 +113,8 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
   const current = SLIDES[slide];
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 300, background: "rgba(30,18,8,0.55)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div style={{ background: BG, borderRadius: 20, width: "100%", maxWidth: 480, maxHeight: "90vh", overflowY: "auto", boxShadow: "0 24px 80px rgba(0,0,0,0.2)", display: "flex", flexDirection: "column" }}>
+    <div className="onboarding-modal-wrap">
+      <div className="onboarding-modal-inner">
 
         {/* Content */}
         <div style={{ padding: "44px 36px 28px", flex: 1 }}>

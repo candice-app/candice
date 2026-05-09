@@ -227,3 +227,175 @@ label { display: block; font-size: 10px; font-weight: 500; letter-spacing: 2px; 
 ::-webkit-scrollbar-track { background: #FAF7F2; }
 ::-webkit-scrollbar-thumb { background: #E8C4A0; border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: #C47A4A; }
+
+/* ══ Mobile / Responsive ═════════════════════════════════════════════ */
+
+/* Hamburger button — visible only on mobile via media query */
+.topbar-hamburger {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2C1A0E;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+/* Sidebar backdrop overlay */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  top: 56px;
+  background: rgba(30,18,8,0.45);
+  z-index: 150;
+  cursor: pointer;
+}
+
+/* Onboarding modal classes for mobile override */
+.onboarding-modal-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(30,18,8,0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.onboarding-modal-inner {
+  background: #FAF7F2;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  /* ── Dashboard layout ── */
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 56px;
+    left: 0;
+    width: 264px;
+    height: calc(100vh - 56px);
+    z-index: 200;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+  }
+
+  .sidebar.sidebar-open {
+    transform: translateX(0);
+    box-shadow: 6px 0 32px rgba(0,0,0,0.25);
+  }
+
+  .sidebar-overlay.sidebar-open {
+    display: block;
+  }
+
+  .topbar-hamburger {
+    display: flex;
+  }
+
+  .main-content {
+    padding: 20px;
+  }
+
+  /* ── Marketing nav links ── */
+  .mkt-nav-links {
+    display: none !important;
+  }
+
+  /* ── Marketing layout helpers ── */
+  .mkt-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+
+  .mkt-grid-4 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  .mkt-bridge {
+    flex-direction: column !important;
+    gap: 20px !important;
+    padding: 24px 20px !important;
+  }
+
+  .mkt-nav {
+    padding: 0 20px !important;
+  }
+
+  .mkt-hero {
+    padding: 60px 20px 48px !important;
+  }
+
+  .mkt-section {
+    padding: 48px 20px !important;
+  }
+
+  .mkt-h1 {
+    font-size: 38px !important;
+    letter-spacing: -1px !important;
+  }
+
+  .mkt-screens-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* ── Onboarding modal mobile ── */
+  .onboarding-modal-wrap {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .onboarding-modal-inner {
+    border-radius: 20px 20px 0 0;
+    max-width: 100%;
+    max-height: 95vh;
+  }
+}
+
+@media (max-width: 480px) {
+  .main-content {
+    padding: 16px;
+  }
+
+  .mkt-grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .mkt-screens-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .mkt-h1 {
+    font-size: 30px !important;
+    letter-spacing: -0.5px !important;
+  }
+
+  .mkt-hero {
+    padding: 48px 16px 36px !important;
+  }
+
+  .mkt-section {
+    padding: 36px 16px !important;
+  }
+
+  .mkt-nav {
+    padding: 0 16px !important;
+  }
+}

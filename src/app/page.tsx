@@ -28,12 +28,12 @@ export default function HomePage() {
     <main style={{ background: BG, fontFamily: DM, color: CON, minHeight: "100vh" }}>
 
       {/* NAV */}
-      <nav aria-label="Navigation principale" style={{ height: 60, padding: "0 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `0.5px solid ${BORDER}`, background: BG, position: "sticky", top: 0, zIndex: 100 }}>
+      <nav aria-label="Navigation principale" className="mkt-nav" style={{ height: 60, padding: "0 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `0.5px solid ${BORDER}`, background: BG, position: "sticky", top: 0, zIndex: 100 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 4 }}>
           <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON }}>Candice</span>
           <span aria-hidden="true" style={{ width: 7, height: 7, background: TERRA, borderRadius: "50%", marginTop: 3, boxShadow: "0 0 8px rgba(196,122,74,0.5)", flexShrink: 0, display: "inline-block" }} />
         </div>
-        <div style={{ display: "flex", gap: 32 }}>
+        <div className="mkt-nav-links" style={{ display: "flex", gap: 32 }}>
           <Link href="/concept" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Le concept</Link>
           <Link href="/comment-ca-marche" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Comment ça marche</Link>
           <Link href="/offre" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>L&apos;offre</Link>
@@ -47,8 +47,8 @@ export default function HomePage() {
       </nav>
 
       {/* HERO */}
-      <section id="main-content" style={{ padding: "96px 52px 88px", textAlign: "center", borderBottom: `0.5px solid ${BORDER}` }}>
-        <h1 style={{ fontFamily: PLAYFAIR, fontSize: 64, fontWeight: 400, color: CON, lineHeight: 1.04, letterSpacing: -2.5, marginBottom: 12 }}>
+      <section id="main-content" className="mkt-hero" style={{ padding: "96px 52px 88px", textAlign: "center", borderBottom: `0.5px solid ${BORDER}` }}>
+        <h1 className="mkt-h1" style={{ fontFamily: PLAYFAIR, fontSize: 64, fontWeight: 400, color: CON, lineHeight: 1.04, letterSpacing: -2.5, marginBottom: 12 }}>
           Votre copilote<br /><span style={{ color: TERRA }}>relationnel.</span>
         </h1>
         <p style={{ fontSize: 22, fontWeight: 300, color: TERRA, letterSpacing: -0.3, marginBottom: 44 }}>
@@ -63,7 +63,7 @@ export default function HomePage() {
       </section>
 
       {/* BRIDGE */}
-      <div style={{ background: BG, borderBottom: `0.5px solid ${BORDER}`, padding: "28px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 40 }}>
+      <div className="mkt-bridge" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}`, padding: "28px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 40 }}>
         <p style={{ fontSize: 18, fontWeight: 300, color: CON, letterSpacing: -0.3, lineHeight: 1.3, maxWidth: 380 }}>
           Vivez pleinement les moments qui comptent.<br />
           <span style={{ color: TERRA }}>Candice s&apos;occupe du reste.</span>
@@ -74,8 +74,8 @@ export default function HomePage() {
       </div>
 
       {/* STATS BLOC */}
-      <section style={{ background: WHITE, borderBottom: `0.5px solid ${BORDER}`, padding: "72px 52px" }}>
-        <div style={{ maxWidth: 920, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
+      <section className="mkt-section" style={{ background: WHITE, borderBottom: `0.5px solid ${BORDER}`, padding: "72px 52px" }}>
+        <div className="mkt-grid-2" style={{ maxWidth: 920, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
           {/* Left — problem text */}
           <div>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 20 }}>Le problème</p>
@@ -107,11 +107,11 @@ export default function HomePage() {
       </section>
 
       {/* CITATIONS */}
-      <section aria-label="Témoignages" style={{ background: BG, padding: "64px 52px", borderBottom: `0.5px solid ${BORDER}` }}>
+      <section aria-label="Témoignages" className="mkt-section" style={{ background: BG, padding: "64px 52px", borderBottom: `0.5px solid ${BORDER}` }}>
         <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 40, textAlign: "center" }}>
           Ils auraient voulu faire autrement.
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
+        <div className="mkt-grid-4" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 12 }}>
           {[
             { q: "Son anniversaire était passé. Je l'ai su le lendemain matin.", who: "Marie, 34 ans", frein: "Oubli" },
             { q: "Je savais exactement quoi faire. Je n'ai jamais eu le temps de le faire.", who: "Thomas, 41 ans", frein: "Manque de temps" },
@@ -130,9 +130,9 @@ export default function HomePage() {
       </section>
 
       {/* BÉNÉFICES */}
-      <section aria-label="Fonctionnalités" style={{ background: WHITE, padding: "64px 52px", borderBottom: `0.5px solid ${BORDER}` }}>
+      <section aria-label="Fonctionnalités" className="mkt-section" style={{ background: WHITE, padding: "64px 52px", borderBottom: `0.5px solid ${BORDER}` }}>
         <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 36 }}>Ce que Candice change</p>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+        <div className="mkt-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           {[
             { num: "01 · Mémoire relationnelle", h: "Candice retient tout. Vous ne perdez plus rien.", p: "Goûts, habitudes, dates importantes, moments partagés — chaque information devient une opportunité de geste juste." },
             { num: "02 · Intelligence contextuelle", h: "La bonne suggestion. Pour la bonne personne. Au bon moment.", p: "Candice analyse le contexte de chacun de vos proches et propose uniquement ce qui a du sens — maintenant." },
@@ -149,7 +149,7 @@ export default function HomePage() {
       </section>
 
       {/* SCREENS PRODUIT */}
-      <section aria-label="Aperçu de l'application" style={{ background: BG, padding: "64px 52px", borderBottom: `0.5px solid ${BORDER}` }}>
+      <section aria-label="Aperçu de l'application" className="mkt-section" style={{ background: BG, padding: "64px 52px", borderBottom: `0.5px solid ${BORDER}` }}>
         <div style={{ textAlign: "center", marginBottom: 48 }}>
           <h2 style={{ fontFamily: PLAYFAIR, fontSize: 28, fontWeight: 400, color: CON, letterSpacing: -0.8, lineHeight: 1.25, marginBottom: 8 }}>
             Tout ce qui compte pour eux,<br />réuni en un seul endroit.
@@ -164,7 +164,7 @@ export default function HomePage() {
       </section>
 
       {/* CTA FINAL */}
-      <section style={{ padding: "88px 52px", textAlign: "center", background: WHITE }}>
+      <section className="mkt-section" style={{ padding: "88px 52px", textAlign: "center", background: WHITE }}>
         <h2 style={{ fontFamily: PLAYFAIR, fontSize: 40, fontWeight: 400, color: CON, letterSpacing: -1.2, lineHeight: 1.1, marginBottom: 14, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
           Prêt à ne plus jamais rater<br /><span style={{ color: TERRA }}>ce qui compte vraiment ?</span>
         </h2>
@@ -182,7 +182,7 @@ export default function HomePage() {
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: BG, padding: "20px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `0.5px solid ${BORDER}` }}>
+      <footer className="mkt-bridge" style={{ background: BG, padding: "20px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `0.5px solid ${BORDER}` }}>
         <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: "rgba(30,18,8,0.2)" }}>Candice ·</span>
         <nav aria-label="Liens légaux" style={{ display: "flex", gap: 24 }}>
           {["Confidentialité", "Conditions générales", "Contact"].map(l => (
@@ -206,7 +206,7 @@ function AppScreenshots() {
   const BORDER2 = "rgba(30,18,8,0.06)";
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }}>
+    <div className="mkt-screens-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14 }}>
       {/* Phone 1 — Proches */}
       <MiniPhone title="Mes proches" label="Liste de proches">
         {[["SM", "Sophie Martin", "Paris · Amie", "u", "Anniversaire J-4"], ["TL", "Thomas Leroy", "Lyon · Frère", "n", "2 mois sans contact"], ["PL", "Paul Lemaire", "Paris · Ami", "g", "Marathon dimanche"], ["CP", "Claire — Maman", "Bordeaux", "u", "Fête des mères J-8"], ["JR", "Julien R.", "Nantes · Ami", "n", "3 mois sans contact"]].map(([init, name, meta, type, badge], i) => (

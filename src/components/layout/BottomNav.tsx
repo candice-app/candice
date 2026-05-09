@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 
+interface Props {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
 const NAV = [
   {
     section: "Réseau",
@@ -28,17 +33,18 @@ const NAV = [
   },
 ];
 
-export default function BottomNav() {
+export default function BottomNav({ isOpen, onClose }: Props) {
   const pathname = usePathname();
   const router = useRouter();
 
   const handleReplayTour = () => {
     try { localStorage.setItem("candice_replay_tour", "true"); } catch { /* storage unavailable */ }
+    if (onClose) onClose();
     router.push("/dashboard");
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${isOpen ? " sidebar-open" : ""}`}>
       {NAV.map(({ section, items }) => (
         <div key={section}>
           <p className="sidebar-section-label">{section}</p>
@@ -49,6 +55,7 @@ export default function BottomNav() {
                 key={href}
                 href={href}
                 className={`sidebar-item${active ? " active" : ""}`}
+                onClick={onClose}
               >
                 {href === "/aide" ? (
                   <svg width="10" height="10" viewBox="0 0 16 16" fill="none" style={{ flexShrink: 0 }} aria-hidden="true">
