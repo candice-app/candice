@@ -80,10 +80,10 @@ export default function HomePage() {
           <div>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 20 }}>Le problème</p>
             <h2 style={{ fontFamily: PLAYFAIR, fontSize: 32, fontWeight: 400, lineHeight: 1.2, letterSpacing: -0.8, color: CON, marginBottom: 20 }}>
-              Vous pensez à eux.<br />Vous ne le montrez pas toujours.
+              On pense à eux. On ne le montre pas toujours. Ou pas comme ils l&apos;aimeraient.
             </h2>
             <p style={{ fontSize: 15, fontWeight: 300, color: COND, lineHeight: 1.85 }}>
-              La vie va vite. Les petites attentions qu&apos;on voulait faire finissent dans un coin de notre tête, et n&apos;en ressortent jamais. Ce n&apos;est pas un manque d&apos;amour — c&apos;est un manque de temps et d&apos;organisation.
+              La vie va vite. Les petites attentions qu&apos;on voulait faire finissent dans un coin de notre tête, et n&apos;en ressortent jamais. Pas par manque d&apos;amour. Par manque de temps, d&apos;idées — ou parce qu&apos;on ne connaît pas toujours assez bien l&apos;autre pour lui faire vraiment plaisir.
             </p>
           </div>
           {/* Right — stat cards */}
