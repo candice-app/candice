@@ -75,31 +75,6 @@ export default function ConceptPage() {
         </div>
       </section>
 
-      {/* Candice vit avec toi */}
-      <section style={{ background: WHITE, borderTop: `0.5px solid ${BORDER}`, borderBottom: `0.5px solid ${BORDER}`, padding: "88px 52px" }}>
-        <div style={{ maxWidth: 980, margin: "0 auto" }}>
-          <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 16, textAlign: "center" }}>Candice vit avec toi</p>
-          <h2 style={{ fontFamily: PLAYFAIR, fontSize: 36, fontWeight: 400, color: CON, letterSpacing: -1, lineHeight: 1.15, marginBottom: 56, textAlign: "center", maxWidth: 560, margin: "0 auto 56px" }}>
-            Des vraies situations. Des vraies attentions.
-          </h2>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-            {[
-              { emoji: "🍽️", text: "Tu sors du resto. Manon avait l'air de ne pas aller fort ce soir. Tu dis à Candice. Le lendemain, Candice te propose d'organiser un week-end surprise pour elle — spa, hôtel, dîner. Tu valides. Elle réserve." },
-              { emoji: "👗", text: "Thomas se balade avec Julie devant une boutique. Julie s'arrête : 'Oh j'adore cette robe.' Thomas prend une photo avec Candice. La robe est ajoutée à la liste de souhaits de Julie. Son anniversaire est dans 6 semaines. Candice s'en souvient." },
-              { emoji: "🍼", text: "Tu viens de raccrocher avec Camille. Elle vient d'accoucher à Dubaï. Tu le dis à Candice. En 3 minutes, elle te propose une livraison de fleurs et un coffret naissance à son adresse. Tu valides. C'est parti." },
-              { emoji: "✈️", text: "Julie part au Japon la semaine prochaine. Candice lui prépare un carnet de voyage personnalisé — ses adresses dans ses quartiers, une playlist pour le vol, un message de ta part. Elle rentre avec des souvenirs." },
-              { emoji: "👴", text: "Papa semble seul depuis quelques semaines. Candice te propose d'organiser un week-end père-enfant — itinéraire, hôtel, activité selon ce qu'il aime. Tu dis oui. Elle gère tout." },
-              { emoji: "🥂", text: "Tu sors d'une réunion. Ton associé vient de décrocher le plus gros contrat de sa vie. Tu le dis à Candice. Elle commande une bouteille de champagne livrée à son bureau dans l'heure." },
-            ].map((card, i) => (
-              <div key={i} style={{ background: BG, border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: "28px 24px" }}>
-                <div style={{ fontSize: 32, marginBottom: 16 }}>{card.emoji}</div>
-                <p style={{ fontSize: 14, fontWeight: 300, color: COND, lineHeight: 1.75 }}>{card.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA */}
       <section style={{ padding: "88px 52px", textAlign: "center" }}>
         <h2 style={{ fontFamily: PLAYFAIR, fontSize: 36, fontWeight: 400, color: CON, letterSpacing: -0.8, marginBottom: 20 }}>
