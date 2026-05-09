@@ -28,37 +28,40 @@ const POINTS = [
   { label: "Marquer une attention réalisée", pts: "+100 pts" },
 ];
 
-const SLIDES: { tag: string; icon: string; title: string; subtitle?: string; body: string; isLast?: true }[] = [
+const SLIDES: { tag: string; icon: string; title: string; subtitle?: string; body: string; pill?: string; isLast?: true }[] = [
   {
     tag: "Bienvenue",
     icon: "🤝",
     title: "Bienvenue sur Candice.",
     subtitle: "Ton copilote relationnel.",
-    body: "La vie va vite. Candice s'assure que tu n'oublies plus jamais ce qui compte pour les gens que tu aimes — leurs goûts, leurs moments importants, ce qui les fait vraiment sourire. Tu lui parles de tes proches. Elle apprend. Elle anticipe. Et quand le moment arrive, elle te dit quoi faire — ou le fait pour toi.",
+    body: "La vie va vite. Candice s'assure que tu n'oublies plus ce qui compte pour les gens que tu aimes.",
   },
   {
     tag: "Ton profil d'abord",
     icon: "👤",
     title: "Commence par toi.",
-    body: "Dis à Candice qui tu es — tes goûts, tes envies, ce qui te touche vraiment. C'est la base de tout. Et plus tard, tu pourras partager ton profil à tes proches — pour qu'eux aussi puissent te faire plaisir comme tu le mérites. Bonus : plus ta fiche est complète, plus Candice peut t'offrir une analyse de ton propre profil — tes langages de l'amour, ce qui te motive, ce dont tu as besoin.",
+    body: "Dis à Candice qui tu es — tes goûts, tes envies, ce qui te touche vraiment.",
+    pill: "✦ Analyse de ton profil offerte",
   },
   {
     tag: "Tes proches",
     icon: "💌",
     title: "Maintenant, parle-lui d'eux.",
-    body: "Envoie un lien à chaque proche — ils remplissent leur fiche en quelques minutes. Plus leur fiche est complète, plus Candice est précise dans ses suggestions. Un simple lien WhatsApp suffit.",
+    body: "Envoie un lien à chaque proche — ils remplissent leur fiche en quelques minutes.",
+    pill: "Un simple lien WhatsApp suffit.",
   },
   {
     tag: "Le matching",
     icon: "🔍",
     title: "Candice analyse tout.",
-    body: "Elle croise ton profil et celui de tes proches — langages de l'amour, préférences, frictions. Elle sait exactement comment tu peux leur faire plaisir. Et elle t'en dit plus dans l'analyse de chaque profil.",
+    body: "Elle croise ton profil et celui de tes proches pour savoir exactement comment leur faire plaisir.",
   },
   {
     tag: "Reste connecté",
     icon: "🎤",
     title: "Parle-lui au quotidien.",
-    body: "Tu sors d'un dîner et tu as appris quelque chose sur Julie ? Dis-le à Candice avec ta voix 🎤 ou en quelques mots. Elle retient, elle met à jour, elle agit. Plus tu lui confies, plus elle est juste.",
+    body: "Tu sors d'un dîner et tu as appris quelque chose sur Julie ? Dis-le à Candice — elle retient et agit.",
+    pill: "Voix ou texte, en quelques secondes.",
   },
   {
     tag: "Les points",
@@ -112,7 +115,7 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
         <div style={{ padding: "44px 36px 28px", flex: 1 }}>
 
           {/* Icon */}
-          <div style={{ fontSize: 52, textAlign: "center", marginBottom: 20, lineHeight: 1 }}>
+          <div style={{ fontSize: 80, textAlign: "center", marginBottom: 20, lineHeight: 1 }}>
             {current.icon}
           </div>
 
@@ -134,9 +137,28 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
           )}
 
           {/* Body */}
-          <p style={{ fontFamily: DM, fontSize: 14, fontWeight: 300, color: COND, lineHeight: 1.85, textAlign: "center", marginBottom: isLast ? 24 : 0 }}>
+          <p style={{ fontFamily: DM, fontSize: 14, fontWeight: 300, color: COND, lineHeight: 1.75, textAlign: "center", marginBottom: current.pill ? 16 : (isLast ? 24 : 0) }}>
             {current.body}
           </p>
+
+          {/* Pill highlight */}
+          {current.pill && !isLast && (
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: isLast ? 24 : 0 }}>
+              <span style={{
+                display: "inline-block",
+                background: TERRA,
+                color: WHITE,
+                fontFamily: DM,
+                fontSize: 12,
+                fontWeight: 500,
+                padding: "7px 16px",
+                borderRadius: 100,
+                textAlign: "center",
+              }}>
+                {current.pill}
+              </span>
+            </div>
+          )}
 
           {/* Points table — last slide only */}
           {isLast && (
@@ -203,7 +225,7 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
           {!isLast && (
             <button
               onClick={handleSkip}
-              style={{ background: "none", border: "none", fontFamily: DM, fontSize: 12, fontWeight: 300, color: COND, cursor: "pointer", padding: 0, textDecoration: "underline", textUnderlineOffset: 3 }}
+              style={{ background: "none", border: "none", fontFamily: DM, fontSize: 11, fontWeight: 300, color: COND, cursor: "pointer", padding: 0, opacity: 0.5 }}
             >
               Passer l&apos;introduction
             </button>
