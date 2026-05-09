@@ -75,21 +75,34 @@ export default function HomePage() {
 
       {/* STATS BLOC */}
       <section style={{ background: WHITE, borderBottom: `0.5px solid ${BORDER}`, padding: "72px 52px" }}>
-        <div style={{ maxWidth: 860, margin: "0 auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-            {[
-              { stat: "66%", text: "oublient régulièrement les moments importants de leurs proches" },
-              { stat: "54%", text: "ne savent tout simplement pas quoi faire" },
-            ].map((s, i) => (
-              <div key={i} style={{ background: BG, border: `0.5px solid ${BORDER}`, borderRadius: 16, padding: "48px 44px" }}>
-                <p style={{ fontFamily: PLAYFAIR, fontSize: 72, fontWeight: 400, color: TERRA, lineHeight: 1, marginBottom: 16, letterSpacing: -2 }}>{s.stat}</p>
-                <p style={{ fontSize: 16, fontWeight: 300, color: CON, lineHeight: 1.7 }}>{s.text}</p>
-              </div>
-            ))}
+        <div style={{ maxWidth: 920, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 64, alignItems: "start" }}>
+          {/* Left — problem text */}
+          <div>
+            <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 20 }}>Le problème</p>
+            <h2 style={{ fontFamily: PLAYFAIR, fontSize: 32, fontWeight: 400, lineHeight: 1.2, letterSpacing: -0.8, color: CON, marginBottom: 20 }}>
+              Vous pensez à eux.<br />Vous ne le montrez pas toujours.
+            </h2>
+            <p style={{ fontSize: 15, fontWeight: 300, color: COND, lineHeight: 1.85 }}>
+              La vie va vite. Les petites attentions qu&apos;on voulait faire finissent dans un coin de notre tête, et n&apos;en ressortent jamais. Ce n&apos;est pas un manque d&apos;amour — c&apos;est un manque de temps et d&apos;organisation.
+            </p>
           </div>
-          <p style={{ fontSize: 11, fontWeight: 300, color: COND, marginTop: 16, textAlign: "right" }}>
-            (Étude Candice, 500 répondants, 2025)
-          </p>
+          {/* Right — stat cards */}
+          <div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { stat: "66%", text: "oublient régulièrement les moments importants de leurs proches" },
+                { stat: "54%", text: "ne savent tout simplement pas quoi faire" },
+              ].map((s, i) => (
+                <div key={i} style={{ background: BG, border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: "28px 32px" }}>
+                  <p style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, color: TERRA, lineHeight: 1, marginBottom: 12, letterSpacing: -1.5 }}>{s.stat}</p>
+                  <p style={{ fontSize: 14, fontWeight: 300, color: CON, lineHeight: 1.65 }}>{s.text}</p>
+                </div>
+              ))}
+            </div>
+            <p style={{ fontSize: 11, fontWeight: 300, color: COND, marginTop: 12, textAlign: "right" }}>
+              (Étude Candice, 500 répondants, 2025)
+            </p>
+          </div>
         </div>
       </section>
 
