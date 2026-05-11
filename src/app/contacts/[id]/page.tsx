@@ -190,7 +190,7 @@ export default async function ContactPage({
             {/* Analyse Candice */}
             <div className="card">
               <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "var(--terra)", marginBottom: 10 }}>
-                Analyse Candice
+                Ce que Candice sait
               </p>
 
               {profile.love_language && (
@@ -248,10 +248,10 @@ export default async function ContactPage({
             </div>
           )}
 
-          {/* Suggestions actives */}
+          {/* Prêt pour [Prénom] */}
           <div>
             <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--cond)", marginBottom: 10 }}>
-              Suggestions actives
+              Prêt pour {typedContact.name.split(" ")[0]}
             </p>
             <SuggestionsPanel
               contactId={id}
@@ -310,35 +310,35 @@ export default async function ContactPage({
             )}
           </details>
 
-          {/* Attentions passées */}
-          <div className="card" style={{ opacity: 0.6 }}>
-            <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 8 }}>Attentions passées</p>
+          {/* Historique */}
+          <div className="card" style={{ opacity: 0.5 }}>
+            <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 8 }}>Historique</p>
             <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", fontStyle: "italic" }}>
-              Bientôt disponible — l&apos;historique de vos gestes apparaîtra ici.
+              L&apos;historique de vos gestes apparaîtra ici.
             </p>
           </div>
 
-          {/* Liste de souhaits */}
+          {/* À retenir */}
           <WishlistSection contactId={id} initialWishlist={wishlist} />
 
         </div>
       ) : (
         /* No profile state */
-        <div style={{ textAlign: "center", padding: "64px 24px", border: "0.5px dashed var(--br3)", borderRadius: "var(--r-lg)" }}>
-          <p style={{ fontSize: 14, fontWeight: 300, color: "var(--con)", marginBottom: 6 }}>
-            Aucun profil pour l&apos;instant
-          </p>
-          <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", marginBottom: 20, maxWidth: 280, margin: "0 auto 20px" }}>
-            Complétez le questionnaire pour débloquer les insights et les suggestions IA.
-          </p>
-          <Link href="/contacts/new">
-            <button className="btn-primary">Compléter le profil</button>
-          </Link>
-
-          {/* Wishlist even without profile */}
-          <div style={{ marginTop: 32, textAlign: "left" }}>
-            <WishlistSection contactId={id} initialWishlist={wishlist} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={{ textAlign: "center", padding: "48px 24px", border: "0.5px dashed var(--br3)", borderRadius: "var(--r-lg)" }}>
+            <p style={{ fontSize: 14, fontWeight: 300, color: "var(--con)", marginBottom: 6 }}>
+              Candice attend de connaître {typedContact.name.split(" ")[0]}.
+            </p>
+            <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.65, marginBottom: 20, maxWidth: 300, margin: "0 auto 20px" }}>
+              Envoyez-lui un lien ou remplissez le profil vous-même — Candice pourra alors anticiper les bons gestes.
+            </p>
+            <Link href={`/contacts/${id}/questionnaire`}>
+              <button className="btn-primary">Compléter le profil →</button>
+            </Link>
           </div>
+
+          {/* À retenir even without profile */}
+          <WishlistSection contactId={id} initialWishlist={wishlist} />
         </div>
       )}
     </DashboardShell>

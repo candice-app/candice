@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: contactEmail,
-    subject: "Ta fiche Candice t'attend 💌",
+    subject: "Votre fiche est incomplète.",
     html: `<!DOCTYPE html>
 <html lang="fr">
 <head>

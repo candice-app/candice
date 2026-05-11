@@ -14,15 +14,12 @@ const NAV = [
     items: [
       { label: "Mes proches", href: "/dashboard", activeOn: (p: string) => p === "/dashboard" || (p.startsWith("/contacts") && !p.includes("/new")) },
       { label: "Idées", href: "/idees", activeOn: (p: string) => p === "/idees" },
-      { label: "Historique", href: "/historique", activeOn: (p: string) => p === "/historique" },
     ],
   },
   {
     section: "Mon profil",
     items: [
       { label: "Ma fiche", href: "/moi", activeOn: (p: string) => p.startsWith("/moi") },
-      { label: "Mes partages", href: "/dashboard/sharing", activeOn: (p: string) => p === "/dashboard/sharing" },
-      { label: "Archivés", href: "/dashboard/archives", activeOn: (p: string) => p === "/dashboard/archives" },
     ],
   },
   {

@@ -3,8 +3,8 @@ import Link from "next/link";
 import MarketingNav from "@/components/layout/MarketingNav";
 
 export const metadata: Metadata = {
-  title: "Le concept — Candice",
-  description: "On a tous quelqu'un à qui on tient. On n'a juste plus le temps de le montrer.",
+  title: "Candice — Pourquoi Candice",
+  description: "Les personnes qui comptent méritent votre meilleur. Candice vous aide à y arriver.",
 };
 
 const BG = "#FAF7F2";
@@ -25,10 +25,10 @@ export default function ConceptPage() {
 
       {/* Hero */}
       <section style={{ padding: "96px 52px 72px", maxWidth: 760, margin: "0 auto", textAlign: "center" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Le concept</p>
+        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Candice</p>
         <h1 style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, lineHeight: 1.1, letterSpacing: -1.5, color: CON, marginBottom: 0 }}>
-          On a tous quelqu&apos;un à qui on tient.<br />
-          <span style={{ color: TERRA }}>On n&apos;a juste plus le temps de le montrer.</span>
+          Les personnes qui comptent<br />
+          <span style={{ color: TERRA }}>méritent votre meilleur.</span>
         </h1>
       </section>
 
@@ -65,11 +65,11 @@ export default function ConceptPage() {
       {/* CTA */}
       <section style={{ padding: "88px 52px", textAlign: "center" }}>
         <h2 style={{ fontFamily: PLAYFAIR, fontSize: 36, fontWeight: 400, color: CON, letterSpacing: -0.8, marginBottom: 20 }}>
-          Prêt à ne plus jamais rater ce qui compte ?
+          Prêt à donner le meilleur de vous-même ?
         </h2>
         <Link href="/register">
           <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "15px 36px", fontSize: 15, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
-            Essayer Candice gratuitement →
+            Commencer gratuitement →
           </button>
         </Link>
       </section>

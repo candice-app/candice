@@ -33,15 +33,15 @@ export default function HomePage() {
 
       {/* HERO */}
       <section id="main-content" className="mkt-hero" style={{ padding: "96px 52px 88px", textAlign: "center", borderBottom: `0.5px solid ${BORDER}` }}>
-        <h1 className="mkt-h1" style={{ fontFamily: PLAYFAIR, fontSize: 64, fontWeight: 400, color: CON, lineHeight: 1.04, letterSpacing: -2.5, marginBottom: 12 }}>
-          Votre copilote<br /><span style={{ color: TERRA }}>relationnel.</span>
+        <h1 className="mkt-h1" style={{ fontFamily: PLAYFAIR, fontSize: 64, fontWeight: 400, color: CON, lineHeight: 1.04, letterSpacing: -2.5, marginBottom: 16 }}>
+          Les personnes qui comptent<br /><span style={{ color: TERRA }}>méritent votre meilleur.</span>
         </h1>
-        <p style={{ fontSize: 22, fontWeight: 300, color: TERRA, letterSpacing: -0.3, marginBottom: 44 }}>
-          L&apos;attention juste, au bon moment.
+        <p style={{ fontSize: 18, fontWeight: 300, color: COND, letterSpacing: -0.2, marginBottom: 44, maxWidth: 480, margin: "0 auto 44px" }}>
+          Candice apprend à connaître vos proches et anticipe les bons gestes — au bon moment, sans effort.
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link href="/register">
-            <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "14px 28px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Ne plus jamais rater un moment →</button>
+            <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "14px 28px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Commencer →</button>
           </Link>
           <Link href="/concept">
             <button style={{ background: "transparent", color: CON, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "14px 28px", fontSize: 14, fontWeight: 300, cursor: "pointer", fontFamily: DM }}>Découvrir</button>
@@ -52,11 +52,11 @@ export default function HomePage() {
       {/* BRIDGE */}
       <div className="mkt-bridge" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}`, padding: "28px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 40 }}>
         <p style={{ fontSize: 18, fontWeight: 300, color: CON, letterSpacing: -0.3, lineHeight: 1.3, maxWidth: 380 }}>
-          Vivez pleinement les moments qui comptent.<br />
-          <span style={{ color: TERRA }}>Candice s&apos;occupe du reste.</span>
+          Vos relations méritent mieux<br />
+          <span style={{ color: TERRA }}>que la charge mentale.</span>
         </p>
         <p style={{ fontSize: 13, fontWeight: 300, color: COND, lineHeight: 1.65, maxWidth: 400, borderLeft: `1.5px solid ${TERRA}`, paddingLeft: 20 }}>
-          Candice <strong style={{ color: CON, fontWeight: 400 }}>apprend, anticipe et agit</strong> — pour que vos relations s&apos;approfondissent et que votre charge mentale disparaisse.
+          Candice <strong style={{ color: CON, fontWeight: 400 }}>apprend, anticipe et agit</strong> — pour que les bonnes attentions arrivent toujours au bon moment.
         </p>
       </div>
 
@@ -153,14 +153,14 @@ export default function HomePage() {
       {/* CTA FINAL */}
       <section className="mkt-section" style={{ padding: "88px 52px", textAlign: "center", background: WHITE }}>
         <h2 style={{ fontFamily: PLAYFAIR, fontSize: 40, fontWeight: 400, color: CON, letterSpacing: -1.2, lineHeight: 1.1, marginBottom: 14, maxWidth: 540, marginLeft: "auto", marginRight: "auto" }}>
-          Prêt à ne plus jamais rater<br /><span style={{ color: TERRA }}>ce qui compte vraiment ?</span>
+          Les personnes qui comptent<br /><span style={{ color: TERRA }}>méritent votre meilleur.</span>
         </h2>
         <p style={{ fontSize: 14, fontWeight: 300, color: COND, lineHeight: 1.75, marginBottom: 36, maxWidth: 400, marginLeft: "auto", marginRight: "auto" }}>
-          Candice <strong style={{ color: CON, fontWeight: 400 }}>apprend, anticipe et agit</strong> — pour que vos relations s&apos;approfondissent et que votre charge mentale disparaisse.
+          Commencez gratuitement. Aucune carte requise.
         </p>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, flexWrap: "wrap" }}>
           <Link href="/register">
-            <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "15px 32px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Commencer avec Candice →</button>
+            <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "15px 32px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Commencer →</button>
           </Link>
           <Link href="/login">
             <button style={{ background: "transparent", color: TERRA, border: `1px solid ${TERRA}`, borderRadius: 8, padding: "15px 32px", fontSize: 14, fontWeight: 300, cursor: "pointer", fontFamily: DM }}>Se connecter</button>

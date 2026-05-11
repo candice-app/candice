@@ -3,8 +3,8 @@ import Link from "next/link";
 import MarketingNav from "@/components/layout/MarketingNav";
 
 export const metadata: Metadata = {
-  title: "L'offre — Candice",
-  description: "Choisis ton Candice. Gratuit pour toujours ou Premium à 9€/mois.",
+  title: "Tarifs — Candice",
+  description: "Candice Essentiel ou Candice — trouvez la formule qui vous correspond.",
 };
 
 const BG = "#FAF7F2";
@@ -26,9 +26,9 @@ export default function OffrePage() {
 
       {/* Hero */}
       <section style={{ padding: "88px 52px 64px", textAlign: "center" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>L&apos;offre</p>
+        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Tarifs</p>
         <h1 style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, lineHeight: 1.1, letterSpacing: -1.5, color: CON }}>
-          Choisis ton Candice.
+          Simple. Transparent.
         </h1>
       </section>
 
@@ -36,9 +36,9 @@ export default function OffrePage() {
       <section style={{ padding: "0 52px 96px" }}>
         <div style={{ maxWidth: 820, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
 
-          {/* Free */}
+          {/* Candice Essentiel */}
           <div style={{ background: WHITE, border: `0.5px solid ${BORDER}`, borderRadius: 16, padding: "40px 36px", display: "flex", flexDirection: "column" }}>
-            <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: COND, marginBottom: 8 }}>Gratuit</p>
+            <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: COND, marginBottom: 8 }}>Candice Essentiel</p>
             <p style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, color: CON, letterSpacing: -1.5, lineHeight: 1, marginBottom: 4 }}>0€</p>
             <p style={{ fontSize: 13, fontWeight: 300, color: COND, marginBottom: 32 }}>Pour toujours</p>
 
@@ -47,7 +47,6 @@ export default function OffrePage() {
                 "2 proches",
                 "Suggestions personnalisées IA",
                 "Fiches partagées par lien",
-                "Programme de points",
                 "Accès à l'application complète",
               ].map(f => (
                 <div key={f} style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -64,12 +63,12 @@ export default function OffrePage() {
             </Link>
           </div>
 
-          {/* Premium */}
+          {/* Candice */}
           <div style={{ background: DARK, border: "none", borderRadius: 16, padding: "40px 36px", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 20, right: 20, background: TERRA, color: "#fff", fontSize: 10, fontWeight: 500, letterSpacing: 1, textTransform: "uppercase", padding: "4px 10px", borderRadius: 4 }}>
               14 jours offerts
             </div>
-            <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>Premium</p>
+            <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: "rgba(250,247,242,0.5)", marginBottom: 8 }}>Candice</p>
             <p style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, color: "#FAF7F2", letterSpacing: -1.5, lineHeight: 1, marginBottom: 4 }}>9€</p>
             <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(250,247,242,0.5)", marginBottom: 32 }}>par mois · résiliable à tout moment</p>
 
@@ -79,7 +78,7 @@ export default function OffrePage() {
                 "Suggestions avancées & personnalisées",
                 "Exécution automatique des attentions",
                 "Accès prioritaire aux partenaires",
-                "Tout ce qui est inclus dans Gratuit",
+                "Tout ce qui est inclus dans Essentiel",
               ].map(f => (
                 <div key={f} style={{ display: "flex", alignItems: "center", gap: 10 }}>
                   <span style={{ color: TERRA, fontSize: 14, flexShrink: 0 }}>✓</span>
@@ -90,7 +89,7 @@ export default function OffrePage() {
 
             <Link href="/register">
               <button style={{ width: "100%", background: TERRA, border: "none", color: "#fff", borderRadius: 8, padding: "13px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
-                Commencer — 14 jours gratuits →
+                Essayer gratuitement — 14 jours →
               </button>
             </Link>
           </div>

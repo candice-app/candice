@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: "Bienvenue sur Candice ✦",
+    subject: "Candice est prête.",
     html: `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -61,9 +61,8 @@ export async function POST(request: NextRequest) {
             <!-- Divider -->
             <div style="height:1px;background:#E8C4A0;margin:32px 0;"></div>
 
-            <!-- Points hint -->
             <p style="font-size:12px;font-weight:300;color:#9E7B5A;line-height:1.65;margin:0;">
-              ✦&nbsp; Compléter ta fiche te rapporte <strong style="color:#C47A4A;">500 points</strong> — soit 5€ de réductions sur Candice Premium.
+              ✦&nbsp; Plus ta fiche est complète, plus les suggestions seront justes.
             </p>
           </td>
         </tr>

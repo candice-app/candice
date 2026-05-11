@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import { Relationship } from "@/types";
-import { InsightsPanel } from "./InsightCard";
 
 interface RadioGroupProps {
   name: string;
@@ -176,11 +175,6 @@ export default function QuestionnaireForm() {
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("");
 
-  // Progressive insights
-  const [insights, setInsights] = useState<string[]>([]);
-  const [insightLoading, setInsightLoading] = useState(false);
-  const lastInsightThreshold = useRef(0);
-
   useEffect(() => { setOrigin(window.location.origin); }, []);
 
   const [loveLanguage, setLoveLanguage] = useState<string[]>([]);
@@ -208,43 +202,6 @@ export default function QuestionnaireForm() {
   const [bestContactMethod, setBestContactMethod] = useState<string[]>([]);
   const [importantDates, setImportantDates] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
-
-  // Trigger insight every 4 psychological questions answered (incognito step 2 only)
-  const psychAnswered = [
-    loveLanguage, communicationStyle, stressResponse, socialEnergy,
-    appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
-    coreValues, recognitionPreference, boundaries, growthMindset,
-  ].filter(a => a.length > 0).length;
-
-  useEffect(() => {
-    if (step !== 2 || mode !== "incognito" || psychAnswered === 0) return;
-    const threshold = Math.floor(psychAnswered / 4) * 4;
-    if (threshold <= 0 || threshold <= lastInsightThreshold.current) return;
-    lastInsightThreshold.current = threshold;
-    const answers: Record<string, string> = {};
-    if (loveLanguage.length) answers.love_language = loveLanguage.join(",");
-    if (communicationStyle.length) answers.communication_style = communicationStyle.join(",");
-    if (stressResponse.length) answers.stress_response = stressResponse.join(",");
-    if (socialEnergy.length) answers.social_energy = socialEnergy.join(",");
-    if (appreciationStyle.length) answers.appreciation_style = appreciationStyle.join(",");
-    if (conflictResolution.length) answers.conflict_resolution = conflictResolution.join(",");
-    if (decisionMaking.length) answers.decision_making = decisionMaking.join(",");
-    if (emotionalExpression.length) answers.emotional_expression = emotionalExpression.join(",");
-    if (coreValues.length) answers.core_values = coreValues.join(",");
-    if (recognitionPreference.length) answers.recognition_preference = recognitionPreference.join(",");
-    if (boundaries.length) answers.boundaries = boundaries.join(",");
-    if (growthMindset.length) answers.growth_mindset = growthMindset.join(",");
-    setInsightLoading(true);
-    fetch("/api/questionnaire-insight", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers, persona: "contact", contactName: name }),
-    })
-      .then(r => r.json())
-      .then(d => { if (d.insight) setInsights(prev => [...prev, d.insight]); })
-      .catch(() => {})
-      .finally(() => setInsightLoading(false));
-  }, [psychAnswered]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const profileUrl = linkContactId ? `${origin}/profil/${linkContactId}` : "";
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
@@ -712,8 +669,6 @@ export default function QuestionnaireForm() {
               ]} />
             </div>
 
-            {/* Progressive insights */}
-            <InsightsPanel insights={insights} loadingInsight={insightLoading} />
           </div>
         )}
 

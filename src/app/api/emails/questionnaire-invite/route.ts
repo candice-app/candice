@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: contactEmail,
-    subject: `${senderFirstName ?? "Quelqu'un"} veut mieux te connaître ✦`,
+    subject: `${senderFirstName ?? "Quelqu'un"} vous a ajouté sur Candice.`,
     html: `<!DOCTYPE html>
 <html lang="fr">
 <head>

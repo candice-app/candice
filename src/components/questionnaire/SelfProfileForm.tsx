@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { MyProfile } from "@/types";
 import { awardPoints } from "@/utils/awardPoints";
-import { InsightsPanel } from "./InsightCard";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -122,11 +121,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
 
   const skipAutoSave = useRef(true);
   const draftTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  // Progressive insights
-  const [insights, setInsights] = useState<string[]>([]);
-  const [insightLoading, setInsightLoading] = useState(false);
-  const lastInsightThreshold = useRef(0);
 
   const v = (key: keyof MyProfile) => (initial?.[key] as string) ?? "";
   const va = (key: keyof MyProfile): string[] => {
@@ -289,44 +283,12 @@ export default function SelfProfileForm({ userId, initial }: Props) {
 
   const pct = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
 
-  // Trigger insight every 8 answered questions
-  useEffect(() => {
-    if (answeredCount === 0) return;
-    const threshold = Math.floor(answeredCount / 8) * 8;
-    if (threshold <= 0 || threshold <= lastInsightThreshold.current) return;
-    lastInsightThreshold.current = threshold;
-    const answers: Record<string, string> = {};
-    if (loveLanguage.length) answers.love_language = loveLanguage.join(",");
-    if (communicationStyle.length) answers.communication_style = communicationStyle.join(",");
-    if (stressResponse.length) answers.stress_response = stressResponse.join(",");
-    if (socialEnergy.length) answers.social_energy = socialEnergy.join(",");
-    if (appreciationStyle.length) answers.appreciation_style = appreciationStyle.join(",");
-    if (conflictResolution.length) answers.conflict_resolution = conflictResolution.join(",");
-    if (decisionMaking.length) answers.decision_making = decisionMaking.join(",");
-    if (emotionalExpression.length) answers.emotional_expression = emotionalExpression.join(",");
-    if (coreValues.length) answers.core_values = coreValues.join(",");
-    if (recognitionPreference.length) answers.recognition_preference = recognitionPreference.join(",");
-    if (boundaries.length) answers.boundaries = boundaries.join(",");
-    if (growthMindset.length) answers.growth_mindset = growthMindset.join(",");
-    if (giftPreference.length) answers.gift_preference = giftPreference.join(",");
-    setInsightLoading(true);
-    fetch("/api/questionnaire-insight", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ answers, persona: "self" }),
-    })
-      .then(r => r.json())
-      .then(d => { if (d.insight) setInsights(prev => [...prev, d.insight]); })
-      .catch(() => {})
-      .finally(() => setInsightLoading(false));
-  }, [answeredCount]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const motivationalMsg =
     pct === 0 ? "C'est parti ! Plus ta fiche est complète, plus les attentions seront personnalisées." :
     pct < 25  ? "Bien ! Continue — chaque réponse affine ton profil." :
     pct < 50  ? "À mi-chemin ! Plus que quelques questions avant de découvrir ton profil." :
     pct < 75  ? "Tu y es presque — les meilleures suggestions arrivent avec une fiche complète." :
-    "Dernière ligne droite ! 🎁 Tes 500 points arrivent dès que tu valides.";
+    "Dernière ligne droite. Une fiche complète, c'est les meilleures attentions pour toi.";
 
   // ── Handlers ──────────────────────────────────────────────────────────────────
   const join = (arr: string[]) => arr.join(",") || null;
@@ -440,59 +402,24 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         </p>
       )}
 
-      {/* ── Main confidentiality + benefits banner ── */}
-      <div style={{ borderRadius: 12, overflow: "hidden", marginBottom: 28 }}>
-
-        {/* Section A — confidentiality */}
-        <div style={{ background: "#FFFFFF", padding: "28px 28px 24px", borderBottom: "1px solid #E8C4A0" }}>
-          <div style={{ display: "flex", alignItems: "flex-start", gap: 14, marginBottom: 16 }}>
-            <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>🔒</span>
-            <h2 style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#2C1A0E", lineHeight: 1.25, margin: 0 }}>
-              Tes réponses restent 100% confidentielles
-            </h2>
-          </div>
-          <p style={{ fontSize: 14, fontWeight: 300, color: "#7A5E44", lineHeight: 1.75, marginBottom: 14 }}>
-            Ce que tu écris ici ne sera jamais lu par personne — ni par tes proches, ni par quiconque. Tes réponses servent uniquement à construire ton profil personnel. Candice les analyse en silence pour comprendre qui tu es vraiment.
-          </p>
-          <p style={{ fontSize: 13, fontWeight: 400, color: "#2C1A0E", lineHeight: 1.65, marginBottom: 12 }}>
-            Ce qui est partagé avec tes proches : uniquement ton profil — une synthèse de tes préférences, jamais tes réponses brutes.
-          </p>
-          <p style={{ fontSize: 13, fontWeight: 300, fontStyle: "italic", color: "#9E7B5A", lineHeight: 1.7 }}>
-            Plus ta fiche est honnête et complète, plus les attentions que tu recevras seront vraiment faites pour toi.
-          </p>
+      {/* ── Confidentiality banner ── */}
+      <div style={{ background: "#2C1A0E", borderRadius: 12, padding: "24px 28px", marginBottom: 28 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
+          <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>🔒</span>
+          <h2 style={{ fontSize: 17, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#FAF7F2", lineHeight: 1.25, margin: 0 }}>
+            Tes réponses ne seront jamais lues par tes proches.
+          </h2>
         </div>
-
-        {/* Section B — benefits */}
-        <div style={{ background: "#FAF7F2", padding: "24px 28px" }}>
-          <p style={{ fontSize: 18, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 16, lineHeight: 1.3 }}>
-            🎁 Ce que tu gagnes en complétant ta fiche
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 16 }}>
-            {[
-              "500 points Candice offerts — soit 5€ utilisables dès 5 000 points cumulés (50€)",
-              "Ton profil personnel détaillé — une analyse de qui tu es, ton style d'attachement, tes vrais besoins",
-              "Des attentions ultra-personnalisées — tes proches auront enfin les bons gestes, au bon moment",
-            ].map((line, i) => (
-              <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
-                <span style={{ color: "#C47A4A", fontWeight: 500, flexShrink: 0, fontSize: 14, marginTop: 1 }}>✦</span>
-                <p style={{ fontSize: 14, fontWeight: 300, color: "#1E1208", lineHeight: 1.6, margin: 0 }}>{line}</p>
-              </div>
-            ))}
-          </div>
-          <p style={{ fontSize: 11, fontWeight: 300, fontStyle: "italic", color: "rgba(30,18,8,0.45)", lineHeight: 1.6 }}>
-            * Points valables 12 mois. Utilisables dans l&apos;app Candice à partir de 5 000 points cumulés. Non remboursables, non transférables. Candice se réserve le droit de modifier ce programme avec préavis de 30 jours.
-          </p>
-        </div>
+        <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(250,247,242,0.75)", lineHeight: 1.7, marginBottom: 8 }}>
+          Candice les analyse en silence pour comprendre qui tu es vraiment — jamais tes mots exacts ne seront partagés.
+        </p>
+        <p style={{ fontSize: 12, fontWeight: 300, fontStyle: "italic", color: "rgba(250,247,242,0.5)", lineHeight: 1.6 }}>
+          Plus ta fiche est honnête, plus les attentions que tu recevras seront justes.
+        </p>
       </div>
 
       {/* ── Progress bar ── */}
       <div style={{ marginBottom: 48 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
-          <span style={{ fontSize: 15, fontWeight: 400, color: "var(--txts)" }}>
-            {answeredCount} / {TOTAL_QUESTIONS} questions complétées
-          </span>
-          <span style={{ fontSize: 15, fontWeight: 500, color: "#C47A4A" }}>{pct}%</span>
-        </div>
         <div className="progress-track">
           <div className="progress-fill" style={{ width: `${pct}%` }} />
         </div>
@@ -635,9 +562,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           ]} />
         </div>
       </div>
-
-      {/* Progressive insights after psychological section */}
-      <InsightsPanel insights={insights} loadingInsight={insightLoading} />
 
       {/* ══════════════════════════════════════════════════════════════════════
           SECTION 2 — Tes préférences

@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: ownerEmail,
-    subject: `La fiche de ${contactFirstName ?? "ton proche"} est complète ✦`,
+    subject: `Tout est prêt pour ${contactFirstName ?? "ton proche"}.`,
     html: `<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
             <div style="height:1px;background:#E8C4A0;margin:32px 0;"></div>
 
             <p style="font-size:12px;font-weight:300;color:#9E7B5A;line-height:1.65;margin:0;">
-              ✦&nbsp; Cette fiche complète te rapporte <strong style="color:#C47A4A;">500 points</strong> supplémentaires dans ta cagnotte Candice.
+              ✦&nbsp; Candice connaît maintenant ${contactFirstName ?? "ton proche"} — les suggestions seront exactement justes.
             </p>
           </td>
         </tr>

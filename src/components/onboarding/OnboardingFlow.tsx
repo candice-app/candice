@@ -21,55 +21,32 @@ const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
 const LS_KEY = "candice_onboarding_complete";
 
-const POINTS = [
-  { label: "Compléter ton profil", pts: "+500 pts" },
-  { label: "Ajouter un proche", pts: "+200 pts" },
-  { label: "Fiche proche complétée", pts: "+500 pts" },
-  { label: "Ajouter une date importante", pts: "+50 pts" },
-  { label: "Laisser un feedback", pts: "+100 pts" },
-  { label: "Marquer une attention réalisée", pts: "+100 pts" },
-];
-
 const SLIDES: { tag: string; icon: string; title: string; subtitle?: string; body: string; pill?: string; isLast?: true }[] = [
   {
     tag: "Bienvenue",
-    icon: "🤝",
-    title: "Bienvenue sur Candice.",
-    subtitle: "Ton copilote relationnel.",
-    body: "La vie va vite. Candice s'assure que tu n'oublies plus ce qui compte pour les gens que tu aimes.",
-  },
-  {
-    tag: "Ton profil d'abord",
-    icon: "👤",
-    title: "Commence par toi.",
-    body: "Dis à Candice qui tu es — tes goûts, tes envies, ce qui te touche vraiment.",
-    pill: "✦ Analyse de ton profil offerte",
-  },
-  {
-    tag: "Tes proches",
-    icon: "💌",
-    title: "Maintenant, parle-lui d'eux.",
-    body: "Envoie un lien à chaque proche — ils remplissent leur fiche en quelques minutes.",
-    pill: "Un simple lien WhatsApp suffit.",
-  },
-  {
-    tag: "Le matching",
-    icon: "🔍",
-    title: "Candice analyse tout.",
-    body: "Elle croise ton profil et celui de tes proches pour savoir exactement comment leur faire plaisir.",
-  },
-  {
-    tag: "Reste connecté",
-    icon: "🎤",
-    title: "Parle-lui au quotidien.",
-    body: "Tu sors d'un dîner et tu as appris quelque chose sur Julie ? Dis-le à Candice — elle retient et agit.",
-    pill: "Voix ou texte, en quelques secondes.",
-  },
-  {
-    tag: "Les points",
     icon: "✦",
-    title: "Chaque geste compte.",
-    body: "Gagne des points à chaque action — et échange-les contre des réductions sur Candice Premium.",
+    title: "Les personnes qui comptent méritent votre meilleur.",
+    body: "Candice apprend à connaître vos proches pour anticiper les bons gestes — au bon moment, sans effort.",
+  },
+  {
+    tag: "Votre profil",
+    icon: "👤",
+    title: "Commencez par vous.",
+    body: "Complétez votre fiche — vos goûts, vos dates importantes, ce qui vous touche vraiment. Vos proches pourront enfin faire les bons gestes pour vous.",
+    pill: "5 minutes. Confidentiel.",
+  },
+  {
+    tag: "Vos proches",
+    icon: "💌",
+    title: "Parlez-lui d'eux.",
+    body: "Envoyez un lien à chaque proche — ils remplissent leur fiche en quelques minutes depuis leur téléphone.",
+    pill: "Un lien WhatsApp suffit.",
+  },
+  {
+    tag: "Candice agit",
+    icon: "🔍",
+    title: "Candice s'occupe du reste.",
+    body: "Elle croise les profils, anticipe les moments clés et propose les attentions les plus justes. Vous approuvez. Elle exécute.",
     isLast: true,
   },
 ];
@@ -89,15 +66,6 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
 
   const handleFinish = async () => {
     setLoading(true);
-    const { data: existing } = await supabase
-      .from("user_points")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("action_type", "registration")
-      .maybeSingle();
-    if (!existing) {
-      await supabase.from("user_points").insert({ user_id: userId, action_type: "registration", points: 500 });
-    }
     await markComplete();
     router.push("/moi/questionnaire");
   };
@@ -165,23 +133,6 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
             </div>
           )}
 
-          {/* Points table — last slide only */}
-          {isLast && (
-            <div style={{ background: WHITE, border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: "16px 20px" }}>
-              {POINTS.map((row, i) => (
-                <div
-                  key={row.label}
-                  style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: i < POINTS.length - 1 ? `0.5px solid ${BORDER}` : "none" }}
-                >
-                  <span style={{ fontFamily: DM, fontSize: 13, fontWeight: 300, color: CON }}>{row.label}</span>
-                  <span style={{ fontFamily: DM, fontSize: 13, fontWeight: 500, color: TERRA }}>{row.pts}</span>
-                </div>
-              ))}
-              <p style={{ fontFamily: DM, fontSize: 11, fontWeight: 300, color: COND, marginTop: 12, fontStyle: "italic" }}>
-                100 pts = 1€ de réduction sur Candice Premium
-              </p>
-            </div>
-          )}
         </div>
 
         {/* Bottom nav */}
@@ -216,7 +167,7 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
                 disabled={loading}
                 style={{ width: "100%", background: TERRA, color: "#fff", border: "none", borderRadius: 10, padding: "15px", fontSize: 15, fontWeight: 500, cursor: loading ? "default" : "pointer", fontFamily: DM, opacity: loading ? 0.7 : 1 }}
               >
-                {loading ? "Chargement…" : "Je complète mon profil →"}
+                {loading ? "Chargement…" : "Compléter mon profil →"}
               </button>
               <button
                 onClick={handleDashboard}
