@@ -2,6 +2,39 @@
 
 import { useRef, useState } from "react";
 
+function compressImage(file: File, maxPx: number, quality: number): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(objectUrl);
+      let { width, height } = img;
+      if (width > maxPx || height > maxPx) {
+        if (width >= height) {
+          height = Math.round((height * maxPx) / width);
+          width = maxPx;
+        } else {
+          width = Math.round((width * maxPx) / height);
+          height = maxPx;
+        }
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("Canvas not available")); return; }
+      ctx.drawImage(img, 0, 0, width, height);
+      canvas.toBlob(
+        (blob) => { blob ? resolve(blob) : reject(new Error("Canvas toBlob failed")); },
+        "image/jpeg",
+        quality,
+      );
+    };
+    img.onerror = () => { URL.revokeObjectURL(objectUrl); reject(new Error("Image load failed")); };
+    img.src = objectUrl;
+  });
+}
+
 const AVATAR_COLORS = [
   "linear-gradient(135deg,#C47A4A,#8A4020)",
   "linear-gradient(135deg,#4A7C59,#2A5C39)",
@@ -40,8 +73,9 @@ export default function ContactHeader({ contactId, name, relationship, phone, em
     if (!file) return;
     setUploading(true);
     try {
+      const compressed = await compressImage(file, 800, 0.8);
       const body = new FormData();
-      body.append("file", file);
+      body.append("file", compressed, "avatar.jpg");
       body.append("contactId", contactId);
       const res = await fetch("/api/contacts/upload-photo", { method: "POST", body });
       if (!res.ok) throw new Error("Upload failed");
