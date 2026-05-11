@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import MarketingNav from "@/components/layout/MarketingNav";
+import MarketingFooter from "@/components/layout/MarketingFooter";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité — Candice",
@@ -280,15 +281,7 @@ export default function ConfidentialitePage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer style={{ background: BG, padding: "20px 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderTop: `0.5px solid ${BORDER}`, flexWrap: "wrap", gap: 12 }}>
-        <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: "rgba(30,18,8,0.2)" }}>Candice ·</span>
-        <nav aria-label="Liens légaux" style={{ display: "flex", gap: 24, flexWrap: "wrap" }}>
-          <Link href="/confidentialite" style={{ fontSize: 11, fontWeight: 400, color: TERRA, textDecoration: "none" }}>Confidentialité</Link>
-          <Link href="/conditions-generales" style={{ fontSize: 11, fontWeight: 300, color: "rgba(30,18,8,0.3)", textDecoration: "none" }}>Conditions générales</Link>
-          <a href="mailto:candiceapp.hello@gmail.com" style={{ fontSize: 11, fontWeight: 300, color: "rgba(30,18,8,0.3)", textDecoration: "none" }}>Contact</a>
-        </nav>
-      </footer>
+      <MarketingFooter />
     </main>
   );
 }

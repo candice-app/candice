@@ -33,7 +33,21 @@
       "Bash(git -C /Users/estellepapillon/candice config user.email)",
       "Bash(printenv)",
       "Bash(git *)",
-      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/node /Users/estellepapillon/candice/node_modules/.bin/tsc --noEmit --project /Users/estellepapillon/candice/tsconfig.json)"
+      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/node /Users/estellepapillon/candice/node_modules/.bin/tsc --noEmit --project /Users/estellepapillon/candice/tsconfig.json)",
+      "Bash(/Users/estellepapillon/.volta/bin/npx tsc *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\")",
+      "Bash(command -v node)",
+      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/node ./node_modules/.bin/tsc --noEmit)",
+      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/node /Users/estellepapillon/candice/node_modules/.bin/tsc --noEmit)",
+      "Bash(npm install *)",
+      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/npm install *)",
+      "Bash(/usr/local/bin/node --version)",
+      "Bash(export PATH=\"/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin:$PATH\")",
+      "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
+      "Bash(~/.nvm/versions/node/v24.15.0/bin/npx tsc *)",
+      "Bash(~/.nvm/versions/node/v24.15.0/bin/node ~/.nvm/versions/node/v24.15.0/bin/tsc --noEmit)",
+      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/node *)"
     ]
   }
 }
