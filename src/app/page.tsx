@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
 import { BASE_URL } from "./metadata";
+import MarketingNav from "@/components/layout/MarketingNav";
 
 export const metadata: Metadata = {
   title: {
@@ -28,23 +29,7 @@ export default function HomePage() {
     <main style={{ background: BG, fontFamily: DM, color: CON, minHeight: "100vh" }}>
 
       {/* NAV */}
-      <nav aria-label="Navigation principale" className="mkt-nav" style={{ height: 60, padding: "0 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `0.5px solid ${BORDER}`, background: BG, position: "sticky", top: 0, zIndex: 100 }}>
-        <div style={{ display: "flex", alignItems: "flex-start", gap: 4 }}>
-          <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON }}>Candice</span>
-          <span aria-hidden="true" style={{ width: 7, height: 7, background: TERRA, borderRadius: "50%", marginTop: 3, boxShadow: "0 0 8px rgba(196,122,74,0.5)", flexShrink: 0, display: "inline-block" }} />
-        </div>
-        <div className="mkt-nav-links" style={{ display: "flex", gap: 32 }}>
-          <Link href="/concept" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Le concept</Link>
-          <Link href="/comment-ca-marche" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Comment ça marche</Link>
-          <Link href="/offre" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>L&apos;offre</Link>
-          <Link href="/login" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Se connecter</Link>
-        </div>
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <Link href="/register">
-            <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "8px 18px", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Commencer</button>
-          </Link>
-        </div>
-      </nav>
+      <MarketingNav />
 
       {/* HERO */}
       <section id="main-content" className="mkt-hero" style={{ padding: "96px 52px 88px", textAlign: "center", borderBottom: `0.5px solid ${BORDER}` }}>
@@ -58,7 +43,9 @@ export default function HomePage() {
           <Link href="/register">
             <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "14px 28px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Ne plus jamais rater un moment →</button>
           </Link>
-          <button style={{ background: "transparent", color: CON, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "14px 28px", fontSize: 14, fontWeight: 300, cursor: "pointer", fontFamily: DM }}>Découvrir</button>
+          <Link href="/concept">
+            <button style={{ background: "transparent", color: CON, border: `1px solid ${BORDER}`, borderRadius: 8, padding: "14px 28px", fontSize: 14, fontWeight: 300, cursor: "pointer", fontFamily: DM }}>Découvrir</button>
+          </Link>
         </div>
       </section>
 

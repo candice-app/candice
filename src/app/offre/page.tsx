@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import MarketingNav from "@/components/layout/MarketingNav";
 
 export const metadata: Metadata = {
   title: "L'offre — Candice",
@@ -21,21 +22,7 @@ export default function OffrePage() {
     <main style={{ background: BG, fontFamily: DM, color: CON, minHeight: "100vh" }}>
 
       {/* Nav */}
-      <nav className="mkt-nav" style={{ height: 60, padding: "0 52px", display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: `0.5px solid ${BORDER}`, background: BG, position: "sticky", top: 0, zIndex: 100 }}>
-        <Link href="/" style={{ display: "flex", alignItems: "flex-start", gap: 4, textDecoration: "none" }}>
-          <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON, fontFamily: DM }}>Candice</span>
-          <span style={{ width: 7, height: 7, background: TERRA, borderRadius: "50%", marginTop: 3, flexShrink: 0, display: "inline-block" }} />
-        </Link>
-        <div className="mkt-nav-links" style={{ display: "flex", gap: 28 }}>
-          <Link href="/concept" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Le concept</Link>
-          <Link href="/comment-ca-marche" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Comment ça marche</Link>
-          <Link href="/offre" style={{ fontSize: 12, fontWeight: 400, color: TERRA, textDecoration: "none" }}>L&apos;offre</Link>
-          <Link href="/login" style={{ fontSize: 12, fontWeight: 300, color: COND, textDecoration: "none" }}>Se connecter</Link>
-        </div>
-        <Link href="/register">
-          <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "8px 18px", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>Commencer</button>
-        </Link>
-      </nav>
+      <MarketingNav />
 
       {/* Hero */}
       <section style={{ padding: "88px 52px 64px", textAlign: "center" }}>

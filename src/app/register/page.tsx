@@ -28,6 +28,11 @@ const INPUT: React.CSSProperties = {
   outline: "none",
 };
 
+function isDuplicateError(message: string): boolean {
+  const m = message.toLowerCase();
+  return m.includes("already registered") || m.includes("user already") || m.includes("already been registered");
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const supabase = createClient();
@@ -35,30 +40,55 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const [duplicate, setDuplicate] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    const { error } = await supabase.auth.signUp({
+    setDuplicate(false);
+
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { full_name: name } },
+      options: {
+        data: { full_name: name },
+        emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard`,
+      },
     });
-    if (error) {
-      setError(error.message);
+
+    if (signUpError) {
+      if (isDuplicateError(signUpError.message)) {
+        setDuplicate(true);
+      } else {
+        setError(signUpError.message);
+      }
       setLoading(false);
-    } else {
-      // Fire welcome email — non-blocking
-      fetch("/api/emails/welcome", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName: name.trim(), email }),
-      }).catch(() => {});
-      router.push("/dashboard");
-      router.refresh();
+      return;
     }
+
+    // If Supabase returned a session immediately (email confirmation disabled), go directly.
+    // Otherwise try signInWithPassword — works when confirmation is off in the Supabase dashboard.
+    if (!data.session) {
+      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      if (signInError) {
+        // Email confirmation is required — account created, user needs to confirm
+        setError("Compte créé ! Vérifie ta boîte e-mail pour confirmer ton adresse avant de te connecter.");
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Fire welcome email — non-blocking
+    fetch("/api/emails/welcome", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ firstName: name.trim(), email }),
+    }).catch(() => {});
+
+    router.push("/dashboard");
+    router.refresh();
   };
 
   return (
@@ -77,7 +107,22 @@ export default function RegisterPage() {
           </div>
 
           <form onSubmit={handleSubmit} style={{ background: WHITE, border: `0.5px solid ${BORDER_CARD}`, borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
-            {error && <p style={{ fontSize: 12, color: "#D04040", margin: 0 }}>{error}</p>}
+
+            {/* Generic error */}
+            {error && (
+              <p style={{ fontSize: 12, color: "#D04040", margin: 0, lineHeight: 1.5 }}>{error}</p>
+            )}
+
+            {/* Duplicate account error */}
+            {duplicate && (
+              <p style={{ fontSize: 12, color: "#D04040", margin: 0, lineHeight: 1.6 }}>
+                Un compte existe déjà avec cet e-mail. Tu peux{" "}
+                <Link href="/login" style={{ color: TERRA, fontWeight: 500, textDecoration: "underline" }}>
+                  te connecter directement
+                </Link>
+                .
+              </p>
+            )}
 
             <div>
               <label htmlFor="name" style={LABEL}>Votre prénom</label>
