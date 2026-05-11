@@ -402,6 +402,16 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         </p>
       )}
 
+      {/* ── Progress bar ── */}
+      <div className="progress-sticky">
+        <div className="progress-track">
+          <div className="progress-fill" style={{ width: `${Math.min(100, pct)}%` }} />
+        </div>
+        <p style={{ fontSize: 15, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "#C47A4A", marginTop: 10, lineHeight: 1.4 }}>
+          {motivationalMsg}
+        </p>
+      </div>
+
       {/* ── Confidentiality banner ── */}
       <div style={{ background: "#2C1A0E", borderRadius: 12, padding: "24px 28px", marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
@@ -415,16 +425,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         </p>
         <p style={{ fontSize: 12, fontWeight: 300, fontStyle: "italic", color: "rgba(250,247,242,0.5)", lineHeight: 1.6 }}>
           Plus ta fiche est honnête, plus les attentions que tu recevras seront justes.
-        </p>
-      </div>
-
-      {/* ── Progress bar ── */}
-      <div style={{ marginBottom: 48 }}>
-        <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${pct}%` }} />
-        </div>
-        <p style={{ fontSize: 15, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "#C47A4A", marginTop: 10, lineHeight: 1.4 }}>
-          {motivationalMsg}
         </p>
       </div>
 

@@ -324,7 +324,7 @@ export default function QuestionnaireForm() {
     <div style={{ maxWidth: 560, margin: "0 auto" }}>
 
       {/* Progress bar */}
-      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 28 }}>
+      <div className="progress-sticky" style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 28 }}>
         {steps.map((s, i) => (
           <div key={s} style={{ display: "flex", alignItems: "center", gap: 6, flex: 1 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>

@@ -458,6 +458,16 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
             </p>
           )}
 
+          {/* ── Progress bar ── */}
+          <div className="progress-sticky">
+            <div className="progress-track">
+              <div className="progress-fill" style={{ width: `${Math.min(100, pct)}%` }} />
+            </div>
+            <p style={{ fontSize: 15, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "#C47A4A", marginTop: 10, lineHeight: 1.4 }}>
+              {motivationalMsg}
+            </p>
+          </div>
+
           {/* ── Banner ── */}
           <div style={{ background: "#2C1A0E", borderRadius: 12, marginTop: 28, marginBottom: 24, padding: "24px 24px 20px" }}>
             <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
@@ -471,16 +481,6 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
             </p>
             <p style={{ fontSize: 12, fontWeight: 300, fontStyle: "italic", color: "rgba(250,247,242,0.5)", lineHeight: 1.6 }}>
               Environ 10 minutes · Tes réponses sont sauvegardées automatiquement.
-            </p>
-          </div>
-
-          {/* ── Progress bar ── */}
-          <div style={{ marginBottom: 40 }}>
-            <div style={{ height: 4, background: "rgba(196,122,74,0.15)", borderRadius: 2, overflow: "hidden" }}>
-              <div style={{ height: "100%", background: "#C47A4A", borderRadius: 2, width: `${pct}%`, transition: "width 0.3s ease" }} />
-            </div>
-            <p style={{ fontSize: 15, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "#C47A4A", marginTop: 10, lineHeight: 1.4 }}>
-              {motivationalMsg}
             </p>
           </div>
 

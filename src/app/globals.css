@@ -163,7 +163,20 @@ label { display: block; font-size: 10px; font-weight: 500; letter-spacing: 2px; 
 
 /* ── Progress bar ────────────────────────────────────────────────── */
 .progress-track { height: 4px; background: #E8C4A0; border-radius: 2px; overflow: hidden; }
-.progress-fill { height: 100%; background: var(--terra); border-radius: 2px; transition: width 0.3s ease; }
+.progress-fill { height: 100%; background: var(--terra); border-radius: 2px; transition: width 0.4s ease; }
+
+.progress-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: #FAF7F2;
+  border-bottom: 1px solid rgba(196,122,74,0.15);
+  padding: 12px 24px;
+  margin-bottom: 24px;
+}
+@media (min-width: 768px) {
+  .progress-sticky { padding: 16px 48px; }
+}
 
 /* ── Modals ──────────────────────────────────────────────────────── */
 .modal-overlay { position: fixed; inset: 0; background: rgba(44,26,14,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(4px); }
