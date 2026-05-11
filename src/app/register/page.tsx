@@ -50,6 +50,12 @@ export default function RegisterPage() {
       setError(error.message);
       setLoading(false);
     } else {
+      // Fire welcome email — non-blocking
+      fetch("/api/emails/welcome", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName: name.trim(), email }),
+      }).catch(() => {});
       router.push("/dashboard");
       router.refresh();
     }

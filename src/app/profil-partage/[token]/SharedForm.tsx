@@ -407,7 +407,11 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
           setError("Impossible d'enregistrer. Tes réponses sont conservées — réessaie dans un instant.");
           return;
         }
-        await fetch("/api/shared-profile/complete", { method: "POST" });
+        await fetch("/api/shared-profile/complete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
       }
 
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }

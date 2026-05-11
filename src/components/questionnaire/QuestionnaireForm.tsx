@@ -250,6 +250,21 @@ export default function QuestionnaireForm() {
     setStep(2);
     setLinkLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Send invite email if contact has an email — non-blocking
+    if (email) {
+      const senderFirstName = (await supabase.auth.getUser()).data.user?.user_metadata?.full_name?.split(" ")[0] ?? "";
+      fetch("/api/emails/questionnaire-invite", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          contactEmail: email,
+          contactFirstName: name.trim(),
+          senderFirstName,
+          profileUrl: `${origin}/profil/${contact.id}`,
+        }),
+      }).catch(() => {});
+    }
   };
 
   const handleSubmitIncognito = async () => {
