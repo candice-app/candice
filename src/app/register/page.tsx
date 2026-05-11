@@ -42,6 +42,7 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [duplicate, setDuplicate] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,10 +165,30 @@ export default function RegisterPage() {
               />
             </div>
 
+            <label style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                required
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                style={{ marginTop: 2, flexShrink: 0, accentColor: TERRA }}
+              />
+              <span style={{ fontSize: 12, fontWeight: 300, color: COND, lineHeight: 1.6 }}>
+                J&apos;accepte les{" "}
+                <Link href="/conditions-generales" target="_blank" style={{ color: TERRA, textDecoration: "underline" }}>
+                  conditions générales
+                </Link>{" "}
+                et la{" "}
+                <Link href="/confidentialite" target="_blank" style={{ color: TERRA, textDecoration: "underline" }}>
+                  politique de confidentialité
+                </Link>
+              </span>
+            </label>
+
             <button
               type="submit"
-              disabled={loading}
-              style={{ width: "100%", marginTop: 4, background: loading ? "#D4956A" : TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "12px", fontSize: 14, fontWeight: 500, cursor: loading ? "default" : "pointer", fontFamily: DM }}
+              disabled={loading || !termsAccepted}
+              style={{ width: "100%", marginTop: 4, background: loading || !termsAccepted ? "#D4956A" : TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "12px", fontSize: 14, fontWeight: 500, cursor: loading || !termsAccepted ? "default" : "pointer", fontFamily: DM }}
             >
               {loading ? "Création du compte…" : "Créer un compte"}
             </button>

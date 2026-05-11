@@ -77,9 +77,9 @@ export default function ConceptPage() {
       <footer style={{ background: WHITE, padding: "20px 52px", display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `0.5px solid ${BORDER}` }}>
         <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: "rgba(30,18,8,0.2)" }}>Candice ·</span>
         <div style={{ display: "flex", gap: 24 }}>
-          {["Confidentialité", "Conditions générales", "Contact"].map(l => (
-            <a key={l} href="#" style={{ fontSize: 11, fontWeight: 300, color: "rgba(30,18,8,0.3)", textDecoration: "none" }}>{l}</a>
-          ))}
+          <Link href="/confidentialite" style={{ fontSize: 11, fontWeight: 300, color: "rgba(30,18,8,0.3)", textDecoration: "none" }}>Confidentialité</Link>
+          <Link href="/conditions-generales" style={{ fontSize: 11, fontWeight: 300, color: "rgba(30,18,8,0.3)", textDecoration: "none" }}>Conditions générales</Link>
+          <a href="mailto:candiceapp.hello@gmail.com" style={{ fontSize: 11, fontWeight: 300, color: "rgba(30,18,8,0.3)", textDecoration: "none" }}>Contact</a>
         </div>
       </footer>
     </main>
