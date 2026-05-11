@@ -9,15 +9,6 @@ const BORDER = "rgba(30,18,8,0.08)";
 const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
 const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
-const POINTS_TABLE = [
-  { label: "Compléter ton profil", pts: "+500 pts" },
-  { label: "Ajouter un proche", pts: "+200 pts" },
-  { label: "Fiche d'un proche complétée", pts: "+500 pts" },
-  { label: "Ajouter une date importante", pts: "+50 pts" },
-  { label: "Laisser un feedback", pts: "+100 pts" },
-  { label: "Marquer une attention réalisée", pts: "+100 pts" },
-];
-
 const STEPS_INFO = [
   { label: "Compléter ton profil", href: "/moi/questionnaire" },
   { label: "Inviter un premier proche", href: "/contacts/new" },
@@ -71,25 +62,27 @@ export default async function AidePage() {
           </p>
         </Section>
 
-        {/* Section 4 — Points */}
-        <Section title="Le programme de points">
-          <div style={{ background: "var(--br1)", border: "0.5px solid var(--brd)", borderRadius: 10, overflow: "hidden" }}>
-            {POINTS_TABLE.map((row, i) => (
-              <div
-                key={row.label}
-                style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "11px 16px", borderBottom: i < POINTS_TABLE.length - 1 ? "0.5px solid var(--brd)" : "none" }}
-              >
-                <span style={{ fontFamily: DM, fontSize: 13, fontWeight: 300, color: "var(--con)" }}>{row.label}</span>
-                <span style={{ fontFamily: DM, fontSize: 13, fontWeight: 500, color: "var(--terra)" }}>{row.pts}</span>
-              </div>
-            ))}
-          </div>
-          <p style={{ fontFamily: DM, fontSize: 11, fontWeight: 300, color: "var(--cond)", marginTop: 10, fontStyle: "italic" }}>
-            100 pts = 1€ de réduction sur Candice Premium
+        {/* Section 4 — How Candice learns */}
+        <Section title="Comment Candice apprend vos proches">
+          <p style={{ fontFamily: DM, fontSize: 14, fontWeight: 300, color: "var(--cond)", lineHeight: 1.8, marginBottom: 12 }}>
+            Chaque réponse au questionnaire affine la compréhension de Candice. Elle ne stocke pas des données — elle construit une lecture de la personne&nbsp;: ses langages d&apos;amour, ses frontières, ses goûts profonds.
+          </p>
+          <p style={{ fontFamily: DM, fontSize: 14, fontWeight: 300, color: "var(--cond)", lineHeight: 1.8 }}>
+            Plus la fiche est honnête, plus les attentions proposées sont justes. Candice ne devine pas — elle écoute.
           </p>
         </Section>
 
-        {/* Section 5 — Weekly check-in */}
+        {/* Section 5 — Privacy */}
+        <Section title="Vos données restent privées">
+          <p style={{ fontFamily: DM, fontSize: 14, fontWeight: 300, color: "var(--cond)", lineHeight: 1.8, marginBottom: 12 }}>
+            Les réponses de vos proches ne vous sont jamais transmises mot pour mot. Candice les analyse en silence et ne partage que des suggestions d&apos;intention — jamais le texte brut.
+          </p>
+          <p style={{ fontFamily: DM, fontSize: 14, fontWeight: 300, color: "var(--cond)", lineHeight: 1.8 }}>
+            Vos proches peuvent remplir leur fiche en toute confiance&nbsp;: ce qu&apos;ils partagent ne circule pas.
+          </p>
+        </Section>
+
+        {/* Section 6 — Weekly check-in */}
         <Section title="Le check-in hebdomadaire">
           <p style={{ fontFamily: DM, fontSize: 14, fontWeight: 300, color: "var(--cond)", lineHeight: 1.8 }}>
             Chaque lundi, Candice te demande des nouvelles de tes proches pour maintenir leurs profils à jour.

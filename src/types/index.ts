@@ -19,6 +19,7 @@ export interface Contact {
   gift_wishlist: WishlistItem[] | null;
   created_at: string;
   archived_at: string | null;
+  last_reminder_sent_at?: string | null;
 }
 
 export interface QuestionnaireResponse {

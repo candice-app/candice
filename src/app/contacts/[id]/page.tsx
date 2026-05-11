@@ -143,6 +143,8 @@ export default async function ContactPage({
   const userHasProfile = !!myProfile;
   const contactNotes = (notesData ?? []) as ProfileNote[];
   const completionPct = getCompletion(profile);
+  const senderFirstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
+  const contactFirstName = typedContact.name.split(" ")[0];
   const importantDates = parseImportantDates(profile?.important_dates ?? null).sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
   const wishlist = (typedContact.gift_wishlist ?? []) as WishlistItem[];
 
@@ -177,7 +179,15 @@ export default async function ContactPage({
           completionPct={completionPct}
         />
         <div style={{ flexShrink: 0, marginTop: 4 }}>
-          <ContactActions contactId={id} contactName={typedContact.name} />
+          <ContactActions
+            contactId={id}
+            contactName={typedContact.name}
+            contactEmail={typedContact.email}
+            contactFirstName={contactFirstName}
+            completionPct={completionPct}
+            lastReminderSentAt={typedContact.last_reminder_sent_at ?? null}
+            senderFirstName={senderFirstName}
+          />
         </div>
       </div>
 
