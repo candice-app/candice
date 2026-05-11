@@ -59,7 +59,7 @@ export default function MarketingNav() {
         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
           <Link href="/register">
             <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "8px 18px", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
-              Essayer
+              Commencer
             </button>
           </Link>
           {/* Hamburger — shown on mobile via CSS */}
@@ -123,7 +123,7 @@ export default function MarketingNav() {
             style={{ display: "block", marginTop: 16 }}
           >
             <button style={{ width: "100%", background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "13px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
-              Essayer gratuitement →
+              Commencer gratuitement →
             </button>
           </Link>
         </div>
