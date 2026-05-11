@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { createClient } from "@/utils/supabase/client";
 
 const AVATAR_COLORS = [
   "linear-gradient(135deg,#C47A4A,#8A4020)",
@@ -19,12 +18,11 @@ function getColor(name: string) {
 
 interface Props {
   contactId: string;
-  userId: string;
   name: string;
   relationship: string;
   phone: string | null;
   email: string | null;
-  photoUrl: string | null;
+  signedUrl: string | null;
   completionPct: number;
 }
 
@@ -32,26 +30,23 @@ const RELATIONSHIP_LABEL: Record<string, string> = {
   partner: "Partenaire", friend: "Ami(e)", family: "Famille", colleague: "Collègue", other: "Autre",
 };
 
-export default function ContactHeader({ contactId, userId, name, relationship, phone, email, photoUrl, completionPct }: Props) {
-  const [photo, setPhoto] = useState<string | null>(photoUrl);
+export default function ContactHeader({ contactId, name, relationship, phone, email, signedUrl, completionPct }: Props) {
+  const [photo, setPhoto] = useState<string | null>(signedUrl);
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const supabase = createClient();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const path = `${userId}/${contactId}/avatar.${ext}`;
-      const { error: uploadError } = await supabase.storage
-        .from("contact-photos")
-        .upload(path, file, { upsert: true });
-      if (uploadError) throw uploadError;
-      const { data: { publicUrl } } = supabase.storage.from("contact-photos").getPublicUrl(path);
-      await supabase.from("contacts").update({ photo_url: publicUrl }).eq("id", contactId);
-      setPhoto(publicUrl);
+      const body = new FormData();
+      body.append("file", file);
+      body.append("contactId", contactId);
+      const res = await fetch("/api/contacts/upload-photo", { method: "POST", body });
+      if (!res.ok) throw new Error("Upload failed");
+      const { signedUrl: freshUrl } = await res.json() as { signedUrl: string };
+      setPhoto(freshUrl);
     } catch {
       // silently fail — photo upload is optional
     } finally {

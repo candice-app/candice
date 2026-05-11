@@ -1,6 +1,7 @@
 import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
 import SuggestionsPanel from "./SuggestionsPanel";
 import { Contact, QuestionnaireResponse, ProfileNote, WishlistItem } from "@/types";
@@ -145,6 +146,16 @@ export default async function ContactPage({
   const importantDates = parseImportantDates(profile?.important_dates ?? null).sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
   const wishlist = (typedContact.gift_wishlist ?? []) as WishlistItem[];
 
+  // Generate a signed URL from the stored path (private bucket)
+  let photoSignedUrl: string | null = null;
+  if (typedContact.photo_url) {
+    const admin = createAdminClient();
+    const { data } = await admin.storage
+      .from("contact-photos")
+      .createSignedUrl(typedContact.photo_url, 3600);
+    photoSignedUrl = data?.signedUrl ?? null;
+  }
+
   return (
     <DashboardShell>
       {/* Quick-add notes */}
@@ -158,12 +169,11 @@ export default async function ContactPage({
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 28 }}>
         <ContactHeader
           contactId={id}
-          userId={user.id}
           name={typedContact.name}
           relationship={typedContact.relationship}
           phone={typedContact.phone}
           email={typedContact.email}
-          photoUrl={typedContact.photo_url ?? null}
+          signedUrl={photoSignedUrl}
           completionPct={completionPct}
         />
         <div style={{ flexShrink: 0, marginTop: 4 }}>
