@@ -39,6 +39,7 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [duplicate, setDuplicate] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -54,7 +55,7 @@ export default function RegisterPage() {
       email,
       password,
       options: {
-        data: { full_name: name },
+        data: { full_name: name, phone },
         emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard`,
       },
     });
@@ -78,6 +79,17 @@ export default function RegisterPage() {
         setError("Compte créé ! Vérifie ta boîte e-mail pour confirmer ton adresse avant de te connecter.");
         setLoading(false);
         return;
+      }
+    }
+
+    // Save phone to my_profile — non-blocking
+    if (phone.trim()) {
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      if (currentUser) {
+        supabase.from("my_profile").upsert(
+          { user_id: currentUser.id, phone: phone.trim(), updated_at: new Date().toISOString() },
+          { onConflict: "user_id" }
+        ).then(() => {});
       }
     }
 
@@ -134,6 +146,19 @@ export default function RegisterPage() {
                 onChange={(e) => setName(e.target.value)}
                 required
                 placeholder="Alex"
+                style={INPUT}
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phone" style={LABEL}>Téléphone *</label>
+              <input
+                id="phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
+                placeholder="+33 6 00 00 00 00"
                 style={INPUT}
               />
             </div>

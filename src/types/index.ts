@@ -1,5 +1,13 @@
 export type Relationship = "partner" | "friend" | "family" | "colleague" | "other";
 
+export interface WishlistItem {
+  id: string;
+  title: string;
+  note?: string;
+  url?: string;
+  addedAt: string;
+}
+
 export interface Contact {
   id: string;
   user_id: string;
@@ -7,6 +15,8 @@ export interface Contact {
   relationship: Relationship;
   email: string | null;
   phone: string | null;
+  photo_url: string | null;
+  gift_wishlist: WishlistItem[] | null;
   created_at: string;
   archived_at: string | null;
 }
@@ -64,6 +74,7 @@ export interface ContactWithProfile extends Contact {
 export interface MyProfile {
   id: string;
   user_id: string;
+  phone: string | null;
   love_language: string | null;
   communication_style: string | null;
   stress_response: string | null;

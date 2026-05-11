@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { MyProfile } from "@/types";
 import { awardPoints } from "@/utils/awardPoints";
+import { InsightsPanel } from "./InsightCard";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -121,6 +122,11 @@ export default function SelfProfileForm({ userId, initial }: Props) {
 
   const skipAutoSave = useRef(true);
   const draftTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // Progressive insights
+  const [insights, setInsights] = useState<string[]>([]);
+  const [insightLoading, setInsightLoading] = useState(false);
+  const lastInsightThreshold = useRef(0);
 
   const v = (key: keyof MyProfile) => (initial?.[key] as string) ?? "";
   const va = (key: keyof MyProfile): string[] => {
@@ -282,6 +288,38 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     (importantDatesList.some(d => d.date) ? 1 : 0);
 
   const pct = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
+
+  // Trigger insight every 8 answered questions
+  useEffect(() => {
+    if (answeredCount === 0) return;
+    const threshold = Math.floor(answeredCount / 8) * 8;
+    if (threshold <= 0 || threshold <= lastInsightThreshold.current) return;
+    lastInsightThreshold.current = threshold;
+    const answers: Record<string, string> = {};
+    if (loveLanguage.length) answers.love_language = loveLanguage.join(",");
+    if (communicationStyle.length) answers.communication_style = communicationStyle.join(",");
+    if (stressResponse.length) answers.stress_response = stressResponse.join(",");
+    if (socialEnergy.length) answers.social_energy = socialEnergy.join(",");
+    if (appreciationStyle.length) answers.appreciation_style = appreciationStyle.join(",");
+    if (conflictResolution.length) answers.conflict_resolution = conflictResolution.join(",");
+    if (decisionMaking.length) answers.decision_making = decisionMaking.join(",");
+    if (emotionalExpression.length) answers.emotional_expression = emotionalExpression.join(",");
+    if (coreValues.length) answers.core_values = coreValues.join(",");
+    if (recognitionPreference.length) answers.recognition_preference = recognitionPreference.join(",");
+    if (boundaries.length) answers.boundaries = boundaries.join(",");
+    if (growthMindset.length) answers.growth_mindset = growthMindset.join(",");
+    if (giftPreference.length) answers.gift_preference = giftPreference.join(",");
+    setInsightLoading(true);
+    fetch("/api/questionnaire-insight", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ answers, persona: "self" }),
+    })
+      .then(r => r.json())
+      .then(d => { if (d.insight) setInsights(prev => [...prev, d.insight]); })
+      .catch(() => {})
+      .finally(() => setInsightLoading(false));
+  }, [answeredCount]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const motivationalMsg =
     pct === 0 ? "C'est parti ! Plus ta fiche est complète, plus les attentions seront personnalisées." :
@@ -597,6 +635,9 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           ]} />
         </div>
       </div>
+
+      {/* Progressive insights after psychological section */}
+      <InsightsPanel insights={insights} loadingInsight={insightLoading} />
 
       {/* ══════════════════════════════════════════════════════════════════════
           SECTION 2 — Tes préférences
