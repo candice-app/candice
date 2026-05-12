@@ -83,6 +83,21 @@ export default function FonctionnementPage() {
         </div>
       </section>
 
+      {/* Certaines fiches se construisent à deux */}
+      <section style={{ background: BG, borderTop: `0.5px solid ${BORDER}`, borderBottom: `0.5px solid ${BORDER}`, padding: "80px 52px" }}>
+        <div style={{ maxWidth: 640, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: PLAYFAIR, fontSize: "clamp(22px, 3vw, 34px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: -0.5, color: CON, marginBottom: 24 }}>
+            Certaines fiches se construisent à deux.
+          </h2>
+          <p style={{ fontSize: 16, fontWeight: 300, color: COND, lineHeight: 1.85, marginBottom: 20 }}>
+            Une grand-mère qui raconte ses habitudes à voix haute pendant qu&apos;on remplit sa fiche pour elle. Un parent qui partage doucement ses préférences. Un proche qui complète la sienne au fil des conversations.
+          </p>
+          <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 16, fontWeight: 400, color: COND, lineHeight: 1.75 }}>
+            Une fois créée, une fiche peut ensuite être partagée avec les proches choisis. Un même profil, autant de relations qu&apos;il compte.
+          </p>
+        </div>
+      </section>
+
       {/* 6 situation cards */}
       <section style={{ background: WHITE, borderTop: `0.5px solid ${BORDER}`, borderBottom: `0.5px solid ${BORDER}`, padding: "80px 52px" }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>

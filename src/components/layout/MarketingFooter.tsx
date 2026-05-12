@@ -2,9 +2,9 @@ import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 
 const DEEP = "#2C1A0E";
-const CREAM = "#FAF7F2";
 const TERRA = "#C47A4A";
 const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
+const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
 export default function MarketingFooter() {
   return (
@@ -55,12 +55,12 @@ export default function MarketingFooter() {
         }
       `}</style>
       <footer style={{ background: DEEP, fontFamily: DM, borderTop: "1px solid rgba(250,247,242,0.1)", marginTop: 0 }}>
-        <div style={{ padding: "80px 40px 0", maxWidth: 1200, margin: "0 auto" }}>
+        <div style={{ padding: "96px 40px 0", maxWidth: 1200, margin: "0 auto" }}>
           {/* Identity */}
-          <div style={{ marginBottom: 56 }}>
-            <Logo size="md" href="/" />
-            <p style={{ fontStyle: "italic", fontSize: 18, color: "rgba(250,247,242,0.7)", marginTop: 10, marginBottom: 0 }}>
-              Un Relational Operating System pour vos proches.
+          <div style={{ marginBottom: 60 }}>
+            <Logo size="md" href="/" color="#FAF7F2" />
+            <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 16, color: "rgba(250,247,242,0.7)", marginTop: 12, marginBottom: 0 }}>
+              Le copilote relationnel.
             </p>
           </div>
 
@@ -99,9 +99,10 @@ export default function MarketingFooter() {
         </div>
 
         {/* Copyright bar */}
-        <div style={{ borderTop: "1px solid rgba(250,247,242,0.15)", margin: "48px 40px 0", padding: "20px 0 32px", maxWidth: 1200 }}>
+        <div style={{ borderTop: "1px solid rgba(250,247,242,0.15)", margin: "56px 40px 0", padding: "20px 0 36px", maxWidth: 1200 }}>
           <div className="mkt-footer-copyright" style={{ maxWidth: 1200 }}>
             <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(250,247,242,0.5)", margin: 0 }}>© 2026 Candice. Tous droits réservés.</p>
+            <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 11, color: "rgba(250,247,242,0.3)", margin: 0 }}>Penser à eux, sans y penser.</p>
             <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(250,247,242,0.5)", margin: 0 }}>Marque déposée INPI · candice.app</p>
           </div>
         </div>

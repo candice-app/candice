@@ -88,17 +88,17 @@ export default function ConceptPage() {
       {/* ── S2 — LE VRAI PROBLÈME ── */}
       <section className="cpt-section" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}` }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: PLAYFAIR, fontSize: "clamp(28px, 3.5vw, 42px)", fontWeight: 400, lineHeight: 1.2, letterSpacing: -0.8, color: CON, marginBottom: 48 }}>
+          <h2 style={{ fontFamily: PLAYFAIR, fontSize: "clamp(28px, 3.5vw, 42px)", fontWeight: 400, lineHeight: 1.2, letterSpacing: -0.8, color: CON, marginBottom: 40 }}>
             Les intentions existent déjà.
           </h2>
-          <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: "clamp(20px, 2.5vw, 28px)", fontWeight: 400, color: CON, lineHeight: 1.45, marginBottom: 32 }}>
-            Le problème n&apos;est pas de ne pas penser aux autres. Le problème, c&apos;est de réussir à tout gérer en même temps&nbsp;: le travail, les enfants, les amis, le couple, la famille, le quotidien.
+          <p style={{ fontSize: 18, fontWeight: 300, color: COND, lineHeight: 1.85, marginBottom: 24 }}>
+            On pense à eux. On veut bien faire. Mais entre une journée chargée, une semaine qui s&apos;accélère et les dix choses en tête en même temps — les bonnes intentions restent dans la tête.
           </p>
-          <p style={{ fontSize: 18, fontWeight: 300, color: COND, lineHeight: 1.85, marginBottom: 48 }}>
-            Et au milieu de tout ça&nbsp;: les idées se perdent. Les attentions arrivent trop tard. Les rappels s&apos;accumulent. Les captures d&apos;écran disparaissent. Les bonnes intentions restent dans la tête… puis passent.
+          <p style={{ fontSize: 18, fontWeight: 300, color: COND, lineHeight: 1.85, marginBottom: 24 }}>
+            Une idée de cadeau oubliée. Un message qu&apos;on reporte. Une attention qui arrive trop tard, ou pas du tout.
           </p>
-          <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: COND, lineHeight: 1.75, borderTop: `0.5px solid ${BORDER}`, paddingTop: 36 }}>
-            Candice devient l&apos;endroit où ces informations restent organisées, utiles et vivantes.
+          <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: COND, lineHeight: 1.75, borderLeft: `2px solid ${TERRA}`, paddingLeft: 28, marginTop: 40 }}>
+            Candice garde ces intentions vivantes et vous aide à les transformer en actions — au bon moment, pour les bonnes personnes.
           </p>
         </div>
       </section>
@@ -176,13 +176,13 @@ export default function ConceptPage() {
               <p style={{ fontSize: 18, fontWeight: 300, color: COND, lineHeight: 1.85, marginBottom: 40 }}>
                 L&apos;objectif n&apos;est pas seulement de ne rien oublier. L&apos;objectif est de réduire la friction entre ce que vous voulez faire… et ce que vous faites réellement.
               </p>
-              <div style={{ marginBottom: 40, display: "flex", flexDirection: "column", gap: 8 }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: "0 0 40px", display: "flex", flexDirection: "column", gap: 10 }}>
                 {["Message.", "Idée cadeau.", "Réservation.", "Livraison.", "Rappel au bon moment."].map((line) => (
-                  <p key={line} style={{ fontSize: 16, fontWeight: 400, color: CON, margin: 0, lineHeight: 1.6 }}>
-                    <span style={{ color: TERRA, marginRight: 10, fontWeight: 700 }}>·</span>{line}
-                  </p>
+                  <li key={line} style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: CON, lineHeight: 1.4 }}>
+                    {line}
+                  </li>
                 ))}
-              </div>
+              </ul>
               <p style={{ fontFamily: PLAYFAIR, fontSize: "clamp(20px, 2vw, 24px)", fontWeight: 400, color: CON, lineHeight: 1.4, marginBottom: 40 }}>
                 Candice prépare l&apos;action. Vous validez.
               </p>
@@ -228,6 +228,21 @@ export default function ConceptPage() {
         </div>
       </section>
 
+      {/* ── S6b — CERTAINES FICHES ── */}
+      <section className="cpt-section" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 680, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: PLAYFAIR, fontSize: "clamp(24px, 3vw, 38px)", fontWeight: 400, lineHeight: 1.25, letterSpacing: -0.6, color: CON, marginBottom: 28 }}>
+            Certaines fiches se construisent à deux.
+          </h2>
+          <p style={{ fontSize: 18, fontWeight: 300, color: COND, lineHeight: 1.85, marginBottom: 24 }}>
+            Une grand-mère qui raconte ses habitudes à voix haute pendant qu&apos;on remplit sa fiche pour elle. Un parent qui partage doucement ses préférences. Un proche qui complète la sienne au fil des conversations.
+          </p>
+          <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 16, fontWeight: 400, color: COND, lineHeight: 1.75 }}>
+            Une fois créée, une fiche peut ensuite être partagée avec les proches choisis. Un même profil, autant de relations qu&apos;il compte.
+          </p>
+        </div>
+      </section>
+
       {/* ── S7 — CONFIDENTIALITÉ — fond deep ── */}
       <section className="cpt-deep" style={{ background: DEEP, borderBottom: "0.5px solid rgba(255,255,255,0.08)" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
@@ -257,7 +272,7 @@ export default function ConceptPage() {
       {/* ── S8 — CTA FINAL ── */}
       <section className="cpt-section" style={{ background: BG, textAlign: "center" }}>
         <div style={{ maxWidth: 680, margin: "0 auto" }}>
-          <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: "clamp(28px, 4vw, 48px)", fontWeight: 400, color: CON, lineHeight: 1.15, letterSpacing: -1.2, marginBottom: 24 }}>
+          <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: "clamp(24px, 3vw, 40px)", fontWeight: 400, color: CON, lineHeight: 1.2, letterSpacing: -0.8, marginBottom: 24 }}>
             Les bonnes intentions existent déjà.<br />Candice aide à les transformer en actions.
           </h2>
           <p style={{ fontSize: 18, fontWeight: 300, color: COND, lineHeight: 1.8, marginBottom: 48, maxWidth: 500, marginLeft: "auto", marginRight: "auto" }}>
