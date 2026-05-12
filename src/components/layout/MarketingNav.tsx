@@ -51,7 +51,7 @@ export default function MarketingNav() {
         }}
       >
         {/* Logo */}
-        <Logo size="lg" href="/" />
+        <Logo size="sm" href="/" />
 
         {/* Desktop center links */}
         <div className="mkt-nav-links">
