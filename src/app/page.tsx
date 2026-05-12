@@ -129,9 +129,13 @@ export default function HomePage() {
           .mkt-tl-desktop { display: block; }
         }
 
+        /* S3 — App preview section */
+        .mkt-s3 { padding: 80px 0; }
+
         /* App preview cards grid */
-        .mkt-cards-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        .mkt-cards-grid { display: grid; grid-template-columns: 1fr; gap: 16px; align-items: stretch; }
         @media (min-width: 768px) {
+          .mkt-s3 { padding: 120px 0; }
           .mkt-cards-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
         }
         @media (min-width: 1024px) {
@@ -210,18 +214,13 @@ export default function HomePage() {
       </section>
 
       {/* ── S3 — APP PREVIEW CARDS ── */}
-      <section aria-label="Aperçu de l'application" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}`, padding: "80px 20px" }}>
-        <style>{`
-          @media (min-width: 768px) {
-            .mkt-s3-inner { padding-left: 52px !important; padding-right: 52px !important; padding-top: 120px !important; padding-bottom: 120px !important; }
-          }
-        `}</style>
-        <div className="mkt-s3-inner" style={{ maxWidth: 1280, margin: "0 auto" }}>
+      <section aria-label="Aperçu de l'application" className="mkt-s3" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 1440, margin: "0 auto", paddingLeft: 32, paddingRight: 32 }}>
           <div style={{ textAlign: "center", marginBottom: 96 }}>
-            <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(32px, 5vw, 56px)", color: CON, letterSpacing: -1, lineHeight: 1.1, marginBottom: 32 }}>
+            <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(30px, 4.5vw, 52px)", color: CON, letterSpacing: -1, lineHeight: 1.1, marginBottom: 24 }}>
               Tout ce qui compte pour eux,<br />réuni en un seul endroit.
             </h2>
-            <p style={{ fontSize: 18, fontWeight: 400, color: "rgba(30,18,8,0.7)", lineHeight: 1.65, maxWidth: 640, margin: "0 auto" }}>
+            <p style={{ fontSize: 18, fontWeight: 400, color: "rgba(30,18,8,0.65)", lineHeight: 1.65, maxWidth: 700, margin: "0 auto" }}>
               Pour ne plus jamais rien oublier. Pour ne plus jamais manquer un moment.
             </p>
           </div>
@@ -572,11 +571,11 @@ function CardWrapper({ children }: { children: React.ReactNode }) {
 
 function CardHeader({ title }: { title: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexShrink: 0 }}>
+    <div style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexShrink: 0 }}>
       <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", fontFamily: C_DM, whiteSpace: "nowrap" }}>
         {title}
       </span>
-      <span style={{ fontSize: 11, letterSpacing: "0.05em", color: C_TERRA, cursor: "pointer", fontFamily: C_DM, flexShrink: 0, marginLeft: 8 }}>
+      <span style={{ fontSize: 11, letterSpacing: "0.05em", color: C_TERRA, cursor: "pointer", fontFamily: C_DM, flexShrink: 0, marginLeft: 8, whiteSpace: "nowrap" }}>
         + Ajouter
       </span>
     </div>
@@ -605,17 +604,26 @@ function AppProchesCard() {
         <CardHeader title="Mes proches" />
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {contacts.map((c, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <div style={{ width: 36, height: 36, borderRadius: "50%", background: c.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, color: C_CREAM, flexShrink: 0, fontFamily: C_DM }}>
+            <div key={i} style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 10 }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: "50%", background: c.color, flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 12, fontWeight: 600, color: C_CREAM, fontFamily: C_DM,
+              }}>
                 {c.init}
               </div>
-              <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
-                <p style={{ fontSize: 13, fontWeight: 600, color: C_CON, margin: 0, lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.name}</p>
-                <p style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.55)", margin: "2px 0 0", lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.detail}</p>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 13, fontWeight: 600, color: C_CON, lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.name}</div>
+                <div style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.55)", marginTop: 2, lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.detail}</div>
               </div>
-              <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: C_TERRA, background: "rgba(196,122,74,0.12)", padding: "4px 8px", borderRadius: 4, flexShrink: 0, fontFamily: C_DM, whiteSpace: "nowrap" }}>
+              <div style={{
+                flexShrink: 0, whiteSpace: "nowrap",
+                fontSize: 9, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase",
+                color: C_TERRA, background: "rgba(196,122,74,0.12)",
+                padding: "4px 8px", borderRadius: 4, fontFamily: C_DM,
+              }}>
                 {c.badge}
-              </span>
+              </div>
             </div>
           ))}
         </div>
@@ -638,8 +646,8 @@ function AppSuggestionsCard() {
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {suggestions.map((s, i) => (
             <div key={i} style={{ background: C_SUB, borderRadius: 10, padding: 14 }}>
-              <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 8px", fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</p>
-              <p style={{ fontSize: 12, fontWeight: 400, color: C_CON, lineHeight: 1.6, margin: "0 0 12px", fontFamily: C_DM }}>{s.desc}</p>
+              <div style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C_TERRA, marginBottom: 8, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</div>
+              <div style={{ fontSize: 12, fontWeight: 400, color: C_CON, lineHeight: 1.6, marginBottom: 12, fontFamily: C_DM }}>{s.desc}</div>
               <button style={{ width: "100%", height: 34, background: C_TERRA, color: C_CREAM, border: "none", borderRadius: 6, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: C_DM }}>
                 {s.btn}
               </button>
@@ -666,17 +674,17 @@ function AppSouvenirsCard() {
         <CardHeader title="Souvenirs" />
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {entries.map((e, i) => (
-            <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+            <div key={i} style={{ display: "flex", flexDirection: "row", gap: 12 }}>
               <div style={{ width: 44, flexShrink: 0, textAlign: "center" }}>
-                <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1 }}>{e.day}</p>
-                <p style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", margin: "3px 0 0", fontFamily: C_DM }}>{e.month}</p>
+                <div style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, lineHeight: 1 }}>{e.day}</div>
+                <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", marginTop: 3, fontFamily: C_DM }}>{e.month}</div>
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 12, fontWeight: 600, color: C_CON, margin: 0, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.name}</p>
-                <p style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.65)", margin: "2px 0 6px", lineHeight: 1.55, fontFamily: C_DM }}>{e.desc}</p>
-                <span style={{ display: "inline-block", fontSize: 8, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: e.badgeColor, background: e.badgeBg, padding: "3px 6px", borderRadius: 3, fontFamily: C_DM, whiteSpace: "nowrap" }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: C_CON, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.name}</div>
+                <div style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.65)", marginTop: 2, lineHeight: 1.55, fontFamily: C_DM }}>{e.desc}</div>
+                <div style={{ display: "inline-block", marginTop: 6, fontSize: 8, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: e.badgeColor, background: e.badgeBg, padding: "3px 6px", borderRadius: 3, fontFamily: C_DM, whiteSpace: "nowrap" }}>
                   {e.badge}
-                </span>
+                </div>
               </div>
             </div>
           ))}
@@ -704,23 +712,27 @@ function AppFicheCard() {
     <CardWrapper>
       <div>
         <CardHeader title="Sophie Martin" />
-        <div style={{ textAlign: "center", marginBottom: 20 }}>
-          <div style={{ width: 56, height: 56, borderRadius: "50%", background: C_TERRA, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: C_CREAM, margin: "0 auto", fontFamily: C_DM }}>SM</div>
-          <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: "12px 0 0", lineHeight: 1.2, whiteSpace: "nowrap" }}>Sophie Martin</p>
-          <p style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.55)", margin: "4px 0 0", fontFamily: C_DM, whiteSpace: "nowrap" }}>Amie proche · Paris</p>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginBottom: 20 }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: "50%", background: C_TERRA,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 16, fontWeight: 600, color: C_CREAM, fontFamily: C_DM,
+          }}>SM</div>
+          <div style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, marginTop: 12, lineHeight: 1.2, whiteSpace: "nowrap" }}>Sophie Martin</div>
+          <div style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.55)", marginTop: 4, fontFamily: C_DM, whiteSpace: "nowrap" }}>Amie proche · Paris</div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, width: "100%", marginBottom: 16 }}>
           {kpis.map((k, i) => (
             <div key={i} style={{ background: C_SUB, border: `1px solid ${C_CARD_BORDER}`, borderRadius: 8, padding: 10, textAlign: "center" }}>
-              <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1 }}>{k.value}</p>
-              <p style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", margin: "4px 0 0", fontFamily: C_DM, whiteSpace: "nowrap" }}>{k.label}</p>
+              <div style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: C_CON, lineHeight: 1 }}>{k.value}</div>
+              <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", marginTop: 4, fontFamily: C_DM, whiteSpace: "nowrap" }}>{k.label}</div>
             </div>
           ))}
         </div>
-        <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 12px", fontFamily: C_DM }}>Profil de réception</p>
+        <div style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: C_TERRA, marginBottom: 12, fontFamily: C_DM }}>Profil de réception</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {bars.map((b, i) => (
-            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <div key={i} style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8 }}>
               <span style={{ fontSize: 11, color: C_CON, width: 44, flexShrink: 0, fontFamily: C_DM }}>{b.label}</span>
               <div style={{ flex: 1, height: 4, borderRadius: 2, background: "rgba(30,18,8,0.1)", position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${b.pct}%`, background: C_TERRA, borderRadius: 2 }} />
