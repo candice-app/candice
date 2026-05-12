@@ -2,8 +2,8 @@ import Link from "next/link";
 
 type Size = "sm" | "md" | "lg";
 
-const wordSizes: Record<Size, number> = { sm: 18, md: 26, lg: 34 };
-const dotSizes: Record<Size, number>  = { sm: 26, md: 36, lg: 48 };
+const wordSizes: Record<Size, number> = { sm: 18, md: 26, lg: 32 };
+const dotSizes: Record<Size, number>  = { sm: 22, md: 32, lg: 40 };
 
 export function Logo({
   size = "md",
@@ -20,7 +20,7 @@ export function Logo({
         style={{
           fontFamily: "'DM Sans', 'Plus Jakarta Sans', sans-serif",
           fontSize: wordSizes[size],
-          fontWeight: 300,
+          fontWeight: 400,
           letterSpacing: "0.3em",
           textTransform: "uppercase",
           color,
@@ -37,7 +37,7 @@ export function Logo({
           color: "#C47A4A",
           lineHeight: 1,
           display: "inline-block",
-          marginLeft: 2,
+          marginLeft: 8,
         }}
       >
         •

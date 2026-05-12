@@ -309,7 +309,7 @@ function ConversationMockup() {
   return (
     <div style={{ background: "#1C1C1E", borderRadius: 44, padding: "12px 6px 16px", boxShadow: "0 24px 48px rgba(44,26,14,0.15)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 14px 6px", color: "rgba(255,255,255,0.85)", fontSize: 9, fontWeight: 600 }}>
-        <span>9:41</span>
+        <span>Candice</span>
         <div style={{ width: 80, height: 16, background: "#1C1C1E", borderRadius: 20, position: "relative" }} />
         <div style={{ display: "flex", gap: 4, alignItems: "center", fontSize: 8 }}>
           <span style={{ opacity: 0.8 }}>●●●</span>

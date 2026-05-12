@@ -128,6 +128,15 @@ export default function HomePage() {
           .mkt-tl-mobile { display: none; }
           .mkt-tl-desktop { display: block; }
         }
+
+        /* App preview cards grid */
+        .mkt-cards-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+        @media (min-width: 768px) {
+          .mkt-cards-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+        }
+        @media (min-width: 1024px) {
+          .mkt-cards-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+        }
       `}</style>
 
       <MarketingNav />
@@ -185,14 +194,29 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── S3 — MOCKUPS iPhone ── */}
-      <section aria-label="Aperçu de l'application" className="mkt-section" style={{ background: WHITE, borderBottom: `0.5px solid ${BORDER}` }}>
-        <div aria-hidden="true">
-          <IPhoneMockups />
+      {/* ── S3 — APP PREVIEW CARDS ── */}
+      <section aria-label="Aperçu de l'application" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}`, padding: "80px 20px" }}>
+        <style>{`
+          @media (min-width: 768px) {
+            .mkt-s3-inner { padding-left: 52px !important; padding-right: 52px !important; padding-top: 120px !important; padding-bottom: 120px !important; }
+          }
+        `}</style>
+        <div className="mkt-s3-inner" style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <div style={{ textAlign: "center", marginBottom: 96 }}>
+            <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(32px, 5vw, 56px)", color: CON, letterSpacing: -1, lineHeight: 1.1, marginBottom: 32 }}>
+              Tout ce qui compte pour eux,<br />réuni en un seul endroit.
+            </h2>
+            <p style={{ fontSize: 18, fontWeight: 400, color: "rgba(30,18,8,0.7)", lineHeight: 1.65, maxWidth: 640, margin: "0 auto" }}>
+              Pour ne plus jamais rien oublier. Pour ne plus jamais manquer un moment.
+            </p>
+          </div>
+          <div className="mkt-cards-grid">
+            <AppProchesCard />
+            <AppSuggestionsCard />
+            <AppSouvenirsCard />
+            <AppFicheCard />
+          </div>
         </div>
-        <p style={{ fontSize: 14, fontWeight: 300, color: COND, lineHeight: 1.75, textAlign: "center", maxWidth: 540, margin: "40px auto 0", fontStyle: "italic" }}>
-          Candice peut déjà vous aider avec quelques informations. Plus vous lui en donnez, plus elle devient précise, personnelle et juste.
-        </p>
       </section>
 
       {/* ── S4 — TIMELINE "Candice grandit avec vous" ── */}
@@ -436,187 +460,188 @@ export default function HomePage() {
   );
 }
 
-function IPhoneFrame({ title, children }: { title: string; children: React.ReactNode }) {
+const C_CARD = "#FFFFFF";
+const C_CARD_BORDER = "rgba(196,122,74,0.08)";
+const C_CARD_SHADOW = "0 4px 24px rgba(44,26,14,0.06), 0 2px 8px rgba(44,26,14,0.04)";
+const C_TERRA = "#C47A4A";
+const C_CON = "#1E1208";
+const C_CREAM = "#FAF7F2";
+const C_DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
+const C_PLAY = "'Playfair Display', Georgia, serif";
+const C_MIN_H = 480;
+
+function CardWrapper({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 14, alignItems: "center" }}>
-      <p style={{ fontSize: 12, fontWeight: 300, color: "#7A5E44", textAlign: "center", margin: 0, letterSpacing: -0.1 }}>{title}</p>
-      <div
-        style={{
-          background: "#1C1C1E",
-          borderRadius: 48,
-          padding: "14px 8px 20px",
-          boxShadow: "0 32px 64px -16px rgba(44,26,14,0.18), 0 2px 8px rgba(0,0,0,0.12)",
-          width: "100%",
-          maxWidth: 240,
-          position: "relative",
-        }}
-      >
-        {/* Status bar */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 16px 8px", color: "rgba(255,255,255,0.85)", fontSize: 8, fontWeight: 600 }}>
-          <span>9:41</span>
-          {/* Dynamic island */}
-          <div style={{ width: 72, height: 14, background: "#1C1C1E", borderRadius: 20, position: "absolute", left: "50%", transform: "translateX(-50%)", top: 10 }} />
-          <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-            <svg width="11" height="8" viewBox="0 0 11 8" fill="none" aria-hidden="true">
-              <rect x="0" y="5" width="2" height="3" rx="0.5" fill="white" opacity="0.4" />
-              <rect x="3" y="3" width="2" height="5" rx="0.5" fill="white" opacity="0.65" />
-              <rect x="6" y="1" width="2" height="7" rx="0.5" fill="white" opacity="0.85" />
-              <rect x="9" y="0" width="2" height="8" rx="0.5" fill="white" />
-            </svg>
-            <svg width="12" height="8" viewBox="0 0 12 8" fill="none" aria-hidden="true">
-              <path d="M6 1.5 C3.5 1.5 1.5 3.5 1.5 6" stroke="white" strokeWidth="1.1" fill="none" opacity="0.45" strokeLinecap="round" />
-              <path d="M6 3.5 C4.5 3.5 3.5 4.5 3.5 6" stroke="white" strokeWidth="1.1" fill="none" opacity="0.7" strokeLinecap="round" />
-              <circle cx="6" cy="6" r="1" fill="white" />
-            </svg>
-            <svg width="17" height="9" viewBox="0 0 17 9" fill="none" aria-hidden="true">
-              <rect x="0.5" y="0.5" width="14" height="8" rx="2.5" stroke="white" strokeOpacity="0.35" />
-              <rect x="1.5" y="1.5" width="9" height="6" rx="1.5" fill="white" />
-              <path d="M15.5 3 Q17 4.5 15.5 6" stroke="white" strokeOpacity="0.45" strokeWidth="1" fill="none" />
-            </svg>
-          </div>
-        </div>
-        {/* Screen */}
-        <div style={{ background: "#FAF7F2", borderRadius: 36, overflow: "hidden" }}>
-          {children}
-        </div>
-      </div>
+    <div style={{
+      background: C_CARD,
+      border: `1px solid ${C_CARD_BORDER}`,
+      borderRadius: 16,
+      boxShadow: C_CARD_SHADOW,
+      padding: 24,
+      display: "flex",
+      flexDirection: "column",
+      minHeight: C_MIN_H,
+    }}>
+      {children}
     </div>
   );
 }
 
-function IPhoneMockups() {
-  const C_BG = "#FAF7F2";
-  const C_WHITE = "#FFFFFF";
-  const C_CON = "#1E1208";
-  const C_COND = "#7A5E44";
-  const C_TERRA = "#C47A4A";
-  const C_BORDER = "rgba(30,18,8,0.1)";
-  const C_FAINT = "rgba(30,18,8,0.04)";
-
+function CardHeader({ title }: { title: string }) {
   return (
-    <div className="mkt-iphone-grid">
-      {/* MOCKUP 1 — Dashboard */}
-      <IPhoneFrame title="L'app, au quotidien.">
-        <div style={{ padding: "16px 14px" }}>
-          <p style={{ fontSize: 9, fontWeight: 300, color: C_COND, margin: "0 0 14px", fontStyle: "italic" }}>Bonjour Estelle.</p>
-          {[
-            { init: "PL", grad: "linear-gradient(135deg,#534AB7,#3C3489)", name: "Paul", status: "Candice connaît bien Paul." },
-            { init: "LÉ", grad: "linear-gradient(135deg,#9A3556,#72243E)", name: "Léa", status: "Commence à connaître Léa." },
-            { init: "MA", grad: "linear-gradient(135deg,#4A7C59,#2A5C39)", name: "Maman", status: "Anticipe pour votre mère." },
-          ].map((c) => (
-            <div key={c.name} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 10px", borderRadius: 10, background: C_WHITE, marginBottom: 6, border: `0.5px solid ${C_BORDER}` }}>
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: c.grad, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, fontWeight: 600, color: "#fff", flexShrink: 0 }}>{c.init}</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p style={{ fontSize: 10, fontWeight: 500, color: C_CON, margin: 0, lineHeight: 1.3 }}>{c.name}</p>
-                <p style={{ fontSize: 7.5, fontWeight: 300, color: C_COND, margin: "2px 0 0", fontStyle: "italic", lineHeight: 1.4 }}>{c.status}</p>
-              </div>
-            </div>
-          ))}
-          <div style={{ marginTop: 12, background: C_FAINT, border: `0.5px solid ${C_BORDER}`, borderRadius: 10, padding: "9px 12px" }}>
-            <p style={{ fontSize: 8, fontWeight: 300, color: "rgba(30,18,8,0.35)", margin: 0 }}>Parlez à Candice…</p>
-          </div>
-        </div>
-      </IPhoneFrame>
-
-      {/* MOCKUP 2 — Analyse profil */}
-      <IPhoneFrame title="Ce que Candice comprend.">
-        <div style={{ padding: "16px 14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, paddingBottom: 12, borderBottom: `0.5px solid ${C_BORDER}` }}>
-            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "linear-gradient(135deg,#C47A4A,#8A4020)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 8.5, fontWeight: 600, color: "#fff", flexShrink: 0 }}>SM</div>
-            <div>
-              <p style={{ fontSize: 10, fontWeight: 500, color: C_CON, margin: 0, lineHeight: 1.3 }}>Sarah</p>
-              <p style={{ fontSize: 7.5, fontWeight: 300, color: C_TERRA, margin: "2px 0 0", lineHeight: 1.3 }}>amie proche</p>
-            </div>
-          </div>
-          <p style={{ fontSize: 8, fontWeight: 600, letterSpacing: 0.8, color: C_TERRA, margin: "0 0 12px", textTransform: "uppercase" }}>Analyse Candice</p>
-          {[
-            "Reçoit l'amour par les gestes intimes.",
-            "Sensible aux attentions discrètes.",
-            "Adore la cuisine italienne.",
-            "Allergique aux fruits à coque.",
-          ].map((line, i) => (
-            <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-              <span style={{ color: C_TERRA, fontSize: 9, flexShrink: 0, marginTop: 1, lineHeight: 1.5 }}>·</span>
-              <p style={{ fontSize: 8.5, fontWeight: 300, color: C_CON, margin: 0, lineHeight: 1.55 }}>{line}</p>
-            </div>
-          ))}
-        </div>
-      </IPhoneFrame>
-
-      {/* MOCKUP 3 — Suggestions */}
-      <IPhoneFrame title="Les bonnes attentions.">
-        <div style={{ padding: "16px 14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 14, paddingBottom: 12, borderBottom: `0.5px solid ${C_BORDER}` }}>
-            <div style={{ width: 26, height: 26, borderRadius: "50%", background: "linear-gradient(135deg,#4A7C59,#2A5C39)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, fontWeight: 600, color: "#fff", flexShrink: 0 }}>TL</div>
-            <div>
-              <p style={{ fontSize: 10, fontWeight: 500, color: C_CON, margin: 0, lineHeight: 1.3 }}>Thomas</p>
-              <p style={{ fontSize: 7.5, fontWeight: 300, color: C_TERRA, margin: "2px 0 0", lineHeight: 1.3 }}>ami · Paris</p>
-            </div>
-          </div>
-          {[
-            "Sa sœur arrive samedi. Préparer un message ?",
-            "Soirée pizza dans 12 jours. Réserver ?",
-            "Anniversaire dans 23 jours.",
-          ].map((s, i) => (
-            <div key={i} style={{ background: C_FAINT, border: `0.5px solid ${C_BORDER}`, borderRadius: 8, padding: "9px 10px", marginBottom: 7, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
-              <p style={{ fontSize: 8, fontWeight: 300, color: C_CON, margin: 0, lineHeight: 1.5, flex: 1 }}>{s}</p>
-              <button style={{ background: C_TERRA, color: "#fff", fontSize: 7, fontWeight: 500, padding: "4px 8px", borderRadius: 5, border: "none", cursor: "pointer", flexShrink: 0 }}>Voir</button>
-            </div>
-          ))}
-        </div>
-      </IPhoneFrame>
-
-      {/* MOCKUP 4 — Validation */}
-      <IPhoneFrame title="Vous décidez.">
-        <div style={{ padding: "16px 14px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16, paddingBottom: 12, borderBottom: `0.5px solid ${C_BORDER}` }}>
-            <div style={{ width: 20, height: 20, borderRadius: "50%", background: C_TERRA, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 7.5, fontWeight: 700, color: "#fff", flexShrink: 0 }}>C</div>
-            <div>
-              <p style={{ fontSize: 10, fontWeight: 500, color: C_CON, margin: 0, lineHeight: 1.3 }}>Candice</p>
-              <p style={{ fontSize: 7.5, fontWeight: 300, color: "rgba(30,18,8,0.4)", margin: "1px 0 0", lineHeight: 1.3 }}>il y a 2 min</p>
-            </div>
-          </div>
-          <div style={{ background: C_BG, border: `0.5px solid ${C_BORDER}`, borderRadius: "4px 12px 12px 12px", padding: "11px 12px", marginBottom: 16 }}>
-            <p style={{ fontSize: 8, fontWeight: 300, color: C_CON, margin: 0, lineHeight: 1.65 }}>
-              Je pense qu&apos;un bouquet de pivoines ferait plaisir à Valentin demain. Bergamotte, livraison 14h, 38&nbsp;€. Je m&apos;en occupe&nbsp;?
-            </p>
-          </div>
-          <div style={{ display: "flex", gap: 7 }}>
-            <button style={{ flex: 1, background: C_TERRA, color: "#fff", fontSize: 8.5, fontWeight: 500, padding: "9px 0", borderRadius: 7, border: "none", cursor: "pointer" }}>Valider</button>
-            <button style={{ flex: 1, background: "transparent", color: C_CON, fontSize: 8.5, fontWeight: 300, padding: "9px 0", borderRadius: 7, border: `0.5px solid ${C_BORDER}`, cursor: "pointer" }}>Modifier</button>
-          </div>
-        </div>
-      </IPhoneFrame>
-
-      {/* MOCKUP 5 — Graphe de relations */}
-      <IPhoneFrame title="Votre réseau relationnel.">
-        <div style={{ padding: "16px 14px", minHeight: 180 }}>
-          <p style={{ fontSize: 8, fontWeight: 600, letterSpacing: 0.8, color: C_TERRA, margin: "0 0 12px", textTransform: "uppercase" }}>Réseau</p>
-          <svg width="100%" viewBox="0 0 176 150" style={{ overflow: "visible" }} aria-hidden="true">
-            <line x1="88" y1="75" x2="28" y2="30" stroke={C_TERRA} strokeWidth="0.7" strokeOpacity="0.35" />
-            <line x1="88" y1="75" x2="148" y2="30" stroke={C_TERRA} strokeWidth="0.7" strokeOpacity="0.35" />
-            <line x1="88" y1="75" x2="28" y2="120" stroke={C_TERRA} strokeWidth="0.7" strokeOpacity="0.35" />
-            <line x1="88" y1="75" x2="148" y2="120" stroke={C_TERRA} strokeWidth="0.7" strokeOpacity="0.35" />
-            <line x1="88" y1="75" x2="88" y2="8" stroke={C_TERRA} strokeWidth="0.7" strokeOpacity="0.2" />
-            <circle cx="88" cy="75" r="24" fill={C_WHITE} stroke={C_TERRA} strokeWidth="1.2" />
-            <text x="88" y="72" textAnchor="middle" fontSize="6.5" fontWeight="500" fill={C_TERRA} fontFamily="sans-serif">Estelle</text>
-            <text x="88" y="82" textAnchor="middle" fontSize="5.5" fontWeight="300" fill={C_COND} fontFamily="sans-serif">vous</text>
-            {[
-              { cx: 28, cy: 30, initials: "PL", color: "#534AB7", label: "Paul" },
-              { cx: 148, cy: 30, initials: "SM", color: "#C47A4A", label: "Sarah" },
-              { cx: 28, cy: 120, initials: "MA", color: "#4A7C59", label: "Maman" },
-              { cx: 148, cy: 120, initials: "TL", color: "#9A3556", label: "Thomas" },
-              { cx: 88, cy: 8, initials: "LÉ", color: "#7A5E44", label: "Léa" },
-            ].map((n) => (
-              <g key={n.label}>
-                <circle cx={n.cx} cy={n.cy} r="17" fill={n.color} opacity="0.9" />
-                <text x={n.cx} y={n.cy + 2.5} textAnchor="middle" fontSize="6.5" fontWeight="600" fill="white" fontFamily="sans-serif">{n.initials}</text>
-                <text x={n.cx} y={n.cy + 28} textAnchor="middle" fontSize="5.5" fontWeight="300" fill={C_COND} fontFamily="sans-serif">{n.label}</text>
-              </g>
-            ))}
-          </svg>
-        </div>
-      </IPhoneFrame>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+      <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(30,18,8,0.5)", fontFamily: C_DM }}>
+        {title}
+      </span>
+      <span style={{ fontSize: 12, letterSpacing: "0.05em", color: C_TERRA, cursor: "pointer", fontFamily: C_DM }}>
+        + Ajouter
+      </span>
     </div>
+  );
+}
+
+function CardFooter({ text }: { text: string }) {
+  return (
+    <div style={{ marginTop: 16, textAlign: "center" }}>
+      <span style={{ fontSize: 12, fontStyle: "italic", color: "rgba(30,18,8,0.5)", fontFamily: C_DM }}>{text}</span>
+    </div>
+  );
+}
+
+function AppProchesCard() {
+  const contacts = [
+    { init: "SM", color: "#C47A4A", name: "Sophie Martin", detail: "Paris · Amie", badge: "ANNIVERSAIRE J-4" },
+    { init: "TL", color: "#6B8AAE", name: "Thomas Leroy", detail: "Lyon · Frère", badge: "2 MOIS SANS CONTACT" },
+    { init: "PL", color: "#8B6FAE", name: "Paul Lemaire", detail: "Paris · Ami", badge: "MARATHON DIMANCHE" },
+    { init: "CP", color: "#6B9E7B", name: "Claire", detail: "Maman / Bordeaux", badge: "FÊTE DES MÈRES J-8" },
+    { init: "JR", color: "#B89058", name: "Julien R.", detail: "Nantes · Ami", badge: "3 MOIS SANS CONTACT" },
+  ];
+  return (
+    <CardWrapper>
+      <CardHeader title="Mes proches" />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
+        {contacts.map((c, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ width: 40, height: 40, borderRadius: "50%", background: c.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, color: C_CREAM, flexShrink: 0, fontFamily: C_DM }}>
+              {c.init}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: 14, fontWeight: 600, color: C_CON, margin: 0, lineHeight: 1.3, fontFamily: C_DM }}>{c.name}</p>
+              <p style={{ fontSize: 12, fontWeight: 400, color: "rgba(30,18,8,0.6)", margin: "2px 0 0", lineHeight: 1.3, fontFamily: C_DM }}>{c.detail}</p>
+            </div>
+            <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: C_TERRA, background: "rgba(196,122,74,0.15)", padding: "4px 10px", borderRadius: 4, flexShrink: 0, fontFamily: C_DM, lineHeight: 1, whiteSpace: "nowrap" }}>
+              {c.badge}
+            </span>
+          </div>
+        ))}
+      </div>
+      <CardFooter text="Liste de proches" />
+    </CardWrapper>
+  );
+}
+
+function AppSuggestionsCard() {
+  const suggestions = [
+    { name: "SOPHIE MARTIN", desc: "Bouquet de pivoines de chez Debeaulieu — livraison le 14 mai.", btn: "Commander" },
+    { name: "PAUL LEMAIRE", desc: "Message d'encouragement pour son premier marathon. Prêt à envoyer.", btn: "Envoyer" },
+    { name: "THOMAS LEROY", desc: "Déjeuner dimanche — créneau commun trouvé.", btn: "Confirmer" },
+  ];
+  return (
+    <CardWrapper>
+      <CardHeader title="Suggestions" />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16 }}>
+        {suggestions.map((s, i) => (
+          <div key={i} style={{ background: "rgba(250,247,242,0.7)", border: "1px solid rgba(196,122,74,0.06)", borderRadius: 12, padding: 16 }}>
+            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 8px", fontFamily: C_DM }}>{s.name}</p>
+            <p style={{ fontSize: 13, fontWeight: 400, color: C_CON, lineHeight: 1.6, margin: "0 0 12px", fontFamily: C_DM }}>{s.desc}</p>
+            <button style={{ width: "100%", height: 36, background: C_TERRA, color: C_CREAM, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: C_DM }}>
+              {s.btn}
+            </button>
+          </div>
+        ))}
+      </div>
+      <CardFooter text="Recommandations" />
+    </CardWrapper>
+  );
+}
+
+function AppSouvenirsCard() {
+  const GREEN = "#4A7C59";
+  const entries = [
+    { day: "14", month: "FÉV", name: "Sophie Martin", desc: "Bouquet de roses envoyé. Elle a adoré.", badge: "RÉACTION POSITIVE", badgeBg: "rgba(74,124,89,0.15)", badgeColor: GREEN },
+    { day: "02", month: "JAN", name: "Thomas Leroy", desc: "Message nouvel an. Lu et répondu.", badge: "MESSAGE · LU", badgeBg: "rgba(30,18,8,0.08)", badgeColor: "rgba(30,18,8,0.7)" },
+    { day: "25", month: "NOV", name: "Claire", desc: "Dîner anniversaire. Excellent souvenir.", badge: "EXPÉRIENCE · TOP", badgeBg: "rgba(196,122,74,0.15)", badgeColor: C_TERRA },
+    { day: "10", month: "OCT", name: "Paul Lemaire", desc: "Whisky Nikka lors de sa rupture.", badge: "SOUTIEN · IMPACTANT", badgeBg: "rgba(30,18,8,0.08)", badgeColor: "rgba(30,18,8,0.7)" },
+  ];
+  return (
+    <CardWrapper>
+      <CardHeader title="Souvenirs" />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16 }}>
+        {entries.map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
+            <div style={{ width: 40, flexShrink: 0, textAlign: "center" }}>
+              <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1.1 }}>{e.day}</p>
+              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.6)", margin: "2px 0 0", fontFamily: C_DM, lineHeight: 1.2 }}>{e.month}</p>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ fontSize: 13, fontWeight: 600, color: C_CON, margin: "0 0 3px", fontFamily: C_DM }}>{e.name}</p>
+              <p style={{ fontSize: 12, fontWeight: 400, color: "rgba(30,18,8,0.7)", margin: "0 0 8px", lineHeight: 1.55, fontFamily: C_DM }}>{e.desc}</p>
+              <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: e.badgeColor, background: e.badgeBg, padding: "3px 8px", borderRadius: 4, fontFamily: C_DM }}>
+                {e.badge}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      <CardFooter text="Historique & souvenirs" />
+    </CardWrapper>
+  );
+}
+
+function AppFicheCard() {
+  const kpis = [
+    { value: "12", label: "GESTES" },
+    { value: "94%", label: "SATISFACTION" },
+    { value: "J-4", label: "ANNIVERSAIRE" },
+    { value: "8", label: "INFOS" },
+  ];
+  const bars = [
+    { label: "Cadeau", pct: 85 },
+    { label: "Expé.", pct: 72 },
+    { label: "Mots", pct: 60 },
+    { label: "Geste", pct: 45 },
+  ];
+  return (
+    <CardWrapper>
+      <CardHeader title="Sophie Martin" />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <div style={{ width: 56, height: 56, borderRadius: "50%", background: C_TERRA, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: C_CREAM, margin: "0 auto", fontFamily: C_DM }}>SM</div>
+          <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: "12px 0 0", lineHeight: 1.2 }}>Sophie Martin</p>
+          <p style={{ fontSize: 12, fontWeight: 400, color: "rgba(30,18,8,0.6)", margin: "4px 0 0", fontFamily: C_DM }}>Amie proche · Paris</p>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
+          {kpis.map((k, i) => (
+            <div key={i} style={{ background: C_CREAM, border: "1px solid rgba(196,122,74,0.1)", borderRadius: 8, padding: 10, textAlign: "center" }}>
+              <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1.1 }}>{k.value}</p>
+              <p style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.6)", margin: "4px 0 0", fontFamily: C_DM }}>{k.label}</p>
+            </div>
+          ))}
+        </div>
+        <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 12px", fontFamily: C_DM }}>Profil de réception</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {bars.map((b, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ fontSize: 11, color: C_CON, width: 60, flexShrink: 0, fontFamily: C_DM }}>{b.label}</span>
+              <div style={{ flex: 1, height: 4, borderRadius: 2, background: "rgba(30,18,8,0.1)", position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${b.pct}%`, background: C_TERRA, borderRadius: 2 }} />
+              </div>
+              <span style={{ fontSize: 11, color: C_CON, width: 32, textAlign: "right", flexShrink: 0, fontFamily: C_DM }}>{b.pct}%</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <CardFooter text="Fiche · KPIs · Matching" />
+    </CardWrapper>
   );
 }
