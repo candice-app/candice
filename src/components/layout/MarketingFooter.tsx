@@ -59,8 +59,8 @@ export default function MarketingFooter() {
           {/* Identity */}
           <div style={{ marginBottom: 60 }}>
             <Logo size="md" href="/" color="#FAF7F2" />
-            <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 16, color: "rgba(250,247,242,0.7)", marginTop: 12, marginBottom: 0 }}>
-              Le copilote relationnel.
+            <p style={{ fontFamily: DM, fontStyle: "italic", fontSize: 14, color: "rgba(250,247,242,0.6)", marginTop: 12, marginBottom: 0 }}>
+              Penser à eux, sans y penser.
             </p>
           </div>
 
@@ -101,9 +101,7 @@ export default function MarketingFooter() {
         {/* Copyright bar */}
         <div style={{ borderTop: "1px solid rgba(250,247,242,0.15)", margin: "56px 40px 0", padding: "20px 0 36px", maxWidth: 1200 }}>
           <div className="mkt-footer-copyright" style={{ maxWidth: 1200 }}>
-            <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(250,247,242,0.5)", margin: 0 }}>© 2026 Candice. Tous droits réservés.</p>
-            <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 11, color: "rgba(250,247,242,0.3)", margin: 0 }}>Penser à eux, sans y penser.</p>
-            <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(250,247,242,0.5)", margin: 0 }}>Marque déposée INPI · candice.app</p>
+            <p style={{ fontFamily: DM, fontSize: 10, fontWeight: 400, color: "rgba(250,247,242,0.3)", margin: 0 }}>© 2026 Candice · votre copilote relationnel · Un Relational Operating System pour vos proches.</p>
           </div>
         </div>
       </footer>

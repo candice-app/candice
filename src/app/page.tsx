@@ -132,10 +132,25 @@ export default function HomePage() {
         /* App preview cards grid */
         .mkt-cards-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
         @media (min-width: 768px) {
-          .mkt-cards-grid { grid-template-columns: 1fr 1fr; gap: 24px; }
+          .mkt-cards-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
         }
         @media (min-width: 1024px) {
-          .mkt-cards-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+          .mkt-cards-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        }
+
+        /* Profiles section */
+        .mkt-profiles-section { padding: 80px 20px; }
+        .mkt-profiles-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+
+        /* CTA final */
+        .mkt-cta-final { padding: 96px 20px; }
+        .mkt-cta-btns { display: flex; flex-direction: column; gap: 10px; align-items: center; justify-content: center; }
+
+        @media (min-width: 768px) {
+          .mkt-profiles-section { padding: 120px 52px; }
+          .mkt-profiles-grid { grid-template-columns: repeat(3, 1fr); }
+          .mkt-cta-final { padding: 160px 52px; }
+          .mkt-cta-btns { flex-direction: row; gap: 12px; }
         }
       `}</style>
 
@@ -366,8 +381,8 @@ export default function HomePage() {
             <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>
               Intelligence
             </p>
-            <h2 style={{ fontFamily: PLAYFAIR, fontSize: "clamp(24px, 3.5vw, 40px)", fontWeight: 400, lineHeight: 1.2, letterSpacing: -0.8, color: BG, marginBottom: 20, maxWidth: 680, marginLeft: "auto", marginRight: "auto" }}>
-              Candice n&apos;est pas un rappel.<br />C&apos;est une intelligence qui apprend votre relation.
+            <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: "clamp(32px, 4.5vw, 48px)", fontWeight: 400, lineHeight: 1.1, letterSpacing: -1, color: BG, marginBottom: 20, maxWidth: 680, marginLeft: "auto", marginRight: "auto" }}>
+              L&apos;intelligence derrière chaque attention.
             </h2>
             <p style={{ fontSize: 16, fontWeight: 300, color: "rgba(250,247,242,0.65)", lineHeight: 1.75, maxWidth: 520, margin: "0 auto" }}>
               Chaque détail enrichit sa compréhension. Chaque interaction l&apos;affine. Candice apprend vos relations — pas seulement vos contacts.
@@ -440,19 +455,87 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── S7 — CTA FINAL ── */}
-      <section aria-label="Démarrer avec Candice" className="mkt-section" style={{ background: DEEP, textAlign: "center", marginTop: 0 }}>
-        <h2 style={{ fontFamily: PLAYFAIR, fontSize: "clamp(32px, 5vw, 56px)", fontWeight: 400, fontStyle: "italic", color: BG, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 24, maxWidth: 640, marginLeft: "auto", marginRight: "auto" }}>
-          Penser à eux,<br />sans y penser.
-        </h2>
-        <p style={{ fontSize: 18, fontWeight: 300, color: "rgba(250,247,242,0.65)", lineHeight: 1.75, marginBottom: 44, maxWidth: 480, marginLeft: "auto", marginRight: "auto" }}>
-          Candice retient ce qui compte, comprend chaque proche et prépare les bonnes attentions à votre place. Vous décidez. Elle s&apos;occupe du reste.
-        </p>
-        <Link href="/register" style={{ textDecoration: "none" }}>
-          <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "16px 40px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM, height: 52 }}>
-            Commencer avec Candice
-          </button>
-        </Link>
+      {/* ── S7 — POURQUOI LES PROFILS CHANGENT TOUT ── */}
+      <section aria-label="Pourquoi les profils changent tout" className="mkt-profiles-section" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
+          <p style={{ fontSize: 13, fontWeight: 500, letterSpacing: "0.3em", textTransform: "uppercase", color: TERRA, marginBottom: 24, textAlign: "center" }}>
+            Pourquoi les profils changent tout
+          </p>
+          <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(28px, 4vw, 44px)", color: CON, letterSpacing: -0.8, lineHeight: 1.15, marginBottom: 64, maxWidth: 1000 }}>
+            Un geste juste, c&apos;est un geste<br />qui correspond à qui ils sont vraiment.
+          </h2>
+          <div className="mkt-profiles-grid">
+            {[
+              {
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                    <path d="M14 24 C14 24 3.5 17 3.5 10.5 C3.5 7.5 6 5 9 5 C11 5 12.8 6.2 14 8 C15.2 6.2 17 5 19 5 C22 5 24.5 7.5 24.5 10.5 C24.5 17 14 24 14 24Z" stroke="#C47A4A" strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                ),
+                title: "Chaque personne reçoit différemment",
+                body: "Pour certains, c'est un cadeau. Pour d'autres, un message au bon moment. Ou simplement une présence. Candice apprend comment chacun de vos proches reçoit les attentions.",
+              },
+              {
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                    <circle cx="14" cy="14" r="12" stroke="#C47A4A" strokeWidth="1.4"/>
+                    <circle cx="14" cy="14" r="7.5" stroke="#C47A4A" strokeWidth="1.4"/>
+                    <circle cx="14" cy="14" r="3" stroke="#C47A4A" strokeWidth="1.4"/>
+                    <circle cx="14" cy="14" r="1" fill="#C47A4A"/>
+                  </svg>
+                ),
+                title: "Les profils s'affinent dans le temps",
+                body: "Plus vous interagissez, plus Candice affine sa compréhension. Chaque information enrichit le profil et améliore la justesse des suggestions.",
+              },
+              {
+                icon: (
+                  <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
+                    <path d="M14 4 L15.4 10.6 L21 8 L17 13.5 L24 13 L17.5 16.5 L21 21.5 L14 17.5 L7 21.5 L10.5 16.5 L4 13 L11 13.5 L7 8 L12.6 10.6 Z" stroke="#C47A4A" strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
+                  </svg>
+                ),
+                title: "Ce que vous partagez reste entre vous",
+                body: "Les profils sont privés. Vos proches peuvent choisir de compléter leur propre fiche — mais ce qu'ils partagent vous est destiné, et uniquement à vous.",
+              },
+            ].map((card, i) => (
+              <div key={i} style={{ background: WHITE, border: `1px solid rgba(196,122,74,0.08)`, borderRadius: 16, boxShadow: "0 4px 24px rgba(44,26,14,0.06)", padding: "clamp(24px,3vw,36px)", display: "flex", flexDirection: "column", gap: 0 }}>
+                <div style={{ marginBottom: 24 }}>{card.icon}</div>
+                <h3 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: CON, lineHeight: 1.2, letterSpacing: -0.3, marginBottom: 16 }}>{card.title}</h3>
+                <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(30,18,8,0.75)", lineHeight: 1.75, margin: 0 }}>{card.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ marginTop: 64, textAlign: "center" }}>
+            <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(30,18,8,0.7)", lineHeight: 1.75, maxWidth: 800, margin: "0 auto" }}>
+              Vos données et celles de vos proches ne sont jamais partagées, vendues ou utilisées à des fins publicitaires.{" "}
+              <Link href="/confidentialite" style={{ color: TERRA, textDecoration: "none", fontWeight: 500 }}>Notre engagement →</Link>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── S8 — CTA FINAL ── */}
+      <section aria-label="Démarrer avec Candice" className="mkt-cta-final" style={{ background: BG, textAlign: "center" }}>
+        <div style={{ maxWidth: 800, margin: "0 auto" }}>
+          <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(36px, 5vw, 56px)", color: CON, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 24 }}>
+            Prêt à faire mieux,<br />sans porter plus&nbsp;?
+          </h2>
+          <p style={{ fontSize: 18, fontWeight: 400, color: "rgba(30,18,8,0.7)", lineHeight: 1.75, marginBottom: 48, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
+            Commencez simplement. Candice s&apos;occupe du reste.
+          </p>
+          <div className="mkt-cta-btns">
+            <Link href="/register" style={{ textDecoration: "none" }}>
+              <button style={{ background: TERRA, color: "#FAF7F2", border: "none", borderRadius: 8, padding: "14px 32px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM, whiteSpace: "nowrap" }}>
+                Commencer
+              </button>
+            </Link>
+            <Link href="/login" style={{ textDecoration: "none" }}>
+              <button style={{ background: "transparent", color: TERRA, border: `1.5px solid ${TERRA}`, borderRadius: 8, padding: "14px 32px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM, whiteSpace: "nowrap" }}>
+                Se connecter
+              </button>
+            </Link>
+          </div>
+        </div>
       </section>
 
       <MarketingFooter />
@@ -461,14 +544,13 @@ export default function HomePage() {
 }
 
 const C_CARD = "#FFFFFF";
+const C_SUB = "#F7F2E9";
 const C_CARD_BORDER = "rgba(196,122,74,0.08)";
-const C_CARD_SHADOW = "0 4px 24px rgba(44,26,14,0.06), 0 2px 8px rgba(44,26,14,0.04)";
 const C_TERRA = "#C47A4A";
 const C_CON = "#1E1208";
 const C_CREAM = "#FAF7F2";
 const C_DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
 const C_PLAY = "'Playfair Display', Georgia, serif";
-const C_MIN_H = 480;
 
 function CardWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -476,11 +558,12 @@ function CardWrapper({ children }: { children: React.ReactNode }) {
       background: C_CARD,
       border: `1px solid ${C_CARD_BORDER}`,
       borderRadius: 16,
-      boxShadow: C_CARD_SHADOW,
+      boxShadow: "0 4px 20px rgba(44,26,14,0.05)",
       padding: 24,
       display: "flex",
       flexDirection: "column",
-      minHeight: C_MIN_H,
+      justifyContent: "space-between",
+      minHeight: 540,
     }}>
       {children}
     </div>
@@ -489,11 +572,11 @@ function CardWrapper({ children }: { children: React.ReactNode }) {
 
 function CardHeader({ title }: { title: string }) {
   return (
-    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
-      <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(30,18,8,0.5)", fontFamily: C_DM }}>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24, flexShrink: 0 }}>
+      <span style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", fontFamily: C_DM, whiteSpace: "nowrap" }}>
         {title}
       </span>
-      <span style={{ fontSize: 12, letterSpacing: "0.05em", color: C_TERRA, cursor: "pointer", fontFamily: C_DM }}>
+      <span style={{ fontSize: 11, letterSpacing: "0.05em", color: C_TERRA, cursor: "pointer", fontFamily: C_DM, flexShrink: 0, marginLeft: 8 }}>
         + Ajouter
       </span>
     </div>
@@ -502,8 +585,8 @@ function CardHeader({ title }: { title: string }) {
 
 function CardFooter({ text }: { text: string }) {
   return (
-    <div style={{ marginTop: 16, textAlign: "center" }}>
-      <span style={{ fontSize: 12, fontStyle: "italic", color: "rgba(30,18,8,0.5)", fontFamily: C_DM }}>{text}</span>
+    <div style={{ marginTop: 16, textAlign: "center", flexShrink: 0 }}>
+      <span style={{ fontSize: 12, fontStyle: "italic", color: "rgba(30,18,8,0.45)", fontFamily: C_DM }}>{text}</span>
     </div>
   );
 }
@@ -513,27 +596,29 @@ function AppProchesCard() {
     { init: "SM", color: "#C47A4A", name: "Sophie Martin", detail: "Paris · Amie", badge: "ANNIVERSAIRE J-4" },
     { init: "TL", color: "#6B8AAE", name: "Thomas Leroy", detail: "Lyon · Frère", badge: "2 MOIS SANS CONTACT" },
     { init: "PL", color: "#8B6FAE", name: "Paul Lemaire", detail: "Paris · Ami", badge: "MARATHON DIMANCHE" },
-    { init: "CP", color: "#6B9E7B", name: "Claire", detail: "Maman / Bordeaux", badge: "FÊTE DES MÈRES J-8" },
+    { init: "CM", color: "#6B9E7B", name: "Claire", detail: "Maman · Bordeaux", badge: "FÊTE DES MÈRES J-8" },
     { init: "JR", color: "#B89058", name: "Julien R.", detail: "Nantes · Ami", badge: "3 MOIS SANS CONTACT" },
   ];
   return (
     <CardWrapper>
-      <CardHeader title="Mes proches" />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 12 }}>
-        {contacts.map((c, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ width: 40, height: 40, borderRadius: "50%", background: c.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, color: C_CREAM, flexShrink: 0, fontFamily: C_DM }}>
-              {c.init}
+      <div>
+        <CardHeader title="Mes proches" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {contacts.map((c, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ width: 36, height: 36, borderRadius: "50%", background: c.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 600, color: C_CREAM, flexShrink: 0, fontFamily: C_DM }}>
+                {c.init}
+              </div>
+              <div style={{ flex: 1, minWidth: 0, overflow: "hidden" }}>
+                <p style={{ fontSize: 13, fontWeight: 600, color: C_CON, margin: 0, lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.name}</p>
+                <p style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.55)", margin: "2px 0 0", lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.detail}</p>
+              </div>
+              <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase", color: C_TERRA, background: "rgba(196,122,74,0.12)", padding: "4px 8px", borderRadius: 4, flexShrink: 0, fontFamily: C_DM, whiteSpace: "nowrap" }}>
+                {c.badge}
+              </span>
             </div>
-            <div style={{ flex: 1, minWidth: 0 }}>
-              <p style={{ fontSize: 14, fontWeight: 600, color: C_CON, margin: 0, lineHeight: 1.3, fontFamily: C_DM }}>{c.name}</p>
-              <p style={{ fontSize: 12, fontWeight: 400, color: "rgba(30,18,8,0.6)", margin: "2px 0 0", lineHeight: 1.3, fontFamily: C_DM }}>{c.detail}</p>
-            </div>
-            <span style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: C_TERRA, background: "rgba(196,122,74,0.15)", padding: "4px 10px", borderRadius: 4, flexShrink: 0, fontFamily: C_DM, lineHeight: 1, whiteSpace: "nowrap" }}>
-              {c.badge}
-            </span>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
       <CardFooter text="Liste de proches" />
     </CardWrapper>
@@ -548,17 +633,19 @@ function AppSuggestionsCard() {
   ];
   return (
     <CardWrapper>
-      <CardHeader title="Suggestions" />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16 }}>
-        {suggestions.map((s, i) => (
-          <div key={i} style={{ background: "rgba(250,247,242,0.7)", border: "1px solid rgba(196,122,74,0.06)", borderRadius: 12, padding: 16 }}>
-            <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 8px", fontFamily: C_DM }}>{s.name}</p>
-            <p style={{ fontSize: 13, fontWeight: 400, color: C_CON, lineHeight: 1.6, margin: "0 0 12px", fontFamily: C_DM }}>{s.desc}</p>
-            <button style={{ width: "100%", height: 36, background: C_TERRA, color: C_CREAM, border: "none", borderRadius: 8, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: C_DM }}>
-              {s.btn}
-            </button>
-          </div>
-        ))}
+      <div>
+        <CardHeader title="Suggestions" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          {suggestions.map((s, i) => (
+            <div key={i} style={{ background: C_SUB, borderRadius: 10, padding: 14 }}>
+              <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: "0.12em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 8px", fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.name}</p>
+              <p style={{ fontSize: 12, fontWeight: 400, color: C_CON, lineHeight: 1.6, margin: "0 0 12px", fontFamily: C_DM }}>{s.desc}</p>
+              <button style={{ width: "100%", height: 34, background: C_TERRA, color: C_CREAM, border: "none", borderRadius: 6, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: C_DM }}>
+                {s.btn}
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
       <CardFooter text="Recommandations" />
     </CardWrapper>
@@ -568,30 +655,32 @@ function AppSuggestionsCard() {
 function AppSouvenirsCard() {
   const GREEN = "#4A7C59";
   const entries = [
-    { day: "14", month: "FÉV", name: "Sophie Martin", desc: "Bouquet de roses envoyé. Elle a adoré.", badge: "RÉACTION POSITIVE", badgeBg: "rgba(74,124,89,0.15)", badgeColor: GREEN },
-    { day: "02", month: "JAN", name: "Thomas Leroy", desc: "Message nouvel an. Lu et répondu.", badge: "MESSAGE · LU", badgeBg: "rgba(30,18,8,0.08)", badgeColor: "rgba(30,18,8,0.7)" },
-    { day: "25", month: "NOV", name: "Claire", desc: "Dîner anniversaire. Excellent souvenir.", badge: "EXPÉRIENCE · TOP", badgeBg: "rgba(196,122,74,0.15)", badgeColor: C_TERRA },
-    { day: "10", month: "OCT", name: "Paul Lemaire", desc: "Whisky Nikka lors de sa rupture.", badge: "SOUTIEN · IMPACTANT", badgeBg: "rgba(30,18,8,0.08)", badgeColor: "rgba(30,18,8,0.7)" },
+    { day: "14", month: "FÉV", name: "Sophie Martin", desc: "Bouquet de roses envoyé. Elle a adoré.", badge: "RÉACTION POSITIVE", badgeBg: "rgba(74,124,89,0.12)", badgeColor: GREEN },
+    { day: "02", month: "JAN", name: "Thomas Leroy", desc: "Message nouvel an. Lu et répondu.", badge: "MESSAGE · LU", badgeBg: "rgba(30,18,8,0.08)", badgeColor: "rgba(30,18,8,0.65)" },
+    { day: "25", month: "NOV", name: "Claire", desc: "Dîner anniversaire. Excellent souvenir.", badge: "EXPÉRIENCE · TOP", badgeBg: "rgba(196,122,74,0.12)", badgeColor: C_TERRA },
+    { day: "10", month: "OCT", name: "Paul Lemaire", desc: "Whisky Nikka lors de sa rupture.", badge: "SOUTIEN · IMPACTANT", badgeBg: "rgba(30,18,8,0.08)", badgeColor: "rgba(30,18,8,0.65)" },
   ];
   return (
     <CardWrapper>
-      <CardHeader title="Souvenirs" />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 16 }}>
-        {entries.map((e, i) => (
-          <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-            <div style={{ width: 40, flexShrink: 0, textAlign: "center" }}>
-              <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1.1 }}>{e.day}</p>
-              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.6)", margin: "2px 0 0", fontFamily: C_DM, lineHeight: 1.2 }}>{e.month}</p>
+      <div>
+        <CardHeader title="Souvenirs" />
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {entries.map((e, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
+              <div style={{ width: 44, flexShrink: 0, textAlign: "center" }}>
+                <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1 }}>{e.day}</p>
+                <p style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", margin: "3px 0 0", fontFamily: C_DM }}>{e.month}</p>
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: 12, fontWeight: 600, color: C_CON, margin: 0, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.name}</p>
+                <p style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.65)", margin: "2px 0 6px", lineHeight: 1.55, fontFamily: C_DM }}>{e.desc}</p>
+                <span style={{ display: "inline-block", fontSize: 8, fontWeight: 500, letterSpacing: "0.12em", textTransform: "uppercase", color: e.badgeColor, background: e.badgeBg, padding: "3px 6px", borderRadius: 3, fontFamily: C_DM, whiteSpace: "nowrap" }}>
+                  {e.badge}
+                </span>
+              </div>
             </div>
-            <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: C_CON, margin: "0 0 3px", fontFamily: C_DM }}>{e.name}</p>
-              <p style={{ fontSize: 12, fontWeight: 400, color: "rgba(30,18,8,0.7)", margin: "0 0 8px", lineHeight: 1.55, fontFamily: C_DM }}>{e.desc}</p>
-              <span style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: e.badgeColor, background: e.badgeBg, padding: "3px 8px", borderRadius: 4, fontFamily: C_DM }}>
-                {e.badge}
-              </span>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
       <CardFooter text="Historique & souvenirs" />
     </CardWrapper>
@@ -613,26 +702,26 @@ function AppFicheCard() {
   ];
   return (
     <CardWrapper>
-      <CardHeader title="Sophie Martin" />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+      <div>
+        <CardHeader title="Sophie Martin" />
         <div style={{ textAlign: "center", marginBottom: 20 }}>
           <div style={{ width: 56, height: 56, borderRadius: "50%", background: C_TERRA, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, fontWeight: 600, color: C_CREAM, margin: "0 auto", fontFamily: C_DM }}>SM</div>
-          <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: "12px 0 0", lineHeight: 1.2 }}>Sophie Martin</p>
-          <p style={{ fontSize: 12, fontWeight: 400, color: "rgba(30,18,8,0.6)", margin: "4px 0 0", fontFamily: C_DM }}>Amie proche · Paris</p>
+          <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_CON, margin: "12px 0 0", lineHeight: 1.2, whiteSpace: "nowrap" }}>Sophie Martin</p>
+          <p style={{ fontSize: 11, fontWeight: 400, color: "rgba(30,18,8,0.55)", margin: "4px 0 0", fontFamily: C_DM, whiteSpace: "nowrap" }}>Amie proche · Paris</p>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 16 }}>
           {kpis.map((k, i) => (
-            <div key={i} style={{ background: C_CREAM, border: "1px solid rgba(196,122,74,0.1)", borderRadius: 8, padding: 10, textAlign: "center" }}>
-              <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1.1 }}>{k.value}</p>
-              <p style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.6)", margin: "4px 0 0", fontFamily: C_DM }}>{k.label}</p>
+            <div key={i} style={{ background: C_SUB, border: `1px solid ${C_CARD_BORDER}`, borderRadius: 8, padding: 10, textAlign: "center" }}>
+              <p style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: C_CON, margin: 0, lineHeight: 1 }}>{k.value}</p>
+              <p style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(30,18,8,0.55)", margin: "4px 0 0", fontFamily: C_DM, whiteSpace: "nowrap" }}>{k.label}</p>
             </div>
           ))}
         </div>
-        <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.2em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 12px", fontFamily: C_DM }}>Profil de réception</p>
+        <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: C_TERRA, margin: "0 0 12px", fontFamily: C_DM }}>Profil de réception</p>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {bars.map((b, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ fontSize: 11, color: C_CON, width: 60, flexShrink: 0, fontFamily: C_DM }}>{b.label}</span>
+              <span style={{ fontSize: 11, color: C_CON, width: 44, flexShrink: 0, fontFamily: C_DM }}>{b.label}</span>
               <div style={{ flex: 1, height: 4, borderRadius: 2, background: "rgba(30,18,8,0.1)", position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${b.pct}%`, background: C_TERRA, borderRadius: 2 }} />
               </div>
