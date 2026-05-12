@@ -34,16 +34,18 @@ export default function HomePage() {
         html { scroll-behavior: smooth; }
 
         /* ── Mobile base ── */
-        .mkt-hero { padding: 52px 20px 60px; }
-        .mkt-h1 { font-size: clamp(46px, 10vw, 68px) !important; letter-spacing: -1.5px !important; line-height: 1.05 !important; }
+        .mkt-hero { padding: 64px 20px; }
+        .mkt-hero-h1 { font-size: clamp(44px, 7vw, 80px); letter-spacing: -2px; line-height: 1.05; margin-bottom: 36px; }
+        .mkt-hero-para { font-size: 16px; }
+        .mkt-hero-bullets { flex-direction: column; gap: 8px; }
+        .mkt-hero-bullet-sep { display: none; }
+        .mkt-hero-cta { flex-direction: column; gap: 10px; }
+        .mkt-hero-btn { width: 100%; box-sizing: border-box; text-align: center; display: block; }
         .mkt-section { padding: 72px 20px; }
         .mkt-grid-3 { grid-template-columns: 1fr !important; gap: 24px !important; }
         .mkt-grid-4 { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }
         .mkt-nav { padding: 0 20px !important; }
         .mkt-nav-links { display: none !important; }
-
-        .mkt-cta-group { flex-direction: column !important; gap: 10px !important; }
-        .mkt-cta-btn { width: 100% !important; box-sizing: border-box !important; text-align: center !important; display: block !important; }
 
         .mkt-iphone-grid {
           display: flex;
@@ -85,16 +87,18 @@ export default function HomePage() {
 
         /* ── Desktop ── */
         @media (min-width: 768px) {
-          .mkt-hero { padding: 112px 52px 108px; }
-          .mkt-h1 { font-size: clamp(65px, 8vw, 108px) !important; letter-spacing: -3px !important; line-height: 1.02 !important; }
+          .mkt-hero { padding: 100px 52px; }
+          .mkt-hero-h1 { font-size: clamp(60px, 7vw, 80px); letter-spacing: -2.5px; }
+          .mkt-hero-para { font-size: 19px; }
+          .mkt-hero-bullets { flex-direction: row; gap: 16px; }
+          .mkt-hero-bullet-sep { display: inline; }
+          .mkt-hero-cta { flex-direction: row; gap: 12px; }
+          .mkt-hero-btn { width: auto; display: inline-block; }
           .mkt-section { padding: 96px 52px; }
           .mkt-grid-3 { grid-template-columns: 1fr 1fr 1fr !important; gap: 24px !important; }
           .mkt-grid-4 { grid-template-columns: repeat(4, 1fr) !important; gap: 52px !important; }
           .mkt-nav { padding: 0 52px !important; }
           .mkt-nav-links { display: flex !important; }
-
-          .mkt-cta-group { flex-direction: row !important; gap: 12px !important; }
-          .mkt-cta-btn { width: auto !important; display: inline-block !important; }
 
           .mkt-iphone-grid {
             display: flex !important;
@@ -161,32 +165,35 @@ export default function HomePage() {
       <MarketingNav />
 
       {/* ── S1 — HERO ── */}
-      <section id="main-content" className="mkt-hero" style={{ textAlign: "center", borderBottom: `0.5px solid ${BORDER}` }}>
-        <h1 className="mkt-h1" style={{ fontFamily: PLAYFAIR, fontWeight: 400, color: CON, marginBottom: 20 }}>
-          Votre copilote<br /><em style={{ color: TERRA, fontStyle: "italic" }}>relationnel.</em>
-        </h1>
-        <p style={{ fontSize: 18, fontWeight: 300, color: COND, letterSpacing: -0.2, maxWidth: 520, margin: "0 auto 28px", lineHeight: 1.65 }}>
-          Candice devient votre mémoire relationnelle&nbsp;: elle retient, comprend et prépare les bonnes attentions au bon moment.
-        </p>
-        <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center", alignItems: "center", marginBottom: 40 }}>
-          {["Moins d'oubli.", "Moins de charge mentale.", "Plus d'attentions qui tombent juste."].map((text, i) => (
-            <React.Fragment key={text}>
-              {i > 0 && <span aria-hidden="true" style={{ color: BORDER, userSelect: "none", fontSize: 14 }}>·</span>}
-              <span style={{ fontSize: 13, fontWeight: 300, color: COND }}>{text}</span>
-            </React.Fragment>
-          ))}
-        </div>
-        <div className="mkt-cta-group" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
-          <Link href="/register" style={{ textDecoration: "none" }}>
-            <button className="mkt-cta-btn" style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "16px 32px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM, height: 52 }}>
-              Commencer avec Candice
-            </button>
-          </Link>
-          <Link href="/concept" style={{ textDecoration: "none" }}>
-            <button className="mkt-cta-btn" style={{ background: "transparent", color: TERRA, border: `1.5px solid ${TERRA}`, borderRadius: 8, padding: "16px 32px", fontSize: 16, fontWeight: 400, cursor: "pointer", fontFamily: DM, height: 52 }}>
-              Explorer
-            </button>
-          </Link>
+      <section id="main-content" className="mkt-hero" style={{ background: BG, textAlign: "center", borderBottom: `0.5px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 920, margin: "0 auto" }}>
+          <h1 className="mkt-hero-h1" style={{ fontFamily: PLAYFAIR, fontWeight: 400, color: CON }}>
+            Votre copilote<br />
+            <span style={{ fontStyle: "italic", color: TERRA }}>relationnel.</span>
+          </h1>
+          <p className="mkt-hero-para" style={{ fontWeight: 400, color: "rgba(44,26,14,0.7)", maxWidth: 720, margin: "0 auto 36px", lineHeight: 1.55, fontFamily: DM }}>
+            Candice devient votre mémoire relationnelle&nbsp;: elle retient, comprend et prépare les bonnes attentions au bon moment.
+          </p>
+          <div className="mkt-hero-bullets" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: 48 }}>
+            {["Moins d'oubli.", "Moins de charge mentale.", "Plus d'attentions qui tombent juste."].map((text, i) => (
+              <React.Fragment key={text}>
+                {i > 0 && <span aria-hidden="true" className="mkt-hero-bullet-sep" style={{ color: "rgba(196,122,74,0.5)", fontSize: 15, margin: "0 4px" }}>·</span>}
+                <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(44,26,14,0.55)", fontFamily: DM }}>{text}</span>
+              </React.Fragment>
+            ))}
+          </div>
+          <div className="mkt-hero-cta" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Link href="/register" style={{ textDecoration: "none" }}>
+              <button className="mkt-hero-btn" style={{ background: TERRA, color: "#FAF7F2", border: "none", borderRadius: 10, padding: "16px 36px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
+                Commencer avec Candice
+              </button>
+            </Link>
+            <Link href="/concept" style={{ textDecoration: "none" }}>
+              <button className="mkt-hero-btn" style={{ background: "transparent", color: TERRA, border: `1.5px solid ${TERRA}`, borderRadius: 10, padding: "16px 36px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
+                Explorer
+              </button>
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -216,11 +223,11 @@ export default function HomePage() {
       {/* ── S3 — APP PREVIEW CARDS ── */}
       <section aria-label="Aperçu de l'application" className="mkt-s3" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}` }}>
         <div style={{ maxWidth: 1480, margin: "0 auto", paddingLeft: 24, paddingRight: 24 }}>
-          <div style={{ textAlign: "center", marginBottom: 80 }}>
-            <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(28px, 4vw, 48px)", color: DEEP, letterSpacing: -1, lineHeight: 1.15, marginBottom: 0 }}>
+          <div style={{ textAlign: "center", marginBottom: 72 }}>
+            <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(28px, 4vw, 46px)", color: DEEP, letterSpacing: -1, lineHeight: 1.15, marginBottom: 0 }}>
               Tout ce qui compte pour eux,<br />réuni en un seul endroit.
             </h2>
-            <p style={{ fontSize: 16, fontWeight: 400, color: "rgba(44,26,14,0.6)", lineHeight: 1.65, marginTop: 20, marginBottom: 0 }}>
+            <p style={{ fontSize: 16, fontWeight: 400, color: "rgba(44,26,14,0.6)", lineHeight: 1.65, marginTop: 20, marginBottom: 0, fontFamily: DM }}>
               Pour ne plus jamais rien oublier. Pour ne plus jamais manquer un moment.
             </p>
           </div>

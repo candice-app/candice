@@ -3,7 +3,7 @@ import Link from "next/link";
 type Size = "sm" | "md" | "lg";
 
 const wordSizes: Record<Size, number> = { sm: 14, md: 16, lg: 18 };
-const dotSizes: Record<Size, number> = { sm: 16, md: 18, lg: 20 };
+const dotSizes: Record<Size, number> = { sm: 20, md: 24, lg: 26 };
 
 export function Logo({
   size = "md",
