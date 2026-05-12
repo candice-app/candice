@@ -4,7 +4,7 @@ import MarketingNav from "@/components/layout/MarketingNav";
 import MarketingFooter from "@/components/layout/MarketingFooter";
 
 export const metadata: Metadata = {
-  title: "Comment ça marche — Candice",
+  title: "Fonctionnement — Candice",
   description: "Chaque détail compte. Candice s'en souvient.",
 };
 
@@ -17,7 +17,7 @@ const BORDER = "rgba(30,18,8,0.1)";
 const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
 const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
-export default function CommentCaMarchePage() {
+export default function FonctionnementPage() {
   return (
     <main style={{ background: BG, fontFamily: DM, color: CON, minHeight: "100vh" }}>
 
@@ -26,7 +26,7 @@ export default function CommentCaMarchePage() {
 
       {/* Hero */}
       <section style={{ padding: "96px 52px 72px", maxWidth: 720, margin: "0 auto", textAlign: "center" }}>
-        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Comment ça marche</p>
+        <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Fonctionnement</p>
         <h1 style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, lineHeight: 1.1, letterSpacing: -1.5, color: CON, marginBottom: 16 }}>
           Chaque détail compte.<br /><span style={{ color: TERRA }}>Candice s&apos;en souvient.</span>
         </h1>

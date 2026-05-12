@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/comment-ca-marche",
+        destination: "/fonctionnement",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

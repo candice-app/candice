@@ -3,19 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/brand/Logo";
 
 const BG = "#FAF7F2";
 const TERRA = "#C47A4A";
-const CON = "#1E1208";
-const COND = "#7A5E44";
-const BORDER = "rgba(30,18,8,0.1)";
+const CON = "#2C1A0E";
+const BORDER = "rgba(44,26,14,0.08)";
 const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
 
-const LINKS = [
-  { href: "/concept", label: "Candice" },
-  { href: "/comment-ca-marche", label: "Comment ça marche" },
+const NAV_LINKS = [
+  { href: "/concept", label: "Le concept" },
+  { href: "/fonctionnement", label: "Fonctionnement" },
   { href: "/offre", label: "Tarifs" },
-  { href: "/login", label: "Se connecter" },
 ];
 
 export default function MarketingNav() {
@@ -24,30 +23,51 @@ export default function MarketingNav() {
 
   return (
     <>
+      <style>{`
+        .mkt-nav { height: 64px; padding: 0 20px; }
+        .mkt-nav-links { display: none; }
+        .mkt-hamburger { display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; padding: 4px; }
+        .mkt-cta-desktop { display: none; }
+        @media (min-width: 768px) {
+          .mkt-nav { height: 80px; padding: 0 52px; }
+          .mkt-nav-links { display: flex; align-items: center; gap: 32px; }
+          .mkt-hamburger { display: none; }
+          .mkt-cta-desktop { display: flex; }
+        }
+      `}</style>
+
       <nav
         className="mkt-nav"
         style={{
-          height: 60, padding: "0 52px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-          borderBottom: `0.5px solid ${BORDER}`, background: BG,
-          position: "sticky", top: 0, zIndex: 100,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderBottom: `0.5px solid ${BORDER}`,
+          background: BG,
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+          fontFamily: DM,
         }}
       >
         {/* Logo */}
-        <Link href="/" style={{ display: "flex", alignItems: "flex-start", gap: 4, textDecoration: "none" }}>
-          <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON, fontFamily: DM }}>Candice</span>
-          <span style={{ width: 7, height: 7, background: TERRA, borderRadius: "50%", marginTop: 3, flexShrink: 0, display: "inline-block" }} />
-        </Link>
+        <Logo size="lg" href="/" />
 
-        {/* Desktop links */}
-        <div className="mkt-nav-links" style={{ display: "flex", gap: 28 }}>
-          {LINKS.map(({ href, label }) => {
+        {/* Desktop center links */}
+        <div className="mkt-nav-links">
+          {NAV_LINKS.map(({ href, label }) => {
             const active = pathname === href;
             return (
               <Link
                 key={href}
                 href={href}
-                style={{ fontSize: 12, fontWeight: active ? 400 : 300, color: active ? TERRA : COND, textDecoration: "none" }}
+                style={{
+                  fontSize: 16,
+                  fontWeight: active ? 400 : 300,
+                  color: active ? TERRA : CON,
+                  textDecoration: "none",
+                  transition: "color 0.15s",
+                }}
               >
                 {label}
               </Link>
@@ -55,49 +75,93 @@ export default function MarketingNav() {
           })}
         </div>
 
-        {/* Right side: CTA + hamburger */}
-        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-          <Link href="/register">
-            <button style={{ background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "8px 18px", fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
+        {/* Desktop right CTAs */}
+        <div className="mkt-cta-desktop" style={{ gap: 12, alignItems: "center" }}>
+          <Link href="/login" style={{ textDecoration: "none" }}>
+            <button
+              style={{
+                background: "transparent",
+                color: TERRA,
+                border: `1.5px solid ${TERRA}`,
+                borderRadius: 8,
+                padding: "10px 20px",
+                fontSize: 16,
+                fontWeight: 400,
+                cursor: "pointer",
+                fontFamily: DM,
+                height: 48,
+                lineHeight: 1,
+                transition: "opacity 0.15s",
+              }}
+            >
+              Se connecter
+            </button>
+          </Link>
+          <Link href="/register" style={{ textDecoration: "none" }}>
+            <button
+              style={{
+                background: TERRA,
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                padding: "10px 20px",
+                fontSize: 16,
+                fontWeight: 500,
+                cursor: "pointer",
+                fontFamily: DM,
+                height: 48,
+                lineHeight: 1,
+                transition: "opacity 0.15s",
+              }}
+            >
               Commencer
             </button>
           </Link>
-          {/* Hamburger — shown on mobile via CSS */}
-          <button
-            className="mkt-hamburger"
-            onClick={() => setOpen(o => !o)}
-            aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-            aria-expanded={open}
-          >
-            <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true">
-              {open ? (
-                <>
-                  <line x1="1" y1="1" x2="17" y2="13" stroke={CON} strokeWidth="1.5" strokeLinecap="round" />
-                  <line x1="17" y1="1" x2="1" y2="13" stroke={CON} strokeWidth="1.5" strokeLinecap="round" />
-                </>
-              ) : (
-                <>
-                  <rect y="0" width="18" height="1.5" rx="0.75" fill={CON} />
-                  <rect y="6" width="18" height="1.5" rx="0.75" fill={CON} />
-                  <rect y="12" width="18" height="1.5" rx="0.75" fill={CON} />
-                </>
-              )}
-            </svg>
-          </button>
         </div>
+
+        {/* Mobile: hamburger */}
+        <button
+          className="mkt-hamburger"
+          onClick={() => setOpen((o) => !o)}
+          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={open}
+        >
+          <svg width="20" height="14" viewBox="0 0 20 14" fill="none" aria-hidden="true">
+            {open ? (
+              <>
+                <line x1="1" y1="1" x2="19" y2="13" stroke={CON} strokeWidth="1.5" strokeLinecap="round" />
+                <line x1="19" y1="1" x2="1" y2="13" stroke={CON} strokeWidth="1.5" strokeLinecap="round" />
+              </>
+            ) : (
+              <>
+                <rect y="0" width="20" height="1.5" rx="0.75" fill={CON} />
+                <rect y="6" width="20" height="1.5" rx="0.75" fill={CON} />
+                <rect y="12" width="20" height="1.5" rx="0.75" fill={CON} />
+              </>
+            )}
+          </svg>
+        </button>
       </nav>
 
-      {/* Mobile dropdown menu */}
+      {/* Mobile fullscreen menu */}
       {open && (
         <div
           style={{
-            position: "fixed", top: 60, left: 0, right: 0, zIndex: 99,
-            background: BG, borderBottom: `0.5px solid ${BORDER}`,
-            padding: "16px 20px", display: "flex", flexDirection: "column", gap: 0,
-            boxShadow: "0 8px 24px rgba(30,18,8,0.08)",
+            position: "fixed",
+            top: 64,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 99,
+            background: BG,
+            padding: "24px 20px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 0,
+            overflowY: "auto",
           }}
         >
-          {LINKS.map(({ href, label }) => {
+          {NAV_LINKS.map(({ href, label }) => {
             const active = pathname === href;
             return (
               <Link
@@ -105,27 +169,32 @@ export default function MarketingNav() {
                 href={href}
                 onClick={() => setOpen(false)}
                 style={{
-                  fontSize: 15, fontWeight: active ? 500 : 300,
+                  fontSize: 22,
+                  fontWeight: active ? 400 : 300,
                   color: active ? TERRA : CON,
                   textDecoration: "none",
-                  padding: "13px 4px",
+                  padding: "16px 0",
                   borderBottom: `0.5px solid ${BORDER}`,
                   display: "block",
+                  fontFamily: DM,
                 }}
               >
                 {label}
               </Link>
             );
           })}
-          <Link
-            href="/register"
-            onClick={() => setOpen(false)}
-            style={{ display: "block", marginTop: 16 }}
-          >
-            <button style={{ width: "100%", background: TERRA, color: "#fff", border: "none", borderRadius: 6, padding: "13px", fontSize: 14, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
-              Commencer gratuitement →
-            </button>
-          </Link>
+          <div style={{ marginTop: 32, display: "flex", flexDirection: "column", gap: 12 }}>
+            <Link href="/login" onClick={() => setOpen(false)} style={{ textDecoration: "none" }}>
+              <button style={{ width: "100%", background: "transparent", color: TERRA, border: `1.5px solid ${TERRA}`, borderRadius: 8, padding: "14px", fontSize: 16, fontWeight: 400, cursor: "pointer", fontFamily: DM }}>
+                Se connecter
+              </button>
+            </Link>
+            <Link href="/register" onClick={() => setOpen(false)} style={{ textDecoration: "none" }}>
+              <button style={{ width: "100%", background: TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "14px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
+                Commencer gratuitement →
+              </button>
+            </Link>
+          </div>
         </div>
       )}
     </>

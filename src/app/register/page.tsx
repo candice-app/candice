@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { Logo } from "@/components/brand/Logo";
 
 const BG = "#FAF7F2";
 const WHITE = "#FFFFFF";
@@ -141,7 +142,7 @@ export default function RegisterPage() {
         .reg-input {
           width: 100%; box-sizing: border-box;
           height: 52px; padding: 0 16px;
-          font-size: 14px; font-weight: 300;
+          font-size: 16px; font-weight: 300;
           background: ${WHITE}; border: 1px solid ${BORDER_INPUT};
           border-radius: 8px; color: ${CON};
           font-family: ${DM}; outline: none;
@@ -164,9 +165,7 @@ export default function RegisterPage() {
       `}</style>
 
       <header style={{ padding: "20px 24px", borderBottom: `0.5px solid rgba(44,26,14,0.08)` }}>
-        <Link href="/" style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 19, fontWeight: 400, color: CON, textDecoration: "none" }}>
-          Candice
-        </Link>
+        <Logo size="md" href="/" />
       </header>
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 16px" }}>

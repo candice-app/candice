@@ -24,7 +24,8 @@
   --txt:    #2C1A0E;
   --txtm:   #7A5E44;
   --txts:   #9E7B5A;
-  --green:  #4A7C59;
+  --green:        #4A7C59;
+  --color-green:  #4A7C59;
   --green2: rgba(74,124,89,0.10);
   --green3: rgba(74,124,89,0.25);
   --font:   'DM Sans', 'Plus Jakarta Sans', sans-serif;
@@ -59,7 +60,7 @@ button { cursor: pointer; font-family: var(--font); }
 
 .dashboard-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
+  grid-template-columns: 264px 1fr;
   grid-template-rows: 56px 1fr;
   min-height: 100vh;
 }
@@ -92,7 +93,7 @@ button { cursor: pointer; font-family: var(--font); }
 .sidebar > div + div { border-top: 0.5px solid rgba(196,122,74,0.25); margin-top: 8px; padding-top: 8px; }
 .sidebar-section-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: rgba(239,231,220,0.22); padding: 0 8px; margin-bottom: 6px; margin-top: 16px; }
 .sidebar-section-label:first-child { margin-top: 0; }
-.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: var(--r-md); font-size: 12px; font-weight: 300; color: rgba(239,231,220,0.48); cursor: pointer; margin-bottom: 1px; transition: background 0.1s, color 0.1s; }
+.sidebar-item { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: var(--r-md); font-size: 14px; font-weight: 300; color: rgba(239,231,220,0.48); cursor: pointer; margin-bottom: 1px; transition: background 0.1s, color 0.1s; }
 .sidebar-item:hover { background: rgba(255,255,255,0.06); color: #EFE7DC; }
 .sidebar-item.active { background: rgba(196,122,74,0.14); color: #C47A4A; }
 .sidebar-item-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
@@ -146,14 +147,14 @@ input, textarea, select {
   border: 1px solid #E8C4A0;
   border-radius: var(--r-md);
   color: #2C1A0E;
-  font-size: 13px;
+  font-size: 16px;
   font-weight: 300;
   padding: 10px 14px;
   width: 100%;
   outline: none;
   transition: border-color 0.15s;
 }
-input::placeholder, textarea::placeholder { color: #9E7B5A; }
+input::placeholder, textarea::placeholder { color: rgba(44,26,14,0.3); }
 input:focus, textarea:focus, select:focus { border-color: #C47A4A; }
 label { display: block; font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; color: #9E7B5A; margin-bottom: 8px; }
 
