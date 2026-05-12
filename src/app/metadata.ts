@@ -33,6 +33,20 @@ export const siteMetadata: Metadata = {
       "Ne plus jamais oublier ce qui compte pour vos proches. Candice apprend, anticipe et agit pour que vos relations s'approfondissent.",
     images: [`${BASE_URL}/og-image.png`],
   },
+  icons: {
+    icon: [
+      { url: "/icons/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/icons/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icons/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    other: [
+      { rel: "mask-icon", url: "/icons/icon.svg" },
+    ],
+  },
+  manifest: "/manifest.json",
   robots: {
     index: true,
     follow: true,

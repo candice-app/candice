@@ -47,7 +47,14 @@
       "Bash(export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\")",
       "Bash(~/.nvm/versions/node/v24.15.0/bin/npx tsc *)",
       "Bash(~/.nvm/versions/node/v24.15.0/bin/node ~/.nvm/versions/node/v24.15.0/bin/tsc --noEmit)",
-      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/node *)"
+      "Bash(/Users/estellepapillon/.nvm/versions/node/v24.15.0/bin/node *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} %{url_effective}\" -L \"https://github.com/googlefonts/PlayfairDisplay/raw/main/fonts/static/PlayfairDisplay-Italic.ttf\")",
+      "Bash(curl -s \"https://api.github.com/repos/googlefonts/PlayfairDisplay/contents/fonts\")",
+      "Bash(node -e 'const d = require\\('\\\\''fs'\\\\''\\).readFileSync\\('\\\\''/dev/stdin'\\\\'','\\\\''utf8'\\\\''\\); JSON.parse\\(d\\).forEach\\(f=>console.log\\(f.name\\)\\)')",
+      "Bash(curl -s \"https://api.github.com/repos/googlefonts/PlayfairDisplay/contents\")",
+      "Bash(node -e 'process.stdin.resume\\(\\); let d='\\\\'''\\\\''; process.stdin.on\\('\\\\''data'\\\\'',c=>d+=c\\); process.stdin.on\\('\\\\''end'\\\\'',\\(\\)=>{try{JSON.parse\\(d\\).forEach\\(f=>console.log\\(f.name\\)\\)}catch\\(e\\){console.log\\(d.slice\\(0,200\\)\\)}}\\)')",
+      "Bash(curl -s \"https://api.github.com/repos/google/fonts/contents/ofl/playfairdisplay\")",
+      "Bash(node -e 'process.stdin.resume\\(\\); let d='\\\\'''\\\\''; process.stdin.on\\('\\\\''data'\\\\'',c=>d+=c\\); process.stdin.on\\('\\\\''end'\\\\'',\\(\\)=>{try{JSON.parse\\(d\\).forEach\\(f=>console.log\\(f.name,f.download_url\\)\\)}catch\\(e\\){console.log\\(d.slice\\(0,300\\)\\)}}\\)')"
     ]
   }
 }

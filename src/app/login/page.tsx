@@ -9,23 +9,17 @@ const BG = "#FAF7F2";
 const WHITE = "#FFFFFF";
 const TERRA = "#C47A4A";
 const CON = "#2C1A0E";
-const COND = "#7A5E44";
-const BORDER_INPUT = "#E8C4A0";
-const BORDER_CARD = "rgba(44,26,14,0.1)";
+const ERR = "#C44A4A";
+const BORDER_INPUT = "#E8DFD6";
 const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
+const PLAYFAIR = "'Playfair Display', Georgia, serif";
 
-const LABEL: React.CSSProperties = {
-  fontSize: 10, fontWeight: 500, letterSpacing: 2,
-  textTransform: "uppercase", color: COND,
-  marginBottom: 6, display: "block",
-};
-
-const INPUT: React.CSSProperties = {
-  width: "100%", boxSizing: "border-box",
-  padding: "10px 12px", fontSize: 14, fontWeight: 300,
-  background: BG, border: `1px solid ${BORDER_INPUT}`,
-  borderRadius: 6, color: CON, fontFamily: DM,
-  outline: "none",
+const LABEL_STYLE: React.CSSProperties = {
+  display: "flex", alignItems: "center", gap: 4,
+  fontSize: 12, fontWeight: 500, letterSpacing: 1,
+  textTransform: "uppercase",
+  color: "rgba(44,26,14,0.65)",
+  marginBottom: 8,
 };
 
 export default function LoginPage() {
@@ -52,61 +46,107 @@ export default function LoginPage() {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: BG, fontFamily: DM }}>
-      <header style={{ padding: "16px 24px", borderBottom: `0.5px solid ${BORDER_CARD}` }}>
-        <Link href="/" style={{ fontSize: 15, fontWeight: 500, letterSpacing: 5, textTransform: "uppercase", color: CON, textDecoration: "none" }}>
+      <style>{`
+        .login-input {
+          width: 100%; box-sizing: border-box;
+          height: 52px; padding: 0 16px;
+          font-size: 14px; font-weight: 300;
+          background: ${WHITE}; border: 1px solid ${BORDER_INPUT};
+          border-radius: 8px; color: ${CON};
+          font-family: ${DM}; outline: none;
+          transition: border-color 0.15s;
+        }
+        .login-input:focus { border-color: ${TERRA}; }
+        .login-input::placeholder { color: rgba(44,26,14,0.3); }
+        .login-btn:hover:not(:disabled) { opacity: 0.9; }
+      `}</style>
+
+      <header style={{ padding: "20px 24px", borderBottom: `0.5px solid rgba(44,26,14,0.08)` }}>
+        <Link href="/" style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 19, fontWeight: 400, color: CON, textDecoration: "none" }}>
           Candice
         </Link>
       </header>
 
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
-        <div style={{ width: "100%", maxWidth: 360 }}>
-          <div style={{ marginBottom: 28 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 400, color: CON, marginBottom: 6 }}>Bon retour.</h1>
-            <p style={{ fontSize: 12, fontWeight: 300, color: COND }}>Connectez-vous à votre compte</p>
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 16px" }}>
+        <div style={{ width: "100%", maxWidth: 480 }}>
+          {/* Title */}
+          <div style={{ marginBottom: 36 }}>
+            <h1 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: "clamp(28px, 5vw, 36px)", fontWeight: 400, color: CON, marginBottom: 8, lineHeight: 1.1 }}>
+              Bon retour.
+            </h1>
+            <p style={{ fontSize: 16, fontWeight: 300, color: "#6B5F58", margin: 0 }}>
+              Connectez-vous à votre compte
+            </p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ background: WHITE, border: `0.5px solid ${BORDER_CARD}`, borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", gap: 16 }}>
-            {error && <p style={{ fontSize: 12, color: "#D04040", margin: 0 }}>{error}</p>}
+          {/* Card */}
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              background: WHITE, borderRadius: 12,
+              boxShadow: "0 4px 24px rgba(196,122,74,0.08)",
+              padding: "clamp(24px, 5vw, 40px)",
+              display: "flex", flexDirection: "column",
+            }}
+          >
+            {error && (
+              <div style={{ marginBottom: 24, padding: "12px 16px", background: "rgba(196,74,74,0.06)", borderRadius: 8, border: "1px solid rgba(196,74,74,0.18)" }}>
+                <p style={{ fontSize: 13, color: ERR, margin: 0 }}>{error}</p>
+              </div>
+            )}
 
-            <div>
-              <label htmlFor="email" style={LABEL}>E-mail</label>
+            {/* Email */}
+            <div style={{ marginBottom: 20 }}>
+              <div style={LABEL_STYLE}><span>E-mail</span></div>
               <input
                 id="email"
+                className="login-input"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 placeholder="vous@exemple.com"
-                style={INPUT}
+                autoComplete="email"
               />
             </div>
 
-            <div>
-              <label htmlFor="password" style={LABEL}>Mot de passe</label>
+            {/* Mot de passe */}
+            <div style={{ marginBottom: 32 }}>
+              <div style={LABEL_STYLE}><span>Mot de passe</span></div>
               <input
                 id="password"
+                className="login-input"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 placeholder="••••••••"
-                style={INPUT}
+                autoComplete="current-password"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              style={{ width: "100%", marginTop: 4, background: loading ? "#D4956A" : TERRA, color: "#fff", border: "none", borderRadius: 8, padding: "12px", fontSize: 14, fontWeight: 500, cursor: loading ? "default" : "pointer", fontFamily: DM }}
+              className="login-btn"
+              style={{
+                width: "100%", height: 52,
+                background: loading ? "rgba(196,122,74,0.7)" : TERRA,
+                color: BG, border: "none", borderRadius: 8,
+                fontSize: 16, fontWeight: 500,
+                cursor: loading ? "default" : "pointer",
+                fontFamily: DM, transition: "opacity 0.15s",
+              }}
             >
               {loading ? "Connexion en cours…" : "Se connecter"}
             </button>
           </form>
 
-          <p style={{ textAlign: "center", fontSize: 12, fontWeight: 300, color: COND, marginTop: 20 }}>
+          {/* Lien inscription */}
+          <p style={{ textAlign: "center", fontSize: 15, fontWeight: 300, color: "rgba(44,26,14,0.75)", marginTop: 24 }}>
             Pas encore de compte ?{" "}
-            <Link href="/register" style={{ color: TERRA, fontWeight: 400, textDecoration: "none" }}>
-              En créer un
+            <Link href="/register" style={{ color: TERRA, fontWeight: 500, textDecoration: "underline" }}>
+              S&apos;inscrire
             </Link>
           </p>
         </div>
