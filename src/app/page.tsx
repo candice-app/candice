@@ -35,12 +35,12 @@ export default function HomePage() {
 
         /* ── Mobile base ── */
         .mkt-hero { padding: 64px 20px; }
-        .mkt-hero-h1 { font-size: clamp(44px, 7vw, 80px); letter-spacing: -2px; line-height: 1.05; margin-bottom: 36px; }
-        .mkt-hero-para { font-size: 16px; }
-        .mkt-hero-bullets { flex-direction: column; gap: 8px; }
-        .mkt-hero-bullet-sep { display: none; }
+        .mkt-hero-h1 { font-size: clamp(44px, 7vw, 80px); letter-spacing: -2px; line-height: 1.05; margin-bottom: 0; }
+        .mkt-hero-sub { font-size: 18px; margin-top: 24px; margin-bottom: 48px; }
         .mkt-hero-cta { flex-direction: column; gap: 10px; }
         .mkt-hero-btn { width: 100%; box-sizing: border-box; text-align: center; display: block; }
+        .mkt-intro { padding: 48px 20px; }
+        .mkt-intro-grid { display: grid; grid-template-columns: 1fr; gap: 32px; }
         .mkt-section { padding: 72px 20px; }
         .mkt-grid-3 { grid-template-columns: 1fr !important; gap: 24px !important; }
         .mkt-grid-4 { grid-template-columns: 1fr 1fr !important; gap: 28px 20px !important; }
@@ -89,11 +89,11 @@ export default function HomePage() {
         @media (min-width: 768px) {
           .mkt-hero { padding: 100px 52px; }
           .mkt-hero-h1 { font-size: clamp(60px, 7vw, 80px); letter-spacing: -2.5px; }
-          .mkt-hero-para { font-size: 19px; }
-          .mkt-hero-bullets { flex-direction: row; gap: 16px; }
-          .mkt-hero-bullet-sep { display: inline; }
+          .mkt-hero-sub { font-size: 24px; }
           .mkt-hero-cta { flex-direction: row; gap: 12px; }
           .mkt-hero-btn { width: auto; display: inline-block; }
+          .mkt-intro { padding: 64px 60px; }
+          .mkt-intro-grid { grid-template-columns: 1fr 1fr; gap: 80px; }
           .mkt-section { padding: 96px 52px; }
           .mkt-grid-3 { grid-template-columns: 1fr 1fr 1fr !important; gap: 24px !important; }
           .mkt-grid-4 { grid-template-columns: repeat(4, 1fr) !important; gap: 52px !important; }
@@ -171,17 +171,9 @@ export default function HomePage() {
             Votre copilote<br />
             <span style={{ fontStyle: "italic", color: TERRA }}>relationnel.</span>
           </h1>
-          <p className="mkt-hero-para" style={{ fontWeight: 400, color: "rgba(44,26,14,0.7)", maxWidth: 720, margin: "0 auto 36px", lineHeight: 1.55, fontFamily: DM }}>
-            Candice devient votre mémoire relationnelle&nbsp;: elle retient, comprend et prépare les bonnes attentions au bon moment.
+          <p className="mkt-hero-sub" style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, color: TERRA, textAlign: "center" }}>
+            L&apos;attention juste, au bon moment.
           </p>
-          <div className="mkt-hero-bullets" style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: 48 }}>
-            {["Moins d'oubli.", "Moins de charge mentale.", "Plus d'attentions qui tombent juste."].map((text, i) => (
-              <React.Fragment key={text}>
-                {i > 0 && <span aria-hidden="true" className="mkt-hero-bullet-sep" style={{ color: "rgba(196,122,74,0.5)", fontSize: 15, margin: "0 4px" }}>·</span>}
-                <span style={{ fontSize: 15, fontWeight: 400, color: "rgba(44,26,14,0.55)", fontFamily: DM }}>{text}</span>
-              </React.Fragment>
-            ))}
-          </div>
           <div className="mkt-hero-cta" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Link href="/register" style={{ textDecoration: "none" }}>
               <button className="mkt-hero-btn" style={{ background: TERRA, color: "#FAF7F2", border: "none", borderRadius: 10, padding: "16px 36px", fontSize: 16, fontWeight: 500, cursor: "pointer", fontFamily: DM }}>
@@ -193,6 +185,27 @@ export default function HomePage() {
                 Explorer
               </button>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── S1b — INTRO 2 COLONNES ── */}
+      <section aria-label="Présentation Candice" className="mkt-intro" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+          <div className="mkt-intro-grid">
+            <div style={{ borderLeft: `1.5px solid ${TERRA}`, paddingLeft: 24 }}>
+              <p style={{ fontSize: 17, fontWeight: 400, color: "rgba(44,26,14,0.9)", lineHeight: 1.6, margin: 0, fontFamily: DM }}>
+                Vivez pleinement les moments qui comptent.
+              </p>
+              <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 17, fontWeight: 400, color: TERRA, marginTop: 4, marginBottom: 0 }}>
+                Candice s&apos;occupe du reste.
+              </p>
+            </div>
+            <div style={{ borderLeft: `1.5px solid ${TERRA}`, paddingLeft: 24 }}>
+              <p style={{ fontSize: 17, fontWeight: 400, color: "rgba(44,26,14,0.9)", lineHeight: 1.6, margin: 0, fontFamily: DM }}>
+                Candice <strong style={{ fontWeight: 600 }}>apprend, anticipe et agit</strong> — pour que vos relations s&apos;approfondissent et que votre charge mentale disparaisse.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -223,7 +236,7 @@ export default function HomePage() {
       {/* ── S3 — APP PREVIEW CARDS ── */}
       <section aria-label="Aperçu de l'application" className="mkt-s3" style={{ background: BG, borderBottom: `0.5px solid ${BORDER}` }}>
         <div style={{ maxWidth: 1480, margin: "0 auto", paddingLeft: 24, paddingRight: 24 }}>
-          <div style={{ textAlign: "center", marginBottom: 72 }}>
+          <div style={{ textAlign: "center", marginBottom: 80 }}>
             <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(28px, 4vw, 46px)", color: DEEP, letterSpacing: -1, lineHeight: 1.15, marginBottom: 0 }}>
               Tout ce qui compte pour eux,<br />réuni en un seul endroit.
             </h2>
@@ -564,7 +577,8 @@ function CardWrapper({ children }: { children: React.ReactNode }) {
       background: C_CARD,
       borderRadius: 18,
       boxShadow: "0 6px 24px rgba(44,26,14,0.06), 0 1px 3px rgba(44,26,14,0.04)",
-      padding: "24px 22px",
+      borderLeft: `2px solid ${C_TERRA}`,
+      padding: "24px 22px 24px 26px",
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
@@ -573,10 +587,6 @@ function CardWrapper({ children }: { children: React.ReactNode }) {
       {children}
     </div>
   );
-}
-
-function CardTopBar() {
-  return <div style={{ width: 32, height: 1.5, background: "rgba(44,26,14,0.15)", marginBottom: 20 }} />;
 }
 
 function CardHeader({ title }: { title: string }) {
@@ -611,7 +621,6 @@ function AppProchesCard() {
   return (
     <CardWrapper>
       <div>
-        <CardTopBar />
         <CardHeader title="MES PROCHES" />
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {contacts.map((c, i) => (
@@ -653,7 +662,6 @@ function AppSuggestionsCard() {
   return (
     <CardWrapper>
       <div>
-        <CardTopBar />
         <CardHeader title="SUGGESTIONS" />
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {suggestions.map((s, i) => (
@@ -682,7 +690,6 @@ function AppSouvenirsCard() {
   return (
     <CardWrapper>
       <div>
-        <CardTopBar />
         <CardHeader title="SOUVENIRS" />
         {/* Timeline container with vertical terra line */}
         <div style={{ position: "relative" }}>
@@ -735,7 +742,6 @@ function AppFicheCard() {
   return (
     <CardWrapper>
       <div style={{ width: "100%" }}>
-        <CardTopBar />
         <CardHeader title="SOPHIE MARTIN" />
         {/* Avatar block — centered */}
         <div style={{ textAlign: "center" }}>
