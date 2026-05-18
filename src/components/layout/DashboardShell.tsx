@@ -4,7 +4,12 @@ import { useState } from "react";
 import Navbar from "./Navbar";
 import BottomNav from "./BottomNav";
 
-export default function DashboardShell({ children }: { children: React.ReactNode }) {
+interface DashboardShellProps {
+  children: React.ReactNode;
+  pendingCount?: number;
+}
+
+export default function DashboardShell({ children, pendingCount }: DashboardShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -15,7 +20,7 @@ export default function DashboardShell({ children }: { children: React.ReactNode
         onClick={() => setSidebarOpen(false)}
         aria-hidden="true"
       />
-      <BottomNav isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <BottomNav isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} pendingCount={pendingCount} />
       <main id="main-content" className="main-content" role="main">
         {children}
       </main>

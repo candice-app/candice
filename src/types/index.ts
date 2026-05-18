@@ -8,6 +8,9 @@ export interface WishlistItem {
   addedAt: string;
 }
 
+export type ProximityLevel = 'inner_circle' | 'close' | 'extended' | 'distant';
+export type CadenceLevel = 'discreet' | 'normal' | 'sustained' | 'intense';
+
 export interface Contact {
   id: string;
   user_id: string;
@@ -20,6 +23,9 @@ export interface Contact {
   created_at: string;
   archived_at: string | null;
   last_reminder_sent_at?: string | null;
+  proximity_level?: ProximityLevel;
+  cadence_override?: CadenceLevel;
+  last_suggestion_at?: string | null;
 }
 
 export interface QuestionnaireResponse {
@@ -120,6 +126,8 @@ export interface MyProfile {
   pets: string | null;
   created_at: string;
   updated_at: string;
+  cadence_preference?: CadenceLevel;
+  has_children?: boolean;
 }
 
 export interface ProfileNote {
@@ -165,4 +173,52 @@ export interface AnalysisResult {
   communication_tips: string[];
   top_things_to_do: string[];
   things_to_avoid: string[];
+}
+
+// ─── Moteur proactif ─────────────────────────────────────────────────────────
+
+export type SignalType =
+  | 'birthday_d7' | 'birthday_d3' | 'birthday_d1' | 'birthday_today'
+  | 'couple_anniversary' | 'wedding_anniversary'
+  | 'mothers_day' | 'fathers_day' | 'valentines_day' | 'christmas'
+  | 'custom_date' | 'silence' | 'note_mention';
+
+export type SignalPriority = 'low' | 'normal' | 'high' | 'urgent';
+export type SignalStatus = 'active' | 'consumed' | 'expired' | 'dismissed';
+
+export interface ContextualSignal {
+  id: string;
+  user_id: string;
+  contact_id: string | null;
+  signal_type: SignalType;
+  signal_data: Record<string, unknown>;
+  trigger_date: string;
+  priority: SignalPriority;
+  status: SignalStatus;
+  created_at: string;
+  consumed_at: string | null;
+  expires_at: string | null;
+}
+
+export type ProactiveSuggestionCategory = 'quality_time' | 'gift' | 'message' | 'gesture' | 'activity';
+export type ProactiveSuggestionStatus = 'pending' | 'validated' | 'refused' | 'snoozed' | 'expired';
+export type RefusalReason = 'not_now' | 'already_done' | 'not_fitting' | 'too_generic' | 'too_expensive' | 'other';
+
+export interface ProactiveSuggestion {
+  id: string;
+  user_id: string;
+  contact_id: string;
+  signal_id: string | null;
+  title: string;
+  description: string;
+  category: ProactiveSuggestionCategory;
+  reasoning: string | null;
+  estimated_price: string | null;
+  partner_hint: string | null;
+  status: ProactiveSuggestionStatus;
+  refusal_reason: RefusalReason | null;
+  priority: SignalPriority;
+  generated_at: string;
+  responded_at: string | null;
+  expires_at: string | null;
 }

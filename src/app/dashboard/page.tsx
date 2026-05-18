@@ -8,6 +8,8 @@ import CandiceInput from "@/components/dashboard/CandiceInput";
 import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
 import TourReplay from "@/components/onboarding/TourReplay";
 import { Contact, QuestionnaireResponse, ProfileNote } from "@/types";
+import ProactiveDashboardCard, { type SuggestionWithContact } from "@/components/dashboard/ProactiveDashboardCard";
+import ManualTriggerButton from "@/components/dashboard/ManualTriggerButton";
 
 const SCORED_FIELDS = [
   "love_language", "communication_style", "stress_response", "social_energy",
@@ -27,7 +29,7 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: contacts }, { data: myProfile }, { count: archivedCount }, { data: recentNoteData }, { data: suggestionsData }] = await Promise.all([
+  const [{ data: contacts }, { data: myProfile }, { count: archivedCount }, { data: recentNoteData }, { data: suggestionsData }, { data: proactiveData }] = await Promise.all([
     supabase
       .from("contacts")
       .select("*, questionnaire_responses(*)")
@@ -57,6 +59,13 @@ export default async function DashboardPage() {
       .eq("user_id", user.id)
       .order("generated_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("proactive_suggestions")
+      .select("*, contacts(name, relationship), contextual_signals!signal_id(signal_type, signal_data)")
+      .eq("user_id", user.id)
+      .eq("status", "pending")
+      .order("generated_at", { ascending: false })
+      .limit(10),
   ]);
 
   const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
@@ -64,6 +73,14 @@ export default async function DashboardPage() {
   const hasMyProfile = !!myProfile;
   const onboardingDone = !!(myProfile as { onboarding_completed?: boolean } | null)?.onboarding_completed;
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
+  const isDevMode = user.email === "papillon.estelle@gmail.com" || process.env.NODE_ENV !== "production";
+
+  // Proactive suggestions — sorted by priority (urgent > high > normal > low)
+  const PRIORITY_RANK: Record<string, number> = { urgent: 3, high: 2, normal: 1, low: 0 };
+  const proactivePending = ((proactiveData ?? []) as SuggestionWithContact[]).sort(
+    (a, b) => (PRIORITY_RANK[b.priority] ?? 0) - (PRIORITY_RANK[a.priority] ?? 0)
+  );
+  const topProactiveSuggestion = proactivePending.find(s => ["urgent", "high"].includes(s.priority)) ?? null;
 
   // Contextual card logic
   const suggestionContactIds = new Set((suggestionsData ?? []).map(s => s.contact_id));
@@ -84,7 +101,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <DashboardShell>
+    <DashboardShell pendingCount={proactivePending.length > 0 ? proactivePending.length : undefined}>
       {!onboardingDone && (
         <OnboardingOverlay userId={user.id} userName={firstName} />
       )}
@@ -104,6 +121,17 @@ export default async function DashboardPage() {
           </span>
         )}
       </div>
+
+      {/* Proactive card (urgent/high priority overrides contextual card) */}
+      {topProactiveSuggestion ? (
+        <ProactiveDashboardCard
+          topSuggestion={topProactiveSuggestion}
+          allPending={proactivePending}
+          pendingCount={proactivePending.length}
+          isDevMode={isDevMode}
+        />
+      ) : (
+        <>
 
       {/* Contextual card */}
       {contextualCardType === "no_contacts" && (
@@ -165,6 +193,12 @@ export default async function DashboardPage() {
           </p>
         </div>
       )}
+
+        </>
+      )}
+
+      {/* Dev-only trigger when no proactive card is shown */}
+      {!topProactiveSuggestion && isDevMode && <ManualTriggerButton />}
 
       {/* Candice input */}
       {typedContacts.length > 0 && (

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 interface Props {
   isOpen?: boolean;
   onClose?: () => void;
+  pendingCount?: number;
 }
 
 const NAV = [
@@ -15,7 +16,7 @@ const NAV = [
   { label: "Aide",       href: "/aide",      activeOn: (p: string) => p === "/aide" },
 ];
 
-export default function BottomNav({ isOpen, onClose }: Props) {
+export default function BottomNav({ isOpen, onClose, pendingCount }: Props) {
   const pathname = usePathname();
 
   return (
@@ -40,7 +41,17 @@ export default function BottomNav({ isOpen, onClose }: Props) {
                 style={{ background: active ? "var(--terra)" : "rgba(239,231,220,0.35)" }}
               />
             )}
-            {label}
+            {href === "/dashboard" && pendingCount && pendingCount > 0 ? (
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                {label}
+                <span style={{
+                  background: "var(--terra)", color: "#fff", borderRadius: 10,
+                  fontSize: 9, fontWeight: 600, padding: "1px 5px", lineHeight: 1.6,
+                }}>
+                  {pendingCount}
+                </span>
+              </span>
+            ) : label}
           </Link>
         );
       })}
