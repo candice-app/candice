@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ContextualSignal, QuestionnaireResponse, MyProfile } from '@/types';
+import { sendPushToUser } from '@/lib/notifications/push-sender';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -234,7 +235,7 @@ Ton strict : sobre, adulte, bienveillant sans excès.`;
     const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString();
   })();
 
-  const { error } = await supabaseAdmin.from('proactive_suggestions').insert({
+  const { data: insertedPilote, error } = await supabaseAdmin.from('proactive_suggestions').insert({
     user_id: signal.user_id,
     contact_id: null,
     signal_id: signal.id,
@@ -247,11 +248,21 @@ Ton strict : sobre, adulte, bienveillant sans excès.`;
     priority: signal.priority,
     status: 'pending',
     expires_at: expiresAt,
-  });
+  }).select('id').single();
 
   if (error) {
     console.error(`[generator] Insert error for pilote signal ${signal.id}:`, error.message);
     return false;
+  }
+
+  if (['urgent', 'high'].includes(signal.priority) && insertedPilote?.id) {
+    sendPushToUser(signal.user_id, {
+      title: 'Candice',
+      body: parsed.title,
+      url: '/dashboard',
+      tag: `proactive-${insertedPilote.id}`,
+      notification_id: insertedPilote.id,
+    }, supabaseAdmin).catch(err => console.error('[generator] Push error (pilote):', err));
   }
 
   await supabaseAdmin
@@ -360,7 +371,7 @@ Ton strict : premium, sobre, adulte. Pas de 'petit', 'doux', 'tendre' en excès.
         return d.toISOString();
       })();
 
-  const { error: insertError } = await supabaseAdmin.from('proactive_suggestions').insert({
+  const { data: insertedContact, error: insertError } = await supabaseAdmin.from('proactive_suggestions').insert({
     user_id: signal.user_id,
     contact_id: signal.contact_id,
     signal_id: signal.id,
@@ -373,11 +384,21 @@ Ton strict : premium, sobre, adulte. Pas de 'petit', 'doux', 'tendre' en excès.
     priority: signal.priority,
     status: 'pending',
     expires_at: expiresAt,
-  });
+  }).select('id').single();
 
   if (insertError) {
     console.error(`[generator] Insert error for signal ${signal.id}:`, insertError.message);
     return false;
+  }
+
+  if (['urgent', 'high'].includes(signal.priority) && insertedContact?.id) {
+    sendPushToUser(signal.user_id, {
+      title: 'Candice',
+      body: parsed.title,
+      url: '/dashboard',
+      tag: `proactive-${insertedContact.id}`,
+      notification_id: insertedContact.id,
+    }, supabaseAdmin).catch(err => console.error('[generator] Push error:', err));
   }
 
   await supabaseAdmin

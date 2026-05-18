@@ -130,6 +130,11 @@ export interface MyProfile {
   has_children?: boolean;
   pilote_difficult_period_until?: string | null;
   pilote_last_achievement_at?: string | null;
+  notif_push_enabled?: boolean | null;
+  notif_email_enabled?: boolean | null;
+  notif_quiet_hours_start?: number | null;
+  notif_quiet_hours_end?: number | null;
+  notif_max_per_day?: number | null;
 }
 
 export interface ProfileNote {

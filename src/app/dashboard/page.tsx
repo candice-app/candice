@@ -10,6 +10,7 @@ import TourReplay from "@/components/onboarding/TourReplay";
 import { Contact, QuestionnaireResponse, ProfileNote } from "@/types";
 import ProactiveDashboardCard, { type SuggestionWithContact } from "@/components/dashboard/ProactiveDashboardCard";
 import ManualTriggerButton from "@/components/dashboard/ManualTriggerButton";
+import PushPrompt from "@/components/dashboard/PushPrompt";
 
 const SCORED_FIELDS = [
   "love_language", "communication_style", "stress_response", "social_energy",
@@ -38,7 +39,7 @@ export default async function DashboardPage() {
       .order("created_at", { ascending: false }),
     supabase
       .from("my_profile")
-      .select("id, onboarding_completed")
+      .select("id, onboarding_completed, notif_push_enabled")
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase
@@ -72,7 +73,20 @@ export default async function DashboardPage() {
   const recentNote = recentNoteData as ProfileNote | null;
   const hasMyProfile = !!myProfile;
   const onboardingDone = !!(myProfile as { onboarding_completed?: boolean } | null)?.onboarding_completed;
+  const pushPrefEnabled = (myProfile as { notif_push_enabled?: boolean | null } | null)?.notif_push_enabled !== false;
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
+
+  // Check for existing push subscription (graceful: table may not exist before migration-6)
+  let hasPushSub = false;
+  try {
+    const { count } = await supabase
+      .from("push_subscriptions")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id);
+    hasPushSub = (count ?? 0) > 0;
+  } catch { /* migration not yet applied */ }
+
+  const showPushPrompt = pushPrefEnabled && !hasPushSub;
   const isDevMode = user.email === "papillon.estelle@gmail.com" || process.env.NODE_ENV !== "production";
 
   // Proactive suggestions — sorted by priority (urgent > high > normal > low)
@@ -106,6 +120,9 @@ export default async function DashboardPage() {
         <OnboardingOverlay userId={user.id} userName={firstName} />
       )}
       <TourReplay />
+
+      {/* Push prompt (shown client-side when no subscription) */}
+      {showPushPrompt && <PushPrompt />}
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 28 }}>
