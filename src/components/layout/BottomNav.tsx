@@ -10,10 +10,11 @@ interface Props {
 }
 
 const NAV = [
-  { label: "Mes proches", href: "/dashboard", activeOn: (p: string) => p === "/dashboard" || (p.startsWith("/contacts") && !p.includes("/new")) },
-  { label: "Idées",       href: "/idees",     activeOn: (p: string) => p === "/idees" },
-  { label: "Ma fiche",   href: "/moi",       activeOn: (p: string) => p.startsWith("/moi") },
-  { label: "Aide",       href: "/aide",      activeOn: (p: string) => p === "/aide" },
+  { label: "Mes proches",  href: "/dashboard",  activeOn: (p: string) => p === "/dashboard" || (p.startsWith("/contacts") && !p.includes("/new")) },
+  { label: "Idées",        href: "/idees",       activeOn: (p: string) => p === "/idees" },
+  { label: "Ma fiche",    href: "/moi",         activeOn: (p: string) => p.startsWith("/moi") },
+  { label: "Mes échanges", href: "/historique",  activeOn: (p: string) => p === "/historique" },
+  { label: "Aide",        href: "/aide",        activeOn: (p: string) => p === "/aide" },
 ];
 
 export default function BottomNav({ isOpen, onClose, pendingCount }: Props) {

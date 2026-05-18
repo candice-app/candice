@@ -109,6 +109,7 @@ export default async function ContactPage({
     { data: cachedSuggestions },
     { data: myProfile },
     { data: notesData },
+    { data: confidencesData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -134,6 +135,13 @@ export default async function ContactPage({
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("confidences")
+      .select("id, raw_text, emotional_tone, created_at")
+      .eq("contact_id", id)
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
 
   if (!contact) notFound();
@@ -142,6 +150,7 @@ export default async function ContactPage({
   const profile = typedContact.questionnaire_responses?.[0];
   const userHasProfile = !!myProfile;
   const contactNotes = (notesData ?? []) as ProfileNote[];
+  const recentConfidences = (confidencesData ?? []) as { id: string; raw_text: string; emotional_tone: string; created_at: string }[];
   const completionPct = getCompletion(profile);
   const senderFirstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
   const contactFirstName = typedContact.name.split(" ")[0];
@@ -320,13 +329,35 @@ export default async function ContactPage({
             )}
           </details>
 
-          {/* Historique */}
-          <div className="card" style={{ opacity: 0.5 }}>
-            <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 8 }}>Historique</p>
-            <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", fontStyle: "italic" }}>
-              L&apos;historique de vos gestes apparaîtra ici.
-            </p>
-          </div>
+          {/* Confidences récentes */}
+          {recentConfidences.length > 0 && (
+            <div className="card">
+              <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 12 }}>
+                Ce que tu m&apos;as dit de {contactFirstName}
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {recentConfidences.map(conf => {
+                  const toneIcon = conf.emotional_tone === "positive" ? "✦"
+                    : conf.emotional_tone === "negative" ? "·"
+                    : conf.emotional_tone === "urgent" ? "!"
+                    : "○";
+                  return (
+                    <div key={conf.id} style={{ borderBottom: "0.5px solid var(--brd)", paddingBottom: 12 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
+                        <span style={{ fontSize: 10, color: "var(--terra)" }}>{toneIcon}</span>
+                        <span style={{ fontSize: 10, fontWeight: 300, color: "var(--cond)" }}>
+                          {new Date(conf.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+                        </span>
+                      </div>
+                      <p style={{ fontSize: 12, fontWeight: 300, color: "var(--con)", fontStyle: "italic", lineHeight: 1.55 }}>
+                        &ldquo;{conf.raw_text.length > 120 ? conf.raw_text.slice(0, 120) + "…" : conf.raw_text}&rdquo;
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
 
           {/* À retenir */}
           <WishlistSection contactId={id} initialWishlist={wishlist} />

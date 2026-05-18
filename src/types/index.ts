@@ -128,6 +128,8 @@ export interface MyProfile {
   updated_at: string;
   cadence_preference?: CadenceLevel;
   has_children?: boolean;
+  pilote_difficult_period_until?: string | null;
+  pilote_last_achievement_at?: string | null;
 }
 
 export interface ProfileNote {
@@ -181,7 +183,8 @@ export type SignalType =
   | 'birthday_d7' | 'birthday_d3' | 'birthday_d1' | 'birthday_today'
   | 'couple_anniversary' | 'wedding_anniversary'
   | 'mothers_day' | 'fathers_day' | 'valentines_day' | 'christmas'
-  | 'custom_date' | 'silence' | 'note_mention';
+  | 'custom_date' | 'silence' | 'note_mention'
+  | 'pilote_birthday' | 'pilote_mothers_day' | 'pilote_fathers_day' | 'pilote_difficult_period';
 
 export type SignalPriority = 'low' | 'normal' | 'high' | 'urgent';
 export type SignalStatus = 'active' | 'consumed' | 'expired' | 'dismissed';
@@ -204,10 +207,41 @@ export type ProactiveSuggestionCategory = 'quality_time' | 'gift' | 'message' | 
 export type ProactiveSuggestionStatus = 'pending' | 'validated' | 'refused' | 'snoozed' | 'expired';
 export type RefusalReason = 'not_now' | 'already_done' | 'not_fitting' | 'too_generic' | 'too_expensive' | 'other';
 
+// ─── Mode conversationnel ────────────────────────────────────────────────────
+
+export type ConfidenceInputMode = 'text' | 'voice';
+export type ConfidenceSubject = 'contact' | 'pilote' | 'general';
+export type EmotionalTone = 'positive' | 'negative' | 'neutral' | 'mixed' | 'urgent';
+
+export interface Confidence {
+  id: string;
+  user_id: string;
+  contact_id: string | null;
+  raw_text: string;
+  input_mode: ConfidenceInputMode;
+  detected_subject: ConfidenceSubject;
+  emotional_tone: EmotionalTone;
+  candice_response: string | null;
+  created_at: string;
+}
+
+export interface ProfileUpdateFromConfidence {
+  id: string;
+  user_id: string;
+  confidence_id: string;
+  contact_id: string | null;
+  field_name: string;
+  old_value: string | null;
+  new_value: string;
+  status: 'pending' | 'applied' | 'rejected';
+  created_at: string;
+  reviewed_at: string | null;
+}
+
 export interface ProactiveSuggestion {
   id: string;
   user_id: string;
-  contact_id: string;
+  contact_id: string | null;
   signal_id: string | null;
   title: string;
   description: string;

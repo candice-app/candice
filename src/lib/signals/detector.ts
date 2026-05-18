@@ -66,20 +66,21 @@ function parseImportantDates(raw: string | null): ImportantDate[] {
 async function signalExists(
   supabaseAdmin: SupabaseClient,
   userId: string,
-  contactId: string,
+  contactId: string | null,
   signalType: string,
   triggerDate: string
 ): Promise<boolean> {
-  const { data } = await supabaseAdmin
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let q: any = supabaseAdmin
     .from('contextual_signals')
     .select('id')
     .eq('user_id', userId)
-    .eq('contact_id', contactId)
     .eq('signal_type', signalType)
     .eq('trigger_date', triggerDate)
     .in('status', ['active', 'consumed'])
-    .limit(1)
-    .maybeSingle();
+    .limit(1);
+  q = contactId === null ? q.is('contact_id', null) : q.eq('contact_id', contactId);
+  const { data } = await q.maybeSingle();
   return !!data;
 }
 
@@ -87,7 +88,7 @@ async function tryInsertSignal(
   supabaseAdmin: SupabaseClient,
   signal: {
     user_id: string;
-    contact_id: string;
+    contact_id: string | null;
     signal_type: string;
     signal_data: Record<string, unknown>;
     trigger_date: string;
@@ -121,7 +122,7 @@ export async function detectSignalsForUser(
 
   const { data: myProfile } = await supabaseAdmin
     .from('my_profile')
-    .select('has_children, cadence_preference')
+    .select('has_children, cadence_preference, important_dates, pilote_difficult_period_until')
     .eq('user_id', userId)
     .maybeSingle();
 
@@ -394,6 +395,107 @@ export async function detectSignalsForUser(
         signal_type: 'silence',
         signal_data: { contact_name: contact.name, days_since: daysSince === Infinity ? null : daysSince, proximity_level: proximity },
         trigger_date: triggerDate,
+        priority: 'normal',
+        expires_at: dateToStr(expires),
+      });
+      if (ok) signals_created++;
+    }
+  }
+
+  // ── SIGNAUX PILOTE ────────────────────────────────────────────────────────────
+
+  // ── I. Anniversaire du pilote ────────────────────────────────────────────────
+  const piloteDates = parseImportantDates((myProfile as { important_dates?: string | null } | null)?.important_dates ?? null);
+  for (const entry of piloteDates) {
+    const label = entry.label.toLowerCase();
+    const isBirthday =
+      (label.includes('anniversaire') || label.includes('naissance') || label.includes('birthday')) &&
+      !label.includes('mariage') && !label.includes('couple') && !label.includes('rencontre') && !label.includes('pacs');
+    if (!isBirthday) continue;
+
+    const md = parseDateStr(entry.date);
+    if (!md) continue;
+    const target = getNextOccurrence(md.month, md.day, today);
+
+    for (const cfg of [
+      { days: 7, priority: 'normal' },
+      { days: 0, priority: 'urgent' },
+    ]) {
+      const trigger = new Date(target);
+      trigger.setDate(trigger.getDate() - cfg.days);
+      const daysUntilTrigger = getDaysUntil(trigger, today);
+      if (daysUntilTrigger < 0 || daysUntilTrigger > WINDOW) continue;
+
+      const expires = new Date(target);
+      expires.setDate(expires.getDate() + 1);
+
+      const ok = await tryInsertSignal(supabaseAdmin, {
+        user_id: userId,
+        contact_id: null,
+        signal_type: 'pilote_birthday',
+        signal_data: { date_label: entry.label, birthday_date: dateToStr(target) },
+        trigger_date: dateToStr(trigger),
+        priority: cfg.priority,
+        expires_at: dateToStr(expires),
+      });
+      if (ok) signals_created++;
+    }
+  }
+
+  // ── J. Fête des mères / des pères (pour le pilote lui-même) ─────────────────
+  if (hasChildren) {
+    const year = today.getFullYear();
+
+    // Fête des mères — dernier dimanche de mai
+    let mothers = getLastSundayOfMay(year);
+    if (mothers < today) mothers = getLastSundayOfMay(year + 1);
+    if (getDaysUntil(mothers, today) >= 0 && getDaysUntil(mothers, today) <= WINDOW) {
+      const expires = new Date(mothers);
+      expires.setDate(expires.getDate() + 1);
+      const ok = await tryInsertSignal(supabaseAdmin, {
+        user_id: userId,
+        contact_id: null,
+        signal_type: 'pilote_mothers_day',
+        signal_data: {},
+        trigger_date: dateToStr(mothers),
+        priority: 'high',
+        expires_at: dateToStr(expires),
+      });
+      if (ok) signals_created++;
+    }
+
+    // Fête des pères — 3ème dimanche de juin
+    let fathers = getThirdSundayOfJune(year);
+    if (fathers < today) fathers = getThirdSundayOfJune(year + 1);
+    if (getDaysUntil(fathers, today) >= 0 && getDaysUntil(fathers, today) <= WINDOW) {
+      const expires = new Date(fathers);
+      expires.setDate(expires.getDate() + 1);
+      const ok = await tryInsertSignal(supabaseAdmin, {
+        user_id: userId,
+        contact_id: null,
+        signal_type: 'pilote_fathers_day',
+        signal_data: {},
+        trigger_date: dateToStr(fathers),
+        priority: 'high',
+        expires_at: dateToStr(expires),
+      });
+      if (ok) signals_created++;
+    }
+  }
+
+  // ── K. Période difficile du pilote (cadence hebdomadaire) ────────────────────
+  const difficultUntil = (myProfile as { pilote_difficult_period_until?: string | null } | null)?.pilote_difficult_period_until;
+  if (difficultUntil) {
+    const untilDate = new Date(difficultUntil);
+    if (untilDate >= today) {
+      const expires = new Date(today);
+      expires.setDate(expires.getDate() + 7);
+      const ok = await tryInsertSignal(supabaseAdmin, {
+        user_id: userId,
+        contact_id: null,
+        signal_type: 'pilote_difficult_period',
+        signal_data: { until: difficultUntil },
+        trigger_date: dateToStr(today),
         priority: 'normal',
         expires_at: dateToStr(expires),
       });

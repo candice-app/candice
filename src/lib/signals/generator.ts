@@ -132,6 +132,16 @@ function getQualityConstraints(resp: QuestionnaireResponse): string {
   return "\n\nCONTRAINTES DE QUALITÉ — respecter impérativement :\n" + rules.join("\n");
 }
 
+function getPiloteSignalContext(signal: ContextualSignal): string {
+  switch (signal.signal_type) {
+    case 'pilote_birthday':        return "C'est l'anniversaire du pilote aujourd'hui";
+    case 'pilote_mothers_day':     return "C'est la Fête des mères — le pilote est parent";
+    case 'pilote_fathers_day':     return "C'est la Fête des pères — le pilote est parent";
+    case 'pilote_difficult_period': return "Le pilote traverse une période difficile en ce moment";
+    default:                       return "Le pilote mérite une attention particulière aujourd'hui";
+  }
+}
+
 function getSignalContext(signal: ContextualSignal): string {
   const name = (signal.signal_data.contact_name as string) ?? 'ce proche';
   const dateLabel = signal.signal_data.date_label as string | undefined;
@@ -157,13 +167,108 @@ function getSignalContext(signal: ContextualSignal): string {
   return map[signal.signal_type] ?? `une attention pour ${name} est recommandée`;
 }
 
+// ─── Pilote suggestions ──────────────────────────────────────────────────────
+
+async function generatePiloteSuggestion(
+  signal: ContextualSignal,
+  supabaseAdmin: SupabaseClient
+): Promise<boolean> {
+  const { data: myProfile } = await supabaseAdmin
+    .from('my_profile')
+    .select('love_language, hobbies, favorite_foods, recognition_preference')
+    .eq('user_id', signal.user_id)
+    .maybeSingle();
+
+  const context = getPiloteSignalContext(signal);
+
+  const profileLines = myProfile ? [
+    myProfile.love_language ? `- Langage d'amour : ${LABEL.love_language?.[myProfile.love_language] ?? myProfile.love_language}` : null,
+    myProfile.recognition_preference ? `- Préférence de reconnaissance : ${LABEL.recognition_preference?.[myProfile.recognition_preference] ?? myProfile.recognition_preference}` : null,
+    myProfile.hobbies ? `- Loisirs : ${myProfile.hobbies}` : null,
+    myProfile.favorite_foods ? `- Plats préférés : ${myProfile.favorite_foods}` : null,
+  ].filter(Boolean).join('\n') : '';
+
+  const prompt = `Tu es Candice — un service de conciergerie relationnelle, sobre et adulte.
+
+CONTEXTE : ${context}.
+
+Il s'agit de la personne qui utilise Candice — pas d'un de ses proches. Suggère-lui quelque chose pour elle-même.
+
+${profileLines ? `PROFIL DU PILOTE :\n${profileLines}` : ''}
+
+Génère UNE suggestion personnelle et bienveillante. Sobre, sans sentimentalisme excessif.
+
+Réponds UNIQUEMENT avec ce JSON, sans texte avant ni après :
+{
+  "title": "Titre court (max 8 mots)",
+  "description": "Suggestion concrète (1-2 phrases)",
+  "category": "quality_time" | "gift" | "message" | "gesture" | "activity",
+  "reasoning": "Une phrase qui commence par 'Parce que'",
+  "estimated_price": "Gratuit" | "X€" | null,
+  "partner_hint": null
+}
+
+Ton strict : sobre, adulte, bienveillant sans excès.`;
+
+  let parsed: {
+    title: string; description: string; category: string;
+    reasoning: string; estimated_price: string | null; partner_hint: null;
+  };
+
+  try {
+    const message = await anthropic.messages.create({
+      model: 'claude-sonnet-4-6',
+      max_tokens: 400,
+      messages: [{ role: 'user', content: prompt }],
+    });
+    const text = message.content[0].type === 'text' ? message.content[0].text : '';
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('No JSON in response');
+    parsed = JSON.parse(jsonMatch[0]);
+  } catch (err) {
+    console.error(`[generator] Claude error for pilote signal ${signal.id}:`, err);
+    return false;
+  }
+
+  const expiresAt = signal.expires_at ?? (() => {
+    const d = new Date(); d.setDate(d.getDate() + 7); return d.toISOString();
+  })();
+
+  const { error } = await supabaseAdmin.from('proactive_suggestions').insert({
+    user_id: signal.user_id,
+    contact_id: null,
+    signal_id: signal.id,
+    title: parsed.title,
+    description: parsed.description,
+    category: parsed.category,
+    reasoning: parsed.reasoning ?? null,
+    estimated_price: parsed.estimated_price ?? null,
+    partner_hint: null,
+    priority: signal.priority,
+    status: 'pending',
+    expires_at: expiresAt,
+  });
+
+  if (error) {
+    console.error(`[generator] Insert error for pilote signal ${signal.id}:`, error.message);
+    return false;
+  }
+
+  await supabaseAdmin
+    .from('contextual_signals')
+    .update({ status: 'consumed', consumed_at: new Date().toISOString() })
+    .eq('id', signal.id);
+
+  return true;
+}
+
 // ─── Main export ─────────────────────────────────────────────────────────────
 
 export async function generateSuggestionForSignal(
   signal: ContextualSignal,
   supabaseAdmin: SupabaseClient
 ): Promise<boolean> {
-  if (!signal.contact_id) return false;
+  if (!signal.contact_id) return generatePiloteSuggestion(signal, supabaseAdmin);
 
   const [{ data: contact }, { data: profile }, { data: myProfile }] = await Promise.all([
     supabaseAdmin
