@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
+import { trackActivity } from "@/lib/lifecycle/track-activity";
 
 export async function POST(
   _request: NextRequest,
@@ -36,6 +38,10 @@ export async function POST(
       .eq("id", suggestion.contact_id)
       .eq("user_id", user.id),
   ]);
+
+  // Track activity
+  const adminClient = createAdminClient();
+  trackActivity(user.id, adminClient).catch(() => {});
 
   // TODO Phase 7: trigger facilitation flow (booking, purchase, etc.)
 

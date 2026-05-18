@@ -57,13 +57,14 @@ interface Props {
   email: string | null;
   signedUrl: string | null;
   completionPct: number;
+  memoryMode?: boolean;
 }
 
 const RELATIONSHIP_LABEL: Record<string, string> = {
   partner: "Partenaire", friend: "Ami(e)", family: "Famille", colleague: "Collègue", other: "Autre",
 };
 
-export default function ContactHeader({ contactId, name, relationship, phone, email, signedUrl, completionPct }: Props) {
+export default function ContactHeader({ contactId, name, relationship, phone, email, signedUrl, completionPct, memoryMode }: Props) {
   const [photo, setPhoto] = useState<string | null>(signedUrl);
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -130,7 +131,7 @@ export default function ContactHeader({ contactId, name, relationship, phone, em
       {/* Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-          <h1 className="page-title" style={{ margin: 0 }}>{name}</h1>
+          <h1 className="page-title" style={{ margin: 0, fontStyle: memoryMode ? "italic" : "normal", fontFamily: memoryMode ? "var(--font-serif, 'Playfair Display', serif)" : undefined }}>{name}</h1>
           <span style={{
             fontSize: 10, fontWeight: 500, letterSpacing: 1.5,
             textTransform: "uppercase", color: "var(--terra)",

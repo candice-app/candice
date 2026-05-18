@@ -137,6 +137,15 @@ export default async function MoiPage() {
             <span>Préférences notifications</span>
             <span style={{ fontSize: 10 }}>→</span>
           </Link>
+
+          {/* Abonnement */}
+          <Link
+            href="/parametres/abonnement"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 13, fontWeight: 300, color: "var(--cond)", textDecoration: "none", borderTop: "0.5px solid var(--brd)", paddingTop: 16 }}
+          >
+            <span>Abonnement</span>
+            <span style={{ fontSize: 10 }}>→</span>
+          </Link>
         </div>
       )}
     </DashboardShell>

@@ -152,6 +152,7 @@ export default async function ContactPage({
 
   const admin = createAdminClient();
   const cadenceResolution = await resolveCadenceForContact(user.id, id, admin);
+  const isMemoryMode = !!typedContact.is_memory_mode;
   const profile = typedContact.questionnaire_responses?.[0];
   const userHasProfile = !!myProfile;
   const contactNotes = (notesData ?? []) as ProfileNote[];
@@ -173,12 +174,31 @@ export default async function ContactPage({
 
   return (
     <DashboardShell>
-      {/* Quick-add notes */}
-      <ContactNotes
-        contactId={id}
-        contactName={typedContact.name}
-        initialNotes={contactNotes}
-      />
+      {/* Memory mode banner */}
+      {isMemoryMode && (
+        <div style={{
+          margin: "0 0 20px",
+          padding: "10px 16px",
+          background: "var(--br3)",
+          border: "0.5px solid var(--brd)",
+          borderRadius: "var(--r-sm)",
+          display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <span style={{ fontSize: 10, color: "var(--cond)" }}>◌</span>
+          <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", fontStyle: "italic" }}>
+            En souvenir — ce profil est conservé en lecture seule.
+          </p>
+        </div>
+      )}
+
+      {/* Quick-add notes (disabled in memory mode) */}
+      {!isMemoryMode && (
+        <ContactNotes
+          contactId={id}
+          contactName={typedContact.name}
+          initialNotes={contactNotes}
+        />
+      )}
 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 28 }}>
@@ -190,18 +210,21 @@ export default async function ContactPage({
           email={typedContact.email}
           signedUrl={photoSignedUrl}
           completionPct={completionPct}
+          memoryMode={isMemoryMode}
         />
-        <div style={{ flexShrink: 0, marginTop: 4 }}>
-          <ContactActions
-            contactId={id}
-            contactName={typedContact.name}
-            contactEmail={typedContact.email}
-            contactFirstName={contactFirstName}
-            completionPct={completionPct}
-            lastReminderSentAt={typedContact.last_reminder_sent_at ?? null}
-            senderFirstName={senderFirstName}
-          />
-        </div>
+        {!isMemoryMode && (
+          <div style={{ flexShrink: 0, marginTop: 4 }}>
+            <ContactActions
+              contactId={id}
+              contactName={typedContact.name}
+              contactEmail={typedContact.email}
+              contactFirstName={contactFirstName}
+              completionPct={completionPct}
+              lastReminderSentAt={typedContact.last_reminder_sent_at ?? null}
+              senderFirstName={senderFirstName}
+            />
+          </div>
+        )}
       </div>
 
       {profile ? (
@@ -271,18 +294,20 @@ export default async function ContactPage({
             </div>
           )}
 
-          {/* Prêt pour [Prénom] */}
-          <div>
-            <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--cond)", marginBottom: 10 }}>
-              Prêt pour {typedContact.name.split(" ")[0]}
-            </p>
-            <SuggestionsPanel
-              contactId={id}
-              contactName={typedContact.name}
-              initialSuggestions={cachedSuggestions?.content ?? null}
-              generatedAt={cachedSuggestions?.generated_at ?? null}
-            />
-          </div>
+          {/* Prêt pour [Prénom] — masqué en mode souvenir */}
+          {!isMemoryMode && (
+            <div>
+              <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--cond)", marginBottom: 10 }}>
+                Prêt pour {typedContact.name.split(" ")[0]}
+              </p>
+              <SuggestionsPanel
+                contactId={id}
+                contactName={typedContact.name}
+                initialSuggestions={cachedSuggestions?.content ?? null}
+                generatedAt={cachedSuggestions?.generated_at ?? null}
+              />
+            </div>
+          )}
 
           {/* Profil détaillé (collapsible summary) */}
           <details style={{ marginTop: 4 }}>

@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
+import { trackActivity } from "@/lib/lifecycle/track-activity";
 import ContactCard from "@/components/dashboard/ContactCard";
 import DashboardActions from "@/components/dashboard/DashboardActions";
 import CandiceInput from "@/components/dashboard/CandiceInput";
@@ -11,6 +13,7 @@ import { Contact, QuestionnaireResponse, ProfileNote } from "@/types";
 import ProactiveDashboardCard, { type SuggestionWithContact } from "@/components/dashboard/ProactiveDashboardCard";
 import ManualTriggerButton from "@/components/dashboard/ManualTriggerButton";
 import PushPrompt from "@/components/dashboard/PushPrompt";
+import PauseBanner from "@/components/dashboard/PauseBanner";
 
 const SCORED_FIELDS = [
   "love_language", "communication_style", "stress_response", "social_energy",
@@ -39,7 +42,7 @@ export default async function DashboardPage() {
       .order("created_at", { ascending: false }),
     supabase
       .from("my_profile")
-      .select("id, onboarding_completed, notif_push_enabled")
+      .select("id, onboarding_completed, notif_push_enabled, subscription_status, trial_started_at")
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase
@@ -69,6 +72,10 @@ export default async function DashboardPage() {
       .limit(10),
   ]);
 
+  // Track activity (non-blocking)
+  const adminClient = createAdminClient();
+  trackActivity(user.id, adminClient).catch(() => {});
+
   const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
   const recentNote = recentNoteData as ProfileNote | null;
   const hasMyProfile = !!myProfile;
@@ -88,6 +95,7 @@ export default async function DashboardPage() {
 
   const showPushPrompt = pushPrefEnabled && !hasPushSub;
   const isDevMode = user.email === "papillon.estelle@gmail.com" || process.env.NODE_ENV !== "production";
+  const isPaused = (myProfile as { subscription_status?: string } | null)?.subscription_status === 'paused';
 
   // Proactive suggestions — sorted by priority (urgent > high > normal > low)
   const PRIORITY_RANK: Record<string, number> = { urgent: 3, high: 2, normal: 1, low: 0 };
@@ -120,6 +128,9 @@ export default async function DashboardPage() {
         <OnboardingOverlay userId={user.id} userName={firstName} />
       )}
       <TourReplay />
+
+      {/* Pause banner */}
+      {isPaused && <PauseBanner />}
 
       {/* Push prompt (shown client-side when no subscription) */}
       {showPushPrompt && <PushPrompt />}

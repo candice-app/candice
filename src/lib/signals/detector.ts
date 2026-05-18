@@ -397,6 +397,36 @@ export async function detectSignalsForUser(
     }
   }
 
+  // ── L. Anniversaire souvenir ─────────────────────────────────────────────────
+  const { data: memoryContacts } = await supabaseAdmin
+    .from('contacts')
+    .select('id, name, archived_at')
+    .eq('user_id', userId)
+    .eq('is_memory_mode', true)
+    .eq('memory_anniversary_opt_out', false)
+    .not('archived_at', 'is', null);
+
+  for (const mc of memoryContacts ?? []) {
+    const archivedDate = new Date(mc.archived_at as string);
+    const anniversary = getNextOccurrence(archivedDate.getMonth() + 1, archivedDate.getDate(), today);
+    const daysUntilAnniversary = getDaysUntil(anniversary, today);
+    if (daysUntilAnniversary < 0 || daysUntilAnniversary > WINDOW) continue;
+
+    const expires = new Date(anniversary);
+    expires.setDate(expires.getDate() + 3);
+
+    const ok = await tryInsertSignal(supabaseAdmin, {
+      user_id: userId,
+      contact_id: mc.id,
+      signal_type: 'memory_anniversary',
+      signal_data: { contact_name: mc.name, archived_date: mc.archived_at },
+      trigger_date: dateToStr(anniversary),
+      priority: 'normal',
+      expires_at: dateToStr(expires),
+    });
+    if (ok) signals_created++;
+  }
+
   // ── SIGNAUX PILOTE ────────────────────────────────────────────────────────────
 
   // ── I. Anniversaire du pilote ────────────────────────────────────────────────

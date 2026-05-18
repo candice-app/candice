@@ -50,6 +50,15 @@ export async function GET(request: NextRequest) {
       }
 
       try {
+        // Skip paused / cancelled users
+        const { data: profileRow } = await supabaseAdmin
+          .from('my_profile')
+          .select('subscription_status')
+          .eq('user_id', userId)
+          .maybeSingle();
+        const subStatus = profileRow?.subscription_status as string | null;
+        if (subStatus === 'paused' || subStatus === 'cancelled') continue;
+
         // 1. Detect signals
         const { signals_created } = await detectSignalsForUser(userId, supabaseAdmin);
         totalSignals += signals_created;

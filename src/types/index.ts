@@ -26,6 +26,9 @@ export interface Contact {
   proximity_level?: ProximityLevel;
   cadence_override?: CadenceLevel;
   last_suggestion_at?: string | null;
+  archive_reason?: 'deceased' | 'lost_contact' | 'end_of_relationship' | 'other' | null;
+  is_memory_mode?: boolean;
+  memory_anniversary_opt_out?: boolean;
 }
 
 export interface QuestionnaireResponse {
@@ -135,6 +138,13 @@ export interface MyProfile {
   notif_quiet_hours_start?: number | null;
   notif_quiet_hours_end?: number | null;
   notif_max_per_day?: number | null;
+  trial_started_at?: string | null;
+  subscription_status?: 'trial' | 'active' | 'paused' | 'silent' | 'cancelled';
+  subscription_paused_at?: string | null;
+  silent_since?: string | null;
+  last_active_at?: string | null;
+  cancelled_at?: string | null;
+  deletion_scheduled_at?: string | null;
 }
 
 export interface ProfileNote {

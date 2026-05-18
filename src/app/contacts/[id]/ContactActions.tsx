@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import ContactActionModal from "@/components/ContactActionModal";
+import ArchiveDialog from "@/components/contact/ArchiveDialog";
 import { createClient } from "@/utils/supabase/client";
 
 interface Props {
@@ -29,7 +30,8 @@ export default function ContactActions({
   senderFirstName,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [action, setAction] = useState<"archive" | "delete" | null>(null);
+  const [showArchiveDialog, setShowArchiveDialog] = useState(false);
+  const [action, setAction] = useState<"delete" | null>(null);
   const [reminderSentAt, setReminderSentAt] = useState<string | null>(lastReminderSentAt ?? null);
   const [reminderLoading, setReminderLoading] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -127,7 +129,7 @@ export default function ContactActions({
               </>
             )}
             <button
-              onClick={() => { setAction("archive"); setMenuOpen(false); }}
+              onClick={() => { setShowArchiveDialog(true); setMenuOpen(false); }}
               style={{
                 width: "100%", display: "flex", alignItems: "center", gap: 10,
                 padding: "10px 16px", fontSize: 13, fontWeight: 300,
@@ -152,6 +154,14 @@ export default function ContactActions({
           </div>
         )}
       </div>
+
+      {showArchiveDialog && (
+        <ArchiveDialog
+          contactId={contactId}
+          contactName={contactName}
+          onClose={() => setShowArchiveDialog(false)}
+        />
+      )}
 
       {action && (
         <ContactActionModal

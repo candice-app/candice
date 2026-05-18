@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
-import QuestionnaireForm from "@/components/questionnaire/QuestionnaireForm";
+import NewContactFlow from "@/components/contacts/NewContactFlow";
 
 const FREE_PLAN_LIMIT = 2;
 
@@ -45,10 +45,10 @@ export default async function NewContactPage() {
         <p className="section-label">Nouveau contact</p>
         <h1 className="page-title">Ajouter quelqu&apos;un.</h1>
         <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", marginTop: 4 }}>
-          Répondez à quelques questions pour construire son profil — environ 3 minutes.
+          Choisis comment tu veux créer ce profil.
         </p>
       </div>
-      <QuestionnaireForm />
+      <NewContactFlow />
     </DashboardShell>
   );
 }
