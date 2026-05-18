@@ -1,4 +1,5 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { resolveCadenceForContact } from '@/lib/cadence/resolver';
 
 type ImportantDate = { label: string; date: string; isCustom?: boolean };
 
@@ -372,13 +373,7 @@ export async function detectSignalsForUser(
     }
 
     // ── H. Silence relationnel ───────────────────────────────────────────────
-    const silenceThresholds: Record<string, number> = {
-      inner_circle: 30,
-      close: 60,
-      extended: 120,
-      distant: 365,
-    };
-    const thresholdDays = silenceThresholds[proximity] ?? 60;
+    const { frequencyDays: thresholdDays } = await resolveCadenceForContact(userId, contact.id, supabaseAdmin);
     const lastSuggestion = contact.last_suggestion_at ? new Date(contact.last_suggestion_at as string) : null;
     const daysSince = lastSuggestion
       ? Math.round((today.getTime() - lastSuggestion.getTime()) / (1000 * 60 * 60 * 24))

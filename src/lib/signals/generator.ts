@@ -2,6 +2,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import type { ContextualSignal, QuestionnaireResponse, MyProfile } from '@/types';
 import { sendPushToUser } from '@/lib/notifications/push-sender';
+import { resolveCadenceForContact } from '@/lib/cadence/resolver';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -284,7 +285,7 @@ export async function generateSuggestionForSignal(
   const [{ data: contact }, { data: profile }, { data: myProfile }] = await Promise.all([
     supabaseAdmin
       .from('contacts')
-      .select('name, relationship')
+      .select('name, relationship, last_suggestion_at')
       .eq('id', signal.contact_id)
       .single(),
     supabaseAdmin
@@ -300,6 +301,22 @@ export async function generateSuggestionForSignal(
   ]);
 
   if (!contact) return false;
+
+  // Cadence gate: skip unless priority is urgent or enough time has passed since last suggestion
+  if (signal.priority !== 'urgent') {
+    const { frequencyDays } = await resolveCadenceForContact(signal.user_id, signal.contact_id, supabaseAdmin);
+    const lastAt = contact.last_suggestion_at ? new Date(contact.last_suggestion_at as string) : null;
+    if (lastAt) {
+      const daysSince = Math.round((Date.now() - lastAt.getTime()) / (1000 * 60 * 60 * 24));
+      if (daysSince < frequencyDays) {
+        await supabaseAdmin
+          .from('contextual_signals')
+          .update({ status: 'consumed', consumed_at: new Date().toISOString() })
+          .eq('id', signal.id);
+        return false;
+      }
+    }
+  }
 
   const contactDesc = profile ? describeContact(profile as QuestionnaireResponse) : "Profil non encore renseigné.";
   const qualityConstraints = profile ? getQualityConstraints(profile as QuestionnaireResponse) : "";

@@ -4,12 +4,14 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
 import SuggestionsPanel from "./SuggestionsPanel";
-import { Contact, QuestionnaireResponse, ProfileNote, WishlistItem } from "@/types";
+import { Contact, QuestionnaireResponse, ProfileNote, WishlistItem, CadenceLevel } from "@/types";
 import ContactActions from "./ContactActions";
 import ContactNotes from "@/components/dashboard/ContactNotes";
 import ContactHeader from "./ContactHeader";
 import WishlistSection from "./WishlistSection";
 import MatchingCard from "./MatchingCard";
+import CadencePerContact from "@/components/dashboard/CadencePerContact";
+import { resolveCadenceForContact } from "@/lib/cadence/resolver";
 
 // ─── Label maps ──────────────────────────────────────────────────────────────
 
@@ -147,6 +149,9 @@ export default async function ContactPage({
   if (!contact) notFound();
 
   const typedContact = contact as Contact & { questionnaire_responses: QuestionnaireResponse[] };
+
+  const admin = createAdminClient();
+  const cadenceResolution = await resolveCadenceForContact(user.id, id, admin);
   const profile = typedContact.questionnaire_responses?.[0];
   const userHasProfile = !!myProfile;
   const contactNotes = (notesData ?? []) as ProfileNote[];
@@ -160,7 +165,6 @@ export default async function ContactPage({
   // Generate a signed URL from the stored path (private bucket)
   let photoSignedUrl: string | null = null;
   if (typedContact.photo_url) {
-    const admin = createAdminClient();
     const { data } = await admin.storage
       .from("contact-photos")
       .createSignedUrl(typedContact.photo_url, 3600);
@@ -328,6 +332,15 @@ export default async function ContactPage({
               </div>
             )}
           </details>
+
+          {/* Cadence d'attention */}
+          <div className="card">
+            <CadencePerContact
+              contactId={id}
+              resolution={cadenceResolution}
+              initialOverride={(typedContact.cadence_override as CadenceLevel) ?? null}
+            />
+          </div>
 
           {/* Confidences récentes */}
           {recentConfidences.length > 0 && (

@@ -4,6 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
 import { MyProfile } from "@/types";
 import ShareButton from "./ShareButton";
+import CadenceGlobal from "@/components/dashboard/CadenceGlobal";
 
 const LABEL: Record<string, Record<string, string>> = {
   love_language: { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité", touch: "Toucher physique" },
@@ -124,6 +125,9 @@ export default async function MoiPage() {
               Gérer les accès →
             </Link>
           </div>
+
+          {/* Cadence globale */}
+          <CadenceGlobal initialCadence={(profile.cadence_preference as import("@/types").CadenceLevel) ?? 'normal'} />
 
           {/* Notifications */}
           <Link
