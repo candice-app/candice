@@ -202,7 +202,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
   const [importantDatesList, setImportantDatesList] = useState<ImportantDate[]>(
     () => parseImportantDates(initial?.important_dates ?? null)
   );
-  const [physicalContactWith, setPhysicalContactWith] = useState<string[]>(va("physical_contact_with"));
+  const [physicalContactWith, setPhysicalContactWith] = useState<string[]>(initial?.physical_contact_with ?? []);
   // Guided personal
   const [healthComfort, setHealthComfort] = useState(v("health_comfort"));
   const [familyLife, setFamilyLife] = useState(v("family_life"));
@@ -376,7 +376,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           recognition_preference: join(recognitionPreference),
           boundaries: join(boundaries),
           growth_mindset: join(growthMindset),
-          physical_contact_with: join(physicalContactWith) || null,
+          physical_contact_with: physicalContactWith.length ? physicalContactWith : null,
           hobbies: hobbies || null,
           disliked_activities: dislikedActivities || null,
           favorite_foods: favoriteFoods || null,

@@ -61,6 +61,8 @@ export interface QuestionnaireResponse {
   best_contact_method: string | null;
   important_dates: string | null;
   additional_notes: string | null;
+  physical_contact_with?: string[] | null;
+  input_mode?: 'text' | 'voice' | null;
   clothing_size: string | null;
   shoe_size: string | null;
   ring_size: string | null;
@@ -145,7 +147,8 @@ export interface MyProfile {
   last_active_at?: string | null;
   cancelled_at?: string | null;
   deletion_scheduled_at?: string | null;
-  physical_contact_with?: string | null;
+  physical_contact_with?: string[] | null;
+  questionnaire_input_mode?: 'text' | 'voice' | null;
 }
 
 export interface ProfileNote {
