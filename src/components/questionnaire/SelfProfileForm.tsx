@@ -335,13 +335,15 @@ export default function SelfProfileForm({ userId, initial }: Props) {
   // ── Handlers ──────────────────────────────────────────────────────────────────
   const join = (arr: string[]) => arr.join(",") || null;
 
-  const handleSaveLater = () => {
+  const handleSaveLater = async () => {
     clearTimeout(draftTimerRef.current);
+    // 1. localStorage en premier (filet de sécurité si le réseau échoue)
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({
         loveLanguage, communicationStyle, stressResponse, socialEnergy,
         appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
         coreValues, recognitionPreference, boundaries, growthMindset,
+        physicalContactWith,
         hobbies, dislikedActivities, favoriteFoods, dislikedFoods,
         giftPreference, standing, gastronomy, accommodation, giftStyle,
         tactility, conversationTopics, thingsToAvoid, bestContactMethod,
@@ -351,6 +353,62 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         savedAt: new Date().toISOString(),
       }));
     } catch { /* ignore */ }
+    // 2. Upsert Supabase (sauvegarde partielle, sans validation)
+    const { error: err } = await supabase.from("my_profile").upsert(
+      {
+        user_id: userId,
+        love_language: join(loveLanguage),
+        communication_style: join(communicationStyle),
+        stress_response: join(stressResponse),
+        social_energy: join(socialEnergy),
+        appreciation_style: join(appreciationStyle),
+        conflict_resolution: join(conflictResolution),
+        decision_making: join(decisionMaking),
+        emotional_expression: join(emotionalExpression),
+        core_values: join(coreValues),
+        recognition_preference: join(recognitionPreference),
+        boundaries: join(boundaries),
+        growth_mindset: join(growthMindset),
+        physical_contact_with: physicalContactWith.length ? physicalContactWith : null,
+        hobbies: hobbies || null,
+        disliked_activities: dislikedActivities || null,
+        favorite_foods: favoriteFoods || null,
+        disliked_foods: dislikedFoods || null,
+        gift_preference: join(giftPreference),
+        standing: join(standing),
+        gastronomy: join(gastronomy),
+        accommodation: join(accommodation),
+        gift_style: join(giftStyle),
+        tactility: join(tactility),
+        conversation_topics: conversationTopics || null,
+        things_to_avoid: thingsToAvoid || null,
+        best_contact_method: join(bestContactMethod),
+        important_dates: importantDatesList.some(d => d.date)
+          ? JSON.stringify(importantDatesList) : null,
+        health_comfort: healthComfort || null,
+        family_life: familyLife || null,
+        character_emotions: characterEmotions || null,
+        cannot_stand: cannotStand || null,
+        few_know: fewKnow || null,
+        food_allergies: join(foodAllergies),
+        diet: join(diet),
+        religion: religion || null,
+        disability: disability || null,
+        postal_address: postalAddress || null,
+        clothing_size: clothingSize || null,
+        shoe_size: shoeSize || null,
+        ring_size: ringSize || null,
+        pants_size: pantsSize || null,
+        pets: pets || null,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" }
+    );
+    if (err) {
+      console.error("handleSaveLater upsert error:", err);
+      setError("Erreur de sauvegarde — vérifie ta connexion. Tes réponses sont conservées localement.");
+      return;
+    }
     setStickyToast(true);
     setTimeout(() => router.push("/dashboard"), 1500);
   };
@@ -1053,7 +1111,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         </button>
         {draftSavedAt && !saved && (
           <p style={{ textAlign: "center", fontSize: 11, fontWeight: 300, color: "var(--txts)" }}>
-            Brouillon sauvegardé
+            Brouillon sauvegardé <span style={{ opacity: 0.6 }}>(sauvegarde locale)</span>
           </p>
         )}
       </div>
@@ -1062,7 +1120,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 100, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 8 }}>
         {stickyToast && (
           <div style={{ background: "#22543D", color: "#fff", fontSize: 13, fontWeight: 400, borderRadius: 8, padding: "8px 14px" }}>
-            Brouillon sauvegardé ✓
+            Progression sauvegardée ✓
           </div>
         )}
         <button
