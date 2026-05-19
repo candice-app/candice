@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { MyProfile } from "@/types";
 import { awardPoints } from "@/utils/awardPoints";
+import StickyProgressBar from "./StickyProgressBar";
+import VoiceMode, { VoiceQuestion } from "./VoiceMode";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -55,11 +57,11 @@ function MultiSelect({ options, values, onChange, max = 3 }: MultiSelectProps) {
               className={`pill-card${selected ? " pill-card-selected" : ""}${disabled ? " pill-card-disabled" : ""}`}>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 {selected && (
-                  <span style={{ width: 18, height: 18, borderRadius: "50%", background: "rgba(255,255,255,0.25)", color: "#fff", fontSize: 9, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  <span style={{ width: 28, height: 28, borderRadius: "50%", background: "rgba(255,255,255,0.25)", color: "#fff", fontSize: 12, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                     {rank + 1}
                   </span>
                 )}
-                <span style={{ fontSize: 14, fontWeight: selected ? 500 : 400, color: selected ? "#fff" : "#1E1208" }}>
+                <span style={{ fontSize: 16, fontWeight: selected ? 500 : 400, color: selected ? "#fff" : "#1E1208" }}>
                   {opt.label}
                 </span>
               </div>
@@ -80,10 +82,51 @@ function MultiSelect({ options, values, onChange, max = 3 }: MultiSelectProps) {
 }
 
 
+// ─── MicButton ────────────────────────────────────────────────────────────────
+
+interface ISpeechRecognition extends EventTarget {
+  lang: string; continuous: boolean; interimResults: boolean;
+  onresult: ((e: { results: { [i: number]: { [i: number]: { transcript: string } } } }) => void) | null;
+  onend: (() => void) | null;
+  start(): void; stop(): void;
+}
+type SRConstructor = new () => ISpeechRecognition;
+type SRWindow = Window & { SpeechRecognition?: SRConstructor; webkitSpeechRecognition?: SRConstructor };
+
+function MicButton({ onResult }: { onResult: (text: string) => void }) {
+  const [listening, setListening] = useState(false);
+  const recRef = useRef<ISpeechRecognition | null>(null);
+
+  const toggle = () => {
+    const SR = (window as SRWindow).SpeechRecognition ?? (window as SRWindow).webkitSpeechRecognition;
+    if (!SR) return;
+    if (listening) { recRef.current?.stop(); return; }
+    const rec = new SR();
+    rec.lang = "fr-FR";
+    rec.continuous = false;
+    rec.interimResults = false;
+    rec.onresult = (e) => onResult(e.results[0][0].transcript);
+    rec.onend = () => setListening(false);
+    recRef.current = rec;
+    rec.start();
+    setListening(true);
+  };
+
+  return (
+    <button type="button" onClick={toggle} title="Dicter" style={{
+      background: "none", border: "none", cursor: "pointer", padding: "4px 6px",
+      color: listening ? "var(--terra)" : "var(--cond)", fontSize: 18, lineHeight: 1,
+      flexShrink: 0,
+    }}>
+      {listening ? "⏹" : "🎙"}
+    </button>
+  );
+}
+
 // ─── Constants & helpers ──────────────────────────────────────────────────────
 
 const FIELD_LABEL: React.CSSProperties = {
-  fontSize: 16, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif",
+  fontSize: "clamp(22px, 3.5vw, 24px)", fontWeight: 500, fontFamily: "'Playfair Display', Georgia, serif",
   fontStyle: "italic", color: "#C47A4A", display: "block",
   textTransform: "none", letterSpacing: "normal",
   paddingBottom: 8, borderBottom: "2px solid #C47A4A", marginBottom: 16,
@@ -159,6 +202,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
   const [importantDatesList, setImportantDatesList] = useState<ImportantDate[]>(
     () => parseImportantDates(initial?.important_dates ?? null)
   );
+  const [physicalContactWith, setPhysicalContactWith] = useState<string[]>(va("physical_contact_with"));
   // Guided personal
   const [healthComfort, setHealthComfort] = useState(v("health_comfort"));
   const [familyLife, setFamilyLife] = useState(v("family_life"));
@@ -199,6 +243,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       setRecognitionPreference(arr(d.recognitionPreference));
       setBoundaries(arr(d.boundaries));
       setGrowthMindset(arr(d.growthMindset));
+      setPhysicalContactWith(arr(d.physicalContactWith));
       setHobbies(str(d.hobbies));
       setDislikedActivities(str(d.dislikedActivities));
       setFavoriteFoods(str(d.favoriteFoods));
@@ -243,6 +288,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           loveLanguage, communicationStyle, stressResponse, socialEnergy,
           appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
           coreValues, recognitionPreference, boundaries, growthMindset,
+          physicalContactWith,
           hobbies, dislikedActivities, favoriteFoods, dislikedFoods,
           giftPreference, standing, gastronomy, accommodation, giftStyle,
           tactility, conversationTopics, thingsToAvoid, bestContactMethod,
@@ -251,6 +297,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           postalAddress, clothingSize, shoeSize, ringSize, pantsSize, pets, savedAt,
         }));
         setDraftSavedAt(new Date(savedAt));
+        setToastTrigger(true);
       } catch { /* storage unavailable */ }
     }, 600);
     return () => clearTimeout(draftTimerRef.current);
@@ -258,6 +305,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     loveLanguage, communicationStyle, stressResponse, socialEnergy,
     appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
     coreValues, recognitionPreference, boundaries, growthMindset,
+    physicalContactWith,
     hobbies, dislikedActivities, favoriteFoods, dislikedFoods,
     giftPreference, standing, gastronomy, accommodation, giftStyle,
     tactility, conversationTopics, thingsToAvoid, bestContactMethod,
@@ -281,14 +329,8 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     ].filter(s => s.trim().length > 0).length +
     (importantDatesList.some(d => d.date) ? 1 : 0);
 
-  const pct = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
-
-  const motivationalMsg =
-    pct === 0 ? "C'est parti ! Plus ta fiche est complète, plus les attentions seront personnalisées." :
-    pct < 25  ? "Bien ! Continue — chaque réponse affine ton profil." :
-    pct < 50  ? "À mi-chemin ! Plus que quelques questions avant de découvrir ton profil." :
-    pct < 75  ? "Tu y es presque — les meilleures suggestions arrivent avec une fiche complète." :
-    "Dernière ligne droite. Une fiche complète, c'est les meilleures attentions pour toi.";
+  const [toastTrigger, setToastTrigger] = useState(false);
+  const [voiceMode, setVoiceMode] = useState(false);
 
   // ── Handlers ──────────────────────────────────────────────────────────────────
   const join = (arr: string[]) => arr.join(",") || null;
@@ -334,6 +376,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           recognition_preference: join(recognitionPreference),
           boundaries: join(boundaries),
           growth_mindset: join(growthMindset),
+          physical_contact_with: join(physicalContactWith) || null,
           hobbies: hobbies || null,
           disliked_activities: dislikedActivities || null,
           favorite_foods: favoriteFoods || null,
@@ -387,6 +430,69 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     }
   };
 
+  // ── Voice questions ───────────────────────────────────────────────────────────
+  const VOICE_QUESTIONS: VoiceQuestion[] = [
+    { id: "loveLanguage", spoken: "Je me sens le plus aimé quand…", max: 3, options: [
+      { value: "words", label: "On me dit des mots doux" },
+      { value: "acts", label: "On m'aide concrètement" },
+      { value: "gifts", label: "On me fait un cadeau réfléchi" },
+      { value: "time", label: "On est vraiment présent" },
+      { value: "touch", label: "On me serre dans ses bras" },
+    ]},
+    { id: "socialEnergy", spoken: "Comment je recharge mes batteries…", max: 2, options: [
+      { value: "very_introverted", label: "J'ai besoin de moments seul pour récupérer" },
+      { value: "introverted", label: "Je préfère les petits groupes" },
+      { value: "ambivert", label: "Ça dépend des jours" },
+      { value: "extroverted", label: "J'aime être entouré" },
+      { value: "very_extroverted", label: "Plus c'est animé, mieux c'est" },
+    ]},
+    { id: "stressResponse", spoken: "Quand je suis stressé, j'ai tendance à…", max: 2, options: [
+      { value: "withdraws", label: "Me retirer, avoir besoin de calme" },
+      { value: "seeks_support", label: "En parler, me confier" },
+      { value: "action_oriented", label: "Agir, me mettre en mouvement" },
+      { value: "internalizes", label: "Garder pour moi, faire bonne figure" },
+    ]},
+    { id: "communicationStyle", spoken: "Pour communiquer, je préfère…", max: 2, options: [
+      { value: "direct", label: "Aller droit au but" },
+      { value: "emotional", label: "Parler de ce que je ressens" },
+      { value: "analytical", label: "Tout analyser en profondeur" },
+      { value: "casual", label: "Garder ça léger, avec humour" },
+    ]},
+    { id: "appreciationStyle", spoken: "Ce qui me touche vraiment, c'est quand…", max: 2, options: [
+      { value: "verbal", label: "On me dit sincèrement merci" },
+      { value: "practical", label: "On m'aide sans que je demande" },
+      { value: "gifts", label: "On me fait un cadeau qui me ressemble" },
+      { value: "time", label: "On me consacre du temps de qualité" },
+      { value: "physical", label: "On me serre dans ses bras" },
+    ]},
+    { id: "coreValues", spoken: "Ce qui compte profondément pour moi…", max: 3, options: [
+      { value: "loyalty", label: "La loyauté et la confiance" },
+      { value: "growth", label: "La croissance personnelle" },
+      { value: "fun", label: "Le fun et les expériences" },
+      { value: "stability", label: "La stabilité et la fiabilité" },
+    ]},
+    { id: "giftPreference", spoken: "Pour les cadeaux, je préfère…", max: 1, options: [
+      { value: "experiences", label: "Des expériences" },
+      { value: "physical", label: "Des objets à garder" },
+      { value: "both", label: "Les deux me touchent" },
+    ]},
+  ];
+
+  const voiceValues: Record<string, string[]> = {
+    loveLanguage, socialEnergy, stressResponse, communicationStyle,
+    appreciationStyle, coreValues, giftPreference,
+  };
+
+  const handleVoiceUpdate = (field: string, vals: string[]) => {
+    const map: Record<string, (v: string[]) => void> = {
+      loveLanguage: setLoveLanguage, socialEnergy: setSocialEnergy,
+      stressResponse: setStressResponse, communicationStyle: setCommunicationStyle,
+      appreciationStyle: setAppreciationStyle, coreValues: setCoreValues,
+      giftPreference: setGiftPreference,
+    };
+    map[field]?.(vals);
+  };
+
   // ── Render ────────────────────────────────────────────────────────────────────
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 0 }}>
@@ -402,18 +508,49 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         </p>
       )}
 
-      {/* ── Progress bar ── */}
-      <div className="progress-sticky">
-        <div className="progress-track">
-          <div className="progress-fill" style={{ width: `${Math.min(100, pct)}%` }} />
-        </div>
-        <p style={{ fontSize: 15, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "#C47A4A", marginTop: 10, lineHeight: 1.4 }}>
-          {motivationalMsg}
-        </p>
+      <StickyProgressBar
+        answeredCount={answeredCount}
+        total={TOTAL_QUESTIONS}
+        showToast={toastTrigger}
+        onToastDone={() => setToastTrigger(false)}
+        onSaveLater={handleSaveLater}
+        onVoiceMode={() => setVoiceMode(true)}
+      />
+
+      {/* ── Voice mode toggle ── */}
+      <div style={{ display: "flex", justifyContent: "center", padding: "16px 0 4px" }}>
+        <button
+          type="button"
+          onClick={() => setVoiceMode(true)}
+          style={{
+            display: "flex", alignItems: "center", gap: 8,
+            background: "var(--t2)", border: "1px solid var(--t3)",
+            borderRadius: 24, padding: "10px 20px",
+            fontSize: 13, fontWeight: 400, color: "var(--terra)", cursor: "pointer",
+          }}
+        >
+          <span style={{ fontSize: 18 }}>🎙</span>
+          Remplir en mode vocal
+        </button>
       </div>
 
-      {/* ── Confidentiality banner ── */}
-      <div style={{ background: "#2C1A0E", borderRadius: 12, padding: "24px 28px", marginBottom: 28 }}>
+      {voiceMode && (
+        <VoiceMode
+          questions={VOICE_QUESTIONS}
+          values={voiceValues}
+          onUpdate={handleVoiceUpdate}
+          onClose={() => setVoiceMode(false)}
+        />
+      )}
+
+      {/* ── Privacy bar (mobile) ── */}
+      <div className="privacy-bar">
+        <span>🔒</span>
+        Tes réponses ne seront jamais partagées mot pour mot.
+      </div>
+
+      {/* ── Confidentiality banner (desktop) ── */}
+      <div className="privacy-banner-full" style={{ background: "#2C1A0E", borderRadius: 12, padding: "24px 28px", marginBottom: 28 }}>
         <div style={{ display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 }}>
           <span style={{ fontSize: 18, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>🔒</span>
           <h2 style={{ fontSize: 17, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#FAF7F2", lineHeight: 1.25, margin: 0 }}>
@@ -433,7 +570,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       ══════════════════════════════════════════════════════════════════════ */}
       <div className="card-light" style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 32 }}>
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Qui es-tu ?</h2>
+          <h2 style={{ fontSize: "clamp(22px, 3.5vw, 24px)", fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Qui es-tu ?</h2>
           <p style={{ fontSize: 12, fontWeight: 300, color: "rgba(196,122,74,0.8)", fontStyle: "italic" }}>
             Réponds instinctivement — il n&apos;y a pas de mauvaise réponse.
           </p>
@@ -449,6 +586,18 @@ export default function SelfProfileForm({ userId, initial }: Props) {
             { value: "touch", label: "On me serre dans ses bras", description: "Proximité physique, réconfort corporel" },
           ]} />
         </div>
+
+        {loveLanguage.includes("touch") && (
+          <div>
+            <label style={FIELD_LABEL}>Le contact physique, c&apos;est surtout avec…</label>
+            <MultiSelect values={physicalContactWith} onChange={setPhysicalContactWith} max={2} options={[
+              { value: "partner",  label: "Mon/ma partenaire", description: "Réservé à l'intimité amoureuse" },
+              { value: "family",   label: "Ma famille proche", description: "Parents, frères et sœurs, enfants" },
+              { value: "friends",  label: "Mes amis proches", description: "Les gens en qui j'ai vraiment confiance" },
+              { value: "everyone", label: "Tout le monde", description: "Je suis naturellement tactile avec tous" },
+            ]} />
+          </div>
+        )}
 
         <div>
           <label style={FIELD_LABEL}>Pour communiquer, je préfère…</label>
@@ -471,9 +620,9 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Mon énergie sociale…</label>
+          <label style={FIELD_LABEL}>Comment je recharge mes batteries…</label>
           <MultiSelect values={socialEnergy} onChange={setSocialEnergy} options={[
-            { value: "very_introverted", label: "Je recharge vraiment seul(e)", description: "Les interactions me coûtent beaucoup d'énergie" },
+            { value: "very_introverted", label: "J'ai besoin de moments seul·e pour récupérer", description: "Les interactions me coûtent beaucoup d'énergie" },
             { value: "introverted", label: "Je préfère les petits groupes", description: "Les grands groupes me fatiguent vite" },
             { value: "ambivert", label: "Ça dépend des jours", description: "Tantôt besoin de monde, tantôt de solitude" },
             { value: "extroverted", label: "J'aime être entouré(e)", description: "Les autres me rechargent, j'aime le contact" },
@@ -568,30 +717,42 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       ══════════════════════════════════════════════════════════════════════ */}
       <div className="card-light" style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 32 }}>
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Tes préférences.</h2>
+          <h2 style={{ fontSize: "clamp(22px, 3.5vw, 24px)", fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Tes préférences.</h2>
           <p style={{ fontSize: 12, fontWeight: 300, color: "rgba(196,122,74,0.8)", fontStyle: "italic" }}>Les détails qui changent tout.</p>
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ce que j&apos;adore faire</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ce que j&apos;adore faire</label>
+            <MicButton onResult={(t) => setHobbies(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={hobbies} onChange={(e) => setHobbies(e.target.value)} rows={2}
             placeholder="ex. escalade, séries coréennes, cuisiner pour les autres, randonnée…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ce que j&apos;évite ou déteste</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ce que j&apos;évite ou déteste</label>
+            <MicButton onResult={(t) => setDislikedActivities(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={dislikedActivities} onChange={(e) => setDislikedActivities(e.target.value)} rows={2}
             placeholder="ex. les sports collectifs, les jeux de société, les soirées trop bruyantes…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ce que j&apos;adore manger</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ce que j&apos;adore manger</label>
+            <MicButton onResult={(t) => setFavoriteFoods(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={favoriteFoods} onChange={(e) => setFavoriteFoods(e.target.value)} rows={2}
             placeholder="ex. cuisine japonaise, pizzas napolitaines, fromage, desserts au chocolat…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ce que je déteste manger</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ce que je déteste manger</label>
+            <MicButton onResult={(t) => setDislikedFoods(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={dislikedFoods} onChange={(e) => setDislikedFoods(e.target.value)} rows={2}
             placeholder="ex. foie gras, anchois, plats trop épicés, fruits de mer…" />
         </div>
@@ -661,13 +822,19 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Les sujets qui me stimulent vraiment</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Les sujets qui me stimulent vraiment</label>
+            <MicButton onResult={(t) => setConversationTopics(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={conversationTopics} onChange={(e) => setConversationTopics(e.target.value)} rows={2}
             placeholder="ex. startups, psychologie, voyages, foot, musique des années 90…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ce qu&apos;il vaut mieux éviter avec moi</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ce qu&apos;il vaut mieux éviter avec moi</label>
+            <MicButton onResult={(t) => setThingsToAvoid(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={thingsToAvoid} onChange={(e) => setThingsToAvoid(e.target.value)} rows={2}
             placeholder="ex. les surprises, annuler à la dernière minute, les blagues sur…" />
         </div>
@@ -678,7 +845,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
             { value: "text", label: "Message (WhatsApp, SMS, iMessage…)", description: "Un message court suffit, je réponds à mon rythme" },
             { value: "call", label: "Appel", description: "Je préfère entendre la voix, c'est plus direct" },
             { value: "email", label: "E-mail", description: "Pour les choses importantes ou les messages longs" },
-            { value: "in_person", label: "En vrai, de préférence", description: "Rien ne vaut une vraie conversation face à face" },
+            { value: "in_person", label: "Je préfère parler en face à face", description: "Rien ne vaut une vraie conversation face à face" },
           ]} />
         </div>
 
@@ -740,38 +907,53 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       ══════════════════════════════════════════════════════════════════════ */}
       <div className="card-light" style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 32 }}>
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Pour aller plus loin.</h2>
+          <h2 style={{ fontSize: "clamp(22px, 3.5vw, 24px)", fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Pour aller plus loin.</h2>
           <p style={{ fontSize: 12, fontWeight: 300, color: "rgba(196,122,74,0.8)", fontStyle: "italic" }}>
             Ces réponses restent strictement privées. Sois aussi honnête(e) que tu le souhaites.
           </p>
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ma santé & confort</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ma santé &amp; confort</label>
+            <MicButton onResult={(t) => setHealthComfort(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={healthComfort} onChange={(e) => setHealthComfort(e.target.value)} rows={2}
             placeholder="ex. problèmes de dos, mobilité réduite, allergies médicales, migraines fréquentes…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ma famille & vie perso</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ma famille &amp; vie perso</label>
+            <MicButton onResult={(t) => setFamilyLife(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={familyLife} onChange={(e) => setFamilyLife(e.target.value)} rows={2}
             placeholder="ex. parent de deux enfants, relation compliquée avec mes parents, en couple depuis 3 ans…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Mon caractère & émotions</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Mon caractère &amp; émotions</label>
+            <MicButton onResult={(t) => setCharacterEmotions(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={characterEmotions} onChange={(e) => setCharacterEmotions(e.target.value)} rows={2}
             placeholder="ex. je gère mal la critique, j'ai besoin de temps seul après une longue journée, j'ai tendance à trop m'oublier…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ce que je ne supporte pas</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ce que je ne supporte pas</label>
+            <MicButton onResult={(t) => setCannotStand(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={cannotStand} onChange={(e) => setCannotStand(e.target.value)} rows={2}
             placeholder="ex. les moqueries, les surprises, le bruit, qu'on soit en retard, les espaces bondés…" />
         </div>
 
         <div>
-          <label style={FIELD_LABEL}>Ce que peu de gens savent sur moi</label>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between" }}>
+            <label style={FIELD_LABEL}>Ce que peu de gens savent sur moi</label>
+            <MicButton onResult={(t) => setFewKnow(p => p ? p + " " + t : t)} />
+          </div>
           <textarea value={fewKnow} onChange={(e) => setFewKnow(e.target.value)} rows={3}
             placeholder="ex. j'adore les mangas, j'ai peur de l'avion, je fais de la poterie le weekend, j'ai vécu 3 ans en Asie…" />
         </div>
@@ -782,7 +964,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       ══════════════════════════════════════════════════════════════════════ */}
       <div className="card-light" style={{ display: "flex", flexDirection: "column", gap: 28, marginBottom: 32 }}>
         <div>
-          <h2 style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Infos pratiques.</h2>
+          <h2 style={{ fontSize: "clamp(22px, 3.5vw, 24px)", fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#C47A4A", marginBottom: 6 }}>Infos pratiques.</h2>
           <p style={{ fontSize: 12, fontWeight: 300, color: "rgba(196,122,74,0.8)", fontStyle: "italic" }}>
             Pour que les attentions soient parfaitement adaptées à toi.
           </p>
@@ -866,7 +1048,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
 
       {/* ── Submit area ── */}
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <button type="submit" disabled={loading} className="btn-primary" style={{ width: "100%", padding: "12px 20px" }}>
+        <button type="submit" disabled={loading} className="btn-primary" style={{ width: "100%", padding: "12px 20px", minHeight: 56 }}>
           {loading ? "Enregistrement…" : initial ? "Mettre à jour ma fiche →" : "Enregistrer ma fiche →"}
         </button>
         {draftSavedAt && !saved && (

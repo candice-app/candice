@@ -27,7 +27,7 @@ export default async function MoiQuestionnairePage() {
         <p style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--con)", lineHeight: 1.3 }}>
           {profile
             ? "Tes réponses actuelles sont pré-remplies."
-            : "Dis-nous qui tu es."}
+            : "Réponds instinctivement — plus c'est honnête, mieux c'est."}
         </p>
       </div>
       <SelfProfileForm userId={user.id} initial={profile} />

@@ -145,6 +145,7 @@ export interface MyProfile {
   last_active_at?: string | null;
   cancelled_at?: string | null;
   deletion_scheduled_at?: string | null;
+  physical_contact_with?: string | null;
 }
 
 export interface ProfileNote {

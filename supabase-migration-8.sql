@@ -1,5 +1,8 @@
 -- Phase 6: Cycle de vie utilisateur + modes spéciaux
 
+-- 8.0 Extension notification_log
+ALTER TABLE notification_log ADD COLUMN IF NOT EXISTS notification_type TEXT;
+
 -- 8.1 Extension de contacts pour mode souvenir
 ALTER TABLE contacts ADD COLUMN IF NOT EXISTS archive_reason TEXT CHECK (archive_reason IN ('deceased','lost_contact','end_of_relationship','other'));
 ALTER TABLE contacts ADD COLUMN IF NOT EXISTS is_memory_mode BOOLEAN DEFAULT FALSE;

@@ -5,6 +5,7 @@ import DashboardShell from "@/components/layout/DashboardShell";
 import { MyProfile } from "@/types";
 import ShareButton from "./ShareButton";
 import CadenceGlobal from "@/components/dashboard/CadenceGlobal";
+import ResumePrompt from "@/components/questionnaire/ResumePrompt";
 
 const LABEL: Record<string, Record<string, string>> = {
   love_language: { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité", touch: "Toucher physique" },
@@ -69,9 +70,7 @@ export default async function MoiPage() {
           <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", marginBottom: 24, maxWidth: 280, margin: "0 auto 24px" }}>
             Réponds à quelques questions sur toi — tes proches pourront la consulter pour mieux prendre soin de toi.
           </p>
-          <Link href="/moi/questionnaire">
-            <button className="btn-primary">Remplir ma fiche →</button>
-          </Link>
+          <ResumePrompt userId={user.id} />
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>

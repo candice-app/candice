@@ -412,6 +412,16 @@ export default function SharedForm({ token, senderName, onDone }: Props) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),
         });
+      } else {
+        const res = await fetch("/api/questionnaire/proche-register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, response_data: payload }),
+        });
+        if (!res.ok) {
+          setError("Impossible d'enregistrer. Tes réponses sont conservées — réessaie dans un instant.");
+          return;
+        }
       }
 
       try { localStorage.removeItem(DRAFT_KEY); } catch { /* ignore */ }

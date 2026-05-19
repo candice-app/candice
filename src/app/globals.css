@@ -179,6 +179,41 @@ label { display: block; font-size: 10px; font-weight: 500; letter-spacing: 2px; 
   .progress-sticky { padding: 16px 48px; }
 }
 
+@keyframes orbPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 16px rgba(196,122,74,0.15), 0 0 0 32px rgba(196,122,74,0.07); }
+  50%       { transform: scale(1.06); box-shadow: 0 0 0 24px rgba(196,122,74,0.18), 0 0 0 48px rgba(196,122,74,0.06); }
+}
+
+@keyframes fadeInOut {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(6px); }
+  15%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  75%  { opacity: 1; transform: translateX(-50%) translateY(0); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(6px); }
+}
+
+@media (max-width: 767px) {
+  .main-content { padding: 16px 20px; }
+}
+
+/* ── Questionnaire privacy ───────────────────────────────────────── */
+.privacy-bar {
+  height: 36px;
+  background: #2C1A0E;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-size: 11px;
+  font-weight: 300;
+  color: rgba(250,247,242,0.75);
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.privacy-banner-full { display: none; }
+@media (min-width: 768px) {
+  .privacy-bar { display: none; }
+  .privacy-banner-full { display: block; }
+}
+
 /* ── Modals ──────────────────────────────────────────────────────── */
 .modal-overlay { position: fixed; inset: 0; background: rgba(44,26,14,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; backdrop-filter: blur(4px); }
 .modal { background: #FFFFFF; border: 1px solid #E8C4A0; border-radius: var(--r-xl); padding: 32px; max-width: 480px; width: 90%; box-shadow: 0 16px 48px rgba(44,26,14,0.12); }

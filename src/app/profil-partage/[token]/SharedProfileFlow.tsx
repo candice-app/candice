@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import SharedForm from "./SharedForm";
 
-type Screen = "landing" | "account" | "form" | "done";
+type Screen = "landing" | "privacy" | "account" | "form" | "done";
 
 const PLAYFAIR: React.CSSProperties = {
   fontFamily: "'Playfair Display', Georgia, serif",
@@ -108,7 +108,50 @@ function LandingScreen({
   );
 }
 
-// ─── Screen 2: Account incentive ─────────────────────────────────────────────
+// ─── Screen 2: Privacy detail ────────────────────────────────────────────────
+
+function PrivacyScreen({ senderName, onNext }: { senderName: string; onNext: () => void }) {
+  const POINTS = [
+    { icon: "🔒", title: "Tes mots exacts restent privés", body: `${senderName} ne lira jamais tes réponses. Jamais. Candice les analyse en silence.` },
+    { icon: "🤫", title: "Candice parle à ta place", body: "L'IA traduit ta fiche en suggestions concrètes — sans exposer ce que tu as écrit." },
+    { icon: "🗑️", title: "Tu peux supprimer à tout moment", body: "Tes données t'appartiennent. Tu peux les effacer en un clic depuis ton profil." },
+    { icon: "🚫", title: "Aucune publicité, aucune revente", body: "Tes données ne sont pas monétisées. Candice est financé par abonnement, pas par la pub." },
+  ];
+  return (
+    <div style={PAGE_WRAP}>
+      <header style={HEADER}>
+        <span style={{ fontSize: 15, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: "#C47A4A" }}>candice</span>
+      </header>
+      <div style={INNER}>
+        <h1 style={{ ...PLAYFAIR, fontSize: 24, lineHeight: 1.3, color: "#1E1208", marginBottom: 8 }}>
+          Tes réponses sont protégées.
+        </h1>
+        <p style={{ fontSize: 14, fontWeight: 300, color: "#7A5E44", lineHeight: 1.6, marginBottom: 28 }}>
+          Voici exactement comment Candice traite tes informations.
+        </p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 36 }}>
+          {POINTS.map((p) => (
+            <div key={p.title} style={{ display: "flex", gap: 16, alignItems: "flex-start", background: "#fff", border: "1px solid rgba(196,122,74,0.2)", borderRadius: 12, padding: "16px 20px" }}>
+              <span style={{ fontSize: 22, flexShrink: 0 }}>{p.icon}</span>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 500, color: "#1E1208", marginBottom: 4 }}>{p.title}</p>
+                <p style={{ fontSize: 13, fontWeight: 300, color: "#7A5E44", lineHeight: 1.6 }}>{p.body}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={onNext}
+          style={{ background: "#C47A4A", color: "#fff", border: "none", borderRadius: 6, padding: "16px 24px", fontSize: 15, fontWeight: 500, cursor: "pointer", width: "100%" }}
+        >
+          J&apos;ai compris, on y va →
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── Screen 3: Account incentive ─────────────────────────────────────────────
 
 function AccountScreen({ token, onSkip }: { token: string; onSkip: () => void }) {
   const BENEFITS = [
@@ -243,11 +286,15 @@ export default function SharedProfileFlow({
     return (
       <LandingScreen
         senderName={senderName}
-        onStart={() => setScreen("account")}
+        onStart={() => setScreen("privacy")}
         onChat={showComingSoonToast}
         toastVisible={toastVisible}
       />
     );
+  }
+
+  if (screen === "privacy") {
+    return <PrivacyScreen senderName={senderName} onNext={() => setScreen("account")} />;
   }
 
   if (screen === "account") {
