@@ -1,0 +1,204 @@
+<!-- VERSION COURANTE — Candice Design System « Présence » V11 (FIGÉ) — 22/05/2026 -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Candice — Design System « Présence » V11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white:#FFFFFF; --canvas:#FDFDFB; --ink:#16150E; --ink2:#6A685F; --ink3:#B0AEA4; --line:rgba(22,21,14,.06);
+    --pine:#173E31; --pine-h1:#1E4337; --pine-h2:#0E2219; --pine-h3:#060E0A; --pine-glow:#3E7361;
+    --champ:#CDB987; --champ-line:rgba(205,185,135,.6); --champ-soft:rgba(205,185,135,.15);
+    --sans:"DM Sans",system-ui,sans-serif; --serif:"Fraunces",Georgia,serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);font-weight:300;background:var(--canvas);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+  .serif{font-family:var(--serif);font-optical-sizing:auto}
+  .page{max-width:760px;margin:0 auto;padding:54px 26px 90px}
+  .masthead{border-radius:24px;overflow:hidden;background:radial-gradient(130% 110% at 24% 0%, var(--pine-h1), var(--pine-h2) 46%, var(--pine-h3));color:#F6F3EA;padding:48px 34px 44px;margin-bottom:14px}
+  .masthead .eye{font-size:10.5px;letter-spacing:.4em;text-transform:uppercase;color:var(--champ);font-weight:500;margin-bottom:22px;display:flex;align-items:center;gap:10px}
+  .masthead .eye .pt{width:5px;height:5px;border-radius:50%;background:var(--champ);box-shadow:0 0 9px 1px rgba(205,185,135,.6);animation:life 3.6s ease-in-out infinite}
+  .masthead h1{font-family:var(--serif);font-optical-sizing:auto;font-weight:300;font-size:38px;line-height:1.16;letter-spacing:-.022em}
+  .masthead p{color:rgba(244,241,232,.7);margin-top:16px;max-width:480px;font-size:14.5px;line-height:1.7}
+
+  section{margin-top:42px}
+  .h{font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink3);font-weight:500;display:flex;align-items:center;gap:12px;margin-bottom:18px}
+  .h::after{content:"";height:.5px;flex:1;background:var(--line)}
+  .h .pt{width:5px;height:5px;border-radius:50%;background:var(--pine);box-shadow:0 0 7px 1px rgba(23,62,49,.3);animation:life 3.8s ease-in-out infinite}
+  .prose{font-size:14.5px;color:var(--ink2);line-height:1.75}
+  .prose b{color:var(--ink);font-weight:500}
+  .grid{display:grid;gap:12px}
+  .card{background:var(--white);border-radius:18px;padding:22px;box-shadow:0 0 0 .5px var(--line),0 16px 40px -30px rgba(23,62,49,.4)}
+
+  /* couleurs */
+  .sw{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+  .chip{border-radius:14px;overflow:hidden;box-shadow:0 0 0 .5px var(--line)}
+  .chip .clr{height:64px}
+  .chip .meta{padding:9px 12px;font-size:11px}
+  .chip .nm{font-weight:500;color:var(--ink)}
+  .chip .hex{color:var(--ink3);letter-spacing:.04em;margin-top:1px}
+
+  /* typo scale */
+  .ty{display:flex;align-items:baseline;justify-content:space-between;gap:18px;padding:13px 0;border-bottom:.5px solid var(--line)}
+  .ty .spec{font-size:11px;color:var(--ink3);text-align:right;flex-shrink:0;line-height:1.5}
+
+  /* logo */
+  .logobox{display:flex;gap:12px;flex-wrap:wrap}
+  .lb{flex:1;min-width:240px;border-radius:16px;display:flex;align-items:center;justify-content:center;height:120px;box-shadow:0 0 0 .5px var(--line)}
+  .lb.light{background:var(--white)} .lb.dark{background:radial-gradient(130% 120% at 24% 0%, var(--pine-h1), var(--pine-h2) 50%, var(--pine-h3))}
+  .logo{font-family:var(--sans);font-weight:300;font-size:21px;letter-spacing:.34em;display:inline-flex;align-items:center;gap:9px;padding-left:.34em}
+  .logo.on-light{color:var(--ink)} .logo.on-dark{color:#F6F3EA}
+  .logo .pt{width:6px;height:6px;border-radius:50%;animation:life 3.6s ease-in-out infinite}
+  .logo.on-light .pt{background:var(--pine);box-shadow:0 0 7px 1px rgba(23,62,49,.3)}
+  .logo.on-dark .pt{background:var(--champ);box-shadow:0 0 9px 1px rgba(205,185,135,.5)}
+
+  /* icône appli */
+  .iconrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .appicon{width:88px;height:88px;border-radius:22px;display:flex;align-items:center;justify-content:center;
+     background:radial-gradient(130% 130% at 32% 22%, var(--pine-h1), var(--pine) 55%, var(--pine-h3));
+     box-shadow:0 14px 30px -12px rgba(8,23,16,.6),inset 0 0 0 1px rgba(205,185,135,.2)}
+  .appicon i{width:16px;height:16px;border-radius:50%;background:var(--champ);box-shadow:0 0 16px 3px rgba(205,185,135,.55);animation:life 3.4s ease-in-out infinite}
+  .appicon.sm{width:44px;height:44px;border-radius:12px}.appicon.sm i{width:9px;height:9px}
+  .appicon.xs{width:26px;height:26px;border-radius:8px}.appicon.xs i{width:6px;height:6px}
+
+  /* le point usages */
+  .pts{display:flex;gap:22px;flex-wrap:wrap;align-items:center}
+  .pu{display:flex;flex-direction:column;align-items:center;gap:9px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3)}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--pine)}
+  .dot.live{animation:life 3.4s ease-in-out infinite}
+  .dot.soft{background:var(--white);box-shadow:0 0 0 1.4px var(--pine)}
+  .dot.anti{background:var(--pine);box-shadow:0 0 0 3px var(--champ-soft)}
+  .dot.glow{background:var(--pine-glow);box-shadow:0 0 11px 2px rgba(62,115,97,.5);animation:life 3.2s ease-in-out infinite}
+
+  /* fil */
+  .fildemo{position:relative;height:120px;padding-left:30px}
+  .fildemo::before{content:"";position:absolute;left:4px;top:6px;bottom:6px;width:1.5px;border-radius:2px;background:linear-gradient(var(--pine),rgba(23,62,49,.08))}
+  .fildemo::after{content:"";position:absolute;left:3px;width:3.5px;height:42px;border-radius:3px;top:0;background:linear-gradient(rgba(62,115,97,0),rgba(62,115,97,.5),rgba(62,115,97,0));filter:blur(1px);animation:flow 6.5s ease-in-out infinite}
+  .fildemo .n{position:absolute;left:-1px;width:9px;height:9px;border-radius:50%;background:var(--pine)}
+  .fildemo .n:nth-child(1){top:14px}.fildemo .n:nth-child(2){top:54px;background:#fff;box-shadow:0 0 0 1.4px var(--pine)}.fildemo .n:nth-child(3){top:94px;box-shadow:0 0 0 3px var(--champ-soft)}
+
+  .dl{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .do,.dont{border-radius:14px;padding:16px 18px;font-size:13.5px;line-height:1.6}
+  .do{background:rgba(23,62,49,.05);color:var(--ink2)} .do b{color:var(--pine)}
+  .dont{background:rgba(180,90,70,.06);color:var(--ink2)} .dont b{color:#9a4a39}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:12px;color:var(--ink2);background:rgba(22,21,14,.04);padding:2px 6px;border-radius:5px}
+
+  @keyframes life{0%,100%{transform:scale(1);opacity:.8}50%{transform:scale(1.16);opacity:1}}
+  @keyframes flow{0%{top:0;opacity:0}15%{opacity:1}85%{opacity:1}100%{top:78px;opacity:0}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="masthead">
+    <div class="eye"><span class="pt"></span>Design System · figé 22.05.2026</div>
+    <h1 class="serif">Présence.</h1>
+    <p>La direction artistique de Candice, en valeurs exactes. Une seule source de vérité, déclinable sur toute l'app et le site. Cohérence avant nouveauté.</p>
+  </div>
+
+  <section>
+    <div class="h"><span class="pt"></span>Principes</div>
+    <div class="prose">
+      <b>Blanc marbre lumineux</b> dominant — jamais beige, gris chaud, greige ou crème terne.<br>
+      <b>Vert sapin presque encre</b> = couleur identitaire : en accents discrets <em>et</em> en masses pleines nocturnes (hero).<br>
+      <b>Champagne</b> = lumière seule (contours, halos, séparateurs, hover, états actifs) — jamais d'aplat.<br>
+      <b>Le point</b> + <b>le fil</b> = signatures vivantes. Interface <b>éditoriale, émotionnelle, mobile-first</b>. Luxe chaud et silencieux.<br>
+      Anti : SaaS en cards · Pinterest féminin · « assistant IA futuriste » · démonstratif · clinique.
+    </div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Couleurs</div>
+    <div class="sw">
+      <div class="chip"><div class="clr" style="background:#FFFFFF"></div><div class="meta"><div class="nm">white</div><div class="hex">#FFFFFF · surfaces</div></div></div>
+      <div class="chip"><div class="clr" style="background:#FDFDFB"></div><div class="meta"><div class="nm">canvas</div><div class="hex">#FDFDFB · fond</div></div></div>
+      <div class="chip"><div class="clr" style="background:#16150E"></div><div class="meta"><div class="nm">ink</div><div class="hex">#16150E · texte</div></div></div>
+      <div class="chip"><div class="clr" style="background:#6A685F"></div><div class="meta"><div class="nm">ink-2</div><div class="hex">#6A685F · secondaire</div></div></div>
+      <div class="chip"><div class="clr" style="background:#B0AEA4"></div><div class="meta"><div class="nm">ink-3</div><div class="hex">#B0AEA4 · ténu</div></div></div>
+      <div class="chip"><div class="clr" style="background:#173E31"></div><div class="meta"><div class="nm">pine</div><div class="hex">#173E31 · ADN</div></div></div>
+      <div class="chip"><div class="clr" style="background:linear-gradient(135deg,#1E4337,#0E2219 55%,#060E0A)"></div><div class="meta"><div class="nm">pine hero</div><div class="hex">#1E4337→#060E0A</div></div></div>
+      <div class="chip"><div class="clr" style="background:#3E7361"></div><div class="meta"><div class="nm">pine-glow</div><div class="hex">#3E7361 · vie</div></div></div>
+      <div class="chip"><div class="clr" style="background:#CDB987"></div><div class="meta"><div class="nm">champagne</div><div class="hex">#CDB987 · lumière</div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Typographie</div>
+    <div class="card">
+      <div class="ty"><span class="serif" style="font-weight:300;font-size:35px;letter-spacing:-.022em">L'anniversaire est proche.</span><span class="spec">Display · Fraunces 300<br>opsz auto · -0.022em</span></div>
+      <div class="ty"><span class="serif" style="font-weight:400;font-size:20px">Thomas</span><span class="spec">Titre/nom · Fraunces 400<br>-0.012em</span></div>
+      <div class="ty"><span style="font-size:15px;font-weight:300;color:var(--ink2)">Texte secondaire, fin et aéré.</span><span class="spec">Corps · DM Sans 300<br>line-height 1.7</span></div>
+      <div class="ty"><span style="font-size:12.5px;color:var(--pine);font-weight:400">Candice anticipe pour lui</span><span class="spec">État · DM Sans 400 · pine</span></div>
+      <div class="ty" style="border:0"><span style="font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink3);font-weight:500">Maintenant</span><span class="spec">Eyebrow · DM Sans 500<br>tracking .34em</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Logo</div>
+    <div class="prose" style="margin-bottom:14px">Capitales fines très espacées (bâtons chics), suivies du <b>point vivant</b>. Sur clair : encre + point sapin. Sur masse verte : ivoire + point champagne.</div>
+    <div class="logobox">
+      <div class="lb light"><span class="logo on-light">CANDICE<span class="pt"></span></span></div>
+      <div class="lb dark"><span class="logo on-dark">CANDICE<span class="pt"></span></span></div>
+    </div>
+    <div class="prose" style="margin-top:10px;font-size:13px"><span class="mono">DM Sans · weight 300 · uppercase · letter-spacing .34em</span> · le point = period vivante.</div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Icône application · favicon <span style="color:#9a4a39;text-transform:none;letter-spacing:0;font-weight:400">(remplace l'ancien terracotta)</span></div>
+    <div class="iconrow">
+      <div class="appicon"><i></i></div>
+      <div class="appicon sm"><i></i></div>
+      <div class="appicon xs"><i></i></div>
+      <div class="prose" style="flex:1;min-width:200px">Carré sapin encre (squircle, radius 22%) + <b>le point champagne</b> centré. Le point devient la marque — reconnaissable à toutes tailles. Décliner : <span class="mono">favicon.svg</span>, <span class="mono">app/icon.tsx</span>, <span class="mono">apple-icon</span>, <span class="mono">manifest</span> (theme #173E31).</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Le point — signature système</div>
+    <div class="prose" style="margin-bottom:16px">Présent partout, subtil, jamais gadget. Respiration <span class="mono">life 3.6s</span> (scale 1→1.16, opacity .8→1). Jamais de glow épais ni d'effet méditation.</div>
+    <div class="pts">
+      <div class="pu"><span class="dot live"></span>présence / voix</div>
+      <div class="pu"><span class="dot soft"></span>nœud sobre</div>
+      <div class="pu"><span class="dot anti"></span>« anticipe »</div>
+      <div class="pu"><span class="dot glow"></span>écoute / input</div>
+      <div class="pu"><span class="appicon xs"><i></i></span>marque</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Le fil — relationnel & vivant</div>
+    <div class="prose" style="margin-bottom:8px">Ligne verticale sapin (1.5px, dégradé vers transparent). Une lueur la <b>parcourt</b> lentement (<span class="mono">flow 6.5s</span>) et les éléments <b>apparaissent au scroll</b> (reveal .7s, stagger 90ms). Ce n'est pas une timeline — c'est Candice qui suit les liens.</div>
+    <div class="fildemo"><span class="n"></span><span class="n"></span><span class="n"></span></div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Composants</div>
+    <div class="grid">
+      <div class="card prose"><b>Hero mass</b> — masse vert encre (radial), eyebrow champagne + point, titre serif large, filet champagne, CTA ivoire. Le « wow » d'ouverture.</div>
+      <div class="card prose"><b>Bottom nav</b> — Proches · Idées · <b>[point Candice central, surélevé]</b> · Échanges · Profil. Actif = sapin + petit point champagne. Aide/réglages en secondaire.</div>
+      <div class="card prose"><b>Avatar</b> — verre lumineux (vert clair / champagne clair) + initiale serif sapin + fin anneau champagne. Jamais de rond beige-gris.</div>
+      <div class="card prose"><b>Input « présence »</b> — pas de champ : surface blanche qui respire (halo <span class="mono">askGlow</span>) + point glow + micro voix. « Candice est là ».</div>
+      <div class="card prose"><b>Le moment</b> — bascule clair→sombre (entrée ~1s), le point respire, phrases qui se posent. Pour les révélations / résultats.</div>
+      <div class="card prose"><b>États proche</b> (texte, jamais %) — « Candice commence à connaître / connaît bien / anticipe pour ». Le moins connu = en sourdine (ink-3).</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Mouvement</div>
+    <div class="prose"><span class="mono">life</span> 3.2–3.8s (respiration du point) · <span class="mono">flow</span> 6.5s (lueur du fil) · <span class="mono">reveal</span> .7s cubic-bezier(.2,.7,.2,1) · transitions UI .3–.35s · le moment ~1s. Lent, organique, jamais démonstratif.</div>
+  </section>
+
+  <section>
+    <div class="h"><span class="pt"></span>Repères</div>
+    <div class="dl">
+      <div class="do"><b>OUI</b><br>blanc dominant · vert encre en masses + accents · champagne en lumière · le point/fil partout · air généreux · serif éditorial · états en mots</div>
+      <div class="dont"><b>NON</b><br>beige/greige/crème · cards SaaS empilées · % / scores / barres / badges · glow méditation · typo magazine · froid clinique · « tu n'as pas ouvert depuis 3 j »</div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
