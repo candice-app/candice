@@ -141,11 +141,8 @@ export default async function DashboardPage() {
 
       {/* ── Hero mass ── */}
       <div
-        className="hero-mass"
-        style={{
-          padding: '0 0 48px',
-          background: 'radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)',
-        }}
+        className="hero-mass hero-bg"
+        style={{ padding: '0 0 48px' }}
       >
         {/* Top bar — hidden on desktop (Wordmark is in the rail) */}
         <div className="hero-top-bar" style={{ alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px 0' }}>

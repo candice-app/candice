@@ -138,6 +138,10 @@ button { cursor: pointer; font-family: var(--font-sans); }
   overflow: hidden;
   position: relative;
 }
+/* Hero gradient — mobile default, overridden on desktop */
+.hero-bg {
+  background: radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%);
+}
 /* Hero top bar (Wordmark + avatar) — hidden on desktop where rail has Wordmark */
 .hero-top-bar { display: flex; }
 
@@ -166,6 +170,8 @@ button { cursor: pointer; font-family: var(--font-sans); }
 }
 .rail-champ { display: none; }
 .rail-item-active .rail-champ { display: block; }
+/* Rail label — font overridden on desktop */
+.rail-label { font-size: 14px; letter-spacing: .01em; }
 
 /* PresenceInput wrapper — repositioned on desktop */
 .presence-input-wrap {
@@ -181,7 +187,7 @@ button { cursor: pointer; font-family: var(--font-sans); }
     position: fixed; left: 0; top: 0; bottom: 0;
     width: 248px; background: var(--white);
     border-right: 0.5px solid var(--line);
-    padding: 36px 20px 24px;
+    padding: 44px 22px 32px;
     z-index: 100; overflow-y: auto;
   }
 
@@ -198,8 +204,25 @@ button { cursor: pointer; font-family: var(--font-sans); }
   /* Hero becomes a contained card in the column */
   .hero-mass {
     border-radius: 28px;
-    max-width: 720px;
+    max-width: 660px;
     margin: 0 auto 32px;
+  }
+
+  /* Hero gradient — deeper multi-stop on desktop */
+  .hero-bg {
+    background: radial-gradient(160% 80% at 28% -8%, #1E4337 0%, #112a20 20%, #0E2219 44%, #071812 68%, #040b08 100%);
+  }
+
+  /* Grain overlay — very light film for editorial texture */
+  .hero-mass::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 200px 200px;
+    opacity: .03;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+    z-index: 1;
   }
 
   /* Hero top bar (Wordmark + avatar) — hidden, rail has Wordmark */
@@ -207,14 +230,35 @@ button { cursor: pointer; font-family: var(--font-sans); }
 
   /* Body and content columns centered */
   .body-pad {
-    max-width: 720px;
+    max-width: 660px;
     margin: 0 auto;
     padding: 0 32px;
   }
   .content-col {
-    max-width: 720px;
+    max-width: 660px;
     margin: 0 auto;
     padding: 0 32px;
+  }
+
+  /* Rail items — more air, ultra-slow hover */
+  .rail-item {
+    padding: 13px 14px;
+    transition: color .45s, background .45s, transform .45s;
+  }
+  .rail-item:hover { transform: translateX(1px); }
+  .rail-item-active::before {
+    width: 1.5px; height: 20px;
+  }
+  .rail-item-active .rail-champ {
+    box-shadow: 0 0 6px 1px rgba(205,185,135,.35);
+    animation: life 3.6s ease-in-out infinite;
+  }
+
+  /* Rail label — editorial 12px with generous tracking */
+  .rail-label {
+    font-size: 12px;
+    letter-spacing: .06em;
+    font-weight: 300;
   }
 
   /* PresenceInput: right of rail, inner centered */
@@ -224,7 +268,7 @@ button { cursor: pointer; font-family: var(--font-sans); }
   }
   .presence-input-inner {
     max-width: 640px; width: 100%;
-    padding: 0 32px;
+    min-height: 56px;
   }
 }
 

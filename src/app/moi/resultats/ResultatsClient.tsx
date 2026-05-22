@@ -10,7 +10,10 @@ import PointDivider from "@/components/presence/PointDivider";
 import DashboardShell from "@/components/layout/DashboardShell";
 import LivePoint from "@/components/presence/LivePoint";
 import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFacts";
+import { computeProfileSynthesis } from "@/lib/profile/synthesis";
 import type { FaceResult, AttentionDim } from "@/lib/attention/scoring";
+import type { RelationalFilters } from "@/lib/lifestyle/scoring";
+import type { ProfileSynthesisFacts, SynthesisNarrative } from "@/lib/profile/synthesis";
 
 // ─── Human-language phrase maps ───────────────────────────────────────────────
 
@@ -60,7 +63,6 @@ const EXPRESSION_PHRASES: Record<AttentionDim, string> = {
 function splitBreathText(text: string): string[] {
   const sentences = text.match(/[^.!?]+[.!?]+/g)?.map(s => s.trim()).filter(Boolean);
   if (sentences && sentences.length >= 2) return sentences.slice(0, 3);
-  // Fallback: split on long pauses
   const parts = text.split(/\s{2,}|—/g).map(s => s.trim()).filter(s => s.length > 20);
   return parts.length >= 2 ? parts.slice(0, 3) : [text];
 }
@@ -68,14 +70,8 @@ function splitBreathText(text: string): string[] {
 function getReceptionDisplay(reception: FaceResult): { dims: AttentionDim[]; isMulti: boolean } {
   const combined = [...reception.dominant, ...reception.secondaire];
   const unique = [...new Set(combined)];
-
-  // "Multi" = no single dominant and 3+ secondary dims close together
   const isMulti = reception.dominant.length === 0 && reception.secondaire.length >= 3;
-
-  return {
-    dims: unique.slice(0, isMulti ? 3 : 2),
-    isMulti,
-  };
+  return { dims: unique.slice(0, isMulti ? 3 : 2), isMulti };
 }
 
 function getExpressionDims(expression: FaceResult): AttentionDim[] {
@@ -83,7 +79,7 @@ function getExpressionDims(expression: FaceResult): AttentionDim[] {
   return [...new Set(combined)].slice(0, 2);
 }
 
-// ─── Modular section wrapper (Lot 5: empile d'autres sections ici) ─────────────
+// ─── Modular section wrapper ───────────────────────────────────────────────────
 
 export function ResultSection({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -96,27 +92,232 @@ export function ResultSection({ label, children }: { label: string; children: Re
   );
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+// ─── Synthesis sections ───────────────────────────────────────────────────────
+
+function SynthesisSection({ narrative }: { narrative: SynthesisNarrative }) {
+  return (
+    <>
+      {/* Block 1 — Synthèse */}
+      <ResultSection label="En quelques mots">
+        <ThreadItem nodeType="solid" voice>
+          <p style={{
+            fontFamily: "var(--font-serif)",
+            fontWeight: 300,
+            fontSize: "clamp(17px, 3.5vw, 20px)",
+            color: "var(--ink)",
+            lineHeight: 1.55,
+            letterSpacing: "-.012em",
+          } as React.CSSProperties}>
+            {narrative.block1}
+          </p>
+        </ThreadItem>
+      </ResultSection>
+
+      {/* Block 2 — Langages (réception + expression + contraste) */}
+      <ResultSection label="Tes langages d'attention">
+        <ThreadItem nodeType="anticipe">
+          <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+            {narrative.block2_reception_text}
+          </p>
+        </ThreadItem>
+        {narrative.block2_expression_text && (
+          <ThreadItem nodeType="soft">
+            <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+              {narrative.block2_expression_text}
+            </p>
+          </ThreadItem>
+        )}
+        {narrative.block2_contrast_text && (
+          <ThreadItem nodeType="soft">
+            <p style={{
+              fontSize: 13.5,
+              fontWeight: 300,
+              color: "var(--ink-3)",
+              fontStyle: "italic",
+              lineHeight: 1.65,
+            }}>
+              {narrative.block2_contrast_text}
+            </p>
+          </ThreadItem>
+        )}
+      </ResultSection>
+
+      {/* Block 3 — Ce qui te touche */}
+      {narrative.block3.length > 0 && (
+        <ResultSection label="Ce qui te touche le plus">
+          {narrative.block3.map((item, i) => (
+            <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
+              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                {item}
+              </p>
+            </ThreadItem>
+          ))}
+        </ResultSection>
+      )}
+
+      {/* Block 4 — Ce qu'il vaut mieux éviter */}
+      {narrative.block4.length > 0 && (
+        <ResultSection label="Ce qu'il vaut mieux éviter">
+          {narrative.block4.map((item, i) => (
+            <ThreadItem key={i} nodeType="soft">
+              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                {item}
+              </p>
+            </ThreadItem>
+          ))}
+        </ResultSection>
+      )}
+
+      {/* Block 5 — Style relationnel */}
+      {narrative.block5 && (
+        <ResultSection label="Ton style relationnel">
+          <ThreadItem nodeType="solid">
+            <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.75 }}>
+              {narrative.block5}
+            </p>
+          </ThreadItem>
+        </ResultSection>
+      )}
+
+      {/* Block 6 — Style de communication */}
+      {narrative.block6 && (
+        <ResultSection label="Ton style de communication">
+          <ThreadItem nodeType="solid">
+            <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.75 }}>
+              {narrative.block6}
+            </p>
+          </ThreadItem>
+        </ResultSection>
+      )}
+
+      {/* Block 7 — Tes attentions idéales */}
+      {narrative.block7.length > 0 && (
+        <ResultSection label="Tes attentions idéales">
+          {narrative.block7.map((item, i) => (
+            <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
+              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                {item}
+              </p>
+            </ThreadItem>
+          ))}
+        </ResultSection>
+      )}
+
+      {/* Block 8 — Les attentions à éviter */}
+      {narrative.block8.length > 0 && (
+        <ResultSection label="Les attentions à éviter">
+          {narrative.block8.map((item, i) => (
+            <ThreadItem key={i} nodeType="soft">
+              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                {item}
+              </p>
+            </ThreadItem>
+          ))}
+        </ResultSection>
+      )}
+
+      {/* Blocks 9-12 — Nuances (level labels, never numbers) */}
+      {(narrative.block9 || narrative.block10 || narrative.block11 || narrative.block12) && (
+        <ResultSection label="Quelques nuances">
+          <ThreadItem nodeType="soft">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 24px" }}>
+              {[
+                { label: "Spontanéité", value: narrative.block9 },
+                { label: "Besoin de contrôle", value: narrative.block10 },
+                { label: "Sensibilité aux détails", value: narrative.block11 },
+                { label: "Besoin d'espace", value: narrative.block12 },
+              ].filter(item => item.value && item.value !== "équilibré" && item.value !== "équilibrée").map(item => (
+                <div key={item.label}>
+                  <p style={{ fontSize: 11, fontWeight: 400, color: "var(--ink-3)", letterSpacing: ".04em", textTransform: "uppercase", marginBottom: 4 }}>
+                    {item.label}
+                  </p>
+                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink)" }}>
+                    {item.value}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </ThreadItem>
+        </ResultSection>
+      )}
+    </>
+  );
+}
+
+// ─── Incomplete profile invite ─────────────────────────────────────────────────
+
+function IncompleteInvite({ hasTemperament, hasLifestyle }: { hasTemperament: boolean; hasLifestyle: boolean }) {
+  if (hasTemperament && hasLifestyle) return null;
+
+  let msg = "Complète ton profil pour découvrir ";
+  if (!hasTemperament) msg += "ton style relationnel, ton style de communication et tes nuances";
+  else if (!hasLifestyle) msg += "tes attentions idéales et ce qu'il vaut mieux éviter";
+
+  return (
+    <div style={{
+      margin: "32px 0",
+      padding: "20px 20px",
+      background: "rgba(23,62,49,.04)",
+      borderRadius: 14,
+      border: "0.5px solid var(--line)",
+    }}>
+      <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65, marginBottom: 14 }}>
+        {msg}.
+      </p>
+      <Link href="/moi/questionnaire" style={{ textDecoration: "none" }}>
+        <button className="btn-primary" style={{ fontSize: 14 }}>
+          Continuer mon profil →
+        </button>
+      </Link>
+    </div>
+  );
+}
+
+// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface Props {
   userId: string;
   reception: FaceResult;
   expression: FaceResult;
   breathText: string | null;
+  temperamentAxes: Record<string, { score: number; intensity: number }> | null;
+  temperamentModes: Record<string, { label: string; intensity: number } | null> | null;
+  lifestyleAxes: Record<string, { score: number; intensity: number }> | null;
+  relationalFilters: RelationalFilters | null;
+  practicalInfo: { vetos?: { no_alcohol?: boolean; halal?: boolean; casher?: boolean; mobility_constraints?: boolean; allergies?: string[] } } | null;
+  singularity: Record<string, string> | null;
+  synthesis: SynthesisNarrative | null;
+  needsSynthesis: boolean;
 }
 
-export default function ResultatsClient({ userId, reception, expression, breathText: initialBreathText }: Props) {
+// ─── Component ────────────────────────────────────────────────────────────────
+
+export default function ResultatsClient({
+  userId,
+  reception,
+  expression,
+  breathText: initialBreathText,
+  temperamentAxes,
+  temperamentModes,
+  lifestyleAxes,
+  relationalFilters,
+  practicalInfo,
+  singularity,
+  synthesis: initialSynthesis,
+  needsSynthesis,
+}: Props) {
   const router = useRouter();
   const [breathText, setBreathText] = useState<string | null>(initialBreathText);
   const [generating, setGenerating] = useState(false);
+  const [generatingSynthesis, setGeneratingSynthesis] = useState(false);
   const [momentVisible, setMomentVisible] = useState(false);
+  const [synthesis, setSynthesis] = useState<SynthesisNarrative | null>(initialSynthesis);
 
   const generateBreath = useCallback(async () => {
     setGenerating(true);
     try {
       const facts = computeBreathFacts(reception, expression);
       let text: string;
-
       try {
         const res = await fetch("/api/attention/breath", {
           method: "POST",
@@ -128,60 +329,94 @@ export default function ResultatsClient({ userId, reception, expression, breathT
       } catch {
         text = buildFallbackText(facts);
       }
-
-      // Persist
       const supabase = createClient();
       await supabase
         .from("my_profile")
         .update({ attention_breath_text: text, updated_at: new Date().toISOString() })
         .eq("user_id", userId);
-
       setBreathText(text);
     } finally {
       setGenerating(false);
     }
   }, [userId, reception, expression]);
 
-  useEffect(() => {
-    if (!initialBreathText) {
-      generateBreath();
+  const generateSynthesis = useCallback(async () => {
+    setGeneratingSynthesis(true);
+    try {
+      const facts: ProfileSynthesisFacts = computeProfileSynthesis({
+        reception,
+        expression,
+        temperamentAxes,
+        temperamentModes,
+        lifestyleAxes,
+        relationalFilters,
+        practicalInfo,
+        singularity,
+      });
+
+      let narrative: SynthesisNarrative;
+      try {
+        const res = await fetch("/api/profile/synthesis", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ facts }),
+        });
+        const data = await res.json() as { narrative: SynthesisNarrative };
+        narrative = data.narrative;
+      } catch {
+        const { buildFallbackNarrative } = await import("@/lib/profile/synthesis");
+        narrative = buildFallbackNarrative(facts);
+      }
+
+      // Persist
+      const supabase = createClient();
+      await supabase
+        .from("my_profile")
+        .update({
+          profile_synthesis: narrative,
+          synthesis_computed_at: new Date().toISOString(),
+        })
+        .eq("user_id", userId);
+
+      setSynthesis(narrative);
+    } finally {
+      setGeneratingSynthesis(false);
     }
+  }, [userId, reception, expression, temperamentAxes, temperamentModes, lifestyleAxes, relationalFilters, practicalInfo, singularity]);
+
+  useEffect(() => {
+    if (!initialBreathText) generateBreath();
   }, []);
 
-  // Show Moment once breathText is ready
   useEffect(() => {
-    if (breathText) {
-      setMomentVisible(true);
-    }
+    if (needsSynthesis) generateSynthesis();
+  }, []);
+
+  useEffect(() => {
+    if (breathText) setMomentVisible(true);
   }, [breathText]);
 
   const { dims: receptionDims, isMulti } = getReceptionDisplay(reception);
   const expressionDims = getExpressionDims(expression);
-
   const momentLines = breathText ? splitBreathText(breathText) : [];
+
+  const isLoading = generating || (generatingSynthesis && !synthesis);
 
   return (
     <DashboardShell>
-      {/* ── Moment overlay (breath text reveal) ── */}
+      {/* ── Moment overlay ── */}
       <Moment
         show={momentVisible}
         lines={momentLines}
-        cta={{
-          label: "Voir ta lecture",
-          onClick: () => setMomentVisible(false),
-        }}
+        cta={{ label: "Voir ma lecture", onClick: () => setMomentVisible(false) }}
       />
 
-      {/* ── Loading state (generating breath text for old profiles) ── */}
-      {generating && (
+      {/* ── Loading state ── */}
+      {isLoading && (
         <div style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: 490,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
+          position: "fixed", inset: 0, zIndex: 490,
+          display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center",
           background: "radial-gradient(135% 70% at 50% 40%, rgba(62,115,97,.20) 0%, rgba(62,115,97,0) 62%), #0E1A14",
         }}>
           <LivePoint size={9} tone="glow" />
@@ -198,17 +433,16 @@ export default function ResultatsClient({ userId, reception, expression, breathT
         </div>
       )}
 
-      {/* ── Body (always rendered, fades in after Moment dismisses) ── */}
+      {/* ── Body ── */}
       <div
         className="content-col"
         style={{
           paddingTop: 28,
-          opacity: momentVisible || generating ? 0 : 1,
+          opacity: momentVisible || isLoading ? 0 : 1,
           transition: "opacity .5s ease .2s",
-          pointerEvents: momentVisible || generating ? "none" : "auto",
+          pointerEvents: momentVisible || isLoading ? "none" : "auto",
         }}
       >
-
         {/* Header */}
         <div style={{ padding: "0 4px", marginBottom: 8 }}>
           <Link href="/moi" style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", textDecoration: "none" }}>
@@ -225,83 +459,76 @@ export default function ResultatsClient({ userId, reception, expression, breathT
             letterSpacing: "-.022em",
             lineHeight: 1,
           } as React.CSSProperties}>
-            Tes langages d'attention
+            Mon profil
           </h1>
         </div>
 
-        {/* ── Réception ── */}
-        <ResultSection label="Ce qui semble compter pour toi">
-          {isMulti ? (
-            <ThreadItem nodeType="soft">
-              <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
-                Plusieurs choses comptent presque autant pour toi —{" "}
-                {receptionDims.map((d, i) => (
-                  <span key={d}>
-                    <span style={{ fontWeight: 400, color: "var(--ink)" }}>
-                      {RECEPTION_PHRASES[d].lead.toLowerCase()}
-                    </span>
-                    {i < receptionDims.length - 1 ? ", " : ""}
-                  </span>
-                ))}
-                . C&apos;est rarement un seul langage qui domine chez toi.
-              </p>
-            </ThreadItem>
-          ) : (
-            receptionDims.map((dim, i) => (
-              <ThreadItem key={dim} nodeType={i === 0 ? "anticipe" : "soft"}>
-                <p style={{
-                  fontSize: 14,
-                  fontWeight: 500,
-                  color: "var(--ink)",
-                  marginBottom: 5,
-                  letterSpacing: "-.008em",
-                }}>
-                  {RECEPTION_PHRASES[dim].lead}
-                </p>
-                <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
-                  {RECEPTION_PHRASES[dim].sub}
-                </p>
-              </ThreadItem>
-            ))
-          )}
-        </ResultSection>
+        {/* ── Synthesis sections (when available) ── */}
+        {synthesis ? (
+          <SynthesisSection narrative={synthesis} />
+        ) : (
+          <>
+            {/* Fallback: existing attention sections while synthesis loads */}
+            <ResultSection label="Ce qui semble compter pour toi">
+              {isMulti ? (
+                <ThreadItem nodeType="soft">
+                  <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+                    Plusieurs choses comptent presque autant pour toi —{" "}
+                    {receptionDims.map((d, i) => (
+                      <span key={d}>
+                        <span style={{ fontWeight: 400, color: "var(--ink)" }}>
+                          {RECEPTION_PHRASES[d].lead.toLowerCase()}
+                        </span>
+                        {i < receptionDims.length - 1 ? ", " : ""}
+                      </span>
+                    ))}
+                    . C&apos;est rarement un seul langage qui domine chez toi.
+                  </p>
+                </ThreadItem>
+              ) : (
+                receptionDims.map((dim, i) => (
+                  <ThreadItem key={dim} nodeType={i === 0 ? "anticipe" : "soft"}>
+                    <p style={{ fontSize: 14, fontWeight: 500, color: "var(--ink)", marginBottom: 5, letterSpacing: "-.008em" }}>
+                      {RECEPTION_PHRASES[dim].lead}
+                    </p>
+                    <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                      {RECEPTION_PHRASES[dim].sub}
+                    </p>
+                  </ThreadItem>
+                ))
+              )}
+            </ResultSection>
 
-        {/* ── Expression ── */}
-        {expressionDims.length > 0 && (
-          <ResultSection label="Ce que tu offres naturellement">
-            {expressionDims.map((dim, i) => (
-              <ThreadItem key={dim} nodeType={i === 0 ? "solid" : "soft"} voice={i === 0}>
-                <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
-                  {EXPRESSION_PHRASES[dim]}
-                </p>
-              </ThreadItem>
-            ))}
-          </ResultSection>
+            {expressionDims.length > 0 && (
+              <ResultSection label="Ce que tu offres naturellement">
+                {expressionDims.map((dim, i) => (
+                  <ThreadItem key={dim} nodeType={i === 0 ? "solid" : "soft"} voice={i === 0}>
+                    <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+                      {EXPRESSION_PHRASES[dim]}
+                    </p>
+                  </ThreadItem>
+                ))}
+              </ResultSection>
+            )}
+          </>
         )}
 
-        {/* ── Clôture ── */}
-        <div style={{
-          margin: "48px 0 12px",
-          padding: "0 4px",
-        }}>
-          <p style={{
-            fontFamily: "var(--font-serif)",
-            fontWeight: 300,
-            fontSize: 18,
-            color: "var(--ink-2)",
-            letterSpacing: "-.012em",
-            lineHeight: 1.5,
-            marginBottom: 24,
-          } as React.CSSProperties}>
-            Ton profil se précise — d&apos;autres facettes viendront.
-          </p>
+        {/* ── Incomplete profile invite ── */}
+        <IncompleteInvite
+          hasTemperament={!!temperamentAxes}
+          hasLifestyle={!!lifestyleAxes}
+        />
 
+        {/* ── Clôture ── */}
+        <div style={{ margin: "48px 0 12px", padding: "0 4px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <Link href="/moi/questionnaire" style={{ textDecoration: "none" }}>
-              <button className="btn-primary">
-                Continuer mon profil →
-              </button>
-            </Link>
+            {(!temperamentAxes || !lifestyleAxes) && (
+              <Link href="/moi/questionnaire" style={{ textDecoration: "none" }}>
+                <button className="btn-primary">
+                  Continuer mon profil →
+                </button>
+              </Link>
+            )}
             <button
               type="button"
               onClick={() => router.push("/dashboard")}
@@ -316,9 +543,7 @@ export default function ResultatsClient({ userId, reception, expression, breathT
           </div>
         </div>
 
-        {/* Bottom padding for nav */}
         <div style={{ height: 40 }} />
-
       </div>
     </DashboardShell>
   );

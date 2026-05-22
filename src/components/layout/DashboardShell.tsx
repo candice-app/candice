@@ -94,7 +94,7 @@ export default function DashboardShell({ children, noNav = false }: Props) {
                     }}>
                       <LivePoint size={5} tone="champ" />
                     </span>
-                    <span style={{ fontSize: 14, letterSpacing: ".01em" }}>{item.label}</span>
+                    <span className="rail-label">{item.label}</span>
                     <span
                       className="rail-champ"
                       style={{
@@ -112,7 +112,7 @@ export default function DashboardShell({ children, noNav = false }: Props) {
                   className={`rail-item${active ? " rail-item-active" : ""}`}
                 >
                   {item.icon}
-                  <span style={{ fontSize: 14, letterSpacing: ".01em" }}>{item.label}</span>
+                  <span className="rail-label">{item.label}</span>
                   <span
                     className="rail-champ"
                     style={{

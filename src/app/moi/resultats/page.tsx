@@ -4,16 +4,8 @@ import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
 import ResultatsClient from "./ResultatsClient";
 import type { FaceResult } from "@/lib/attention/scoring";
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-type AttentionProfile = {
-  attention_reception: FaceResult | null;
-  attention_expression: FaceResult | null;
-  attention_breath_text: string | null;
-};
-
-// ─── Empty state ──────────────────────────────────────────────────────────────
+import type { RelationalFilters } from "@/lib/lifestyle/scoring";
+import type { SynthesisNarrative } from "@/lib/profile/synthesis";
 
 function EmptyState() {
   return (
@@ -48,36 +40,55 @@ function EmptyState() {
   );
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
 export default async function ResultatsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  type ProfileRow = {
+    attention_reception: unknown;
+    attention_expression: unknown;
+    attention_breath_text: string | null;
+    temperament_axes: unknown;
+    temperament_modes: unknown;
+    lifestyle_axes: unknown;
+    relational_filters: unknown;
+    practical_info: unknown;
+    singularity_answers: unknown;
+    profile_synthesis: unknown;
+    synthesis_computed_at: string | null;
+    updated_at: string;
+  };
+
   const { data } = await supabase
     .from("my_profile")
-    .select("attention_reception, attention_expression, attention_breath_text")
+    .select("attention_reception, attention_expression, attention_breath_text, temperament_axes, temperament_modes, lifestyle_axes, relational_filters, practical_info, singularity_answers, profile_synthesis, synthesis_computed_at, updated_at")
     .eq("user_id", user.id)
-    .maybeSingle();
+    .maybeSingle() as { data: ProfileRow | null; error: unknown };
 
-  const profile = data as AttentionProfile | null;
+  const hasAttentionData = !!(data?.attention_reception && data?.attention_expression);
+  if (!hasAttentionData) return <EmptyState />;
 
-  const hasAttentionData = !!(
-    profile?.attention_reception &&
-    profile?.attention_expression
-  );
-
-  if (!hasAttentionData) {
-    return <EmptyState />;
-  }
+  // Synthesis is current if it exists and was computed after last profile update
+  const synthesisCurrent =
+    !!(data?.profile_synthesis) &&
+    !!(data?.synthesis_computed_at) &&
+    new Date(data.synthesis_computed_at as string) >= new Date(data.updated_at as string);
 
   return (
     <ResultatsClient
       userId={user.id}
-      reception={profile!.attention_reception!}
-      expression={profile!.attention_expression!}
-      breathText={profile!.attention_breath_text}
+      reception={data!.attention_reception as FaceResult}
+      expression={data!.attention_expression as FaceResult}
+      breathText={(data?.attention_breath_text as string | null) ?? null}
+      temperamentAxes={(data?.temperament_axes as Record<string, { score: number; intensity: number }> | null) ?? null}
+      temperamentModes={(data?.temperament_modes as Record<string, { label: string; intensity: number } | null> | null) ?? null}
+      lifestyleAxes={(data?.lifestyle_axes as Record<string, { score: number; intensity: number }> | null) ?? null}
+      relationalFilters={(data?.relational_filters as RelationalFilters | null) ?? null}
+      practicalInfo={(data?.practical_info as { vetos?: { no_alcohol?: boolean; halal?: boolean; casher?: boolean; mobility_constraints?: boolean; allergies?: string[] } } | null) ?? null}
+      singularity={(data?.singularity_answers as Record<string, string> | null) ?? null}
+      synthesis={synthesisCurrent ? (data!.profile_synthesis as SynthesisNarrative) : null}
+      needsSynthesis={!synthesisCurrent}
     />
   );
 }
