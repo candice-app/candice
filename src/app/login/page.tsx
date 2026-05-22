@@ -6,20 +6,20 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Wordmark from "@/components/presence/Wordmark";
 
-const BG = "#FAF7F2";
-const WHITE = "#FFFFFF";
-const TERRA = "#C47A4A";
-const CON = "#2C1A0E";
+const BG = "var(--canvas)";
+const WHITE = "var(--white)";
+const PINE = "var(--pine)";
+const INK = "var(--ink)";
 const ERR = "#C44A4A";
-const BORDER_INPUT = "#E8DFD6";
-const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const BORDER_INPUT = "var(--line)";
+const DM = "var(--font-sans)";
+const SERIF = "var(--font-serif)";
 
 const LABEL_STYLE: React.CSSProperties = {
   display: "flex", alignItems: "center", gap: 4,
   fontSize: 12, fontWeight: 500, letterSpacing: 1,
   textTransform: "uppercase",
-  color: "rgba(44,26,14,0.65)",
+  color: "var(--ink-3)",
   marginBottom: 8,
 };
 
@@ -52,39 +52,36 @@ export default function LoginPage() {
           width: 100%; box-sizing: border-box;
           height: 52px; padding: 0 16px;
           font-size: 16px; font-weight: 300;
-          background: ${WHITE}; border: 1px solid ${BORDER_INPUT};
-          border-radius: 8px; color: ${CON};
-          font-family: ${DM}; outline: none;
+          background: var(--white); border: 0.5px solid var(--line);
+          border-radius: 8px; color: var(--ink);
+          font-family: var(--font-sans); outline: none;
           transition: border-color 0.15s;
         }
-        .login-input:focus { border-color: ${TERRA}; }
-        .login-input::placeholder { color: rgba(44,26,14,0.3); }
-
+        .login-input:focus { border-color: var(--pine); }
+        .login-input::placeholder { color: var(--ink-3); }
         .login-btn:hover:not(:disabled) { opacity: 0.9; }
       `}</style>
 
-      <header style={{ padding: "20px 24px", borderBottom: `0.5px solid rgba(44,26,14,0.08)` }}>
+      <header style={{ padding: "20px 24px", borderBottom: "0.5px solid var(--line)" }}>
         <Wordmark href="/" />
       </header>
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 16px" }}>
         <div style={{ width: "100%", maxWidth: 480 }}>
-          {/* Title */}
           <div style={{ marginBottom: 36 }}>
-            <h1 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: "clamp(28px, 5vw, 36px)", fontWeight: 400, color: CON, marginBottom: 8, lineHeight: 1.1 }}>
+            <h1 style={{ fontFamily: SERIF, fontWeight: 300, fontSize: "clamp(28px, 5vw, 36px)", color: INK, marginBottom: 8, lineHeight: 1.1, letterSpacing: "-.022em" }}>
               Bon retour.
             </h1>
-            <p style={{ fontSize: 16, fontWeight: 300, color: "#6B5F58", margin: 0 }}>
+            <p style={{ fontSize: 16, fontWeight: 300, color: "var(--ink-2)", margin: 0 }}>
               Connectez-vous à votre compte
             </p>
           </div>
 
-          {/* Card */}
           <form
             onSubmit={handleSubmit}
             style={{
               background: WHITE, borderRadius: 12,
-              boxShadow: "0 4px 24px rgba(196,122,74,0.08)",
+              boxShadow: "0 4px 24px rgba(30,67,49,0.06)",
               padding: "clamp(24px, 5vw, 40px)",
               display: "flex", flexDirection: "column",
             }}
@@ -95,7 +92,6 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Email */}
             <div style={{ marginBottom: 20 }}>
               <div style={LABEL_STYLE}><span>E-mail</span></div>
               <input
@@ -110,7 +106,6 @@ export default function LoginPage() {
               />
             </div>
 
-            {/* Mot de passe */}
             <div style={{ marginBottom: 32 }}>
               <div style={LABEL_STYLE}><span>Mot de passe</span></div>
               <input
@@ -131,8 +126,8 @@ export default function LoginPage() {
               className="login-btn"
               style={{
                 width: "100%", height: 52,
-                background: loading ? "rgba(196,122,74,0.7)" : TERRA,
-                color: BG, border: "none", borderRadius: 8,
+                background: loading ? "rgba(30,67,49,0.6)" : PINE,
+                color: "var(--canvas)", border: "none", borderRadius: 8,
                 fontSize: 16, fontWeight: 500,
                 cursor: loading ? "default" : "pointer",
                 fontFamily: DM, transition: "opacity 0.15s",
@@ -142,10 +137,9 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Lien inscription */}
-          <p style={{ textAlign: "center", fontSize: 15, fontWeight: 300, color: "rgba(44,26,14,0.75)", marginTop: 24 }}>
+          <p style={{ textAlign: "center", fontSize: 15, fontWeight: 300, color: "var(--ink-2)", marginTop: 24 }}>
             Pas encore de compte ?{" "}
-            <Link href="/register" style={{ color: TERRA, fontWeight: 500, textDecoration: "underline" }}>
+            <Link href="/register" style={{ color: PINE, fontWeight: 500, textDecoration: "underline" }}>
               S&apos;inscrire
             </Link>
           </p>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Wordmark from "@/components/presence/Wordmark";
+import LivePoint from "@/components/presence/LivePoint";
 import PresenceBottomNav from "@/components/presence/BottomNav";
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
   noNav?: boolean;
 }
 
-const NAV_ITEMS = [
+const NAV_ITEMS: { label: string; href: string; activeOn: (p: string) => boolean; icon?: React.ReactNode; center?: boolean }[] = [
   {
     label: "Accueil",
     href: "/dashboard",
@@ -34,22 +35,18 @@ const NAV_ITEMS = [
     ),
   },
   {
+    label: "Candice",
+    href: "/historique",
+    activeOn: (p: string) => p === "/historique",
+    center: true,
+  },
+  {
     label: "Idées",
     href: "/idees",
     activeOn: (p: string) => p === "/idees",
     icon: (
       <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1" />
-      </svg>
-    ),
-  },
-  {
-    label: "Échanges",
-    href: "/historique",
-    activeOn: (p: string) => p === "/historique",
-    icon: (
-      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 11.5a7.5 7.5 0 0 1-10.7 6.8L4 19.5l1.3-4.1A7.5 7.5 0 1 1 20 11.5Z" />
       </svg>
     ),
   },
@@ -81,6 +78,33 @@ export default function DashboardShell({ children, noNav = false }: Props) {
           <nav style={{ flex: 1, display: "flex", flexDirection: "column" }}>
             {NAV_ITEMS.map(item => {
               const active = item.activeOn(pathname);
+              if (item.center) {
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`rail-item${active ? " rail-item-active" : ""}`}
+                    style={{ gap: 10 }}
+                  >
+                    <span style={{
+                      width: 19, height: 19, borderRadius: "50%",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      background: "radial-gradient(130% 130% at 32% 24%, #1E4337 0%, #112a21 60%, #081710 100%)",
+                      flexShrink: 0,
+                    }}>
+                      <LivePoint size={5} tone="champ" />
+                    </span>
+                    <span style={{ fontSize: 14, letterSpacing: ".01em" }}>{item.label}</span>
+                    <span
+                      className="rail-champ"
+                      style={{
+                        width: 4, height: 4, borderRadius: "50%",
+                        background: "var(--champ)", marginLeft: "auto", flexShrink: 0,
+                      }}
+                    />
+                  </Link>
+                );
+              }
               return (
                 <Link
                   key={item.href}

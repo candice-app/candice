@@ -25,11 +25,11 @@ export default function ShareButton({ userId, variant = "icon" }: Props) {
   if (variant === "full") {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        <div style={{ border: "1px solid #E8C4A0", borderRadius: "var(--r-sm)", padding: "10px 14px", background: "#F8F4EE" }}>
-          <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "#9E7B5A", marginBottom: 4 }}>
+        <div style={{ border: "0.5px solid var(--champ-line)", borderRadius: 10, padding: "10px 14px", background: "var(--champ-soft)" }}>
+          <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
             Ton lien
           </p>
-          <p style={{ fontSize: 11, fontWeight: 300, color: "#7A5E44", fontFamily: "monospace", wordBreak: "break-all" }}>
+          <p style={{ fontSize: 11, fontWeight: 300, color: "var(--ink-2)", fontFamily: "monospace", wordBreak: "break-all" }}>
             {url || "…"}
           </p>
         </div>
@@ -44,7 +44,7 @@ export default function ShareButton({ userId, variant = "icon" }: Props) {
     <button
       onClick={copy}
       className="btn-ghost"
-      style={{ fontSize: 11, padding: "5px 12px", color: "var(--terra)", borderColor: "var(--terra)", flexShrink: 0 }}
+      style={{ fontSize: 11, padding: "5px 12px", color: "var(--pine)", borderColor: "var(--champ-line)", flexShrink: 0 }}
     >
       {copied ? "Copié ✓" : "Partager ma fiche"}
     </button>

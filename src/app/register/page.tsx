@@ -6,14 +6,13 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Wordmark from "@/components/presence/Wordmark";
 
-const BG = "#FAF7F2";
-const WHITE = "#FFFFFF";
-const TERRA = "#C47A4A";
-const CON = "#2C1A0E";
+const BG = "var(--canvas)";
+const WHITE = "var(--white)";
+const PINE = "var(--pine)";
+const INK = "var(--ink)";
 const ERR = "#C44A4A";
-const BORDER_INPUT = "#E8DFD6";
-const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const DM = "var(--font-sans)";
+const SERIF = "var(--font-serif)";
 
 const PHONE_RE = /^[+0-9\s().-]{6,}$/;
 
@@ -21,7 +20,7 @@ const LABEL_STYLE: React.CSSProperties = {
   display: "flex", alignItems: "center", gap: 4,
   fontSize: 12, fontWeight: 500, letterSpacing: 1,
   textTransform: "uppercase",
-  color: "rgba(44,26,14,0.65)",
+  color: "var(--ink-3)",
   marginBottom: 8,
 };
 
@@ -143,50 +142,48 @@ export default function RegisterPage() {
           width: 100%; box-sizing: border-box;
           height: 52px; padding: 0 16px;
           font-size: 16px; font-weight: 300;
-          background: ${WHITE}; border: 1px solid ${BORDER_INPUT};
-          border-radius: 8px; color: ${CON};
-          font-family: ${DM}; outline: none;
+          background: var(--white); border: 0.5px solid var(--line);
+          border-radius: 8px; color: var(--ink);
+          font-family: var(--font-sans); outline: none;
           transition: border-color 0.15s;
         }
-        .reg-input:focus { border-color: ${TERRA}; }
-        .reg-input::placeholder { color: rgba(44,26,14,0.3); }
+        .reg-input:focus { border-color: var(--pine); }
+        .reg-input::placeholder { color: var(--ink-3); }
         .reg-terms-check {
           width: 24px; height: 24px; border-radius: 5px; flex-shrink: 0; margin-top: 1px;
-          border: 1.5px solid ${TERRA};
+          border: 1.5px solid var(--champ-line);
           display: flex; align-items: center; justify-content: center;
           transition: border-color 0.2s, box-shadow 0.2s;
           cursor: pointer;
         }
         .reg-terms-check.highlight {
-          border-color: ${ERR};
+          border-color: #C44A4A;
           box-shadow: 0 0 0 3px rgba(196,74,74,0.15);
         }
         .reg-btn:hover:not(:disabled) { opacity: 0.9; }
       `}</style>
 
-      <header style={{ padding: "20px 24px", borderBottom: `0.5px solid rgba(44,26,14,0.08)` }}>
+      <header style={{ padding: "20px 24px", borderBottom: "0.5px solid var(--line)" }}>
         <Wordmark href="/" />
       </header>
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 16px" }}>
         <div style={{ width: "100%", maxWidth: 480 }}>
-          {/* Title */}
           <div style={{ marginBottom: 36 }}>
-            <h1 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: "clamp(28px, 5vw, 36px)", fontWeight: 400, color: CON, marginBottom: 8, lineHeight: 1.1 }}>
+            <h1 style={{ fontFamily: SERIF, fontWeight: 300, fontSize: "clamp(28px, 5vw, 36px)", color: INK, marginBottom: 8, lineHeight: 1.1, letterSpacing: "-.022em" }}>
               Créer un compte.
             </h1>
-            <p style={{ fontSize: 16, fontWeight: 300, color: "#6B5F58", margin: 0 }}>
+            <p style={{ fontSize: 16, fontWeight: 300, color: "var(--ink-2)", margin: 0 }}>
               Quelques secondes suffisent
             </p>
           </div>
 
-          {/* Card */}
           <form
             onSubmit={handleSubmit}
             noValidate
             style={{
               background: WHITE, borderRadius: 12,
-              boxShadow: "0 4px 24px rgba(196,122,74,0.08)",
+              boxShadow: "0 4px 24px rgba(30,67,49,0.06)",
               padding: "clamp(24px, 5vw, 40px)",
               display: "flex", flexDirection: "column",
             }}
@@ -211,7 +208,7 @@ export default function RegisterPage() {
             <div style={{ marginBottom: 20 }}>
               <div style={LABEL_STYLE}>
                 <span>Prénom</span>
-                <span style={{ color: TERRA, fontWeight: 700, fontSize: 11 }}>*</span>
+                <span style={{ color: PINE, fontWeight: 700, fontSize: 11 }}>*</span>
               </div>
               <input
                 id="name"
@@ -228,7 +225,7 @@ export default function RegisterPage() {
             <div style={{ marginBottom: 4 }}>
               <div style={LABEL_STYLE}>
                 <span>E-mail</span>
-                <span style={{ color: TERRA, fontWeight: 700, fontSize: 11 }}>*</span>
+                <span style={{ color: PINE, fontWeight: 700, fontSize: 11 }}>*</span>
               </div>
               <input
                 id="email"
@@ -270,7 +267,7 @@ export default function RegisterPage() {
             <div style={{ marginBottom: 4 }}>
               <div style={LABEL_STYLE}>
                 <span>Mot de passe</span>
-                <span style={{ color: TERRA, fontWeight: 700, fontSize: 11 }}>*</span>
+                <span style={{ color: PINE, fontWeight: 700, fontSize: 11 }}>*</span>
               </div>
               <input
                 id="password"
@@ -303,22 +300,22 @@ export default function RegisterPage() {
                 {/* Visual checkbox */}
                 <span
                   className={`reg-terms-check${termsHighlight ? " highlight" : ""}`}
-                  style={{ background: termsAccepted ? TERRA : "transparent" }}
+                  style={{ background: termsAccepted ? PINE : "transparent" }}
                   aria-hidden="true"
                 >
                   {termsAccepted && (
                     <svg width="13" height="10" viewBox="0 0 13 10" fill="none">
-                      <path d="M1.5 5L5 8.5L11.5 1.5" stroke="#FAF7F2" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                      <path d="M1.5 5L5 8.5L11.5 1.5" stroke="#FDFDFB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   )}
                 </span>
-                <span style={{ fontSize: 14, fontWeight: 300, color: CON, lineHeight: 1.55 }}>
+                <span style={{ fontSize: 14, fontWeight: 300, color: INK, lineHeight: 1.55 }}>
                   J&apos;accepte les{" "}
                   <Link
                     href="/conditions-generales"
                     target="_blank"
                     onClick={(e) => e.stopPropagation()}
-                    style={{ color: TERRA, textDecoration: "underline" }}
+                    style={{ color: PINE, textDecoration: "underline" }}
                   >
                     conditions générales
                   </Link>{" "}
@@ -327,7 +324,7 @@ export default function RegisterPage() {
                     href="/confidentialite"
                     target="_blank"
                     onClick={(e) => e.stopPropagation()}
-                    style={{ color: TERRA, textDecoration: "underline" }}
+                    style={{ color: PINE, textDecoration: "underline" }}
                   >
                     politique de confidentialité
                   </Link>
@@ -345,8 +342,8 @@ export default function RegisterPage() {
               className="reg-btn"
               style={{
                 width: "100%", height: 52,
-                background: loading ? "rgba(196,122,74,0.7)" : TERRA,
-                color: BG, border: "none", borderRadius: 8,
+                background: loading ? "rgba(30,67,49,0.6)" : PINE,
+                color: "var(--canvas)", border: "none", borderRadius: 8,
                 fontSize: 16, fontWeight: 500,
                 cursor: loading ? "default" : "pointer",
                 fontFamily: DM, transition: "opacity 0.15s",
@@ -357,9 +354,9 @@ export default function RegisterPage() {
           </form>
 
           {/* Lien connexion */}
-          <p style={{ textAlign: "center", fontSize: 15, fontWeight: 300, color: "rgba(44,26,14,0.75)", marginTop: 24 }}>
+          <p style={{ textAlign: "center", fontSize: 15, fontWeight: 300, color: "var(--ink-2)", marginTop: 24 }}>
             Déjà un compte ?{" "}
-            <Link href="/login" style={{ color: TERRA, fontWeight: 500, textDecoration: "underline" }}>
+            <Link href="/login" style={{ color: PINE, fontWeight: 500, textDecoration: "underline" }}>
               Se connecter
             </Link>
           </p>

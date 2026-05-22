@@ -28,13 +28,13 @@ export default function CadenceGlobal({ initialCadence }: Props) {
   }
 
   return (
-    <div style={{ paddingTop: 14, marginTop: 14, borderTop: "0.5px solid var(--brd)" }}>
+    <div style={{ paddingTop: 14, marginTop: 14, borderTop: "0.5px solid var(--line)" }}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-        <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)" }}>
+        <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--ink-3)" }}>
           Cadence globale
         </p>
         {(saving || saved) && (
-          <span style={{ fontSize: 10, fontWeight: 300, color: "var(--terra)" }}>
+          <span style={{ fontSize: 10, fontWeight: 300, color: "var(--pine)" }}>
             {saving ? "Enregistrement…" : "Enregistré"}
           </span>
         )}
@@ -49,24 +49,24 @@ export default function CadenceGlobal({ initialCadence }: Props) {
               onClick={() => handleSelect(level)}
               style={{
                 padding: "10px 8px",
-                borderRadius: "var(--r-md)",
-                border: active ? "1.5px solid var(--terra)" : "0.5px solid var(--brd)",
-                background: active ? "var(--t2)" : "var(--bg)",
+                borderRadius: 10,
+                border: active ? "1.5px solid var(--champ-line)" : "0.5px solid var(--line)",
+                background: active ? "var(--champ-soft)" : "transparent",
                 cursor: "pointer",
                 textAlign: "left",
               }}
             >
-              <p style={{ fontSize: 11, fontWeight: active ? 500 : 300, color: active ? "var(--terra)" : "var(--con)", marginBottom: 2 }}>
+              <p style={{ fontSize: 11, fontWeight: active ? 500 : 300, color: active ? "var(--pine)" : "var(--ink)", marginBottom: 2 }}>
                 {label}
               </p>
-              <p style={{ fontSize: 10, fontWeight: 300, color: "var(--cond)", lineHeight: 1.4 }}>
+              <p style={{ fontSize: 10, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.4 }}>
                 {description}
               </p>
             </button>
           );
         })}
       </div>
-      <p style={{ fontSize: 10, fontWeight: 300, color: "var(--cond)", marginTop: 8, lineHeight: 1.5 }}>
+      <p style={{ fontSize: 10, fontWeight: 300, color: "var(--ink-3)", marginTop: 8, lineHeight: 1.5 }}>
         Candice adapte ce rythme selon chaque proche et le contexte.
       </p>
     </div>
