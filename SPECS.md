@@ -212,8 +212,12 @@ src/
 | `last_active_at` | text | |
 | `cancelled_at` | text | |
 | `deletion_scheduled_at` | text | |
-| `physical_contact_with` | text[] | **Tableau PostgreSQL natif** (migration-9) |
+| `physical_contact_with` | text[] | **Tableau PostgreSQL natif** (migration-9) — déprécié : plus lu ni écrit par le nouveau modèle d'analyse, conservé sans suppression |
 | `questionnaire_input_mode` | text | text/voice (migration-9) |
+| `attention_answers` | jsonb | Réponses brutes Étape 1 — `{"reception":{"q1":["MOT","GES"],...},"expression":{"qE":[]}}` (migration-11) |
+| `attention_reception` | jsonb | Vecteur 7 dimensions face réception — `{"MOT":20,"SER":8,"CAD_C":0,"CAD_S":3,"EXP":15,"GES":6,"SUR":0}` (migration-11) |
+| `attention_expression` | jsonb | Vecteur 7 dimensions face expression — même structure (migration-11) |
+| `attention_computed_at` | timestamptz | Horodatage du dernier calcul des vecteurs (migration-11) |
 
 **Colonnes orphelines prod** (présentes en base, absentes du code — ne pas supprimer sans validation) :
 `energy_type`, `conflict_style`, `food_preferences`, `surprise_preference`, `wishlist`
