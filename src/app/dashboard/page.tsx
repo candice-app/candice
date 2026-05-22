@@ -121,7 +121,7 @@ export default async function DashboardPage() {
   // Hero focus — use top proactive suggestion or a contextual message
   let heroTitle = typedContacts.length === 0
     ? "Ajoutez un proche pour commencer."
-    : "Rien ne presse aujourd'hui.";
+    : "Candice garde le lien vivant.";
   let heroSubtitle = typedContacts.length === 0
     ? "Dites-lui de qui vous souhaitez prendre soin — elle s'occupe du reste."
     : undefined;
@@ -183,7 +183,7 @@ export default async function DashboardPage() {
           <p style={{
             fontFamily: 'var(--font-serif)',
             fontWeight: 300,
-            fontSize: 'clamp(26px,5vw,33px)',
+            fontSize: 'clamp(36px,9.5vw,44px)',
             lineHeight: 1.2,
             color: '#FAF8F1',
             letterSpacing: '-.022em',

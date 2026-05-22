@@ -42,23 +42,41 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
   }
 
   return (
-    <>
-      <div style={{ marginBottom: 28 }}>
-        <p className="section-label">Mon profil</p>
-        <h1 className="page-title" style={{ marginBottom: 4 }}>
-          {initial ? "Modifier ma fiche." : "Remplir ma fiche."}
+    <div style={{ padding: "28px 20px 100px" }}>
+      <div style={{ marginBottom: 32 }}>
+        <p style={{
+          fontSize: 10, fontWeight: 500, letterSpacing: ".28em",
+          textTransform: "uppercase", color: "var(--pine)", marginBottom: 12,
+        }}>
+          Ton profil
+        </p>
+        <h1 style={{
+          fontFamily: "var(--font-serif)",
+          fontOpticalSizing: "auto",
+          fontWeight: 300,
+          fontSize: "clamp(28px, 6vw, 35px)",
+          color: "var(--ink)",
+          letterSpacing: "-.022em",
+          lineHeight: 1.1,
+          marginBottom: 10,
+        } as React.CSSProperties}>
+          {initial ? "Modifier ta fiche." : "Remplir ta fiche."}
         </h1>
         <p style={{
-          fontSize: 20, fontWeight: 400,
-          fontFamily: "'Playfair Display', Georgia, serif",
-          fontStyle: "italic", color: "var(--con)", lineHeight: 1.3,
-        }}>
+          fontFamily: "var(--font-serif)",
+          fontOpticalSizing: "auto",
+          fontWeight: 300,
+          fontStyle: "italic",
+          fontSize: 17,
+          color: "var(--ink-2)",
+          lineHeight: 1.4,
+        } as React.CSSProperties}>
           {initial
             ? "Tes réponses actuelles sont pré-remplies."
             : "Réponds instinctivement — plus c'est honnête, mieux c'est."}
         </p>
       </div>
       <SelfProfileForm userId={userId} initial={initial} />
-    </>
+    </div>
   );
 }

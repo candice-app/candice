@@ -16,51 +16,88 @@ interface Props {
   onDone: (result: AttentionResult, breathText: string) => void;
 }
 
-// questionId → ordered selected optionIds (index 0 = rank 1)
 type Selections = Record<string, string[]>;
 
-// ─── Sticky attention bar ─────────────────────────────────────────────────────
+// ─── Immersive hero header ────────────────────────────────────────────────────
 
-function AttentionBar() {
+function AttentionHero({ progress }: { progress: number }) {
   return (
     <div style={{
-      position: "sticky", top: 0, zIndex: 50,
+      position: "sticky",
+      top: 0,
+      zIndex: 50,
       background: "var(--pine-h2)",
-      display: "flex", flexDirection: "column",
+      padding: "14px 22px 12px",
     }}>
-      <div style={{
-        height: 52, display: "flex", alignItems: "center",
-        justifyContent: "space-between", padding: "0 22px",
+      <p style={{
+        fontSize: 10,
+        fontWeight: 500,
+        letterSpacing: ".32em",
+        textTransform: "uppercase",
+        color: "rgba(205,185,135,.65)",
+        marginBottom: 10,
       }}>
-        {/* Wordmark on-dark inline */}
+        Langages d&apos;attention
+      </p>
+
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 14,
+      }}>
         <span style={{
-          fontFamily: "var(--font-sans)", fontWeight: 300, fontSize: 18,
-          letterSpacing: ".34em", textTransform: "uppercase",
-          color: "#F6F3EA", paddingLeft: ".34em",
-          display: "inline-flex", alignItems: "center", gap: 7,
+          fontFamily: "var(--font-sans)",
+          fontWeight: 300,
+          fontSize: 17,
+          letterSpacing: ".34em",
+          textTransform: "uppercase",
+          color: "#F6F3EA",
+          paddingLeft: ".34em",
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 7,
         }}>
           CANDICE
           <span style={{
-            width: 5, height: 5, borderRadius: "50%",
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
             background: "var(--champ)",
             boxShadow: "0 0 7px 1px rgba(205,185,135,.5)",
-            animation: "life 3.6s ease-in-out infinite",
             display: "inline-block",
+            animation: "life 3.6s ease-in-out infinite",
           }} />
         </span>
-        <span style={{ fontSize: 11, fontWeight: 300, color: "rgba(205,185,135,.7)", letterSpacing: ".22em" }}>
+        <span style={{
+          fontSize: 11,
+          fontWeight: 300,
+          color: "rgba(205,185,135,.65)",
+          letterSpacing: ".22em",
+        }}>
           01 — 07
         </span>
       </div>
-      {/* Barre de progression — sans chiffre */}
-      <div style={{ height: 1.5, background: "rgba(22,21,14,.25)", margin: "0 22px" }}>
-        <div style={{ height: "100%", width: "14%", background: "var(--pine-glow)", borderRadius: "0 2px 2px 0", transition: "width .55s cubic-bezier(.2,.7,.2,1)" }} />
+
+      <div style={{
+        height: 1.5,
+        background: "rgba(252,251,247,.12)",
+        borderRadius: 2,
+        overflow: "hidden",
+      }}>
+        <div style={{
+          height: "100%",
+          width: `${progress}%`,
+          background: "rgba(62,115,97,.9)",
+          borderRadius: "0 2px 2px 0",
+          transition: "width .55s cubic-bezier(.2,.7,.2,1)",
+        }} />
       </div>
     </div>
   );
 }
 
-// ─── Option card (fil + nœud numéroté) ───────────────────────────────────────
+// ─── Floating option card ─────────────────────────────────────────────────────
 
 function OptionCard({
   option, rank, disabled, onToggle,
@@ -79,61 +116,71 @@ function OptionCard({
       onClick={onToggle}
       disabled={disabled && !selected}
       style={{
-        position: "relative",
         display: "flex",
         alignItems: "flex-start",
-        gap: 14,
-        padding: "14px 0",
-        background: "none",
-        border: "none",
+        gap: 13,
+        padding: "15px 16px",
+        background: "var(--white)",
+        border: selected ? "1.5px solid var(--pine)" : "0.5px solid var(--line)",
+        borderRadius: 14,
+        boxShadow: selected
+          ? "0 4px 20px -6px rgba(23,62,49,.22), 0 0 0 3px rgba(23,62,49,.05)"
+          : "0 2px 10px -3px rgba(23,62,49,.05)",
         cursor: disabled && !selected ? "not-allowed" : "pointer",
-        opacity: disabled && !selected ? .35 : 1,
+        opacity: disabled && !selected ? .38 : 1,
         textAlign: "left",
         width: "100%",
-        transition: "opacity .2s",
+        transition: "border-color .22s, box-shadow .22s, opacity .2s",
         WebkitTapHighlightColor: "transparent",
+        marginBottom: 10,
       }}
     >
-      {/* Nœud sur le fil */}
+      {/* Rank badge */}
       <span style={{
         flexShrink: 0,
-        width: 20, height: 20,
+        width: 22,
+        height: 22,
         borderRadius: "50%",
-        display: "inline-flex", alignItems: "center", justifyContent: "center",
-        marginTop: 1,
-        ...(selected
-          ? isFirst
-            ? { background: "var(--pine)", boxShadow: "0 0 0 3px var(--champ-soft)", color: "var(--canvas)" }
-            : { background: "var(--white)", boxShadow: "0 0 0 1.4px var(--pine)", color: "var(--pine)" }
-          : { background: "var(--white)", boxShadow: "0 0 0 1px var(--line)", color: "transparent" }
-        ),
-        fontFamily: "var(--font-serif)",
-        fontSize: 10,
-        fontWeight: selected ? 600 : 300,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: 2,
+        background: selected
+          ? isFirst ? "var(--pine)" : "transparent"
+          : "rgba(22,21,14,.04)",
+        border: selected
+          ? isFirst ? "none" : "1.5px solid var(--pine)"
+          : "0.5px solid var(--line)",
+        color: selected
+          ? isFirst ? "var(--canvas)" : "var(--pine)"
+          : "transparent",
+        fontFamily: "var(--font-sans)",
+        fontSize: 11,
+        fontWeight: 600,
         transition: "all .25s cubic-bezier(.2,.8,.3,1.2)",
         transform: selected ? "scale(1)" : "scale(.85)",
       }}>
         {selected ? rank : ""}
       </span>
 
-      <div>
+      <div style={{ flex: 1 }}>
         <span style={{
           display: "block",
-          fontSize: 15,
-          fontWeight: selected ? 500 : 300,
+          fontSize: 16,
+          fontWeight: selected ? 500 : 400,
           color: selected ? "var(--ink)" : "var(--ink-2)",
           lineHeight: 1.3,
-          transition: "color .25s, font-weight .25s",
+          marginBottom: 5,
+          transition: "color .22s, font-weight .22s",
         }}>
           {option.label}
         </span>
         <span style={{
           display: "block",
-          fontSize: 12,
+          fontSize: 13,
           fontWeight: 300,
           color: "var(--ink-3)",
-          lineHeight: 1.4,
-          marginTop: 2,
+          lineHeight: 1.45,
         }}>
           {option.subtext}
         </span>
@@ -154,33 +201,33 @@ function QuestionBlock({
   const maxReached = selectedIds.length >= 3;
 
   return (
-    <div style={{ marginBottom: 32, padding: "0 4px" }}>
-      <div style={{ marginBottom: 16 }}>
+    <div style={{ marginBottom: 40 }}>
+      <div style={{ marginBottom: 18 }}>
         <label style={{
-          fontSize: "clamp(20px, 3.5vw, 24px)", fontWeight: 300,
           fontFamily: "var(--font-serif)",
           fontOpticalSizing: "auto",
-          color: "var(--ink)", display: "block",
-          letterSpacing: "-.014em", lineHeight: 1.2,
+          fontSize: "clamp(26px, 6vw, 34px)",
+          fontWeight: 300,
+          color: "var(--ink)",
+          display: "block",
+          letterSpacing: "-.018em",
+          lineHeight: 1.15,
           marginBottom: 8,
-        }}>
+        } as React.CSSProperties}>
           {question.title}
         </label>
-        <p style={{ fontSize: 11.5, fontWeight: 300, color: "var(--ink-3)", fontStyle: "italic" }}>
+        <p style={{
+          fontSize: 12,
+          fontWeight: 300,
+          color: "var(--ink-3)",
+          fontStyle: "italic",
+          lineHeight: 1.5,
+        }}>
           {question.micro}
         </p>
       </div>
 
-      {/* Options sur le fil */}
-      <div style={{ position: "relative", paddingLeft: 32 }}>
-        {/* Fil */}
-        <div style={{
-          position: "absolute", left: 9, top: 8, bottom: 8,
-          width: 1, background: selectedIds.length > 0
-            ? "linear-gradient(var(--pine), rgba(23,62,49,.12))"
-            : "var(--line)",
-          transition: "background .35s",
-        }} />
+      <div>
         {question.options.map((opt) => {
           const rank = selectedIds.indexOf(opt.id) + 1;
           return (
@@ -220,6 +267,10 @@ export default function AttentionStep({ userId, onDone }: Props) {
   const [selections, setSelections] = useState<Selections>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const totalQuestions = RECEPTION_QUESTIONS.length + 1;
+  const answeredCount = Object.values(selections).filter(v => v.length > 0).length;
+  const progress = Math.round((answeredCount / totalQuestions) * 100);
 
   function toggle(qId: string, optId: string) {
     setSelections((prev) => {
@@ -284,25 +335,26 @@ export default function AttentionStep({ userId, onDone }: Props) {
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <AttentionBar />
+      <AttentionHero progress={progress} />
 
-      <div style={{ padding: "28px 22px 100px" }}>
+      <div style={{ padding: "28px 20px 100px" }}>
 
         {/* Intro */}
-        <div style={{ marginBottom: 36 }}>
+        <div style={{ marginBottom: 40 }}>
           <p style={{
             fontFamily: "var(--font-serif)",
+            fontOpticalSizing: "auto",
             fontWeight: 300,
-            fontSize: "clamp(22px, 4vw, 28px)",
+            fontSize: "clamp(22px, 4.5vw, 28px)",
             color: "var(--ink)",
             marginBottom: 10,
             lineHeight: 1.2,
             letterSpacing: "-.018em",
-          }}>
+          } as React.CSSProperties}>
             Comment tu reçois et donnes l&apos;attention.
           </p>
           <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65 }}>
-            Il n&apos;y a pas de bonne réponse — seulement ta vérité. Choisis jusqu&apos;à 3 réponses par question.
+            Il n&apos;y a pas de bonne réponse — seulement ta vérité.
           </p>
         </div>
 
@@ -319,7 +371,7 @@ export default function AttentionStep({ userId, onDone }: Props) {
         {/* Expression separator */}
         <div style={{
           display: "flex", alignItems: "center", gap: 14,
-          margin: "8px 4px 32px",
+          margin: "4px 0 32px",
         }}>
           <div style={{ flex: 1, height: ".5px", background: "var(--line)" }} />
           <span style={{

@@ -6,7 +6,7 @@ import { MyProfile } from "@/types";
 // ─── Label maps ───────────────────────────────────────────────────────────────
 
 const LABEL: Record<string, Record<string, string>> = {
-  love_language: { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité", touch: "Toucher physique" },
+  love_language: { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité" },
   communication_style: { direct: "Direct et concis", emotional: "Émotionnel et expressif", analytical: "Analytique et détaillé", casual: "Décontracté et humoristique" },
   stress_response: { withdraws: "Besoin de solitude", seeks_support: "Cherche du soutien", action_oriented: "Passe à l'action", internalizes: "Intériorise ses émotions" },
   social_energy: { very_introverted: "Très introverti(e)", introverted: "Introverti(e)", ambivert: "Ambiverti(e)", extroverted: "Extraverti(e)", very_extroverted: "Très extraverti(e)" },

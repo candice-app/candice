@@ -17,7 +17,6 @@ const LABEL: Record<string, Record<string, string>> = {
     acts: "Actes de service",
     gifts: "Cadeaux",
     time: "Temps de qualité",
-    touch: "Toucher physique",
   },
   communication_style: {
     direct: "Direct et concis",
@@ -153,7 +152,7 @@ export default async function MoiPage() {
               letterSpacing: "-.022em",
               lineHeight: 1,
             } as React.CSSProperties}>
-              Ma fiche
+              Ton profil
             </h1>
             <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", marginTop: 8, lineHeight: 1.5 }}>
               {profile
@@ -279,8 +278,8 @@ export default async function MoiPage() {
               margin: "32px 0",
               padding: "22px 22px",
               borderRadius: 16,
-              border: "0.5px solid var(--champ-line)",
-              background: "var(--champ-soft)",
+              border: "1px solid var(--pine)",
+              background: "var(--white)",
             }}>
               <p style={{
                 fontFamily: "var(--font-serif)",

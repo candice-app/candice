@@ -18,7 +18,7 @@ export default async function MoiQuestionnairePage() {
   const profile = existing as MyProfile | null;
 
   return (
-    <DashboardShell>
+    <DashboardShell noNav>
       <QuestionnaireFlow userId={user.id} initial={profile} />
     </DashboardShell>
   );
