@@ -11,6 +11,8 @@ import ContactHeader from "./ContactHeader";
 import WishlistSection from "./WishlistSection";
 import MatchingCard from "./MatchingCard";
 import CadencePerContact from "@/components/dashboard/CadencePerContact";
+import PointDivider from "@/components/presence/PointDivider";
+import Thread, { ThreadItem } from "@/components/presence/Thread";
 import { resolveCadenceForContact } from "@/lib/cadence/resolver";
 
 // ─── Label maps ──────────────────────────────────────────────────────────────
@@ -29,22 +31,19 @@ const LABEL: Record<string, Record<string, string>> = {
   boundaries: { space: "Espace personnel", emotional: "Limites émotionnelles", time: "Temps et planning", privacy: "Vie privée" },
   growth_mindset: { experiences: "Nouvelles expériences", structured: "Apprentissage structuré", reflective: "Réflexion intérieure", community: "Apprentissage par les autres" },
   gift_preference: { experiences: "Expériences", physical: "Cadeaux matériels", both: "Les deux" },
-  best_contact_method: { text: "SMS", call: "Appel", email: "E-mail", in_person: "En personne" },
 };
 
 function resolve(field: string, value: string | null): string {
   if (!value) return "";
-  const parts = value.split(",").filter(Boolean);
-  return parts.map(v => LABEL[field]?.[v] ?? v).join(", ");
+  return value.split(",").filter(Boolean).map(v => LABEL[field]?.[v] ?? v).join(", ");
 }
 
-// ─── Relational style derivation ─────────────────────────────────────────────
+// ─── Relational style ─────────────────────────────────────────────────────────
 
 function deriveRelationalStyle(profile: QuestionnaireResponse): string {
   const expr = profile.emotional_expression;
   const comm = profile.communication_style;
   const vals = profile.core_values;
-
   if (expr?.includes("openly") && vals?.includes("loyalty")) return "Chaleureux(se) et engagé(e) — s'investit pleinement dans ses relations.";
   if (expr?.includes("rarely") && vals?.includes("stability")) return "Réservé(e) et fiable — montre son affection par les actes.";
   if (comm?.includes("direct") && vals?.includes("growth")) return "Direct(e) et orienté(e) évolution — apprécie la clarté et le progrès.";
@@ -55,7 +54,7 @@ function deriveRelationalStyle(profile: QuestionnaireResponse): string {
   return "Profil équilibré — s'adapte selon le contexte et les personnes.";
 }
 
-// ─── Completion score ─────────────────────────────────────────────────────────
+// ─── Completion (internal use only — no display) ──────────────────────────────
 
 const SCORED_FIELDS: (keyof QuestionnaireResponse)[] = [
   "love_language", "communication_style", "stress_response", "social_energy",
@@ -66,11 +65,16 @@ const SCORED_FIELDS: (keyof QuestionnaireResponse)[] = [
 
 function getCompletion(profile: QuestionnaireResponse | undefined): number {
   if (!profile) return 0;
-  const filled = SCORED_FIELDS.filter(f => !!profile[f]).length;
-  return Math.round((filled / SCORED_FIELDS.length) * 100);
+  return Math.round(SCORED_FIELDS.filter(f => !!profile[f]).length / SCORED_FIELDS.length * 100);
 }
 
-// ─── Important dates parsing ──────────────────────────────────────────────────
+function candiceState(pct: number, firstName: string): string {
+  if (pct >= 65) return `Candice anticipe pour ${firstName}`;
+  if (pct >= 30) return `Candice connaît bien ${firstName}`;
+  return `Candice commence à connaître ${firstName}`;
+}
+
+// ─── Important dates ──────────────────────────────────────────────────────────
 
 interface ImportantDate { label: string; date: string; }
 
@@ -79,21 +83,22 @@ function parseImportantDates(raw: string | null): ImportantDate[] {
   try {
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) return (parsed as ImportantDate[]).filter(d => d.date);
-  } catch { /* legacy text */ }
+  } catch { /* legacy */ }
   return [];
 }
 
 function daysUntil(dateStr: string): number {
   const now = new Date();
   const year = now.getFullYear();
-  const [month, day] = dateStr.includes("-") ? dateStr.split("-").slice(-2).map(Number) : [0, 0];
+  const parts = dateStr.includes("-") ? dateStr.split("-").slice(-2).map(Number) : [0, 0];
+  const [month, day] = parts;
   if (!month || !day) return Infinity;
   let next = new Date(year, month - 1, day);
   if (next < now) next = new Date(year + 1, month - 1, day);
   return Math.ceil((next.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-// ─── Page ────────────────────────────────────────────────────────────────────
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function ContactPage({
   params,
@@ -149,7 +154,6 @@ export default async function ContactPage({
   if (!contact) notFound();
 
   const typedContact = contact as Contact & { questionnaire_responses: QuestionnaireResponse[] };
-
   const admin = createAdminClient();
   const cadenceResolution = await resolveCadenceForContact(user.id, id, admin);
   const isMemoryMode = !!typedContact.is_memory_mode;
@@ -157,13 +161,12 @@ export default async function ContactPage({
   const userHasProfile = !!myProfile;
   const contactNotes = (notesData ?? []) as ProfileNote[];
   const recentConfidences = (confidencesData ?? []) as { id: string; raw_text: string; emotional_tone: string; created_at: string }[];
-  const completionPct = getCompletion(profile);
+  const pct = getCompletion(profile);
   const senderFirstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
   const contactFirstName = typedContact.name.split(" ")[0];
   const importantDates = parseImportantDates(profile?.important_dates ?? null).sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
   const wishlist = (typedContact.gift_wishlist ?? []) as WishlistItem[];
 
-  // Generate a signed URL from the stored path (private bucket)
   let photoSignedUrl: string | null = null;
   if (typedContact.photo_url) {
     const { data } = await admin.storage
@@ -172,254 +175,255 @@ export default async function ContactPage({
     photoSignedUrl = data?.signedUrl ?? null;
   }
 
+  // Profile traits to show (only filled ones, in priority order)
+  const traitRows: { label: string; value: string }[] = [
+    { label: "Langage d'amour", value: resolve("love_language", profile?.love_language ?? null) },
+    { label: "Communication", value: resolve("communication_style", profile?.communication_style ?? null) },
+    { label: "Se sent apprécié(e) par", value: resolve("appreciation_style", profile?.appreciation_style ?? null) },
+    { label: "Énergie sociale", value: resolve("social_energy", profile?.social_energy ?? null) },
+    { label: "Sous stress", value: resolve("stress_response", profile?.stress_response ?? null) },
+    { label: "Valeurs fondamentales", value: resolve("core_values", profile?.core_values ?? null) },
+    { label: "Expression émotionnelle", value: resolve("emotional_expression", profile?.emotional_expression ?? null) },
+    { label: "Gestion des conflits", value: resolve("conflict_resolution", profile?.conflict_resolution ?? null) },
+    { label: "Prise de décision", value: resolve("decision_making", profile?.decision_making ?? null) },
+    { label: "Reconnaissance", value: resolve("recognition_preference", profile?.recognition_preference ?? null) },
+    { label: "Limites importantes", value: resolve("boundaries", profile?.boundaries ?? null) },
+    { label: "Développement", value: resolve("growth_mindset", profile?.growth_mindset ?? null) },
+    { label: "Loisirs", value: profile?.hobbies ?? "" },
+    { label: "Cadeaux", value: resolve("gift_preference", profile?.gift_preference ?? null) },
+  ].filter(r => r.value);
+
   return (
     <DashboardShell>
-      {/* Memory mode banner */}
-      {isMemoryMode && (
-        <div style={{
-          margin: "0 0 20px",
-          padding: "10px 16px",
-          background: "var(--br3)",
-          border: "0.5px solid var(--brd)",
-          borderRadius: "var(--r-sm)",
-          display: "flex", alignItems: "center", gap: 8,
-        }}>
-          <span style={{ fontSize: 10, color: "var(--cond)" }}>◌</span>
-          <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", fontStyle: "italic" }}>
-            En souvenir — ce profil est conservé en lecture seule.
-          </p>
+
+      {/* ── Header band — pine encre ── */}
+      <div style={{
+        position: "relative",
+        padding: "0 0 32px",
+        background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
+      }}>
+        {/* Back link */}
+        <div style={{ padding: "18px 24px 0" }}>
+          <Link href="/contacts" style={{ textDecoration: "none" }}>
+            <span style={{
+              fontSize: 12, fontWeight: 300,
+              color: "rgba(244,241,232,.5)",
+              letterSpacing: ".08em",
+              display: "inline-flex", alignItems: "center", gap: 6,
+            }}>
+              ← Mes proches
+            </span>
+          </Link>
         </div>
-      )}
 
-      {/* Quick-add notes (disabled in memory mode) */}
-      {!isMemoryMode && (
-        <ContactNotes
-          contactId={id}
-          contactName={typedContact.name}
-          initialNotes={contactNotes}
-        />
-      )}
-
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 28 }}>
-        <ContactHeader
-          contactId={id}
-          name={typedContact.name}
-          relationship={typedContact.relationship}
-          phone={typedContact.phone}
-          email={typedContact.email}
-          signedUrl={photoSignedUrl}
-          completionPct={completionPct}
-          memoryMode={isMemoryMode}
-        />
-        {!isMemoryMode && (
-          <div style={{ flexShrink: 0, marginTop: 4 }}>
-            <ContactActions
-              contactId={id}
-              contactName={typedContact.name}
-              contactEmail={typedContact.email}
-              contactFirstName={contactFirstName}
-              completionPct={completionPct}
-              lastReminderSentAt={typedContact.last_reminder_sent_at ?? null}
-              senderFirstName={senderFirstName}
-            />
-          </div>
-        )}
-      </div>
-
-      {profile ? (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-
-          {/* Row 1: Analyse Candice + Matching */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-
-            {/* Analyse Candice */}
-            <div className="card">
-              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "var(--terra)", marginBottom: 10 }}>
-                Ce que Candice sait
-              </p>
-
-              {profile.love_language && (
-                <div style={{ marginBottom: 14 }}>
-                  <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--cond)", marginBottom: 4 }}>
-                    Langage d&apos;amour
-                  </p>
-                  <p style={{ fontSize: 14, fontWeight: 400, color: "var(--con)" }}>
-                    {resolve("love_language", profile.love_language)}
-                  </p>
-                </div>
-              )}
-
-              <div>
-                <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--cond)", marginBottom: 4 }}>
-                  Style relationnel
-                </p>
-                <p style={{ fontSize: 13, fontWeight: 300, color: "var(--cond)", lineHeight: 1.6 }}>
-                  {deriveRelationalStyle(profile)}
-                </p>
-              </div>
-            </div>
-
-            {/* Matching */}
-            <MatchingCard contactId={id} userHasProfile={userHasProfile} />
-          </div>
-
-          {/* Dates importantes */}
-          {importantDates.length > 0 && (
-            <div className="card">
-              <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 14 }}>Dates importantes</p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                {importantDates.map((d, i) => {
-                  const days = daysUntil(d.date);
-                  const urgent = days <= 14;
-                  return (
-                    <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                      <div>
-                        <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)" }}>{d.label}</p>
-                        <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)" }}>{d.date}</p>
-                      </div>
-                      <span style={{
-                        fontSize: 11, fontWeight: 500,
-                        color: urgent ? "#fff" : "var(--terra)",
-                        background: urgent ? "var(--terra)" : "var(--t2)",
-                        border: "0.5px solid var(--t3)",
-                        padding: "3px 10px", borderRadius: 20,
-                      }}>
-                        {days === 0 ? "Aujourd'hui" : days === 1 ? "Demain" : days === Infinity ? "—" : `J−${days}`}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Prêt pour [Prénom] — masqué en mode souvenir */}
+        {/* Header content */}
+        <div style={{ padding: "20px 24px 0", display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
+          <ContactHeader
+            contactId={id}
+            name={typedContact.name}
+            relationship={typedContact.relationship}
+            phone={typedContact.phone}
+            email={typedContact.email}
+            signedUrl={photoSignedUrl}
+            memoryMode={isMemoryMode}
+          />
           {!isMemoryMode && (
-            <div>
-              <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase", color: "var(--cond)", marginBottom: 10 }}>
-                Prêt pour {typedContact.name.split(" ")[0]}
-              </p>
-              <SuggestionsPanel
+            <div style={{ flexShrink: 0, marginTop: 2 }}>
+              <ContactActions
                 contactId={id}
                 contactName={typedContact.name}
-                initialSuggestions={cachedSuggestions?.content ?? null}
-                generatedAt={cachedSuggestions?.generated_at ?? null}
+                contactEmail={typedContact.email}
+                contactFirstName={contactFirstName}
+                completionPct={pct}
+                lastReminderSentAt={typedContact.last_reminder_sent_at ?? null}
+                senderFirstName={senderFirstName}
               />
             </div>
           )}
+        </div>
 
-          {/* Profil détaillé (collapsible summary) */}
-          <details style={{ marginTop: 4 }}>
-            <summary style={{
-              fontSize: 12, fontWeight: 400, letterSpacing: 1.5, textTransform: "uppercase",
-              color: "var(--cond)", cursor: "pointer", marginBottom: 12, listStyle: "none",
-              display: "flex", alignItems: "center", gap: 8,
-            }}>
-              <span>Profil psychologique complet</span>
-              <span style={{ fontSize: 10 }}>▼</span>
-            </summary>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              {[
-                ["love_language", "Langage d'amour"],
-                ["communication_style", "Communication"],
-                ["stress_response", "Sous stress"],
-                ["social_energy", "Énergie sociale"],
-                ["appreciation_style", "Se sent apprécié(e) par"],
-                ["conflict_resolution", "Gestion des conflits"],
-                ["decision_making", "Prise de décision"],
-                ["emotional_expression", "Expression émotionnelle"],
-                ["core_values", "Valeurs fondamentales"],
-                ["recognition_preference", "Reconnaissance"],
-                ["boundaries", "Limites importantes"],
-                ["growth_mindset", "Développement personnel"],
-              ].map(([key, label]) => {
-                const val = resolve(key, profile[key as keyof QuestionnaireResponse] as string | null);
-                if (!val) return null;
-                return (
-                  <div key={key} style={{ padding: "8px 0", borderBottom: "0.5px solid var(--brd)" }}>
-                    <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", marginBottom: 2 }}>{label}</p>
-                    <p style={{ fontSize: 12, fontWeight: 300, color: "var(--con)" }}>{val}</p>
-                  </div>
-                );
-              })}
-            </div>
-            {profile.hobbies && (
-              <div style={{ marginTop: 12, padding: "8px 0", borderBottom: "0.5px solid var(--brd)" }}>
-                <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", marginBottom: 2 }}>Loisirs</p>
-                <p style={{ fontSize: 12, fontWeight: 300, color: "var(--con)" }}>{profile.hobbies}</p>
-              </div>
-            )}
-            {profile.things_to_avoid && (
-              <div style={{ marginTop: 12, padding: "8px 0" }}>
-                <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", marginBottom: 2 }}>À éviter</p>
-                <p style={{ fontSize: 12, fontWeight: 300, color: "var(--con)" }}>{profile.things_to_avoid}</p>
-              </div>
-            )}
-          </details>
+        {/* Candice state — no % */}
+        <div style={{ padding: "16px 24px 0" }}>
+          <div style={{ height: "0.5px", background: "linear-gradient(90deg, var(--champ-line), transparent)", marginBottom: 14 }} />
+          <p style={{
+            fontSize: 13,
+            fontWeight: 300,
+            color: pct >= 65 ? "var(--champ)" : "rgba(244,241,232,.5)",
+            letterSpacing: ".04em",
+          }}>
+            {candiceState(pct, contactFirstName)}
+          </p>
+        </div>
+      </div>
 
-          {/* Cadence d'attention */}
-          <div className="card">
-            <CadencePerContact
+      {/* ── Corps blanc ── */}
+      <div style={{ padding: "0 24px" }}>
+
+        {/* Memory mode notice */}
+        {isMemoryMode && (
+          <div style={{
+            margin: "20px 0 0",
+            padding: "10px 14px",
+            background: "var(--champ-soft)",
+            border: "0.5px solid var(--champ-line)",
+            borderRadius: 8,
+          }}>
+            <p style={{ fontSize: 11, fontWeight: 300, color: "var(--ink-2)", fontStyle: "italic" }}>
+              En souvenir — ce profil est conservé en lecture seule.
+            </p>
+          </div>
+        )}
+
+        {/* Notes Candice (quick add) */}
+        {!isMemoryMode && (
+          <div style={{ marginTop: 20 }}>
+            <ContactNotes
               contactId={id}
-              resolution={cadenceResolution}
-              initialOverride={(typedContact.cadence_override as CadenceLevel) ?? null}
+              contactName={typedContact.name}
+              initialNotes={contactNotes}
             />
           </div>
+        )}
 
-          {/* Confidences récentes */}
-          {recentConfidences.length > 0 && (
-            <div className="card">
-              <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 12 }}>
-                Ce que tu m&apos;as dit de {contactFirstName}
-              </p>
-              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {recentConfidences.map(conf => {
-                  const toneIcon = conf.emotional_tone === "positive" ? "✦"
-                    : conf.emotional_tone === "negative" ? "·"
-                    : conf.emotional_tone === "urgent" ? "!"
-                    : "○";
-                  return (
-                    <div key={conf.id} style={{ borderBottom: "0.5px solid var(--brd)", paddingBottom: 12 }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4 }}>
-                        <span style={{ fontSize: 10, color: "var(--terra)" }}>{toneIcon}</span>
-                        <span style={{ fontSize: 10, fontWeight: 300, color: "var(--cond)" }}>
-                          {new Date(conf.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
-                        </span>
+        {profile ? (
+          <>
+            {/* Ce que Candice sait */}
+            {traitRows.length > 0 && (
+              <>
+                <PointDivider label="Ce que Candice sait" />
+                <Thread>
+                  {/* Relational style — voix Candice */}
+                  <ThreadItem nodeType="solid" voice>
+                    <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+                      {deriveRelationalStyle(profile)}
+                    </p>
+                  </ThreadItem>
+                  {/* Individual traits */}
+                  {traitRows.map((row, i) => (
+                    <ThreadItem key={row.label} nodeType="soft">
+                      <div>
+                        <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".22em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 3 }}>
+                          {row.label}
+                        </p>
+                        <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink)", lineHeight: 1.5 }}>
+                          {row.value}
+                        </p>
                       </div>
-                      <p style={{ fontSize: 12, fontWeight: 300, color: "var(--con)", fontStyle: "italic", lineHeight: 1.55 }}>
+                    </ThreadItem>
+                  ))}
+                  {/* Matching avec moi */}
+                  {userHasProfile && (
+                    <ThreadItem nodeType="soft">
+                      <MatchingCard contactId={id} userHasProfile={userHasProfile} />
+                    </ThreadItem>
+                  )}
+                </Thread>
+              </>
+            )}
+
+            {/* Dates importantes */}
+            {importantDates.length > 0 && (
+              <>
+                <PointDivider label="Dates importantes" />
+                <Thread>
+                  {importantDates.map((d) => {
+                    const days = daysUntil(d.date);
+                    const isUrgent = days <= 14;
+                    const dayLabel = days === 0 ? "aujourd'hui"
+                      : days === 1 ? "demain"
+                      : days === Infinity ? "—"
+                      : `dans ${days} jours`;
+                    return (
+                      <ThreadItem key={d.label + d.date} nodeType={isUrgent ? "anticipe" : "soft"}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <div>
+                            <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink)", lineHeight: 1.4 }}>{d.label}</p>
+                            <p style={{ fontSize: 11, fontWeight: 300, color: "var(--ink-3)", marginTop: 2 }}>{d.date}</p>
+                          </div>
+                          <span style={{
+                            fontSize: 11, fontWeight: 500,
+                            color: isUrgent ? "var(--canvas)" : "var(--pine)",
+                            background: isUrgent ? "var(--pine)" : "var(--champ-soft)",
+                            border: "0.5px solid var(--champ-line)",
+                            padding: "3px 10px", borderRadius: 20, flexShrink: 0,
+                          }}>
+                            {dayLabel}
+                          </span>
+                        </div>
+                      </ThreadItem>
+                    );
+                  })}
+                </Thread>
+              </>
+            )}
+
+            {/* Idées pour [Prénom] */}
+            {!isMemoryMode && (
+              <>
+                <PointDivider label={`Idées pour ${contactFirstName}`} />
+                <SuggestionsPanel
+                  contactId={id}
+                  contactName={typedContact.name}
+                  initialSuggestions={cachedSuggestions?.content ?? null}
+                  generatedAt={cachedSuggestions?.generated_at ?? null}
+                />
+              </>
+            )}
+
+            {/* Confidences */}
+            {recentConfidences.length > 0 && (
+              <>
+                <PointDivider label={`Ce que tu m'as dit de ${contactFirstName}`} />
+                <Thread>
+                  {recentConfidences.map(conf => (
+                    <ThreadItem key={conf.id} nodeType="soft">
+                      <p style={{ fontSize: 11, fontWeight: 300, color: "var(--ink-3)", marginBottom: 4 }}>
+                        {new Date(conf.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}
+                      </p>
+                      <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-2)", fontStyle: "italic", lineHeight: 1.6 }}>
                         &ldquo;{conf.raw_text.length > 120 ? conf.raw_text.slice(0, 120) + "…" : conf.raw_text}&rdquo;
                       </p>
-                    </div>
-                  );
-                })}
-              </div>
+                    </ThreadItem>
+                  ))}
+                </Thread>
+              </>
+            )}
+
+            {/* À retenir */}
+            <PointDivider label="À retenir" />
+            <WishlistSection contactId={id} initialWishlist={wishlist} />
+
+            {/* Cadence */}
+            <PointDivider label="Fréquence d'attention" />
+            <div style={{ paddingBottom: 8 }}>
+              <CadencePerContact
+                contactId={id}
+                resolution={cadenceResolution}
+                initialOverride={(typedContact.cadence_override as CadenceLevel) ?? null}
+              />
             </div>
-          )}
+          </>
+        ) : (
+          /* No profile state */
+          <>
+            <PointDivider label={`Connaître ${contactFirstName}`} />
+            <div style={{ padding: "32px 4px 24px", textAlign: "center" }}>
+              <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 8 }}>
+                Candice attend de connaître {contactFirstName}.
+              </p>
+              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, marginBottom: 24, maxWidth: 300, margin: "0 auto 24px" }}>
+                Envoyez-lui un lien ou remplissez le profil vous-même — Candice pourra alors anticiper les bons gestes.
+              </p>
+              <Link href={`/contacts/${id}/questionnaire`}>
+                <button className="btn-primary">Compléter le profil →</button>
+              </Link>
+            </div>
 
-          {/* À retenir */}
-          <WishlistSection contactId={id} initialWishlist={wishlist} />
-
-        </div>
-      ) : (
-        /* No profile state */
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div style={{ textAlign: "center", padding: "48px 24px", border: "0.5px dashed var(--br3)", borderRadius: "var(--r-lg)" }}>
-            <p style={{ fontSize: 14, fontWeight: 300, color: "var(--con)", marginBottom: 6 }}>
-              Candice attend de connaître {typedContact.name.split(" ")[0]}.
-            </p>
-            <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.65, marginBottom: 20, maxWidth: 300, margin: "0 auto 20px" }}>
-              Envoyez-lui un lien ou remplissez le profil vous-même — Candice pourra alors anticiper les bons gestes.
-            </p>
-            <Link href={`/contacts/${id}/questionnaire`}>
-              <button className="btn-primary">Compléter le profil →</button>
-            </Link>
-          </div>
-
-          {/* À retenir even without profile */}
-          <WishlistSection contactId={id} initialWishlist={wishlist} />
-        </div>
-      )}
+            <PointDivider label="À retenir" />
+            <WishlistSection contactId={id} initialWishlist={wishlist} />
+          </>
+        )}
+      </div>
     </DashboardShell>
   );
 }

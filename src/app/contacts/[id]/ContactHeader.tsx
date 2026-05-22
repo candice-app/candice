@@ -56,7 +56,6 @@ interface Props {
   phone: string | null;
   email: string | null;
   signedUrl: string | null;
-  completionPct: number;
   memoryMode?: boolean;
 }
 
@@ -64,7 +63,7 @@ const RELATIONSHIP_LABEL: Record<string, string> = {
   partner: "Partenaire", friend: "Ami(e)", family: "Famille", colleague: "Collègue", other: "Autre",
 };
 
-export default function ContactHeader({ contactId, name, relationship, phone, email, signedUrl, completionPct, memoryMode }: Props) {
+export default function ContactHeader({ contactId, name, relationship, phone, email, signedUrl, memoryMode }: Props) {
   const [photo, setPhoto] = useState<string | null>(signedUrl);
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -89,28 +88,32 @@ export default function ContactHeader({ contactId, name, relationship, phone, em
     }
   };
 
-  const barColor = completionPct >= 75 ? "#4A7C59" : completionPct >= 40 ? "#C47A4A" : "#9E7B5A";
-
   return (
-    <div style={{ display: "flex", alignItems: "flex-start", gap: 20, marginBottom: 28 }}>
-      {/* Avatar with upload */}
+    <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+      {/* Photo upload */}
       <div style={{ position: "relative", flexShrink: 0 }}>
         <button
           onClick={() => inputRef.current?.click()}
           disabled={uploading}
           title="Changer la photo"
           style={{
-            width: 64, height: 64, borderRadius: "50%",
+            width: 72, height: 72, borderRadius: "50%",
             background: photo ? "transparent" : getColor(name),
             border: "none", cursor: "pointer", padding: 0, overflow: "hidden",
             display: "flex", alignItems: "center", justifyContent: "center",
             position: "relative",
+            boxShadow: "0 0 0 1px var(--champ-line)",
           }}
         >
           {photo ? (
             <img src={photo} alt={name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           ) : (
-            <span style={{ fontSize: 22, fontWeight: 500, color: "#fff" }}>
+            <span style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 28, fontWeight: 300,
+              color: "var(--canvas)",
+              letterSpacing: "-.01em",
+            }}>
               {name.charAt(0).toUpperCase()}
             </span>
           )}
@@ -130,40 +133,42 @@ export default function ContactHeader({ contactId, name, relationship, phone, em
 
       {/* Info */}
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-          <h1 className="page-title" style={{ margin: 0, fontStyle: memoryMode ? "italic" : "normal", fontFamily: memoryMode ? "var(--font-serif, 'Playfair Display', serif)" : undefined }}>{name}</h1>
-          <span style={{
-            fontSize: 10, fontWeight: 500, letterSpacing: 1.5,
-            textTransform: "uppercase", color: "var(--terra)",
-            background: "var(--t2)", border: "0.5px solid var(--t3)",
-            padding: "2px 8px", borderRadius: 20,
-          }}>
-            {RELATIONSHIP_LABEL[relationship] ?? relationship}
-          </span>
+        <div style={{
+          fontFamily: "var(--font-serif)",
+          fontWeight: 300,
+          fontSize: "clamp(22px, 4.5vw, 28px)",
+          color: "var(--canvas)",
+          letterSpacing: "-.018em",
+          lineHeight: 1.15,
+          fontStyle: memoryMode ? "italic" : "normal",
+        }}>
+          {name}
         </div>
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12, marginBottom: 12 }}>
-          {phone && (
-            <a href={`tel:${phone}`} style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", textDecoration: "none" }}>
-              📞 {phone}
-            </a>
-          )}
-          {email && (
-            <a href={`mailto:${email}`} style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", textDecoration: "none" }}>
-              ✉ {email}
-            </a>
-          )}
+        <div style={{
+          fontSize: 12,
+          color: "var(--champ-line)",
+          fontWeight: 300,
+          marginTop: 5,
+          letterSpacing: ".08em",
+          textTransform: "uppercase",
+        }}>
+          {RELATIONSHIP_LABEL[relationship] ?? relationship}
+          {memoryMode && " · En souvenir"}
         </div>
-
-        {/* Completion bar */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ flex: 1, height: 4, background: "var(--brd)", borderRadius: 2, overflow: "hidden" }}>
-            <div style={{ height: "100%", width: `${completionPct}%`, background: barColor, borderRadius: 2, transition: "width 0.5s ease" }} />
+        {(phone || email) && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 14, marginTop: 10 }}>
+            {phone && (
+              <a href={`tel:${phone}`} style={{ fontSize: 12, fontWeight: 300, color: "rgba(244,241,232,.6)", textDecoration: "none" }}>
+                {phone}
+              </a>
+            )}
+            {email && (
+              <a href={`mailto:${email}`} style={{ fontSize: 12, fontWeight: 300, color: "rgba(244,241,232,.6)", textDecoration: "none" }}>
+                {email}
+              </a>
+            )}
           </div>
-          <span style={{ fontSize: 10, fontWeight: 500, color: barColor, flexShrink: 0 }}>
-            {completionPct}% profil
-          </span>
-        </div>
+        )}
       </div>
     </div>
   );

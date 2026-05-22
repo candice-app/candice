@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Logo } from "@/components/brand/Logo";
+import Wordmark from "@/components/presence/Wordmark";
 
 const BG = "#FAF7F2";
 const TERRA = "#C47A4A";
@@ -51,7 +51,7 @@ export default function MarketingNav() {
         }}
       >
         {/* Logo */}
-        <Logo size="lg" href="/" />
+        <Wordmark href="/" />
 
         {/* Desktop center links */}
         <div className="mkt-nav-links">

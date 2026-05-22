@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Logo } from "@/components/brand/Logo";
+import Wordmark from "@/components/presence/Wordmark";
 
 interface Props {
   onToggleSidebar?: () => void;
@@ -33,7 +33,7 @@ export default function Navbar({ onToggleSidebar }: Props) {
             <rect y="12" width="18" height="1.5" rx="0.75" fill="#2C1A0E" />
           </svg>
         </button>
-        <Logo size="sm" href="/dashboard" />
+        <Wordmark href="/dashboard" />
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>

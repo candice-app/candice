@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
-import { Logo } from "@/components/brand/Logo";
+import Wordmark from "@/components/presence/Wordmark";
 
 const BG = "#FAF7F2";
 const WHITE = "#FFFFFF";
@@ -64,7 +64,7 @@ export default function LoginPage() {
       `}</style>
 
       <header style={{ padding: "20px 24px", borderBottom: `0.5px solid rgba(44,26,14,0.08)` }}>
-        <Logo size="md" href="/" />
+        <Wordmark href="/" />
       </header>
 
       <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 16px" }}>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Logo } from "@/components/brand/Logo";
+import Wordmark from "@/components/presence/Wordmark";
 
 const DEEP = "#2C1A0E";
 const TERRA = "#C47A4A";
@@ -58,7 +58,7 @@ export default function MarketingFooter() {
         <div style={{ padding: "96px 40px 0", maxWidth: 1200, margin: "0 auto" }}>
           {/* Identity */}
           <div style={{ marginBottom: 60 }}>
-            <Logo size="md" href="/" color="#FAF7F2" />
+            <Wordmark tone="on-dark" href="/" />
             <p style={{ fontFamily: DM, fontStyle: "italic", fontSize: 13, color: "rgba(250,247,242,0.55)", marginTop: 12, marginBottom: 0 }}>
               Relational Operating System — Le premier copilote relationnel.
             </p>

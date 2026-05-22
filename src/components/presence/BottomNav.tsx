@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 const NAV_ITEMS = [
   {
     label: "Proches",
-    href: "/dashboard",
-    activeOn: (p: string) => p === "/dashboard" || (p.startsWith("/contacts") && !p.includes("/new")),
+    href: "/contacts",
+    activeOn: (p: string) => p === "/contacts" || (p.startsWith("/contacts") && !p.includes("/new")),
     icon: (
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="9" cy="9" r="3.2" />
