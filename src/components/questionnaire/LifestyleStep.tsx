@@ -3,23 +3,19 @@
 import { useState } from "react";
 import type { LifestyleQuestion, LifestyleOption } from "@/lib/lifestyle/questions";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface Props {
   questions: LifestyleQuestion[];
   onDone: (answers: Record<string, string>) => void;
 }
 
-// ─── Hero header ──────────────────────────────────────────────────────────────
-
 function LifestyleHero({
-  questionIndex,
+  answeredCount,
   totalQuestions,
 }: {
-  questionIndex: number;
+  answeredCount: number;
   totalQuestions: number;
 }) {
-  const progress = Math.round((questionIndex / totalQuestions) * 100);
+  const progress = Math.round((answeredCount / totalQuestions) * 100);
 
   return (
     <div style={{
@@ -73,7 +69,7 @@ function LifestyleHero({
           color: "rgba(205,185,135,.65)",
           letterSpacing: ".22em",
         }}>
-          Étape 4/7 — {questionIndex + 1}/{totalQuestions}
+          04 — 07
         </span>
       </div>
 
@@ -95,10 +91,10 @@ function LifestyleHero({
   );
 }
 
-// ─── Option card ──────────────────────────────────────────────────────────────
-
 function OptionCard({
-  option, selected, onSelect,
+  option,
+  selected,
+  onSelect,
 }: {
   option: LifestyleOption;
   selected: boolean;
@@ -174,116 +170,97 @@ function OptionCard({
   );
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+function QuestionBlock({
+  question,
+  selectedId,
+  onSelect,
+}: {
+  question: LifestyleQuestion;
+  selectedId: string | null;
+  onSelect: (optionId: string) => void;
+}) {
+  return (
+    <div style={{ marginBottom: 40 }}>
+      <div style={{ marginBottom: 18 }}>
+        <label style={{
+          fontFamily: "var(--font-serif)",
+          fontOpticalSizing: "auto",
+          fontSize: "clamp(26px, 6vw, 34px)",
+          fontWeight: 300,
+          color: "var(--ink)",
+          display: "block",
+          letterSpacing: "-.018em",
+          lineHeight: 1.15,
+          marginBottom: 8,
+        } as React.CSSProperties}>
+          {question.title}
+        </label>
+        <p style={{
+          fontSize: 12,
+          fontWeight: 300,
+          color: "var(--ink-3)",
+          fontStyle: "italic",
+          lineHeight: 1.5,
+        }}>
+          {question.micro}
+        </p>
+      </div>
+
+      <div>
+        {question.options.map((opt) => (
+          <OptionCard
+            key={opt.id}
+            option={opt}
+            selected={selectedId === opt.id}
+            onSelect={() => onSelect(opt.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function LifestyleStep({ questions, onDone }: Props) {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
-  const question = questions[currentIndex];
-  const selectedId = answers[question.id] ?? null;
-  const isLast = currentIndex === questions.length - 1;
+  const answeredCount = Object.keys(answers).length;
+  const allAnswered = answeredCount === questions.length;
 
-  function selectOption(optionId: string) {
-    setAnswers(prev => ({ ...prev, [question.id]: optionId }));
-  }
-
-  function handleNext() {
-    if (!selectedId) return;
-    if (isLast) {
-      onDone(answers);
-    } else {
-      setCurrentIndex(i => i + 1);
-    }
-  }
-
-  function handleBack() {
-    if (currentIndex > 0) setCurrentIndex(i => i - 1);
+  function select(questionId: string, optionId: string) {
+    setAnswers(prev => ({ ...prev, [questionId]: optionId }));
   }
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
       <LifestyleHero
-        questionIndex={currentIndex}
+        answeredCount={answeredCount}
         totalQuestions={questions.length}
       />
 
       <div style={{ padding: "28px 20px 100px" }}>
+        {questions.map((q) => (
+          <QuestionBlock
+            key={q.id}
+            question={q}
+            selectedId={answers[q.id] ?? null}
+            onSelect={(optId) => select(q.id, optId)}
+          />
+        ))}
 
-        <div style={{ marginBottom: 24 }}>
-          <label style={{
-            fontFamily: "var(--font-serif)",
-            fontOpticalSizing: "auto",
-            fontSize: "clamp(26px, 6vw, 34px)",
-            fontWeight: 300,
-            color: "var(--ink)",
-            display: "block",
-            letterSpacing: "-.018em",
-            lineHeight: 1.15,
-            marginBottom: 10,
-          } as React.CSSProperties}>
-            {question.title}
-          </label>
-          <p style={{
-            fontSize: 12,
-            fontWeight: 300,
-            color: "var(--ink-3)",
-            fontStyle: "italic",
-            lineHeight: 1.5,
-          }}>
-            {question.micro}
-          </p>
-        </div>
-
-        <div style={{ marginBottom: 24 }}>
-          {question.options.map((opt) => (
-            <OptionCard
-              key={opt.id}
-              option={opt}
-              selected={selectedId === opt.id}
-              onSelect={() => selectOption(opt.id)}
-            />
-          ))}
-        </div>
-
-        <div style={{ display: "flex", gap: 12 }}>
-          {currentIndex > 0 && (
-            <button
-              type="button"
-              onClick={handleBack}
-              style={{
-                height: 52,
-                padding: "0 20px",
-                background: "none",
-                border: "0.5px solid var(--line)",
-                borderRadius: 8,
-                fontSize: 15,
-                fontWeight: 300,
-                color: "var(--ink-3)",
-                cursor: "pointer",
-                fontFamily: "var(--font-sans)",
-                flexShrink: 0,
-              }}
-            >
-              ←
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={!selectedId}
-            className="btn-primary"
-            style={{
-              flex: 1,
-              minHeight: 52,
-              opacity: selectedId ? 1 : 0.4,
-              transition: "opacity .2s",
-            }}
-          >
-            {isLast ? "Continuer →" : "Suivant →"}
-          </button>
-        </div>
-
+        <button
+          type="button"
+          onClick={() => allAnswered && onDone(answers)}
+          disabled={!allAnswered}
+          className="btn-primary"
+          style={{
+            width: "100%",
+            minHeight: 52,
+            opacity: allAnswered ? 1 : 0.4,
+            transition: "opacity .2s",
+          }}
+        >
+          Continuer →
+        </button>
       </div>
     </div>
   );

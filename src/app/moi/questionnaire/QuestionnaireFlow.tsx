@@ -372,7 +372,8 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             },
             { onConflict: "user_id" }
           ).then(() => {});
-          setStep("singularity6Breath");
+          const hasContent = Object.values(answers).some(v => v.trim().length > 0);
+          setStep(hasContent ? "singularity6Breath" : "practical7");
         }}
       />
     );

@@ -10,17 +10,17 @@ export const metadata: Metadata = {
     "Candice vous aide à mieux gérer les personnes qui comptent. Profils intelligents, mémoire relationnelle, recommandations personnalisées et exécution assistée — un copilote relationnel premium.",
 };
 
-const BG = "#FAF7F2";
+const BG = "#FDFDFB";
 const WHITE = "#FFFFFF";
-const TERRA = "#C47A4A";
-const CON = "#1E1208";
-const COND = "#7A5E44";
-const DEEP = "#2C1A0E";
-const WARM = "#F5EDE3";
-const GREEN = "#4A7C59";
-const BORDER = "rgba(30,18,8,0.1)";
-const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const TERRA = "#173E31";
+const CON = "#1A1A1A";
+const COND = "rgba(26,26,26,0.55)";
+const DEEP = "#0E2219";
+const WARM = "#F0F4F2";
+const GREEN = "#173E31";
+const BORDER = "rgba(23,62,49,0.1)";
+const DM = "var(--font-sans)";
+const PLAYFAIR = "var(--font-serif)";
 
 export default function ConceptPage() {
   return (
@@ -299,12 +299,12 @@ export default function ConceptPage() {
 }
 
 function ConversationMockup() {
-  const C_BG = "#FAF7F2";
+  const C_BG = "#FDFDFB";
   const C_WHITE = "#FFFFFF";
-  const C_CON = "#1E1208";
-  const C_COND = "#7A5E44";
-  const C_TERRA = "#C47A4A";
-  const C_BORDER = "rgba(30,18,8,0.1)";
+  const C_CON = "#1A1A1A";
+  const C_COND = "rgba(26,26,26,0.55)";
+  const C_TERRA = "#173E31";
+  const C_BORDER = "rgba(23,62,49,0.1)";
 
   return (
     <div style={{ background: "#1C1C1E", borderRadius: 44, padding: "12px 6px 16px", boxShadow: "0 24px 48px rgba(44,26,14,0.15)" }}>

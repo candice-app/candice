@@ -8,14 +8,14 @@ export const metadata: Metadata = {
   description: "Chaque détail compte. Candice s'en souvient.",
 };
 
-const BG = "#FAF7F2";
+const BG = "#FDFDFB";
 const WHITE = "#FFFFFF";
-const TERRA = "#C47A4A";
-const CON = "#1E1208";
-const COND = "#7A5E44";
-const BORDER = "rgba(30,18,8,0.1)";
-const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const TERRA = "#173E31";
+const CON = "#1A1A1A";
+const COND = "rgba(26,26,26,0.55)";
+const BORDER = "rgba(23,62,49,0.1)";
+const DM = "var(--font-sans)";
+const PLAYFAIR = "var(--font-serif)";
 
 export default function FonctionnementPage() {
   return (

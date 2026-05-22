@@ -6,7 +6,7 @@ import { MyProfile } from "@/types";
 // ─── Label maps ───────────────────────────────────────────────────────────────
 
 const LABEL: Record<string, Record<string, string>> = {
-  love_language: { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité" },
+  love_language: { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité", touch: "" },
   communication_style: { direct: "Direct et concis", emotional: "Émotionnel et expressif", analytical: "Analytique et détaillé", casual: "Décontracté et humoristique" },
   stress_response: { withdraws: "Besoin de solitude", seeks_support: "Cherche du soutien", action_oriented: "Passe à l'action", internalizes: "Intériorise ses émotions" },
   social_energy: { very_introverted: "Très introverti(e)", introverted: "Introverti(e)", ambivert: "Ambiverti(e)", extroverted: "Extraverti(e)", very_extroverted: "Très extraverti(e)" },
@@ -26,7 +26,7 @@ const LABEL: Record<string, Record<string, string>> = {
 
 function resolve(field: string, value: string | null): string | null {
   if (!value) return null;
-  const parts = value.split(",").filter(Boolean).map(v => LABEL[field]?.[v.trim()] ?? v.trim());
+  const parts = value.split(",").filter(Boolean).map(v => LABEL[field]?.[v.trim()] ?? v.trim()).filter(Boolean);
   return parts.length > 0 ? parts.join(", ") : null;
 }
 

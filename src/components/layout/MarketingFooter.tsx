@@ -1,10 +1,8 @@
 import Link from "next/link";
 import Wordmark from "@/components/presence/Wordmark";
 
-const DEEP = "#2C1A0E";
-const TERRA = "#C47A4A";
-const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const DEEP = "#0E2219";
+const DM = "var(--font-sans)";
 
 export default function MarketingFooter() {
   return (

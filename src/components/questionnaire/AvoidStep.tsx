@@ -3,21 +3,20 @@
 import { useState } from "react";
 import type { LifestyleQuestion, LifestyleOption } from "@/lib/lifestyle/questions";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface Props {
   q18Question: LifestyleQuestion;
   q19Question: LifestyleQuestion;
   onDone: (answers: Record<string, string>, q17Text: string) => void;
 }
 
-// Screens: q17 textarea → q18 choice → q19 choice
-type Screen = "q17" | "q18" | "q19";
-
-// ─── Hero header ──────────────────────────────────────────────────────────────
-
-function AvoidHero({ screenIndex }: { screenIndex: number }) {
-  const progress = Math.round((screenIndex / 3) * 100);
+function AvoidHero({
+  answeredCount,
+  totalRequired,
+}: {
+  answeredCount: number;
+  totalRequired: number;
+}) {
+  const progress = Math.round((answeredCount / totalRequired) * 100);
 
   return (
     <div style={{
@@ -71,7 +70,7 @@ function AvoidHero({ screenIndex }: { screenIndex: number }) {
           color: "rgba(205,185,135,.65)",
           letterSpacing: ".22em",
         }}>
-          Étape 5/7
+          05 — 07
         </span>
       </div>
 
@@ -93,10 +92,10 @@ function AvoidHero({ screenIndex }: { screenIndex: number }) {
   );
 }
 
-// ─── Option card (reused pattern) ────────────────────────────────────────────
-
 function OptionCard({
-  option, selected, onSelect,
+  option,
+  selected,
+  onSelect,
 }: {
   option: LifestyleOption;
   selected: boolean;
@@ -172,269 +171,159 @@ function OptionCard({
   );
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+function ChoiceBlock({
+  question,
+  selectedId,
+  onSelect,
+}: {
+  question: LifestyleQuestion;
+  selectedId: string | null;
+  onSelect: (optionId: string) => void;
+}) {
+  return (
+    <div style={{ marginBottom: 40 }}>
+      <div style={{ marginBottom: 18 }}>
+        <label style={{
+          fontFamily: "var(--font-serif)",
+          fontOpticalSizing: "auto",
+          fontSize: "clamp(26px, 6vw, 34px)",
+          fontWeight: 300,
+          color: "var(--ink)",
+          display: "block",
+          letterSpacing: "-.018em",
+          lineHeight: 1.15,
+          marginBottom: 8,
+        } as React.CSSProperties}>
+          {question.title}
+        </label>
+        <p style={{
+          fontSize: 12,
+          fontWeight: 300,
+          color: "var(--ink-3)",
+          fontStyle: "italic",
+          lineHeight: 1.5,
+        }}>
+          {question.micro}
+        </p>
+      </div>
+      <div>
+        {question.options.map(opt => (
+          <OptionCard
+            key={opt.id}
+            option={opt}
+            selected={selectedId === opt.id}
+            onSelect={() => onSelect(opt.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function AvoidStep({ q18Question, q19Question, onDone }: Props) {
-  const [screen, setScreen] = useState<Screen>("q17");
   const [q17Text, setQ17Text] = useState("");
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [q17Focused, setQ17Focused] = useState(false);
 
-  const screenIndex = screen === "q17" ? 0 : screen === "q18" ? 1 : 2;
+  const q18Selected = !!answers[q18Question.id];
+  const q19Selected = !!answers[q19Question.id];
+  const allAnswered = q18Selected && q19Selected;
+  const answeredCount = (q18Selected ? 1 : 0) + (q19Selected ? 1 : 0);
 
-  function handleQ17Continue() {
-    setScreen("q18");
-  }
-
-  function selectOption(questionId: string, optionId: string) {
+  function select(questionId: string, optionId: string) {
     setAnswers(prev => ({ ...prev, [questionId]: optionId }));
-  }
-
-  function handleQ18Next() {
-    if (!answers[q18Question.id]) return;
-    setScreen("q19");
-  }
-
-  function handleQ19Done() {
-    if (!answers[q19Question.id]) return;
-    onDone(answers, q17Text);
   }
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <AvoidHero screenIndex={screenIndex} />
+      <AvoidHero answeredCount={answeredCount} totalRequired={2} />
 
       <div style={{ padding: "28px 20px 100px" }}>
 
-        {/* ── Q17 : champ texte libre ── */}
-        {screen === "q17" && (
-          <>
-            <div style={{ marginBottom: 24 }}>
-              <label
-                htmlFor="q17"
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontOpticalSizing: "auto",
-                  fontSize: "clamp(26px, 6vw, 34px)",
-                  fontWeight: 300,
-                  color: "var(--ink)",
-                  display: "block",
-                  letterSpacing: "-.018em",
-                  lineHeight: 1.15,
-                  marginBottom: 10,
-                } as React.CSSProperties}
-              >
-                Ce qu'il vaut mieux éviter avec moi…
-              </label>
-              <p style={{
-                fontSize: 12,
-                fontWeight: 300,
-                color: "var(--ink-3)",
-                fontStyle: "italic",
-                lineHeight: 1.5,
-              }}>
-                Aucune obligation — réponds instinctivement, ou laisse vide.
-              </p>
-            </div>
+        {/* Q17 — champ texte libre (optionnel) */}
+        <div style={{ marginBottom: 40 }}>
+          <label
+            htmlFor="q17"
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontOpticalSizing: "auto",
+              fontSize: "clamp(26px, 6vw, 34px)",
+              fontWeight: 300,
+              color: "var(--ink)",
+              display: "block",
+              letterSpacing: "-.018em",
+              lineHeight: 1.15,
+              marginBottom: 8,
+            } as React.CSSProperties}
+          >
+            Ce qu'il vaut mieux éviter avec moi…
+          </label>
+          <p style={{
+            fontSize: 12,
+            fontWeight: 300,
+            color: "var(--ink-3)",
+            fontStyle: "italic",
+            lineHeight: 1.5,
+            marginBottom: 14,
+          }}>
+            Aucune obligation — réponds instinctivement, ou laisse vide.
+          </p>
+          <textarea
+            id="q17"
+            value={q17Text}
+            onChange={e => setQ17Text(e.target.value)}
+            placeholder="ex. les surprises, les annulations de dernière minute, certaines blagues, le bruit, les espaces bondés…"
+            rows={4}
+            onFocus={() => setQ17Focused(true)}
+            onBlur={() => setQ17Focused(false)}
+            style={{
+              width: "100%",
+              padding: "14px 16px",
+              borderRadius: 14,
+              border: q17Focused ? "1.5px solid var(--pine)" : "0.5px solid var(--line)",
+              background: "var(--white)",
+              fontFamily: "var(--font-sans)",
+              fontSize: 15,
+              fontWeight: 300,
+              color: "var(--ink)",
+              lineHeight: 1.6,
+              resize: "none",
+              outline: "none",
+              boxShadow: "0 2px 10px -3px rgba(23,62,49,.05)",
+              transition: "border-color .22s",
+              boxSizing: "border-box",
+            } as React.CSSProperties}
+          />
+        </div>
 
-            <textarea
-              id="q17"
-              value={q17Text}
-              onChange={e => setQ17Text(e.target.value)}
-              placeholder="ex. les surprises, les annulations de dernière minute, certaines blagues, le bruit, les espaces bondés…"
-              rows={5}
-              style={{
-                width: "100%",
-                padding: "14px 16px",
-                borderRadius: 14,
-                border: "0.5px solid var(--line)",
-                background: "var(--white)",
-                fontFamily: "var(--font-sans)",
-                fontSize: 15,
-                fontWeight: 300,
-                color: "var(--ink)",
-                lineHeight: 1.6,
-                resize: "none",
-                outline: "none",
-                boxShadow: "0 2px 10px -3px rgba(23,62,49,.05)",
-                transition: "border-color .22s",
-                marginBottom: 24,
-                boxSizing: "border-box",
-              } as React.CSSProperties}
-              onFocus={e => {
-                e.target.style.borderColor = "var(--pine)";
-                e.target.style.borderWidth = "1.5px";
-              }}
-              onBlur={e => {
-                e.target.style.borderColor = "var(--line)";
-                e.target.style.borderWidth = "0.5px";
-              }}
-            />
+        {/* Q18 */}
+        <ChoiceBlock
+          question={q18Question}
+          selectedId={answers[q18Question.id] ?? null}
+          onSelect={(optId) => select(q18Question.id, optId)}
+        />
 
-            <button
-              type="button"
-              onClick={handleQ17Continue}
-              className="btn-primary"
-              style={{ width: "100%", minHeight: 52 }}
-            >
-              Continuer →
-            </button>
-          </>
-        )}
+        {/* Q19 */}
+        <ChoiceBlock
+          question={q19Question}
+          selectedId={answers[q19Question.id] ?? null}
+          onSelect={(optId) => select(q19Question.id, optId)}
+        />
 
-        {/* ── Q18 ── */}
-        {screen === "q18" && (
-          <>
-            <div style={{ marginBottom: 24 }}>
-              <label style={{
-                fontFamily: "var(--font-serif)",
-                fontOpticalSizing: "auto",
-                fontSize: "clamp(26px, 6vw, 34px)",
-                fontWeight: 300,
-                color: "var(--ink)",
-                display: "block",
-                letterSpacing: "-.018em",
-                lineHeight: 1.15,
-                marginBottom: 10,
-              } as React.CSSProperties}>
-                {q18Question.title}
-              </label>
-              <p style={{
-                fontSize: 12,
-                fontWeight: 300,
-                color: "var(--ink-3)",
-                fontStyle: "italic",
-                lineHeight: 1.5,
-              }}>
-                {q18Question.micro}
-              </p>
-            </div>
-
-            <div style={{ marginBottom: 24 }}>
-              {q18Question.options.map(opt => (
-                <OptionCard
-                  key={opt.id}
-                  option={opt}
-                  selected={answers[q18Question.id] === opt.id}
-                  onSelect={() => selectOption(q18Question.id, opt.id)}
-                />
-              ))}
-            </div>
-
-            <div style={{ display: "flex", gap: 12 }}>
-              <button
-                type="button"
-                onClick={() => setScreen("q17")}
-                style={{
-                  height: 52,
-                  padding: "0 20px",
-                  background: "none",
-                  border: "0.5px solid var(--line)",
-                  borderRadius: 8,
-                  fontSize: 15,
-                  fontWeight: 300,
-                  color: "var(--ink-3)",
-                  cursor: "pointer",
-                  fontFamily: "var(--font-sans)",
-                  flexShrink: 0,
-                }}
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                onClick={handleQ18Next}
-                disabled={!answers[q18Question.id]}
-                className="btn-primary"
-                style={{
-                  flex: 1,
-                  minHeight: 52,
-                  opacity: answers[q18Question.id] ? 1 : 0.4,
-                  transition: "opacity .2s",
-                }}
-              >
-                Suivant →
-              </button>
-            </div>
-          </>
-        )}
-
-        {/* ── Q19 ── */}
-        {screen === "q19" && (
-          <>
-            <div style={{ marginBottom: 24 }}>
-              <label style={{
-                fontFamily: "var(--font-serif)",
-                fontOpticalSizing: "auto",
-                fontSize: "clamp(26px, 6vw, 34px)",
-                fontWeight: 300,
-                color: "var(--ink)",
-                display: "block",
-                letterSpacing: "-.018em",
-                lineHeight: 1.15,
-                marginBottom: 10,
-              } as React.CSSProperties}>
-                {q19Question.title}
-              </label>
-              <p style={{
-                fontSize: 12,
-                fontWeight: 300,
-                color: "var(--ink-3)",
-                fontStyle: "italic",
-                lineHeight: 1.5,
-              }}>
-                {q19Question.micro}
-              </p>
-            </div>
-
-            <div style={{ marginBottom: 24 }}>
-              {q19Question.options.map(opt => (
-                <OptionCard
-                  key={opt.id}
-                  option={opt}
-                  selected={answers[q19Question.id] === opt.id}
-                  onSelect={() => selectOption(q19Question.id, opt.id)}
-                />
-              ))}
-            </div>
-
-            <div style={{ display: "flex", gap: 12 }}>
-              <button
-                type="button"
-                onClick={() => setScreen("q18")}
-                style={{
-                  height: 52,
-                  padding: "0 20px",
-                  background: "none",
-                  border: "0.5px solid var(--line)",
-                  borderRadius: 8,
-                  fontSize: 15,
-                  fontWeight: 300,
-                  color: "var(--ink-3)",
-                  cursor: "pointer",
-                  fontFamily: "var(--font-sans)",
-                  flexShrink: 0,
-                }}
-              >
-                ←
-              </button>
-              <button
-                type="button"
-                onClick={handleQ19Done}
-                disabled={!answers[q19Question.id]}
-                className="btn-primary"
-                style={{
-                  flex: 1,
-                  minHeight: 52,
-                  opacity: answers[q19Question.id] ? 1 : 0.4,
-                  transition: "opacity .2s",
-                }}
-              >
-                Continuer →
-              </button>
-            </div>
-          </>
-        )}
-
+        <button
+          type="button"
+          onClick={() => allAnswered && onDone(answers, q17Text)}
+          disabled={!allAnswered}
+          className="btn-primary"
+          style={{
+            width: "100%",
+            minHeight: 52,
+            opacity: allAnswered ? 1 : 0.4,
+            transition: "opacity .2s",
+          }}
+        >
+          Continuer →
+        </button>
       </div>
     </div>
   );

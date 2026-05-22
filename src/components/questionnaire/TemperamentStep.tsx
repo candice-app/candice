@@ -3,8 +3,6 @@
 import { useState } from "react";
 import type { TemperamentQuestion, TemperamentOption } from "@/lib/temperament/questions";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 interface Props {
   questions: TemperamentQuestion[];
   stepNumber: 2 | 3;
@@ -12,16 +10,18 @@ interface Props {
   onDone: (answers: Record<string, string>) => void;
 }
 
-// ─── Hero header ──────────────────────────────────────────────────────────────
-
 function TemperamentHero({
-  stepNumber, questionIndex, totalQuestions,
+  stepNumber,
+  answeredCount,
+  totalQuestions,
 }: {
   stepNumber: number;
-  questionIndex: number;
+  answeredCount: number;
   totalQuestions: number;
 }) {
-  const progress = Math.round(((questionIndex) / totalQuestions) * 100);
+  const progress = Math.round((answeredCount / totalQuestions) * 100);
+  const stepLabel = stepNumber === 2 ? "Mon énergie relationnelle" : "Communication & décision";
+  const stepIndex = stepNumber === 2 ? "02" : "03";
 
   return (
     <div style={{
@@ -39,7 +39,7 @@ function TemperamentHero({
         color: "rgba(205,185,135,.65)",
         marginBottom: 10,
       }}>
-        {stepNumber === 2 ? "Mon énergie relationnelle" : "Communication & décision"}
+        {stepLabel}
       </p>
 
       <div style={{
@@ -62,7 +62,9 @@ function TemperamentHero({
         }}>
           CANDICE
           <span style={{
-            width: 5, height: 5, borderRadius: "50%",
+            width: 5,
+            height: 5,
+            borderRadius: "50%",
             background: "var(--champ)",
             boxShadow: "0 0 7px 1px rgba(205,185,135,.5)",
             display: "inline-block",
@@ -75,7 +77,7 @@ function TemperamentHero({
           color: "rgba(205,185,135,.65)",
           letterSpacing: ".22em",
         }}>
-          Étape {stepNumber}/7 — {questionIndex + 1}/{totalQuestions}
+          {stepIndex} — 07
         </span>
       </div>
 
@@ -97,10 +99,10 @@ function TemperamentHero({
   );
 }
 
-// ─── Single-choice option card ────────────────────────────────────────────────
-
 function OptionCard({
-  option, selected, onSelect,
+  option,
+  selected,
+  onSelect,
 }: {
   option: TemperamentOption;
   selected: boolean;
@@ -129,7 +131,6 @@ function OptionCard({
         marginBottom: 10,
       }}
     >
-      {/* Selection indicator */}
       <span style={{
         flexShrink: 0,
         width: 20,
@@ -177,120 +178,98 @@ function OptionCard({
   );
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
+function QuestionBlock({
+  question,
+  selectedId,
+  onSelect,
+}: {
+  question: TemperamentQuestion;
+  selectedId: string | null;
+  onSelect: (optionId: string) => void;
+}) {
+  return (
+    <div style={{ marginBottom: 40 }}>
+      <div style={{ marginBottom: 18 }}>
+        <label style={{
+          fontFamily: "var(--font-serif)",
+          fontOpticalSizing: "auto",
+          fontSize: "clamp(26px, 6vw, 34px)",
+          fontWeight: 300,
+          color: "var(--ink)",
+          display: "block",
+          letterSpacing: "-.018em",
+          lineHeight: 1.15,
+          marginBottom: 8,
+        } as React.CSSProperties}>
+          {question.title}
+        </label>
+        <p style={{
+          fontSize: 12,
+          fontWeight: 300,
+          color: "var(--ink-3)",
+          fontStyle: "italic",
+          lineHeight: 1.5,
+        }}>
+          {question.micro}
+        </p>
+      </div>
+
+      <div>
+        {question.options.map((opt) => (
+          <OptionCard
+            key={opt.id}
+            option={opt}
+            selected={selectedId === opt.id}
+            onSelect={() => onSelect(opt.id)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function TemperamentStep({ questions, stepNumber, onDone }: Props) {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
 
-  const question = questions[currentIndex];
-  const selectedId = answers[question.id] ?? null;
-  const isLast = currentIndex === questions.length - 1;
+  const answeredCount = Object.keys(answers).length;
+  const allAnswered = answeredCount === questions.length;
 
-  function selectOption(optionId: string) {
-    setAnswers(prev => ({ ...prev, [question.id]: optionId }));
-  }
-
-  function handleNext() {
-    if (!selectedId) return;
-    if (isLast) {
-      onDone(answers);
-    } else {
-      setCurrentIndex(i => i + 1);
-    }
-  }
-
-  function handleBack() {
-    if (currentIndex > 0) setCurrentIndex(i => i - 1);
+  function select(questionId: string, optionId: string) {
+    setAnswers(prev => ({ ...prev, [questionId]: optionId }));
   }
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
       <TemperamentHero
         stepNumber={stepNumber}
-        questionIndex={currentIndex}
+        answeredCount={answeredCount}
         totalQuestions={questions.length}
       />
 
       <div style={{ padding: "28px 20px 100px" }}>
+        {questions.map((q) => (
+          <QuestionBlock
+            key={q.id}
+            question={q}
+            selectedId={answers[q.id] ?? null}
+            onSelect={(optId) => select(q.id, optId)}
+          />
+        ))}
 
-        {/* Question */}
-        <div style={{ marginBottom: 24 }}>
-          <label style={{
-            fontFamily: "var(--font-serif)",
-            fontOpticalSizing: "auto",
-            fontSize: "clamp(26px, 6vw, 34px)",
-            fontWeight: 300,
-            color: "var(--ink)",
-            display: "block",
-            letterSpacing: "-.018em",
-            lineHeight: 1.15,
-            marginBottom: 10,
-          } as React.CSSProperties}>
-            {question.title}
-          </label>
-          <p style={{
-            fontSize: 12,
-            fontWeight: 300,
-            color: "var(--ink-3)",
-            fontStyle: "italic",
-            lineHeight: 1.5,
-          }}>
-            {question.micro}
-          </p>
-        </div>
-
-        {/* Options */}
-        <div style={{ marginBottom: 24 }}>
-          {question.options.map((opt) => (
-            <OptionCard
-              key={opt.id}
-              option={opt}
-              selected={selectedId === opt.id}
-              onSelect={() => selectOption(opt.id)}
-            />
-          ))}
-        </div>
-
-        {/* Navigation */}
-        <div style={{ display: "flex", gap: 12 }}>
-          {currentIndex > 0 && (
-            <button
-              type="button"
-              onClick={handleBack}
-              style={{
-                height: 52,
-                padding: "0 20px",
-                background: "none",
-                border: "0.5px solid var(--line)",
-                borderRadius: 8,
-                fontSize: 15,
-                fontWeight: 300,
-                color: "var(--ink-3)",
-                cursor: "pointer",
-                fontFamily: "var(--font-sans)",
-                flexShrink: 0,
-              }}
-            >
-              ←
-            </button>
-          )}
-          <button
-            type="button"
-            onClick={handleNext}
-            disabled={!selectedId}
-            className="btn-primary"
-            style={{
-              flex: 1,
-              minHeight: 52,
-              opacity: selectedId ? 1 : 0.4,
-              transition: "opacity .2s",
-            }}
-          >
-            {isLast ? "Continuer →" : "Suivant →"}
-          </button>
-        </div>
-
+        <button
+          type="button"
+          onClick={() => allAnswered && onDone(answers)}
+          disabled={!allAnswered}
+          className="btn-primary"
+          style={{
+            width: "100%",
+            minHeight: 52,
+            opacity: allAnswered ? 1 : 0.4,
+            transition: "opacity .2s",
+          }}
+        >
+          Continuer →
+        </button>
       </div>
     </div>
   );

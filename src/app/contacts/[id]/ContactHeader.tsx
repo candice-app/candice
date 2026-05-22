@@ -36,7 +36,7 @@ function compressImage(file: File, maxPx: number, quality: number): Promise<Blob
 }
 
 const AVATAR_COLORS = [
-  "linear-gradient(135deg,#C47A4A,#8A4020)",
+  "linear-gradient(135deg,#2A5C39,#1A3E26)",
   "linear-gradient(135deg,#4A7C59,#2A5C39)",
   "linear-gradient(135deg,#534AB7,#3C3489)",
   "linear-gradient(135deg,#9A3556,#72243E)",

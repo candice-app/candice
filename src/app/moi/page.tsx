@@ -8,6 +8,7 @@ import { MyProfile, CadenceLevel } from "@/types";
 import ShareButton from "./ShareButton";
 import CadenceGlobal from "@/components/dashboard/CadenceGlobal";
 import ResumePrompt from "@/components/questionnaire/ResumePrompt";
+import LogoutButton from "./LogoutButton";
 
 // ─── Label maps ───────────────────────────────────────────────────────────────
 
@@ -17,6 +18,7 @@ const LABEL: Record<string, Record<string, string>> = {
     acts: "Actes de service",
     gifts: "Cadeaux",
     time: "Temps de qualité",
+    touch: "",
   },
   communication_style: {
     direct: "Direct et concis",
@@ -90,7 +92,7 @@ const LABEL: Record<string, Record<string, string>> = {
 
 function resolve(field: string, value: string | null): string | null {
   if (!value) return null;
-  const parts = value.split(",").filter(Boolean).map(v => LABEL[field]?.[v.trim()] ?? v.trim());
+  const parts = value.split(",").filter(Boolean).map(v => LABEL[field]?.[v.trim()] ?? v.trim()).filter(Boolean);
   return parts.length > 0 ? parts.join(", ") : null;
 }
 
@@ -116,6 +118,7 @@ export default async function MoiPage() {
 
   const profile = existing as (MyProfile & { attention_breath_text?: string | null }) | null;
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "toi";
+  const initial = firstName !== "toi" ? firstName[0].toUpperCase() : "M";
 
   const cadence = profile?.cadence_preference ?? "normal";
   const cadenceInfo = CADENCE_LABELS_FR[cadence] ?? CADENCE_LABELS_FR.normal;
@@ -133,39 +136,84 @@ export default async function MoiPage() {
 
   return (
     <DashboardShell>
-      <div className="content-col" style={{ paddingTop: 28 }}>
 
-        {/* Header */}
-        <div style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          marginBottom: 28,
-          padding: "0 4px",
-        }}>
-          <div>
-            <h1 style={{
+      {/* ── Green hero header — mirrors contacts/[id] ── */}
+      <div
+        className="hero-mass"
+        style={{
+          padding: "0 0 28px",
+          background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
+        }}
+      >
+        <div style={{ padding: "18px 24px 0" }}>
+          <Link href="/dashboard" style={{ textDecoration: "none" }}>
+            <span style={{
+              fontSize: 12, fontWeight: 300,
+              color: "rgba(244,241,232,.5)",
+              letterSpacing: ".08em",
+              display: "inline-flex", alignItems: "center", gap: 6,
+            }}>
+              ← Tableau de bord
+            </span>
+          </Link>
+        </div>
+
+        <div style={{ padding: "20px 24px 0", display: "flex", alignItems: "center", gap: 18 }}>
+          {/* Avatar */}
+          <div style={{
+            width: 72, height: 72, borderRadius: "50%",
+            background: "radial-gradient(120% 120% at 30% 22%, #FFFFFF, #F1E8D2 60%, #E0CFA6)",
+            boxShadow: "0 0 0 1px var(--champ-line)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <span style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: 28, fontWeight: 300,
+              color: "var(--pine)",
+              letterSpacing: "-.01em",
+            }}>
+              {initial}
+            </span>
+          </div>
+          {/* Name + label */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{
               fontFamily: "var(--font-serif)",
               fontWeight: 300,
-              fontSize: 35,
-              color: "var(--ink)",
-              letterSpacing: "-.022em",
-              lineHeight: 1,
-            } as React.CSSProperties}>
+              fontSize: "clamp(22px, 4.5vw, 28px)",
+              color: "var(--canvas)",
+              letterSpacing: "-.018em",
+              lineHeight: 1.15,
+            }}>
+              {firstName !== "toi" ? firstName : "Mon profil"}
+            </div>
+            <div style={{
+              fontSize: 12, color: "var(--champ-line)",
+              fontWeight: 300, marginTop: 5,
+              letterSpacing: ".08em", textTransform: "uppercase",
+            }}>
               Ton profil
-            </h1>
-            <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", marginTop: 8, lineHeight: 1.5 }}>
-              {profile
-                ? "Ce que tes proches peuvent consulter pour mieux prendre soin de toi."
-                : "Crée ta fiche pour que tes proches sachent comment te faire plaisir."}
-            </p>
+            </div>
           </div>
           {profile && (
-            <Link href="/moi/questionnaire" style={{ fontSize: 13, color: "var(--pine)", fontWeight: 500, textDecoration: "none", flexShrink: 0 }}>
+            <Link href="/moi/questionnaire" style={{ fontSize: 13, color: "var(--champ)", fontWeight: 400, textDecoration: "none", flexShrink: 0 }}>
               Modifier
             </Link>
           )}
         </div>
+
+        <div style={{ padding: "16px 24px 0" }}>
+          <div style={{ height: "0.5px", background: "linear-gradient(90deg, var(--champ-line), transparent)", marginBottom: 14 }} />
+          <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(244,241,232,.5)", letterSpacing: ".04em" }}>
+            {profile
+              ? "Ce que tes proches peuvent consulter pour mieux prendre soin de toi."
+              : "Crée ta fiche pour que tes proches sachent comment te faire plaisir."}
+          </p>
+        </div>
+      </div>
+
+      <div className="content-col" style={{ paddingTop: 28 }}>
 
         {!profile ? (
 
@@ -326,6 +374,18 @@ export default async function MoiPage() {
 
           </>
         )}
+
+        {/* Always-visible: site link + logout */}
+        <div style={{ borderTop: "0.5px solid var(--line)", marginTop: 8, paddingTop: 4 }}>
+          <Link
+            href="/"
+            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0", borderBottom: "0.5px solid var(--line)" }}
+          >
+            <span>Retour au site</span>
+            <span style={{ fontSize: 12, color: "var(--ink-3)" }}>→</span>
+          </Link>
+          <LogoutButton />
+        </div>
       </div>
     </DashboardShell>
   );

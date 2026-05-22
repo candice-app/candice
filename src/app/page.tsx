@@ -16,16 +16,16 @@ export const metadata: Metadata = {
   },
 };
 
-const BG = "#FAF7F2";
+const BG = "#FDFDFB";
 const WHITE = "#FFFFFF";
-const TERRA = "#C47A4A";
-const CON = "#1E1208";
-const COND = "#7A5E44";
-const DEEP = "#2C1A0E";
-const WARM = "#F2EBE0";
-const BORDER = "rgba(30,18,8,0.1)";
-const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
-const PLAYFAIR = "'Playfair Display', Georgia, serif";
+const TERRA = "#173E31";
+const CON = "#1A1A1A";
+const COND = "rgba(26,26,26,0.55)";
+const DEEP = "#0E2219";
+const WARM = "#F0F4F2";
+const BORDER = "rgba(23,62,49,0.1)";
+const DM = "var(--font-sans)";
+const PLAYFAIR = "var(--font-serif)";
 
 export default function HomePage() {
   return (
@@ -194,7 +194,7 @@ export default function HomePage() {
         <div style={{ maxWidth: 1200, margin: "0 auto" }}>
           <div className="mkt-intro-grid">
             <div style={{ borderLeft: `1.5px solid ${TERRA}`, paddingLeft: 24 }}>
-              <p style={{ fontSize: 17, fontWeight: 400, color: "rgba(44,26,14,0.9)", lineHeight: 1.6, margin: 0, fontFamily: DM }}>
+              <p style={{ fontSize: 17, fontWeight: 400, color: "rgba(26,26,26,0.9)", lineHeight: 1.6, margin: 0, fontFamily: DM }}>
                 Vivez pleinement les moments qui comptent.
               </p>
               <p style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 17, fontWeight: 400, color: TERRA, marginTop: 4, marginBottom: 0 }}>
@@ -202,7 +202,7 @@ export default function HomePage() {
               </p>
             </div>
             <div style={{ borderLeft: `1.5px solid ${TERRA}`, paddingLeft: 24 }}>
-              <p style={{ fontSize: 17, fontWeight: 400, color: "rgba(44,26,14,0.9)", lineHeight: 1.6, margin: 0, fontFamily: DM }}>
+              <p style={{ fontSize: 17, fontWeight: 400, color: "rgba(26,26,26,0.9)", lineHeight: 1.6, margin: 0, fontFamily: DM }}>
                 Candice <strong style={{ fontWeight: 600 }}>apprend, anticipe et agit</strong> — pour que vos relations s&apos;approfondissent et que votre charge mentale disparaisse.
               </p>
             </div>
@@ -240,7 +240,7 @@ export default function HomePage() {
             <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(28px, 4vw, 46px)", color: DEEP, letterSpacing: -1, lineHeight: 1.15, marginBottom: 0 }}>
               Tout ce qui compte pour eux,<br />réuni en un seul endroit.
             </h2>
-            <p style={{ fontSize: 16, fontWeight: 400, color: "rgba(44,26,14,0.6)", lineHeight: 1.65, marginTop: 20, marginBottom: 0, fontFamily: DM }}>
+            <p style={{ fontSize: 16, fontWeight: 400, color: "rgba(26,26,26,0.6)", lineHeight: 1.65, marginTop: 20, marginBottom: 0, fontFamily: DM }}>
               Pour ne plus jamais rien oublier. Pour ne plus jamais manquer un moment.
             </p>
           </div>
@@ -276,12 +276,12 @@ export default function HomePage() {
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 20, flexShrink: 0 }}>
                   <div style={{
                     width: 20, height: 20, borderRadius: "50%", flexShrink: 0,
-                    background: i === 0 ? "rgba(196,122,74,0.45)" : i === 1 ? "rgba(196,122,74,0.72)" : TERRA,
+                    background: i === 0 ? "rgba(23,62,49,0.45)" : i === 1 ? "rgba(23,62,49,0.72)" : TERRA,
                     border: `2px solid ${TERRA}`,
                     zIndex: 1,
                   }} />
                   {i < arr.length - 1 && (
-                    <div style={{ width: 1.5, flex: 1, minHeight: 48, background: `linear-gradient(to bottom, ${TERRA}, rgba(196,122,74,0.3))`, opacity: 0.6, marginTop: 4 }} />
+                    <div style={{ width: 1.5, flex: 1, minHeight: 48, background: `linear-gradient(to bottom, ${TERRA}, rgba(23,62,49,0.3))`, opacity: 0.6, marginTop: 4 }} />
                   )}
                 </div>
                 <div style={{ paddingBottom: i < arr.length - 1 ? 36 : 0 }}>
@@ -326,7 +326,7 @@ export default function HomePage() {
                   <div key={i} style={{ flex: 1, display: "flex", justifyContent: "center" }}>
                     <div style={{
                       width: 20, height: 20, borderRadius: "50%",
-                      background: i === 0 ? "rgba(196,122,74,0.45)" : i === 1 ? "rgba(196,122,74,0.72)" : TERRA,
+                      background: i === 0 ? "rgba(23,62,49,0.45)" : i === 1 ? "rgba(23,62,49,0.72)" : TERRA,
                       border: `2px solid ${TERRA}`,
                       zIndex: 1, position: "relative",
                     }} />
@@ -352,7 +352,7 @@ export default function HomePage() {
       </section>
 
       {/* ── S5 — 3 EXEMPLES CONCRETS ── */}
-      <section aria-label="Exemples concrets" className="mkt-section" style={{ background: "#F5EDE3", borderBottom: `0.5px solid ${BORDER}` }}>
+      <section aria-label="Exemples concrets" className="mkt-section" style={{ background: "#F0F4F2", borderBottom: `0.5px solid ${BORDER}` }}>
         <div style={{ maxWidth: 980, margin: "0 auto" }}>
           <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 20 }}>
             Des exemples concrets
@@ -413,16 +413,16 @@ export default function HomePage() {
               {
                 icon: (
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                    <circle cx="16" cy="16" r="10" stroke="#C47A4A" strokeWidth="1.2" strokeOpacity="0.7" />
-                    <circle cx="16" cy="16" r="4" fill="#C47A4A" fillOpacity="0.9" />
-                    <line x1="16" y1="6" x2="16" y2="10" stroke="#C47A4A" strokeWidth="1" strokeOpacity="0.5" />
-                    <line x1="16" y1="22" x2="16" y2="26" stroke="#C47A4A" strokeWidth="1" strokeOpacity="0.5" />
-                    <line x1="6" y1="16" x2="10" y2="16" stroke="#C47A4A" strokeWidth="1" strokeOpacity="0.5" />
-                    <line x1="22" y1="16" x2="26" y2="16" stroke="#C47A4A" strokeWidth="1" strokeOpacity="0.5" />
-                    <circle cx="16" cy="6" r="2" fill="#C47A4A" fillOpacity="0.4" />
-                    <circle cx="16" cy="26" r="2" fill="#C47A4A" fillOpacity="0.4" />
-                    <circle cx="6" cy="16" r="2" fill="#C47A4A" fillOpacity="0.4" />
-                    <circle cx="26" cy="16" r="2" fill="#C47A4A" fillOpacity="0.4" />
+                    <circle cx="16" cy="16" r="10" stroke="#173E31" strokeWidth="1.2" strokeOpacity="0.7" />
+                    <circle cx="16" cy="16" r="4" fill="#173E31" fillOpacity="0.9" />
+                    <line x1="16" y1="6" x2="16" y2="10" stroke="#173E31" strokeWidth="1" strokeOpacity="0.5" />
+                    <line x1="16" y1="22" x2="16" y2="26" stroke="#173E31" strokeWidth="1" strokeOpacity="0.5" />
+                    <line x1="6" y1="16" x2="10" y2="16" stroke="#173E31" strokeWidth="1" strokeOpacity="0.5" />
+                    <line x1="22" y1="16" x2="26" y2="16" stroke="#173E31" strokeWidth="1" strokeOpacity="0.5" />
+                    <circle cx="16" cy="6" r="2" fill="#173E31" fillOpacity="0.4" />
+                    <circle cx="16" cy="26" r="2" fill="#173E31" fillOpacity="0.4" />
+                    <circle cx="6" cy="16" r="2" fill="#173E31" fillOpacity="0.4" />
+                    <circle cx="26" cy="16" r="2" fill="#173E31" fillOpacity="0.4" />
                   </svg>
                 ),
                 title: "Mémoire contextuelle",
@@ -431,8 +431,8 @@ export default function HomePage() {
               {
                 icon: (
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                    <path d="M16 4 L17.5 12 L24 8 L19 14 L28 14 L20 17.5 L24 24 L16 19 L8 24 L12 17.5 L4 14 L13 14 L8 8 L14.5 12 Z" stroke="#C47A4A" strokeWidth="1.2" strokeOpacity="0.8" fill="none" strokeLinejoin="round" />
-                    <circle cx="16" cy="14" r="2.5" fill="#C47A4A" fillOpacity="0.9" />
+                    <path d="M16 4 L17.5 12 L24 8 L19 14 L28 14 L20 17.5 L24 24 L16 19 L8 24 L12 17.5 L4 14 L13 14 L8 8 L14.5 12 Z" stroke="#173E31" strokeWidth="1.2" strokeOpacity="0.8" fill="none" strokeLinejoin="round" />
+                    <circle cx="16" cy="14" r="2.5" fill="#173E31" fillOpacity="0.9" />
                   </svg>
                 ),
                 title: "Suggestions IA",
@@ -441,9 +441,9 @@ export default function HomePage() {
               {
                 icon: (
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                    <path d="M16 4 L26 8 L26 18 C26 23 21 27 16 28 C11 27 6 23 6 18 L6 8 Z" stroke="#C47A4A" strokeWidth="1.2" strokeOpacity="0.8" fill="none" strokeLinejoin="round" />
-                    <rect x="13" y="14" width="6" height="7" rx="1" stroke="#C47A4A" strokeWidth="1" strokeOpacity="0.7" fill="none" />
-                    <path d="M13.5 14 L13.5 12 C13.5 10.3 14.3 9 16 9 C17.7 9 18.5 10.3 18.5 12 L18.5 14" stroke="#C47A4A" strokeWidth="1" strokeOpacity="0.7" fill="none" />
+                    <path d="M16 4 L26 8 L26 18 C26 23 21 27 16 28 C11 27 6 23 6 18 L6 8 Z" stroke="#173E31" strokeWidth="1.2" strokeOpacity="0.8" fill="none" strokeLinejoin="round" />
+                    <rect x="13" y="14" width="6" height="7" rx="1" stroke="#173E31" strokeWidth="1" strokeOpacity="0.7" fill="none" />
+                    <path d="M13.5 14 L13.5 12 C13.5 10.3 14.3 9 16 9 C17.7 9 18.5 10.3 18.5 12 L18.5 14" stroke="#173E31" strokeWidth="1" strokeOpacity="0.7" fill="none" />
                   </svg>
                 ),
                 title: "Confidentialité totale",
@@ -452,11 +452,11 @@ export default function HomePage() {
               {
                 icon: (
                   <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-                    <polyline points="4,24 10,16 16,19 22,10 28,6" stroke="#C47A4A" strokeWidth="1.4" strokeOpacity="0.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                    <circle cx="10" cy="16" r="2" fill="#C47A4A" fillOpacity="0.6" />
-                    <circle cx="16" cy="19" r="2" fill="#C47A4A" fillOpacity="0.75" />
-                    <circle cx="22" cy="10" r="2" fill="#C47A4A" fillOpacity="0.9" />
-                    <circle cx="28" cy="6" r="2.5" fill="#C47A4A" />
+                    <polyline points="4,24 10,16 16,19 22,10 28,6" stroke="#173E31" strokeWidth="1.4" strokeOpacity="0.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+                    <circle cx="10" cy="16" r="2" fill="#173E31" fillOpacity="0.6" />
+                    <circle cx="16" cy="19" r="2" fill="#173E31" fillOpacity="0.75" />
+                    <circle cx="22" cy="10" r="2" fill="#173E31" fillOpacity="0.9" />
+                    <circle cx="28" cy="6" r="2.5" fill="#173E31" />
                   </svg>
                 ),
                 title: "Apprentissage continu",
@@ -488,7 +488,7 @@ export default function HomePage() {
               {
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                    <path d="M14 24 C14 24 3.5 17 3.5 10.5 C3.5 7.5 6 5 9 5 C11 5 12.8 6.2 14 8 C15.2 6.2 17 5 19 5 C22 5 24.5 7.5 24.5 10.5 C24.5 17 14 24 14 24Z" stroke="#C47A4A" strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
+                    <path d="M14 24 C14 24 3.5 17 3.5 10.5 C3.5 7.5 6 5 9 5 C11 5 12.8 6.2 14 8 C15.2 6.2 17 5 19 5 C22 5 24.5 7.5 24.5 10.5 C24.5 17 14 24 14 24Z" stroke="#173E31" strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
                   </svg>
                 ),
                 title: "Chaque personne reçoit différemment",
@@ -497,10 +497,10 @@ export default function HomePage() {
               {
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                    <circle cx="14" cy="14" r="12" stroke="#C47A4A" strokeWidth="1.4"/>
-                    <circle cx="14" cy="14" r="7.5" stroke="#C47A4A" strokeWidth="1.4"/>
-                    <circle cx="14" cy="14" r="3" stroke="#C47A4A" strokeWidth="1.4"/>
-                    <circle cx="14" cy="14" r="1" fill="#C47A4A"/>
+                    <circle cx="14" cy="14" r="12" stroke="#173E31" strokeWidth="1.4"/>
+                    <circle cx="14" cy="14" r="7.5" stroke="#173E31" strokeWidth="1.4"/>
+                    <circle cx="14" cy="14" r="3" stroke="#173E31" strokeWidth="1.4"/>
+                    <circle cx="14" cy="14" r="1" fill="#173E31"/>
                   </svg>
                 ),
                 title: "Les profils s'affinent dans le temps",
@@ -509,23 +509,23 @@ export default function HomePage() {
               {
                 icon: (
                   <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-                    <path d="M14 4 L15.4 10.6 L21 8 L17 13.5 L24 13 L17.5 16.5 L21 21.5 L14 17.5 L7 21.5 L10.5 16.5 L4 13 L11 13.5 L7 8 L12.6 10.6 Z" stroke="#C47A4A" strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
+                    <path d="M14 4 L15.4 10.6 L21 8 L17 13.5 L24 13 L17.5 16.5 L21 21.5 L14 17.5 L7 21.5 L10.5 16.5 L4 13 L11 13.5 L7 8 L12.6 10.6 Z" stroke="#173E31" strokeWidth="1.4" strokeLinejoin="round" fill="none"/>
                   </svg>
                 ),
                 title: "Ce que vous partagez reste entre vous",
                 body: "Les profils sont privés. Vos proches peuvent choisir de compléter leur propre fiche — mais ce qu'ils partagent vous est destiné, et uniquement à vous.",
               },
             ].map((card, i) => (
-              <div key={i} style={{ background: WHITE, border: `1px solid rgba(196,122,74,0.08)`, borderRadius: 16, boxShadow: "0 4px 24px rgba(44,26,14,0.06)", padding: "clamp(24px,3vw,36px)", display: "flex", flexDirection: "column", gap: 0 }}>
+              <div key={i} style={{ background: WHITE, border: `1px solid rgba(23,62,49,0.08)`, borderRadius: 16, boxShadow: "0 4px 24px rgba(26,26,26,0.06)", padding: "clamp(24px,3vw,36px)", display: "flex", flexDirection: "column", gap: 0 }}>
                 <div style={{ marginBottom: 24 }}>{card.icon}</div>
                 <h3 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: CON, lineHeight: 1.2, letterSpacing: -0.3, marginBottom: 16 }}>{card.title}</h3>
-                <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(30,18,8,0.75)", lineHeight: 1.75, margin: 0 }}>{card.body}</p>
+                <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(26,26,26,0.75)", lineHeight: 1.75, margin: 0 }}>{card.body}</p>
               </div>
             ))}
           </div>
 
           <div style={{ marginTop: 64, textAlign: "center" }}>
-            <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(30,18,8,0.7)", lineHeight: 1.75, maxWidth: 800, margin: "0 auto" }}>
+            <p style={{ fontSize: 15, fontWeight: 400, color: "rgba(26,26,26,0.7)", lineHeight: 1.75, maxWidth: 800, margin: "0 auto" }}>
               Vos données et celles de vos proches ne sont jamais partagées, vendues ou utilisées à des fins publicitaires.{" "}
               <Link href="/confidentialite" style={{ color: TERRA, textDecoration: "none", fontWeight: 500 }}>Notre engagement →</Link>
             </p>
@@ -539,7 +539,7 @@ export default function HomePage() {
           <h2 style={{ fontFamily: PLAYFAIR, fontStyle: "italic", fontWeight: 400, fontSize: "clamp(36px, 5vw, 56px)", color: CON, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 24 }}>
             Prêt à faire mieux,<br />sans porter plus&nbsp;?
           </h2>
-          <p style={{ fontSize: 18, fontWeight: 400, color: "rgba(30,18,8,0.7)", lineHeight: 1.75, marginBottom: 48, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
+          <p style={{ fontSize: 18, fontWeight: 400, color: "rgba(26,26,26,0.7)", lineHeight: 1.75, marginBottom: 48, maxWidth: 600, marginLeft: "auto", marginRight: "auto" }}>
             Commencez simplement. Candice s&apos;occupe du reste.
           </p>
           <div className="mkt-cta-btns">
@@ -563,20 +563,20 @@ export default function HomePage() {
 }
 
 const C_CARD = "#FFFFFF";
-const C_SUB = "#F7F2E9";
-const C_CARD_BORDER = "rgba(196,122,74,0.08)";
-const C_TERRA = "#C47A4A";
-const C_DEEP = "#2C1A0E";
-const C_CREAM = "#FAF7F2";
-const C_DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
-const C_PLAY = "'Playfair Display', Georgia, serif";
+const C_SUB = "#F0F5F2";
+const C_CARD_BORDER = "rgba(23,62,49,0.08)";
+const C_TERRA = "#173E31";
+const C_DEEP = "#1A1A1A";
+const C_CREAM = "#FDFDFB";
+const C_DM = "var(--font-sans)";
+const C_PLAY = "var(--font-serif)";
 
 function CardWrapper({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       background: C_CARD,
       borderRadius: 18,
-      boxShadow: "0 6px 24px rgba(44,26,14,0.06), 0 1px 3px rgba(44,26,14,0.04)",
+      boxShadow: "0 6px 24px rgba(26,26,26,0.06), 0 1px 3px rgba(26,26,26,0.04)",
       borderLeft: `2px solid ${C_TERRA}`,
       padding: "24px 22px 24px 26px",
       display: "flex",
@@ -592,7 +592,7 @@ function CardWrapper({ children }: { children: React.ReactNode }) {
 function CardHeader({ title }: { title: string }) {
   return (
     <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-      <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(44,26,14,0.55)", fontFamily: C_DM, whiteSpace: "nowrap" }}>
+      <span style={{ fontSize: 12, fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(26,26,26,0.55)", fontFamily: C_DM, whiteSpace: "nowrap" }}>
         {title}
       </span>
       <span style={{ fontSize: 12, letterSpacing: "0.02em", color: C_TERRA, cursor: "pointer", fontFamily: C_DM, whiteSpace: "nowrap", marginLeft: 8 }}>
@@ -605,14 +605,14 @@ function CardHeader({ title }: { title: string }) {
 function CardFooter({ text }: { text: string }) {
   return (
     <div style={{ marginTop: 20, textAlign: "center" }}>
-      <span style={{ fontSize: 12, fontStyle: "italic", color: "rgba(44,26,14,0.45)", fontFamily: C_DM }}>{text}</span>
+      <span style={{ fontSize: 12, fontStyle: "italic", color: "rgba(26,26,26,0.45)", fontFamily: C_DM }}>{text}</span>
     </div>
   );
 }
 
 function AppProchesCard() {
   const contacts = [
-    { init: "SM", color: "#C47A4A", name: "Sophie Martin",  detail: "Paris · Amie",   badge: "ANNIVERSAIRE J-4",       badgeBg: "rgba(196,122,74,0.18)",  badgeColor: "#C47A4A" },
+    { init: "SM", color: "#173E31", name: "Sophie Martin",  detail: "Paris · Amie",   badge: "ANNIVERSAIRE J-4",       badgeBg: "rgba(23,62,49,0.18)",  badgeColor: "#173E31" },
     { init: "TL", color: "#6B8AAE", name: "Thomas Leroy",   detail: "Lyon · Frère",   badge: "2 MOIS SANS CONTACT",    badgeBg: "rgba(197,213,192,0.6)",  badgeColor: "#5C7558" },
     { init: "PL", color: "#8B6FAE", name: "Paul Lemaire",   detail: "Paris · Ami",    badge: "MARATHON DIMANCHE",      badgeBg: "rgba(197,213,192,0.6)",  badgeColor: "#5C7558" },
     { init: "CP", color: "#6B9E7B", name: "Claire — Maman", detail: "Bordeaux",       badge: "FÊTE DES MÈRES J-8",     badgeBg: "#E8D5C2",                badgeColor: "#B58661" },
@@ -634,7 +634,7 @@ function AppProchesCard() {
               </div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 14, fontWeight: 600, color: C_DEEP, lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.name}</div>
-                <div style={{ fontSize: 12, color: "rgba(44,26,14,0.55)", marginTop: 2, lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.detail}</div>
+                <div style={{ fontSize: 12, color: "rgba(26,26,26,0.55)", marginTop: 2, lineHeight: 1.3, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{c.detail}</div>
               </div>
               <div style={{
                 flexShrink: 0, whiteSpace: "nowrap",
@@ -683,9 +683,9 @@ function AppSuggestionsCard() {
 function AppSouvenirsCard() {
   const entries = [
     { day: "14", month: "FÉV", name: "Sophie Martin", desc: "Bouquet de roses envoyé. Elle a adoré.",  badge: "RÉACTION POSITIVE",  badgeBg: "rgba(197,213,192,0.6)",  badgeColor: "#5C7558" },
-    { day: "02", month: "JAN", name: "Thomas Leroy",  desc: "Message nouvel an. Lu et répondu.",       badge: "MESSAGE · LU",       badgeBg: "#E8DDCB",                badgeColor: "rgba(44,26,14,0.65)" },
-    { day: "25", month: "NOV", name: "Claire",        desc: "Dîner anniversaire. Excellent souvenir.", badge: "EXPÉRIENCE · TOP",   badgeBg: "rgba(196,122,74,0.18)", badgeColor: C_TERRA },
-    { day: "10", month: "OCT", name: "Paul Lemaire",  desc: "Whisky Nikka lors de sa rupture.",        badge: "SOUTIEN · IMPACTANT",badgeBg: "#E8DDCB",                badgeColor: "rgba(44,26,14,0.65)" },
+    { day: "02", month: "JAN", name: "Thomas Leroy",  desc: "Message nouvel an. Lu et répondu.",       badge: "MESSAGE · LU",       badgeBg: "#E8DDCB",                badgeColor: "rgba(26,26,26,0.65)" },
+    { day: "25", month: "NOV", name: "Claire",        desc: "Dîner anniversaire. Excellent souvenir.", badge: "EXPÉRIENCE · TOP",   badgeBg: "rgba(23,62,49,0.18)", badgeColor: C_TERRA },
+    { day: "10", month: "OCT", name: "Paul Lemaire",  desc: "Whisky Nikka lors de sa rupture.",        badge: "SOUTIEN · IMPACTANT",badgeBg: "#E8DDCB",                badgeColor: "rgba(26,26,26,0.65)" },
   ];
   return (
     <CardWrapper>
@@ -699,7 +699,7 @@ function AppSouvenirsCard() {
             top: 0,
             bottom: 0,
             width: 1.5,
-            background: "rgba(196,122,74,0.35)",
+            background: "rgba(23,62,49,0.35)",
             pointerEvents: "none",
           }} />
           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
@@ -707,11 +707,11 @@ function AppSouvenirsCard() {
               <div key={i} style={{ display: "flex", flexDirection: "row", gap: 16, position: "relative" }}>
                 <div style={{ width: 44, flexShrink: 0 }}>
                   <div style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 18, fontWeight: 400, color: C_DEEP, lineHeight: 1 }}>{e.day}</div>
-                  <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(44,26,14,0.55)", marginTop: 4, fontFamily: C_DM }}>{e.month}</div>
+                  <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(26,26,26,0.55)", marginTop: 4, fontFamily: C_DM }}>{e.month}</div>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: C_DEEP, fontFamily: C_DM, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{e.name}</div>
-                  <div style={{ fontSize: 12, color: "rgba(44,26,14,0.7)", marginTop: 4, lineHeight: 1.5, fontFamily: C_DM }}>{e.desc}</div>
+                  <div style={{ fontSize: 12, color: "rgba(26,26,26,0.7)", marginTop: 4, lineHeight: 1.5, fontFamily: C_DM }}>{e.desc}</div>
                   <div style={{ display: "inline-block", marginTop: 8, fontSize: 9, fontWeight: 500, letterSpacing: "0.1em", textTransform: "uppercase", color: e.badgeColor, background: e.badgeBg, padding: "3px 7px", borderRadius: 4, fontFamily: C_DM, whiteSpace: "nowrap" }}>
                     {e.badge}
                   </div>
@@ -751,7 +751,7 @@ function AppFicheCard() {
             fontSize: 18, fontWeight: 600, color: C_CREAM, fontFamily: C_DM, margin: "0 auto",
           }}>SM</div>
           <div style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 20, fontWeight: 400, color: C_DEEP, marginTop: 14, lineHeight: 1.2, whiteSpace: "nowrap" }}>Sophie Martin</div>
-          <div style={{ fontSize: 12, color: "rgba(44,26,14,0.55)", marginTop: 4, fontFamily: C_DM, whiteSpace: "nowrap" }}>Amie proche · Paris</div>
+          <div style={{ fontSize: 12, color: "rgba(26,26,26,0.55)", marginTop: 4, fontFamily: C_DM, whiteSpace: "nowrap" }}>Amie proche · Paris</div>
         </div>
         {/* KPI 2×2 grid */}
         <div style={{ height: 24 }} />
@@ -759,7 +759,7 @@ function AppFicheCard() {
           {kpis.map((k, i) => (
             <div key={i} style={{ background: C_SUB, border: `1px solid ${C_CARD_BORDER}`, borderRadius: 10, padding: "14px 8px", textAlign: "center" }}>
               <div style={{ fontFamily: C_PLAY, fontStyle: "italic", fontSize: 22, fontWeight: 400, color: C_DEEP, lineHeight: 1 }}>{k.value}</div>
-              <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(44,26,14,0.55)", marginTop: 6, fontFamily: C_DM, whiteSpace: "nowrap" }}>{k.label}</div>
+              <div style={{ fontSize: 9, fontWeight: 500, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(26,26,26,0.55)", marginTop: 6, fontFamily: C_DM, whiteSpace: "nowrap" }}>{k.label}</div>
             </div>
           ))}
         </div>
@@ -770,7 +770,7 @@ function AppFicheCard() {
           {bars.map((b, i) => (
             <div key={i} style={{ display: "flex", flexDirection: "row", alignItems: "center", gap: 8, height: 18 }}>
               <span style={{ fontSize: 11, color: C_DEEP, width: 48, flexShrink: 0, fontFamily: C_DM }}>{b.label}</span>
-              <div style={{ flex: 1, height: 3, borderRadius: 1.5, background: "rgba(44,26,14,0.08)", position: "relative", overflow: "hidden" }}>
+              <div style={{ flex: 1, height: 3, borderRadius: 1.5, background: "rgba(26,26,26,0.08)", position: "relative", overflow: "hidden" }}>
                 <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${b.pct}%`, background: C_TERRA, borderRadius: 1.5 }} />
               </div>
               <span style={{ fontSize: 11, color: C_DEEP, width: 32, textAlign: "right", flexShrink: 0, fontFamily: C_DM }}>{b.pct}%</span>

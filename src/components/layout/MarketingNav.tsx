@@ -5,15 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Wordmark from "@/components/presence/Wordmark";
 
-const BG = "#FAF7F2";
-const TERRA = "#C47A4A";
-const CON = "#2C1A0E";
-const BORDER = "rgba(44,26,14,0.08)";
-const DM = "'DM Sans', 'Plus Jakarta Sans', sans-serif";
+const BG = "#FDFDFB";
+const TERRA = "#173E31";
+const CON = "#1A1A1A";
+const BORDER = "rgba(23,62,49,0.08)";
+const DM = "var(--font-sans)";
 
 const NAV_LINKS = [
-  { href: "/concept", label: "Le concept" },
-  { href: "/fonctionnement", label: "Fonctionnement" },
+  { href: "/fonctionnement", label: "Comment ça marche" },
   { href: "/offre", label: "Tarifs" },
 ];
 
