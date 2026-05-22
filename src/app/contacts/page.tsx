@@ -119,7 +119,7 @@ export default async function ContactsPage() {
 
   return (
     <DashboardShell>
-      <div style={{ padding: "28px 24px 0" }}>
+      <div className="content-col" style={{ paddingTop: "28px" }}>
 
         {/* ptitle */}
         <div style={{

@@ -19,22 +19,15 @@ export default function PresenceInput({ onSubmit, placeholder = "Dis quelque cho
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      left: 0,
-      right: 0,
-      bottom: 76,
-      padding: '0 18px',
-      zIndex: 90,
-    }}>
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
+    <div className="presence-input-wrap">
+      <div className="presence-input-inner" style={{
+        display: "flex",
+        alignItems: "center",
         gap: 13,
-        padding: '14px 18px',
+        padding: "14px 18px",
         borderRadius: 20,
-        background: 'var(--white)',
-        animation: 'askGlow 4.5s ease-in-out infinite',
+        background: "var(--white)",
+        animation: "askGlow 4.5s ease-in-out infinite",
       }}>
         <LivePoint size={8} tone="glow" />
         <input
@@ -45,34 +38,27 @@ export default function PresenceInput({ onSubmit, placeholder = "Dis quelque cho
           placeholder={placeholder}
           style={{
             flex: 1,
-            border: 'none',
-            background: 'transparent',
+            border: "none",
+            background: "transparent",
             fontSize: 14.5,
             fontWeight: 300,
-            color: value ? 'var(--ink)' : 'var(--ink-3)',
-            outline: 'none',
+            color: value ? "var(--ink)" : "var(--ink-3)",
+            outline: "none",
             padding: 0,
-            width: 'auto',
-            boxShadow: 'none',
+            width: "auto",
+            boxShadow: "none",
           }}
         />
         <button
           type="button"
           aria-label="Message vocal"
           style={{
-            width: 28,
-            height: 28,
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            color: 'var(--pine)',
-            boxShadow: '0 0 0 1px var(--champ-line)',
-            padding: 0,
-            flexShrink: 0,
+            width: 28, height: 28, borderRadius: "50%",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "none", border: "none", cursor: "pointer",
+            color: "var(--pine)",
+            boxShadow: "0 0 0 1px var(--champ-line)",
+            padding: 0, flexShrink: 0,
           }}
         >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">

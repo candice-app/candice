@@ -119,7 +119,116 @@ button { cursor: pointer; font-family: var(--font-sans); }
   *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
 }
 
-/* ── Layout dashboard ────────────────────────────────────────────── */
+/* ── App Shell — mobile-first, desktop rail ──────────────────────── */
+.app-shell {
+  position: relative;
+  min-height: 100dvh;
+  background: var(--canvas);
+}
+
+/* Rail — desktop only, hidden on mobile */
+.app-rail { display: none; }
+
+/* Main content */
+.app-main { padding-bottom: 96px; }
+
+/* Hero mass — edge-to-edge mobile */
+.hero-mass {
+  border-radius: 0 0 32px 32px;
+  overflow: hidden;
+  position: relative;
+}
+/* Hero top bar (Wordmark + avatar) — hidden on desktop where rail has Wordmark */
+.hero-top-bar { display: flex; }
+
+/* Body content padding — always has left/right breathing room */
+.body-pad { padding: 0 24px; }
+
+/* Content column — used for pages that don't have a hero edge-to-edge */
+.content-col { padding: 0 24px; }
+
+/* Rail nav items */
+.rail-item {
+  position: relative;
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 12px; border-radius: 10px;
+  color: var(--ink-2); font-size: 14px; font-weight: 300;
+  transition: color .2s, background .2s;
+  margin-bottom: 2px;
+}
+.rail-item:hover { color: var(--ink); background: rgba(23,62,49,.04); }
+.rail-item-active { color: var(--pine); font-weight: 500; }
+.rail-item-active::before {
+  content: "";
+  position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+  width: 2.5px; height: 16px;
+  background: var(--pine); border-radius: 0 2px 2px 0;
+}
+.rail-champ { display: none; }
+.rail-item-active .rail-champ { display: block; }
+
+/* PresenceInput wrapper — repositioned on desktop */
+.presence-input-wrap {
+  position: fixed; left: 0; right: 0;
+  bottom: 76px; padding: 0 18px; z-index: 90;
+}
+
+/* Desktop layout ≥ 1024px */
+@media (min-width: 1024px) {
+  /* Rail visible */
+  .app-rail {
+    display: flex; flex-direction: column;
+    position: fixed; left: 0; top: 0; bottom: 0;
+    width: 248px; background: var(--white);
+    border-right: 0.5px solid var(--line);
+    padding: 36px 20px 24px;
+    z-index: 100; overflow-y: auto;
+  }
+
+  /* Main shifts right */
+  .app-main {
+    margin-left: 248px;
+    padding-top: 48px;
+    padding-bottom: 120px;
+  }
+
+  /* Bottom nav hidden */
+  .app-bottom-nav { display: none !important; }
+
+  /* Hero becomes a contained card in the column */
+  .hero-mass {
+    border-radius: 28px;
+    max-width: 720px;
+    margin: 0 auto 32px;
+  }
+
+  /* Hero top bar (Wordmark + avatar) — hidden, rail has Wordmark */
+  .hero-top-bar { display: none; }
+
+  /* Body and content columns centered */
+  .body-pad {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+  .content-col {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* PresenceInput: right of rail, inner centered */
+  .presence-input-wrap {
+    left: 248px; right: 0; bottom: 28px;
+    padding: 0; display: flex; justify-content: center;
+  }
+  .presence-input-inner {
+    max-width: 640px; width: 100%;
+    padding: 0 32px;
+  }
+}
+
+/* ── Layout dashboard (legacy alias) ─────────────────────────────── */
 .dashboard-layout {
   min-height: 100vh;
   background: var(--canvas);

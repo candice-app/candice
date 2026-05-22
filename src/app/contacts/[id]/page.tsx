@@ -197,11 +197,13 @@ export default async function ContactPage({
     <DashboardShell>
 
       {/* ── Header band — pine encre ── */}
-      <div style={{
-        position: "relative",
-        padding: "0 0 32px",
-        background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
-      }}>
+      <div
+        className="hero-mass"
+        style={{
+          padding: "0 0 32px",
+          background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
+        }}
+      >
         {/* Back link */}
         <div style={{ padding: "18px 24px 0" }}>
           <Link href="/contacts" style={{ textDecoration: "none" }}>
@@ -257,7 +259,7 @@ export default async function ContactPage({
       </div>
 
       {/* ── Corps blanc ── */}
-      <div style={{ padding: "0 24px" }}>
+      <div className="body-pad">
 
         {/* Memory mode notice */}
         {isMemoryMode && (

@@ -8,7 +8,6 @@ import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
 import TourReplay from "@/components/onboarding/TourReplay";
 import PauseBanner from "@/components/dashboard/PauseBanner";
 import PushPrompt from "@/components/dashboard/PushPrompt";
-import ManualTriggerButton from "@/components/dashboard/ManualTriggerButton";
 import ProactiveDashboardCard, { type SuggestionWithContact } from "@/components/dashboard/ProactiveDashboardCard";
 import Thread, { ThreadItem } from "@/components/presence/Thread";
 import Avatar from "@/components/presence/Avatar";
@@ -122,7 +121,7 @@ export default async function DashboardPage() {
   // Hero focus — use top proactive suggestion or a contextual message
   let heroTitle = typedContacts.length === 0
     ? "Ajoutez un proche pour commencer."
-    : "Candice surveille. Tout est calme.";
+    : "Rien ne presse aujourd'hui.";
   let heroSubtitle = typedContacts.length === 0
     ? "Dites-lui de qui vous souhaitez prendre soin — elle s'occupe du reste."
     : undefined;
@@ -141,15 +140,15 @@ export default async function DashboardPage() {
       {showPushPrompt && <PushPrompt />}
 
       {/* ── Hero mass ── */}
-      <div style={{
-        position: 'relative',
-        padding: '0 0 48px',
-        borderRadius: '0 0 32px 32px',
-        overflow: 'hidden',
-        background: 'radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)',
-      }}>
-        {/* Top bar */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px 0' }}>
+      <div
+        className="hero-mass"
+        style={{
+          padding: '0 0 48px',
+          background: 'radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)',
+        }}
+      >
+        {/* Top bar — hidden on desktop (Wordmark is in the rail) */}
+        <div className="hero-top-bar" style={{ alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px 0' }}>
           <span style={{
             fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: 20,
             letterSpacing: '.34em', textTransform: 'uppercase', color: '#F6F3EA',
@@ -228,7 +227,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── Corps blanc ── */}
-      <div style={{ padding: '0 24px' }}>
+      <div className="body-pad">
 
         {/* Proactive card when urgent/high */}
         {topProactiveSuggestion && (
@@ -292,7 +291,7 @@ export default async function DashboardPage() {
             </Thread>
 
             {typedContacts.length > 4 && (
-              <Link href="/dashboard" style={{ display: 'block', marginTop: 12, fontSize: 13, color: 'var(--ink-3)', fontWeight: 300 }}>
+              <Link href="/contacts" style={{ display: 'block', marginTop: 12, fontSize: 13, color: 'var(--ink-3)', fontWeight: 300 }}>
                 + {typedContacts.length - 4} autres proches →
               </Link>
             )}
@@ -317,7 +316,6 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        {isDevMode && !topProactiveSuggestion && <ManualTriggerButton />}
       </div>
 
       <PresenceInput />
