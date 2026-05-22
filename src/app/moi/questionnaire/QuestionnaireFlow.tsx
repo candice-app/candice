@@ -17,13 +17,15 @@ interface Props {
 export default function QuestionnaireFlow({ userId, initial }: Props) {
   const [step, setStep] = useState<Step>("attention");
   const [attentionResult, setAttentionResult] = useState<AttentionResult | null>(null);
+  const [breathText, setBreathText] = useState<string>("");
 
   if (step === "attention") {
     return (
       <AttentionStep
         userId={userId}
-        onDone={(result) => {
+        onDone={(result, text) => {
           setAttentionResult(result);
+          setBreathText(text);
           setStep("breath");
         }}
       />
@@ -33,7 +35,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
   if (step === "breath" && attentionResult) {
     return (
       <AttentionBreath
-        result={attentionResult}
+        breathText={breathText}
         onContinue={() => setStep("profile")}
       />
     );

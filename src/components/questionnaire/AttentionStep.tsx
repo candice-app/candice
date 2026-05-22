@@ -4,6 +4,8 @@ import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { scoreAttention } from "@/lib/attention/scoring";
 import type { AttentionResult, AttentionAnswers, Question } from "@/lib/attention/scoring";
+import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFacts";
+import type { BreathFacts } from "@/lib/attention/breathFacts";
 import { RECEPTION_QUESTIONS, EXPRESSION_QUESTION } from "@/lib/attention/questions";
 import type { AttentionQuestion } from "@/lib/attention/questions";
 
@@ -11,7 +13,7 @@ import type { AttentionQuestion } from "@/lib/attention/questions";
 
 interface Props {
   userId: string;
-  onDone: (result: AttentionResult) => void;
+  onDone: (result: AttentionResult, breathText: string) => void;
 }
 
 // questionId → ordered selected optionIds (index 0 = rank 1)
@@ -194,7 +196,27 @@ export default function AttentionStep({ userId, onDone }: Props) {
         return;
       }
 
-      onDone(result);
+      const facts: BreathFacts = computeBreathFacts(result.reception, result.expression);
+
+      let breathText: string;
+      try {
+        const res = await fetch("/api/attention/breath", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ facts }),
+        });
+        if (!res.ok) throw new Error("api_error");
+        const data = await res.json() as { text: string };
+        breathText = data.text || buildFallbackText(facts);
+      } catch {
+        breathText = buildFallbackText(facts);
+      }
+
+      await supabase.from("my_profile")
+        .update({ attention_breath_text: breathText, updated_at: new Date().toISOString() })
+        .eq("user_id", userId);
+
+      onDone(result, breathText);
     } catch {
       setError("Une erreur inattendue s'est produite. Réessaie dans un instant.");
     } finally {
