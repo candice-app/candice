@@ -4,16 +4,18 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
 import { trackActivity } from "@/lib/lifecycle/track-activity";
-import ContactCard from "@/components/dashboard/ContactCard";
-import DashboardActions from "@/components/dashboard/DashboardActions";
-import CandiceInput from "@/components/dashboard/CandiceInput";
 import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
 import TourReplay from "@/components/onboarding/TourReplay";
-import { Contact, QuestionnaireResponse, ProfileNote } from "@/types";
-import ProactiveDashboardCard, { type SuggestionWithContact } from "@/components/dashboard/ProactiveDashboardCard";
-import ManualTriggerButton from "@/components/dashboard/ManualTriggerButton";
-import PushPrompt from "@/components/dashboard/PushPrompt";
 import PauseBanner from "@/components/dashboard/PauseBanner";
+import PushPrompt from "@/components/dashboard/PushPrompt";
+import ManualTriggerButton from "@/components/dashboard/ManualTriggerButton";
+import ProactiveDashboardCard, { type SuggestionWithContact } from "@/components/dashboard/ProactiveDashboardCard";
+import Thread, { ThreadItem } from "@/components/presence/Thread";
+import Avatar from "@/components/presence/Avatar";
+import PointDivider from "@/components/presence/PointDivider";
+import LivePoint from "@/components/presence/LivePoint";
+import PresenceInput from "@/components/presence/PresenceInput";
+import { Contact, QuestionnaireResponse, ProfileNote } from "@/types";
 
 const SCORED_FIELDS = [
   "love_language", "communication_style", "stress_response", "social_energy",
@@ -28,12 +30,29 @@ function getCompletion(profile: QuestionnaireResponse | undefined): number {
   return Math.round((filled / SCORED_FIELDS.length) * 100);
 }
 
+function contactState(pct: number): string {
+  if (pct >= 65) return "Candice anticipe pour";
+  if (pct >= 30) return "Candice connaît bien";
+  return "Candice commence à connaître";
+}
+
+function avatarVariant(i: number): 'g' | 'c' {
+  return i % 2 === 0 ? 'g' : 'c';
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: contacts }, { data: myProfile }, { count: archivedCount }, { data: recentNoteData }, { data: suggestionsData }, { data: proactiveData }] = await Promise.all([
+  const [
+    { data: contacts },
+    { data: myProfile },
+    { count: archivedCount },
+    { data: recentNoteData },
+    { data: suggestionsData },
+    { data: proactiveData },
+  ] = await Promise.all([
     supabase
       .from("contacts")
       .select("*, questionnaire_responses(*)")
@@ -55,8 +74,7 @@ export default async function DashboardPage() {
       .select("id, contact_id, user_id, note, created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle(),
+      .limit(2),
     supabase
       .from("suggestions")
       .select("contact_id, generated_at")
@@ -72,18 +90,18 @@ export default async function DashboardPage() {
       .limit(10),
   ]);
 
-  // Track activity (non-blocking)
   const adminClient = createAdminClient();
   trackActivity(user.id, adminClient).catch(() => {});
 
   const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
-  const recentNote = recentNoteData as ProfileNote | null;
-  const hasMyProfile = !!myProfile;
+  const recentNotes = (recentNoteData ?? []) as ProfileNote[];
+  const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
+  const initial = (firstName || user.email || "C")[0].toUpperCase();
   const onboardingDone = !!(myProfile as { onboarding_completed?: boolean } | null)?.onboarding_completed;
   const pushPrefEnabled = (myProfile as { notif_push_enabled?: boolean | null } | null)?.notif_push_enabled !== false;
-  const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
+  const isPaused = (myProfile as { subscription_status?: string } | null)?.subscription_status === 'paused';
+  const isDevMode = user.email === "papillon.estelle@gmail.com" || process.env.NODE_ENV !== "production";
 
-  // Check for existing push subscription (graceful: table may not exist before migration-6)
   let hasPushSub = false;
   try {
     const { count } = await supabase
@@ -94,182 +112,215 @@ export default async function DashboardPage() {
   } catch { /* migration not yet applied */ }
 
   const showPushPrompt = pushPrefEnabled && !hasPushSub;
-  const isDevMode = user.email === "papillon.estelle@gmail.com" || process.env.NODE_ENV !== "production";
-  const isPaused = (myProfile as { subscription_status?: string } | null)?.subscription_status === 'paused';
 
-  // Proactive suggestions — sorted by priority (urgent > high > normal > low)
   const PRIORITY_RANK: Record<string, number> = { urgent: 3, high: 2, normal: 1, low: 0 };
   const proactivePending = ((proactiveData ?? []) as SuggestionWithContact[]).sort(
     (a, b) => (PRIORITY_RANK[b.priority] ?? 0) - (PRIORITY_RANK[a.priority] ?? 0)
   );
   const topProactiveSuggestion = proactivePending.find(s => ["urgent", "high"].includes(s.priority)) ?? null;
 
-  // Contextual card logic
-  const suggestionContactIds = new Set((suggestionsData ?? []).map(s => s.contact_id));
-  const contactsWithSuggestions = typedContacts.filter(c => suggestionContactIds.has(c.id));
-  const contactsSortedByCompletion = [...typedContacts].sort((a, b) => {
-    return getCompletion(a.questionnaire_responses?.[0]) - getCompletion(b.questionnaire_responses?.[0]);
-  });
-  const mostIncomplete = contactsSortedByCompletion[0];
+  // Hero focus — use top proactive suggestion or a contextual message
+  let heroTitle = typedContacts.length === 0
+    ? "Ajoutez un proche pour commencer."
+    : "Candice surveille. Tout est calme.";
+  let heroSubtitle = typedContacts.length === 0
+    ? "Dites-lui de qui vous souhaitez prendre soin — elle s'occupe du reste."
+    : undefined;
 
-  type ContextualCardType = "no_contacts" | "suggestions_ready" | "incomplete_contact" | "watching";
-  let contextualCardType: ContextualCardType = "watching";
-  if (typedContacts.length === 0) {
-    contextualCardType = "no_contacts";
-  } else if (contactsWithSuggestions.length > 0) {
-    contextualCardType = "suggestions_ready";
-  } else if (mostIncomplete && getCompletion(mostIncomplete.questionnaire_responses?.[0]) < 60) {
-    contextualCardType = "incomplete_contact";
+  if (topProactiveSuggestion) {
+    const contactName = (topProactiveSuggestion.contacts as { name: string } | null)?.name ?? "";
+    heroTitle = topProactiveSuggestion.title ?? `Une attention pour ${contactName}.`;
+    heroSubtitle = topProactiveSuggestion.description ?? undefined;
   }
 
   return (
-    <DashboardShell pendingCount={proactivePending.length > 0 ? proactivePending.length : undefined}>
-      {!onboardingDone && (
-        <OnboardingOverlay userId={user.id} userName={firstName} />
-      )}
+    <DashboardShell>
+      {!onboardingDone && <OnboardingOverlay userId={user.id} userName={firstName} />}
       <TourReplay />
-
-      {/* Pause banner */}
       {isPaused && <PauseBanner />}
-
-      {/* Push prompt (shown client-side when no subscription) */}
       {showPushPrompt && <PushPrompt />}
 
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: 28 }}>
-        <div>
-          <p className="section-label">Tableau de bord</p>
-          <h1 className="page-title" style={{ marginBottom: 0 }}>
-            {firstName ? `Bonjour, ${firstName}.` : "Bonjour."}
-          </h1>
-        </div>
-        {typedContacts.length > 0 && (
-          <span style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", paddingBottom: 2 }}>
-            {typedContacts.length} {typedContacts.length === 1 ? "proche" : "proches"}
+      {/* ── Hero mass ── */}
+      <div style={{
+        position: 'relative',
+        padding: '0 0 48px',
+        borderRadius: '0 0 32px 32px',
+        overflow: 'hidden',
+        background: 'radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)',
+      }}>
+        {/* Top bar */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px 0' }}>
+          <span style={{
+            fontFamily: 'var(--font-sans)', fontWeight: 300, fontSize: 20,
+            letterSpacing: '.34em', textTransform: 'uppercase', color: '#F6F3EA',
+            paddingLeft: '.34em', display: 'inline-flex', alignItems: 'center', gap: 8,
+          }}>
+            CANDICE
+            <LivePoint size={6} tone="champ" />
           </span>
-        )}
+          {/* Avatar utilisateur */}
+          <div style={{
+            width: 33, height: 33, borderRadius: '50%',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--pine)',
+            background: 'radial-gradient(120% 120% at 30% 22%, #FFFFFF, #F1E8D2 60%, #E0CFA6)',
+            boxShadow: '0 0 0 1px var(--champ-line)',
+          }}>
+            {initial}
+          </div>
+        </div>
+
+        {/* Content */}
+        <div style={{ padding: '48px 26px 0' }}>
+          <div style={{
+            fontSize: 10.5, letterSpacing: '.4em', textTransform: 'uppercase',
+            color: 'var(--champ)', fontWeight: 500,
+            display: 'flex', alignItems: 'center', gap: 10, marginBottom: 24,
+          }}>
+            <LivePoint size={5} tone="champ" />
+            Maintenant
+          </div>
+
+          <p style={{
+            fontFamily: 'var(--font-serif)',
+            fontWeight: 300,
+            fontSize: 'clamp(26px,5vw,33px)',
+            lineHeight: 1.2,
+            color: '#FAF8F1',
+            letterSpacing: '-.022em',
+            marginBottom: heroSubtitle ? 18 : 28,
+          } as React.CSSProperties}>
+            {heroTitle}
+          </p>
+
+          {heroSubtitle && (
+            <p style={{
+              fontSize: 14, fontWeight: 300,
+              color: 'rgba(244,241,232,.64)',
+              lineHeight: 1.7, maxWidth: 300, marginBottom: 28,
+            }}>
+              {heroSubtitle}
+            </p>
+          )}
+
+          <div style={{ height: 1, background: 'linear-gradient(90deg, var(--champ-line), transparent)', marginBottom: 22 }} />
+
+          {topProactiveSuggestion ? (
+            <Link href={`/contacts/${(topProactiveSuggestion.contacts as { name?: string; id?: string } | null)?.id ?? ""}`} style={{ textDecoration: 'none' }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                fontSize: 15, fontWeight: 400, color: '#F6F3EA',
+              }}>
+                Voir l&apos;idée <span>→</span>
+              </span>
+            </Link>
+          ) : typedContacts.length === 0 ? (
+            <Link href="/contacts/new" style={{ textDecoration: 'none' }}>
+              <span style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                fontSize: 15, fontWeight: 400, color: '#F6F3EA',
+              }}>
+                Ajouter un proche <span>→</span>
+              </span>
+            </Link>
+          ) : null}
+        </div>
       </div>
 
-      {/* Proactive card (urgent/high priority overrides contextual card) */}
-      {topProactiveSuggestion ? (
-        <ProactiveDashboardCard
-          topSuggestion={topProactiveSuggestion}
-          allPending={proactivePending}
-          pendingCount={proactivePending.length}
-          isDevMode={isDevMode}
-        />
-      ) : (
-        <>
+      {/* ── Corps blanc ── */}
+      <div style={{ padding: '0 24px' }}>
 
-      {/* Contextual card */}
-      {contextualCardType === "no_contacts" && (
-        <div className="card" style={{ marginBottom: 20, borderColor: "var(--t3)" }}>
-          <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
-            Commencez par ajouter un proche.
-          </p>
-          <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.65, marginBottom: 16 }}>
-            Candice apprend à les connaître pour anticiper les bons gestes, au bon moment.
-          </p>
-          {!hasMyProfile && (
-            <Link href="/moi/questionnaire" style={{ display: "inline-block", marginBottom: 10 }}>
-              <button className="btn-ghost" style={{ fontSize: 12 }}>Remplir ma fiche d&apos;abord →</button>
+        {/* Proactive card when urgent/high */}
+        {topProactiveSuggestion && (
+          <div style={{ marginTop: 24 }}>
+            <ProactiveDashboardCard
+              topSuggestion={topProactiveSuggestion}
+              allPending={proactivePending}
+              pendingCount={proactivePending.length}
+              isDevMode={isDevMode}
+            />
+          </div>
+        )}
+
+        {/* Notes Candice */}
+        {recentNotes.length > 0 && (
+          <>
+            <PointDivider label="Candice a gardé en tête" />
+            <Thread>
+              {recentNotes.map((note, i) => (
+                <ThreadItem key={note.id} nodeType={i === 0 ? 'solid' : 'soft'} voice={i === 0}>
+                  <p style={{ fontSize: 15, fontWeight: 300, color: 'var(--ink-2)', lineHeight: 1.7 }}>
+                    {note.note}
+                  </p>
+                </ThreadItem>
+              ))}
+            </Thread>
+          </>
+        )}
+
+        {/* Tes proches */}
+        {typedContacts.length > 0 && (
+          <>
+            <PointDivider label="Tes proches" />
+            <Thread>
+              {typedContacts.slice(0, 4).map((contact, i) => {
+                const pct = getCompletion(contact.questionnaire_responses?.[0]);
+                const state = contactState(pct);
+                const isAnticipe = pct >= 65;
+                return (
+                  <Link key={contact.id} href={`/contacts/${contact.id}`} style={{ textDecoration: 'none', display: 'block' }}>
+                    <ThreadItem nodeType={isAnticipe ? 'anticipe' : 'soft'} dim={pct < 20}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                        <Avatar initial={contact.name[0]} size={46} variant={avatarVariant(i)} />
+                        <div>
+                          <div style={{
+                            fontFamily: 'var(--font-serif)',
+                            fontWeight: 400, fontSize: 19,
+                            color: 'var(--ink)', letterSpacing: '-.012em',
+                          }}>
+                            {contact.name}
+                          </div>
+                          <div style={{ fontSize: 12.5, color: isAnticipe ? 'var(--pine)' : 'var(--ink-3)', fontWeight: 400, marginTop: 3 }}>
+                            {state} {contact.name.split(' ')[0]}
+                          </div>
+                        </div>
+                      </div>
+                    </ThreadItem>
+                  </Link>
+                );
+              })}
+            </Thread>
+
+            {typedContacts.length > 4 && (
+              <Link href="/dashboard" style={{ display: 'block', marginTop: 12, fontSize: 13, color: 'var(--ink-3)', fontWeight: 300 }}>
+                + {typedContacts.length - 4} autres proches →
+              </Link>
+            )}
+          </>
+        )}
+
+        {/* Empty state */}
+        {typedContacts.length === 0 && (
+          <div style={{ textAlign: 'center', padding: '48px 0 24px' }}>
+            <Link href="/contacts/new">
+              <button className="btn-primary">Ajouter un proche →</button>
             </Link>
-          )}
-          <Link href="/contacts/new">
-            <button className="btn-primary">+ Ajouter un proche →</button>
-          </Link>
-        </div>
-      )}
+          </div>
+        )}
 
-      {contextualCardType === "suggestions_ready" && (
-        <div className="card" style={{ marginBottom: 20, borderColor: "var(--t3)" }}>
-          <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "var(--terra)", marginBottom: 8 }}>
-            Prêt
-          </p>
-          <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
-            {contactsWithSuggestions.length === 1
-              ? `Candice a des idées pour ${contactsWithSuggestions[0].name}.`
-              : `Candice a des idées pour ${contactsWithSuggestions.length} de vos proches.`}
-          </p>
-          <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.65, marginBottom: 16 }}>
-            Des suggestions personnalisées vous attendent.
-          </p>
-          <Link href={`/contacts/${contactsWithSuggestions[0].id}`}>
-            <button className="btn-primary">Voir les suggestions →</button>
-          </Link>
-        </div>
-      )}
+        {/* Archived link */}
+        {(archivedCount ?? 0) > 0 && (
+          <div style={{ marginTop: 24, paddingTop: 16, borderTop: '.5px solid var(--line)' }}>
+            <Link href="/dashboard/archives" style={{ fontSize: 12, fontWeight: 300, color: 'var(--ink-3)' }}>
+              {archivedCount} {archivedCount === 1 ? 'contact archivé' : 'contacts archivés'} →
+            </Link>
+          </div>
+        )}
 
-      {contextualCardType === "incomplete_contact" && mostIncomplete && (
-        <div className="card" style={{ marginBottom: 20 }}>
-          <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
-            Complétez la fiche de {mostIncomplete.name}.
-          </p>
-          <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.65, marginBottom: 16 }}>
-            Plus Candice en sait, plus ses suggestions seront précises.
-          </p>
-          <Link href={`/contacts/${mostIncomplete.id}`}>
-            <button className="btn-primary">Compléter la fiche →</button>
-          </Link>
-        </div>
-      )}
+        {isDevMode && !topProactiveSuggestion && <ManualTriggerButton />}
+      </div>
 
-      {contextualCardType === "watching" && (
-        <div className="card" style={{ marginBottom: 20, opacity: 0.7 }}>
-          <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", fontStyle: "italic" }}>
-            Candice surveille. Dès qu&apos;une attention s&apos;impose, elle vous le dit.
-          </p>
-        </div>
-      )}
-
-        </>
-      )}
-
-      {/* Dev-only trigger when no proactive card is shown */}
-      {!topProactiveSuggestion && isDevMode && <ManualTriggerButton />}
-
-      {/* Candice input */}
-      {typedContacts.length > 0 && (
-        <CandiceInput contacts={typedContacts} recentNote={recentNote} />
-      )}
-
-      {/* Idea button */}
-      <DashboardActions contacts={typedContacts} />
-
-      {/* Contact list or empty state */}
-      {typedContacts.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "64px 24px", border: "0.5px dashed var(--br3)", borderRadius: "var(--r-lg)" }}>
-          <p style={{ fontSize: 28, marginBottom: 14 }}>💌</p>
-          <p style={{ fontSize: 14, fontWeight: 300, color: "var(--con)", marginBottom: 6 }}>
-            Personne pour l&apos;instant.
-          </p>
-          <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.65, marginBottom: 20, maxWidth: 280, margin: "0 auto 20px" }}>
-            Ajoutez quelqu&apos;un qui vous est cher. Candice s&apos;occupe du reste.
-          </p>
-          <Link href="/contacts/new">
-            <button className="btn-primary">Ajouter un proche →</button>
-          </Link>
-        </div>
-      ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          {typedContacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact} />
-          ))}
-        </div>
-      )}
-
-      {/* Archived link */}
-      {(archivedCount ?? 0) > 0 && (
-        <div style={{ marginTop: 24, paddingTop: 16, borderTop: "0.5px solid var(--brd)" }}>
-          <Link
-            href="/dashboard/archives"
-            style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", display: "inline-flex", alignItems: "center", gap: 8 }}
-          >
-            <span>📦</span>
-            {archivedCount} {archivedCount === 1 ? "contact archivé" : "contacts archivés"} →
-          </Link>
-        </div>
-      )}
+      <PresenceInput />
     </DashboardShell>
   );
 }

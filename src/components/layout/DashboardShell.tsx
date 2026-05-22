@@ -1,29 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import Navbar from "./Navbar";
-import BottomNav from "./BottomNav";
+import PresenceBottomNav from "@/components/presence/BottomNav";
 
 interface DashboardShellProps {
   children: React.ReactNode;
   pendingCount?: number;
+  noNav?: boolean;
 }
 
-export default function DashboardShell({ children, pendingCount }: DashboardShellProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
+export default function DashboardShell({ children, noNav = false }: DashboardShellProps) {
   return (
     <div className="dashboard-layout">
-      <Navbar onToggleSidebar={() => setSidebarOpen(o => !o)} />
-      <div
-        className={`sidebar-overlay${sidebarOpen ? " sidebar-open" : ""}`}
-        onClick={() => setSidebarOpen(false)}
-        aria-hidden="true"
-      />
-      <BottomNav isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} pendingCount={pendingCount} />
       <main id="main-content" className="main-content" role="main">
         {children}
       </main>
+      {!noNav && <PresenceBottomNav />}
     </div>
   );
 }

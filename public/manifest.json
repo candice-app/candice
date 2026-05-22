@@ -4,8 +4,8 @@
   "description": "Votre mémoire relationnelle personnelle",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#FAF7F2",
-  "theme_color": "#C47A4A",
+  "background_color": "#FDFDFB",
+  "theme_color": "#173E31",
   "lang": "fr",
   "icons": [
     {
