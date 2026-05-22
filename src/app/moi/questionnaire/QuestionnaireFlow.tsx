@@ -16,7 +16,11 @@ import TemperamentStep from "@/components/questionnaire/TemperamentStep";
 import TemperamentBreath from "@/components/questionnaire/TemperamentBreath";
 import LifestyleStep from "@/components/questionnaire/LifestyleStep";
 import AvoidStep from "@/components/questionnaire/AvoidStep";
-import SelfProfileForm from "@/components/questionnaire/SelfProfileForm";
+import SingularityStep from "@/components/questionnaire/SingularityStep";
+import PracticalStep from "@/components/questionnaire/PracticalStep";
+import ClosingMoment from "@/components/questionnaire/ClosingMoment";
+import type { SingularityAnswers } from "@/components/questionnaire/SingularityStep";
+import type { PracticalInfo } from "@/components/questionnaire/PracticalStep";
 
 type Step =
   | "attention"
@@ -29,12 +33,21 @@ type Step =
   | "lifestyle4Breath"
   | "lifestyle5"
   | "lifestyle5Breath"
-  | "profile";
+  | "singularity6"
+  | "singularity6Breath"
+  | "practical7"
+  | "practical7Closing";
 
 interface Props {
   userId: string;
   initial: MyProfile | null;
 }
+
+// Deterministic breath text for Step 6 (non-scored, no Claude API needed)
+const SINGULARITY_BREATH =
+  "C'est souvent dans ces détails que Candice devient vraiment précise. " +
+  "Ces réponses donnent à Candice la matière la plus personnelle : ce qui ne rentre dans aucune case. " +
+  "Ton profil relationnel prend maintenant toute sa profondeur.";
 
 export default function QuestionnaireFlow({ userId, initial }: Props) {
   const supabase = createClient();
@@ -47,7 +60,6 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
   const [lifestyle5BreathText, setLifestyle5BreathText] = useState<string>("");
   const [temperamentAnswers, setTemperamentAnswers] = useState<Record<string, string>>({});
   const [lifestyleAnswers, setLifestyleAnswers] = useState<Record<string, string>>({});
-  // Keep latest temperament axes in memory so lifestyle can supplement them
   const [latestTemperamentAxes, setLatestTemperamentAxes] = useState<Record<string, { score: number; intensity: number }> | null>(null);
   const [latestTemperamentModes, setLatestTemperamentModes] = useState<Record<string, { label: string; intensity: number } | null> | null>(null);
 
@@ -205,13 +217,11 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           const result = scoreLifestyle(merged);
           const facts = computeLifestyleBreathFacts(result.axes, result.relationalFilters, 4);
 
-          // Merge temperament supplements into latest axes
           const mergedAxes = latestTemperamentAxes
             ? mergeTemperamentSupplements(latestTemperamentAxes, result.temperamentSupplements)
             : null;
           if (mergedAxes) setLatestTemperamentAxes(mergedAxes);
 
-          // Update canal mode if Q4d answered
           let updatedModes = latestTemperamentModes;
           if (result.canalSupplements.length > 0 && latestTemperamentModes) {
             const existingCanal = latestTemperamentModes.canal;
@@ -279,7 +289,6 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           const merged = { ...lifestyleAnswers, ...step5Answers };
           setLifestyleAnswers(merged);
 
-          // Extract Q17 interdits via AI (non-blocking best-effort)
           let q17Interdits: string[] = [];
           if (q17Text.trim().length > 4) {
             try {
@@ -301,7 +310,6 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
 
           const facts = computeLifestyleBreathFacts(result.axes, result.relationalFilters, 5);
 
-          // Merge temperament supplements from Q18/Q19
           const mergedAxes = latestTemperamentAxes
             ? mergeTemperamentSupplements(latestTemperamentAxes, result.temperamentSupplements)
             : null;
@@ -344,50 +352,64 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <TemperamentBreath
         breathText={lifestyle5BreathText}
-        onContinue={() => setStep("profile")}
-        ctaLabel="Continuer mon profil →"
+        onContinue={() => setStep("singularity6")}
+        ctaLabel="Continuer →"
       />
     );
   }
 
-  // ─── Step "profile": informations pratiques ───────────────────────────────
+  // ─── Step 6: Ce qui me rend unique ───────────────────────────────────────
 
-  return (
-    <div style={{ padding: "28px 20px 100px" }}>
-      <div style={{ marginBottom: 32 }}>
-        <p style={{
-          fontSize: 10, fontWeight: 500, letterSpacing: ".28em",
-          textTransform: "uppercase", color: "var(--pine)", marginBottom: 12,
-        }}>
-          Ton profil
-        </p>
-        <h1 style={{
-          fontFamily: "var(--font-serif)",
-          fontOpticalSizing: "auto",
-          fontWeight: 300,
-          fontSize: "clamp(28px, 6vw, 35px)",
-          color: "var(--ink)",
-          letterSpacing: "-.022em",
-          lineHeight: 1.1,
-          marginBottom: 10,
-        } as React.CSSProperties}>
-          {initial ? "Modifier ta fiche." : "Remplir ta fiche."}
-        </h1>
-        <p style={{
-          fontFamily: "var(--font-serif)",
-          fontOpticalSizing: "auto",
-          fontWeight: 300,
-          fontStyle: "italic",
-          fontSize: 17,
-          color: "var(--ink-2)",
-          lineHeight: 1.4,
-        } as React.CSSProperties}>
-          {initial
-            ? "Tes réponses actuelles sont pré-remplies."
-            : "Réponds instinctivement — plus c'est honnête, mieux c'est."}
-        </p>
-      </div>
-      <SelfProfileForm userId={userId} initial={initial} />
-    </div>
-  );
+  if (step === "singularity6") {
+    return (
+      <SingularityStep
+        onDone={async (answers: SingularityAnswers) => {
+          supabase.from("my_profile").upsert(
+            {
+              user_id: userId,
+              singularity_answers: answers,
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id" }
+          ).then(() => {});
+          setStep("singularity6Breath");
+        }}
+      />
+    );
+  }
+
+  if (step === "singularity6Breath") {
+    return (
+      <TemperamentBreath
+        breathText={SINGULARITY_BREATH}
+        onContinue={() => setStep("practical7")}
+        ctaLabel="Continuer →"
+      />
+    );
+  }
+
+  // ─── Step 7: Informations pratiques ──────────────────────────────────────
+
+  if (step === "practical7") {
+    return (
+      <PracticalStep
+        onDone={async (info: PracticalInfo) => {
+          await supabase.from("my_profile").upsert(
+            {
+              user_id: userId,
+              practical_info: info,
+              practical_computed_at: new Date().toISOString(),
+              updated_at: new Date().toISOString(),
+            },
+            { onConflict: "user_id" }
+          );
+          setStep("practical7Closing");
+        }}
+      />
+    );
+  }
+
+  // ─── Closing moment ───────────────────────────────────────────────────────
+
+  return <ClosingMoment />;
 }
