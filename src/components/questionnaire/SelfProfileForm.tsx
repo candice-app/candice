@@ -173,7 +173,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
   };
 
   // Psychological
-  const [loveLanguage, setLoveLanguage] = useState<string[]>(va("love_language"));
   const [communicationStyle, setCommunicationStyle] = useState<string[]>(va("communication_style"));
   const [stressResponse, setStressResponse] = useState<string[]>(va("stress_response"));
   const [socialEnergy, setSocialEnergy] = useState<string[]>(va("social_energy"));
@@ -202,7 +201,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
   const [importantDatesList, setImportantDatesList] = useState<ImportantDate[]>(
     () => parseImportantDates(initial?.important_dates ?? null)
   );
-  const [physicalContactWith, setPhysicalContactWith] = useState<string[]>(initial?.physical_contact_with ?? []);
   // Guided personal
   const [healthComfort, setHealthComfort] = useState(v("health_comfort"));
   const [familyLife, setFamilyLife] = useState(v("family_life"));
@@ -231,7 +229,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       const d = JSON.parse(raw);
       const arr = (val: unknown): string[] => Array.isArray(val) ? val : [];
       const str = (val: unknown): string => typeof val === "string" ? val : "";
-      setLoveLanguage(arr(d.loveLanguage));
       setCommunicationStyle(arr(d.communicationStyle));
       setStressResponse(arr(d.stressResponse));
       setSocialEnergy(arr(d.socialEnergy));
@@ -243,7 +240,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       setRecognitionPreference(arr(d.recognitionPreference));
       setBoundaries(arr(d.boundaries));
       setGrowthMindset(arr(d.growthMindset));
-      setPhysicalContactWith(arr(d.physicalContactWith));
       setHobbies(str(d.hobbies));
       setDislikedActivities(str(d.dislikedActivities));
       setFavoriteFoods(str(d.favoriteFoods));
@@ -285,10 +281,9 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       try {
         const savedAt = new Date().toISOString();
         localStorage.setItem(DRAFT_KEY, JSON.stringify({
-          loveLanguage, communicationStyle, stressResponse, socialEnergy,
+          communicationStyle, stressResponse, socialEnergy,
           appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
           coreValues, recognitionPreference, boundaries, growthMindset,
-          physicalContactWith,
           hobbies, dislikedActivities, favoriteFoods, dislikedFoods,
           giftPreference, standing, gastronomy, accommodation, giftStyle,
           tactility, conversationTopics, thingsToAvoid, bestContactMethod,
@@ -302,10 +297,9 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     }, 600);
     return () => clearTimeout(draftTimerRef.current);
   }, [ // eslint-disable-line react-hooks/exhaustive-deps
-    loveLanguage, communicationStyle, stressResponse, socialEnergy,
+    communicationStyle, stressResponse, socialEnergy,
     appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
     coreValues, recognitionPreference, boundaries, growthMindset,
-    physicalContactWith,
     hobbies, dislikedActivities, favoriteFoods, dislikedFoods,
     giftPreference, standing, gastronomy, accommodation, giftStyle,
     tactility, conversationTopics, thingsToAvoid, bestContactMethod,
@@ -316,7 +310,7 @@ export default function SelfProfileForm({ userId, initial }: Props) {
 
   // ── Progress ──────────────────────────────────────────────────────────────────
   const answeredCount =
-    [loveLanguage, communicationStyle, stressResponse, socialEnergy,
+    [communicationStyle, stressResponse, socialEnergy,
       appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
       coreValues, recognitionPreference, boundaries, growthMindset,
       giftPreference, standing, gastronomy, accommodation, giftStyle,
@@ -340,10 +334,9 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     // 1. localStorage en premier (filet de sécurité si le réseau échoue)
     try {
       localStorage.setItem(DRAFT_KEY, JSON.stringify({
-        loveLanguage, communicationStyle, stressResponse, socialEnergy,
+        communicationStyle, stressResponse, socialEnergy,
         appreciationStyle, conflictResolution, decisionMaking, emotionalExpression,
         coreValues, recognitionPreference, boundaries, growthMindset,
-        physicalContactWith,
         hobbies, dislikedActivities, favoriteFoods, dislikedFoods,
         giftPreference, standing, gastronomy, accommodation, giftStyle,
         tactility, conversationTopics, thingsToAvoid, bestContactMethod,
@@ -357,7 +350,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
     const { error: err } = await supabase.from("my_profile").upsert(
       {
         user_id: userId,
-        love_language: join(loveLanguage),
         communication_style: join(communicationStyle),
         stress_response: join(stressResponse),
         social_energy: join(socialEnergy),
@@ -369,7 +361,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
         recognition_preference: join(recognitionPreference),
         boundaries: join(boundaries),
         growth_mindset: join(growthMindset),
-        physical_contact_with: physicalContactWith.length ? physicalContactWith : null,
         hobbies: hobbies || null,
         disliked_activities: dislikedActivities || null,
         favorite_foods: favoriteFoods || null,
@@ -422,7 +413,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
       const { error: err } = await supabase.from("my_profile").upsert(
         {
           user_id: userId,
-          love_language: join(loveLanguage),
           communication_style: join(communicationStyle),
           stress_response: join(stressResponse),
           social_energy: join(socialEnergy),
@@ -434,7 +424,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
           recognition_preference: join(recognitionPreference),
           boundaries: join(boundaries),
           growth_mindset: join(growthMindset),
-          physical_contact_with: physicalContactWith.length ? physicalContactWith : null,
           hobbies: hobbies || null,
           disliked_activities: dislikedActivities || null,
           favorite_foods: favoriteFoods || null,
@@ -490,13 +479,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
 
   // ── Voice questions ───────────────────────────────────────────────────────────
   const VOICE_QUESTIONS: VoiceQuestion[] = [
-    { id: "loveLanguage", spoken: "Je me sens le plus aimé quand…", max: 3, options: [
-      { value: "words", label: "On me dit des mots doux" },
-      { value: "acts", label: "On m'aide concrètement" },
-      { value: "gifts", label: "On me fait un cadeau réfléchi" },
-      { value: "time", label: "On est vraiment présent" },
-      { value: "touch", label: "On me serre dans ses bras" },
-    ]},
     { id: "socialEnergy", spoken: "Comment je recharge mes batteries…", max: 2, options: [
       { value: "very_introverted", label: "J'ai besoin de moments seul pour récupérer" },
       { value: "introverted", label: "Je préfère les petits groupes" },
@@ -537,13 +519,13 @@ export default function SelfProfileForm({ userId, initial }: Props) {
   ];
 
   const voiceValues: Record<string, string[]> = {
-    loveLanguage, socialEnergy, stressResponse, communicationStyle,
+    socialEnergy, stressResponse, communicationStyle,
     appreciationStyle, coreValues, giftPreference,
   };
 
   const handleVoiceUpdate = (field: string, vals: string[]) => {
     const map: Record<string, (v: string[]) => void> = {
-      loveLanguage: setLoveLanguage, socialEnergy: setSocialEnergy,
+      socialEnergy: setSocialEnergy,
       stressResponse: setStressResponse, communicationStyle: setCommunicationStyle,
       appreciationStyle: setAppreciationStyle, coreValues: setCoreValues,
       giftPreference: setGiftPreference,
@@ -633,29 +615,6 @@ export default function SelfProfileForm({ userId, initial }: Props) {
             Réponds instinctivement — il n&apos;y a pas de mauvaise réponse.
           </p>
         </div>
-
-        <div>
-          <label style={FIELD_LABEL}>Je me sens le plus aimé(e) quand…</label>
-          <MultiSelect values={loveLanguage} onChange={setLoveLanguage} options={[
-            { value: "words", label: "On me dit des mots doux", description: "Compliments, encouragements, reconnaissance verbale" },
-            { value: "acts", label: "On m'aide concrètement", description: "Quelqu'un qui allège ma charge sans que je demande" },
-            { value: "gifts", label: "On me fait un cadeau réfléchi", description: "Quelque chose choisi pour moi spécifiquement" },
-            { value: "time", label: "On est vraiment présent", description: "Attention sans partage, qualité du moment" },
-            { value: "touch", label: "On me serre dans ses bras", description: "Proximité physique, réconfort corporel" },
-          ]} />
-        </div>
-
-        {loveLanguage.includes("touch") && (
-          <div>
-            <label style={FIELD_LABEL}>Le contact physique, c&apos;est surtout avec…</label>
-            <MultiSelect values={physicalContactWith} onChange={setPhysicalContactWith} max={2} options={[
-              { value: "partner",  label: "Mon/ma partenaire", description: "Réservé à l'intimité amoureuse" },
-              { value: "family",   label: "Ma famille proche", description: "Parents, frères et sœurs, enfants" },
-              { value: "friends",  label: "Mes amis proches", description: "Les gens en qui j'ai vraiment confiance" },
-              { value: "everyone", label: "Tout le monde", description: "Je suis naturellement tactile avec tous" },
-            ]} />
-          </div>
-        )}
 
         <div>
           <label style={FIELD_LABEL}>Pour communiquer, je préfère…</label>

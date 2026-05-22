@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
-import SelfProfileForm from "@/components/questionnaire/SelfProfileForm";
+import QuestionnaireFlow from "./QuestionnaireFlow";
 import { MyProfile } from "@/types";
 
 export default async function MoiQuestionnairePage() {
@@ -19,18 +19,7 @@ export default async function MoiQuestionnairePage() {
 
   return (
     <DashboardShell>
-      <div style={{ marginBottom: 28 }}>
-        <p className="section-label">Mon profil</p>
-        <h1 className="page-title" style={{ marginBottom: 4 }}>
-          {profile ? "Modifier ma fiche." : "Remplir ma fiche."}
-        </h1>
-        <p style={{ fontSize: 20, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", fontStyle: "italic", color: "var(--con)", lineHeight: 1.3 }}>
-          {profile
-            ? "Tes réponses actuelles sont pré-remplies."
-            : "Réponds instinctivement — plus c'est honnête, mieux c'est."}
-        </p>
-      </div>
-      <SelfProfileForm userId={user.id} initial={profile} />
+      <QuestionnaireFlow userId={user.id} initial={profile} />
     </DashboardShell>
   );
 }
