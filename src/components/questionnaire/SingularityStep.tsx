@@ -23,78 +23,19 @@ interface Props {
   onDone: (answers: SingularityAnswers) => void;
 }
 
-// ─── Hero header ──────────────────────────────────────────────────────────────
-
 function SingularityHero() {
   return (
-    <div style={{
-      position: "sticky",
-      top: 0,
-      zIndex: 50,
-      background: "var(--pine-h2)",
-      padding: "14px 22px 12px",
-    }}>
-      <p style={{
-        fontSize: 10,
-        fontWeight: 500,
-        letterSpacing: ".32em",
-        textTransform: "uppercase",
-        color: "rgba(205,185,135,.65)",
-        marginBottom: 10,
-      }}>
+    <div className="q-header">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <span className="q-logo">Candice<span className="q-logo-dot" /></span>
+        <span className="q-idx">06 — 07</span>
+      </div>
+      <div className="q-bar-track">
+        <div className="q-bar-fill" style={{ width: "72%" }} />
+      </div>
+      <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".32em", textTransform: "uppercase", color: "var(--ink-3)", marginTop: 10 }}>
         Ce qui me rend unique
       </p>
-
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 14,
-      }}>
-        <span style={{
-          fontFamily: "var(--font-sans)",
-          fontWeight: 300,
-          fontSize: 17,
-          letterSpacing: ".34em",
-          textTransform: "uppercase",
-          color: "#F6F3EA",
-          paddingLeft: ".34em",
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 7,
-        }}>
-          CANDICE
-          <span style={{
-            width: 5, height: 5, borderRadius: "50%",
-            background: "var(--champ)",
-            boxShadow: "0 0 7px 1px rgba(205,185,135,.5)",
-            display: "inline-block",
-            animation: "life 3.6s ease-in-out infinite",
-          }} />
-        </span>
-        <span style={{
-          fontSize: 11,
-          fontWeight: 300,
-          color: "rgba(205,185,135,.65)",
-          letterSpacing: ".22em",
-        }}>
-          Étape 6/7
-        </span>
-      </div>
-
-      <div style={{
-        height: 1.5,
-        background: "rgba(252,251,247,.12)",
-        borderRadius: 2,
-        overflow: "hidden",
-      }}>
-        <div style={{
-          height: "100%",
-          width: "72%",
-          background: "rgba(62,115,97,.9)",
-          borderRadius: "0 2px 2px 0",
-        }} />
-      </div>
     </div>
   );
 }
