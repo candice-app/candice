@@ -8,6 +8,8 @@ interface Props {
   q18Question: LifestyleQuestion;
   q19Question: LifestyleQuestion;
   onDone: (answers: Record<string, string>, q17Text: string) => void;
+  initialAnswers?: Record<string, string>;
+  initialQ17Text?: string;
 }
 
 function QHeader({ answeredCount, totalRequired }: { answeredCount: number; totalRequired: number }) {
@@ -67,9 +69,9 @@ function ChoiceSection({
   );
 }
 
-export default function AvoidStep({ q18Question, q19Question, onDone }: Props) {
-  const [q17Text, setQ17Text] = useState("");
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+export default function AvoidStep({ q18Question, q19Question, onDone, initialAnswers, initialQ17Text }: Props) {
+  const [q17Text, setQ17Text] = useState(initialQ17Text ?? "");
+  const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers ?? {});
   const [q17Focused, setQ17Focused] = useState(false);
   const [activeQId, setActiveQId] = useState<string | null>(null);
 

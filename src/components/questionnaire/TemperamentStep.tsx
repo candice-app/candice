@@ -8,6 +8,7 @@ interface Props {
   stepNumber: 2 | 3;
   totalSteps: 7;
   onDone: (answers: Record<string, string>) => void;
+  initialAnswers?: Record<string, string>;
 }
 
 function QHeader({ stepNumber, answeredCount, totalQuestions }: {
@@ -76,8 +77,8 @@ function QuestionSection({
   );
 }
 
-export default function TemperamentStep({ questions, stepNumber, onDone }: Props) {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+export default function TemperamentStep({ questions, stepNumber, onDone, initialAnswers }: Props) {
+  const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers ?? {});
   const [activeQId, setActiveQId] = useState<string | null>(null);
 
   const answeredCount = Object.keys(answers).length;

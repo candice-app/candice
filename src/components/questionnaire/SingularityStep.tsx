@@ -22,6 +22,7 @@ export interface SingularityAnswers {
 
 interface Props {
   onDone: (answers: SingularityAnswers) => void;
+  initialAnswers?: SingularityAnswers;
 }
 
 function SingularityHero() {
@@ -127,9 +128,9 @@ const EMPTY: SingularityAnswers = {
   sentir_special: "",
 };
 
-export default function SingularityStep({ onDone }: Props) {
+export default function SingularityStep({ onDone, initialAnswers }: Props) {
   const router = useRouter();
-  const [answers, setAnswers] = useState<SingularityAnswers>(EMPTY);
+  const [answers, setAnswers] = useState<SingularityAnswers>(initialAnswers ?? EMPTY);
 
   function set(key: keyof SingularityAnswers) {
     return (v: string) => setAnswers(prev => ({ ...prev, [key]: v }));

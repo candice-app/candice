@@ -6,6 +6,7 @@ import type { LifestyleQuestion, LifestyleOption } from "@/lib/lifestyle/questio
 interface Props {
   questions: LifestyleQuestion[];
   onDone: (answers: Record<string, string>) => void;
+  initialAnswers?: Record<string, string>;
 }
 
 function QHeader({ answeredCount, totalQuestions }: { answeredCount: number; totalQuestions: number }) {
@@ -65,8 +66,8 @@ function QuestionSection({
   );
 }
 
-export default function LifestyleStep({ questions, onDone }: Props) {
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+export default function LifestyleStep({ questions, onDone, initialAnswers }: Props) {
+  const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers ?? {});
   const [activeQId, setActiveQId] = useState<string | null>(null);
 
   const answeredCount = Object.keys(answers).length;

@@ -51,6 +51,7 @@ export interface PracticalInfo {
 
 interface Props {
   onDone: (info: PracticalInfo) => void;
+  initialInfo?: Partial<PracticalInfo & { role_familial: string | string[] }>;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -462,9 +463,17 @@ function SizeField({
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function PracticalStep({ onDone }: Props) {
+export default function PracticalStep({ onDone, initialInfo }: Props) {
   const router = useRouter();
-  const [info, setInfo] = useState<Omit<PracticalInfo, "vetos">>(EMPTY_INFO);
+  const [info, setInfo] = useState<Omit<PracticalInfo, "vetos">>(() => {
+    if (!initialInfo) return EMPTY_INFO;
+    const rf = initialInfo.role_familial;
+    return {
+      ...EMPTY_INFO,
+      ...initialInfo,
+      role_familial: Array.isArray(rf) ? rf : (rf ? [rf as string] : []),
+    };
+  });
 
   function setField<K extends keyof Omit<PracticalInfo, "vetos">>(key: K) {
     return (v: Omit<PracticalInfo, "vetos">[K]) =>
