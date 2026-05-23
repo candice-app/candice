@@ -21,24 +21,37 @@ const PLAYFAIR = "var(--font-serif)";
 export default function OffrePage() {
   return (
     <main style={{ background: BG, fontFamily: DM, color: CON, minHeight: "100vh" }}>
+      <style>{`
+        .offre-hero { padding: 56px 20px 40px; text-align: center; }
+        .offre-h1   { font-size: clamp(32px, 8vw, 52px); }
+        .offre-plans { padding: 0 20px 64px; }
+        .offre-grid  { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .offre-card  { padding: 28px 22px; }
+        @media (min-width: 640px) {
+          .offre-hero  { padding: 88px 52px 64px; }
+          .offre-plans { padding: 0 52px 96px; }
+          .offre-grid  { grid-template-columns: 1fr 1fr; gap: 16px; }
+          .offre-card  { padding: 40px 36px; }
+        }
+      `}</style>
 
       {/* Nav */}
       <MarketingNav />
 
       {/* Hero */}
-      <section style={{ padding: "88px 52px 64px", textAlign: "center" }}>
+      <section className="offre-hero">
         <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 4, textTransform: "uppercase", color: TERRA, marginBottom: 24 }}>Tarifs</p>
-        <h1 style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, lineHeight: 1.1, letterSpacing: -1.5, color: CON }}>
+        <h1 className="offre-h1" style={{ fontFamily: PLAYFAIR, fontWeight: 400, lineHeight: 1.1, letterSpacing: -1.5, color: CON }}>
           Simple. Transparent.
         </h1>
       </section>
 
       {/* Plans */}
-      <section style={{ padding: "0 52px 96px" }}>
-        <div style={{ maxWidth: 820, margin: "0 auto", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+      <section className="offre-plans">
+        <div style={{ maxWidth: 820, margin: "0 auto" }} className="offre-grid">
 
           {/* Candice Essentiel */}
-          <div style={{ background: WHITE, border: `0.5px solid ${BORDER}`, borderRadius: 16, padding: "40px 36px", display: "flex", flexDirection: "column" }}>
+          <div className="offre-card" style={{ background: WHITE, border: `0.5px solid ${BORDER}`, borderRadius: 16, display: "flex", flexDirection: "column" }}>
             <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: COND, marginBottom: 8 }}>Candice Essentiel</p>
             <p style={{ fontFamily: PLAYFAIR, fontSize: 52, fontWeight: 400, color: CON, letterSpacing: -1.5, lineHeight: 1, marginBottom: 4 }}>0€</p>
             <p style={{ fontSize: 13, fontWeight: 300, color: COND, marginBottom: 32 }}>Pour toujours</p>
@@ -65,7 +78,7 @@ export default function OffrePage() {
           </div>
 
           {/* Candice */}
-          <div style={{ background: DARK, border: "none", borderRadius: 16, padding: "40px 36px", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+          <div className="offre-card" style={{ background: DARK, border: "none", borderRadius: 16, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", top: 20, right: 20, background: TERRA, color: "#fff", fontSize: 10, fontWeight: 500, letterSpacing: 1, textTransform: "uppercase", padding: "4px 10px", borderRadius: 4 }}>
               14 jours offerts
             </div>
@@ -98,6 +111,7 @@ export default function OffrePage() {
       </section>
 
       <MarketingFooter />
+
     </main>
   );
 }

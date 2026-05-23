@@ -12,7 +12,8 @@ const BORDER = "rgba(23,62,49,0.08)";
 const DM = "var(--font-sans)";
 
 const NAV_LINKS = [
-  { href: "/fonctionnement", label: "Comment ça marche" },
+  { href: "/concept", label: "Le concept" },
+  { href: "/fonctionnement", label: "Fonctionnement" },
   { href: "/offre", label: "Tarifs" },
 ];
 
