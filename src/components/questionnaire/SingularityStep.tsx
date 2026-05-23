@@ -23,14 +23,26 @@ export interface SingularityAnswers {
 interface Props {
   onDone: (answers: SingularityAnswers) => void;
   initialAnswers?: SingularityAnswers;
+  onBack?: () => void;
+  onExit?: (currentAnswers: SingularityAnswers) => void;
 }
 
-function SingularityHero() {
+const qNavBtn: React.CSSProperties = {
+  background: "none", border: "none", cursor: "pointer", padding: 0,
+  fontSize: 11, letterSpacing: ".22em", color: "var(--ink-3)", fontWeight: 300,
+  fontFamily: "var(--font-sans)", WebkitTapHighlightColor: "transparent",
+};
+
+function SingularityHero({ onBack, onExit }: { onBack?: () => void; onExit?: () => void }) {
   return (
     <div className="q-header">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span className="q-logo">Candice<span className="q-logo-dot" /></span>
-        <span className="q-idx">06 — 07</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {onBack && <button type="button" onClick={onBack} style={qNavBtn}>← Retour</button>}
+          <span className="q-idx">06 — 07</span>
+          {onExit && <button type="button" onClick={onExit} style={qNavBtn}>Quitter ×</button>}
+        </div>
       </div>
       <div className="q-bar-track">
         <div className="q-bar-fill" style={{ width: "72%" }} />
@@ -128,7 +140,7 @@ const EMPTY: SingularityAnswers = {
   sentir_special: "",
 };
 
-export default function SingularityStep({ onDone, initialAnswers }: Props) {
+export default function SingularityStep({ onDone, initialAnswers, onBack, onExit }: Props) {
   const router = useRouter();
   const [answers, setAnswers] = useState<SingularityAnswers>(initialAnswers ?? EMPTY);
 
@@ -138,7 +150,7 @@ export default function SingularityStep({ onDone, initialAnswers }: Props) {
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <SingularityHero />
+      <SingularityHero onBack={onBack} onExit={onExit ? () => onExit(answers) : undefined} />
 
       <div style={{ padding: "32px 20px 40px" }}>
         <p style={{
@@ -238,7 +250,7 @@ export default function SingularityStep({ onDone, initialAnswers }: Props) {
           </button>
           <button
             type="button"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => onExit ? onExit(answers) : router.push("/moi")}
             style={{
               background: "none",
               border: "none",

@@ -52,6 +52,8 @@ export interface PracticalInfo {
 interface Props {
   onDone: (info: PracticalInfo) => void;
   initialInfo?: Partial<PracticalInfo & { role_familial: string | string[] }>;
+  onBack?: () => void;
+  onExit?: (currentInfo: PracticalInfo) => void;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -97,12 +99,22 @@ function deriveVetos(info: Omit<PracticalInfo, "vetos">): PracticalInfo["vetos"]
 
 // ─── Hero header ──────────────────────────────────────────────────────────────
 
-function PracticalHero() {
+const qNavBtn: React.CSSProperties = {
+  background: "none", border: "none", cursor: "pointer", padding: 0,
+  fontSize: 11, letterSpacing: ".22em", color: "var(--ink-3)", fontWeight: 300,
+  fontFamily: "var(--font-sans)", WebkitTapHighlightColor: "transparent",
+};
+
+function PracticalHero({ onBack, onExit }: { onBack?: () => void; onExit?: () => void }) {
   return (
     <div className="q-header">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span className="q-logo">Candice<span className="q-logo-dot" /></span>
-        <span className="q-idx">07 — 07</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {onBack && <button type="button" onClick={onBack} style={qNavBtn}>← Retour</button>}
+          <span className="q-idx">07 — 07</span>
+          {onExit && <button type="button" onClick={onExit} style={qNavBtn}>Quitter ×</button>}
+        </div>
       </div>
       <div className="q-bar-track">
         <div className="q-bar-fill" style={{ width: "86%" }} />
@@ -463,7 +475,7 @@ function SizeField({
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function PracticalStep({ onDone, initialInfo }: Props) {
+export default function PracticalStep({ onDone, initialInfo, onBack, onExit }: Props) {
   const router = useRouter();
   const [info, setInfo] = useState<Omit<PracticalInfo, "vetos">>(() => {
     if (!initialInfo) return EMPTY_INFO;
@@ -487,7 +499,7 @@ export default function PracticalStep({ onDone, initialInfo }: Props) {
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <PracticalHero />
+      <PracticalHero onBack={onBack} onExit={onExit ? () => onExit({ ...info, vetos: deriveVetos(info) }) : undefined} />
 
       <div style={{ padding: "28px 20px 40px" }}>
 
@@ -718,7 +730,7 @@ export default function PracticalStep({ onDone, initialInfo }: Props) {
           </button>
           <button
             type="button"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => onExit ? onExit({ ...info, vetos: deriveVetos(info) }) : router.push("/moi")}
             style={{
               background: "none",
               border: "none",

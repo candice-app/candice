@@ -129,8 +129,8 @@ button { cursor: pointer; font-family: var(--font-sans); }
 /* Rail — desktop only, hidden on mobile */
 .app-rail { display: none; }
 
-/* Main content */
-.app-main { padding-bottom: 96px; }
+/* Main content — 128 px ensures LogoutButton clears bottom nav on iOS (76px nav + ~34px safe-area) */
+.app-main { padding-bottom: 128px; }
 
 /* Hero mass — edge-to-edge mobile */
 .hero-mass {

@@ -9,12 +9,22 @@ interface Props {
   totalSteps: 7;
   onDone: (answers: Record<string, string>) => void;
   initialAnswers?: Record<string, string>;
+  onBack?: () => void;
+  onExit?: () => void;
 }
 
-function QHeader({ stepNumber, answeredCount, totalQuestions }: {
+const qNavBtn: React.CSSProperties = {
+  background: "none", border: "none", cursor: "pointer", padding: 0,
+  fontSize: 11, letterSpacing: ".22em", color: "var(--ink-3)", fontWeight: 300,
+  fontFamily: "var(--font-sans)", WebkitTapHighlightColor: "transparent",
+};
+
+function QHeader({ stepNumber, answeredCount, totalQuestions, onBack, onExit }: {
   stepNumber: number;
   answeredCount: number;
   totalQuestions: number;
+  onBack?: () => void;
+  onExit?: () => void;
 }) {
   const progress = Math.round((answeredCount / totalQuestions) * 100);
   const stepLabel = stepNumber === 2 ? "Mon énergie relationnelle" : "Communication & décision";
@@ -24,7 +34,11 @@ function QHeader({ stepNumber, answeredCount, totalQuestions }: {
     <div className="q-header">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span className="q-logo">Candice<span className="q-logo-dot" /></span>
-        <span className="q-idx">{stepIndex} — 07</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {onBack && <button type="button" onClick={onBack} style={qNavBtn}>← Retour</button>}
+          <span className="q-idx">{stepIndex} — 07</span>
+          {onExit && <button type="button" onClick={onExit} style={qNavBtn}>Quitter ×</button>}
+        </div>
       </div>
       <div className="q-bar-track">
         <div className="q-bar-fill" style={{ width: `${progress}%` }} />
@@ -77,7 +91,7 @@ function QuestionSection({
   );
 }
 
-export default function TemperamentStep({ questions, stepNumber, onDone, initialAnswers }: Props) {
+export default function TemperamentStep({ questions, stepNumber, onDone, initialAnswers, onBack, onExit }: Props) {
   const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers ?? {});
   const [activeQId, setActiveQId] = useState<string | null>(null);
 
@@ -91,7 +105,7 @@ export default function TemperamentStep({ questions, stepNumber, onDone, initial
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <QHeader stepNumber={stepNumber} answeredCount={answeredCount} totalQuestions={questions.length} />
+      <QHeader stepNumber={stepNumber} answeredCount={answeredCount} totalQuestions={questions.length} onBack={onBack} onExit={onExit} />
 
       <div style={{ padding: "26px 24px 140px" }}>
         {questions.map((q) => (

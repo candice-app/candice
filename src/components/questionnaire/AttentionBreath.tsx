@@ -107,7 +107,7 @@ export default function AttentionBreath({ breathText, onContinue }: Props) {
         </button>
         <button
           type="button"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/moi")}
           style={{
             background: "none",
             border: "none",

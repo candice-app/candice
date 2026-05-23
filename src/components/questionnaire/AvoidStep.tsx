@@ -10,21 +10,38 @@ interface Props {
   onDone: (answers: Record<string, string>, q17Text: string) => void;
   initialAnswers?: Record<string, string>;
   initialQ17Text?: string;
+  onBack?: () => void;
+  onExit?: () => void;
 }
 
-function QHeader({ answeredCount, totalRequired }: { answeredCount: number; totalRequired: number }) {
+const qNavBtn: React.CSSProperties = {
+  background: "none", border: "none", cursor: "pointer", padding: 0,
+  fontSize: 11, letterSpacing: ".22em", color: "var(--ink-3)", fontWeight: 300,
+  fontFamily: "var(--font-sans)", WebkitTapHighlightColor: "transparent",
+};
+
+function QHeader({ answeredCount, totalRequired, onBack, onExit }: {
+  answeredCount: number;
+  totalRequired: number;
+  onBack?: () => void;
+  onExit?: () => void;
+}) {
   const progress = Math.round((answeredCount / totalRequired) * 100);
   return (
     <div className="q-header">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span className="q-logo">Candice<span className="q-logo-dot" /></span>
-        <span className="q-idx">05 — 07</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {onBack && <button type="button" onClick={onBack} style={qNavBtn}>← Retour</button>}
+          <span className="q-idx">05 — 07</span>
+          {onExit && <button type="button" onClick={onExit} style={qNavBtn}>Quitter ×</button>}
+        </div>
       </div>
       <div className="q-bar-track">
         <div className="q-bar-fill" style={{ width: `${progress}%` }} />
       </div>
       <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".32em", textTransform: "uppercase", color: "var(--ink-3)", marginTop: 10 }}>
-        Ce qu'il vaut mieux éviter
+        Ce qu&apos;il vaut mieux éviter
       </p>
     </div>
   );
@@ -69,7 +86,7 @@ function ChoiceSection({
   );
 }
 
-export default function AvoidStep({ q18Question, q19Question, onDone, initialAnswers, initialQ17Text }: Props) {
+export default function AvoidStep({ q18Question, q19Question, onDone, initialAnswers, initialQ17Text, onBack, onExit }: Props) {
   const [q17Text, setQ17Text] = useState(initialQ17Text ?? "");
   const [answers, setAnswers] = useState<Record<string, string>>(initialAnswers ?? {});
   const [q17Focused, setQ17Focused] = useState(false);
@@ -87,7 +104,7 @@ export default function AvoidStep({ q18Question, q19Question, onDone, initialAns
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <QHeader answeredCount={answeredCount} totalRequired={2} />
+      <QHeader answeredCount={answeredCount} totalRequired={2} onBack={onBack} onExit={onExit} />
 
       <div style={{ padding: "26px 24px 140px" }}>
 

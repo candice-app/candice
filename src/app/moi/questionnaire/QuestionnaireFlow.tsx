@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import type { MyProfile } from "@/types";
 import type { AttentionResult } from "@/lib/attention/scoring";
@@ -109,6 +110,7 @@ const SINGULARITY_BREATH =
 
 export default function QuestionnaireFlow({ userId, initial }: Props) {
   const supabase = createClient();
+  const router = useRouter();
   const ext = initial as ExtendedProfile | null;
 
   // ── Edit mode state ──────────────────────────────────────────────────────
@@ -116,6 +118,28 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
 
   // Start at editMenu if profile exists, otherwise start fresh
   const [step, setStep] = useState<Step>(ext ? "editMenu" : "attention");
+  const [stepHistory, setStepHistory] = useState<Step[]>([]);
+
+  // ── Navigation helpers ───────────────────────────────────────────────────
+  function navigate(next: Step) {
+    setStepHistory(prev => [...prev, step]);
+    setStep(next);
+  }
+
+  function goBack() {
+    setStepHistory(prev => {
+      const history = [...prev];
+      const prevStep = history.pop();
+      if (prevStep !== undefined) setStep(prevStep);
+      return history;
+    });
+  }
+
+  function exitQuestionnaire() {
+    router.push("/moi");
+  }
+
+  const canGoBack = stepHistory.length > 0;
 
   // ── Pre-filled states from existing profile ───────────────────────────────
   const [attentionResult, setAttentionResult]       = useState<AttentionResult | null>(null);
@@ -141,7 +165,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
   // ── After single-part save: skip to closing ───────────────────────────────
   function afterSave() {
     if (editMode === "single") {
-      setStep("practical7Closing");
+      navigate("practical7Closing");
     }
   }
 
@@ -155,17 +179,18 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
       <EditMenu
         isComplete={complete}
         firstStepId={firstStep}
+        onExit={exitQuestionnaire}
         onResume={() => {
           setEditMode("resume");
-          setStep(firstStep ?? "practical7Closing");
+          navigate(firstStep ?? "practical7Closing");
         }}
         onJumpTo={(partId) => {
           setEditMode("single");
-          setStep(partIdToStep(partId));
+          navigate(partIdToStep(partId));
         }}
         onFull={() => {
           setEditMode("full");
-          setStep("attention");
+          navigate("attention");
         }}
       />
     );
@@ -177,12 +202,13 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <AttentionStep
         userId={userId}
+        onBack={canGoBack ? goBack : undefined}
+        onExit={exitQuestionnaire}
         onDone={(result, text) => {
           setAttentionResult(result);
           setAttentionBreathText(text);
-          // In single-part mode, skip breath screen
-          if (editMode === "single") { setStep("practical7Closing"); return; }
-          setStep("attentionBreath");
+          if (editMode === "single") { navigate("practical7Closing"); return; }
+          navigate("attentionBreath");
         }}
       />
     );
@@ -192,7 +218,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <AttentionBreath
         breathText={attentionBreathText}
-        onContinue={() => setStep("temperament2")}
+        onContinue={() => navigate("temperament2")}
       />
     );
   }
@@ -206,6 +232,8 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
         stepNumber={2}
         totalSteps={7}
         initialAnswers={temperamentAnswers}
+        onBack={canGoBack ? goBack : undefined}
+        onExit={exitQuestionnaire}
         onDone={async (step2Answers) => {
           const merged = { ...temperamentAnswers, ...step2Answers };
           setTemperamentAnswers(merged);
@@ -220,7 +248,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             { onConflict: "user_id" }
           ).then(() => {});
 
-          if (editMode === "single") { setStep("practical7Closing"); return; }
+          if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
           try {
@@ -230,7 +258,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           } catch { text = buildTemperamentFallbackText(facts); }
 
           setStep2BreathText(text);
-          setStep("temperament2Breath");
+          navigate("temperament2Breath");
         }}
       />
     );
@@ -240,7 +268,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <TemperamentBreath
         breathText={step2BreathText}
-        onContinue={() => setStep("temperament3")}
+        onContinue={() => navigate("temperament3")}
         ctaLabel="Continuer →"
       />
     );
@@ -255,6 +283,8 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
         stepNumber={3}
         totalSteps={7}
         initialAnswers={temperamentAnswers}
+        onBack={canGoBack ? goBack : undefined}
+        onExit={exitQuestionnaire}
         onDone={async (step3Answers) => {
           const merged = { ...temperamentAnswers, ...step3Answers };
           setTemperamentAnswers(merged);
@@ -269,7 +299,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             { onConflict: "user_id" }
           );
 
-          if (editMode === "single") { setStep("practical7Closing"); return; }
+          if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
           try {
@@ -279,7 +309,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           } catch { text = buildTemperamentFallbackText(facts); }
 
           setStep3BreathText(text);
-          setStep("temperament3Breath");
+          navigate("temperament3Breath");
         }}
       />
     );
@@ -289,7 +319,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <TemperamentBreath
         breathText={step3BreathText}
-        onContinue={() => setStep("lifestyle4")}
+        onContinue={() => navigate("lifestyle4")}
         ctaLabel="Continuer mon profil →"
       />
     );
@@ -302,6 +332,8 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
       <LifestyleStep
         questions={STEP4_QUESTIONS}
         initialAnswers={lifestyleAnswers}
+        onBack={canGoBack ? goBack : undefined}
+        onExit={exitQuestionnaire}
         onDone={async (step4Answers) => {
           const merged = { ...lifestyleAnswers, ...step4Answers };
           setLifestyleAnswers(merged);
@@ -327,7 +359,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             { onConflict: "user_id" }
           ).then(() => {});
 
-          if (editMode === "single") { setStep("practical7Closing"); return; }
+          if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
           try {
@@ -337,7 +369,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           } catch { text = buildLifestyleFallbackText(facts); }
 
           setLifestyle4BreathText(text);
-          setStep("lifestyle4Breath");
+          navigate("lifestyle4Breath");
         }}
       />
     );
@@ -347,7 +379,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <TemperamentBreath
         breathText={lifestyle4BreathText}
-        onContinue={() => setStep("lifestyle5")}
+        onContinue={() => navigate("lifestyle5")}
         ctaLabel="Continuer →"
       />
     );
@@ -367,6 +399,8 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
         q19Question={q19}
         initialAnswers={lifestyleAnswers}
         initialQ17Text={q17TextInit}
+        onBack={canGoBack ? goBack : undefined}
+        onExit={exitQuestionnaire}
         onDone={async (step5Answers, q17Text) => {
           const merged = { ...lifestyleAnswers, ...step5Answers };
           setLifestyleAnswers(merged);
@@ -395,7 +429,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             { onConflict: "user_id" }
           );
 
-          if (editMode === "single") { setStep("practical7Closing"); return; }
+          if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
           try {
@@ -405,7 +439,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           } catch { text = buildLifestyleFallbackText(facts); }
 
           setLifestyle5BreathText(text);
-          setStep("lifestyle5Breath");
+          navigate("lifestyle5Breath");
         }}
       />
     );
@@ -415,7 +449,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <TemperamentBreath
         breathText={lifestyle5BreathText}
-        onContinue={() => setStep("singularity6")}
+        onContinue={() => navigate("singularity6")}
         ctaLabel="Continuer →"
       />
     );
@@ -431,16 +465,24 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <SingularityStep
         initialAnswers={singInit}
+        onBack={canGoBack ? goBack : undefined}
+        onExit={(answers) => {
+          supabase.from("my_profile").upsert(
+            { user_id: userId, singularity_answers: answers, updated_at: new Date().toISOString() },
+            { onConflict: "user_id" }
+          ).then(() => {});
+          exitQuestionnaire();
+        }}
         onDone={async (answers: SingularityAnswers) => {
           supabase.from("my_profile").upsert(
             { user_id: userId, singularity_answers: answers, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
           ).then(() => {});
 
-          if (editMode === "single") { setStep("practical7Closing"); return; }
+          if (editMode === "single") { navigate("practical7Closing"); return; }
 
           const hasContent = Object.values(answers).some(v => v.trim().length > 0);
-          setStep(hasContent ? "singularity6Breath" : "practical7");
+          navigate(hasContent ? "singularity6Breath" : "practical7");
         }}
       />
     );
@@ -450,7 +492,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <TemperamentBreath
         breathText={SINGULARITY_BREATH}
-        onContinue={() => setStep("practical7")}
+        onContinue={() => navigate("practical7")}
         ctaLabel="Continuer →"
       />
     );
@@ -462,13 +504,21 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     return (
       <PracticalStep
         initialInfo={ext?.practical_info ?? undefined}
+        onBack={canGoBack ? goBack : undefined}
+        onExit={(info) => {
+          supabase.from("my_profile").upsert(
+            { user_id: userId, practical_info: info, updated_at: new Date().toISOString() },
+            { onConflict: "user_id" }
+          ).then(() => {});
+          exitQuestionnaire();
+        }}
         onDone={async (info: PracticalInfo) => {
           await supabase.from("my_profile").upsert(
             { user_id: userId, practical_info: info, practical_computed_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
           );
           afterSave();
-          if (editMode !== "single") setStep("practical7Closing");
+          if (editMode !== "single") navigate("practical7Closing");
         }}
       />
     );

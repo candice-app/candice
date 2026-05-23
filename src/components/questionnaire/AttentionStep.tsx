@@ -12,6 +12,8 @@ import type { AttentionQuestion } from "@/lib/attention/questions";
 interface Props {
   userId: string;
   onDone: (result: AttentionResult, breathText: string) => void;
+  onBack?: () => void;
+  onExit?: () => void;
 }
 
 type Selections = Record<string, string[]>;
@@ -24,12 +26,20 @@ const EYEBROWS: Record<string, string> = {
   qe: "Et toi",
 };
 
-function QHeader({ progress }: { progress: number }) {
+function QHeader({ progress, onBack, onExit }: { progress: number; onBack?: () => void; onExit?: () => void }) {
   return (
     <div className="q-header">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span className="q-logo">Candice<span className="q-logo-dot" /></span>
-        <span className="q-idx">01 — 07</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {onBack && (
+            <button type="button" onClick={onBack} style={qNavBtn}>← Retour</button>
+          )}
+          <span className="q-idx">01 — 07</span>
+          {onExit && (
+            <button type="button" onClick={onExit} style={qNavBtn}>Quitter ×</button>
+          )}
+        </div>
       </div>
       <div className="q-bar-track">
         <div className="q-bar-fill" style={{ width: `${progress}%` }} />
@@ -37,6 +47,12 @@ function QHeader({ progress }: { progress: number }) {
     </div>
   );
 }
+
+const qNavBtn: React.CSSProperties = {
+  background: "none", border: "none", cursor: "pointer", padding: 0,
+  fontSize: 11, letterSpacing: ".22em", color: "var(--ink-3)", fontWeight: 300,
+  fontFamily: "var(--font-sans)", WebkitTapHighlightColor: "transparent",
+};
 
 function QuestionSection({
   question, selectedIds, onToggle, active,
@@ -99,7 +115,7 @@ function buildAnswers(selections: Selections): AttentionAnswers {
   };
 }
 
-export default function AttentionStep({ userId, onDone }: Props) {
+export default function AttentionStep({ userId, onDone, onBack, onExit }: Props) {
   const supabase = createClient();
   const [selections, setSelections] = useState<Selections>({});
   const [activeQId, setActiveQId] = useState<string | null>(null);
@@ -176,7 +192,7 @@ export default function AttentionStep({ userId, onDone }: Props) {
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <QHeader progress={progress} />
+      <QHeader progress={progress} onBack={onBack} onExit={onExit} />
 
       <div style={{ padding: "26px 24px 140px" }}>
         <div style={{ marginBottom: 32 }}>

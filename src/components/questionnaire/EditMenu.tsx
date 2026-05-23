@@ -22,11 +22,12 @@ interface Props {
   onResume:      () => void;
   onJumpTo:      (partId: string) => void;
   onFull:        () => void;
+  onExit:        () => void;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function EditMenu({ isComplete, firstStepId, onResume, onJumpTo, onFull }: Props) {
+export default function EditMenu({ isComplete, firstStepId, onResume, onJumpTo, onFull, onExit }: Props) {
   const [showParts, setShowParts] = useState(false);
 
   return (
@@ -36,7 +37,16 @@ export default function EditMenu({ isComplete, firstStepId, onResume, onJumpTo, 
       <div className="q-header">
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <span className="q-logo">Candice<span className="q-logo-dot" /></span>
-          <span className="q-idx">Modifier</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+            <span className="q-idx">Modifier</span>
+            <button
+              type="button"
+              onClick={onExit}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 11, letterSpacing: ".22em", color: "var(--ink-3)", fontWeight: 300, fontFamily: "var(--font-sans)", WebkitTapHighlightColor: "transparent" } as React.CSSProperties}
+            >
+              Fermer ×
+            </button>
+          </div>
         </div>
         <div className="q-bar-track">
           <div className="q-bar-fill" style={{ width: "100%" }} />

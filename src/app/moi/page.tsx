@@ -920,7 +920,7 @@ export default async function MoiPage() {
         )}
 
         {/* Always-visible: site link + logout */}
-        <div style={{ borderTop: "0.5px solid var(--line)", marginTop: 8, paddingTop: 4 }}>
+        <div style={{ borderTop: "0.5px solid var(--line)", marginTop: 8, paddingTop: 4, paddingBottom: 16 }}>
           <Link
             href="/"
             style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0", borderBottom: "0.5px solid var(--line)" }}
