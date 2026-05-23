@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { LifestyleQuestion, LifestyleOption } from "@/lib/lifestyle/questions";
+import VoiceButton from "./VoiceButton";
 
 interface Props {
   q18Question: LifestyleQuestion;
@@ -90,8 +91,13 @@ export default function AvoidStep({ q18Question, q19Question, onDone }: Props) {
 
         {/* Q17 — texte libre optionnel */}
         <div className="q-section rest" style={{ opacity: 1 }}>
-          <div className="q-eyebrow">En toutes lettres</div>
-          <div className="q-prompt">Ce qu'il vaut mieux éviter avec moi…</div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
+            <div>
+              <div className="q-eyebrow">En toutes lettres</div>
+              <div className="q-prompt">Ce qu'il vaut mieux éviter avec moi…</div>
+            </div>
+            <VoiceButton onResult={v => setQ17Text(q17Text ? q17Text + " " + v : v)} currentValue={q17Text} />
+          </div>
           <div className="q-helper">Aucune obligation — réponds instinctivement, ou laisse vide.</div>
           <textarea
             id="q17"

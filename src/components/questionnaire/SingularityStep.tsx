@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import VoiceButton from "./VoiceButton";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -54,19 +55,21 @@ function TextareaField({
   const [focused, setFocused] = useState(false);
   return (
     <div style={{ marginBottom: 36 }}>
-      <label style={{
-        display: "block",
-        fontFamily: "var(--font-serif)",
-        fontOpticalSizing: "auto",
-        fontSize: "clamp(20px, 4.5vw, 24px)",
-        fontWeight: 300,
-        color: "var(--ink)",
-        letterSpacing: "-.015em",
-        lineHeight: 1.2,
-        marginBottom: subtext ? 6 : 10,
-      } as React.CSSProperties}>
-        {label}
-      </label>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: subtext ? 6 : 10 }}>
+        <label style={{
+          fontFamily: "var(--font-serif)",
+          fontOpticalSizing: "auto",
+          fontSize: "clamp(20px, 4.5vw, 24px)",
+          fontWeight: 300,
+          color: "var(--ink)",
+          letterSpacing: "-.015em",
+          lineHeight: 1.2,
+          flex: 1,
+        } as React.CSSProperties}>
+          {label}
+        </label>
+        <VoiceButton onResult={onChange} currentValue={value} />
+      </div>
       {subtext && (
         <p style={{
           fontSize: 12,

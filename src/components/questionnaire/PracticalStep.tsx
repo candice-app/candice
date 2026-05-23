@@ -12,6 +12,11 @@ export interface ImportantDate {
 }
 
 export interface PracticalInfo {
+  // Identité
+  prenom:             string;
+  sexe:               string;
+  age:                string;
+  profession:         string;
   // Alimentation
   allergies:          string[]; // ["aucune"] | ["gluten", "lactose", ...]
   regime:             string;
@@ -33,7 +38,7 @@ export interface PracticalInfo {
   animaux:            string;
   // Agenda
   dates_importantes:  ImportantDate[];
-  role_familial:      string;
+  role_familial:      string[]; // multi-select
   // Veto flags (derived from above)
   vetos: {
     no_alcohol:          boolean;
@@ -51,6 +56,10 @@ interface Props {
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const EMPTY_INFO: PracticalInfo = {
+  prenom: "",
+  sexe: "",
+  age: "",
+  profession: "",
   allergies: [],
   regime: "",
   alcool: "",
@@ -65,7 +74,7 @@ const EMPTY_INFO: PracticalInfo = {
   adresse_livraison: "",
   animaux: "",
   dates_importantes: [],
-  role_familial: "",
+  role_familial: [],
   vetos: {
     no_alcohol: false,
     halal: false,
@@ -496,6 +505,42 @@ export default function PracticalStep({ onDone }: Props) {
           </p>
         </div>
 
+        {/* ── Identité ── */}
+        <SectionLabel>Identité</SectionLabel>
+
+        <FieldLabel>Prénom</FieldLabel>
+        <TextInput
+          placeholder="Ton prénom"
+          value={info.prenom}
+          onChange={setField("prenom")}
+        />
+
+        <FieldLabel>Sexe</FieldLabel>
+        <PillGrid
+          options={[
+            { id: "femme",              label: "Femme" },
+            { id: "homme",              label: "Homme" },
+            { id: "non_binaire",        label: "Non-binaire" },
+            { id: "ne_se_prononce_pas", label: "Préfère ne pas préciser" },
+          ]}
+          values={info.sexe ? [info.sexe] : []}
+          onChange={v => setField("sexe")(v[0] ?? "")}
+        />
+
+        <FieldLabel>Âge</FieldLabel>
+        <TextInput
+          placeholder="ex. 32"
+          value={info.age}
+          onChange={setField("age")}
+        />
+
+        <FieldLabel>Profession</FieldLabel>
+        <TextInput
+          placeholder="ex. infirmière, développeur, enseignant…"
+          value={info.profession}
+          onChange={setField("profession")}
+        />
+
         {/* ── Alimentation ── */}
         <SectionLabel>Alimentation</SectionLabel>
 
@@ -647,8 +692,9 @@ export default function PracticalStep({ onDone }: Props) {
             { id: "collegue",      label: "Collègue" },
             { id: "autre",         label: "Autre" },
           ]}
-          values={info.role_familial ? [info.role_familial] : []}
-          onChange={v => setField("role_familial")(v[0] ?? "")}
+          multi
+          values={Array.isArray(info.role_familial) ? info.role_familial : (info.role_familial ? [info.role_familial as unknown as string] : [])}
+          onChange={setField("role_familial")}
         />
 
         {/* CTA */}
