@@ -126,6 +126,7 @@ export default async function ContactPage({
     { data: confidencesData },
     { data: recoData },
     { data: pendingQuestionData },
+    { count: feedbackCount },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -168,6 +169,12 @@ export default async function ContactPage({
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle(),
+    supabase
+      .from("attention_log")
+      .select("*", { count: "exact", head: true })
+      .eq("contact_id", id)
+      .eq("user_id", user.id)
+      .not("feedback", "is", null),
   ]);
 
   if (!contact) notFound();
@@ -351,6 +358,18 @@ export default async function ContactPage({
           }}>
             {headerState}
           </p>
+          {(feedbackCount ?? 0) >= 3 && (
+            <p style={{
+              fontSize: 11,
+              fontWeight: 300,
+              color: "rgba(244,241,232,.38)",
+              letterSpacing: ".04em",
+              marginTop: 5,
+              fontStyle: "italic",
+            }}>
+              Candice apprend votre histoire
+            </p>
+          )}
         </div>
       </div>
 
