@@ -53,12 +53,23 @@ function ModeCard({
   );
 }
 
+const REGISTER_OPTIONS_INCOGNITO: { value: string; label: string; subtext: string }[] = [
+  { value: "très_proche_fluide",     label: "Très proche et fluide",                   subtext: "Vous pouvez vous parler naturellement, sans trop réfléchir." },
+  { value: "proche_quotidien",       label: "Proche, mais prise dans le quotidien",     subtext: "Le lien est là, mais il manque parfois de temps ou d'attention." },
+  { value: "importante_distante",    label: "Importante, mais un peu distante",         subtext: "Vous tenez l'un à l'autre, mais le lien n'est pas toujours nourri." },
+  { value: "compliquée_fragile",     label: "Compliquée ou fragile",                    subtext: "Il faut éviter les attentions trop intimes ou trop émotionnelles." },
+  { value: "formelle_occasionnelle", label: "Plutôt formelle ou occasionnelle",         subtext: "Les attentions doivent rester simples, sobres et adaptées." },
+  { value: "je_ne_sais_pas",         label: "Je ne sais pas trop",                      subtext: "Candice commencera doucement, sans supposer trop d'intimité." },
+];
+
 function IncognitoForm() {
   const router = useRouter();
+  const [infoStep, setInfoStep] = useState<0 | 1 | 2>(0);
   const [name, setName] = useState("");
   const [relationship, setRelationship] = useState<Relationship>("friend");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [register, setRegister] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -71,7 +82,7 @@ function IncognitoForm() {
     const res = await fetch("/api/contacts/create-incognito", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name.trim(), relationship, phone: phone.trim(), postal_address: address.trim() }),
+      body: JSON.stringify({ name: name.trim(), relationship, phone: phone.trim(), postal_address: address.trim(), relationship_register: register || null }),
     });
 
     if (!res.ok) {
@@ -98,21 +109,106 @@ function IncognitoForm() {
     boxSizing: "border-box",
   };
 
+  // Step 0 — basic info
+  if (infoStep === 0) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div>
+          <label style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", display: "block", marginBottom: 6 }}>
+            Prénom *
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={e => setName(e.target.value)}
+            placeholder="Ex : Sophie"
+            style={fieldStyle}
+            onKeyDown={e => e.key === "Enter" && name.trim() && setInfoStep(1)}
+          />
+        </div>
+        <button
+          type="button"
+          disabled={!name.trim()}
+          onClick={() => setInfoStep(1)}
+          className="btn-primary"
+          style={{ opacity: name.trim() ? 1 : 0.45 }}
+        >
+          Suivant →
+        </button>
+      </div>
+    );
+  }
+
+  // Step 1 — register question
+  if (infoStep === 1) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div>
+          <p style={{ fontSize: 15, fontWeight: 400, color: "var(--con)", marginBottom: 4, lineHeight: 1.4 }}>
+            Et aujourd&apos;hui, votre relation avec {name} ressemble plutôt à…
+          </p>
+          <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", lineHeight: 1.5 }}>
+            Uniquement visible par vous. Candice adapte ses idées en conséquence.
+          </p>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {REGISTER_OPTIONS_INCOGNITO.map((opt) => {
+            const selected = register === opt.value;
+            return (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setRegister(opt.value)}
+                style={{
+                  textAlign: "left", padding: "12px 14px",
+                  borderRadius: "var(--r-sm)",
+                  border: selected ? "1.5px solid var(--terra)" : "0.5px solid var(--brd)",
+                  background: selected ? "var(--t2)" : "var(--bg)",
+                  cursor: "pointer",
+                }}
+              >
+                <p style={{ fontSize: 13, fontWeight: selected ? 500 : 400, color: selected ? "var(--terra)" : "var(--con)", marginBottom: 2 }}>
+                  {opt.label}
+                </p>
+                <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", lineHeight: 1.45 }}>
+                  {opt.subtext}
+                </p>
+              </button>
+            );
+          })}
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => setInfoStep(0)}
+            className="btn-ghost"
+            style={{ flex: "0 0 auto" }}
+          >
+            ← Retour
+          </button>
+          <button
+            type="button"
+            onClick={() => setInfoStep(2)}
+            className="btn-primary"
+            style={{ flex: 1 }}
+          >
+            Suivant →
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // Step 2 — rest of form
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div>
-        <label style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", display: "block", marginBottom: 6 }}>
-          Prénom *
-        </label>
-        <input
-          type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Ex : Sophie"
-          required
-          style={fieldStyle}
-        />
-      </div>
+      <button
+        type="button"
+        onClick={() => setInfoStep(1)}
+        style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}
+      >
+        ← Retour
+      </button>
 
       <div>
         <label style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", display: "block", marginBottom: 6 }}>
@@ -178,7 +274,7 @@ function IncognitoForm() {
 
       <button
         type="submit"
-        disabled={loading || !name.trim() || !phone.trim() || !address.trim()}
+        disabled={loading || !phone.trim() || !address.trim()}
         className="btn-primary"
         style={{ opacity: loading ? 0.6 : 1 }}
       >

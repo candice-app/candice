@@ -138,9 +138,18 @@ function MultiSelect({ options, values, onChange, max = 3 }: MultiSelectProps) {
 }
 
 function getSteps(mode: string) {
-  if (mode === "link") return ["Informations", "Mode", "Lien envoyé"];
-  return ["Informations", "Mode", "Profil", "Préférences"];
+  if (mode === "link") return ["Informations", "Registre", "Mode", "Lien envoyé"];
+  return ["Informations", "Registre", "Mode", "Profil", "Préférences"];
 }
+
+const REGISTER_OPTIONS: { value: string; label: string; subtext: string }[] = [
+  { value: "très_proche_fluide",     label: "Très proche et fluide",                    subtext: "Vous pouvez vous parler naturellement, sans trop réfléchir." },
+  { value: "proche_quotidien",       label: "Proche, mais prise dans le quotidien",      subtext: "Le lien est là, mais il manque parfois de temps ou d'attention." },
+  { value: "importante_distante",    label: "Importante, mais un peu distante",          subtext: "Vous tenez l'un à l'autre, mais le lien n'est pas toujours nourri." },
+  { value: "compliquée_fragile",     label: "Compliquée ou fragile",                     subtext: "Il faut éviter les attentions trop intimes ou trop émotionnelles." },
+  { value: "formelle_occasionnelle", label: "Plutôt formelle ou occasionnelle",          subtext: "Les attentions doivent rester simples, sobres et adaptées." },
+  { value: "je_ne_sais_pas",         label: "Je ne sais pas trop",                       subtext: "Candice commencera doucement, sans supposer trop d'intimité." },
+];
 
 const FIELD_LABEL: React.CSSProperties = {
   fontSize: 18, fontWeight: 300, color: "var(--txt)",
@@ -169,6 +178,7 @@ export default function QuestionnaireForm() {
   const [relationship, setRelationship] = useState<Relationship>("friend");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [register, setRegister] = useState<string>("");
 
   const [linkContactId, setLinkContactId] = useState<string | null>(null);
   const [linkLoading, setLinkLoading] = useState(false);
@@ -223,7 +233,7 @@ export default function QuestionnaireForm() {
 
   const handleChooseIncognito = () => {
     setMode("incognito");
-    setStep(2);
+    setStep(3);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -235,7 +245,7 @@ export default function QuestionnaireForm() {
 
     const { data: contact, error: contactErr } = await supabase
       .from("contacts")
-      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null })
+      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null, ...(register ? { relationship_register: register } : {}) })
       .select()
       .single();
 
@@ -247,7 +257,7 @@ export default function QuestionnaireForm() {
 
     setLinkContactId(contact.id);
     setMode("link");
-    setStep(2);
+    setStep(3);
     setLinkLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
 
@@ -275,7 +285,7 @@ export default function QuestionnaireForm() {
 
     const { data: contact, error: contactErr } = await supabase
       .from("contacts")
-      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null })
+      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null, ...(register ? { relationship_register: register } : {}) })
       .select()
       .single();
 
@@ -318,7 +328,7 @@ export default function QuestionnaireForm() {
   };
 
   const steps = getSteps(mode);
-  const isDark = step === 1 || (step === 2 && mode === "link");
+  const isDark = step === 2 || (step === 3 && mode === "link");
 
   return (
     <div style={{ maxWidth: 560, margin: "0 auto" }}>
@@ -410,8 +420,48 @@ export default function QuestionnaireForm() {
           </div>
         )}
 
-        {/* ── STEP 1: Mode choice ───────────────────────────────────────── */}
+        {/* ── STEP 1: Register question ─────────────────────────────────── */}
         {step === 1 && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            <div>
+              <h2 style={{ fontSize: 16, fontWeight: 400, color: "var(--txt)", marginBottom: 4 }}>
+                Et aujourd&apos;hui, votre relation ressemble plutôt à…
+              </h2>
+              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--txtm)", lineHeight: 1.6 }}>
+                Candice adapte ses suggestions au registre de votre lien. Uniquement visible par vous.
+              </p>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {REGISTER_OPTIONS.map((opt) => {
+                const selected = register === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setRegister(opt.value)}
+                    style={{
+                      textAlign: "left", padding: "14px 16px",
+                      borderRadius: "var(--r-sm)",
+                      border: selected ? "1.5px solid var(--terra)" : "0.5px solid var(--iv3)",
+                      background: selected ? "var(--t2)" : "#fff",
+                      cursor: "pointer", transition: "border-color 0.15s",
+                    }}
+                  >
+                    <p style={{ fontSize: 14, fontWeight: selected ? 500 : 400, color: selected ? "var(--terra)" : "var(--txt)", marginBottom: 3 }}>
+                      {opt.label}
+                    </p>
+                    <p style={{ fontSize: 12, fontWeight: 300, color: "var(--txts)", lineHeight: 1.5 }}>
+                      {opt.subtext}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* ── STEP 2: Mode choice ───────────────────────────────────────── */}
+        {step === 2 && (
           <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
             <div>
               <h2 style={{ fontSize: 18, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
@@ -479,8 +529,8 @@ export default function QuestionnaireForm() {
           </div>
         )}
 
-        {/* ── STEP 2 (link): Link display ───────────────────────────────── */}
-        {step === 2 && mode === "link" && linkContactId && (
+        {/* ── STEP 3 (link): Link display ───────────────────────────────── */}
+        {step === 3 && mode === "link" && linkContactId && (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div>
               <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 3, textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
@@ -534,8 +584,8 @@ export default function QuestionnaireForm() {
           </div>
         )}
 
-        {/* ── STEP 2 (incognito): Psychological profile ─────────────────── */}
-        {step === 2 && mode === "incognito" && (
+        {/* ── STEP 3 (incognito): Psychological profile ─────────────────── */}
+        {step === 3 && mode === "incognito" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
             <div>
               <h2 style={{ fontSize: 16, fontWeight: 400, color: "var(--txt)", marginBottom: 4 }}>
@@ -672,8 +722,8 @@ export default function QuestionnaireForm() {
           </div>
         )}
 
-        {/* ── STEP 3 (incognito): Preferences ───────────────────────────── */}
-        {step === 3 && mode === "incognito" && (
+        {/* ── STEP 4 (incognito): Preferences ───────────────────────────── */}
+        {step === 4 && mode === "incognito" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div>
               <h2 style={{ fontSize: 16, fontWeight: 400, color: "var(--txt)", marginBottom: 4 }}>
@@ -786,7 +836,7 @@ export default function QuestionnaireForm() {
         )}
 
         {/* ── Navigation ─────────────────────────────────────────────────── */}
-        {step !== 1 && !(step === 2 && mode === "link") && (
+        {step !== 2 && !(step === 3 && mode === "link") && (
           <div style={{
             display: "flex", alignItems: "center", justifyContent: "space-between",
             marginTop: 28, paddingTop: 20,
@@ -807,9 +857,9 @@ export default function QuestionnaireForm() {
               </button>
             )}
 
-            {step === 2 && mode === "incognito" && (
+            {step === 1 && (
               <button
-                onClick={() => { setStep(3); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                onClick={() => { setStep(2); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                 className="btn-primary"
               >
                 Suivant →
@@ -817,6 +867,15 @@ export default function QuestionnaireForm() {
             )}
 
             {step === 3 && mode === "incognito" && (
+              <button
+                onClick={() => { setStep(4); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                className="btn-primary"
+              >
+                Suivant →
+              </button>
+            )}
+
+            {step === 4 && mode === "incognito" && (
               <button onClick={handleSubmitIncognito} disabled={loading} className="btn-primary">
                 {loading ? "Enregistrement…" : "Enregistrer ✓"}
               </button>
