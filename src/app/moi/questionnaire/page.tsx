@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
 import QuestionnaireFlow from "./QuestionnaireFlow";
@@ -19,7 +20,9 @@ export default async function MoiQuestionnairePage() {
 
   return (
     <DashboardShell noNav>
-      <QuestionnaireFlow userId={user.id} initial={profile} />
+      <Suspense>
+        <QuestionnaireFlow userId={user.id} initial={profile} />
+      </Suspense>
     </DashboardShell>
   );
 }

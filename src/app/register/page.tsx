@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Wordmark from "@/components/presence/Wordmark";
 
@@ -34,8 +34,10 @@ function isDuplicateError(msg: string) {
   return m.includes("already registered") || m.includes("user already") || m.includes("already been registered");
 }
 
-export default function RegisterPage() {
+function RegisterForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite_token");
   const supabase = createClient();
 
   const [name, setName] = useState("");
@@ -131,7 +133,10 @@ export default function RegisterPage() {
       body: JSON.stringify({ firstName: name.trim(), email }),
     }).catch(() => {});
 
-    router.push("/dashboard");
+    const destination = inviteToken
+      ? `/moi/questionnaire?invite_token=${encodeURIComponent(inviteToken)}`
+      : "/dashboard";
+    router.push(destination);
     router.refresh();
   };
 
@@ -363,5 +368,13 @@ export default function RegisterPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense>
+      <RegisterForm />
+    </Suspense>
   );
 }

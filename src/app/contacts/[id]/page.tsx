@@ -5,6 +5,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
 import SuggestionsPanel from "./SuggestionsPanel";
 import { Contact, QuestionnaireResponse, ProfileNote, WishlistItem, CadenceLevel } from "@/types";
+import type { SynthesisNarrative } from "@/lib/profile/synthesis";
 import ContactActions from "./ContactActions";
 import ContactNotes from "@/components/dashboard/ContactNotes";
 import ContactHeader from "./ContactHeader";
@@ -157,6 +158,18 @@ export default async function ContactPage({
   const admin = createAdminClient();
   const cadenceResolution = await resolveCadenceForContact(user.id, id, admin);
   const isMemoryMode = !!typedContact.is_memory_mode;
+  const procheUserId = typedContact.proche_user_id ?? null;
+
+  // Fetch Proche's synthesised profile when linked
+  let procheSynthesis: SynthesisNarrative | null = null;
+  if (procheUserId) {
+    const { data: procheProfile } = await admin
+      .from("my_profile")
+      .select("profile_synthesis")
+      .eq("user_id", procheUserId)
+      .maybeSingle();
+    procheSynthesis = (procheProfile?.profile_synthesis ?? null) as SynthesisNarrative | null;
+  }
   const profile = typedContact.questionnaire_responses?.[0];
   const userHasProfile = !!myProfile;
   const contactNotes = (notesData ?? []) as ProfileNote[];
@@ -239,6 +252,7 @@ export default async function ContactPage({
                 completionPct={pct}
                 lastReminderSentAt={typedContact.last_reminder_sent_at ?? null}
                 senderFirstName={senderFirstName}
+                hasProche={!!procheUserId}
               />
             </div>
           )}
@@ -285,6 +299,34 @@ export default async function ContactPage({
               initialNotes={contactNotes}
             />
           </div>
+        )}
+
+        {/* ── Analyse Proche (quand le proche a rejoint Candice) ── */}
+        {procheSynthesis && (
+          <>
+            <PointDivider label={`Analyse de ${contactFirstName}`} />
+            <Thread>
+              <ThreadItem nodeType="solid" voice>
+                <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+                  {procheSynthesis.block1}
+                </p>
+              </ThreadItem>
+              {procheSynthesis.block3?.slice(0, 3).map((item: string, i: number) => (
+                <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
+                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                    {item}
+                  </p>
+                </ThreadItem>
+              ))}
+              {procheSynthesis.block5 && (
+                <ThreadItem nodeType="soft">
+                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                    {procheSynthesis.block5}
+                  </p>
+                </ThreadItem>
+              )}
+            </Thread>
+          </>
         )}
 
         {profile ? (
@@ -405,8 +447,27 @@ export default async function ContactPage({
               />
             </div>
           </>
+        ) : procheUserId ? (
+          /* Proche joined Candice — synthesis computing or not yet visible */
+          <>
+            {!procheSynthesis && (
+              <>
+                <PointDivider label={`Connaître ${contactFirstName}`} />
+                <div style={{ padding: "28px 4px 20px", textAlign: "center" }}>
+                  <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 8 }}>
+                    {contactFirstName} est sur Candice.
+                  </p>
+                  <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, maxWidth: 300, margin: "0 auto" }}>
+                    Son analyse sera disponible dès qu&apos;il ou elle aura consulté son profil.
+                  </p>
+                </div>
+              </>
+            )}
+            <PointDivider label="À retenir" />
+            <WishlistSection contactId={id} initialWishlist={wishlist} />
+          </>
         ) : (
-          /* No profile state */
+          /* No profile and no proche account */
           <>
             <PointDivider label={`Connaître ${contactFirstName}`} />
             <div style={{ padding: "32px 4px 24px", textAlign: "center" }}>

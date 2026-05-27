@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import type { MyProfile } from "@/types";
 import type { AttentionResult } from "@/lib/attention/scoring";
@@ -111,6 +111,9 @@ const SINGULARITY_BREATH =
 export default function QuestionnaireFlow({ userId, initial }: Props) {
   const supabase = createClient();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams.get("invite_token");
+  const inviteLinkCalled = useRef(false);
   const ext = initial as ExtendedProfile | null;
 
   // ── Edit mode state ──────────────────────────────────────────────────────
@@ -140,6 +143,17 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
   }
 
   const canGoBack = stepHistory.length > 0;
+
+  // ── Invite-link: fire once when questionnaire closes ─────────────────────
+  useEffect(() => {
+    if (step !== "practical7Closing" || !inviteToken || inviteLinkCalled.current) return;
+    inviteLinkCalled.current = true;
+    fetch("/api/invite/link", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: inviteToken }),
+    }).catch(console.error);
+  }, [step, inviteToken]);
 
   // ── Pre-filled states from existing profile ───────────────────────────────
   const [attentionResult, setAttentionResult]       = useState<AttentionResult | null>(null);

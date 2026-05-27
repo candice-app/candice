@@ -29,6 +29,7 @@ export interface Contact {
   archive_reason?: 'deceased' | 'lost_contact' | 'end_of_relationship' | 'other' | null;
   is_memory_mode?: boolean;
   memory_anniversary_opt_out?: boolean;
+  proche_user_id?: string | null;
 }
 
 export interface QuestionnaireResponse {

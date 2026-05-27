@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import ContactActionModal from "@/components/ContactActionModal";
 import ArchiveDialog from "@/components/contact/ArchiveDialog";
+import InviteButton from "./InviteButton";
 import { createClient } from "@/utils/supabase/client";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   completionPct: number;
   lastReminderSentAt: string | null;
   senderFirstName: string;
+  hasProche: boolean;
 }
 
 function isWithin24h(sentAt: string | null): boolean {
@@ -28,6 +30,7 @@ export default function ContactActions({
   completionPct,
   lastReminderSentAt,
   senderFirstName,
+  hasProche,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showArchiveDialog, setShowArchiveDialog] = useState(false);
@@ -105,6 +108,14 @@ export default function ContactActions({
             background: "var(--br2)", border: "0.5px solid var(--brd)",
             borderRadius: "var(--r-sm)", overflow: "hidden", minWidth: 180,
           }}>
+            {!hasProche && (
+              <>
+                <div onClick={() => setMenuOpen(false)}>
+                  <InviteButton contactId={contactId} contactFirstName={contactFirstName} />
+                </div>
+                <div style={{ borderTop: "0.5px solid var(--brd)" }} />
+              </>
+            )}
             {showReminderButton && (
               <>
                 <button
