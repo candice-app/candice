@@ -139,7 +139,8 @@ function MultiSelect({ options, values, onChange, max = 3 }: MultiSelectProps) {
 
 function getSteps(mode: string) {
   if (mode === "link") return ["Informations", "Registre", "Mode", "Lien envoyé"];
-  return ["Informations", "Registre", "Mode", "Profil", "Préférences"];
+  if (mode === "incognito") return ["Informations", "Registre", "Mode"];
+  return ["Informations", "Registre", "Mode"];
 }
 
 const REGISTER_OPTIONS: { value: string; label: string; subtext: string }[] = [
@@ -178,6 +179,7 @@ export default function QuestionnaireForm() {
   const [relationship, setRelationship] = useState<Relationship>("friend");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState<string>("");
   const [register, setRegister] = useState<string>("");
 
   const [linkContactId, setLinkContactId] = useState<string | null>(null);
@@ -231,10 +233,25 @@ export default function QuestionnaireForm() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleChooseIncognito = () => {
-    setMode("incognito");
-    setStep(3);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const handleChooseIncognito = async () => {
+    setLinkLoading(true);
+    setError("");
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) { setError("Non authentifié."); setLinkLoading(false); return; }
+
+    const { data: contact, error: contactErr } = await supabase
+      .from("contacts")
+      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null, ...(register ? { relationship_register: register } : {}), ...(gender ? { gender } : {}) })
+      .select()
+      .single();
+
+    if (contactErr || !contact) {
+      setError(contactErr?.message ?? "Impossible de créer le contact.");
+      setLinkLoading(false);
+      return;
+    }
+
+    router.push(`/contacts/${contact.id}/questionnaire`);
   };
 
   const handleGenerateLink = async () => {
@@ -245,7 +262,7 @@ export default function QuestionnaireForm() {
 
     const { data: contact, error: contactErr } = await supabase
       .from("contacts")
-      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null, ...(register ? { relationship_register: register } : {}) })
+      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null, ...(register ? { relationship_register: register } : {}), ...(gender ? { gender } : {}) })
       .select()
       .single();
 
@@ -417,6 +434,33 @@ export default function QuestionnaireForm() {
                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="facultatif" />
               </div>
             </div>
+
+            <div>
+              <label style={SHORT_LABEL}>Pronom</label>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+                {[
+                  { value: "femme", label: "Elle" },
+                  { value: "homme", label: "Il" },
+                  { value: "non_binaire", label: "Iel" },
+                  { value: "non_precise", label: "Ne se prononce pas" },
+                ].map(opt => (
+                  <label
+                    key={opt.value}
+                    style={{
+                      display: "inline-flex", alignItems: "center",
+                      padding: "8px 16px", borderRadius: 20,
+                      border: gender === opt.value ? "0.5px solid var(--terra)" : "0.5px solid var(--iv3)",
+                      background: gender === opt.value ? "var(--t2)" : "#fff",
+                      cursor: "pointer", fontSize: 13, fontWeight: 300,
+                      color: gender === opt.value ? "var(--terra)" : "var(--txt)",
+                    }}
+                  >
+                    <input type="radio" name="gender" value={opt.value} checked={gender === opt.value} onChange={() => setGender(opt.value)} style={{ display: "none" }} />
+                    {opt.label}
+                  </label>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 
@@ -584,7 +628,7 @@ export default function QuestionnaireForm() {
           </div>
         )}
 
-        {/* ── STEP 3 (incognito): Psychological profile ─────────────────── */}
+        {/* ── STEP 3 (incognito): Redirecting — this block should never render */}
         {step === 3 && mode === "incognito" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
             <div>
@@ -592,7 +636,7 @@ export default function QuestionnaireForm() {
                 Profil de {name}
               </h2>
               <p style={{ fontSize: 12, fontWeight: 300, color: "var(--txtm)" }}>
-                Réponds selon ce que tu sais — l&apos;approximation est normale.
+                Redirection en cours…
               </p>
             </div>
 
@@ -863,21 +907,6 @@ export default function QuestionnaireForm() {
                 className="btn-primary"
               >
                 Suivant →
-              </button>
-            )}
-
-            {step === 3 && mode === "incognito" && (
-              <button
-                onClick={() => { setStep(4); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-                className="btn-primary"
-              >
-                Suivant →
-              </button>
-            )}
-
-            {step === 4 && mode === "incognito" && (
-              <button onClick={handleSubmitIncognito} disabled={loading} className="btn-primary">
-                {loading ? "Enregistrement…" : "Enregistrer ✓"}
               </button>
             )}
           </div>

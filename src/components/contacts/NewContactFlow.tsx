@@ -62,10 +62,18 @@ const REGISTER_OPTIONS_INCOGNITO: { value: string; label: string; subtext: strin
   { value: "je_ne_sais_pas",         label: "Je ne sais pas trop",                      subtext: "Candice commencera doucement, sans supposer trop d'intimité." },
 ];
 
+const GENDER_OPTIONS = [
+  { value: "femme", label: "Elle (féminin)" },
+  { value: "homme", label: "Il (masculin)" },
+  { value: "non_binaire", label: "Iel (non-binaire)" },
+  { value: "non_precise", label: "Je préfère ne pas préciser" },
+];
+
 function IncognitoForm() {
   const router = useRouter();
   const [infoStep, setInfoStep] = useState<0 | 1 | 2>(0);
   const [name, setName] = useState("");
+  const [gender, setGender] = useState<string>("");
   const [relationship, setRelationship] = useState<Relationship>("friend");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -82,7 +90,7 @@ function IncognitoForm() {
     const res = await fetch("/api/contacts/create-incognito", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name.trim(), relationship, phone: phone.trim(), postal_address: address.trim(), relationship_register: register || null }),
+      body: JSON.stringify({ name: name.trim(), relationship, phone: phone.trim(), postal_address: address.trim(), relationship_register: register || null, gender: gender || null }),
     });
 
     if (!res.ok) {
@@ -125,6 +133,29 @@ function IncognitoForm() {
             style={fieldStyle}
             onKeyDown={e => e.key === "Enter" && name.trim() && setInfoStep(1)}
           />
+        </div>
+        <div>
+          <label style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", display: "block", marginBottom: 8 }}>
+            Pronom
+          </label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
+            {GENDER_OPTIONS.map(opt => (
+              <button
+                key={opt.value}
+                type="button"
+                onClick={() => setGender(opt.value)}
+                style={{
+                  padding: "7px 13px", borderRadius: 20, fontSize: 13, fontWeight: 300,
+                  border: gender === opt.value ? "1.5px solid var(--terra)" : "0.5px solid var(--brd)",
+                  background: gender === opt.value ? "var(--t2)" : "transparent",
+                  color: gender === opt.value ? "var(--terra)" : "var(--cond)",
+                  cursor: "pointer",
+                }}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
         </div>
         <button
           type="button"
