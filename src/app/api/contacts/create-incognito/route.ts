@@ -3,6 +3,7 @@ import { createClient } from '@/utils/supabase/server';
 
 const VALID_RELATIONSHIPS = ['partner', 'friend', 'family', 'colleague', 'other'];
 const VALID_REGISTERS = ['très_proche_fluide', 'proche_quotidien', 'importante_distante', 'compliquée_fragile', 'formelle_occasionnelle', 'je_ne_sais_pas'];
+const VALID_GENDERS = ['femme', 'homme', 'non_binaire', 'non_precise'];
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -10,7 +11,7 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { name, relationship, phone, postal_address, relationship_register } = body;
+  const { name, relationship, phone, postal_address, relationship_register, gender } = body;
 
   if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 });
   if (!VALID_RELATIONSHIPS.includes(relationship)) return NextResponse.json({ error: 'Relation invalide' }, { status: 400 });
@@ -19,6 +20,7 @@ export async function POST(req: Request) {
 
   const safeRegister = relationship_register && VALID_REGISTERS.includes(relationship_register)
     ? relationship_register : null;
+  const safeGender = gender && VALID_GENDERS.includes(gender) ? gender : null;
 
   const { data, error } = await supabase
     .from('contacts')
@@ -29,6 +31,7 @@ export async function POST(req: Request) {
       phone: phone.trim(),
       email: null,
       ...(safeRegister ? { relationship_register: safeRegister } : {}),
+      ...(safeGender ? { gender: safeGender } : {}),
     })
     .select('id')
     .single();

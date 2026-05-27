@@ -39,6 +39,7 @@ export interface Contact {
   memory_anniversary_opt_out?: boolean;
   proche_user_id?: string | null;
   relationship_register?: RelationshipRegister | null;
+  gender?: 'femme' | 'homme' | 'non_binaire' | 'non_precise' | null;
 }
 
 export interface QuestionnaireResponse {
@@ -73,6 +74,8 @@ export interface QuestionnaireResponse {
   additional_notes: string | null;
   physical_contact_with?: string[] | null;
   input_mode?: 'text' | 'voice' | null;
+  attention_reception?: Record<string, unknown> | null;
+  incognito_signals?: Record<string, unknown> | null;
   clothing_size: string | null;
   shoe_size: string | null;
   ring_size: string | null;
