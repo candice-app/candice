@@ -1,7 +1,7 @@
 import type { AttentionDim, FaceResult } from '@/lib/attention/scoring';
 import type { RelationalFilters } from '@/lib/lifestyle/scoring';
 import type { SingularityInput, VetosInput } from '@/lib/profile/synthesis';
-import type { QuestionnaireResponse } from '@/types';
+import type { QuestionnaireResponse, RelationshipRegister } from '@/types';
 
 export type KadenceProfile = 'haute' | 'moyenne' | 'basse';
 
@@ -51,6 +51,9 @@ export interface RecoInput {
 
   // Pilote profile (for blind spot detection)
   piloteExpression: FaceResult | null;
+
+  // Relationship register (pilote-only proximity signal)
+  register: RelationshipRegister | null;
 
   // Context
   importantDates: { label: string; date: string }[];

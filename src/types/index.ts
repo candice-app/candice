@@ -1,5 +1,13 @@
 export type Relationship = "partner" | "friend" | "family" | "colleague" | "other";
 
+export type RelationshipRegister =
+  | 'très_proche_fluide'
+  | 'proche_quotidien'
+  | 'importante_distante'
+  | 'compliquée_fragile'
+  | 'formelle_occasionnelle'
+  | 'je_ne_sais_pas';
+
 export interface WishlistItem {
   id: string;
   title: string;
@@ -30,6 +38,7 @@ export interface Contact {
   is_memory_mode?: boolean;
   memory_anniversary_opt_out?: boolean;
   proche_user_id?: string | null;
+  relationship_register?: RelationshipRegister | null;
 }
 
 export interface QuestionnaireResponse {
