@@ -803,3 +803,36 @@ Le seul "score" dans l'application est `compatibility_score` : un entier 0-100 g
 | B8 | VoiceMode | Mineur | Web Speech API : pas de fallback iOS Safari (SpeechRecognition non supporté). Échec silencieux. |
 | B9 | Emails | Mineur | `APP_URL` codé en dur `"https://candice.app"` dans toutes les routes email. Pas configurable par env var. |
 | B10 | `QuestionnaireForm.tsx` | Mineur | Envoie l'email invite questionnaire vers `/profil/{contactId}` (ancien flow PublicForm), pas vers le nouveau flow token `/profil-partage/[token]`. |
+
+---
+
+## Module 6b — Registre de relation (2026-05-27)
+
+### Concept
+Signal de proximité primaire du moteur de recommandation. Saisi par le pilote à la création d'un proche, modifiable depuis la fiche. Jamais exposé au proche.
+
+### 6 valeurs
+| Valeur DB | Label affiché | Comportement moteur |
+|---|---|---|
+| `très_proche_fluide` | Très proche et fluide | Kadence haute, répertoire complet, ton chaleureux direct |
+| `proche_quotidien` | Proche, mais prise dans le quotidien | Kadence haute (pour combler le manque), ton chaleureux |
+| `importante_distante` | Importante, mais un peu distante | Kadence moyenne, ponts de reconnexion, ton mesuré |
+| `compliquée_fragile` | Compliquée ou fragile | Kadence basse, veto attentions intimes, ton neutre/courtois |
+| `formelle_occasionnelle` | Plutôt formelle ou occasionnelle | Kadence basse, attentions simples sobres, ton courtois |
+| `je_ne_sais_pas` | Je ne sais pas trop | Kadence basse, commencer doucement, ton neutre doux |
+
+### Fichiers créés/modifiés
+- **`supabase-migration-19-relationship-register.sql`** — `ALTER TABLE contacts ADD COLUMN relationship_register TEXT CHECK(...)` (6 valeurs)
+- **`src/types/index.ts`** — type `RelationshipRegister`, champ optionnel sur `Contact`
+- **`src/lib/recommendations/types.ts`** — champ `register: RelationshipRegister | null` sur `RecoInput`
+- **`src/lib/recommendations/engine.ts`** — `computeKadenceFromProfile` : register prime en premier; `buildContextString` : ligne REGISTRE DE RELATION + VETO REGISTRE pour registres fragile/formel
+- **`src/lib/cadence/resolver.ts`** — `REGISTER_BASE` map, prend le dessus sur `PROXIMITY_BASE` quand register défini
+- **`src/app/api/recommendations/generate/route.ts`** — sélectionne `relationship_register`, le passe à `RecoInput`
+- **`src/app/api/contacts/create-incognito/route.ts`** — accepte et sauvegarde `relationship_register`
+- **`src/components/questionnaire/QuestionnaireForm.tsx`** — nouvelle étape 1 (registre) entre info de base et choix de mode ; tous les numéros d'étapes décalés de +1
+- **`src/components/contacts/NewContactFlow.tsx`** — `IncognitoForm` convertie en 3 étapes (prénom → registre → reste du formulaire)
+- **`src/app/contacts/[id]/RegisterEditor.tsx`** — composant client : affichage + édition inline du registre via supabase client
+- **`src/app/contacts/[id]/page.tsx`** — importe et affiche `RegisterEditor` après `ContactNotes`
+
+### Règle de gate
+Register est un **modulateur** (gate) sur répertoire + cadence + ton. Les langages de réception définissent toujours le TYPE d'attention ; le type de relation reste contexte léger. Register PRIME sur le type pour la proximité.
