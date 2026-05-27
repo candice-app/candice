@@ -142,6 +142,11 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     router.push("/moi");
   }
 
+  // Fire-and-forget: called after each part saves so synthesis stays current
+  function triggerSynthesis() {
+    fetch("/api/profile/synthesis/generate", { method: "POST" }).catch(() => {});
+  }
+
   const canGoBack = stepHistory.length > 0;
 
   // ── Invite-link: fire once when questionnaire closes ─────────────────────
@@ -221,6 +226,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
         onDone={(result, text) => {
           setAttentionResult(result);
           setAttentionBreathText(text);
+          triggerSynthesis();
           if (editMode === "single") { navigate("practical7Closing"); return; }
           navigate("attentionBreath");
         }}
@@ -260,7 +266,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           supabase.from("my_profile").upsert(
             { user_id: userId, temperament_answers: merged, temperament_axes: result.axes, temperament_modes: result.modes, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => {});
+          ).then(() => { triggerSynthesis(); });
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -312,6 +318,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             { user_id: userId, temperament_answers: merged, temperament_axes: result.axes, temperament_modes: result.modes, temperament_computed_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
           );
+          triggerSynthesis();
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -371,7 +378,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           supabase.from("my_profile").upsert(
             { user_id: userId, lifestyle_answers: merged, lifestyle_axes: result.axes, ...(mergedAxes ? { temperament_axes: mergedAxes } : {}), ...(updatedModes ? { temperament_modes: updatedModes } : {}), updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => {});
+          ).then(() => { triggerSynthesis(); });
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -442,6 +449,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             { user_id: userId, lifestyle_answers: merged, lifestyle_axes: result.axes, relational_filters: result.relationalFilters, lifestyle_computed_at: new Date().toISOString(), ...(mergedAxes ? { temperament_axes: mergedAxes } : {}), updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
           );
+          triggerSynthesis();
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -491,7 +499,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           supabase.from("my_profile").upsert(
             { user_id: userId, singularity_answers: answers, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => {});
+          ).then(() => { triggerSynthesis(); });
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -531,6 +539,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
             { user_id: userId, practical_info: info, practical_computed_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
           );
+          triggerSynthesis();
           afterSave();
           if (editMode !== "single") navigate("practical7Closing");
         }}

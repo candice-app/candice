@@ -75,6 +75,13 @@ export default async function ResultatsPage() {
     !!(data?.synthesis_computed_at) &&
     new Date(data.synthesis_computed_at as string) >= new Date(data.updated_at as string);
 
+  const isComplete = !!(
+    data?.attention_reception &&
+    data?.temperament_axes &&
+    data?.lifestyle_axes &&
+    data?.practical_info
+  );
+
   return (
     <ResultatsClient
       userId={user.id}
@@ -89,6 +96,7 @@ export default async function ResultatsPage() {
       singularity={(data?.singularity_answers as Record<string, string> | null) ?? null}
       synthesis={synthesisCurrent ? (data!.profile_synthesis as SynthesisNarrative) : null}
       needsSynthesis={!synthesisCurrent}
+      isComplete={isComplete}
     />
   );
 }

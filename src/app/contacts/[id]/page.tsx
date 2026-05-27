@@ -10,6 +10,7 @@ import ContactActions from "./ContactActions";
 import ContactNotes from "@/components/dashboard/ContactNotes";
 import ContactHeader from "./ContactHeader";
 import WishlistSection from "./WishlistSection";
+import RelancerButton from "./RelancerButton";
 import MatchingCard from "./MatchingCard";
 import CadencePerContact from "@/components/dashboard/CadencePerContact";
 import PointDivider from "@/components/presence/PointDivider";
@@ -162,13 +163,20 @@ export default async function ContactPage({
 
   // Fetch Proche's synthesised profile when linked
   let procheSynthesis: SynthesisNarrative | null = null;
+  let procheComplete = false;
   if (procheUserId) {
     const { data: procheProfile } = await admin
       .from("my_profile")
-      .select("profile_synthesis")
+      .select("profile_synthesis, attention_reception, temperament_axes, lifestyle_axes, practical_info")
       .eq("user_id", procheUserId)
       .maybeSingle();
     procheSynthesis = (procheProfile?.profile_synthesis ?? null) as SynthesisNarrative | null;
+    procheComplete = !!(
+      procheProfile?.attention_reception &&
+      procheProfile?.temperament_axes &&
+      procheProfile?.lifestyle_axes &&
+      procheProfile?.practical_info
+    );
   }
   const profile = typedContact.questionnaire_responses?.[0];
   const userHasProfile = !!myProfile;
@@ -179,6 +187,18 @@ export default async function ContactPage({
   const contactFirstName = typedContact.name.split(" ")[0];
   const importantDates = parseImportantDates(profile?.important_dates ?? null).sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
   const wishlist = (typedContact.gift_wishlist ?? []) as WishlistItem[];
+
+  const procheStateLabel: string | null = procheUserId
+    ? procheComplete
+      ? `Candice anticipe pour ${contactFirstName}`
+      : procheSynthesis
+      ? `Candice connaît bien ${contactFirstName}`
+      : `Candice commence à connaître ${contactFirstName}`
+    : null;
+  const headerState = procheStateLabel ?? candiceState(pct, contactFirstName);
+  const headerStateColor = procheUserId
+    ? procheComplete || !!procheSynthesis ? "var(--champ)" : "rgba(244,241,232,.5)"
+    : pct >= 65 ? "var(--champ)" : "rgba(244,241,232,.5)";
 
   let photoSignedUrl: string | null = null;
   if (typedContact.photo_url) {
@@ -264,10 +284,10 @@ export default async function ContactPage({
           <p style={{
             fontSize: 13,
             fontWeight: 300,
-            color: pct >= 65 ? "var(--champ)" : "rgba(244,241,232,.5)",
+            color: headerStateColor,
             letterSpacing: ".04em",
           }}>
-            {candiceState(pct, contactFirstName)}
+            {headerState}
           </p>
         </div>
       </div>
@@ -326,6 +346,14 @@ export default async function ContactPage({
                 </ThreadItem>
               )}
             </Thread>
+            {!procheComplete && (
+              <div style={{ padding: "4px 4px 0" }}>
+                <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", fontStyle: "italic", lineHeight: 1.65, marginBottom: 12 }}>
+                  Candice ne peut pas encore tout prendre en compte — {contactFirstName} n&apos;a pas terminé son profil.
+                </p>
+                <RelancerButton contactId={id} procheName={contactFirstName} />
+              </div>
+            )}
           </>
         )}
 
@@ -453,13 +481,14 @@ export default async function ContactPage({
             {!procheSynthesis && (
               <>
                 <PointDivider label={`Connaître ${contactFirstName}`} />
-                <div style={{ padding: "28px 4px 20px", textAlign: "center" }}>
+                <div style={{ padding: "28px 4px 20px" }}>
                   <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 8 }}>
                     {contactFirstName} est sur Candice.
                   </p>
-                  <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, maxWidth: 300, margin: "0 auto" }}>
-                    Son analyse sera disponible dès qu&apos;il ou elle aura consulté son profil.
+                  <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, marginBottom: 20 }}>
+                    Son analyse sera disponible dès qu&apos;il ou elle aura répondu aux premières questions.
                   </p>
+                  <RelancerButton contactId={id} procheName={contactFirstName} />
                 </div>
               </>
             )}

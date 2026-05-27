@@ -244,29 +244,35 @@ function SynthesisSection({ narrative }: { narrative: SynthesisNarrative }) {
   );
 }
 
-// ─── Incomplete profile invite ─────────────────────────────────────────────────
+// ─── Reprendre banner ─────────────────────────────────────────────────────────
 
-function IncompleteInvite({ hasTemperament, hasLifestyle }: { hasTemperament: boolean; hasLifestyle: boolean }) {
-  if (hasTemperament && hasLifestyle) return null;
-
-  let msg = "Complète ton profil pour découvrir ";
-  if (!hasTemperament) msg += "ton style relationnel, ton style de communication et tes nuances";
-  else if (!hasLifestyle) msg += "tes attentions idéales et ce qu'il vaut mieux éviter";
-
+function ReprendreBanner({ isComplete }: { isComplete: boolean }) {
+  if (isComplete) return null;
   return (
     <div style={{
-      margin: "32px 0",
-      padding: "20px 20px",
+      margin: "28px 0 8px",
+      padding: "22px 22px",
       background: "rgba(23,62,49,.04)",
       borderRadius: 14,
-      border: "0.5px solid var(--line)",
+      border: "0.5px solid rgba(23,62,49,.12)",
     }}>
-      <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65, marginBottom: 14 }}>
-        {msg}.
+      <p style={{
+        fontFamily: "var(--font-serif)",
+        fontWeight: 300,
+        fontSize: 17,
+        color: "var(--ink)",
+        letterSpacing: "-.012em",
+        lineHeight: 1.35,
+        marginBottom: 8,
+      } as React.CSSProperties}>
+        Ton profil s&apos;enrichit à chaque étape.
+      </p>
+      <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65, marginBottom: 16 }}>
+        Reprends là où tu t&apos;es arrêté(e) — Candice devient plus précise à chaque réponse.
       </p>
       <Link href="/moi/questionnaire" style={{ textDecoration: "none" }}>
         <button className="btn-primary" style={{ fontSize: 14 }}>
-          Continuer mon profil →
+          Reprendre mon profil →
         </button>
       </Link>
     </div>
@@ -288,6 +294,7 @@ interface Props {
   singularity: Record<string, string> | null;
   synthesis: SynthesisNarrative | null;
   needsSynthesis: boolean;
+  isComplete: boolean;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -305,6 +312,7 @@ export default function ResultatsClient({
   singularity,
   synthesis: initialSynthesis,
   needsSynthesis,
+  isComplete,
 }: Props) {
   const router = useRouter();
   const [breathText, setBreathText] = useState<string | null>(initialBreathText);
@@ -513,22 +521,12 @@ export default function ResultatsClient({
           </>
         )}
 
-        {/* ── Incomplete profile invite ── */}
-        <IncompleteInvite
-          hasTemperament={!!temperamentAxes}
-          hasLifestyle={!!lifestyleAxes}
-        />
+        {/* ── Reprendre banner (when profile incomplete) ── */}
+        <ReprendreBanner isComplete={isComplete} />
 
         {/* ── Clôture ── */}
         <div style={{ margin: "48px 0 12px", padding: "0 4px" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {(!temperamentAxes || !lifestyleAxes) && (
-              <Link href="/moi/questionnaire" style={{ textDecoration: "none" }}>
-                <button className="btn-primary">
-                  Continuer mon profil →
-                </button>
-              </Link>
-            )}
             <button
               type="button"
               onClick={() => router.push("/dashboard")}
