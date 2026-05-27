@@ -51,6 +51,7 @@ export default async function DashboardPage() {
     { data: recentNoteData },
     { data: suggestionsData },
     { data: proactiveData },
+    { data: recoData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -87,6 +88,10 @@ export default async function DashboardPage() {
       .eq("status", "pending")
       .order("generated_at", { ascending: false })
       .limit(10),
+    supabase
+      .from("contact_recommendations")
+      .select("contact_id, ideas")
+      .eq("user_id", user.id),
   ]);
 
   const adminClient = createAdminClient();
@@ -94,6 +99,14 @@ export default async function DashboardPage() {
 
   const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
   const recentNotes = (recentNoteData ?? []) as ProfileNote[];
+
+  // Map contact_id → first recommendation title for dashboard hints
+  type RecoRow = { contact_id: string; ideas: { title: string }[] };
+  const recoMap: Record<string, string> = {};
+  for (const row of ((recoData ?? []) as RecoRow[])) {
+    const firstTitle = row.ideas?.[0]?.title;
+    if (firstTitle) recoMap[row.contact_id] = firstTitle;
+  }
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
   const initial = (firstName || user.email || "C")[0].toUpperCase();
   const onboardingDone = !!(myProfile as { onboarding_completed?: boolean } | null)?.onboarding_completed;
@@ -279,6 +292,11 @@ export default async function DashboardPage() {
                           <div style={{ fontSize: 12.5, color: isAnticipe ? 'var(--pine)' : 'var(--ink-3)', fontWeight: 400, marginTop: 3 }}>
                             {state} {contact.name.split(' ')[0]}
                           </div>
+                          {recoMap[contact.id] && (
+                            <div style={{ fontSize: 11.5, fontWeight: 300, color: 'var(--ink-3)', marginTop: 4, fontStyle: 'italic' }}>
+                              ✦ {recoMap[contact.id]}
+                            </div>
+                          )}
                         </div>
                       </div>
                     </ThreadItem>

@@ -3,14 +3,17 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
-import SuggestionsPanel from "./SuggestionsPanel";
 import { Contact, QuestionnaireResponse, ProfileNote, WishlistItem, CadenceLevel } from "@/types";
 import type { SynthesisNarrative } from "@/lib/profile/synthesis";
+import type { ContactRecommendations } from "@/lib/recommendations/types";
+import { generateProactiveQuestion } from "@/lib/recommendations/questions";
 import ContactActions from "./ContactActions";
 import ContactNotes from "@/components/dashboard/ContactNotes";
 import ContactHeader from "./ContactHeader";
 import WishlistSection from "./WishlistSection";
 import RelancerButton from "./RelancerButton";
+import AttentionContextuelle from "./AttentionContextuelle";
+import ProactiveQuestion from "./ProactiveQuestion";
 import MatchingCard from "./MatchingCard";
 import CadencePerContact from "@/components/dashboard/CadencePerContact";
 import PointDivider from "@/components/presence/PointDivider";
@@ -113,12 +116,15 @@ export default async function ContactPage({
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
   const [
     { data: contact },
-    { data: cachedSuggestions },
     { data: myProfile },
     { data: notesData },
     { data: confidencesData },
+    { data: recoData },
+    { data: pendingQuestionData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -126,12 +132,6 @@ export default async function ContactPage({
       .eq("id", id)
       .eq("user_id", user.id)
       .single(),
-    supabase
-      .from("suggestions")
-      .select("content, generated_at")
-      .eq("contact_id", id)
-      .eq("user_id", user.id)
-      .maybeSingle(),
     supabase
       .from("my_profile")
       .select("id")
@@ -151,6 +151,22 @@ export default async function ContactPage({
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("contact_recommendations")
+      .select("ideas, blind_spot, kadence, generated_at")
+      .eq("contact_id", id)
+      .eq("user_id", user.id)
+      .maybeSingle(),
+    supabase
+      .from("context_journal")
+      .select("id, question, answer")
+      .eq("contact_id", id)
+      .eq("user_id", user.id)
+      .is("answer", null)
+      .gte("created_at", sevenDaysAgo)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   if (!contact) notFound();
@@ -187,6 +203,51 @@ export default async function ContactPage({
   const contactFirstName = typedContact.name.split(" ")[0];
   const importantDates = parseImportantDates(profile?.important_dates ?? null).sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
   const wishlist = (typedContact.gift_wishlist ?? []) as WishlistItem[];
+
+  // Recommendations — pre-loaded from contact_recommendations table
+  const initialRecommendations: ContactRecommendations | null = recoData
+    ? {
+        ideas: (recoData.ideas ?? []) as ContactRecommendations["ideas"],
+        blindSpot: (recoData.blind_spot ?? null) as ContactRecommendations["blindSpot"],
+        kadence: (recoData.kadence ?? "moyenne") as ContactRecommendations["kadence"],
+        generatedAt: "",
+      }
+    : null;
+
+  // Proactive question — seed one if none exists in last 7 days (only when there's profile data)
+  let pendingQuestion: { id: string; question: string } | null = pendingQuestionData
+    ? { id: pendingQuestionData.id, question: pendingQuestionData.question }
+    : null;
+
+  if (!pendingQuestion && !isMemoryMode && (procheUserId || !!profile)) {
+    const { data: anyRecent } = await supabase
+      .from("context_journal")
+      .select("id")
+      .eq("contact_id", id)
+      .eq("user_id", user.id)
+      .gte("created_at", sevenDaysAgo)
+      .limit(1)
+      .maybeSingle();
+
+    if (!anyRecent) {
+      const { data: recentQs } = await supabase
+        .from("context_journal")
+        .select("question")
+        .eq("contact_id", id)
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+
+      const recentlyAsked = (recentQs ?? []).map((r) => r.question);
+      const question = generateProactiveQuestion(contactFirstName, recentlyAsked);
+      const { data: inserted } = await supabase
+        .from("context_journal")
+        .insert({ user_id: user.id, contact_id: id, question })
+        .select("id")
+        .single();
+      if (inserted) pendingQuestion = { id: inserted.id, question };
+    }
+  }
 
   const procheStateLabel: string | null = procheUserId
     ? procheComplete
@@ -429,15 +490,20 @@ export default async function ContactPage({
               </>
             )}
 
-            {/* Idées pour [Prénom] */}
+            {/* Attentions pour [Prénom] */}
             {!isMemoryMode && (
               <>
-                <PointDivider label={`Idées pour ${contactFirstName}`} />
-                <SuggestionsPanel
+                <PointDivider label={`Attentions pour ${contactFirstName}`} />
+                {pendingQuestion && (
+                  <ProactiveQuestion
+                    questionId={pendingQuestion.id}
+                    question={pendingQuestion.question}
+                  />
+                )}
+                <AttentionContextuelle
                   contactId={id}
-                  contactName={typedContact.name}
-                  initialSuggestions={cachedSuggestions?.content ?? null}
-                  generatedAt={cachedSuggestions?.generated_at ?? null}
+                  contactFirstName={contactFirstName}
+                  initialRecommendations={initialRecommendations}
                 />
               </>
             )}
