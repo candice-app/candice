@@ -14,6 +14,7 @@ import WishlistSection from "./WishlistSection";
 import RelancerButton from "./RelancerButton";
 import AttentionContextuelle from "./AttentionContextuelle";
 import ProactiveQuestion from "./ProactiveQuestion";
+import RegisterEditor from "./RegisterEditor";
 import MatchingCard from "./MatchingCard";
 import CadencePerContact from "@/components/dashboard/CadencePerContact";
 import PointDivider from "@/components/presence/PointDivider";
@@ -378,6 +379,10 @@ export default async function ContactPage({
               contactId={id}
               contactName={typedContact.name}
               initialNotes={contactNotes}
+            />
+            <RegisterEditor
+              contactId={id}
+              initialRegister={typedContact.relationship_register ?? null}
             />
           </div>
         )}

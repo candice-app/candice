@@ -7,7 +7,7 @@ import type { RecoInput } from '@/lib/recommendations/types';
 import type { FaceResult } from '@/lib/attention/scoring';
 import type { RelationalFilters } from '@/lib/lifestyle/scoring';
 import type { SingularityInput, VetosInput } from '@/lib/profile/synthesis';
-import type { QuestionnaireResponse } from '@/types';
+import type { QuestionnaireResponse, RelationshipRegister } from '@/types';
 
 function parseImportantDates(raw: string | null): { label: string; date: string }[] {
   if (!raw) return [];
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
   ] = await Promise.all([
     admin
       .from('contacts')
-      .select('id, name, relationship, proximity_level, proche_user_id, questionnaire_responses(*)')
+      .select('id, name, relationship, proximity_level, proche_user_id, relationship_register, questionnaire_responses(*)')
       .eq('id', contactId)
       .eq('user_id', user.id)
       .single(),
@@ -67,6 +67,7 @@ export async function POST(req: NextRequest) {
   type ContactRow = {
     id: string; name: string; relationship: string;
     proximity_level: string | null; proche_user_id: string | null;
+    relationship_register: RelationshipRegister | null;
     questionnaire_responses: QuestionnaireResponse[];
   };
   const c = contact as ContactRow;
@@ -111,6 +112,7 @@ export async function POST(req: NextRequest) {
     contactFirstName,
     relationship: c.relationship,
     proximityLevel: c.proximity_level ?? 'close',
+    register: c.relationship_register ?? null,
 
     reception: procheReception,
     expression: procheExpression,

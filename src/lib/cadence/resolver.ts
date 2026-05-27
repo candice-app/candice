@@ -50,6 +50,15 @@ const PROXIMITY_BASE: Record<string, CadenceLevel> = {
   distant:      'discreet',
 };
 
+const REGISTER_BASE: Record<string, CadenceLevel> = {
+  'très_proche_fluide':     'sustained',
+  'proche_quotidien':       'sustained',
+  'importante_distante':    'normal',
+  'compliquée_fragile':     'discreet',
+  'formelle_occasionnelle': 'discreet',
+  'je_ne_sais_pas':         'discreet',
+};
+
 const GLOBAL_PREF_SHIFT: Record<string, number> = {
   discreet:  -1,
   normal:     0,
@@ -69,7 +78,7 @@ export async function resolveCadenceForContact(
   const [{ data: contact }, { data: myProfile }] = await Promise.all([
     supabaseAdmin
       .from('contacts')
-      .select('proximity_level, cadence_override, relationship, last_suggestion_at')
+      .select('proximity_level, cadence_override, relationship, last_suggestion_at, relationship_register')
       .eq('id', contactId)
       .eq('user_id', userId)
       .single(),
@@ -81,6 +90,7 @@ export async function resolveCadenceForContact(
   ]);
 
   const proximity = (contact?.proximity_level as string | null) ?? 'close';
+  const register = (contact?.relationship_register as string | null) ?? null;
   const reasons: string[] = [];
   const factors: CadenceFactors = {
     base: 'normal',
@@ -88,10 +98,16 @@ export async function resolveCadenceForContact(
     active_high_signal: false,
   };
 
-  // Niveau 1 : cadence de base selon proximity_level
-  let computed: CadenceLevel = PROXIMITY_BASE[proximity] ?? 'normal';
+  // Niveau 1 : cadence de base — register primes over proximity_level
+  let computed: CadenceLevel;
+  if (register && REGISTER_BASE[register]) {
+    computed = REGISTER_BASE[register];
+    reasons.push(`register:${register}`);
+  } else {
+    computed = PROXIMITY_BASE[proximity] ?? 'normal';
+    reasons.push(`base:${computed}`);
+  }
   factors.base = computed;
-  reasons.push(`base:${computed}`);
 
   // Niveau 2a : modulation par cadence_preference globale du Pilote
   const globalPref = myProfile?.cadence_preference as CadenceLevel | null | undefined;

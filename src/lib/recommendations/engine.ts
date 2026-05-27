@@ -29,9 +29,25 @@ const DIM_IDEAL_CANAL: Record<AttentionDim, RecoCanal> = {
   SUR:   'experience',
 };
 
+// ─── Register → kadence mapping ──────────────────────────────────────────────
+
+const REGISTER_KADENCE: Record<string, KadenceProfile> = {
+  'très_proche_fluide':     'haute',
+  'proche_quotidien':       'haute',
+  'importante_distante':    'moyenne',
+  'compliquée_fragile':     'basse',
+  'formelle_occasionnelle': 'basse',
+  'je_ne_sais_pas':         'basse',
+};
+
 // ─── Kadence from profile ─────────────────────────────────────────────────────
 
 export function computeKadenceFromProfile(input: RecoInput): KadenceProfile {
+  // Register primes over all profile-derived signals
+  if (input.register && REGISTER_KADENCE[input.register]) {
+    return REGISTER_KADENCE[input.register];
+  }
+
   const { reception, relationalFilters, classicProfile } = input;
 
   if (reception) {
@@ -151,11 +167,27 @@ function buildFallbackIdeas(input: RecoInput): RecoIdea[] {
 
 // ─── Context string ───────────────────────────────────────────────────────────
 
+const REGISTER_CONTEXT: Record<string, string> = {
+  'très_proche_fluide':     'Relation très proche et fluide — répertoire complet (affectif inclus), cadence élevée, ton chaleureux et direct.',
+  'proche_quotidien':       'Relation proche mais prise dans le quotidien — répertoire complet, cadence élevée pour renforcer le lien, ton chaleureux.',
+  'importante_distante':    'Relation importante mais un peu distante — favorise les ponts de reconnexion, cadence modérée, ton mesuré et chaleureux.',
+  'compliquée_fragile':     'Relation compliquée ou fragile — EXCLURE attentions intimes ou trop émotionnelles, ton neutre/courtois uniquement, cadence basse.',
+  'formelle_occasionnelle': 'Relation formelle ou occasionnelle — attentions simples et sobres uniquement, zéro intimité, cadence basse, ton courtois.',
+  'je_ne_sais_pas':         'Registre incertain — commencer doucement, pas d\'intimité supposée, cadence basse, ton neutre et doux.',
+};
+
 function buildContextString(input: RecoInput): string {
   const lines: string[] = [];
   const { contactFirstName, relationship, reception, relationalFilters, singularity, classicProfile, vetos } = input;
 
   lines.push(`PROCHE : ${contactFirstName} (${relationship})`);
+
+  if (input.register) {
+    lines.push(`REGISTRE DE RELATION : ${REGISTER_CONTEXT[input.register] ?? input.register}`);
+    if (input.register === 'compliquée_fragile' || input.register === 'formelle_occasionnelle') {
+      lines.push('VETO REGISTRE (absolu) : attentions intimes, expressions d\'affection personnelle, surprises émotionnelles, déclarations de type affectif');
+    }
+  }
 
   if (reception) {
     const top = [...reception.dominant, ...reception.secondaire].slice(0, 3);
