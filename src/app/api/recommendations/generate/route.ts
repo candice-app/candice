@@ -99,6 +99,11 @@ export async function POST(req: NextRequest) {
     }
   }
 
+  // Fallback: use incognito-filled attention_reception when proche has no account
+  if (!procheReception && classicProfile?.attention_reception) {
+    procheReception = classicProfile.attention_reception as unknown as FaceResult;
+  }
+
   const importantDates = parseImportantDates(classicProfile?.important_dates ?? null);
   const recentlyProposed = (recentLog ?? []).map((l) => l.attention_title);
   const recentContext = (recentAnswers ?? [])
