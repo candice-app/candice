@@ -59,4 +59,17 @@ export interface RecoInput {
   importantDates: { label: string; date: string }[];
   recentContext: string | null;
   recentlyProposed: string[];
+
+  // Complicated-register pilot context (Part 1)
+  complicatedContext: string | null;
+
+  // Attention feedback history for this contact (Part 2)
+  feedbackHistory: FeedbackEntry[];
+}
+
+export interface FeedbackEntry {
+  dim: AttentionDim;
+  canal: string;
+  feedback: 'juste' | 'a_cote' | 'pas_le_moment';
+  note: string | null;
 }

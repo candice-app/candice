@@ -187,6 +187,10 @@ function buildContextString(input: RecoInput): string {
     if (input.register === 'compliquée_fragile' || input.register === 'formelle_occasionnelle') {
       lines.push('VETO REGISTRE (absolu) : attentions intimes, expressions d\'affection personnelle, surprises émotionnelles, déclarations de type affectif');
     }
+    // Complicated context — highest-priority pilot voice, placed just after register veto
+    if (input.register === 'compliquée_fragile' && input.complicatedContext) {
+      lines.push(`GARDE-FOU PRIORITAIRE (parole du pilote — pèse plus que tout signal profil) : ${input.complicatedContext}`);
+    }
   }
 
   if (reception) {
@@ -241,6 +245,30 @@ function buildContextString(input: RecoInput): string {
 
   if (input.recentContext)
     lines.push(`CONTEXTE RÉCENT : ${input.recentContext}`);
+
+  // Feedback history — per-contact learning signal (Part 2)
+  if (input.feedbackHistory.length > 0) {
+    const aCoté = input.feedbackHistory.filter(f => f.feedback === 'a_cote');
+    const justes = input.feedbackHistory.filter(f => f.feedback === 'juste');
+    const pasLeMoment = input.feedbackHistory.filter(f => f.feedback === 'pas_le_moment');
+    const notes = input.feedbackHistory.filter(f => f.note).map(f => f.note!);
+
+    if (aCoté.length > 0) {
+      const dims = [...new Set(aCoté.map(f => DIM_FR[f.dim as AttentionDim] ?? f.dim))];
+      lines.push(`SOFT VETO — ATTENTIONS MAL ATTERRIES RÉCEMMENT (baisser fortement, ne pas supprimer) : ${dims.join(', ')}`);
+    }
+    if (justes.length > 0) {
+      const dims = [...new Set(justes.map(f => DIM_FR[f.dim as AttentionDim] ?? f.dim))];
+      lines.push(`RÉSONANCE FORTE — ATTENTIONS APPRÉCIÉES RÉCEMMENT (favoriser) : ${dims.join(', ')}`);
+    }
+    if (pasLeMoment.length > 0) {
+      const dims = [...new Set(pasLeMoment.map(f => DIM_FR[f.dim as AttentionDim] ?? f.dim))];
+      lines.push(`TIMING — PAS LE BON MOMENT RÉCEMMENT (ajuster la cadence, pas le type) : ${dims.join(', ')}`);
+    }
+    if (notes.length > 0) {
+      lines.push(`RETOURS PILOTE (indices qualitatifs) : ${notes.join(' | ')}`);
+    }
+  }
 
   if (input.recentlyProposed.length > 0)
     lines.push(`DÉJÀ PROPOSÉ RÉCEMMENT (ne pas répéter) : ${input.recentlyProposed.join(', ')}`);
