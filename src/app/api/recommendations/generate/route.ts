@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { generateRecommendations } from '@/lib/recommendations/engine';
 import { generateProactiveQuestion } from '@/lib/recommendations/questions';
-import type { RecoInput } from '@/lib/recommendations/types';
+import type { RecoInput, FeedbackEntry } from '@/lib/recommendations/types';
 import type { FaceResult } from '@/lib/attention/scoring';
 import type { RelationalFilters } from '@/lib/lifestyle/scoring';
 import type { SingularityInput, VetosInput } from '@/lib/profile/synthesis';
@@ -33,6 +33,8 @@ export async function POST(req: NextRequest) {
     { data: piloteProfile },
     { data: recentLog },
     { data: recentAnswers },
+    { data: complicatedContextRow },
+    { data: feedbackLog },
   ] = await Promise.all([
     admin
       .from('contacts')
@@ -60,6 +62,21 @@ export async function POST(req: NextRequest) {
       .not('answer', 'is', null)
       .order('answered_at', { ascending: false })
       .limit(3),
+    admin
+      .from('context_journal')
+      .select('answer')
+      .eq('user_id', user.id)
+      .eq('contact_id', contactId)
+      .eq('type', 'register_complicated_context')
+      .maybeSingle(),
+    admin
+      .from('attention_log')
+      .select('attention_type, attention_title, feedback, feedback_note, feedback_at')
+      .eq('user_id', user.id)
+      .eq('contact_id', contactId)
+      .not('feedback', 'is', null)
+      .order('feedback_at', { ascending: false })
+      .limit(10),
   ]);
 
   if (!contact) return NextResponse.json({ error: 'Contact not found' }, { status: 404 });
@@ -104,6 +121,17 @@ export async function POST(req: NextRequest) {
     procheReception = classicProfile.attention_reception as unknown as FaceResult;
   }
 
+  const complicatedContext = (complicatedContextRow?.answer as string | null) ?? null;
+
+  const feedbackHistory: FeedbackEntry[] = (feedbackLog ?? [])
+    .filter(f => f.feedback && f.attention_type)
+    .map(f => ({
+      dim: f.attention_type as FeedbackEntry['dim'],
+      canal: '',
+      feedback: f.feedback as FeedbackEntry['feedback'],
+      note: (f.feedback_note as string | null) ?? null,
+    }));
+
   const importantDates = parseImportantDates(classicProfile?.important_dates ?? null);
   const recentlyProposed = (recentLog ?? []).map((l) => l.attention_title);
   const recentContext = (recentAnswers ?? [])
@@ -133,6 +161,8 @@ export async function POST(req: NextRequest) {
     importantDates,
     recentContext,
     recentlyProposed,
+    complicatedContext,
+    feedbackHistory,
   };
 
   const recommendations = await generateRecommendations(input);
