@@ -889,3 +889,54 @@ Fonction `interp(tpl, name, gender)` : remplace `{{prenom}}`, `{{il/elle}}`, `{{
 - **`src/app/contacts/[id]/questionnaire/page.tsx`** — server component (auth + fetch contact + existing response → IncognitoFlow)
 - **`src/app/contacts/[id]/questionnaire/IncognitoFlow.tsx`** — state machine 15 étapes, interp gender, computeReceptionFromQ1, 3 save points, même DA que parcours A
 - **`src/app/api/recommendations/generate/route.ts`** — fallback attention_reception depuis classicProfile
+
+---
+
+## Module 6d — Déroulé « compliquée » + boucle feedback (2026-05-27)
+
+### Partie 1 — Déroulé conditionnel « Compliquée ou fragile »
+
+Quand le Pilote sélectionne `compliquée_fragile`, un bloc optionnel s'ouvre doucement juste en dessous (dans RegisterEditor, QuestionnaireForm étape 1, et NewContactFlow IncognitoForm étape 1). Champ libre, aucune validation bloquante.
+
+**Stockage** : `context_journal` avec `type = 'register_complicated_context'`, `question` = libellé fixe, `answer` = texte libre du Pilote.
+
+**Effet moteur** : `buildContextString` place ce texte en **GARDE-FOU PRIORITAIRE** juste après VETO REGISTRE — au-dessus des langages dominants. Pèse plus que tout signal profil pour ce contact.
+
+**Modifiable** : RegisterEditor relit le contexte existant à l'ouverture de l'édition, pré-remplit le champ.
+
+### Partie 2 — Boucle de feedback sur les attentions
+
+Sur chaque attention proposée (AttentionContextuelle), 3 micro-actions sous « Fait ✓ » :
+- **C'était juste** → renforcer le type dans les prochaines générations
+- **À côté** → ouvre champ inline optionnel ; baisser ce type (SOFT VETO dans context string)
+- **Pas le bon moment** → ajuste la cadence uniquement, pas le type
+
+**Stockage** : `attention_log.feedback` (ENUM juste|a_cote|pas_le_moment), `feedback_note` (TEXT), `feedback_at` (TIMESTAMPTZ).
+
+**Endpoint** : `POST /api/recommendations/feedback { contactId, attentionTitle, feedback, note? }`
+
+**Effet moteur** : `buildContextString` ajoute en fin de contexte :
+- `SOFT VETO — ATTENTIONS MAL ATTERRIES RÉCEMMENT` (dims 'a_cote')
+- `RÉSONANCE FORTE — ATTENTIONS APPRÉCIÉES RÉCEMMENT` (dims 'juste')
+- `TIMING — PAS LE BON MOMENT RÉCEMMENT` (dims 'pas_le_moment')
+- `RETOURS PILOTE` (notes libres)
+
+**Apprentissage par contact** : le feedback n'affecte jamais le modèle global, uniquement la relation A-B.
+
+**Label fiche** : après 3 feedbacks pour ce contact → "Candice apprend votre histoire" (sobre, sans chiffre) en dessous du headerState.
+
+### Migration
+- `supabase-migration-21-feedback-context.sql` — `context_journal ADD COLUMN type TEXT` + `attention_log ADD COLUMN feedback TEXT CHECK(...), feedback_note TEXT, feedback_at TIMESTAMPTZ`
+
+### Fichiers créés/modifiés
+- **`supabase-migration-21-feedback-context.sql`**
+- **`src/app/api/recommendations/feedback/route.ts`** — nouveau endpoint POST feedback
+- **`src/lib/recommendations/types.ts`** — `complicatedContext: string|null` + `feedbackHistory: FeedbackEntry[]` dans RecoInput
+- **`src/lib/recommendations/engine.ts`** — GARDE-FOU PRIORITAIRE (P1) + SOFT VETO/RÉSONANCE/TIMING/RETOURS (P2) dans buildContextString
+- **`src/app/api/recommendations/generate/route.ts`** — fetch context_journal type=register_complicated_context + attention_log feedback récent
+- **`src/app/contacts/[id]/RegisterEditor.tsx`** — bloc compliquée expandable avec fetch/save context_journal
+- **`src/components/questionnaire/QuestionnaireForm.tsx`** — bloc compliquée en step 1 + saveComplicatedContext après création contact
+- **`src/components/contacts/NewContactFlow.tsx`** — bloc compliquée en step 1 + passage via create-incognito API
+- **`src/app/api/contacts/create-incognito/route.ts`** — accepte complicated_context, insère dans context_journal
+- **`src/app/contacts/[id]/AttentionContextuelle.tsx`** — 3 micro-actions feedback + inline note "À côté"
+- **`src/app/contacts/[id]/page.tsx`** — fetch feedback count, label "Candice apprend votre histoire" ≥ 3 feedbacks
