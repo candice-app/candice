@@ -182,6 +182,8 @@ export default function QuestionnaireForm() {
   const [gender, setGender] = useState<string>("");
   const [register, setRegister] = useState<string>("");
 
+  const [complicatedContext, setComplicatedContext] = useState<string>("");
+
   const [linkContactId, setLinkContactId] = useState<string | null>(null);
   const [linkLoading, setLinkLoading] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -220,6 +222,17 @@ export default function QuestionnaireForm() {
     `Hey ! J'essaie un truc pour faire plaisir aux gens que j'aime. 5 minutes ? ${profileUrl}`
   )}`;
 
+  const saveComplicatedContext = async (contactId: string, userId: string) => {
+    if (register !== "compliquée_fragile" || !complicatedContext.trim()) return;
+    await supabase.from("context_journal").insert({
+      user_id: userId,
+      contact_id: contactId,
+      type: "register_complicated_context",
+      question: "Comment tu aimes entretenir le lien, malgré ce qui est compliqué",
+      answer: complicatedContext.trim(),
+    });
+  };
+
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(profileUrl);
     setCopied(true);
@@ -251,6 +264,7 @@ export default function QuestionnaireForm() {
       return;
     }
 
+    await saveComplicatedContext(contact.id, user.id);
     router.push(`/contacts/${contact.id}/questionnaire`);
   };
 
@@ -277,6 +291,8 @@ export default function QuestionnaireForm() {
     setStep(3);
     setLinkLoading(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    await saveComplicatedContext(contact.id, user.id);
 
     // Send invite email if contact has an email — non-blocking
     if (email) {
@@ -501,6 +517,41 @@ export default function QuestionnaireForm() {
                 );
               })}
             </div>
+
+            {/* Expanding block for "compliquée ou fragile" */}
+            {register === "compliquée_fragile" && (
+              <div style={{
+                padding: "16px 14px",
+                background: "var(--br3)",
+                border: "0.5px solid var(--brd)",
+                borderRadius: "var(--r-sm)",
+              }}>
+                <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 3 }}>
+                  Tu veux nous en dire un peu plus ? <span style={{ fontWeight: 300, color: "var(--cond)" }}>(facultatif)</span>
+                </p>
+                <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.55, marginBottom: 12 }}>
+                  Cela nous aidera à proposer juste, sans tomber à côté.
+                </p>
+                <label style={{ fontSize: 11, fontWeight: 400, color: "var(--cond)", display: "block", marginBottom: 6, letterSpacing: ".04em" }}>
+                  Comment tu aimes entretenir le lien avec {name || "cette personne"}, malgré ce qui est compliqué
+                </label>
+                <textarea
+                  value={complicatedContext}
+                  onChange={e => setComplicatedContext(e.target.value)}
+                  rows={4}
+                  placeholder="Par ex. : pour sa fête, je veux quand même un cadeau, mais sobre — qui montre que je connais ses goûts, sans démonstration affective. Plutôt un mot court qu'un long message. Pas d'appels surprise."
+                  style={{
+                    width: "100%", padding: "10px 12px", fontSize: 12, fontWeight: 300,
+                    lineHeight: 1.6, border: "0.5px solid var(--brd)", borderRadius: "var(--r-sm)",
+                    background: "var(--bg)", color: "var(--con)", resize: "vertical",
+                    outline: "none", boxSizing: "border-box", fontFamily: "var(--font-sans)",
+                  }}
+                />
+                <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", lineHeight: 1.55, marginTop: 10, fontStyle: "italic" }}>
+                  Sur ce registre, Candice propose avec retenue. Tes retours après chaque attention nous aideront à viser juste — n&apos;hésite pas à nous dire ce qui a bien atterri ou pas.
+                </p>
+              </div>
+            )}
           </div>
         )}
 

@@ -78,6 +78,7 @@ function IncognitoForm() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [register, setRegister] = useState<string>("");
+  const [complicatedContext, setComplicatedContext] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -90,7 +91,7 @@ function IncognitoForm() {
     const res = await fetch("/api/contacts/create-incognito", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name.trim(), relationship, phone: phone.trim(), postal_address: address.trim(), relationship_register: register || null, gender: gender || null }),
+      body: JSON.stringify({ name: name.trim(), relationship, phone: phone.trim(), postal_address: address.trim(), relationship_register: register || null, gender: gender || null, complicated_context: (register === "compliquée_fragile" && complicatedContext.trim()) ? complicatedContext.trim() : null }),
     });
 
     if (!res.ok) {
@@ -208,6 +209,42 @@ function IncognitoForm() {
             );
           })}
         </div>
+
+        {/* Expanding "compliquée" context block */}
+        {register === "compliquée_fragile" && (
+          <div style={{
+            padding: "14px 13px",
+            background: "var(--br3)",
+            border: "0.5px solid var(--brd)",
+            borderRadius: "var(--r-sm)",
+          }}>
+            <p style={{ fontSize: 13, fontWeight: 400, color: "var(--con)", marginBottom: 3 }}>
+              Tu veux nous en dire un peu plus ? <span style={{ fontWeight: 300, color: "var(--cond)" }}>(facultatif)</span>
+            </p>
+            <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", lineHeight: 1.55, marginBottom: 10 }}>
+              Cela nous aidera à proposer juste, sans tomber à côté.
+            </p>
+            <label style={{ fontSize: 11, fontWeight: 400, color: "var(--cond)", display: "block", marginBottom: 5 }}>
+              Comment tu aimes entretenir le lien avec {name}, malgré ce qui est compliqué
+            </label>
+            <textarea
+              value={complicatedContext}
+              onChange={e => setComplicatedContext(e.target.value)}
+              rows={4}
+              placeholder="Par ex. : pour sa fête, je veux quand même un cadeau, mais sobre — qui montre que je connais ses goûts, sans démonstration affective. Plutôt un mot court qu'un long message. Pas d'appels surprise."
+              style={{
+                width: "100%", padding: "10px 12px", fontSize: 12, fontWeight: 300,
+                lineHeight: 1.6, border: "0.5px solid var(--brd)", borderRadius: "var(--r-sm)",
+                background: "var(--bg)", color: "var(--con)", resize: "vertical",
+                outline: "none", boxSizing: "border-box", fontFamily: "var(--font-sans)",
+              }}
+            />
+            <p style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", lineHeight: 1.55, marginTop: 8, fontStyle: "italic" }}>
+              Sur ce registre, Candice propose avec retenue. Tes retours après chaque attention nous aideront à viser juste.
+            </p>
+          </div>
+        )}
+
         <div style={{ display: "flex", gap: 10 }}>
           <button
             type="button"

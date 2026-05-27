@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { name, relationship, phone, postal_address, relationship_register, gender } = body;
+  const { name, relationship, phone, postal_address, relationship_register, gender, complicated_context } = body;
 
   if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 });
   if (!VALID_RELATIONSHIPS.includes(relationship)) return NextResponse.json({ error: 'Relation invalide' }, { status: 400 });
@@ -44,6 +44,18 @@ export async function POST(req: Request) {
     user_id: user.id,
     postal_address: postal_address.trim(),
   });
+
+  // Store complicated register context if provided
+  const safeContext = typeof complicated_context === 'string' ? complicated_context.trim() : '';
+  if (safeRegister === 'compliquée_fragile' && safeContext) {
+    await supabase.from('context_journal').insert({
+      user_id: user.id,
+      contact_id: data.id,
+      type: 'register_complicated_context',
+      question: 'Comment tu aimes entretenir le lien, malgré ce qui est compliqué',
+      answer: safeContext,
+    });
+  }
 
   return NextResponse.json({ contactId: data.id });
 }
