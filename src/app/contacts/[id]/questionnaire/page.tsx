@@ -11,7 +11,7 @@ export default async function IncognitoQuestionnairePage({ params }: Props) {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/connexion");
+  if (!user) redirect("/login");
 
   const { data: contact } = await supabase
     .from("contacts")

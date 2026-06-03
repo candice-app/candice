@@ -265,7 +265,7 @@ export default function QuestionnaireForm() {
     }
 
     await saveComplicatedContext(contact.id, user.id);
-    router.push(`/contacts/${contact.id}/questionnaire`);
+    router.push(`/contacts/${contact.id}`);
   };
 
   const handleGenerateLink = async () => {
