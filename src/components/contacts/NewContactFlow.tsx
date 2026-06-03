@@ -81,17 +81,29 @@ function IncognitoForm() {
   const [complicatedContext, setComplicatedContext] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Stable per form-session: prevents duplicate rows on network retry or double-click
+  const [idempotencyKey] = useState<string>(() => crypto.randomUUID());
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim() || !phone.trim() || !address.trim()) return;
+    if (loading) return; // guard against programmatic double-submit
     setLoading(true);
     setError(null);
 
     const res = await fetch("/api/contacts/create-incognito", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name.trim(), relationship, phone: phone.trim(), postal_address: address.trim(), relationship_register: register || null, gender: gender || null, complicated_context: (register === "compliquée_fragile" && complicatedContext.trim()) ? complicatedContext.trim() : null }),
+      body: JSON.stringify({
+        name: name.trim(),
+        relationship,
+        phone: phone.trim(),
+        postal_address: address.trim(),
+        relationship_register: register || null,
+        gender: gender || null,
+        complicated_context: (register === "compliquée_fragile" && complicatedContext.trim()) ? complicatedContext.trim() : null,
+        idempotency_key: idempotencyKey,
+      }),
     });
 
     if (!res.ok) {

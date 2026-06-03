@@ -186,6 +186,8 @@ export default function QuestionnaireForm() {
 
   const [linkContactId, setLinkContactId] = useState<string | null>(null);
   const [linkLoading, setLinkLoading] = useState(false);
+  // Stable per form session — prevents duplicate rows on retry or double-click
+  const [idempotencyKey] = useState<string>(() => crypto.randomUUID());
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("");
 
@@ -233,6 +235,51 @@ export default function QuestionnaireForm() {
     });
   };
 
+  // Shared contact creation with idempotency: inserts on first call, returns existing on retry
+  const upsertContact = async (userId: string) => {
+    // Check for existing row with this idempotency key first (handles network retries)
+    const { data: existing } = await supabase
+      .from("contacts")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("idempotency_key", idempotencyKey)
+      .maybeSingle();
+
+    if (existing) return existing;
+
+    const { data: contact, error: contactErr } = await supabase
+      .from("contacts")
+      .insert({
+        user_id: userId,
+        name: name.trim(),
+        relationship,
+        email: email || null,
+        phone: phone || null,
+        ...(register ? { relationship_register: register } : {}),
+        ...(gender ? { gender } : {}),
+        idempotency_key: idempotencyKey,
+      })
+      .select("id")
+      .single();
+
+    if (contactErr) {
+      // Unique constraint violation: another tab/click already created it
+      if (contactErr.code === "23505") {
+        const { data: raced } = await supabase
+          .from("contacts")
+          .select("id")
+          .eq("user_id", userId)
+          .eq("idempotency_key", idempotencyKey)
+          .single();
+        return raced ?? null;
+      }
+      setError(contactErr.message ?? "Impossible de créer le contact.");
+      return null;
+    }
+
+    return contact;
+  };
+
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(profileUrl);
     setCopied(true);
@@ -247,44 +294,28 @@ export default function QuestionnaireForm() {
   };
 
   const handleChooseIncognito = async () => {
+    if (linkLoading) return;
     setLinkLoading(true);
     setError("");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setError("Non authentifié."); setLinkLoading(false); return; }
 
-    const { data: contact, error: contactErr } = await supabase
-      .from("contacts")
-      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null, ...(register ? { relationship_register: register } : {}), ...(gender ? { gender } : {}) })
-      .select()
-      .single();
-
-    if (contactErr || !contact) {
-      setError(contactErr?.message ?? "Impossible de créer le contact.");
-      setLinkLoading(false);
-      return;
-    }
+    const contact = await upsertContact(user.id);
+    if (!contact) { setLinkLoading(false); return; }
 
     await saveComplicatedContext(contact.id, user.id);
     router.push(`/contacts/${contact.id}`);
   };
 
   const handleGenerateLink = async () => {
+    if (linkLoading) return;
     setLinkLoading(true);
     setError("");
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) { setError("Non authentifié."); setLinkLoading(false); return; }
 
-    const { data: contact, error: contactErr } = await supabase
-      .from("contacts")
-      .insert({ user_id: user.id, name: name.trim(), relationship, email: email || null, phone: phone || null, ...(register ? { relationship_register: register } : {}), ...(gender ? { gender } : {}) })
-      .select()
-      .single();
-
-    if (contactErr || !contact) {
-      setError(contactErr?.message ?? "Impossible de créer le contact.");
-      setLinkLoading(false);
-      return;
-    }
+    const contact = await upsertContact(user.id);
+    if (!contact) { setLinkLoading(false); return; }
 
     setLinkContactId(contact.id);
     setMode("link");
@@ -603,11 +634,13 @@ export default function QuestionnaireForm() {
               {/* SECONDARY: Je remplis moi-même */}
               <button
                 onClick={handleChooseIncognito}
+                disabled={linkLoading}
                 style={{
                   textAlign: "left", borderRadius: "var(--r-md)",
                   border: "0.5px solid var(--brd2)", padding: "32px",
-                  background: "transparent", cursor: "pointer",
+                  background: "transparent", cursor: linkLoading ? "default" : "pointer",
                   display: "flex", flexDirection: "column",
+                  opacity: linkLoading ? 0.5 : 1,
                 }}
               >
                 <h3 style={{ fontSize: 20, fontWeight: 400, color: "var(--cond)", marginBottom: 10 }}>

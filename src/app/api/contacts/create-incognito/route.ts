@@ -11,16 +11,45 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   const body = await req.json();
-  const { name, relationship, phone, postal_address, relationship_register, gender, complicated_context } = body;
+  const { name, relationship, phone, postal_address, relationship_register, gender, complicated_context, idempotency_key } = body;
 
   if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 });
   if (!VALID_RELATIONSHIPS.includes(relationship)) return NextResponse.json({ error: 'Relation invalide' }, { status: 400 });
   if (!phone?.trim()) return NextResponse.json({ error: 'Téléphone requis' }, { status: 400 });
   if (!postal_address?.trim()) return NextResponse.json({ error: 'Adresse requise' }, { status: 400 });
 
+  // ── Idempotency check: return existing row if same key already processed ──
+  if (idempotency_key && typeof idempotency_key === 'string') {
+    const { data: existing } = await supabase
+      .from('contacts')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('idempotency_key', idempotency_key)
+      .maybeSingle();
+
+    if (existing) {
+      return NextResponse.json({ contactId: existing.id });
+    }
+  }
+
+  // ── Business guard: same name created within the last 30 s ───────────────
+  const thirtySecondsAgo = new Date(Date.now() - 30_000).toISOString();
+  const { data: recentDup } = await supabase
+    .from('contacts')
+    .select('id')
+    .eq('user_id', user.id)
+    .ilike('name', name.trim())
+    .gte('created_at', thirtySecondsAgo)
+    .maybeSingle();
+
+  if (recentDup) {
+    return NextResponse.json({ contactId: recentDup.id });
+  }
+
   const safeRegister = relationship_register && VALID_REGISTERS.includes(relationship_register)
     ? relationship_register : null;
   const safeGender = gender && VALID_GENDERS.includes(gender) ? gender : null;
+  const safeKey = idempotency_key && typeof idempotency_key === 'string' ? idempotency_key : null;
 
   const { data, error } = await supabase
     .from('contacts')
@@ -32,6 +61,7 @@ export async function POST(req: Request) {
       email: null,
       ...(safeRegister ? { relationship_register: safeRegister } : {}),
       ...(safeGender ? { gender: safeGender } : {}),
+      ...(safeKey ? { idempotency_key: safeKey } : {}),
     })
     .select('id')
     .single();
