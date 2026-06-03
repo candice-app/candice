@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import LivePoint from "./LivePoint";
 
 interface Props {
@@ -10,12 +11,25 @@ interface Props {
 
 export default function PresenceInput({ onSubmit, placeholder = "Dis quelque chose à Candice…" }: Props) {
   const [value, setValue] = useState("");
+  const router = useRouter();
 
   const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && value.trim()) {
-      onSubmit?.(value.trim());
-      setValue("");
+    if (e.key === "Enter") {
+      if (onSubmit && value.trim()) {
+        onSubmit(value.trim());
+        setValue("");
+      } else {
+        router.push("/parler-a-candice");
+      }
     }
+  };
+
+  const handleVoiceClick = () => {
+    if (!onSubmit) router.push("/parler-a-candice");
+  };
+
+  const handleInputClick = () => {
+    if (!onSubmit) router.push("/parler-a-candice");
   };
 
   return (
@@ -35,6 +49,7 @@ export default function PresenceInput({ onSubmit, placeholder = "Dis quelque cho
           value={value}
           onChange={e => setValue(e.target.value)}
           onKeyDown={handleKey}
+          onClick={handleInputClick}
           placeholder={placeholder}
           style={{
             flex: 1,
@@ -52,6 +67,7 @@ export default function PresenceInput({ onSubmit, placeholder = "Dis quelque cho
         <button
           type="button"
           aria-label="Message vocal"
+          onClick={handleVoiceClick}
           style={{
             width: 28, height: 28, borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
