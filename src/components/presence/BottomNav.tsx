@@ -25,7 +25,7 @@ const NAV_ITEMS = [
       </svg>
     ),
   },
-  { center: true, href: "/historique", label: "Candice" },
+  { center: true, href: "/parler-a-candice", label: "Candice" },
   {
     label: "Idées",
     href: "/idees",
