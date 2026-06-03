@@ -7,6 +7,24 @@ import type {
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// ─── Interest category labels ─────────────────────────────────────────────────
+
+const DIM_INTEREST_LABELS: Record<string, string> = {
+  lecture:  'Lecture',
+  cuisine:  'Cuisine & gastronomie',
+  sport:    'Sport',
+  musique:  'Musique',
+  cinema:   'Ciné & séries',
+  art:      'Art & culture',
+  voyage:   'Voyage',
+  mode:     'Mode & beauté',
+  tech:     'Tech & jeux',
+  nature:   'Nature & jardinage',
+  bienetre: 'Bien-être',
+  deco:     'Déco & maison',
+  vin:      'Vin & spiritueux',
+};
+
 // ─── Dimension labels ─────────────────────────────────────────────────────────
 
 export const DIM_FR: Record<AttentionDim, string> = {
@@ -231,6 +249,21 @@ function buildContextString(input: RecoInput): string {
     if (classicProfile.hobbies)           lines.push(`LOISIRS : ${classicProfile.hobbies}`);
     if (classicProfile.favorite_foods)    lines.push(`PLATS PRÉFÉRÉS : ${classicProfile.favorite_foods}`);
     if (classicProfile.conversation_topics) lines.push(`SUJETS : ${classicProfile.conversation_topics}`);
+
+    // Interests from questionnaire (lien / incognito)
+    const iv = classicProfile.interests as { items?: Array<{ id: string; rank: number }> } | null | undefined;
+    if (iv?.items?.length) {
+      const top3 = [...iv.items].sort((a, b) => a.rank - b.rank).slice(0, 3);
+      const parts = top3.map((item, i) => `rang ${i + 1} : ${DIM_INTEREST_LABELS[item.id] ?? item.id}`);
+      lines.push(`CENTRES D'INTÉRÊT (classés) : ${parts.join(' — ')}`);
+    }
+  }
+
+  // Interests from linked proche's singularity answers (my_profile case)
+  if (singularity?.interests?.items?.length) {
+    const top3 = [...singularity.interests.items].sort((a, b) => a.rank - b.rank).slice(0, 3);
+    const parts = top3.map((item, i) => `rang ${i + 1} : ${DIM_INTEREST_LABELS[item.id] ?? item.id}`);
+    lines.push(`CENTRES D'INTÉRÊT (classés) : ${parts.join(' — ')}`);
   }
 
   // Hard filters — veto absolu

@@ -76,6 +76,7 @@ export interface QuestionnaireResponse {
   input_mode?: 'text' | 'voice' | null;
   attention_reception?: Record<string, unknown> | null;
   incognito_signals?: Record<string, unknown> | null;
+  interests?: Record<string, unknown> | null;
   clothing_size: string | null;
   shoe_size: string | null;
   ring_size: string | null;

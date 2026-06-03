@@ -19,6 +19,7 @@ export interface SingularityInput {
   envies_reves?: string;
   remarquer?: string;
   sentir_special?: string;
+  interests?: { items?: Array<{ id: string; rank: number }>; freeText?: string };
 }
 
 export interface VetosInput {

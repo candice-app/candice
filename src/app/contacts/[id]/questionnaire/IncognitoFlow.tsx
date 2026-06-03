@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import type { QuestionnaireResponse } from "@/types";
 import LivePoint from "@/components/presence/LivePoint";
+import InterestsQuestion, { type InterestsValue, EMPTY_INTERESTS } from "@/components/questionnaire/InterestsQuestion";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -351,6 +352,17 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
   const [openNotes, setOpenNotes] = useState(existingResponse?.additional_notes ?? "");
   const [openTopics, setOpenTopics] = useState(existingResponse?.conversation_topics ?? "");
 
+  // Interests
+  const [interests, setInterests] = useState<InterestsValue>(() => {
+    try {
+      const raw = existingResponse?.interests;
+      if (raw && typeof raw === "object" && Array.isArray((raw as unknown as InterestsValue).items)) {
+        return raw as unknown as InterestsValue;
+      }
+    } catch { /* ignore */ }
+    return EMPTY_INTERESTS;
+  });
+
   // Practical
   const [practicalDates, setPracticalDates] = useState(existingResponse?.important_dates ?? "");
 
@@ -410,6 +422,7 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
       additional_notes: openNotes || null,
       conversation_topics: openTopics || null,
       important_dates: practicalDates || null,
+      interests: interests.items.length > 0 ? interests : null,
       incognito_signals,
     }, { onConflict: "contact_id,user_id" });
     setSaving(false);
@@ -919,7 +932,7 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
     return (
       <div style={{ minHeight: "100dvh", background: "var(--bg)", display: "flex", flexDirection: "column" }}>
         <IQHeader
-          sectionLabel="Questions ouvertes"
+          sectionLabel={t("Ce qui rend {{prenom}} unique")}
           stepIdx="04"
           totalSteps="05"
           progress={progress}
@@ -927,6 +940,13 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
           onExit={() => router.push(`/contacts/${contactId}`)}
         />
         <div style={{ flex: 1, padding: "32px 24px 0", display: "flex", flexDirection: "column", gap: 36 }}>
+          <div style={{ padding: "0 0 4px" }}>
+            <InterestsQuestion
+              label={t("Les centres d'intérêt de {{prenom}}")}
+              value={interests}
+              onChange={setInterests}
+            />
+          </div>
           <div className="q-section active">
             <div className="q-eyebrow">Questions ouvertes</div>
             <div className="q-prompt">{t("Ce que vous voudriez que Candice sache sur {{prenom}}")}</div>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import InterestsQuestion, { type InterestsValue, EMPTY_INTERESTS } from "@/components/questionnaire/InterestsQuestion";
 
 const FIELD_LABEL: React.CSSProperties = {
   fontSize: 18, fontWeight: 300, color: "var(--txt)",
@@ -156,6 +157,7 @@ export default function PublicForm({ contactId, userId }: Props) {
   const [recognitionPreference, setRecognitionPreference] = useState<string[]>([]);
   const [boundaries, setBoundaries] = useState<string[]>([]);
   const [growthMindset, setGrowthMindset] = useState<string[]>([]);
+  const [interests, setInterests] = useState<InterestsValue>(EMPTY_INTERESTS);
   const [hobbies, setHobbies] = useState("");
   const [favoriteFoods, setFavoriteFoods] = useState("");
   const [giftPreference, setGiftPreference] = useState<string[]>([]);
@@ -187,6 +189,7 @@ export default function PublicForm({ contactId, userId }: Props) {
         recognition_preference: join(recognitionPreference),
         boundaries: join(boundaries),
         growth_mindset: join(growthMindset),
+        interests: interests.items.length > 0 ? interests : null,
         hobbies: hobbies || null,
         favorite_foods: favoriteFoods || null,
         gift_preference: join(giftPreference),
@@ -347,6 +350,14 @@ export default function PublicForm({ contactId, userId }: Props) {
         <div>
           <h2 style={{ fontSize: 15, fontWeight: 400, color: "var(--txt)", marginBottom: 4 }}>Tes préférences.</h2>
           <p style={{ fontSize: 12, fontWeight: 300, color: "var(--txtm)" }}>Les détails qui changent tout.</p>
+        </div>
+
+        <div>
+          <InterestsQuestion
+            label="Mes centres d'intérêt"
+            value={interests}
+            onChange={setInterests}
+          />
         </div>
 
         <div>

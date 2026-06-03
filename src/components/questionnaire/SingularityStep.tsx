@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import VoiceButton from "./VoiceButton";
+import InterestsQuestion, { type InterestsValue, EMPTY_INTERESTS } from "./InterestsQuestion";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -18,6 +19,7 @@ export interface SingularityAnswers {
   envies_reves:      string;
   remarquer:         string;
   sentir_special:    string;
+  interests?:        InterestsValue;
 }
 
 interface Props {
@@ -138,6 +140,7 @@ const EMPTY: SingularityAnswers = {
   envies_reves: "",
   remarquer: "",
   sentir_special: "",
+  interests: undefined,
 };
 
 export default function SingularityStep({ onDone, initialAnswers, onBack, onExit }: Props) {
@@ -166,6 +169,12 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           Aucune obligation — réponds à ce qui t'inspire, laisse le reste vide.
           Ces détails donnent à Candice la matière la plus personnelle.
         </p>
+
+        <InterestsQuestion
+          label="Mes centres d'intérêt"
+          value={answers.interests ?? EMPTY_INTERESTS}
+          onChange={v => setAnswers(prev => ({ ...prev, interests: v }))}
+        />
 
         <TextareaField
           label="Ce que j'adore faire"
