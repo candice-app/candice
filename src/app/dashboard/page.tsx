@@ -168,15 +168,18 @@ export default async function DashboardPage() {
             <LivePoint size={6} tone="champ" />
           </span>
           {/* Avatar utilisateur */}
-          <div style={{
-            width: 33, height: 33, borderRadius: '50%',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--pine)',
-            background: 'radial-gradient(120% 120% at 30% 22%, #FFFFFF, #F1E8D2 60%, #E0CFA6)',
-            boxShadow: '0 0 0 1px var(--champ-line)',
-          }}>
-            {initial}
-          </div>
+          <Link href="/moi" style={{ textDecoration: 'none' }}>
+            <div style={{
+              width: 33, height: 33, borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: 'var(--font-serif)', fontSize: 14, color: 'var(--pine)',
+              background: 'radial-gradient(120% 120% at 30% 22%, #FFFFFF, #F1E8D2 60%, #E0CFA6)',
+              boxShadow: '0 0 0 1px var(--champ-line)',
+              cursor: 'pointer',
+            }}>
+              {initial}
+            </div>
+          </Link>
         </div>
 
         {/* Content */}
