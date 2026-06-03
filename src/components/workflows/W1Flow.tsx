@@ -13,10 +13,10 @@ interface FlowContact {
 
 interface W1Result {
   memoryId: string;
-  reformulation: string;
-  nature: "positive" | "negative" | "neutre";
-  theme: string;
-  urgence: string;
+  sanitized_summary: string;
+  sentiment: "très_négatif" | "négatif" | "neutre" | "positif" | "très_positif";
+  category: string;
+  emotional_intensity: "faible" | "moyen" | "élevé" | "très_élevé";
   sensitivity_level: number;
 }
 
@@ -36,10 +36,10 @@ function bloc2Copy(result: W1Result, firstName: string): string {
   if (result.sensitivity_level === 3) {
     return `Je suis désolée. C'est une nouvelle difficile. J'ai noté ça avec beaucoup de précaution. Je serai très discrète dans les semaines à venir.`;
   }
-  if (result.sensitivity_level === 2 || result.nature === "negative") {
+  if (result.sensitivity_level === 2 || result.sentiment === "négatif" || result.sentiment === "très_négatif") {
     return `Je comprends. J'ai noté ça et je serai attentive pour ${firstName}.`;
   }
-  if (result.nature === "positive") {
+  if (result.sentiment === "positif" || result.sentiment === "très_positif") {
     return `J'ai noté ça dans le profil de ${firstName}. Ça me donne quelques idées.`;
   }
   return `J'ai noté ça dans le profil de ${firstName}. Ça m'aidera à mieux comprendre ce qu'il/elle traverse.`;
@@ -327,7 +327,7 @@ function MagicMoment({
           <div style={cardStyle}>
             <p style={eyebrowStyle}>Ce que Candice a compris</p>
             <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink)", lineHeight: 1.7 }}>
-              {result.reformulation}
+              {result.sanitized_summary}
             </p>
           </div>
         </div>

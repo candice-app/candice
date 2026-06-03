@@ -20,6 +20,7 @@ import CadencePerContact from "@/components/dashboard/CadencePerContact";
 import PointDivider from "@/components/presence/PointDivider";
 import Thread, { ThreadItem } from "@/components/presence/Thread";
 import { resolveCadenceForContact } from "@/lib/cadence/resolver";
+import MemoriesSection, { type MemoryRow } from "@/components/contacts/MemoriesSection";
 
 // ─── Label maps ──────────────────────────────────────────────────────────────
 
@@ -127,6 +128,7 @@ export default async function ContactPage({
     { data: recoData },
     { data: pendingQuestionData },
     { count: feedbackCount },
+    { data: memoriesData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -175,6 +177,15 @@ export default async function ContactPage({
       .eq("contact_id", id)
       .eq("user_id", user.id)
       .not("feedback", "is", null),
+    supabase
+      .from("memories")
+      .select("id, sanitized_summary, memory_type, category, sentiment, status, confidence_score, sensitivity_level, created_at")
+      .eq("contact_id", id)
+      .eq("pilot_id", user.id)
+      .neq("status", "masqué")
+      .neq("status", "archivé")
+      .order("created_at", { ascending: false })
+      .limit(20),
   ]);
 
   if (!contact) notFound();
@@ -621,6 +632,17 @@ export default async function ContactPage({
 
             <PointDivider label="À retenir" />
             <WishlistSection contactId={id} initialWishlist={wishlist} />
+          </>
+        )}
+
+        {/* Ce que Candice retient — memories from W1/W2 workflows */}
+        {(memoriesData ?? []).length > 0 && (
+          <>
+            <PointDivider label="Ce que Candice retient" />
+            <MemoriesSection
+              contactId={id}
+              initialMemories={(memoriesData ?? []) as MemoryRow[]}
+            />
           </>
         )}
       </div>
