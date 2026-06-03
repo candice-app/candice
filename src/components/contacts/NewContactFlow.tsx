@@ -102,7 +102,7 @@ function IncognitoForm() {
     }
 
     const { contactId } = await res.json();
-    router.push(`/contacts/${contactId}/questionnaire`);
+    router.push(`/contacts/${contactId}`);
   };
 
   const fieldStyle: React.CSSProperties = {
