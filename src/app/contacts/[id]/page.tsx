@@ -444,6 +444,24 @@ export default async function ContactPage({
 
         {profile ? (
           <>
+            {/* Compléter le profil — shown when response exists but has no data yet */}
+            {pct === 0 && !isMemoryMode && !procheUserId && (
+              <>
+                <PointDivider label={`Connaître ${contactFirstName}`} />
+                <div style={{ padding: "32px 4px 24px", textAlign: "center" }}>
+                  <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 8 }}>
+                    Candice attend de connaître {contactFirstName}.
+                  </p>
+                  <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, marginBottom: 24, maxWidth: 300, margin: "0 auto 24px" }}>
+                    Remplissez le profil pour que Candice puisse anticiper les bons gestes.
+                  </p>
+                  <Link href={`/contacts/${id}/questionnaire`}>
+                    <button className="btn-primary">Compléter le profil →</button>
+                  </Link>
+                </div>
+              </>
+            )}
+
             {/* Ce que Candice sait */}
             {traitRows.length > 0 && (
               <>
