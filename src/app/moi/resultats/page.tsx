@@ -5,7 +5,6 @@ import DashboardShell from "@/components/layout/DashboardShell";
 import ResultatsClient from "./ResultatsClient";
 import type { FaceResult } from "@/lib/attention/scoring";
 import type { RelationalFilters } from "@/lib/lifestyle/scoring";
-import type { SynthesisNarrative } from "@/lib/profile/synthesis";
 
 function EmptyState() {
   return (
@@ -55,25 +54,25 @@ export default async function ResultatsPage() {
     relational_filters: unknown;
     practical_info: unknown;
     singularity_answers: unknown;
-    profile_synthesis: unknown;
-    synthesis_computed_at: string | null;
     updated_at: string;
   };
 
-  const { data } = await supabase
-    .from("my_profile")
-    .select("attention_reception, attention_expression, attention_breath_text, temperament_axes, temperament_modes, lifestyle_axes, relational_filters, practical_info, singularity_answers, profile_synthesis, synthesis_computed_at, updated_at")
-    .eq("user_id", user.id)
-    .maybeSingle() as { data: ProfileRow | null; error: unknown };
+  const [{ data }, { data: analysisRow }] = await Promise.all([
+    supabase
+      .from("my_profile")
+      .select("attention_reception, attention_expression, attention_breath_text, temperament_axes, temperament_modes, lifestyle_axes, relational_filters, practical_info, singularity_answers, updated_at")
+      .eq("user_id", user.id)
+      .maybeSingle() as unknown as Promise<{ data: ProfileRow | null; error: unknown }>,
+    supabase
+      .from("profile_analysis")
+      .select("summary, summary_chips, sections")
+      .eq("user_id", user.id)
+      .is("contact_id", null)
+      .maybeSingle(),
+  ]);
 
   const hasAttentionData = !!(data?.attention_reception && data?.attention_expression);
   if (!hasAttentionData) return <EmptyState />;
-
-  // Synthesis is current if it exists and was computed after last profile update
-  const synthesisCurrent =
-    !!(data?.profile_synthesis) &&
-    !!(data?.synthesis_computed_at) &&
-    new Date(data.synthesis_computed_at as string) >= new Date(data.updated_at as string);
 
   const isComplete = !!(
     data?.attention_reception &&
@@ -81,6 +80,14 @@ export default async function ResultatsPage() {
     data?.lifestyle_axes &&
     data?.practical_info
   );
+
+  const profileAnalysis = analysisRow?.summary
+    ? {
+        summary: analysisRow.summary as string,
+        summary_chips: (analysisRow.summary_chips as string[] | null) ?? null,
+        sections: (analysisRow.sections as Record<string, { text?: string; chips?: string[] }> | null) ?? null,
+      }
+    : null;
 
   return (
     <ResultatsClient
@@ -94,8 +101,8 @@ export default async function ResultatsPage() {
       relationalFilters={(data?.relational_filters as RelationalFilters | null) ?? null}
       practicalInfo={(data?.practical_info as { vetos?: { no_alcohol?: boolean; halal?: boolean; casher?: boolean; mobility_constraints?: boolean; allergies?: string[] } } | null) ?? null}
       singularity={(data?.singularity_answers as Record<string, string> | null) ?? null}
-      synthesis={synthesisCurrent ? (data!.profile_synthesis as SynthesisNarrative) : null}
-      needsSynthesis={!synthesisCurrent}
+      profileAnalysis={profileAnalysis}
+      needsAnalysis={!profileAnalysis}
       isComplete={isComplete}
     />
   );

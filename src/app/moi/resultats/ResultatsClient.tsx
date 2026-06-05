@@ -10,10 +10,16 @@ import PointDivider from "@/components/presence/PointDivider";
 import DashboardShell from "@/components/layout/DashboardShell";
 import LivePoint from "@/components/presence/LivePoint";
 import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFacts";
-import { computeProfileSynthesis } from "@/lib/profile/synthesis";
 import type { FaceResult, AttentionDim } from "@/lib/attention/scoring";
 import type { RelationalFilters } from "@/lib/lifestyle/scoring";
-import type { ProfileSynthesisFacts, SynthesisNarrative } from "@/lib/profile/synthesis";
+
+// ─── Profile analysis type ────────────────────────────────────────────────────
+
+interface ProfileAnalysis {
+  summary: string | null;
+  summary_chips: string[] | null;
+  sections: Record<string, { text?: string; chips?: string[] }> | null;
+}
 
 // ─── Human-language phrase maps ───────────────────────────────────────────────
 
@@ -92,154 +98,93 @@ export function ResultSection({ label, children }: { label: string; children: Re
   );
 }
 
-// ─── Synthesis sections ───────────────────────────────────────────────────────
+// ─── Analysis sections from profile_analysis ──────────────────────────────────
 
-function SynthesisSection({ narrative }: { narrative: SynthesisNarrative }) {
+const ANALYSIS_SECTIONS: Array<{ key: string; label: string }> = [
+  { key: "attention",    label: "Ce qui compte pour toi" },
+  { key: "what_touches", label: "Ce qui te touche" },
+  { key: "feels_loved",  label: "Ce qui te fait te sentir aimé" },
+  { key: "gifts",        label: "Tes attentions idéales" },
+  { key: "avoid",        label: "Ce qu'il vaut mieux éviter" },
+  { key: "style",        label: "Ton style" },
+  { key: "restaurants",  label: "Tes restaurants" },
+  { key: "travel",       label: "Ton rapport au voyage" },
+  { key: "hobbies",      label: "Tes passions" },
+];
+
+function AnalysisSection({ analysis }: { analysis: ProfileAnalysis }) {
+  const filledSections = ANALYSIS_SECTIONS.filter(({ key }) => {
+    const sec = analysis.sections?.[key];
+    return sec?.text && sec.text.trim().length > 3;
+  });
+
   return (
     <>
-      {/* Block 1 — Synthèse */}
-      <ResultSection label="En quelques mots">
-        <ThreadItem nodeType="solid" voice>
-          <p style={{
-            fontFamily: "var(--font-serif)",
-            fontWeight: 300,
-            fontSize: "clamp(17px, 3.5vw, 20px)",
-            color: "var(--ink)",
-            lineHeight: 1.55,
-            letterSpacing: "-.012em",
-          } as React.CSSProperties}>
-            {narrative.block1}
-          </p>
-        </ThreadItem>
-      </ResultSection>
-
-      {/* Block 2 — Langages (réception + expression + contraste) */}
-      <ResultSection label="Tes langages d'attention">
-        <ThreadItem nodeType="anticipe">
-          <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
-            {narrative.block2_reception_text}
-          </p>
-        </ThreadItem>
-        {narrative.block2_expression_text && (
-          <ThreadItem nodeType="soft">
-            <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
-              {narrative.block2_expression_text}
-            </p>
-          </ThreadItem>
-        )}
-        {narrative.block2_contrast_text && (
-          <ThreadItem nodeType="soft">
+      {/* Résumé principal */}
+      {analysis.summary && (
+        <ResultSection label="En quelques mots">
+          <ThreadItem nodeType="solid" voice>
             <p style={{
-              fontSize: 13.5,
+              fontFamily: "var(--font-serif)",
               fontWeight: 300,
-              color: "var(--ink-3)",
-              fontStyle: "italic",
-              lineHeight: 1.65,
-            }}>
-              {narrative.block2_contrast_text}
+              fontSize: "clamp(17px, 3.5vw, 20px)",
+              color: "var(--ink)",
+              lineHeight: 1.55,
+              letterSpacing: "-.012em",
+            } as React.CSSProperties}>
+              {analysis.summary}
             </p>
           </ThreadItem>
-        )}
-      </ResultSection>
+          {analysis.summary_chips && analysis.summary_chips.length > 0 && (
+            <ThreadItem nodeType="soft">
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {analysis.summary_chips.map((chip, i) => (
+                  <span key={i} style={{
+                    fontSize: 12, fontWeight: 300,
+                    padding: "4px 10px", borderRadius: 20,
+                    background: "rgba(23,62,49,.06)",
+                    border: "0.5px solid rgba(23,62,49,.12)",
+                    color: "var(--pine)",
+                  }}>
+                    {chip}
+                  </span>
+                ))}
+              </div>
+            </ThreadItem>
+          )}
+        </ResultSection>
+      )}
 
-      {/* Block 3 — Ce qui te touche */}
-      {narrative.block3.length > 0 && (
-        <ResultSection label="Ce qui te touche le plus">
-          {narrative.block3.map((item, i) => (
-            <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
-              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
-                {item}
+      {/* Sections */}
+      {filledSections.map(({ key, label }, i) => {
+        const sec = analysis.sections![key]!;
+        return (
+          <ResultSection key={key} label={label}>
+            <ThreadItem nodeType={i === 0 ? "anticipe" : "soft"}>
+              <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+                {sec.text}
               </p>
             </ThreadItem>
-          ))}
-        </ResultSection>
-      )}
-
-      {/* Block 4 — Ce qu'il vaut mieux éviter */}
-      {narrative.block4.length > 0 && (
-        <ResultSection label="Ce qu'il vaut mieux éviter">
-          {narrative.block4.map((item, i) => (
-            <ThreadItem key={i} nodeType="soft">
-              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
-                {item}
-              </p>
-            </ThreadItem>
-          ))}
-        </ResultSection>
-      )}
-
-      {/* Block 5 — Style relationnel */}
-      {narrative.block5 && (
-        <ResultSection label="Ton style relationnel">
-          <ThreadItem nodeType="solid">
-            <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.75 }}>
-              {narrative.block5}
-            </p>
-          </ThreadItem>
-        </ResultSection>
-      )}
-
-      {/* Block 6 — Style de communication */}
-      {narrative.block6 && (
-        <ResultSection label="Ton style de communication">
-          <ThreadItem nodeType="solid">
-            <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.75 }}>
-              {narrative.block6}
-            </p>
-          </ThreadItem>
-        </ResultSection>
-      )}
-
-      {/* Block 7 — Tes attentions idéales */}
-      {narrative.block7.length > 0 && (
-        <ResultSection label="Tes attentions idéales">
-          {narrative.block7.map((item, i) => (
-            <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
-              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
-                {item}
-              </p>
-            </ThreadItem>
-          ))}
-        </ResultSection>
-      )}
-
-      {/* Block 8 — Les attentions à éviter */}
-      {narrative.block8.length > 0 && (
-        <ResultSection label="Les attentions à éviter">
-          {narrative.block8.map((item, i) => (
-            <ThreadItem key={i} nodeType="soft">
-              <p style={{ fontSize: 14.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
-                {item}
-              </p>
-            </ThreadItem>
-          ))}
-        </ResultSection>
-      )}
-
-      {/* Blocks 9-12 — Nuances (level labels, never numbers) */}
-      {(narrative.block9 || narrative.block10 || narrative.block11 || narrative.block12) && (
-        <ResultSection label="Quelques nuances">
-          <ThreadItem nodeType="soft">
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 24px" }}>
-              {[
-                { label: "Spontanéité", value: narrative.block9 },
-                { label: "Besoin de contrôle", value: narrative.block10 },
-                { label: "Sensibilité aux détails", value: narrative.block11 },
-                { label: "Besoin d'espace", value: narrative.block12 },
-              ].filter(item => item.value && item.value !== "équilibré" && item.value !== "équilibrée").map(item => (
-                <div key={item.label}>
-                  <p style={{ fontSize: 11, fontWeight: 400, color: "var(--ink-3)", letterSpacing: ".04em", textTransform: "uppercase", marginBottom: 4 }}>
-                    {item.label}
-                  </p>
-                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink)" }}>
-                    {item.value}
-                  </p>
+            {sec.chips && sec.chips.length > 0 && (
+              <ThreadItem nodeType="soft">
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                  {sec.chips.map((chip, ci) => (
+                    <span key={ci} style={{
+                      fontSize: 12, fontWeight: 300,
+                      padding: "4px 10px", borderRadius: 20,
+                      background: "rgba(23,62,49,.06)",
+                      border: "0.5px solid rgba(23,62,49,.12)",
+                      color: "var(--pine)",
+                    }}>
+                      {chip}
+                    </span>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </ThreadItem>
-        </ResultSection>
-      )}
+              </ThreadItem>
+            )}
+          </ResultSection>
+        );
+      })}
     </>
   );
 }
@@ -292,8 +237,8 @@ interface Props {
   relationalFilters: RelationalFilters | null;
   practicalInfo: { vetos?: { no_alcohol?: boolean; halal?: boolean; casher?: boolean; mobility_constraints?: boolean; allergies?: string[] } } | null;
   singularity: Record<string, string> | null;
-  synthesis: SynthesisNarrative | null;
-  needsSynthesis: boolean;
+  profileAnalysis: ProfileAnalysis | null;
+  needsAnalysis: boolean;
   isComplete: boolean;
 }
 
@@ -304,22 +249,16 @@ export default function ResultatsClient({
   reception,
   expression,
   breathText: initialBreathText,
-  temperamentAxes,
-  temperamentModes,
-  lifestyleAxes,
-  relationalFilters,
-  practicalInfo,
-  singularity,
-  synthesis: initialSynthesis,
-  needsSynthesis,
+  profileAnalysis: initialProfileAnalysis,
+  needsAnalysis,
   isComplete,
 }: Props) {
   const router = useRouter();
   const [breathText, setBreathText] = useState<string | null>(initialBreathText);
   const [generating, setGenerating] = useState(false);
-  const [generatingSynthesis, setGeneratingSynthesis] = useState(false);
+  const [generatingAnalysis, setGeneratingAnalysis] = useState(false);
   const [momentVisible, setMomentVisible] = useState(false);
-  const [synthesis, setSynthesis] = useState<SynthesisNarrative | null>(initialSynthesis);
+  const [profileAnalysis, setProfileAnalysis] = useState<ProfileAnalysis | null>(initialProfileAnalysis);
 
   const generateBreath = useCallback(async () => {
     setGenerating(true);
@@ -348,56 +287,35 @@ export default function ResultatsClient({
     }
   }, [userId, reception, expression]);
 
-  const generateSynthesis = useCallback(async () => {
-    setGeneratingSynthesis(true);
+  const generateAnalysis = useCallback(async () => {
+    setGeneratingAnalysis(true);
     try {
-      const facts: ProfileSynthesisFacts = computeProfileSynthesis({
-        reception,
-        expression,
-        temperamentAxes,
-        temperamentModes,
-        lifestyleAxes,
-        relationalFilters,
-        practicalInfo,
-        singularity,
-      });
-
-      let narrative: SynthesisNarrative;
-      try {
-        const res = await fetch("/api/profile/synthesis", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ facts }),
-        });
-        const data = await res.json() as { narrative: SynthesisNarrative };
-        narrative = data.narrative;
-      } catch {
-        const { buildFallbackNarrative } = await import("@/lib/profile/synthesis");
-        narrative = buildFallbackNarrative(facts);
-      }
-
-      // Persist
+      await fetch("/api/profile/generate", { method: "POST" });
       const supabase = createClient();
-      await supabase
-        .from("my_profile")
-        .update({
-          profile_synthesis: narrative,
-          synthesis_computed_at: new Date().toISOString(),
-        })
-        .eq("user_id", userId);
-
-      setSynthesis(narrative);
+      const { data } = await supabase
+        .from("profile_analysis")
+        .select("summary, summary_chips, sections")
+        .eq("user_id", userId)
+        .is("contact_id", null)
+        .maybeSingle();
+      if (data?.summary) {
+        setProfileAnalysis({
+          summary: data.summary as string,
+          summary_chips: (data.summary_chips as string[] | null) ?? null,
+          sections: (data.sections as Record<string, { text?: string; chips?: string[] }> | null) ?? null,
+        });
+      }
     } finally {
-      setGeneratingSynthesis(false);
+      setGeneratingAnalysis(false);
     }
-  }, [userId, reception, expression, temperamentAxes, temperamentModes, lifestyleAxes, relationalFilters, practicalInfo, singularity]);
+  }, [userId]);
 
   useEffect(() => {
     if (!initialBreathText) generateBreath();
   }, []);
 
   useEffect(() => {
-    if (needsSynthesis) generateSynthesis();
+    if (needsAnalysis) generateAnalysis();
   }, []);
 
   useEffect(() => {
@@ -408,7 +326,7 @@ export default function ResultatsClient({
   const expressionDims = getExpressionDims(expression);
   const momentLines = breathText ? splitBreathText(breathText) : [];
 
-  const isLoading = generating || (generatingSynthesis && !synthesis);
+  const isLoading = generating || (generatingAnalysis && !profileAnalysis);
 
   return (
     <DashboardShell>
@@ -471,12 +389,12 @@ export default function ResultatsClient({
           </h1>
         </div>
 
-        {/* ── Synthesis sections (when available) ── */}
-        {synthesis ? (
-          <SynthesisSection narrative={synthesis} />
+        {/* ── Analysis sections (when available) ── */}
+        {profileAnalysis ? (
+          <AnalysisSection analysis={profileAnalysis} />
         ) : (
           <>
-            {/* Fallback: existing attention sections while synthesis loads */}
+            {/* Fallback: attention sections while analysis loads */}
             <ResultSection label="Ce qui semble compter pour toi">
               {isMulti ? (
                 <ThreadItem nodeType="soft">

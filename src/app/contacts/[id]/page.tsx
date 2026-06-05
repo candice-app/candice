@@ -4,7 +4,6 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
 import { Contact, QuestionnaireResponse, ProfileNote, WishlistItem, CadenceLevel } from "@/types";
-import type { SynthesisNarrative } from "@/lib/profile/synthesis";
 import type { ContactRecommendations } from "@/lib/recommendations/types";
 import { generateProactiveQuestion } from "@/lib/recommendations/questions";
 import ContactActions from "./ContactActions";
@@ -207,7 +206,7 @@ export default async function ContactPage({
   const isMemoryMode = !!typedContact.is_memory_mode;
   const procheUserId = typedContact.proche_user_id ?? null;
 
-  // Fetch Proche's analysis when linked — profile_analysis preferred, fallback to profile_synthesis
+  // Fetch Proche's analysis when linked
   type ProcheAnalysis = {
     summary: string | null;
     sections: Record<string, { text?: string; chips?: string[] }> | null;
@@ -215,7 +214,6 @@ export default async function ContactPage({
     confidence: number | null;
   };
   let procheAnalysis: ProcheAnalysis | null = null;
-  let procheSynthesis: SynthesisNarrative | null = null;
   let procheComplete = false;
   if (procheUserId) {
     const [{ data: procheAnalysisRow }, { data: procheProfile }] = await Promise.all([
@@ -227,12 +225,11 @@ export default async function ContactPage({
         .maybeSingle(),
       admin
         .from("my_profile")
-        .select("profile_synthesis, attention_reception, temperament_axes, lifestyle_axes, practical_info")
+        .select("attention_reception, temperament_axes, lifestyle_axes, practical_info")
         .eq("user_id", procheUserId)
         .maybeSingle(),
     ]);
     procheAnalysis = procheAnalysisRow as ProcheAnalysis | null;
-    procheSynthesis = (procheProfile?.profile_synthesis ?? null) as SynthesisNarrative | null;
     procheComplete = !!(
       procheProfile?.attention_reception &&
       procheProfile?.temperament_axes &&
@@ -298,13 +295,13 @@ export default async function ContactPage({
   const procheStateLabel: string | null = procheUserId
     ? procheComplete
       ? `Candice anticipe pour ${contactFirstName}`
-      : procheSynthesis
+      : procheAnalysis?.summary
       ? `Candice connaît bien ${contactFirstName}`
       : `Candice commence à connaître ${contactFirstName}`
     : null;
   const headerState = procheStateLabel ?? candiceState(pct, contactFirstName);
   const headerStateColor = procheUserId
-    ? procheComplete || !!procheSynthesis ? "var(--champ)" : "rgba(244,241,232,.5)"
+    ? procheComplete || !!procheAnalysis?.summary ? "var(--champ)" : "rgba(244,241,232,.5)"
     : pct >= 65 ? "var(--champ)" : "rgba(244,241,232,.5)";
 
   let photoSignedUrl: string | null = null;
@@ -474,14 +471,14 @@ export default async function ContactPage({
         )}
 
         {/* ── Analyse Proche (quand le proche a rejoint Candice) ── */}
-        {(procheAnalysis?.summary || procheSynthesis) && (
+        {procheAnalysis?.summary && (
           <>
             <PointDivider label={`${contactFirstName} selon Candice`} />
             <Thread>
-              {/* Résumé global — profile_analysis preferred */}
+              {/* Résumé global */}
               <ThreadItem nodeType="solid" voice>
                 <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
-                  {procheAnalysis?.summary ?? procheSynthesis?.block1 ?? ""}
+                  {procheAnalysis.summary}
                 </p>
               </ThreadItem>
 
@@ -539,21 +536,6 @@ export default async function ContactPage({
                 </ThreadItem>
               )}
 
-              {/* Fallback : bloc5 style relationnel si pas de profile_analysis */}
-              {!procheAnalysis && procheSynthesis?.block3?.slice(0, 3).map((item: string, i: number) => (
-                <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
-                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
-                    {item}
-                  </p>
-                </ThreadItem>
-              ))}
-              {!procheAnalysis && procheSynthesis?.block5 && (
-                <ThreadItem nodeType="soft">
-                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
-                    {procheSynthesis.block5}
-                  </p>
-                </ThreadItem>
-              )}
             </Thread>
             {!procheComplete && (
               <div style={{ padding: "4px 4px 0" }}>
@@ -708,9 +690,9 @@ export default async function ContactPage({
             </div>
           </>
         ) : procheUserId ? (
-          /* Proche joined Candice — synthesis computing or not yet visible */
+          /* Proche joined Candice — analysis not yet available */
           <>
-            {!procheSynthesis && (
+            {!procheAnalysis?.summary && (
               <>
                 <PointDivider label={`Connaître ${contactFirstName}`} />
                 <div style={{ padding: "28px 4px 20px" }}>

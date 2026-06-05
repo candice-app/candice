@@ -78,19 +78,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "contactId et rawText requis" }, { status: 400 });
   }
 
-  // Extract + reformulate
-  const [extraction, reformulated] = await Promise.all([
-    extractSituation(rawText),
-    (async () => {
-      try {
-        return await reformulateSituation(rawText, await extractSituation(rawText), contactFirstName);
-      } catch {
-        return rawText;
-      }
-    })(),
-  ]);
-
-  const reformulatedText = await reformulateSituation(rawText, extraction, contactFirstName);
+  // Extract (once) then reformulate
+  const extraction = await extractSituation(rawText);
+  let reformulatedText: string;
+  try {
+    reformulatedText = await reformulateSituation(rawText, extraction, contactFirstName);
+  } catch {
+    reformulatedText = rawText;
+  }
 
   const revalidateAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
@@ -126,8 +121,6 @@ export async function POST(req: Request) {
   if (contactUserId) {
     generateProfileAnalysis(contactUserId, null, supabase).catch(() => {});
   }
-
-  void reformulated; // suppress unused warning
 
   return NextResponse.json({ success: true, id: inserted?.id });
 }
