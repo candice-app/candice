@@ -196,15 +196,31 @@ export default async function ContactPage({
   const isMemoryMode = !!typedContact.is_memory_mode;
   const procheUserId = typedContact.proche_user_id ?? null;
 
-  // Fetch Proche's synthesised profile when linked
+  // Fetch Proche's analysis when linked — profile_analysis preferred, fallback to profile_synthesis
+  type ProcheAnalysis = {
+    summary: string | null;
+    sections: Record<string, { text?: string; chips?: string[] }> | null;
+    gender: string | null;
+    confidence: number | null;
+  };
+  let procheAnalysis: ProcheAnalysis | null = null;
   let procheSynthesis: SynthesisNarrative | null = null;
   let procheComplete = false;
   if (procheUserId) {
-    const { data: procheProfile } = await admin
-      .from("my_profile")
-      .select("profile_synthesis, attention_reception, temperament_axes, lifestyle_axes, practical_info")
-      .eq("user_id", procheUserId)
-      .maybeSingle();
+    const [{ data: procheAnalysisRow }, { data: procheProfile }] = await Promise.all([
+      admin
+        .from("profile_analysis")
+        .select("summary, sections, gender, confidence")
+        .eq("user_id", procheUserId)
+        .is("contact_id", null)
+        .maybeSingle(),
+      admin
+        .from("my_profile")
+        .select("profile_synthesis, attention_reception, temperament_axes, lifestyle_axes, practical_info")
+        .eq("user_id", procheUserId)
+        .maybeSingle(),
+    ]);
+    procheAnalysis = procheAnalysisRow as ProcheAnalysis | null;
     procheSynthesis = (procheProfile?.profile_synthesis ?? null) as SynthesisNarrative | null;
     procheComplete = !!(
       procheProfile?.attention_reception &&
@@ -438,23 +454,80 @@ export default async function ContactPage({
         )}
 
         {/* ── Analyse Proche (quand le proche a rejoint Candice) ── */}
-        {procheSynthesis && (
+        {(procheAnalysis?.summary || procheSynthesis) && (
           <>
-            <PointDivider label={`Analyse de ${contactFirstName}`} />
+            <PointDivider label={`${contactFirstName} selon Candice`} />
             <Thread>
+              {/* Résumé global — profile_analysis preferred */}
               <ThreadItem nodeType="solid" voice>
                 <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
-                  {procheSynthesis.block1}
+                  {procheAnalysis?.summary ?? procheSynthesis?.block1 ?? ""}
                 </p>
               </ThreadItem>
-              {procheSynthesis.block3?.slice(0, 3).map((item: string, i: number) => (
+
+              {/* Ce qui touche */}
+              {procheAnalysis?.sections?.what_touches?.text && (
+                <ThreadItem nodeType="anticipe">
+                  <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
+                    Ce qui la/le touche
+                  </p>
+                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                    {procheAnalysis.sections.what_touches.text}
+                  </p>
+                  {(procheAnalysis.sections.what_touches.chips ?? []).length > 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 8 }}>
+                      {(procheAnalysis.sections.what_touches.chips ?? []).map((chip, i) => (
+                        <span key={i} style={{ fontSize: 11, fontWeight: 300, padding: "3px 9px", borderRadius: 20, background: "rgba(23,62,49,.06)", border: "0.5px solid rgba(23,62,49,.12)", color: "var(--pine)" }}>
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </ThreadItem>
+              )}
+
+              {/* Attentions idéales */}
+              {procheAnalysis?.sections?.attention?.text && (
+                <ThreadItem nodeType="soft">
+                  <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
+                    Comment lui montrer qu&apos;on pense à elle/lui
+                  </p>
+                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                    {procheAnalysis.sections.attention.text}
+                  </p>
+                </ThreadItem>
+              )}
+
+              {/* À éviter */}
+              {procheAnalysis?.sections?.avoid?.text && (
+                <ThreadItem nodeType="soft">
+                  <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
+                    À éviter
+                  </p>
+                  <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
+                    {procheAnalysis.sections.avoid.text}
+                  </p>
+                  {(procheAnalysis.sections.avoid.chips ?? []).length > 0 && (
+                    <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginTop: 8 }}>
+                      {(procheAnalysis.sections.avoid.chips ?? []).map((chip, i) => (
+                        <span key={i} style={{ fontSize: 11, fontWeight: 300, padding: "3px 9px", borderRadius: 20, background: "rgba(205,185,135,.08)", border: "0.5px solid rgba(205,185,135,.25)", color: "var(--ink-2)" }}>
+                          {chip}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </ThreadItem>
+              )}
+
+              {/* Fallback : bloc5 style relationnel si pas de profile_analysis */}
+              {!procheAnalysis && procheSynthesis?.block3?.slice(0, 3).map((item: string, i: number) => (
                 <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
                   <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
                     {item}
                   </p>
                 </ThreadItem>
               ))}
-              {procheSynthesis.block5 && (
+              {!procheAnalysis && procheSynthesis?.block5 && (
                 <ThreadItem nodeType="soft">
                   <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65 }}>
                     {procheSynthesis.block5}
