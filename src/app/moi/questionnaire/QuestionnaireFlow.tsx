@@ -147,9 +147,9 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
     router.push("/moi");
   }
 
-  // Fire-and-forget: called after each part saves so synthesis stays current
+  // Fire-and-forget: called after each part saves so analysis stays current
   function triggerSynthesis() {
-    fetch("/api/profile/synthesis/generate", { method: "POST" }).catch(() => {});
+    fetch("/api/profile/generate", { method: "POST" }).catch(() => {});
   }
 
   const canGoBack = stepHistory.length > 0;

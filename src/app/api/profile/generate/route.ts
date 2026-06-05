@@ -1,9 +1,9 @@
-// Deprecated — replaced by /api/profile/generate (Lot 2 Phase 2).
-// Kept to avoid 404 on any in-flight requests during deployment.
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
 
+// Single source-of-truth analysis endpoint.
+// Called fire-and-forget from QuestionnaireFlow after each part saves.
 export async function POST(): Promise<NextResponse> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
