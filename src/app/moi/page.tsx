@@ -499,6 +499,44 @@ function computeCompletionLevel(sections: SectionDef[]): CompletionLevel {
   return 'precise';
 }
 
+// ─── Analysis overlay ─────────────────────────────────────────────────────────
+
+// Maps sectionKey (used in buildSections) → profile_analysis.sections key
+const SECTION_KEY_TO_ANALYSIS: Record<string, string> = {
+  "attention-reception": "attention",
+  "attention-expression": "feels_loved",
+  "attention-dna":        "attention_dna",
+  "temperament-energy":   "what_touches",
+  "gifts-what-works":     "gifts",
+  "gifts-to-avoid":       "avoid",
+  "style-clothing":       "style",
+  "brands-favorites":     "brands",
+  "food-restaurants":     "restaurants",
+  "travel-style":         "travel",
+  "hobbies-main":         "hobbies",
+};
+
+type AnalysisSection = { text?: string; chips?: string[] };
+
+function mergeWithAnalysis(
+  sections: SectionDef[],
+  analysisSections: Record<string, AnalysisSection> | null,
+): SectionDef[] {
+  if (!analysisSections) return sections;
+  return sections.map(sec => {
+    const key = SECTION_KEY_TO_ANALYSIS[sec.sectionKey];
+    if (!key) return sec;
+    const ai = analysisSections[key];
+    if (!ai) return sec;
+    return {
+      ...sec,
+      summary: ai.text && ai.text.trim().length > 3 ? ai.text : sec.summary,
+      chips: ai.chips && ai.chips.length > 0 ? ai.chips : sec.chips,
+      filled: sec.filled || !!(ai.text && ai.text.trim().length > 3),
+    };
+  });
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function MoiPage() {
@@ -506,18 +544,26 @@ export default async function MoiPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: existing } = await supabase
-    .from("my_profile")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const [{ data: existing }, { data: analysisRow }] = await Promise.all([
+    supabase.from("my_profile").select("*").eq("user_id", user.id).maybeSingle(),
+    supabase.from("profile_analysis").select("summary, summary_chips, sections, gender")
+      .eq("user_id", user.id).is("contact_id", null).maybeSingle(),
+  ]);
 
   const profile = existing as ExtendedProfile | null;
+  const analysis = analysisRow as {
+    summary: string | null;
+    summary_chips: string[] | null;
+    sections: Record<string, AnalysisSection> | null;
+    gender: string | null;
+  } | null;
+
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "toi";
   const initial = firstName !== "toi" ? firstName[0].toUpperCase() : "M";
 
-  const sections = profile ? buildSections(profile) : [];
-  const level = profile ? computeCompletionLevel(sections) : 'empty';
+  const rawSections = profile ? buildSections(profile) : [];
+  const sections = mergeWithAnalysis(rawSections, analysis?.sections ?? null);
+  const level = profile ? computeCompletionLevel(rawSections) : 'empty';
   const levelLabels: Record<string, string> = {
     started: 'En cours', well_filled: 'Bien rempli', precise: 'Très précis',
   };
@@ -618,6 +664,47 @@ export default async function MoiPage() {
           </div>
         ) : (
           <>
+            {/* ── Résumé global (profile_analysis) ── */}
+            {analysis?.summary && (
+              <div style={{
+                padding: "18px 20px 16px",
+                borderRadius: 14,
+                background: "rgba(23,62,49,.04)",
+                border: "0.5px solid rgba(23,62,49,.1)",
+                marginBottom: 12,
+              }}>
+                <p style={{
+                  fontFamily: "var(--font-serif)", fontWeight: 300,
+                  fontSize: 13, color: "var(--ink-3)",
+                  letterSpacing: ".06em", textTransform: "uppercase",
+                  marginBottom: 10,
+                } as React.CSSProperties}>
+                  Ce que Candice retient
+                </p>
+                <p style={{
+                  fontSize: 14, fontWeight: 300, color: "var(--ink-2)",
+                  lineHeight: 1.75, marginBottom: analysis.summary_chips?.length ? 12 : 0,
+                }}>
+                  {analysis.summary}
+                </p>
+                {analysis.summary_chips && analysis.summary_chips.length > 0 && (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                    {analysis.summary_chips.map((chip, i) => (
+                      <span key={i} style={{
+                        fontSize: 11, fontWeight: 300,
+                        padding: "3px 10px", borderRadius: 20,
+                        background: "rgba(23,62,49,.07)",
+                        border: "0.5px solid rgba(23,62,49,.13)",
+                        color: "var(--pine)",
+                      }}>
+                        {chip}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* ── Carte Affiner mon portrait ── */}
             <AffinerCard level={level} />
 
