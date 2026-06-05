@@ -139,13 +139,17 @@ export default async function DashboardPage() {
     heroTitle = "Ajoutez un proche pour commencer.";
     heroSubtitle = "Dites-lui de qui vous souhaitez prendre soin — elle s'occupe du reste.";
   } else if (recentNotes.length > 0) {
-    heroTitle = "Candice suit le fil.";
+    heroTitle = "Candice a gardé quelques choses en tête.";
   } else if (typedContacts.length === 1) {
     heroTitle = `Candice apprend à connaître ${typedContacts[0].name.split(" ")[0]}.`;
   } else if (typedContacts.length >= 5) {
     heroTitle = `Candice veille sur ${typedContacts.length} proches.`;
   } else {
-    heroTitle = "Candice garde le lien vivant.";
+    heroTitle = "Parle-moi de ce qui compte.";
+  }
+
+  if (proactivePending.length > 0 && !topProactiveSuggestion) {
+    heroTitle = "Qui a besoin de toi aujourd'hui ?";
   }
 
   if (topProactiveSuggestion) {

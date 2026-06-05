@@ -8,6 +8,7 @@ import ResumePrompt from "@/components/questionnaire/ResumePrompt";
 import LogoutButton from "./LogoutButton";
 import ProfileSection from "@/components/profile/ProfileSection";
 import AffinerCard, { type CompletionLevel } from "@/components/profile/AffinerCard";
+import GenderModal from "@/components/profile/GenderModal";
 
 // ─── Extended profile type ────────────────────────────────────────────────────
 
@@ -17,6 +18,8 @@ interface ModeResult  { label: string; intensity: number; }
 interface ImportantDate { type: string; label: string; date: string; recurrence?: string; importance?: string; rappel?: string; }
 
 type ExtendedProfile = MyProfile & {
+  grammatical_gender?:     string | null;
+  style_gender_orientation?: string[] | null;
   attention_breath_text?:  string | null;
   attention_reception?:    FaceResult | null;
   attention_expression?:   FaceResult | null;
@@ -212,7 +215,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? `Tu te sens aimé·e surtout par ${dimsToFr(receptionDims).toLowerCase()}.${profile.attention_breath_text ? " " + profile.attention_breath_text.slice(0, 100) + (profile.attention_breath_text.length > 100 ? "…" : "") : ""}`
         : profile.love_language ? `Tu apprécies les ${profile.love_language.split(",")[0]} avant tout.` : null,
       editHref: "/moi/questionnaire?part=attention",
-      ctaLabel: "Affiner mes langages d'attention",
+      ctaLabel: "Approfondir mon langage d'attention",
       sectionKey: "attention-reception",
     },
     // 2 — Ce qui me touche
@@ -254,7 +257,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         : profile.gift_preference === "physical" ? "Tu apprécies les beaux objets bien choisis."
         : profile.gift_preference === "both" ? "Tu aimes autant les expériences que les cadeaux matériels." : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Affiner mes préférences cadeaux",
+      ctaLabel: "Affiner ce qui te fait plaisir",
       sectionKey: "gifts-what-works",
     },
     // 5 — À éviter
@@ -316,7 +319,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? `Tu préfères ${resolveDiscovery('food.restaurants', da['food.restaurants']).slice(0,2).join(", ").toLowerCase()}.`
         : profile.gastronomy ? GASTRONOMY_FR[profile.gastronomy] ?? null : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Préciser mes goûts",
+      ctaLabel: "Aller plus loin sur tes tables",
       sectionKey: "food-restaurants",
     },
     // 9 — Hôtels
@@ -367,7 +370,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? "Attiré·e par l'inédit et les découvertes."
         : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Affiner ma façon de voyager",
+      ctaLabel: "Aide Candice à mieux comprendre comment te faire voyager",
       sectionKey: "travel-style",
     },
     // 12 — Loisirs & centres d'intérêt
@@ -569,8 +572,12 @@ export default async function MoiPage() {
   };
   const levelBadge = levelLabels[level] ?? null;
 
+  const showGenderModal = !!profile && !profile.grammatical_gender;
+
   return (
     <DashboardShell>
+
+      {showGenderModal && <GenderModal userId={user.id} />}
 
       {/* ── Header ── */}
       <div
@@ -651,6 +658,35 @@ export default async function MoiPage() {
             </p>
           )}
         </div>
+
+        {/* ── Analyse globale (directement sous le header, fond foncé) ── */}
+        {analysis?.summary && (
+          <div style={{ padding: "16px 24px 24px" }}>
+            <p style={{
+              fontFamily: "var(--font-serif)", fontWeight: 300,
+              fontSize: 16, color: "rgba(244,241,232,.9)",
+              lineHeight: 1.7, letterSpacing: "-.01em",
+              marginBottom: analysis.summary_chips?.length ? 14 : 0,
+            } as React.CSSProperties}>
+              {analysis.summary}
+            </p>
+            {analysis.summary_chips && analysis.summary_chips.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {analysis.summary_chips.map((chip, i) => (
+                  <span key={i} style={{
+                    fontSize: 11, fontWeight: 300,
+                    padding: "3px 10px", borderRadius: 20,
+                    background: "rgba(255,255,255,.08)",
+                    border: "0.5px solid rgba(255,255,255,.14)",
+                    color: "rgba(244,241,232,.75)",
+                  }}>
+                    {chip}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="content-col" style={{ paddingTop: 24 }}>
@@ -664,49 +700,8 @@ export default async function MoiPage() {
           </div>
         ) : (
           <>
-            {/* ── Résumé global (profile_analysis) ── */}
-            {analysis?.summary && (
-              <div style={{
-                padding: "18px 20px 16px",
-                borderRadius: 14,
-                background: "rgba(23,62,49,.04)",
-                border: "0.5px solid rgba(23,62,49,.1)",
-                marginBottom: 12,
-              }}>
-                <p style={{
-                  fontFamily: "var(--font-serif)", fontWeight: 300,
-                  fontSize: 13, color: "var(--ink-3)",
-                  letterSpacing: ".06em", textTransform: "uppercase",
-                  marginBottom: 10,
-                } as React.CSSProperties}>
-                  Ce que Candice retient
-                </p>
-                <p style={{
-                  fontSize: 14, fontWeight: 300, color: "var(--ink-2)",
-                  lineHeight: 1.75, marginBottom: analysis.summary_chips?.length ? 12 : 0,
-                }}>
-                  {analysis.summary}
-                </p>
-                {analysis.summary_chips && analysis.summary_chips.length > 0 && (
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                    {analysis.summary_chips.map((chip, i) => (
-                      <span key={i} style={{
-                        fontSize: 11, fontWeight: 300,
-                        padding: "3px 10px", borderRadius: 20,
-                        background: "rgba(23,62,49,.07)",
-                        border: "0.5px solid rgba(23,62,49,.13)",
-                        color: "var(--pine)",
-                      }}>
-                        {chip}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* ── Carte Affiner mon portrait ── */}
-            <AffinerCard level={level} />
+            <AffinerCard level={level} showBadge={false} />
 
             {/* ── 20 sections accordéon ── */}
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

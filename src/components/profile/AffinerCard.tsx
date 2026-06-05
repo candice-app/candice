@@ -11,9 +11,10 @@ const LEVEL_META: Record<CompletionLevel, { badge: string | null; color: string 
 
 interface Props {
   level: CompletionLevel;
+  showBadge?: boolean;
 }
 
-export default function AffinerCard({ level }: Props) {
+export default function AffinerCard({ level, showBadge = false }: Props) {
   const { badge, color } = LEVEL_META[level];
 
   return (
@@ -26,7 +27,7 @@ export default function AffinerCard({ level }: Props) {
         : '0.5px solid rgba(23,62,49,.1)',
       marginBottom: 24,
     }}>
-      {badge && (
+      {showBadge && badge && (
         <span style={{
           display: 'inline-block',
           fontSize: 10, fontWeight: 500,
@@ -50,9 +51,9 @@ export default function AffinerCard({ level }: Props) {
         <Link href="/moi/discovery" style={{ textDecoration: 'none', flex: 1 }}>
           <button style={{
             width: '100%', padding: '11px 14px',
-            borderRadius: 12, border: '0.5px solid rgba(23,62,49,.2)',
+            borderRadius: 12, border: '1px solid rgba(23,62,49,.35)',
             background: 'var(--white)',
-            fontSize: 13, fontWeight: 300,
+            fontSize: 13, fontWeight: 400,
             color: 'var(--pine)',
             cursor: 'pointer', textAlign: 'center' as const,
           }}>

@@ -17,6 +17,7 @@ type Gender = "feminine" | "masculine" | "neutral";
 
 interface ProfileAnalysisResult {
   summary: string;
+  summary_third_person: string;
   summary_chips: string[];
   sections: Record<string, { text: string; chips: string[] }>;
   must_haves: string[];
@@ -29,7 +30,14 @@ interface ProfileAnalysisResult {
 
 // ── Gender helpers ────────────────────────────────────────────────────────────
 
-function resolveGender(sexe: string | null | undefined): Gender {
+function resolveGender(
+  grammaticalGender: string | null | undefined,
+  sexe: string | null | undefined,
+): Gender {
+  if (grammaticalGender === "feminine") return "feminine";
+  if (grammaticalGender === "masculine") return "masculine";
+  if (grammaticalGender === "neutral" || grammaticalGender === "unspecified") return "neutral";
+  // Legacy fallback
   if (sexe === "femme") return "feminine";
   if (sexe === "homme") return "masculine";
   return "neutral";
@@ -37,12 +45,12 @@ function resolveGender(sexe: string | null | undefined): Gender {
 
 function genderInstruction(gender: Gender): string {
   if (gender === "feminine") {
-    return "La personne décrite est une femme : accords féminins systématiques (elle, sa, ses, contente, aimée, etc.).";
+    return "La personne est une femme : accords féminins systématiques (elle, sa, ses, contente, aimée, etc.). JAMAIS de point médian « · » ni de « (-ve) ».";
   }
   if (gender === "masculine") {
-    return "La personne décrite est un homme : accords masculins systématiques (il, son, ses, content, aimé, etc.).";
+    return "La personne est un homme : accords masculins systématiques (il, son, ses, content, aimé, etc.). JAMAIS de point médian « · » ni de « (-ve) ».";
   }
-  return "Le genre n'est pas précisé : utilise des formulations inclusives avec le point médian (content·e, aimé·e, etc.) ou reformule pour éviter l'accord.";
+  return "Le genre n'est pas déterminé : reformule SANS accord (ex: 'une personne qui', 'quelqu'un qui'). INTERDIT absolument : point médian « · », tiret-genre, parenthèses d'accord « (-ve) ». Utilise la 3e personne neutre ou des tournures impersonnelles.";
 }
 
 // ── Entity extraction via Haiku ───────────────────────────────────────────────
@@ -226,46 +234,57 @@ function buildAnalysisPrompt(data: {
 // ── System prompt ─────────────────────────────────────────────────────────────
 
 function buildSystemPrompt(gender: Gender): string {
-  return `Tu es Candice. Tu rédiges la fiche profil intime d'une personne à partir de toutes ses réponses.
+  return `Tu es Candice. Tu rédiges la fiche profil intime d'une personne à partir de l'ensemble de ses réponses.
 
 ${genderInstruction(gender)}
 
-Règles absolues :
-- Ton : « tu sembles », « on devine », « il est possible que », « quelque chose revient souvent », « chez toi »
-- Jamais clinique, jamais coach, jamais MBTI/psy, jamais "profil", jamais "analyse", jamais "score"
-- Court, humain, fin, légèrement émotionnel, nuancé
-- Tous les blocs doivent être renseignés — analyse globale et transversale, jamais dimension par dimension
-- Pas de redondance entre les sections
-- Français, tutoiement (tu)
+RÈGLES D'ÉCRITURE ABSOLUES :
+- Ton : « tu sembles », « on devine », « quelque chose revient souvent », « chez toi »
+- JAMAIS clinique, coach, MBTI/psy, "profil", "analyse", "score", "compatibilité"
+- Humain, fin, légèrement émotionnel, nuancé, toujours positif dans la formulation
+- Français, tutoiement (tu) pour summary / sections ; 3e personne pour summary_third_person
+- JAMAIS de troncature « … » : chaque phrase est complète
 - Candice ne juge jamais. Candice traduit.
+
+RÈGLES SUR LES SECTIONS :
+- Analyse GLOBALE et transversale — JAMAIS dimension par dimension
+- Si deux sections proches disent la même chose (ex: attention ≈ feels_loved), FUSIONNE-les en une lecture commune plus forte, et laisse l'autre vide ("text": "", "chips": [])
+- "attention" = comment la personne REÇOIT l'attention des autres (les langages dans lesquels ELLE SE SENT aimée)
+- "feels_loved" = les situations concrètes qui lui font vivre cela — PAS ce qu'elle donne, PAS comment elle exprime
+- "what_touches" = ce qui la touche profondément (émotions, gestes, moments)
+- Zéro redondance entre sections : un chip ou une idée n'apparaît que dans UNE seule section
+
+RÈGLES SUR LES CHIPS :
+- Courts (2-5 mots max), nets, non-redondants
+- INTERDIT : fragments bruts ("Aime planifier et anticiper"), mots répétés dans 3+ sections
+- Chips informatifs et actionables pour un proche (ex: "Cadeaux expérience", "Hôtel boutique", "Pas de surprises")
 
 Retourne UNIQUEMENT ce JSON valide (aucun markdown, aucune explication) :
 {
-  "summary": "string — 2-3 phrases de synthèse (ton 'tu sembles'), résumé global",
+  "summary": "string — 2-3 phrases, résumé global en 2e personne (ton 'tu sembles')",
+  "summary_third_person": "string — même synthèse mais en 3e personne neutre pour un proche (ex: 'Elle semble...', 'Il est touché par...', 'Pour lui faire plaisir...'). Accords selon le genre indiqué.",
   "summary_chips": ["string", "string", "string", "string"],
   "sections": {
-    "attention": { "text": "string — comment la personne aime vraiment recevoir l'attention (2-3 phrases)", "chips": ["string", "string", "string"] },
-    "what_touches": { "text": "string — ce qui la touche vraiment (2-3 phrases)", "chips": ["string", "string", "string"] },
-    "feels_loved": { "text": "string — comment elle se sent aimée concrètement (2-3 phrases)", "chips": ["string", "string"] },
-    "gifts": { "text": "string — quel type de cadeau lui parle vraiment (2-3 phrases)", "chips": ["string", "string", "string"] },
-    "avoid": { "text": "string — ce qu'il vaut mieux éviter absolument (2-3 phrases)", "chips": ["string", "string", "string"] },
-    "style": { "text": "string — son univers esthétique et ses goûts (2-3 phrases, ou chaîne vide si aucune donnée)", "chips": [] },
-    "brands": { "text": "string — marques / univers qui lui correspondent (1-2 phrases, ou chaîne vide si aucune donnée)", "chips": [] },
-    "restaurants": { "text": "string — ses tables et cuisines préférées (1-2 phrases, ou chaîne vide si aucune donnée)", "chips": [] },
-    "travel": { "text": "string — comment elle voyage (1-2 phrases, ou chaîne vide si aucune donnée)", "chips": [] },
-    "hobbies": { "text": "string — ce qui la ressource et ses passions (1-2 phrases, ou chaîne vide si aucune donnée)", "chips": [] },
-    "attention_dna": { "text": "string — synthèse de son ADN attentions (2-3 phrases)", "chips": ["string", "string"] }
+    "attention":    { "text": "string — comment reçoit l'attention (2-3 phrases complètes)", "chips": ["string", "string", "string"] },
+    "what_touches": { "text": "string — ce qui la/le touche vraiment (2-3 phrases)", "chips": ["string", "string", "string"] },
+    "feels_loved":  { "text": "string — situations concrètes de réception (2-3 phrases) — si trop similaire à 'attention', laisser vide", "chips": ["string", "string"] },
+    "gifts":        { "text": "string — quel type de cadeau lui parle (2-3 phrases)", "chips": ["string", "string", "string"] },
+    "avoid":        { "text": "string — ce qu'il vaut mieux éviter (2-3 phrases)", "chips": ["string", "string", "string"] },
+    "style":        { "text": "string — univers esthétique (2 phrases, ou vide si aucune donnée)", "chips": [] },
+    "brands":       { "text": "string — marques / univers (1-2 phrases, ou vide si aucune donnée)", "chips": [] },
+    "restaurants":  { "text": "string — tables et cuisines (1-2 phrases, ou vide si aucune donnée)", "chips": [] },
+    "travel":       { "text": "string — comment voyage (1-2 phrases, ou vide si aucune donnée)", "chips": [] },
+    "hobbies":      { "text": "string — passions et loisirs (1-2 phrases, ou vide si aucune donnée)", "chips": [] },
+    "attention_dna":{ "text": "string — synthèse ADN attentions (2-3 phrases)", "chips": ["string", "string"] }
   },
   "must_haves": ["string", "string", "string"],
   "deal_breakers": ["string", "string", "string"],
-  "attention_dna": [
-    { "dimension": "string", "intensity": 0, "note": "string" }
-  ],
+  "attention_dna": [{ "dimension": "string", "intensity": 0, "note": "string" }],
   "constraints": ["string"],
   "confidence": 0.0
 }
 
-Règles sur confidence : 0.3 = peu de données, 0.6 = données questionnaire de base, 0.85 = questionnaire complet + singularité, 1.0 = tout rempli + mémoires.`;
+Règles confidence : 0.3 = peu de données, 0.6 = questionnaire de base, 0.85 = questionnaire + singularité, 1.0 = tout + mémoires.`;
 }
 
 // ── Main export ────────────────────────────────────────────────────────────────
@@ -313,6 +332,7 @@ export async function generateProfileAnalysis(
     practical_info: unknown;
     singularity_answers: unknown;
     discovery_answers: unknown;
+    grammatical_gender: string | null;
   };
 
   const { data: rawProfile } = await supabase
@@ -327,6 +347,7 @@ export async function generateProfileAnalysis(
       "practical_info",
       "singularity_answers",
       "discovery_answers",
+      "grammatical_gender",
     ].join(", "))
     .eq("user_id", userId)
     .maybeSingle();
@@ -354,7 +375,7 @@ export async function generateProfileAnalysis(
   // ── 3. Determine gender ───────────────────────────────────────────────────
 
   const pi = profile.practical_info as Record<string, string> | null;
-  const gender = resolveGender(pi?.sexe);
+  const gender = resolveGender(profile.grammatical_gender, pi?.sexe);
 
   // ── 4. Extract entities (Haiku, non-blocking) ─────────────────────────────
 
@@ -420,6 +441,9 @@ export async function generateProfileAnalysis(
       summary: facts.touchInsights.length > 0
         ? `Tu sembles particulièrement sensible à ${facts.touchInsights[0]}.`
         : "Candice apprend à te connaître.",
+      summary_third_person: facts.touchInsights.length > 0
+        ? `Cette personne semble particulièrement sensible à ${facts.touchInsights[0]}.`
+        : "Candice apprend à la connaître.",
       summary_chips: facts.topReceptionDims.slice(0, 4),
       sections: {
         attention:    { text: facts.idealAttentions[0] ?? "", chips: facts.topReceptionDims.slice(0, 3) },
@@ -478,10 +502,11 @@ export async function generateProfileAnalysis(
   // ── 9. Upsert to profile_analysis ─────────────────────────────────────────
 
   const payload = {
-    user_id:          userId,
-    contact_id:       contactId,
-    summary:          result.summary ?? null,
-    summary_chips:    result.summary_chips ?? null,
+    user_id:               userId,
+    contact_id:            contactId,
+    summary:               result.summary ?? null,
+    summary_third_person:  result.summary_third_person ?? null,
+    summary_chips:         result.summary_chips ?? null,
     sections:         result.sections ?? null,
     dimension_scores: dimensionScores,
     must_haves:       result.must_haves ?? null,

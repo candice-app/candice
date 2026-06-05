@@ -11,6 +11,7 @@ import { STEP2_QUESTIONS, STEP3_QUESTIONS } from "@/lib/temperament/questions";
 import { scoreLifestyle, mergeTemperamentSupplements } from "@/lib/lifestyle/scoring";
 import { computeLifestyleBreathFacts, buildLifestyleFallbackText } from "@/lib/lifestyle/breathFacts";
 import { STEP4_QUESTIONS, STEP5_CHOICE_QUESTIONS } from "@/lib/lifestyle/questions";
+import GenderStep from "@/components/questionnaire/GenderStep";
 import AttentionStep from "@/components/questionnaire/AttentionStep";
 import AttentionBreath from "@/components/questionnaire/AttentionBreath";
 import TemperamentStep from "@/components/questionnaire/TemperamentStep";
@@ -28,6 +29,7 @@ import type { PracticalInfo } from "@/components/questionnaire/PracticalStep";
 
 type Step =
   | "editMenu"
+  | "gender"
   | "attention"
   | "attentionBreath"
   | "temperament2"
@@ -120,7 +122,7 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
   const partParam = searchParams.get("part");
   const initialStep: Step = partParam
     ? partIdToStep(partParam)
-    : ext ? "editMenu" : "attention";
+    : ext ? "editMenu" : "gender";
 
   // ── Edit mode state ──────────────────────────────────────────────────────
   const [editMode, setEditMode] = useState<EditMode>(partParam ? "single" : null);
@@ -216,6 +218,18 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
           setEditMode("full");
           navigate("attention");
         }}
+      />
+    );
+  }
+
+  // ─── Step 0: Genre ───────────────────────────────────────────────────────
+
+  if (step === "gender") {
+    return (
+      <GenderStep
+        userId={userId}
+        supabase={supabase}
+        onDone={() => navigate("attention")}
       />
     );
   }

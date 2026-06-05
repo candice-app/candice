@@ -73,7 +73,7 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
   const [{ data }, { data: analysisRow }] = await Promise.all([
     supabase.from("my_profile").select("*").eq("user_id", id).maybeSingle(),
     supabase.from("profile_analysis")
-      .select("summary, summary_chips, sections, must_haves, deal_breakers, constraints")
+      .select("summary, summary_third_person, summary_chips, sections, must_haves, deal_breakers, constraints")
       .eq("user_id", id).is("contact_id", null).maybeSingle(),
   ]);
 
@@ -82,6 +82,7 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
   const profile = data as MyProfile & { attention_breath_text?: string | null };
   const analysis = analysisRow as {
     summary: string | null;
+    summary_third_person: string | null;
     summary_chips: string[] | null;
     sections: Record<string, AnalysisSection> | null;
     must_haves: string[] | null;
@@ -132,8 +133,8 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
           </p>
         </div>
 
-        {/* Résumé Candice — profile_analysis preferred, fallback breath_text */}
-        {(analysis?.summary || profile.attention_breath_text) && (
+        {/* Résumé Candice en 3e personne — summary_third_person preferred, fallback summary, then breath_text */}
+        {(analysis?.summary_third_person || analysis?.summary || profile.attention_breath_text) && (
           <div style={{
             padding: "20px 22px",
             borderRadius: 16,
@@ -145,7 +146,7 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
               fontWeight: 300, fontSize: 17,
               color: "#FAF8F1", lineHeight: 1.65, letterSpacing: "-.012em",
             } as React.CSSProperties}>
-              {analysis?.summary ?? profile.attention_breath_text}
+              {analysis?.summary_third_person ?? analysis?.summary ?? profile.attention_breath_text}
             </p>
           </div>
         )}

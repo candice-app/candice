@@ -21,6 +21,7 @@ import PointDivider from "@/components/presence/PointDivider";
 import Thread, { ThreadItem } from "@/components/presence/Thread";
 import { resolveCadenceForContact } from "@/lib/cadence/resolver";
 import MemoriesSection, { type MemoryRow } from "@/components/contacts/MemoriesSection";
+import SituationCard, { type SituationRow } from "@/components/contacts/SituationCard";
 
 // ─── Label maps ──────────────────────────────────────────────────────────────
 
@@ -129,6 +130,7 @@ export default async function ContactPage({
     { data: pendingQuestionData },
     { count: feedbackCount },
     { data: memoriesData },
+    { data: situationsData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -186,6 +188,15 @@ export default async function ContactPage({
       .neq("status", "archivé")
       .order("created_at", { ascending: false })
       .limit(20),
+    supabase
+      .from("memories")
+      .select("id, reformulated_text, category, tonality, emotional_intensity, probable_needs, created_at")
+      .eq("contact_id", id)
+      .eq("pilot_id", user.id)
+      .eq("type", "situation")
+      .eq("status", "active")
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
 
   if (!contact) notFound();
@@ -422,6 +433,15 @@ export default async function ContactPage({
 
       {/* ── Corps blanc ── */}
       <div className="body-pad">
+
+        {/* ── Situation actuelle (juste sous le header) ── */}
+        {(situationsData ?? []).length > 0 && (
+          <SituationCard
+            situations={(situationsData ?? []) as SituationRow[]}
+            contactId={id}
+            contactFirstName={contactFirstName}
+          />
+        )}
 
         {/* Memory mode notice */}
         {isMemoryMode && (
