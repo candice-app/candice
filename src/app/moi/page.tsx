@@ -2,202 +2,60 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
-import Thread, { ThreadItem } from "@/components/presence/Thread";
-import PointDivider from "@/components/presence/PointDivider";
 import { MyProfile, CadenceLevel } from "@/types";
 import ShareButton from "./ShareButton";
-import CadenceGlobal from "@/components/dashboard/CadenceGlobal";
 import ResumePrompt from "@/components/questionnaire/ResumePrompt";
 import LogoutButton from "./LogoutButton";
+import ProfileSection from "@/components/profile/ProfileSection";
+import AffinerCard, { type CompletionLevel } from "@/components/profile/AffinerCard";
 
-// ─── Extended type (new questionnaire fields) ─────────────────────────────────
+// ─── Extended profile type ────────────────────────────────────────────────────
 
-interface FaceResult {
-  dominant:   string[];
-  secondaire: string[];
-  tertiaire:  string[];
-}
-
-interface AxisScore {
-  score:     number;
-  intensity: number;
-}
-
-interface ModeResult {
-  label:     string;
-  intensity: number;
-}
-
-interface ImportantDate {
-  type:  string;
-  label: string;
-  date:  string;
-}
+interface FaceResult { dominant: string[]; secondaire: string[]; tertiaire: string[]; }
+interface AxisScore   { score: number; intensity: number; }
+interface ModeResult  { label: string; intensity: number; }
+interface ImportantDate { type: string; label: string; date: string; }
 
 type ExtendedProfile = MyProfile & {
-  attention_breath_text?: string | null;
-  attention_reception?:   FaceResult | null;
-  attention_expression?:  FaceResult | null;
-  temperament_axes?:      Record<string, AxisScore> | null;
-  temperament_modes?:     Record<string, ModeResult | null> | null;
-  lifestyle_axes?:        Record<string, AxisScore> | null;
-  relational_filters?:    Record<string, unknown> | null;
-  singularity_answers?:   Record<string, string> | null;
+  attention_breath_text?:  string | null;
+  attention_reception?:    FaceResult | null;
+  attention_expression?:   FaceResult | null;
+  temperament_axes?:       Record<string, AxisScore> | null;
+  temperament_modes?:      Record<string, ModeResult | null> | null;
+  lifestyle_axes?:         Record<string, AxisScore> | null;
+  relational_filters?:     Record<string, unknown> | null;
+  singularity_answers?:    Record<string, string> | null;
+  discovery_answers?:      Record<string, string | string[]> | null;
   practical_info?: {
-    prenom?:            string;
-    sexe?:              string;
-    age?:               string;
-    profession?:        string;
-    allergies?:         string[];
-    regime?:            string;
-    alcool?:            string;
-    mobilite_sante?:    string;
-    taille_vetements?:  string;
-    taille_chaussures?: string;
-    taille_pantalon?:   string;
-    taille_bague?:      string;
-    parfums?:           string[];
-    odeurs_detestees?:  string;
-    couleurs_matieres?: string;
-    animaux?:           string;
-    dates_importantes?: ImportantDate[];
-    role_familial?:     string | string[]; // backwards compat
+    prenom?: string; sexe?: string; age?: string; profession?: string;
+    allergies?: string[]; regime?: string; alcool?: string; mobilite_sante?: string;
+    taille_vetements?: string; taille_chaussures?: string;
+    taille_pantalon?: string; taille_bague?: string;
+    parfums?: string[]; odeurs_detestees?: string; couleurs_matieres?: string;
+    animaux?: string; dates_importantes?: ImportantDate[];
+    role_familial?: string | string[];
   } | null;
 };
 
-// ─── Label maps (old questionnaire — fallback) ────────────────────────────────
-
-const OLD_LABEL: Record<string, Record<string, string>> = {
-  love_language: {
-    words: "Mots d'affirmation",
-    acts:  "Actes de service",
-    gifts: "Cadeaux",
-    time:  "Temps de qualité",
-    touch: "",
-  },
-  communication_style: {
-    direct:     "Direct et concis",
-    emotional:  "Émotionnel et expressif",
-    analytical: "Analytique et détaillé",
-    casual:     "Décontracté et humoristique",
-  },
-  social_energy: {
-    very_introverted: "Très introverti(e)",
-    introverted:      "Introverti(e)",
-    ambivert:         "Ambiverti(e)",
-    extroverted:      "Extraverti(e)",
-    very_extroverted: "Très extraverti(e)",
-  },
-  appreciation_style: {
-    verbal:   "Reconnaissance verbale",
-    practical: "Aide pratique",
-    gifts:    "Cadeaux réfléchis",
-    time:     "Temps dédié",
-    physical: "Gestes physiques",
-  },
-  core_values: {
-    loyalty:   "Loyauté et confiance",
-    growth:    "Croissance et apprentissage",
-    fun:       "Fun et expériences",
-    stability: "Stabilité",
-  },
-  gift_preference: {
-    experiences: "Expériences",
-    physical:    "Cadeaux matériels",
-    both:        "Les deux",
-  },
-  gastronomy: {
-    anywhere:   "Aime manger partout",
-    gourmet:    "Gourmand(e)",
-    fine_dining: "Belles tables",
-    passion:    "Passionné(e) de gastronomie",
-    functional: "Mange pour vivre",
-  },
-};
-
-function resolveOld(field: string, value: string | null): string | null {
-  if (!value) return null;
-  const parts = value.split(",").filter(Boolean)
-    .map(v => OLD_LABEL[field]?.[v.trim()] ?? v.trim())
-    .filter(Boolean);
-  return parts.length > 0 ? parts.join(", ") : null;
-}
-
-// ─── Attention dims → French ──────────────────────────────────────────────────
+// ─── Label maps ───────────────────────────────────────────────────────────────
 
 const DIM_FR: Record<string, string> = {
-  MOT:   "Mots d'affirmation",
-  SER:   "Actes de service",
-  CAD_C: "Cadeaux personnalisés",
-  CAD_S: "Cadeaux symboliques",
-  EXP:   "Expériences partagées",
-  GES:   "Petites attentions du quotidien",
-  SUR:   "Surprises",
+  MOT: "Mots d'affirmation", SER: "Actes de service",
+  CAD_C: "Cadeaux personnalisés", CAD_S: "Cadeaux symboliques",
+  EXP: "Expériences partagées", GES: "Petites attentions", SUR: "Surprises",
 };
-
-function pickDims(face: FaceResult): string[] {
-  if (face.dominant.length > 0)   return face.dominant;
-  if (face.secondaire.length > 0) return face.secondaire;
-  return face.tertiaire.slice(0, 2);
-}
-
-function dimsToFr(dims: string[]): string {
-  return dims.map(d => DIM_FR[d] ?? d).join(", ");
-}
-
-// ─── Temperament axes → readable ─────────────────────────────────────────────
 
 const AXIS_POLES: Record<string, [string, string]> = {
-  energieSociale:      ["Extraverti(e) et sociable",        "Introverti(e) et sélectif(-ve)"],
-  espaceProsimite:     ["À l'aise avec la proximité physique", "Besoin d'espace et de distance"],
-  spontaneiteControle: ["Spontané(e) et flexible",          "Aime planifier et anticiper"],
-  communicationStyle:  ["Communication directe et franche", "Communication nuancée et indirecte"],
-  expressiviteReserve: ["Expressif(-ve) en émotions",       "Plutôt réservé(e) et pudique"],
-  stabiliteNouveaute:  ["Ouvert(e) aux nouveautés",         "Préfère ses repères habituels"],
-  sensibiliteDetails:  ["Attentif(-ve) aux petits détails", "Vision d'ensemble plutôt que détails"],
-  exigenceStanding:    ["Sens de la qualité et du raffinement", "Simple et accessible avant tout"],
-  rapportTemps:        ["La ponctualité est importante",    "Rapport flexible au temps"],
+  energieSociale:      ["Extraverti(e) et sociable",         "Introverti(e) et sélectif(-ve)"],
+  espaceProsimite:     ["À l'aise avec la proximité physique","Besoin d'espace et de distance"],
+  spontaneiteControle: ["Spontané(e) et flexible",           "Aime planifier et anticiper"],
+  communicationStyle:  ["Communication directe et franche",  "Communication nuancée et indirecte"],
+  expressiviteReserve: ["Expressif(-ve) en émotions",        "Plutôt réservé(e) et pudique"],
+  stabiliteNouveaute:  ["Ouvert(e) aux nouveautés",          "Préfère ses repères habituels"],
+  sensibiliteDetails:  ["Attentif(-ve) aux petits détails",  "Vision d'ensemble plutôt que détails"],
+  exigenceStanding:    ["Sens de la qualité et du raffinement","Simple et accessible avant tout"],
+  rapportTemps:        ["La ponctualité est importante",     "Rapport flexible au temps"],
 };
-
-function axisLabel(key: string, score: number): string | null {
-  if (Math.abs(score) < 30) return null;
-  const poles = AXIS_POLES[key];
-  if (!poles) return null;
-  return score > 0 ? poles[0] : poles[1];
-}
-
-// ─── Temperament modes → readable ─────────────────────────────────────────────
-
-const STRESS_FR: Record<string, string> = {
-  silence:  "Silence et recul intérieur",
-  retrait:  "Besoin de s'isoler un moment",
-  parole:   "A besoin d'en parler",
-  action:   "Se dépense pour évacuer",
-  contrôle: "Cherche à maîtriser son environnement",
-};
-const CONFLIT_FR: Record<string, string> = {
-  direct:        "Confronte directement et clairement",
-  temporisateur: "Prend du recul avant d'agir",
-  évitant:       "Préfère éviter la confrontation",
-  humour:        "Désamorce avec l'humour",
-};
-const DECISION_FR: Record<string, string> = {
-  analytique: "Décide après analyse approfondie",
-  rationnel:  "Décide de façon rationnelle",
-  intuitif:   "Fait confiance à son intuition",
-  social:     "Cherche le consensus autour de soi",
-  maturation: "Laisse mûrir avant de décider",
-};
-const CANAL_FR: Record<string, string> = {
-  écrit:      "Canal préféré : l'écrit (SMS, messages)",
-  oral:       "Canal préféré : l'échange verbal",
-  hybride:    "À l'aise à l'écrit comme à l'oral",
-  présentiel: "Préfère le face-à-face",
-  flexible:   "Flexible selon le contexte",
-};
-
-// ─── Lifestyle axes → readable ────────────────────────────────────────────────
-
 const LIFESTYLE_POLES: Record<string, [string, string]> = {
   foodie:                ["Curieux(-se) gastronomiquement",         "Pragmatique avec la nourriture"],
   premiumSimplicite:     ["Sensible à la qualité et au raffinement","Préfère la simplicité au luxe"],
@@ -206,112 +64,399 @@ const LIFESTYLE_POLES: Record<string, [string, string]> = {
   aventureConfort:       ["Attiré(e) par l'aventure et l'inédit",   "Préfère le confort et le familier"],
   authenticiteLuxe:      ["Authenticité et sincérité avant tout",   "Sensible au luxe et au prestige"],
 };
+const CONFLIT_FR:  Record<string, string> = {
+  direct: "Confronte directement", temporisateur: "Prend du recul avant d'agir",
+  évitant: "Préfère éviter la confrontation", humour: "Désamorce avec l'humour",
+};
+const PARFUM_FR:   Record<string, string> = {
+  frais: "Frais", poudre: "Poudré", boise: "Boisé", floral: "Floral",
+  gourmand: "Gourmand", ambre: "Ambré", discret: "Discret", sans_parfum: "Sans parfum",
+};
+const ALLERGIE_FR: Record<string, string> = {
+  gluten: "Gluten", lactose: "Lactose",
+  fruits_a_coque: "Fruits à coque", fruits_de_mer: "Fruits de mer", autre: "Autres allergies",
+};
+const REGIME_FR: Record<string, string> = {
+  vegetarien: "Végétarien", vegan: "Vegan", halal: "Halal", casher: "Casher", autre: "Régime particulier",
+};
+const ALCOOL_FR:  Record<string, string> = {
+  ne_bois_pas: "Ne boit pas d'alcool", eviter_lieux: "Évite les lieux centrés alcool",
+};
+const FILTER_SURPRISE_FR: Record<string, string> = {
+  ouvertSurprise: "Ouvert(e) aux belles surprises bien pensées",
+  antiSurprisePublique: "Préfère éviter les surprises publiques",
+  antiSurprisePlanning: "Aime être prévenu(e) pour les grandes occasions",
+  antiSurpriseIntime: "Peu à l'aise avec les surprises intimes",
+};
+const GIFT_PREF_FR: Record<string, string> = {
+  experiences: "Expériences", physical: "Cadeaux matériels", both: "Les deux",
+};
+const GASTRONOMY_FR: Record<string, string> = {
+  anywhere: "Mange partout avec plaisir", gourmet: "Gourmand(e)",
+  fine_dining: "Apprécie les belles tables", passion: "Passionné(e) de gastronomie",
+  functional: "Mange pour vivre",
+};
 
+// Discovery answer label maps
+const DISCOVERY_OPTS: Record<string, Record<string, string>> = {
+  'attention.reception': { MOT: "Mots d'affirmation", SER: "Actes de service", CAD_C: "Cadeaux", EXP: "Temps partagé", GES: "Petites attentions", SUR: "Surprises" },
+  'gifts.what_works':    { experiences: "Expériences", personalized: "Personnalisé", practical: "Utile et beau", beauty: "Beauté / bien-être", culture: "Livres / culture", handmade: "Fait main", surprise: "Surprise totale" },
+  'style.clothing':      { classic: "Classique", boho: "Bohème", minimal: "Minimaliste", chic: "Chic parisien", casual: "Décontracté", sport: "Sportswear", trendy: "Mode / tendance" },
+  'food.restaurants':    { bistro: "Bistrot convivial", gastronomic: "Gastronomique", casual_good: "Bonne adresse décontractée", world: "Cuisine du monde", veggie: "Végétarien / healthy", anything_good: "Tout si c'est bon" },
+  'fragrance.family':    { floral: "Fleuri", fresh: "Frais / citrus", woody: "Boisé", oriental: "Oriental / Ambré", powder: "Poudré", gourmand: "Gourmand", light: "Discret", none: "Sans parfum" },
+  'travel.style':        { adventure: "L'aventure", culture: "La culture", relax: "Le repos total", nature: "La nature", city: "Les villes animées", gastro: "La gastronomie locale", luxury: "Le luxe discret" },
+  'surprises.preference':{ loves: "Adore les surprises", depends: "Selon le contexte", notice: "Préfère être prévenu·e", dislikes: "Les surprises créent du stress" },
+  'conflicts.style':     { direct: "Communication directe", space: "Besoin de recul d'abord", avoids: "Préfère éviter", humor: "Désamorce avec l'humour" },
+  'practical.constraints': { vegetarian: "Végétarien·ne", vegan: "Vegan", halal: "Halal", casher: "Casher", food_allergy: "Allergie alimentaire", no_alcohol: "Sans alcool", mobility: "Contrainte de mobilité" },
+};
+
+function resolveDiscovery(key: string, val: unknown): string[] {
+  if (!val) return [];
+  const map = DISCOVERY_OPTS[key] ?? {};
+  const arr = Array.isArray(val) ? val as string[] : [val as string];
+  return arr.map(v => map[v] ?? v).filter(v => v && v !== 'none');
+}
+
+// ─── Computation helpers ──────────────────────────────────────────────────────
+
+function pickDims(face: FaceResult): string[] {
+  if (face.dominant.length > 0) return face.dominant;
+  if (face.secondaire.length > 0) return face.secondaire;
+  return face.tertiaire.slice(0, 2);
+}
+function dimsToFr(dims: string[]): string {
+  return dims.map(d => DIM_FR[d] ?? d).join(", ");
+}
+
+function axisLabel(key: string, score: number): string | null {
+  if (Math.abs(score) < 30) return null;
+  const poles = AXIS_POLES[key];
+  return poles ? (score > 0 ? poles[0] : poles[1]) : null;
+}
 function lifestyleLabel(key: string, score: number): string | null {
   if (Math.abs(score) < 30) return null;
   const poles = LIFESTYLE_POLES[key];
-  if (!poles) return null;
-  return score > 0 ? poles[0] : poles[1];
+  return poles ? (score > 0 ? poles[0] : poles[1]) : null;
 }
 
-// ─── Relational filters → readable ───────────────────────────────────────────
-
-const FILTER_FR: Record<string, string> = {
-  antiSurprisePublique:    "Préfère éviter les surprises publiques",
-  antiSurprisePlanning:    "Aime être prévenu(e) pour les grandes occasions",
-  antiSurpriseIntime:      "Peu à l'aise avec les surprises intimes",
-  exigenceExecution:       "Attentif(-ve) à la qualité d'exécution",
-  ouvertSurprise:          "Ouvert(e) aux belles surprises bien pensées",
-  besoinEcoute:            "Se sentir vraiment écouté(e) est essentiel",
-  peurOubli:               "Sensible à l'idée d'être oublié(e)",
-  besoinAir:               "Besoin d'espace et d'indépendance",
-  sensibiliteCritique:     "Sensible aux critiques, même bienveillantes",
-  besoinFiabilite:         "La fiabilité et la constance comptent beaucoup",
-  besoinProfondeur:        "Les échanges profonds nourrissent vraiment",
-  sensibiliteChargeMetale: "Attentif(-ve) à la charge mentale",
-};
-
-// ─── Singularity field labels ─────────────────────────────────────────────────
-
-const SINGULARITY_LABELS: Record<string, string> = {
-  adore_faire:      "Ce que j'adore faire",
-  evite_deteste:    "Ce que j'évite",
-  sujets_stimulants:"Sujets qui me stimulent",
-  peu_savent:       "Peu de gens savent que…",
-  plus_beau_cadeau: "Plus beau cadeau ou moment reçu",
-  detail_compris:   "Ce qui me fait me sentir compris(e)",
-  marques_lieux:    "Marques et lieux favoris",
-  cadeaux_non:      "Cadeaux à éviter",
-  envies_reves:     "Envies et rêves du moment",
-  remarquer:        "Ce que j'aimerais qu'on remarque",
-  sentir_special:   "Ce qui me fait me sentir spécial(e)",
-};
-
-// ─── Practical helpers ────────────────────────────────────────────────────────
-
-const REGIME_FR: Record<string, string> = {
-  vegetarien: "Végétarien",
-  vegan:      "Vegan",
-  halal:      "Halal",
-  casher:     "Casher",
-  autre:      "Régime particulier",
-};
-const ALCOOL_FR: Record<string, string> = {
-  ne_bois_pas:  "Ne boit pas d'alcool",
-  eviter_lieux: "Préfère éviter les lieux centrés sur l'alcool",
-};
-const PARFUM_FR: Record<string, string> = {
-  frais:      "Frais", poudre:    "Poudré", boise:    "Boisé",
-  floral:     "Floral", gourmand: "Gourmand", ambre:  "Ambré",
-  discret:    "Discret", sans_parfum: "Sans parfum",
-};
-const ALLERGIE_FR: Record<string, string> = {
-  gluten:         "Gluten",
-  lactose:        "Lactose",
-  fruits_a_coque: "Fruits à coque",
-  fruits_de_mer:  "Fruits de mer",
-  autre:          "Autres allergies",
-};
-const ROLE_FR: Record<string, string> = {
-  conjoint:    "Conjoint·e", ami:         "Ami·e",
-  pere:        "Père",       mere:        "Mère",
-  enfant:      "Enfant",     frere_soeur: "Frère / Sœur",
-  beaux_parents:"Beaux-parents", collegue: "Collègue",
-};
-const SEXE_FR: Record<string, string> = {
-  femme:              "Femme",
-  homme:              "Homme",
-  non_binaire:        "Non-binaire",
-  ne_se_prononce_pas: "",
-};
-
-function formatDate(s: string): string {
-  if (!s) return "";
-  const parts = s.split("-");
-  if (parts.length !== 3) return s;
-  const months = ["jan.","fév.","mars","avr.","mai","juin","juil.","août","sept.","oct.","nov.","déc."];
-  const m = parseInt(parts[1]) - 1;
-  return `${parseInt(parts[2])} ${months[m] ?? ""} ${parts[0]}`;
+function formatUpdatedAt(iso: string): string {
+  const d = new Date(iso);
+  const months = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+  return `Mis à jour le ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-// ─── Portrait helpers ─────────────────────────────────────────────────────────
+// ─── Section builder ──────────────────────────────────────────────────────────
 
-function K({ children }: { children: React.ReactNode }) {
-  return (
-    <span style={{ color: "var(--pine)", fontWeight: 500 }}>
-      {children}
-    </span>
-  );
+interface SectionDef {
+  icon: string; title: string;
+  summary: string | null; chips: string[];
+  filled: boolean; editHref: string;
 }
 
-// ─── Cadence ──────────────────────────────────────────────────────────────────
+function buildSections(profile: ExtendedProfile): SectionDef[] {
+  const da = profile.discovery_answers ?? {};
+  const pi = profile.practical_info;
+  const sing = profile.singularity_answers ?? {};
+  const filters = profile.relational_filters ?? {};
+  const q17Text = typeof filters.q17Text === "string" ? filters.q17Text : "";
 
-const CADENCE_LABELS_FR: Record<string, { label: string; detail: string }> = {
-  discreet:  { label: "Discret",  detail: "1 attention par mois" },
-  normal:    { label: "Normal",   detail: "1 attention toutes les 2 semaines" },
-  sustained: { label: "Soutenu",  detail: "1 attention par semaine" },
-  intense:   { label: "Intense",  detail: "1 attention tous les 3 jours" },
-};
+  // Attention dims
+  const receptionDims = profile.attention_reception ? pickDims(profile.attention_reception) : [];
+  const expressionDims = profile.attention_expression ? pickDims(profile.attention_expression) : [];
+  const hasAttentionData = receptionDims.length > 0 || expressionDims.length > 0;
+
+  // Temperament
+  const temperamentTraits: string[] = [];
+  if (profile.temperament_axes) {
+    Object.entries(profile.temperament_axes)
+      .filter(([,v]) => v && Math.abs(v.score) >= 30 && v.intensity > 0)
+      .sort(([,a],[,b]) => Math.abs(b!.score) - Math.abs(a!.score))
+      .slice(0, 4)
+      .forEach(([key, v]) => { const l = v ? axisLabel(key, v.score) : null; if (l) temperamentTraits.push(l); });
+  }
+  const conflitMode = profile.temperament_modes?.conflit?.label ?? null;
+
+  // Lifestyle
+  const lifestyleTraits: string[] = [];
+  if (profile.lifestyle_axes) {
+    Object.entries(profile.lifestyle_axes)
+      .filter(([,v]) => v && Math.abs(v.score) >= 30 && v.intensity > 0)
+      .sort(([,a],[,b]) => Math.abs(b!.score) - Math.abs(a!.score))
+      .slice(0, 3)
+      .forEach(([key, v]) => { const l = v ? lifestyleLabel(key, v.score) : null; if (l) lifestyleTraits.push(l); });
+  }
+
+  // Surprise filters
+  const surpriseChips: string[] = Object.entries(FILTER_SURPRISE_FR)
+    .filter(([k]) => typeof filters[k] === "boolean" && filters[k])
+    .map(([,v]) => v);
+
+  // Constraints
+  const allergiesChips = (pi?.allergies ?? []).filter(a => a !== "aucune").map(a => ALLERGIE_FR[a] ?? a);
+  const regimeChip = pi?.regime ? (REGIME_FR[pi.regime] ?? null) : null;
+  const alcoolChip = pi?.alcool ? (ALCOOL_FR[pi.alcool] ?? null) : null;
+
+  // Discovery: surprises
+  const daSurprise = resolveDiscovery('surprises.preference', da['surprises.preference']);
+  // Discovery: conflicts
+  const daConflicts = resolveDiscovery('conflicts.style', da['conflicts.style']);
+
+  return [
+    // 1 — Langage d'attention
+    {
+      icon: "❤️", title: "Langage d'attention",
+      filled: hasAttentionData || !!profile.love_language,
+      chips: receptionDims.length > 0 ? receptionDims.map(d => DIM_FR[d]) : (profile.love_language?.split(",").filter(Boolean) ?? []),
+      summary: receptionDims.length > 0
+        ? `Tu te sens aimé·e surtout par ${dimsToFr(receptionDims).toLowerCase()}.${profile.attention_breath_text ? " " + profile.attention_breath_text.slice(0, 100) + (profile.attention_breath_text.length > 100 ? "…" : "") : ""}`
+        : profile.love_language ? `Tu apprécies les ${profile.love_language.split(",")[0]} avant tout.` : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 2 — Ce qui me touche
+    {
+      icon: "✨", title: "Ce qui me touche",
+      filled: temperamentTraits.length > 0,
+      chips: temperamentTraits.slice(0, 3),
+      summary: temperamentTraits.length >= 2
+        ? `Tu sembles ${temperamentTraits[0].toLowerCase()}, et ${temperamentTraits[1].toLowerCase()}.`
+        : temperamentTraits.length === 1 ? `Tu sembles ${temperamentTraits[0].toLowerCase()}.` : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 3 — Ce qui me fait me sentir aimé·e
+    {
+      icon: "🌟", title: "Ce qui me fait me sentir aimé·e",
+      filled: hasAttentionData || !!profile.appreciation_style,
+      chips: expressionDims.length > 0 ? expressionDims.map(d => DIM_FR[d]) : [],
+      summary: expressionDims.length > 0
+        ? `Tu exprimes l'attention à travers ${dimsToFr(expressionDims).toLowerCase()}.`
+        : profile.appreciation_style ? `Les ${profile.appreciation_style.split(",")[0]} comptent particulièrement.` : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 4 — Cadeaux qui fonctionnent
+    {
+      icon: "🎁", title: "Cadeaux qui fonctionnent",
+      filled: !!profile.gift_preference || !!sing.plus_beau_cadeau || !!da['gifts.what_works'],
+      chips: da['gifts.what_works']
+        ? resolveDiscovery('gifts.what_works', da['gifts.what_works'])
+        : profile.gift_preference ? (GIFT_PREF_FR[profile.gift_preference] ? [GIFT_PREF_FR[profile.gift_preference]] : []) : [],
+      summary: sing.plus_beau_cadeau
+        ? `« ${sing.plus_beau_cadeau.length > 80 ? sing.plus_beau_cadeau.slice(0, 80) + "…" : sing.plus_beau_cadeau} »`
+        : da['gifts.what_works']
+        ? `Tu apprécies surtout ${resolveDiscovery('gifts.what_works', da['gifts.what_works']).slice(0,2).join(", ").toLowerCase()}.`
+        : profile.gift_preference === "experiences" ? "Tu préfères les expériences aux objets."
+        : profile.gift_preference === "physical" ? "Tu apprécies les beaux objets bien choisis."
+        : profile.gift_preference === "both" ? "Tu aimes autant les expériences que les cadeaux matériels." : null,
+      editHref: "/moi/discovery?mode=full",
+    },
+    // 5 — À éviter
+    {
+      icon: "🚫", title: "À éviter",
+      filled: !!profile.things_to_avoid || !!sing.cadeaux_non || !!q17Text || !!da['gifts.to_avoid'],
+      chips: [profile.things_to_avoid, sing.cadeaux_non, q17Text, da['gifts.to_avoid'] as string]
+        .filter(Boolean).flatMap(s => (s as string).split(/[,;·]/).map(p => p.trim()).filter(p => p.length > 2 && p.length < 40))
+        .slice(0, 5),
+      summary: (da['gifts.to_avoid'] as string) || profile.things_to_avoid || sing.cadeaux_non || q17Text
+        ? `À garder en tête pour ne pas manquer sa cible.`
+        : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 6 — Style vestimentaire
+    {
+      icon: "👗", title: "Style vestimentaire",
+      filled: !!pi?.couleurs_matieres || !!pi?.taille_vetements || !!da['style.clothing'],
+      chips: [
+        ...resolveDiscovery('style.clothing', da['style.clothing']),
+        pi?.taille_vetements ? `Vêtements ${pi.taille_vetements}` : null,
+        pi?.taille_chaussures ? `Chaussures ${pi.taille_chaussures}` : null,
+        pi?.taille_bague ? `Bague ${pi.taille_bague}` : null,
+      ].filter(Boolean) as string[],
+      summary: pi?.couleurs_matieres
+        ? pi.couleurs_matieres.length > 100 ? pi.couleurs_matieres.slice(0, 100) + "…" : pi.couleurs_matieres
+        : da['style.clothing']
+        ? `Style ${resolveDiscovery('style.clothing', da['style.clothing']).slice(0,2).join(", ").toLowerCase()}.`
+        : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 7 — Marques aimées
+    {
+      icon: "🛍", title: "Marques aimées",
+      filled: !!sing.marques_lieux || !!da['brands.favorites'],
+      chips: ((sing.marques_lieux || da['brands.favorites'] as string) ?? "")
+        .split(/[,;·\n]/).map(s => s.trim()).filter(s => s.length > 1 && s.length < 30).slice(0, 6),
+      summary: sing.marques_lieux || da['brands.favorites']
+        ? `Quelques adresses et marques de référence.`
+        : null,
+      editHref: "/moi/discovery?mode=full",
+    },
+    // 8 — Restaurants
+    {
+      icon: "🍽", title: "Restaurants",
+      filled: !!profile.gastronomy || !!profile.favorite_foods || !!da['food.restaurants'],
+      chips: da['food.restaurants']
+        ? resolveDiscovery('food.restaurants', da['food.restaurants'])
+        : profile.gastronomy ? [GASTRONOMY_FR[profile.gastronomy] ?? profile.gastronomy] : [],
+      summary: profile.favorite_foods
+        ? profile.favorite_foods.length > 100 ? profile.favorite_foods.slice(0, 100) + "…" : profile.favorite_foods
+        : da['food.restaurants']
+        ? `Tu préfères ${resolveDiscovery('food.restaurants', da['food.restaurants']).slice(0,2).join(", ").toLowerCase()}.`
+        : profile.gastronomy ? GASTRONOMY_FR[profile.gastronomy] ?? null : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 9 — Hôtels
+    {
+      icon: "🏨", title: "Hôtels",
+      filled: lifestyleTraits.some(t => t.toLowerCase().includes("luxe") || t.toLowerCase().includes("qualité") || t.toLowerCase().includes("confort")),
+      chips: lifestyleTraits.filter(t =>
+        t.toLowerCase().includes("luxe") || t.toLowerCase().includes("qualité") ||
+        t.toLowerCase().includes("confort") || t.toLowerCase().includes("authenticit")
+      ).slice(0, 3),
+      summary: lifestyleTraits.length > 0
+        ? lifestyleTraits.find(t => t.toLowerCase().includes("luxe") || t.toLowerCase().includes("qualité"))
+          ? "Apprécie les lieux premium, chaleureux et vivants."
+          : "Préfère les adresses authentiques et sans prétention."
+        : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 10 — Parfums
+    {
+      icon: "🌸", title: "Parfums",
+      filled: (pi?.parfums?.length ?? 0) > 0 || !!da['fragrance.family'],
+      chips: da['fragrance.family']
+        ? resolveDiscovery('fragrance.family', da['fragrance.family'])
+        : (pi?.parfums ?? []).map(p => PARFUM_FR[p] ?? p),
+      summary: pi?.odeurs_detestees
+        ? `À éviter : ${pi.odeurs_detestees}.`
+        : (pi?.parfums?.length ?? 0) > 0
+        ? `Tend vers les notes ${(pi!.parfums!.map(p => PARFUM_FR[p] ?? p)).join(", ").toLowerCase()}.`
+        : da['fragrance.family']
+        ? `Notes préférées : ${resolveDiscovery('fragrance.family', da['fragrance.family']).join(", ").toLowerCase()}.`
+        : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 11 — Voyages
+    {
+      icon: "✈️", title: "Voyages",
+      filled: !!da['travel.style'] || lifestyleTraits.some(t => t.toLowerCase().includes("aventure") || t.toLowerCase().includes("nouveau")),
+      chips: da['travel.style']
+        ? resolveDiscovery('travel.style', da['travel.style'])
+        : lifestyleTraits.filter(t => t.toLowerCase().includes("aventure") || t.toLowerCase().includes("nouveau")).slice(0, 2),
+      summary: da['travel.style']
+        ? `En voyage, tu cherches ${resolveDiscovery('travel.style', da['travel.style']).slice(0,2).join(", ").toLowerCase()}.`
+        : lifestyleTraits.find(t => t.includes("aventure"))
+        ? "Attiré·e par l'inédit et les découvertes."
+        : null,
+      editHref: "/moi/discovery?mode=full",
+    },
+    // 12 — Loisirs & centres d'intérêt
+    {
+      icon: "🎭", title: "Loisirs & centres d'intérêt",
+      filled: !!profile.hobbies || !!sing.adore_faire || !!da['hobbies.main'],
+      chips: (profile.hobbies || sing.adore_faire || da['hobbies.main'] as string || "")
+        .split(/[,;·\n]/).map(s => s.trim()).filter(s => s.length > 1 && s.length < 35).slice(0, 5),
+      summary: profile.hobbies
+        ? profile.hobbies.length > 100 ? profile.hobbies.slice(0, 100) + "…" : profile.hobbies
+        : sing.adore_faire ? sing.adore_faire.slice(0, 100) + (sing.adore_faire.length > 100 ? "…" : "")
+        : da['hobbies.main'] ? (da['hobbies.main'] as string).slice(0, 100) : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 13 — Rêves
+    {
+      icon: "💭", title: "Rêves",
+      filled: !!sing.envies_reves || !!da['dreams.current'],
+      chips: [],
+      summary: sing.envies_reves
+        ? `« ${sing.envies_reves.length > 120 ? sing.envies_reves.slice(0, 120) + "…" : sing.envies_reves} »`
+        : da['dreams.current']
+        ? `« ${(da['dreams.current'] as string).length > 120 ? (da['dreams.current'] as string).slice(0, 120) + "…" : da['dreams.current']} »`
+        : null,
+      editHref: "/moi/discovery?mode=full",
+    },
+    // 14 — Événements importants
+    {
+      icon: "📅", title: "Événements importants",
+      filled: (pi?.dates_importantes?.length ?? 0) > 0,
+      chips: (pi?.dates_importantes ?? []).map(d => d.label).slice(0, 5),
+      summary: (pi?.dates_importantes?.length ?? 0) > 0
+        ? `${pi!.dates_importantes!.length} date${pi!.dates_importantes!.length > 1 ? "s" : ""} à ne pas manquer.`
+        : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 15 — Gestion des conflits
+    {
+      icon: "💬", title: "Gestion des conflits",
+      filled: !!conflitMode || daConflicts.length > 0,
+      chips: conflitMode ? [CONFLIT_FR[conflitMode] ?? conflitMode] : daConflicts,
+      summary: conflitMode
+        ? (CONFLIT_FR[conflitMode] ?? conflitMode)
+        : daConflicts.length > 0 ? daConflicts[0] : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 16 — Préférences de surprise
+    {
+      icon: "🎉", title: "Préférences de surprise",
+      filled: surpriseChips.length > 0 || daSurprise.length > 0,
+      chips: surpriseChips.length > 0 ? surpriseChips : daSurprise,
+      summary: surpriseChips.length > 0
+        ? surpriseChips[0]
+        : daSurprise.length > 0 ? daSurprise[0] : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 17 — Contraintes pratiques
+    {
+      icon: "🧭", title: "Contraintes pratiques",
+      filled: allergiesChips.length > 0 || !!regimeChip || !!alcoolChip || !!pi?.mobilite_sante || resolveDiscovery('practical.constraints', da['practical.constraints']).length > 0,
+      chips: [
+        ...allergiesChips,
+        regimeChip,
+        alcoolChip,
+        pi?.mobilite_sante ? "Mobilité" : null,
+        ...resolveDiscovery('practical.constraints', da['practical.constraints']),
+      ].filter(Boolean) as string[],
+      summary: (allergiesChips.length > 0 || regimeChip || alcoolChip)
+        ? [regimeChip, alcoolChip, allergiesChips.length > 0 ? `Allergies : ${allergiesChips.join(", ")}` : null].filter(Boolean).join(". ") + "."
+        : null,
+      editHref: "/moi/questionnaire",
+    },
+    // 18 — Attention DNA
+    {
+      icon: "🧬", title: "Attention DNA",
+      filled: hasAttentionData,
+      chips: [
+        ...receptionDims.map(d => DIM_FR[d]),
+        ...expressionDims.slice(0, 2).map(d => `↗ ${DIM_FR[d] ?? d}`),
+      ],
+      summary: profile.attention_breath_text ?? (hasAttentionData
+        ? `Reçoit : ${dimsToFr(receptionDims).toLowerCase()}. Donne : ${dimsToFr(expressionDims).toLowerCase()}.`
+        : null),
+      editHref: "/moi/questionnaire",
+    },
+    // 19 — Life States
+    {
+      icon: "🌱", title: "Life States passés ou actuels",
+      filled: false,
+      chips: [],
+      summary: null,
+      editHref: "/moi/discovery?mode=full",
+    },
+    // 20 — Attentions reçues
+    {
+      icon: "📜", title: "Attentions reçues qui ont fonctionné",
+      filled: false,
+      chips: [],
+      summary: null,
+      editHref: "/moi/discovery?mode=full",
+    },
+  ];
+}
+
+function computeCompletionLevel(sections: SectionDef[]): CompletionLevel {
+  const filled = sections.filter(s => s.filled).length;
+  const total = sections.length;
+  if (filled === 0) return 'empty';
+  if (filled / total < 0.35) return 'started';
+  if (filled / total < 0.70) return 'well_filled';
+  return 'precise';
+}
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -330,139 +475,17 @@ export default async function MoiPage() {
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "toi";
   const initial = firstName !== "toi" ? firstName[0].toUpperCase() : "M";
 
-  const cadence = profile?.cadence_preference ?? "normal";
-  const cadenceInfo = CADENCE_LABELS_FR[cadence] ?? CADENCE_LABELS_FR.normal;
-
-  // ── Attention ──────────────────────────────────────────────────────────────
-  const receptionDims = profile?.attention_reception ? pickDims(profile.attention_reception) : [];
-  const expressionDims = profile?.attention_expression ? pickDims(profile.attention_expression) : [];
-  const hasAttentionData = receptionDims.length > 0 || expressionDims.length > 0;
-
-  // ── Temperament ────────────────────────────────────────────────────────────
-  const temperamentTraits: string[] = [];
-  if (profile?.temperament_axes) {
-    const sorted = Object.entries(profile.temperament_axes)
-      .filter(([, v]) => v && Math.abs(v.score) >= 30 && v.intensity > 0)
-      .sort(([, a], [, b]) => Math.abs(b!.score) - Math.abs(a!.score))
-      .slice(0, 4);
-    for (const [key, v] of sorted) {
-      const label = v ? axisLabel(key, v.score) : null;
-      if (label) temperamentTraits.push(label);
-    }
-  }
-
-  const modes: { label: string; value: string }[] = [];
-  if (profile?.temperament_modes) {
-    const m = profile.temperament_modes;
-    if (m.stress?.label)   { const v = STRESS_FR[m.stress.label];   if (v) modes.push({ label: "Face au stress",           value: v }); }
-    if (m.conflit?.label)  { const v = CONFLIT_FR[m.conflit.label];  if (v) modes.push({ label: "Face au conflit",          value: v }); }
-    if (m.decision?.label) { const v = DECISION_FR[m.decision.label];if (v) modes.push({ label: "Prise de décision",        value: v }); }
-    if (m.canal?.label)    { const v = CANAL_FR[m.canal.label];      if (v) modes.push({ label: "Canal de communication",   value: v }); }
-  }
-  const hasTemperamentData = temperamentTraits.length > 0 || modes.length > 0;
-
-  // ── Lifestyle ──────────────────────────────────────────────────────────────
-  const lifestyleTraits: string[] = [];
-  if (profile?.lifestyle_axes) {
-    const sorted = Object.entries(profile.lifestyle_axes)
-      .filter(([, v]) => v && Math.abs(v.score) >= 30 && v.intensity > 0)
-      .sort(([, a], [, b]) => Math.abs(b!.score) - Math.abs(a!.score))
-      .slice(0, 3);
-    for (const [key, v] of sorted) {
-      const label = v ? lifestyleLabel(key, v.score) : null;
-      if (label) lifestyleTraits.push(label);
-    }
-  }
-
-  const activeFilters: string[] = [];
-  const q17Text = typeof profile?.relational_filters?.q17Text === "string"
-    ? profile.relational_filters.q17Text as string : "";
-  if (profile?.relational_filters) {
-    for (const [key, val] of Object.entries(profile.relational_filters)) {
-      if (typeof val === "boolean" && val && FILTER_FR[key]) {
-        activeFilters.push(FILTER_FR[key]);
-      }
-    }
-  }
-  const hasLifestyleData = lifestyleTraits.length > 0 || activeFilters.length > 0 || q17Text.length > 0;
-
-  // ── Singularity ────────────────────────────────────────────────────────────
-  const singularityEntries: { label: string; value: string }[] = [];
-  if (profile?.singularity_answers) {
-    for (const [key, value] of Object.entries(profile.singularity_answers)) {
-      if (value?.trim() && SINGULARITY_LABELS[key]) {
-        singularityEntries.push({ label: SINGULARITY_LABELS[key], value: value.trim() });
-      }
-    }
-  }
-
-  // ── Practical ──────────────────────────────────────────────────────────────
-  const pi = profile?.practical_info;
-  const allergiesDisplay = (pi?.allergies ?? []).filter(a => a !== "aucune").map(a => ALLERGIE_FR[a] ?? a).join(", ");
-  const regimeDisplay    = pi?.regime ? (REGIME_FR[pi.regime] ?? null) : null;
-  const alcoolDisplay    = pi?.alcool ? (ALCOOL_FR[pi.alcool] ?? null) : null;
-  const parfumsDisplay   = (pi?.parfums ?? []).map(p => PARFUM_FR[p] ?? p).join(", ");
-  const roleArr = Array.isArray(pi?.role_familial)
-    ? pi.role_familial as string[]
-    : (pi?.role_familial ? [pi.role_familial as string] : []);
-  const roleDisplay = roleArr.map(r => ROLE_FR[r] ?? r).filter(Boolean).join(", ") || null;
-  const sexeDisplay  = pi?.sexe ? (SEXE_FR[pi.sexe] ?? null) : null;
-  const hasPractical = !!pi && (
-    !!pi.prenom || !!sexeDisplay || !!pi.age || !!pi.profession ||
-    allergiesDisplay.length > 0 || !!regimeDisplay || !!alcoolDisplay ||
-    !!pi.taille_vetements || !!pi.taille_chaussures || !!pi.taille_pantalon || !!pi.taille_bague ||
-    parfumsDisplay.length > 0 || !!pi.odeurs_detestees || !!pi.couleurs_matieres ||
-    !!pi.animaux || (pi.dates_importantes?.length ?? 0) > 0 || !!roleDisplay || !!pi.mobilite_sante
-  );
-
-  // ── Portrait-résumé (Mission 3) ────────────────────────────────────────────
-  const portraitParts: React.ReactNode[] = [];
-  if (temperamentTraits.length > 0) {
-    const t0 = temperamentTraits[0];
-    const t1 = temperamentTraits[1];
-    portraitParts.push(
-      <span key="t">
-        Tu sembles <K>{t0.toLowerCase()}</K>{t1 ? <>, et <K>{t1.toLowerCase()}</K></> : null}.{" "}
-      </span>
-    );
-  }
-  if (receptionDims.length > 0) {
-    const dims = dimsToFr(receptionDims);
-    portraitParts.push(
-      <span key="r">
-        Tu te sens aimé·e à travers <K>{dims.toLowerCase()}</K>.{" "}
-      </span>
-    );
-  }
-  const singHighlight = singularityEntries.find(e =>
-    e.label === SINGULARITY_LABELS.adore_faire || e.label === SINGULARITY_LABELS.envies_reves
-  );
-  if (singHighlight) {
-    const txt = singHighlight.value.length > 60 ? singHighlight.value.slice(0, 57) + "…" : singHighlight.value;
-    portraitParts.push(<span key="s">On devine <K>{txt}</K>.</span>);
-  } else if (lifestyleTraits.length > 0) {
-    portraitParts.push(<span key="l"><K>{lifestyleTraits[0]}</K>.</span>);
-  }
-
-  // Dynamic section subtitles
-  const temperamentSubtitle = temperamentTraits.slice(0, 2).join(" · ") || null;
-  const lifestyleSubtitle   = lifestyleTraits.slice(0, 2).join(" · ") || null;
-
-  // ── Old traits (fallback for pre-V11 profiles) ─────────────────────────────
-  const oldTraits = [
-    resolveOld("love_language",    profile?.love_language    ?? null),
-    resolveOld("social_energy",    profile?.social_energy    ?? null),
-    resolveOld("communication_style", profile?.communication_style ?? null),
-    resolveOld("appreciation_style",  profile?.appreciation_style  ?? null),
-    resolveOld("core_values",      profile?.core_values      ?? null),
-    resolveOld("gastronomy",       profile?.gastronomy       ?? null),
-    resolveOld("gift_preference",  profile?.gift_preference  ?? null),
-  ].filter(Boolean) as string[];
+  const sections = profile ? buildSections(profile) : [];
+  const level = profile ? computeCompletionLevel(sections) : 'empty';
+  const levelLabels: Record<string, string> = {
+    started: 'En cours', well_filled: 'Bien rempli', precise: 'Très précis',
+  };
+  const levelBadge = levelLabels[level] ?? null;
 
   return (
     <DashboardShell>
 
-      {/* ── Green hero header ── */}
+      {/* ── Header ── */}
       <div
         className="hero-mass"
         style={{
@@ -470,15 +493,18 @@ export default async function MoiPage() {
           background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
         }}
       >
-        <div style={{ padding: "18px 24px 0" }}>
+        <div style={{ padding: "18px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Link href="/dashboard" style={{ textDecoration: "none" }}>
-            <span style={{
-              fontSize: 12, fontWeight: 300,
-              color: "rgba(244,241,232,.5)",
-              letterSpacing: ".08em",
-              display: "inline-flex", alignItems: "center", gap: 6,
-            }}>
+            <span style={{ fontSize: 12, fontWeight: 300, color: "rgba(244,241,232,.5)", letterSpacing: ".08em" }}>
               ← Tableau de bord
+            </span>
+          </Link>
+          <Link href="/parametres" style={{ textDecoration: "none" }}>
+            <span style={{
+              fontSize: 18, color: "rgba(244,241,232,.45)",
+              display: "flex", alignItems: "center",
+            }}>
+              ⚙
             </span>
           </Link>
         </div>
@@ -491,33 +517,37 @@ export default async function MoiPage() {
             display: "flex", alignItems: "center", justifyContent: "center",
             flexShrink: 0,
           }}>
-            <span style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: 28, fontWeight: 300,
-              color: "var(--pine)",
-              letterSpacing: "-.01em",
-            }}>
+            <span style={{ fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 300, color: "var(--pine)" } as React.CSSProperties}>
               {initial}
             </span>
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{
-              fontFamily: "var(--font-serif)",
-              fontWeight: 300,
-              fontSize: "clamp(22px, 4.5vw, 28px)",
-              color: "var(--canvas)",
-              letterSpacing: "-.018em",
-              lineHeight: 1.15,
-            }}>
-              {firstName !== "toi" ? firstName : "Mon profil"}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5 }}>
+              <div style={{
+                fontFamily: "var(--font-serif)", fontWeight: 300,
+                fontSize: "clamp(22px, 4.5vw, 28px)",
+                color: "var(--canvas)", letterSpacing: "-.018em", lineHeight: 1.15,
+              } as React.CSSProperties}>
+                {firstName !== "toi" ? firstName : "Mon profil"}
+              </div>
+              <span style={{
+                fontSize: 10, fontWeight: 400, letterSpacing: ".18em",
+                textTransform: "uppercase", color: "rgba(244,241,232,.4)",
+                border: "0.5px solid rgba(244,241,232,.18)", borderRadius: 20,
+                padding: "2px 8px", flexShrink: 0,
+              }}>
+                Profil personnel
+              </span>
             </div>
-            <div style={{
-              fontSize: 12, color: "var(--champ-line)",
-              fontWeight: 300, marginTop: 5,
-              letterSpacing: ".08em", textTransform: "uppercase",
-            }}>
-              Ton profil
-            </div>
+            {levelBadge && (
+              <span style={{
+                fontSize: 10, fontWeight: 500, letterSpacing: ".18em",
+                textTransform: "uppercase",
+                color: level === 'precise' ? "var(--champ)" : "rgba(205,185,135,.7)",
+              }}>
+                {levelBadge}
+              </span>
+            )}
           </div>
           {profile && (
             <Link href="/moi/questionnaire" style={{ fontSize: 13, color: "var(--champ)", fontWeight: 400, textDecoration: "none", flexShrink: 0 }}>
@@ -526,360 +556,56 @@ export default async function MoiPage() {
           )}
         </div>
 
-        <div style={{ padding: "16px 24px 0" }}>
-          <div style={{ height: "0.5px", background: "linear-gradient(90deg, var(--champ-line), transparent)", marginBottom: 14 }} />
-          <p style={{ fontSize: 13, fontWeight: 300, color: "rgba(244,241,232,.5)", letterSpacing: ".04em" }}>
-            {profile
-              ? "Ce que tes proches peuvent consulter pour mieux prendre soin de toi."
-              : "Crée ta fiche pour que tes proches sachent comment te faire plaisir."}
-          </p>
+        <div style={{ padding: "14px 24px 0" }}>
+          <div style={{ height: "0.5px", background: "linear-gradient(90deg, var(--champ-line), transparent)", marginBottom: 12 }} />
+          {profile?.updated_at && (
+            <p style={{ fontSize: 11, fontWeight: 300, color: "rgba(244,241,232,.35)", letterSpacing: ".04em" }}>
+              {formatUpdatedAt(profile.updated_at)}
+            </p>
+          )}
         </div>
       </div>
 
-      <div className="content-col" style={{ paddingTop: 28 }}>
+      <div className="content-col" style={{ paddingTop: 24 }}>
 
         {!profile ? (
-
-          <div style={{ textAlign: "center", padding: "64px 0" }}>
+          <div style={{ textAlign: "center", padding: "48px 0" }}>
             <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", marginBottom: 24, lineHeight: 1.7 }}>
               Réponds à quelques questions — tes proches pourront consulter ta fiche pour mieux prendre soin de toi.
             </p>
             <ResumePrompt userId={user.id} />
           </div>
-
         ) : (
-
           <>
+            {/* ── Carte Affiner mon portrait ── */}
+            <AffinerCard level={level} />
 
-            {/* Narrative breath text */}
-            {profile.attention_breath_text && (
-              <div style={{
-                padding: "20px 22px",
-                borderRadius: 16,
-                background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
-                marginBottom: 24,
-              }}>
-                <p style={{
-                  fontFamily: "var(--font-serif)",
-                  fontWeight: 300,
-                  fontSize: 17,
-                  color: "#FAF8F1",
-                  lineHeight: 1.65,
-                  letterSpacing: "-.012em",
-                } as React.CSSProperties}>
-                  {profile.attention_breath_text}
-                </p>
-              </div>
-            )}
-
-            {/* ── Portrait-résumé ── */}
-            {portraitParts.length > 0 && (
-              <div style={{
-                padding: "18px 20px",
-                borderRadius: 14,
-                background: "rgba(23,62,49,.04)",
-                border: "0.5px solid rgba(23,62,49,.12)",
-                marginBottom: 24,
-              }}>
-                <p style={{
-                  fontFamily: "var(--font-serif)",
-                  fontStyle: "italic",
-                  fontWeight: 300,
-                  fontSize: 16,
-                  color: "var(--ink-2)",
-                  lineHeight: 1.75,
-                  letterSpacing: "-.01em",
-                } as React.CSSProperties}>
-                  {portraitParts}
-                </p>
-              </div>
-            )}
-
-            {/* ── Langages d'attention (nouveau questionnaire) ── */}
-            {hasAttentionData && (
-              <>
-                <PointDivider label="Tes langages d'attention" />
-                <Thread>
-                  {receptionDims.length > 0 && (
-                    <ThreadItem nodeType="anticipe">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
-                        Comment tu reçois l'attention
-                      </p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {dimsToFr(receptionDims)}
-                      </p>
-                    </ThreadItem>
-                  )}
-                  {expressionDims.length > 0 && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
-                        Comment tu exprimes l'attention
-                      </p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {dimsToFr(expressionDims)}
-                      </p>
-                    </ThreadItem>
-                  )}
-                </Thread>
-              </>
-            )}
-
-            {/* ── Tempérament (nouveau questionnaire) ── */}
-            {hasTemperamentData && (
-              <>
-                <PointDivider label="Ton tempérament" />
-                {temperamentSubtitle && (
-                  <p style={{ fontSize: 12, fontWeight: 400, color: "var(--ink-3)", marginTop: -10, marginBottom: 14, fontStyle: "italic" }}>
-                    {temperamentSubtitle}
-                  </p>
-                )}
-                <Thread>
-                  {temperamentTraits.map((trait, i) => (
-                    <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {trait}
-                      </p>
-                    </ThreadItem>
-                  ))}
-                  {modes.map((mode, i) => (
-                    <ThreadItem key={`m${i}`} nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
-                        {mode.label}
-                      </p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {mode.value}
-                      </p>
-                    </ThreadItem>
-                  ))}
-                </Thread>
-              </>
-            )}
-
-            {/* ── Ce que tu aimes vivre (nouveau questionnaire) ── */}
-            {hasLifestyleData && (
-              <>
-                <PointDivider label="Ce que tu aimes vivre" />
-                {lifestyleSubtitle && (
-                  <p style={{ fontSize: 12, fontWeight: 400, color: "var(--ink-3)", marginTop: -10, marginBottom: 14, fontStyle: "italic" }}>
-                    {lifestyleSubtitle}
-                  </p>
-                )}
-                <Thread>
-                  {lifestyleTraits.map((trait, i) => (
-                    <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {trait}
-                      </p>
-                    </ThreadItem>
-                  ))}
-                  {q17Text.length > 0 && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
-                        Ce qu'il vaut mieux éviter
-                      </p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {q17Text}
-                      </p>
-                    </ThreadItem>
-                  )}
-                  {activeFilters.map((filter, i) => (
-                    <ThreadItem key={`f${i}`} nodeType="soft">
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {filter}
-                      </p>
-                    </ThreadItem>
-                  ))}
-                </Thread>
-              </>
-            )}
-
-            {/* ── Fallback : anciens traits (profils pré-V11) ── */}
-            {!hasAttentionData && oldTraits.length > 0 && (
-              <>
-                <PointDivider label="Ce qui te définit" />
-                <Thread>
-                  {oldTraits.map((trait, i) => (
-                    <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {trait}
-                      </p>
-                    </ThreadItem>
-                  ))}
-                </Thread>
-              </>
-            )}
-
-            {/* ── Tes goûts (champs texte libres — anciens et nouveaux) ── */}
-            {(profile.hobbies || profile.favorite_foods || profile.conversation_topics) && (
-              <>
-                <PointDivider label="Tes goûts" />
-                <Thread>
-                  {profile.hobbies && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>Loisirs</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{profile.hobbies}</p>
-                    </ThreadItem>
-                  )}
-                  {profile.favorite_foods && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>Cuisine</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{profile.favorite_foods}</p>
-                    </ThreadItem>
-                  )}
-                  {profile.conversation_topics && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>Sujets de conversation</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{profile.conversation_topics}</p>
-                    </ThreadItem>
-                  )}
-                </Thread>
-              </>
-            )}
-
-            {/* ── Ce qui te rend unique (singularity) ── */}
-            {singularityEntries.length > 0 && (
-              <>
-                <PointDivider label="Ce qui te rend unique" />
-                <Thread>
-                  {singularityEntries.map((entry, i) => (
-                    <ThreadItem key={i} nodeType={i === 0 ? "anticipe" : "soft"}>
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
-                        {entry.label}
-                      </p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                        {entry.value}
-                      </p>
-                    </ThreadItem>
-                  ))}
-                </Thread>
-              </>
-            )}
-
-            {/* ── À savoir (ancien questionnaire — fallback) ── */}
-            {(profile.things_to_avoid || profile.disliked_activities || profile.disliked_foods || profile.few_know) && (
-              <>
-                <PointDivider label="À savoir" />
-                <Thread>
-                  {profile.things_to_avoid && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>À éviter</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{profile.things_to_avoid}</p>
-                    </ThreadItem>
-                  )}
-                  {profile.disliked_foods && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>Régime / allergies</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{profile.disliked_foods}</p>
-                    </ThreadItem>
-                  )}
-                  {profile.few_know && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>Peu de gens savent que…</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{profile.few_know}</p>
-                    </ThreadItem>
-                  )}
-                </Thread>
-              </>
-            )}
-
-            {/* ── Pratique (nouveau questionnaire) ── */}
-            {hasPractical && (
-              <>
-                <PointDivider label="Pratique" />
-                <Thread>
-                  {/* Identité */}
-                  {(pi?.prenom || sexeDisplay || pi?.age || pi?.profession) && (
-                    <ThreadItem nodeType="anticipe">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>Identité</p>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        {pi?.prenom     && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{pi.prenom}</p>}
-                        {sexeDisplay    && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{sexeDisplay}</p>}
-                        {pi?.age        && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{pi.age} ans</p>}
-                        {pi?.profession && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{pi.profession}</p>}
-                      </div>
-                    </ThreadItem>
-                  )}
-                  {/* Alimentation */}
-                  {(allergiesDisplay || regimeDisplay || alcoolDisplay || pi?.mobilite_sante) && (
-                    <ThreadItem nodeType="anticipe">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>Alimentation & santé</p>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        {allergiesDisplay && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>Allergies : {allergiesDisplay}</p>}
-                        {regimeDisplay    && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{regimeDisplay}</p>}
-                        {alcoolDisplay    && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{alcoolDisplay}</p>}
-                        {pi?.mobilite_sante && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{pi.mobilite_sante}</p>}
-                      </div>
-                    </ThreadItem>
-                  )}
-                  {/* Tailles */}
-                  {(pi?.taille_vetements || pi?.taille_chaussures || pi?.taille_pantalon || pi?.taille_bague) && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>Tailles</p>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 20px" }}>
-                        {pi.taille_vetements  && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)" }}>Vêtements : {pi.taille_vetements}</p>}
-                        {pi.taille_chaussures && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)" }}>Chaussures : {pi.taille_chaussures}</p>}
-                        {pi.taille_pantalon   && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)" }}>Pantalon : {pi.taille_pantalon}</p>}
-                        {pi.taille_bague      && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)" }}>Bague : {pi.taille_bague}</p>}
-                      </div>
-                    </ThreadItem>
-                  )}
-                  {/* Goûts esthétiques */}
-                  {(parfumsDisplay || pi?.odeurs_detestees || pi?.couleurs_matieres) && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>Goûts & esthétique</p>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        {parfumsDisplay       && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>Parfums : {parfumsDisplay}</p>}
-                        {pi?.odeurs_detestees && <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>Odeurs à éviter : {pi.odeurs_detestees}</p>}
-                        {pi?.couleurs_matieres&& <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>Style : {pi.couleurs_matieres}</p>}
-                      </div>
-                    </ThreadItem>
-                  )}
-                  {/* Animaux */}
-                  {pi?.animaux && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>Animaux</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{pi.animaux}</p>
-                    </ThreadItem>
-                  )}
-                  {/* Rôle familial */}
-                  {roleDisplay && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>Situation</p>
-                      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>{roleDisplay}</p>
-                    </ThreadItem>
-                  )}
-                  {/* Dates importantes */}
-                  {(pi?.dates_importantes?.length ?? 0) > 0 && (
-                    <ThreadItem nodeType="soft">
-                      <p style={{ fontSize: 12, fontWeight: 400, letterSpacing: ".08em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>Dates importantes</p>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        {pi!.dates_importantes!.map((d, i) => (
-                          <p key={i} style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6 }}>
-                            {d.label}{d.date ? ` — ${formatDate(d.date)}` : ""}
-                          </p>
-                        ))}
-                      </div>
-                    </ThreadItem>
-                  )}
-                </Thread>
-              </>
-            )}
+            {/* ── 20 sections accordéon ── */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {sections.map((sec, i) => (
+                <ProfileSection
+                  key={i}
+                  icon={sec.icon}
+                  title={sec.title}
+                  summary={sec.summary}
+                  chips={sec.chips}
+                  filled={sec.filled}
+                  editHref={sec.editHref}
+                />
+              ))}
+            </div>
 
             {/* ── Partage ── */}
             <div style={{
-              margin: "32px 0",
-              padding: "22px 22px",
+              margin: "28px 0",
+              padding: "20px 22px",
               borderRadius: 16,
               border: "1px solid var(--pine)",
               background: "var(--white)",
             }}>
               <p style={{
-                fontFamily: "var(--font-serif)",
-                fontWeight: 300,
-                fontSize: 19,
-                color: "var(--ink)",
-                letterSpacing: "-.012em",
-                marginBottom: 8,
+                fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: 19,
+                color: "var(--ink)", letterSpacing: "-.012em", marginBottom: 8,
               } as React.CSSProperties}>
                 Partage ta fiche.
               </p>
@@ -889,42 +615,23 @@ export default async function MoiPage() {
               <ShareButton userId={user.id} variant="full" />
             </div>
 
-            {/* ── Cadence ── */}
-            <PointDivider label="Rythme des attentions" />
-            <div style={{ marginBottom: 8 }}>
-              <CadenceGlobal initialCadence={cadence as CadenceLevel} />
-            </div>
-            <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", marginBottom: 32, lineHeight: 1.5 }}>
-              Actuellement : <span style={{ color: "var(--pine)", fontWeight: 500 }}>{cadenceInfo.label}</span> — {cadenceInfo.detail}
-            </p>
-
             {/* ── Liens secondaires ── */}
             <div style={{ borderTop: "0.5px solid var(--line)", paddingTop: 20, display: "flex", flexDirection: "column", gap: 0 }}>
-              <Link
-                href="/parametres/notifications"
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0", borderBottom: "0.5px solid var(--line)" }}
-              >
+              <Link href="/parametres/notifications" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0", borderBottom: "0.5px solid var(--line)" }}>
                 <span>Préférences notifications</span>
                 <span style={{ fontSize: 12, color: "var(--ink-3)" }}>→</span>
               </Link>
-              <Link
-                href="/parametres/abonnement"
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0" }}
-              >
+              <Link href="/parametres/abonnement" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0" }}>
                 <span>Abonnement</span>
                 <span style={{ fontSize: 12, color: "var(--ink-3)" }}>→</span>
               </Link>
             </div>
-
           </>
         )}
 
-        {/* Always-visible: site link + logout */}
+        {/* Always visible */}
         <div style={{ borderTop: "0.5px solid var(--line)", marginTop: 8, paddingTop: 4, paddingBottom: 16 }}>
-          <Link
-            href="/"
-            style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0", borderBottom: "0.5px solid var(--line)" }}
-          >
+          <Link href="/" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0", borderBottom: "0.5px solid var(--line)" }}>
             <span>Retour au site</span>
             <span style={{ fontSize: 12, color: "var(--ink-3)" }}>→</span>
           </Link>
