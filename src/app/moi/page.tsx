@@ -151,6 +151,7 @@ interface SectionDef {
   icon: string; title: string;
   summary: string | null; chips: string[];
   filled: boolean; editHref: string;
+  ctaLabel: string; sectionKey: string;
 }
 
 function buildSections(profile: ExtendedProfile): SectionDef[] {
@@ -210,7 +211,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: receptionDims.length > 0
         ? `Tu te sens aimé·e surtout par ${dimsToFr(receptionDims).toLowerCase()}.${profile.attention_breath_text ? " " + profile.attention_breath_text.slice(0, 100) + (profile.attention_breath_text.length > 100 ? "…" : "") : ""}`
         : profile.love_language ? `Tu apprécies les ${profile.love_language.split(",")[0]} avant tout.` : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=attention",
+      ctaLabel: "Affiner mes langages d'attention",
+      sectionKey: "attention-reception",
     },
     // 2 — Ce qui me touche
     {
@@ -220,7 +223,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: temperamentTraits.length >= 2
         ? `Tu sembles ${temperamentTraits[0].toLowerCase()}, et ${temperamentTraits[1].toLowerCase()}.`
         : temperamentTraits.length === 1 ? `Tu sembles ${temperamentTraits[0].toLowerCase()}.` : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=temperament2",
+      ctaLabel: "Préciser mon énergie relationnelle",
+      sectionKey: "temperament-energy",
     },
     // 3 — Ce qui me fait me sentir aimé·e
     {
@@ -230,9 +235,11 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: expressionDims.length > 0
         ? `Tu exprimes l'attention à travers ${dimsToFr(expressionDims).toLowerCase()}.`
         : profile.appreciation_style ? `Les ${profile.appreciation_style.split(",")[0]} comptent particulièrement.` : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=attention",
+      ctaLabel: "Approfondir ce qui me touche",
+      sectionKey: "attention-expression",
     },
-    // 4 — Cadeaux qui fonctionnent
+    // 4 — Ce qui pourrait te faire plaisir
     {
       icon: "🎁", title: "Ce qui pourrait te faire plaisir",
       filled: !!profile.gift_preference || !!sing.plus_beau_cadeau || !!da['gifts.what_works'],
@@ -247,6 +254,8 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         : profile.gift_preference === "physical" ? "Tu apprécies les beaux objets bien choisis."
         : profile.gift_preference === "both" ? "Tu aimes autant les expériences que les cadeaux matériels." : null,
       editHref: "/moi/discovery?mode=full",
+      ctaLabel: "Affiner mes préférences cadeaux",
+      sectionKey: "gifts-what-works",
     },
     // 5 — À éviter
     {
@@ -258,7 +267,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: (da['gifts.to_avoid'] as string) || profile.things_to_avoid || sing.cadeaux_non || q17Text
         ? `À garder en tête pour ne pas manquer sa cible.`
         : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=lifestyle5",
+      ctaLabel: "Préciser ce qui ne marche pas",
+      sectionKey: "gifts-to-avoid",
     },
     // 6 — Style vestimentaire
     {
@@ -275,7 +286,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         : da['style.clothing']
         ? `Style ${resolveDiscovery('style.clothing', da['style.clothing']).slice(0,2).join(", ").toLowerCase()}.`
         : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=practical7",
+      ctaLabel: "Affiner mon style",
+      sectionKey: "style-clothing",
     },
     // 7 — Marques aimées
     {
@@ -287,6 +300,8 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? `Quelques adresses et marques de référence.`
         : null,
       editHref: "/moi/discovery?mode=full",
+      ctaLabel: "Ajouter des adresses",
+      sectionKey: "brands-favorites",
     },
     // 8 — Restaurants
     {
@@ -300,7 +315,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         : da['food.restaurants']
         ? `Tu préfères ${resolveDiscovery('food.restaurants', da['food.restaurants']).slice(0,2).join(", ").toLowerCase()}.`
         : profile.gastronomy ? GASTRONOMY_FR[profile.gastronomy] ?? null : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/discovery?mode=full",
+      ctaLabel: "Préciser mes goûts",
+      sectionKey: "food-restaurants",
     },
     // 9 — Hôtels
     {
@@ -315,7 +332,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
           ? "Apprécie les lieux premium, chaleureux et vivants."
           : "Préfère les adresses authentiques et sans prétention."
         : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=lifestyle4",
+      ctaLabel: "Affiner mon rapport au confort",
+      sectionKey: "hotels-comfort",
     },
     // 10 — Parfums
     {
@@ -331,7 +350,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         : da['fragrance.family']
         ? `Notes préférées : ${resolveDiscovery('fragrance.family', da['fragrance.family']).join(", ").toLowerCase()}.`
         : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=practical7",
+      ctaLabel: "Préciser mes préférences olfactives",
+      sectionKey: "fragrance-family",
     },
     // 11 — Voyages
     {
@@ -346,6 +367,8 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? "Attiré·e par l'inédit et les découvertes."
         : null,
       editHref: "/moi/discovery?mode=full",
+      ctaLabel: "Affiner ma façon de voyager",
+      sectionKey: "travel-style",
     },
     // 12 — Loisirs & centres d'intérêt
     {
@@ -357,7 +380,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? profile.hobbies.length > 100 ? profile.hobbies.slice(0, 100) + "…" : profile.hobbies
         : sing.adore_faire ? sing.adore_faire.slice(0, 100) + (sing.adore_faire.length > 100 ? "…" : "")
         : da['hobbies.main'] ? (da['hobbies.main'] as string).slice(0, 100) : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=singularity6",
+      ctaLabel: "Ajouter à mes loisirs",
+      sectionKey: "hobbies-main",
     },
     // 13 — Rêves
     {
@@ -370,6 +395,8 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? `« ${(da['dreams.current'] as string).length > 120 ? (da['dreams.current'] as string).slice(0, 120) + "…" : da['dreams.current']} »`
         : null,
       editHref: "/moi/discovery?mode=full",
+      ctaLabel: "Partager une envie",
+      sectionKey: "dreams-current",
     },
     // 14 — Événements importants
     {
@@ -379,7 +406,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: (pi?.dates_importantes?.length ?? 0) > 0
         ? `${pi!.dates_importantes!.length} date${pi!.dates_importantes!.length > 1 ? "s" : ""} à ne pas manquer.`
         : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=practical7",
+      ctaLabel: "Ajouter une date",
+      sectionKey: "important-dates",
     },
     // 15 — Gestion des conflits
     {
@@ -389,7 +418,9 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: conflitMode
         ? (CONFLIT_FR[conflitMode] ?? conflitMode)
         : daConflicts.length > 0 ? daConflicts[0] : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=temperament3",
+      ctaLabel: "Préciser mon rapport aux conflits",
+      sectionKey: "conflicts-style",
     },
     // 16 — Préférences de surprise
     {
@@ -399,9 +430,11 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: surpriseChips.length > 0
         ? surpriseChips[0]
         : daSurprise.length > 0 ? daSurprise[0] : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=lifestyle5",
+      ctaLabel: "Affiner mes préférences",
+      sectionKey: "surprises-preference",
     },
-    // 17 — Contraintes pratiques
+    // 17 — À prendre en compte
     {
       icon: "🧭", title: "À prendre en compte",
       filled: allergiesChips.length > 0 || !!regimeChip || !!alcoolChip || !!pi?.mobilite_sante || resolveDiscovery('practical.constraints', da['practical.constraints']).length > 0,
@@ -415,9 +448,11 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: (allergiesChips.length > 0 || regimeChip || alcoolChip)
         ? [regimeChip, alcoolChip, allergiesChips.length > 0 ? `Allergies : ${allergiesChips.join(", ")}` : null].filter(Boolean).join(". ") + "."
         : null,
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=practical7",
+      ctaLabel: "Ajouter une contrainte",
+      sectionKey: "practical-constraints",
     },
-    // 18 — Attention DNA
+    // 18 — Ce qui rend une attention réussie
     {
       icon: "🧬", title: "Ce qui rend une attention réussie",
       filled: hasAttentionData,
@@ -428,23 +463,29 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: profile.attention_breath_text ?? (hasAttentionData
         ? `Reçoit : ${dimsToFr(receptionDims).toLowerCase()}. Donne : ${dimsToFr(expressionDims).toLowerCase()}.`
         : null),
-      editHref: "/moi/questionnaire",
+      editHref: "/moi/questionnaire?part=attention",
+      ctaLabel: "Approfondir mon profil d'attention",
+      sectionKey: "attention-dna",
     },
-    // 19 — Life States
+    // 19 — Moments de vie importants
     {
       icon: "🌱", title: "Moments de vie importants",
       filled: false,
       chips: [],
       summary: null,
       editHref: "/moi/discovery?mode=full",
+      ctaLabel: "Partager un moment clé",
+      sectionKey: "life-states",
     },
-    // 20 — Attentions reçues
+    // 20 — Ce qui a déjà marché
     {
       icon: "📜", title: "Ce qui a déjà marché",
       filled: false,
       chips: [],
       summary: null,
       editHref: "/moi/discovery?mode=full",
+      ctaLabel: "Ajouter ce qui a marché",
+      sectionKey: "attention-history",
     },
   ];
 }
@@ -591,6 +632,8 @@ export default async function MoiPage() {
                   chips={sec.chips}
                   filled={sec.filled}
                   editHref={sec.editHref}
+                  ctaLabel={sec.ctaLabel}
+                  sectionKey={sec.sectionKey}
                 />
               ))}
             </div>

@@ -116,11 +116,16 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
   const inviteLinkCalled = useRef(false);
   const ext = initial as ExtendedProfile | null;
 
-  // ── Edit mode state ──────────────────────────────────────────────────────
-  const [editMode, setEditMode] = useState<EditMode>(null);
+  // ?part=X → jump directly to that section (bypasses editMenu)
+  const partParam = searchParams.get("part");
+  const initialStep: Step = partParam
+    ? partIdToStep(partParam)
+    : ext ? "editMenu" : "attention";
 
-  // Start at editMenu if profile exists, otherwise start fresh
-  const [step, setStep] = useState<Step>(ext ? "editMenu" : "attention");
+  // ── Edit mode state ──────────────────────────────────────────────────────
+  const [editMode, setEditMode] = useState<EditMode>(partParam ? "single" : null);
+
+  const [step, setStep] = useState<Step>(initialStep);
   const [stepHistory, setStepHistory] = useState<Step[]>([]);
 
   // ── Navigation helpers ───────────────────────────────────────────────────

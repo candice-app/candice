@@ -47,18 +47,23 @@ export default function AffinerCard({ level }: Props) {
           : 'Candice te connaît de mieux en mieux. Pour que ceux qui t\'aiment visent juste.'}
       </p>
       <div style={{ display: 'flex', gap: 10 }}>
-        <Link href="/moi/discovery?mode=quick" style={{ textDecoration: 'none', flex: 1 }}>
-          <button style={{
-            width: '100%', padding: '11px 14px',
+        {/* Receptacle Lot 2 — Discovery Engine — inactif pour l'instant */}
+        <button
+          disabled
+          data-section="discovery-quick"
+          style={{
+            flex: 1, padding: '11px 14px',
             borderRadius: 12, border: '0.5px solid var(--line)',
             background: 'var(--white)',
-            fontSize: 13, fontWeight: 300, color: 'var(--ink)',
-            cursor: 'pointer', textAlign: 'center' as const,
-          }}>
-            Une question rapide
-          </button>
-        </Link>
-        <Link href="/moi/discovery?mode=full" style={{ textDecoration: 'none', flex: 1 }}>
+            fontSize: 13, fontWeight: 300,
+            color: 'var(--ink-3)',
+            cursor: 'not-allowed', textAlign: 'center' as const,
+            opacity: 0.55,
+          }}
+        >
+          Une question rapide
+        </button>
+        <Link href="/moi/questionnaire" style={{ textDecoration: 'none', flex: 1 }}>
           <button style={{
             width: '100%', padding: '11px 14px',
             borderRadius: 12, border: 'none',

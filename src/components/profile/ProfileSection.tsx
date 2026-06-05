@@ -10,11 +10,13 @@ interface ProfileSectionProps {
   chips?: string[];
   filled: boolean;
   editHref?: string;
+  ctaLabel?: string;
+  sectionKey?: string;
   children?: React.ReactNode;
 }
 
 export default function ProfileSection({
-  icon, title, summary, chips = [], filled, editHref, children,
+  icon, title, summary, chips = [], filled, editHref, ctaLabel, sectionKey, children,
 }: ProfileSectionProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -130,8 +132,8 @@ export default function ProfileSection({
             </div>
           )}
           {children}
-          {editHref && (
-            <div style={{ marginTop: 14, paddingTop: 12, borderTop: '0.5px solid var(--line)' }}>
+          <div style={{ marginTop: 14, paddingTop: 12, borderTop: '0.5px solid var(--line)', display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+            {editHref && (
               <Link href={editHref} style={{
                 display: 'inline-block',
                 fontSize: 12, fontWeight: 400, color: 'var(--pine)',
@@ -143,8 +145,26 @@ export default function ProfileSection({
               }}>
                 Modifier
               </Link>
-            </div>
-          )}
+            )}
+            {ctaLabel && (
+              <button
+                disabled
+                data-section={sectionKey}
+                style={{
+                  fontSize: 12, fontWeight: 300,
+                  color: 'var(--ink-3)',
+                  padding: '6px 14px',
+                  border: '0.5px solid var(--line)',
+                  borderRadius: 20,
+                  background: 'none',
+                  cursor: 'not-allowed',
+                  opacity: 0.6,
+                }}
+              >
+                {ctaLabel}
+              </button>
+            )}
+          </div>
         </div>
       )}
 
