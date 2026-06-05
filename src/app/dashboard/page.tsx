@@ -13,7 +13,7 @@ import Thread, { ThreadItem } from "@/components/presence/Thread";
 import Avatar from "@/components/presence/Avatar";
 import PointDivider from "@/components/presence/PointDivider";
 import LivePoint from "@/components/presence/LivePoint";
-import PresenceInput from "@/components/presence/PresenceInput";
+import HeroInput from "@/components/dashboard/HeroInput";
 import { Contact, QuestionnaireResponse, ProfileNote } from "@/types";
 
 const SCORED_FIELDS = [
@@ -131,13 +131,22 @@ export default async function DashboardPage() {
   );
   const topProactiveSuggestion = proactivePending.find(s => ["urgent", "high"].includes(s.priority)) ?? null;
 
-  // Hero focus — use top proactive suggestion or a contextual message
-  let heroTitle = typedContacts.length === 0
-    ? "Ajoutez un proche pour commencer."
-    : "Candice garde le lien vivant.";
-  let heroSubtitle = typedContacts.length === 0
-    ? "Dites-lui de qui vous souhaitez prendre soin — elle s'occupe du reste."
-    : undefined;
+  // Hero focus — contextual, reacts to live state
+  let heroTitle: string;
+  let heroSubtitle: string | undefined;
+
+  if (typedContacts.length === 0) {
+    heroTitle = "Ajoutez un proche pour commencer.";
+    heroSubtitle = "Dites-lui de qui vous souhaitez prendre soin — elle s'occupe du reste.";
+  } else if (recentNotes.length > 0) {
+    heroTitle = "Candice suit le fil.";
+  } else if (typedContacts.length === 1) {
+    heroTitle = `Candice apprend à connaître ${typedContacts[0].name.split(" ")[0]}.`;
+  } else if (typedContacts.length >= 5) {
+    heroTitle = `Candice veille sur ${typedContacts.length} proches.`;
+  } else {
+    heroTitle = "Candice garde le lien vivant.";
+  }
 
   if (topProactiveSuggestion) {
     const contactName = (topProactiveSuggestion.contacts as { name: string } | null)?.name ?? "";
@@ -236,6 +245,9 @@ export default async function DashboardPage() {
               </span>
             </Link>
           ) : null}
+
+          {/* Input intégré au héro */}
+          <HeroInput />
         </div>
       </div>
 
@@ -335,8 +347,6 @@ export default async function DashboardPage() {
         )}
 
       </div>
-
-      <PresenceInput />
     </DashboardShell>
   );
 }
