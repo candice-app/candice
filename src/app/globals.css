@@ -62,13 +62,20 @@
 
 /* ── Reset ──────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100%;
+}
 body {
   font-family: var(--font-sans);
   font-weight: 300;
   background: var(--canvas);
   color: var(--ink);
   line-height: 1.6;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 a { color: inherit; text-decoration: none; }
 button { cursor: pointer; font-family: var(--font-sans); }
@@ -124,6 +131,8 @@ button { cursor: pointer; font-family: var(--font-sans); }
   position: relative;
   min-height: 100dvh;
   background: var(--canvas);
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* Rail — desktop only, hidden on mobile */
