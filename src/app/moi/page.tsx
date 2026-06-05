@@ -234,7 +234,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
     },
     // 4 — Cadeaux qui fonctionnent
     {
-      icon: "🎁", title: "Cadeaux qui fonctionnent",
+      icon: "🎁", title: "Ce qui pourrait te faire plaisir",
       filled: !!profile.gift_preference || !!sing.plus_beau_cadeau || !!da['gifts.what_works'],
       chips: da['gifts.what_works']
         ? resolveDiscovery('gifts.what_works', da['gifts.what_works'])
@@ -403,7 +403,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
     },
     // 17 — Contraintes pratiques
     {
-      icon: "🧭", title: "Contraintes pratiques",
+      icon: "🧭", title: "À prendre en compte",
       filled: allergiesChips.length > 0 || !!regimeChip || !!alcoolChip || !!pi?.mobilite_sante || resolveDiscovery('practical.constraints', da['practical.constraints']).length > 0,
       chips: [
         ...allergiesChips,
@@ -419,7 +419,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
     },
     // 18 — Attention DNA
     {
-      icon: "🧬", title: "Attention DNA",
+      icon: "🧬", title: "Ce qui rend une attention réussie",
       filled: hasAttentionData,
       chips: [
         ...receptionDims.map(d => DIM_FR[d]),
@@ -432,7 +432,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
     },
     // 19 — Life States
     {
-      icon: "🌱", title: "Life States passés ou actuels",
+      icon: "🌱", title: "Moments de vie importants",
       filled: false,
       chips: [],
       summary: null,
@@ -440,7 +440,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
     },
     // 20 — Attentions reçues
     {
-      icon: "📜", title: "Attentions reçues qui ont fonctionné",
+      icon: "📜", title: "Ce qui a déjà marché",
       filled: false,
       chips: [],
       summary: null,

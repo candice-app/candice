@@ -535,7 +535,7 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
             Vous connaissez {contactName} mieux que personne.
           </h1>
           <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6, marginBottom: 40 }}>
-            Répondez à {t("{{son/sa}}")} place selon ce que vous savez. L&apos;approximation est normale — Candice complètera avec le temps.
+            Répondez à sa place, selon ce que vous savez vraiment. L&apos;approximation est normale — Candice complètera avec le temps.
           </p>
           <button
             type="button"
