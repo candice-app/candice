@@ -358,9 +358,29 @@ export default async function ContactPage({
           )}
         </div>
 
-        {/* Candice state — no % */}
+        {/* Mode badge + Candice state */}
         <div style={{ padding: "16px 24px 0" }}>
-          <div style={{ height: "0.5px", background: "linear-gradient(90deg, var(--champ-line), transparent)", marginBottom: 14 }} />
+          <div style={{ height: "0.5px", background: "linear-gradient(90deg, var(--champ-line), transparent)", marginBottom: 12 }} />
+
+          {/* Confirmed vs incognito badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+            <span style={{
+              display: "inline-flex", alignItems: "center", gap: 5,
+              fontSize: 10, fontWeight: 500, letterSpacing: ".18em", textTransform: "uppercase",
+              color: procheUserId ? "rgba(23,62,49,.85)" : "rgba(205,185,135,.8)",
+              background: procheUserId ? "rgba(23,62,49,.55)" : "rgba(205,185,135,.12)",
+              border: `0.5px solid ${procheUserId ? "rgba(23,62,49,.5)" : "rgba(205,185,135,.35)"}`,
+              borderRadius: 20, padding: "3px 10px",
+            }}>
+              <span style={{
+                width: 5, height: 5, borderRadius: "50%",
+                background: procheUserId ? "var(--pine)" : "var(--champ)",
+                flexShrink: 0,
+              }} />
+              {procheUserId ? "Profil confirmé" : "Incognito"}
+            </span>
+          </div>
+
           <p style={{
             fontSize: 13,
             fontWeight: 300,
