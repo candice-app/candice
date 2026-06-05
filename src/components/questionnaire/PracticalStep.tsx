@@ -9,6 +9,9 @@ export interface ImportantDate {
   type: string;
   label: string;
   date: string;
+  recurrence: string; // "annuelle" | "unique"
+  importance: string; // "faible" | "normale" | "forte"
+  rappel: string;     // "J-30" | "J-14" | "J-7" | "none"
 }
 
 export interface PracticalInfo {
@@ -314,6 +317,41 @@ const DATE_TYPES = [
   { id: "symbolique",   label: "Date symbolique" },
 ];
 
+const EMPTY_DATE: ImportantDate = {
+  type: "anniversaire",
+  label: "",
+  date: "",
+  recurrence: "annuelle",
+  importance: "normale",
+  rappel: "J-14",
+};
+
+function MiniChip({
+  label, selected, onClick,
+}: { label: string; selected: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      style={{
+        padding: "5px 11px",
+        borderRadius: 20,
+        border: selected ? "1.5px solid var(--pine)" : "0.5px solid var(--line)",
+        background: selected ? "rgba(23,62,49,.07)" : "var(--white)",
+        color: selected ? "var(--pine)" : "var(--ink-2)",
+        fontFamily: "var(--font-sans)",
+        fontSize: 12,
+        fontWeight: selected ? 500 : 400,
+        cursor: "pointer",
+        transition: "all .15s",
+        WebkitTapHighlightColor: "transparent",
+      }}
+    >
+      {label}
+    </button>
+  );
+}
+
 function DatesManager({
   dates, onChange,
 }: {
@@ -321,7 +359,7 @@ function DatesManager({
   onChange: (d: ImportantDate[]) => void;
 }) {
   function add() {
-    onChange([...dates, { type: "anniversaire", label: "Anniversaire", date: "" }]);
+    onChange([...dates, { ...EMPTY_DATE }]);
   }
   function remove(i: number) {
     onChange(dates.filter((_, idx) => idx !== i));
@@ -331,7 +369,7 @@ function DatesManager({
       if (idx !== i) return d;
       if (field === "type") {
         const found = DATE_TYPES.find(t => t.id === value);
-        return { ...d, type: value, label: found?.label ?? d.label };
+        return { ...d, type: value, label: found ? "" : d.label };
       }
       return { ...d, [field]: value };
     });
@@ -342,72 +380,156 @@ function DatesManager({
     <div style={{ marginBottom: 24 }}>
       {dates.map((d, i) => (
         <div key={i} style={{
-          display: "flex",
-          gap: 8,
-          alignItems: "flex-start",
-          marginBottom: 10,
+          marginBottom: 14,
+          padding: "16px 16px 14px",
+          borderRadius: 14,
+          border: "0.5px solid var(--line)",
+          background: "var(--white)",
         }}>
-          <select
-            value={d.type}
-            onChange={e => update(i, "type", e.target.value)}
-            style={{
-              flex: "0 0 auto",
-              padding: "10px 10px",
-              borderRadius: 10,
-              border: "0.5px solid var(--line)",
-              background: "var(--white)",
-              fontFamily: "var(--font-sans)",
-              fontSize: 13,
-              fontWeight: 300,
-              color: "var(--ink-2)",
-              outline: "none",
-              cursor: "pointer",
-            }}
-          >
-            {DATE_TYPES.map(t => (
-              <option key={t.id} value={t.id}>{t.label}</option>
-            ))}
-            <option value="autre">Autre</option>
-          </select>
+          {/* Type + Date row */}
+          <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+            <select
+              value={d.type}
+              onChange={e => update(i, "type", e.target.value)}
+              style={{
+                flex: "0 0 auto",
+                padding: "9px 10px",
+                borderRadius: 8,
+                border: "0.5px solid var(--line)",
+                background: "var(--canvas)",
+                fontFamily: "var(--font-sans)",
+                fontSize: 13,
+                fontWeight: 300,
+                color: "var(--ink-2)",
+                outline: "none",
+                cursor: "pointer",
+              }}
+            >
+              {DATE_TYPES.map(t => (
+                <option key={t.id} value={t.id}>{t.label}</option>
+              ))}
+              <option value="autre">Autre</option>
+            </select>
+            <input
+              type="date"
+              value={d.date}
+              onChange={e => update(i, "date", e.target.value)}
+              style={{
+                flex: 1,
+                padding: "9px 10px",
+                borderRadius: 8,
+                border: "0.5px solid var(--line)",
+                background: "var(--canvas)",
+                fontFamily: "var(--font-sans)",
+                fontSize: 13,
+                fontWeight: 300,
+                color: "var(--ink)",
+                outline: "none",
+                boxSizing: "border-box",
+              } as React.CSSProperties}
+            />
+            <button
+              type="button"
+              onClick={() => remove(i)}
+              style={{
+                flexShrink: 0,
+                width: 32, height: 32,
+                borderRadius: 8,
+                border: "0.5px solid var(--line)",
+                background: "none",
+                color: "var(--ink-3)",
+                fontSize: 15,
+                cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Label personnalisé */}
           <input
-            type="date"
-            value={d.date}
-            onChange={e => update(i, "date", e.target.value)}
+            type="text"
+            value={d.label}
+            onChange={e => update(i, "label", e.target.value)}
+            placeholder={
+              d.type === "anniversaire" ? "ex. Anniversaire de maman"
+              : d.type === "mariage" ? "ex. Mariage de Julie"
+              : d.type === "perso" ? "ex. Date de rencontre"
+              : "Libellé personnalisé (facultatif)"
+            }
             style={{
-              flex: 1,
-              padding: "10px 12px",
-              borderRadius: 10,
+              width: "100%",
+              padding: "8px 10px",
+              borderRadius: 8,
               border: "0.5px solid var(--line)",
-              background: "var(--white)",
+              background: "var(--canvas)",
               fontFamily: "var(--font-sans)",
-              fontSize: 14,
+              fontSize: 12,
               fontWeight: 300,
               color: "var(--ink)",
               outline: "none",
               boxSizing: "border-box",
+              marginBottom: 10,
             } as React.CSSProperties}
           />
-          <button
-            type="button"
-            onClick={() => remove(i)}
-            style={{
-              flexShrink: 0,
-              width: 36,
-              height: 36,
-              marginTop: 4,
-              borderRadius: 8,
-              border: "0.5px solid var(--line)",
-              background: "none",
-              color: "var(--ink-3)",
-              fontSize: 16,
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            ×
-          </button>
+
+          {/* Récurrence */}
+          <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>
+            Récurrence
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
+            {[
+              { id: "annuelle", label: "Chaque année" },
+              { id: "unique",   label: "Une seule fois" },
+            ].map(opt => (
+              <MiniChip
+                key={opt.id}
+                label={opt.label}
+                selected={d.recurrence === opt.id}
+                onClick={() => update(i, "recurrence", opt.id)}
+              />
+            ))}
+          </div>
+
+          {/* Importance */}
+          <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>
+            Importance
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
+            {[
+              { id: "faible",  label: "Faible" },
+              { id: "normale", label: "Normale" },
+              { id: "forte",   label: "Forte" },
+            ].map(opt => (
+              <MiniChip
+                key={opt.id}
+                label={opt.label}
+                selected={d.importance === opt.id}
+                onClick={() => update(i, "importance", opt.id)}
+              />
+            ))}
+          </div>
+
+          {/* Rappel */}
+          <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: ".2em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>
+            Rappel avant
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+            {[
+              { id: "J-30", label: "30 jours" },
+              { id: "J-14", label: "14 jours" },
+              { id: "J-7",  label: "7 jours" },
+              { id: "none", label: "Pas de rappel" },
+            ].map(opt => (
+              <MiniChip
+                key={opt.id}
+                label={opt.label}
+                selected={d.rappel === opt.id}
+                onClick={() => update(i, "rappel", opt.id)}
+              />
+            ))}
+          </div>
         </div>
       ))}
       <button

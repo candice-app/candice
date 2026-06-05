@@ -14,7 +14,7 @@ import AffinerCard, { type CompletionLevel } from "@/components/profile/AffinerC
 interface FaceResult { dominant: string[]; secondaire: string[]; tertiaire: string[]; }
 interface AxisScore   { score: number; intensity: number; }
 interface ModeResult  { label: string; intensity: number; }
-interface ImportantDate { type: string; label: string; date: string; }
+interface ImportantDate { type: string; label: string; date: string; recurrence?: string; importance?: string; rappel?: string; }
 
 type ExtendedProfile = MyProfile & {
   attention_breath_text?:  string | null;
@@ -402,7 +402,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
     {
       icon: "📅", title: "Événements importants",
       filled: (pi?.dates_importantes?.length ?? 0) > 0,
-      chips: (pi?.dates_importantes ?? []).map(d => d.label).slice(0, 5),
+      chips: (pi?.dates_importantes ?? []).map(d => d.label || d.type).slice(0, 5),
       summary: (pi?.dates_importantes?.length ?? 0) > 0
         ? `${pi!.dates_importantes!.length} date${pi!.dates_importantes!.length > 1 ? "s" : ""} à ne pas manquer.`
         : null,
