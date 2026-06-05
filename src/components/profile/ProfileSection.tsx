@@ -11,12 +11,13 @@ interface ProfileSectionProps {
   filled: boolean;
   editHref?: string;
   ctaLabel?: string;
+  ctaHref?: string;
   sectionKey?: string;
   children?: React.ReactNode;
 }
 
 export default function ProfileSection({
-  icon, title, summary, chips = [], filled, editHref, ctaLabel, sectionKey, children,
+  icon, title, summary, chips = [], filled, editHref, ctaLabel, ctaHref, sectionKey, children,
 }: ProfileSectionProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -147,22 +148,41 @@ export default function ProfileSection({
               </Link>
             )}
             {ctaLabel && (
-              <button
-                disabled
-                data-section={sectionKey}
-                style={{
-                  fontSize: 12, fontWeight: 300,
-                  color: 'var(--ink-3)',
-                  padding: '6px 14px',
-                  border: '0.5px solid var(--line)',
-                  borderRadius: 20,
-                  background: 'none',
-                  cursor: 'not-allowed',
-                  opacity: 0.6,
-                }}
-              >
-                {ctaLabel}
-              </button>
+              ctaHref ? (
+                <Link href={ctaHref} style={{ textDecoration: 'none' }}>
+                  <button
+                    data-section={sectionKey}
+                    style={{
+                      fontSize: 12, fontWeight: 400,
+                      color: 'var(--pine)',
+                      padding: '6px 14px',
+                      border: '0.5px solid rgba(23,62,49,.2)',
+                      borderRadius: 20,
+                      background: 'rgba(23,62,49,.04)',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {ctaLabel}
+                  </button>
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  data-section={sectionKey}
+                  style={{
+                    fontSize: 12, fontWeight: 300,
+                    color: 'var(--ink-3)',
+                    padding: '6px 14px',
+                    border: '0.5px solid var(--line)',
+                    borderRadius: 20,
+                    background: 'none',
+                    cursor: 'not-allowed',
+                    opacity: 0.6,
+                  }}
+                >
+                  {ctaLabel}
+                </button>
+              )
             )}
           </div>
         </div>

@@ -9,6 +9,7 @@ import LogoutButton from "./LogoutButton";
 import ProfileSection from "@/components/profile/ProfileSection";
 import AffinerCard, { type CompletionLevel } from "@/components/profile/AffinerCard";
 import GenderModal from "@/components/profile/GenderModal";
+import { getAvailableDiscoverySections, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
 
 // ─── Extended profile type ────────────────────────────────────────────────────
 
@@ -67,6 +68,17 @@ const LIFESTYLE_POLES: Record<string, [string, string]> = {
   aventureConfort:       ["Attiré(e) par l'aventure et l'inédit",   "Préfère le confort et le familier"],
   authenticiteLuxe:      ["Authenticité et sincérité avant tout",   "Sensible au luxe et au prestige"],
 };
+
+// Applique le genre grammatical sur les labels avec accord parenthésé ou ·
+function applyGender(text: string, gender: string | null | undefined): string {
+  const isFem = gender === "feminine";
+  return text
+    .replace(/\(-ve\)/g, isFem ? "ve" : "")
+    .replace(/\(-se\)/g, isFem ? "se" : "")
+    .replace(/\(e\)/g,   isFem ? "e"  : "")
+    .replace(/·ne\b/g,   isFem ? "ne" : "")
+    .replace(/·e\b/g,    isFem ? "e"  : "");
+}
 const CONFLIT_FR:  Record<string, string> = {
   direct: "Confronte directement", temporisateur: "Prend du recul avant d'agir",
   évitant: "Préfère éviter la confrontation", humour: "Désamorce avec l'humour",
@@ -131,15 +143,17 @@ function dimsToFr(dims: string[]): string {
   return dims.map(d => DIM_FR[d] ?? d).join(", ");
 }
 
-function axisLabel(key: string, score: number): string | null {
+function axisLabel(key: string, score: number, gender?: string | null): string | null {
   if (Math.abs(score) < 30) return null;
   const poles = AXIS_POLES[key];
-  return poles ? (score > 0 ? poles[0] : poles[1]) : null;
+  if (!poles) return null;
+  return applyGender(score > 0 ? poles[0] : poles[1], gender);
 }
-function lifestyleLabel(key: string, score: number): string | null {
+function lifestyleLabel(key: string, score: number, gender?: string | null): string | null {
   if (Math.abs(score) < 30) return null;
   const poles = LIFESTYLE_POLES[key];
-  return poles ? (score > 0 ? poles[0] : poles[1]) : null;
+  if (!poles) return null;
+  return applyGender(score > 0 ? poles[0] : poles[1], gender);
 }
 
 function formatUpdatedAt(iso: string): string {
@@ -154,10 +168,13 @@ interface SectionDef {
   icon: string; title: string;
   summary: string | null; chips: string[];
   filled: boolean; editHref: string;
-  ctaLabel: string; sectionKey: string;
+  ctaLabel: string; ctaHref?: string; sectionKey: string;
 }
 
-function buildSections(profile: ExtendedProfile): SectionDef[] {
+function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>): SectionDef[] {
+  const ag = (t: string) => applyGender(t, profile.grammatical_gender);
+  const discoveryHref = (sk: string): string | undefined =>
+    discoveryAvailable.has(sk) ? `/moi/discovery?mode=full&section=${sk}` : undefined;
   const da = profile.discovery_answers ?? {};
   const pi = profile.practical_info;
   const sing = profile.singularity_answers ?? {};
@@ -176,7 +193,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       .filter(([,v]) => v && Math.abs(v.score) >= 30 && v.intensity > 0)
       .sort(([,a],[,b]) => Math.abs(b!.score) - Math.abs(a!.score))
       .slice(0, 4)
-      .forEach(([key, v]) => { const l = v ? axisLabel(key, v.score) : null; if (l) temperamentTraits.push(l); });
+      .forEach(([key, v]) => { const l = v ? axisLabel(key, v.score, profile.grammatical_gender) : null; if (l) temperamentTraits.push(l); });
   }
   const conflitMode = profile.temperament_modes?.conflit?.label ?? null;
 
@@ -187,13 +204,13 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       .filter(([,v]) => v && Math.abs(v.score) >= 30 && v.intensity > 0)
       .sort(([,a],[,b]) => Math.abs(b!.score) - Math.abs(a!.score))
       .slice(0, 3)
-      .forEach(([key, v]) => { const l = v ? lifestyleLabel(key, v.score) : null; if (l) lifestyleTraits.push(l); });
+      .forEach(([key, v]) => { const l = v ? lifestyleLabel(key, v.score, profile.grammatical_gender) : null; if (l) lifestyleTraits.push(l); });
   }
 
   // Surprise filters
   const surpriseChips: string[] = Object.entries(FILTER_SURPRISE_FR)
     .filter(([k]) => typeof filters[k] === "boolean" && filters[k])
-    .map(([,v]) => v);
+    .map(([,v]) => ag(v));
 
   // Constraints
   const allergiesChips = (pi?.allergies ?? []).filter(a => a !== "aucune").map(a => ALLERGIE_FR[a] ?? a);
@@ -201,7 +218,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
   const alcoolChip = pi?.alcool ? (ALCOOL_FR[pi.alcool] ?? null) : null;
 
   // Discovery: surprises
-  const daSurprise = resolveDiscovery('surprises.preference', da['surprises.preference']);
+  const daSurprise = resolveDiscovery('surprises.preference', da['surprises.preference']).map(ag);
   // Discovery: conflicts
   const daConflicts = resolveDiscovery('conflicts.style', da['conflicts.style']);
 
@@ -212,7 +229,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       filled: hasAttentionData || !!profile.love_language,
       chips: receptionDims.length > 0 ? receptionDims.map(d => DIM_FR[d]) : (profile.love_language?.split(",").filter(Boolean) ?? []),
       summary: receptionDims.length > 0
-        ? `Tu te sens aimé·e surtout par ${dimsToFr(receptionDims).toLowerCase()}.${profile.attention_breath_text ? " " + profile.attention_breath_text.slice(0, 100) + (profile.attention_breath_text.length > 100 ? "…" : "") : ""}`
+        ? `Tu te sens ${ag("aimé·e")} surtout par ${dimsToFr(receptionDims).toLowerCase()}.${profile.attention_breath_text ? " " + profile.attention_breath_text.slice(0, 100) + (profile.attention_breath_text.length > 100 ? "…" : "") : ""}`
         : profile.love_language ? `Tu apprécies les ${profile.love_language.split(",")[0]} avant tout.` : null,
       editHref: "/moi/questionnaire?part=attention",
       ctaLabel: "Approfondir mon langage d'attention",
@@ -232,7 +249,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
     },
     // 3 — Ce qui me fait me sentir aimé·e
     {
-      icon: "🌟", title: "Ce qui me fait me sentir aimé·e",
+      icon: "🌟", title: ag("Ce qui me fait me sentir aimé·e"),
       filled: hasAttentionData || !!profile.appreciation_style,
       chips: expressionDims.length > 0 ? expressionDims.map(d => DIM_FR[d]) : [],
       summary: expressionDims.length > 0
@@ -257,7 +274,8 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         : profile.gift_preference === "physical" ? "Tu apprécies les beaux objets bien choisis."
         : profile.gift_preference === "both" ? "Tu aimes autant les expériences que les cadeaux matériels." : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Affiner ce qui te fait plaisir",
+      ctaLabel: discoveryAvailable.has('gifts-what-works') ? "Affiner ce qui te fait plaisir" : "",
+      ctaHref: discoveryHref('gifts-what-works'),
       sectionKey: "gifts-what-works",
     },
     // 5 — À éviter
@@ -303,7 +321,8 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? `Quelques adresses et marques de référence.`
         : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Ajouter des adresses",
+      ctaLabel: discoveryAvailable.has('brands-favorites') ? "Ajouter des adresses" : "",
+      ctaHref: discoveryHref('brands-favorites'),
       sectionKey: "brands-favorites",
     },
     // 8 — Restaurants
@@ -312,14 +331,15 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       filled: !!profile.gastronomy || !!profile.favorite_foods || !!da['food.restaurants'],
       chips: da['food.restaurants']
         ? resolveDiscovery('food.restaurants', da['food.restaurants'])
-        : profile.gastronomy ? [GASTRONOMY_FR[profile.gastronomy] ?? profile.gastronomy] : [],
+        : profile.gastronomy ? [ag(GASTRONOMY_FR[profile.gastronomy] ?? profile.gastronomy)] : [],
       summary: profile.favorite_foods
         ? profile.favorite_foods.length > 100 ? profile.favorite_foods.slice(0, 100) + "…" : profile.favorite_foods
         : da['food.restaurants']
         ? `Tu préfères ${resolveDiscovery('food.restaurants', da['food.restaurants']).slice(0,2).join(", ").toLowerCase()}.`
-        : profile.gastronomy ? GASTRONOMY_FR[profile.gastronomy] ?? null : null,
+        : profile.gastronomy ? ag(GASTRONOMY_FR[profile.gastronomy] ?? profile.gastronomy) : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Aller plus loin sur tes tables",
+      ctaLabel: discoveryAvailable.has('food-restaurants') ? "Aller plus loin sur tes tables" : "",
+      ctaHref: discoveryHref('food-restaurants'),
       sectionKey: "food-restaurants",
     },
     // 9 — Hôtels
@@ -367,10 +387,11 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
       summary: da['travel.style']
         ? `En voyage, tu cherches ${resolveDiscovery('travel.style', da['travel.style']).slice(0,2).join(", ").toLowerCase()}.`
         : lifestyleTraits.find(t => t.includes("aventure"))
-        ? "Attiré·e par l'inédit et les découvertes."
+        ? ag("Attiré·e par l'inédit et les découvertes.")
         : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Aide Candice à mieux comprendre comment te faire voyager",
+      ctaLabel: discoveryAvailable.has('travel-style') ? "Aide Candice à mieux comprendre comment te faire voyager" : "",
+      ctaHref: discoveryHref('travel-style'),
       sectionKey: "travel-style",
     },
     // 12 — Loisirs & centres d'intérêt
@@ -398,7 +419,8 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         ? `« ${(da['dreams.current'] as string).length > 120 ? (da['dreams.current'] as string).slice(0, 120) + "…" : da['dreams.current']} »`
         : null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Partager une envie",
+      ctaLabel: discoveryAvailable.has('dreams-current') ? "Partager une envie" : "",
+      ctaHref: discoveryHref('dreams-current'),
       sectionKey: "dreams-current",
     },
     // 14 — Événements importants
@@ -446,7 +468,7 @@ function buildSections(profile: ExtendedProfile): SectionDef[] {
         regimeChip,
         alcoolChip,
         pi?.mobilite_sante ? "Mobilité" : null,
-        ...resolveDiscovery('practical.constraints', da['practical.constraints']),
+        ...resolveDiscovery('practical.constraints', da['practical.constraints']).map(ag),
       ].filter(Boolean) as string[],
       summary: (allergiesChips.length > 0 || regimeChip || alcoolChip)
         ? [regimeChip, alcoolChip, allergiesChips.length > 0 ? `Allergies : ${allergiesChips.join(", ")}` : null].filter(Boolean).join(". ") + "."
@@ -561,10 +583,17 @@ export default async function MoiPage() {
     gender: string | null;
   } | null;
 
+  const analysisSnapshot: ProfileAnalysisSnapshot | null = analysis?.sections
+    ? { sections: analysis.sections as Record<string, { text?: string; chips?: string[] }> }
+    : null;
+  const discoveryAvailable = profile
+    ? await getAvailableDiscoverySections(user.id, supabase, analysisSnapshot)
+    : new Set<string>();
+
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "toi";
   const initial = firstName !== "toi" ? firstName[0].toUpperCase() : "M";
 
-  const rawSections = profile ? buildSections(profile) : [];
+  const rawSections = profile ? buildSections(profile, discoveryAvailable) : [];
   const sections = mergeWithAnalysis(rawSections, analysis?.sections ?? null);
   const level = profile ? computeCompletionLevel(rawSections) : 'empty';
   const levelLabels: Record<string, string> = {
@@ -715,6 +744,7 @@ export default async function MoiPage() {
                   filled={sec.filled}
                   editHref={sec.editHref}
                   ctaLabel={sec.ctaLabel}
+                  ctaHref={sec.ctaHref}
                   sectionKey={sec.sectionKey}
                 />
               ))}

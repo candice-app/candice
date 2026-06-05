@@ -94,7 +94,7 @@ async function getAllQuestions(supabase: SupaDB): Promise<DiscoveryQuestion[]> {
 // LLM: reformulate question in Candice voice given context (layer 3)
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-async function personalizeQuestion(
+export async function personalizeQuestion(
   base: DiscoveryQuestion,
   contextHint: string,
 ): Promise<string> {
@@ -344,4 +344,215 @@ export async function pauseSession(sessionId: string, supabase: SupaDB): Promise
     .from('discovery_sessions')
     .update({ status: 'paused', last_activity_at: new Date().toISOString() })
     .eq('id', sessionId);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ── DISCOVERY BRAIN ──────────────────────────────────────────────────────────
+// Smart question selector: evaluates triggers against profile_analysis,
+// scores candidates by section gap, respects answered/fatigue state.
+// ══════════════════════════════════════════════════════════════════════════════
+
+const FULL_SESSION_MAX = 3;
+
+export interface DiscoveryQuestionFull extends DiscoveryQuestion {
+  trigger_condition: string | null;
+  priority: number;
+}
+
+export interface ProfileAnalysisSnapshot {
+  sections: Record<string, { text?: string; chips?: string[] }> | null;
+}
+
+// question.dimension → profile_analysis.sections key
+const DIMENSION_TO_ANALYSIS_SECTION: Record<string, string> = {
+  attention:  'attention',
+  gifts:      'gifts',
+  style:      'style',
+  brands:     'brands',
+  food:       'restaurants',
+  fragrance:  'style',
+  travel:     'travel',
+  hobbies:    'hobbies',
+  dreams:     'hobbies',
+  surprises:  'avoid',
+  conflicts:  'avoid',
+};
+
+// UI sectionKey (from moi/page.tsx buildSections) → discovery question dimensions
+export const SECTION_KEY_TO_DIMENSIONS: Record<string, string[]> = {
+  'attention-reception': ['attention'],
+  'attention-expression': ['attention'],
+  'attention-dna':        ['attention'],
+  'gifts-what-works':     ['gifts'],
+  'gifts-to-avoid':       ['gifts'],
+  'style-clothing':       ['style'],
+  'brands-favorites':     ['brands'],
+  'food-restaurants':     ['food'],
+  'fragrance-family':     ['fragrance'],
+  'travel-style':         ['travel'],
+  'hobbies-main':         ['hobbies'],
+  'dreams-current':       ['dreams', 'hobbies'],
+  'surprises-preference': ['surprises'],
+  'conflicts-style':      ['conflicts'],
+  'practical-constraints':['practical'],
+};
+
+async function getAllQuestionsWithTrigger(supabase: SupaDB): Promise<DiscoveryQuestionFull[]> {
+  const { data } = await supabase
+    .from('discovery_questions')
+    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, trigger_condition, priority')
+    .eq('statut', 'active')
+    .eq('target', 'self')
+    .order('sort_order');
+  return (data ?? []) as DiscoveryQuestionFull[];
+}
+
+function inferSectionKeyFromTrigger(cond: string): string | null {
+  const c = cond.toLowerCase();
+  if (/\battention\b|petite|acte\b|service\b|mots?\b/.test(c)) return 'attention';
+  if (/expérience\b|experience/.test(c)) return 'attention';
+  if (/cadeau|bijou\b|objet\b/.test(c)) return 'gifts';
+  if (/\bstyle\b|mode\b|vêtement|matière|couleur/.test(c)) return 'style';
+  if (/marque/.test(c)) return 'brands';
+  if (/restaurant|gastrono|cuisine/.test(c)) return 'restaurants';
+  if (/voyage|week-end|hôtel|hotel/.test(c)) return 'travel';
+  if (/rêve|wishlist|envie|destination/.test(c)) return 'hobbies';
+  if (/livre|lecture|bd\b|auteur|artiste|sport|bien.être|culture|concert|musique|déco|maison/.test(c)) return 'hobbies';
+  if (/parfum|beauté|soin|odeur/.test(c)) return 'style';
+  if (/surprise|conflit|réparation/.test(c)) return 'avoid';
+  return null;
+}
+
+export function evaluateTrigger(
+  question: DiscoveryQuestionFull,
+  analysis: ProfileAnalysisSnapshot | null,
+): boolean {
+  const cond = question.trigger_condition?.trim();
+  if (!cond) return true;
+
+  const sections = analysis?.sections ?? {};
+
+  const sectionHasContent = (key: string): boolean => {
+    const s = sections[key];
+    return !!(s?.text?.trim());
+  };
+  const sectionIsThin = (key: string): boolean => {
+    const s = sections[key];
+    return !(s?.text?.trim()) || (s.text?.length ?? 0) < 60;
+  };
+
+  const isAbsencePattern = /non\s*renseign|non\s*détaill|vide|incomplèt|non\s*précis/i.test(cond);
+  const sectionKey = inferSectionKeyFromTrigger(cond);
+
+  if (isAbsencePattern) {
+    return sectionKey ? sectionIsThin(sectionKey) : true;
+  }
+  return sectionKey ? sectionHasContent(sectionKey) : true;
+}
+
+function computeGapScore(
+  q: DiscoveryQuestionFull,
+  analysis: ProfileAnalysisSnapshot | null,
+): number {
+  const sectionRef = DIMENSION_TO_ANALYSIS_SECTION[q.dimension];
+  if (!sectionRef || !analysis?.sections) return 2; // max gap if no analysis
+  const sec = analysis.sections[sectionRef];
+  const text = sec?.text?.trim() ?? '';
+  if (!text) return 2;
+  if (text.length < 60) return 1;
+  return 0;
+}
+
+export async function getNextMicroQuestion(
+  userId: string,
+  supabase: SupaDB,
+  analysis: ProfileAnalysisSnapshot | null,
+  mode: 'quick' | 'full',
+  sectionKey?: string,
+): Promise<NextQuestionResult | null> {
+  const [answered, allQuestions] = await Promise.all([
+    getAnsweredKeys(supabase, userId),
+    getAllQuestionsWithTrigger(supabase),
+  ]);
+
+  // Unanswered + trigger passes
+  let candidates = allQuestions.filter(
+    q => !answered.has(q.question_key) && evaluateTrigger(q, analysis),
+  );
+
+  // If sectionKey: restrict to relevant dimensions
+  if (sectionKey) {
+    const dims = SECTION_KEY_TO_DIMENSIONS[sectionKey] ?? [];
+    if (dims.length > 0) {
+      candidates = candidates.filter(q => dims.includes(q.dimension));
+    }
+  }
+
+  if (candidates.length === 0) return null;
+
+  // Score: gap * 100 + priority, tie-break by sort_order asc
+  const scored = candidates
+    .map(q => ({ q, score: computeGapScore(q, analysis) * 100 + (q.priority ?? 50) }))
+    .sort((a, b) => b.score - a.score || a.q.sort_order - b.q.sort_order);
+
+  const limit = mode === 'quick' ? 1 : FULL_SESSION_MAX;
+  const picks = scored.slice(0, limit).map(s => s.q);
+
+  // Create session
+  const { data: session } = await supabase
+    .from('discovery_sessions')
+    .insert({
+      user_id: userId,
+      mode,
+      pending_keys: picks.map(q => q.question_key),
+      current_index: 0,
+      status: 'active',
+    })
+    .select('id')
+    .single();
+
+  if (!session) return null;
+
+  // Mark first question as last_asked
+  await supabase
+    .from('profile_completion')
+    .upsert(
+      { user_id: userId, question_key: picks[0].question_key, last_asked_at: new Date().toISOString() },
+      { onConflict: 'user_id,question_key' },
+    );
+
+  const personalizedText = await personalizeQuestion(
+    picks[0],
+    sectionKey ? `Section ciblée : ${DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension}` : '',
+  );
+
+  return {
+    question: { ...picks[0], question_text: personalizedText },
+    sessionId: session.id as string,
+    sectionLabel: DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension,
+    progress: mode === 'full' ? { current: 1, total: picks.length } : null,
+  };
+}
+
+export async function getAvailableDiscoverySections(
+  userId: string,
+  supabase: SupaDB,
+  analysis: ProfileAnalysisSnapshot | null,
+): Promise<Set<string>> {
+  const [answered, allQuestions] = await Promise.all([
+    getAnsweredKeys(supabase, userId),
+    getAllQuestionsWithTrigger(supabase),
+  ]);
+
+  const candidates = allQuestions.filter(
+    q => !answered.has(q.question_key) && evaluateTrigger(q, analysis),
+  );
+
+  const available = new Set<string>();
+  for (const [sk, dims] of Object.entries(SECTION_KEY_TO_DIMENSIONS)) {
+    if (candidates.some(q => dims.includes(q.dimension))) {
+      available.add(sk);
+    }
+  }
+  return available;
 }
