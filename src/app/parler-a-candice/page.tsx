@@ -75,6 +75,9 @@ export default async function ParlerACandice() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
+  const active = ACTIONS.filter(a => a.active);
+  const upcoming = ACTIONS.filter(a => !a.active);
+
   return (
     <DashboardShell>
       <div className="content-col" style={{ paddingTop: 40, paddingBottom: 40 }}>
@@ -102,74 +105,68 @@ export default async function ParlerACandice() {
           Dis-moi ce que tu as en tête, je m&apos;occupe du reste.
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          {ACTIONS.map((action) => {
-            const card = (
-              <div
-                key={action.id}
-                style={{
-                  padding: "18px 20px",
-                  borderRadius: 16,
-                  border: action.active
-                    ? "0.5px solid rgba(23,62,49,.18)"
-                    : "0.5px solid var(--line)",
-                  background: action.active ? "var(--white)" : "rgba(253,253,251,.6)",
-                  cursor: action.active ? "pointer" : "default",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 14,
-                  transition: "border-color .18s, box-shadow .18s",
-                  opacity: action.active ? 1 : 0.72,
-                  position: "relative",
-                } as React.CSSProperties}
-              >
+        {/* Active actions */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 40 }}>
+          {active.map((action) => (
+            <Link key={action.id} href={action.href!} style={{ textDecoration: "none" }}>
+              <div style={{
+                padding: "18px 20px",
+                borderRadius: 16,
+                border: "0.5px solid rgba(23,62,49,.18)",
+                background: "var(--white)",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "flex-start",
+                gap: 14,
+                transition: "border-color .18s, box-shadow .18s",
+              }}>
                 <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>
                   {action.icon}
                 </span>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{
-                    fontSize: 15,
-                    fontWeight: 400,
-                    color: action.active ? "var(--ink)" : "var(--ink-2)",
-                    marginBottom: 4,
-                    lineHeight: 1.3,
-                  }}>
+                  <p style={{ fontSize: 15, fontWeight: 400, color: "var(--ink)", marginBottom: 4, lineHeight: 1.3 }}>
                     {action.title}
                   </p>
-                  <p style={{
-                    fontSize: 13,
-                    fontWeight: 300,
-                    color: "var(--ink-3)",
-                    lineHeight: 1.55,
-                  }}>
+                  <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.55 }}>
                     {action.desc}
                   </p>
                 </div>
-                {!action.active && (
-                  <span style={{
-                    position: "absolute",
-                    top: 14,
-                    right: 16,
-                    fontSize: 9,
-                    fontWeight: 500,
-                    letterSpacing: ".3em",
-                    textTransform: "uppercase",
-                    color: "var(--ink-3)",
-                  }}>
-                    Bientôt
-                  </span>
-                )}
               </div>
-            );
+            </Link>
+          ))}
+        </div>
 
-            if (!action.active || !action.href) return card;
-
-            return (
-              <Link key={action.id} href={action.href} style={{ textDecoration: "none" }}>
-                {card}
-              </Link>
-            );
-          })}
+        {/* Upcoming — visually secondary */}
+        <div>
+          <p style={{
+            fontSize: 10, fontWeight: 500, letterSpacing: ".32em",
+            textTransform: "uppercase", color: "var(--ink-3)",
+            marginBottom: 12,
+          }}>
+            À venir
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {upcoming.map((action) => (
+              <div
+                key={action.id}
+                style={{
+                  padding: "12px 4px",
+                  borderBottom: "0.5px solid var(--line)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  opacity: 0.55,
+                }}
+              >
+                <span style={{ fontSize: 16, width: 24, textAlign: "center", flexShrink: 0 }}>
+                  {action.icon}
+                </span>
+                <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.4, flex: 1 }}>
+                  {action.title}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
