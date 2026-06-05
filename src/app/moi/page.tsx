@@ -499,7 +499,7 @@ function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>
       chips: [],
       summary: null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Partager un moment clé",
+      ctaLabel: "",
       sectionKey: "life-states",
     },
     // 20 — Ce qui a déjà marché
@@ -509,7 +509,7 @@ function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>
       chips: [],
       summary: null,
       editHref: "/moi/discovery?mode=full",
-      ctaLabel: "Ajouter ce qui a marché",
+      ctaLabel: "",
       sectionKey: "attention-history",
     },
   ];

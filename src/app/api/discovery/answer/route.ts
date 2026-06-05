@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { recordAnswer } from "@/lib/discovery/engine";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
@@ -41,6 +42,9 @@ export async function POST(req: Request) {
         .eq("user_id", user.id);
     } catch { /* non bloquant */ }
   }
+
+  // Invalider le cache de /moi pour que les CTAs Discovery soient recalculés
+  revalidatePath('/moi');
 
   // Quand la session est terminée, régénérer l'analyse (fire-and-forget)
   if (result.done) {
