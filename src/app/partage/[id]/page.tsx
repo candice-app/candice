@@ -3,6 +3,8 @@ import Link from "next/link";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { MyProfile } from "@/types";
 
+type AnalysisSection = { text?: string; chips?: string[] };
+
 // ─── Label maps ───────────────────────────────────────────────────────────────
 
 const LABEL: Record<string, Record<string, string>> = {
@@ -68,15 +70,24 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
   const { id } = await params;
   const supabase = createAdminClient();
 
-  const { data } = await supabase
-    .from("my_profile")
-    .select("*")
-    .eq("user_id", id)
-    .maybeSingle();
+  const [{ data }, { data: analysisRow }] = await Promise.all([
+    supabase.from("my_profile").select("*").eq("user_id", id).maybeSingle(),
+    supabase.from("profile_analysis")
+      .select("summary, summary_chips, sections, must_haves, deal_breakers, constraints")
+      .eq("user_id", id).is("contact_id", null).maybeSingle(),
+  ]);
 
   if (!data) notFound();
 
   const profile = data as MyProfile & { attention_breath_text?: string | null };
+  const analysis = analysisRow as {
+    summary: string | null;
+    summary_chips: string[] | null;
+    sections: Record<string, AnalysisSection> | null;
+    must_haves: string[] | null;
+    deal_breakers: string[] | null;
+    constraints: string[] | null;
+  } | null;
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--canvas)" }}>
@@ -121,28 +132,117 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
           </p>
         </div>
 
-        {/* Breath text */}
-        {profile.attention_breath_text && (
+        {/* Résumé Candice — profile_analysis preferred, fallback breath_text */}
+        {(analysis?.summary || profile.attention_breath_text) && (
           <div style={{
             padding: "20px 22px",
             borderRadius: 16,
             background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
-            marginBottom: 40,
+            marginBottom: analysis?.summary_chips?.length ? 16 : 40,
           }}>
             <p style={{
               fontFamily: "var(--font-serif)",
-              fontWeight: 300,
-              fontSize: 17,
-              color: "#FAF8F1",
-              lineHeight: 1.65,
-              letterSpacing: "-.012em",
+              fontWeight: 300, fontSize: 17,
+              color: "#FAF8F1", lineHeight: 1.65, letterSpacing: "-.012em",
             } as React.CSSProperties}>
-              {profile.attention_breath_text}
+              {analysis?.summary ?? profile.attention_breath_text}
             </p>
           </div>
         )}
 
-        {/* Profil relationnel */}
+        {/* Chips résumé */}
+        {analysis?.summary_chips && analysis.summary_chips.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 40 }}>
+            {analysis.summary_chips.map((chip, i) => (
+              <span key={i} style={{
+                fontSize: 12, fontWeight: 300,
+                padding: "5px 12px", borderRadius: 20,
+                background: "rgba(23,62,49,.06)",
+                border: "0.5px solid rgba(23,62,49,.12)",
+                color: "var(--pine)",
+              }}>
+                {chip}
+              </span>
+            ))}
+          </div>
+        )}
+
+        {/* Sections enrichies profile_analysis */}
+        {analysis?.sections && (() => {
+          const SECTION_DISPLAY: Array<{ key: string; label: string }> = [
+            { key: "attention",    label: "Ce qui lui fait plaisir" },
+            { key: "what_touches", label: "Ce qui la/le touche" },
+            { key: "gifts",        label: "Cadeaux" },
+            { key: "avoid",        label: "À éviter" },
+            { key: "style",        label: "Style" },
+            { key: "restaurants",  label: "Restaurants" },
+            { key: "travel",       label: "Voyages" },
+            { key: "hobbies",      label: "Loisirs & passions" },
+          ];
+          const filled = SECTION_DISPLAY.filter(s => {
+            const sec = analysis.sections![s.key];
+            return sec?.text && sec.text.trim().length > 3;
+          });
+          if (filled.length === 0) return null;
+          return (
+            <Section label="Ce que Candice retient">
+              {filled.map(({ key, label }) => {
+                const sec = analysis.sections![key]!;
+                return (
+                  <div key={key} style={{ padding: "14px 0", borderBottom: "0.5px solid var(--line)" }}>
+                    <p style={{ fontSize: 11, fontWeight: 400, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>
+                      {label}
+                    </p>
+                    <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6, marginBottom: sec.chips?.length ? 8 : 0 }}>
+                      {sec.text}
+                    </p>
+                    {sec.chips && sec.chips.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                        {sec.chips.map((chip, i) => (
+                          <span key={i} style={{ fontSize: 11, fontWeight: 300, padding: "3px 9px", borderRadius: 20, background: "rgba(23,62,49,.06)", border: "0.5px solid rgba(23,62,49,.12)", color: "var(--pine)" }}>
+                            {chip}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+              {/* Must-haves */}
+              {analysis.must_haves && analysis.must_haves.length > 0 && (
+                <div style={{ padding: "14px 0", borderBottom: "0.5px solid var(--line)" }}>
+                  <p style={{ fontSize: 11, fontWeight: 400, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>
+                    Indispensables
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                    {analysis.must_haves.map((item, i) => (
+                      <span key={i} style={{ fontSize: 11, fontWeight: 300, padding: "3px 9px", borderRadius: 20, background: "rgba(23,62,49,.06)", border: "0.5px solid rgba(23,62,49,.12)", color: "var(--pine)" }}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {/* Contraintes */}
+              {analysis.constraints && analysis.constraints.length > 0 && (
+                <div style={{ padding: "14px 0" }}>
+                  <p style={{ fontSize: 11, fontWeight: 400, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 6 }}>
+                    À prendre en compte
+                  </p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+                    {analysis.constraints.map((item, i) => (
+                      <span key={i} style={{ fontSize: 12, fontWeight: 300, padding: "4px 10px", borderRadius: 20, background: "rgba(205,185,135,.08)", border: "0.5px solid rgba(205,185,135,.25)", color: "var(--ink-2)" }}>
+                        {item}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </Section>
+          );
+        })()}
+
+        {/* Profil relationnel — données legacy my_profile */}
         <Section label="Profil">
           <Row label="Se sent aimé(e) par" value={resolve("love_language", profile.love_language)} />
           <Row label="Énergie sociale" value={resolve("social_energy", profile.social_energy)} />
