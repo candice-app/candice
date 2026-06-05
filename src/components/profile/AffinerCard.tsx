@@ -47,23 +47,19 @@ export default function AffinerCard({ level }: Props) {
           : 'Candice te connaît de mieux en mieux. Pour que ceux qui t\'aiment visent juste.'}
       </p>
       <div style={{ display: 'flex', gap: 10 }}>
-        {/* Receptacle Lot 2 — Discovery Engine — inactif pour l'instant */}
-        <button
-          disabled
-          data-section="discovery-quick"
-          style={{
-            flex: 1, padding: '11px 14px',
-            borderRadius: 12, border: '0.5px solid var(--line)',
+        <Link href="/moi/discovery" style={{ textDecoration: 'none', flex: 1 }}>
+          <button style={{
+            width: '100%', padding: '11px 14px',
+            borderRadius: 12, border: '0.5px solid rgba(23,62,49,.2)',
             background: 'var(--white)',
             fontSize: 13, fontWeight: 300,
-            color: 'var(--ink-3)',
-            cursor: 'not-allowed', textAlign: 'center' as const,
-            opacity: 0.55,
-          }}
-        >
-          Une question rapide
-        </button>
-        <Link href="/moi/questionnaire" style={{ textDecoration: 'none', flex: 1 }}>
+            color: 'var(--pine)',
+            cursor: 'pointer', textAlign: 'center' as const,
+          }}>
+            Une seule question rapide
+          </button>
+        </Link>
+        <Link href="/moi/discovery?mode=full" style={{ textDecoration: 'none', flex: 1 }}>
           <button style={{
             width: '100%', padding: '11px 14px',
             borderRadius: 12, border: 'none',
@@ -71,7 +67,7 @@ export default function AffinerCard({ level }: Props) {
             fontSize: 13, fontWeight: 400, color: 'var(--canvas)',
             cursor: 'pointer', textAlign: 'center' as const,
           }}>
-            Tout compléter
+            Affiner mon profil
           </button>
         </Link>
       </div>

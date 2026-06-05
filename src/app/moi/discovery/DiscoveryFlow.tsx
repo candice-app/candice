@@ -207,12 +207,58 @@ function DoneState({ mode }: { mode: "quick" | "full" }) {
   );
 }
 
+// ── Intro screen (full mode) ─────────────────────────────────────────────────
+
+function IntroScreen({ onStart, onQuick }: { onStart: () => void; onQuick: () => void }) {
+  return (
+    <div style={{ paddingTop: 48, paddingBottom: 40 }}>
+      <Link href="/moi" style={{ textDecoration: "none" }}>
+        <span style={{ fontSize: 12, color: "var(--ink-3)", fontWeight: 300 }}>← Mon profil</span>
+      </Link>
+      <h1 style={{
+        fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: 28,
+        color: "var(--ink)", letterSpacing: "-.018em", lineHeight: 1.2,
+        marginTop: 28, marginBottom: 18,
+      } as React.CSSProperties}>
+        Tu veux que Candice vise encore plus juste&nbsp;?
+      </h1>
+      <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.75, marginBottom: 32 }}>
+        Réponds à quelques questions très courtes pour que tes proches comprennent mieux ce qui te touche vraiment : le bon cadeau, le bon restaurant, le bon week-end, le bon mot, le bon geste — sans avoir à deviner.
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <button
+          onClick={onStart}
+          style={{
+            padding: "15px 20px", borderRadius: 12, border: "none",
+            background: "var(--pine)", fontSize: 15, fontWeight: 400,
+            color: "var(--canvas)", cursor: "pointer", textAlign: "center" as const,
+          }}
+        >
+          Affiner mon profil
+        </button>
+        <button
+          onClick={onQuick}
+          style={{
+            padding: "13px 20px", borderRadius: 12,
+            border: "0.5px solid rgba(23,62,49,.2)",
+            background: "var(--white)", fontSize: 14, fontWeight: 300,
+            color: "var(--pine)", cursor: "pointer", textAlign: "center" as const,
+          }}
+        >
+          Une seule question rapide
+        </button>
+      </div>
+    </div>
+  );
+}
+
 // ── Main component ─────────────────────────────────────────────────────────────
 
 export default function DiscoveryFlow({ initial, mode }: Props) {
   const [current, setCurrent] = useState<NextQuestionResult | null>(initial);
   const [done, setDone] = useState(initial === null);
   const [loading, setLoading] = useState(false);
+  const [intro, setIntro] = useState(mode === "full");
 
   async function handleAnswer(answer: string | string[], skip = false) {
     if (!current || loading) return;
@@ -242,6 +288,16 @@ export default function DiscoveryFlow({ initial, mode }: Props) {
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleQuickFromIntro() {
+    setIntro(false);
+    // In full mode started from intro, switch to quick: show only first question
+    // session is already loaded as a full session; just show first question
+  }
+
+  if (intro && mode === "full") {
+    return <IntroScreen onStart={() => setIntro(false)} onQuick={handleQuickFromIntro} />;
   }
 
   if (done || !current) return <DoneState mode={mode} />;
