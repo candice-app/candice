@@ -186,6 +186,7 @@ export default function QuestionnaireForm() {
   const [complicatedContext, setComplicatedContext] = useState<string>("");
 
   const [linkContactId, setLinkContactId] = useState<string | null>(null);
+  const [inviteToken, setInviteToken] = useState<string | null>(null);
   const [linkLoading, setLinkLoading] = useState(false);
   // Stable per form session — prevents duplicate rows on retry or double-click
   const [idempotencyKey] = useState<string>(() => crypto.randomUUID());
@@ -220,9 +221,13 @@ export default function QuestionnaireForm() {
   const [importantDates, setImportantDates] = useState("");
   const [additionalNotes, setAdditionalNotes] = useState("");
 
-  const profileUrl = linkContactId ? `${origin}/profil/${linkContactId}` : "";
+  const inviteUrl = inviteToken
+    ? `${origin}/invite/${inviteToken}`
+    : linkContactId
+      ? `${origin}/profil/${linkContactId}`
+      : "";
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(
-    `Hey ! J'essaie un truc pour faire plaisir aux gens que j'aime. 5 minutes ? ${profileUrl}`
+    `Hey ! J'essaie un truc pour faire plaisir aux gens que j'aime. 5 minutes ? ${inviteUrl}`
   )}`;
 
   const saveComplicatedContext = async (contactId: string, userId: string) => {
@@ -283,7 +288,7 @@ export default function QuestionnaireForm() {
   };
 
   const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(profileUrl);
+    await navigator.clipboard.writeText(inviteUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -319,7 +324,22 @@ export default function QuestionnaireForm() {
     const contact = await upsertContact(user.id);
     if (!contact) { setLinkLoading(false); return; }
 
+    // Create invite_link to track the invite and generate a shareable token
+    let token: string | null = null;
+    try {
+      const inviteRes = await fetch("/api/invite/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contactId: contact.id }),
+      });
+      if (inviteRes.ok) {
+        const { token: t } = await inviteRes.json() as { token: string };
+        token = t;
+      }
+    } catch { /* fallback to profil URL */ }
+
     setLinkContactId(contact.id);
+    setInviteToken(token);
     setMode("link");
     setStep(3);
     setLinkLoading(false);
@@ -330,6 +350,7 @@ export default function QuestionnaireForm() {
     // Send invite email if contact has an email — non-blocking
     if (email) {
       const senderFirstName = (await supabase.auth.getUser()).data.user?.user_metadata?.full_name?.split(" ")[0] ?? "";
+      const shareUrl = token ? `${origin}/invite/${token}` : `${origin}/profil/${contact.id}`;
       fetch("/api/emails/questionnaire-invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -337,7 +358,7 @@ export default function QuestionnaireForm() {
           contactEmail: email,
           contactFirstName: name.trim(),
           senderFirstName,
-          profileUrl: `${origin}/profil/${contact.id}`,
+          profileUrl: shareUrl,
         }),
       }).catch(() => {});
     }
@@ -670,29 +691,37 @@ export default function QuestionnaireForm() {
           </div>
         )}
 
-        {/* ── STEP 3 (link): Link display ───────────────────────────────── */}
+        {/* ── STEP 3 (link): Confirmation + lien à partager ────────────── */}
         {step === 3 && mode === "link" && linkContactId && (
           <div style={{ display: "flex", flexDirection: "column", gap: 24 }}>
             <div>
-              <p style={{ fontSize: 10, fontWeight: 400, letterSpacing: 3, textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
-                Lien généré
+              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 3, textTransform: "uppercase", color: "var(--terra)", marginBottom: 12 }}>
+                Invitation prête ✓
               </p>
               <h2 style={{ fontSize: 18, fontWeight: 400, color: "var(--con)", marginBottom: 6 }}>
                 Envoie ce lien à {name}.
               </h2>
-              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5 }}>
-                Il/elle peut remplir son profil en 5 minutes depuis son téléphone.
+              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", lineHeight: 1.6 }}>
+                Il/elle découvrira Candice à son rythme — ça prend une vingtaine de minutes.
               </p>
             </div>
 
-            <div style={{ border: "1px solid #E8C4A0", borderRadius: "var(--r-sm)", padding: "14px 16px", background: "#F8F4EE" }}>
-              <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "#9E7B5A", marginBottom: 6 }}>
-                Lien à partager
+            {inviteUrl && (
+              <div style={{ border: "0.5px solid rgba(23,62,49,.2)", borderRadius: "var(--r-sm)", padding: "14px 16px", background: "rgba(23,62,49,.04)" }}>
+                <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "var(--terra)", marginBottom: 6 }}>
+                  Lien à partager
+                </p>
+                <p style={{ fontSize: 12, fontWeight: 300, color: "var(--con)", wordBreak: "break-all", fontFamily: "monospace" }}>
+                  {inviteUrl}
+                </p>
+              </div>
+            )}
+
+            {email && (
+              <p style={{ fontSize: 11, fontWeight: 300, color: "var(--conf)", lineHeight: 1.5 }}>
+                Un email a également été envoyé à {email}.
               </p>
-              <p style={{ fontSize: 12, fontWeight: 300, color: "#7A5E44", wordBreak: "break-all", fontFamily: "monospace" }}>
-                {profileUrl || `…/profil/${linkContactId}`}
-              </p>
-            </div>
+            )}
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               <button onClick={handleCopyLink} className="btn-ghost" style={{ width: "100%" }}>
@@ -720,7 +749,7 @@ export default function QuestionnaireForm() {
               href={`/contacts/${linkContactId}`}
               style={{ fontSize: 12, fontWeight: 300, color: "var(--conf)", textAlign: "center", textDecoration: "none" }}
             >
-              Voir la fiche de {name}
+              Voir la fiche de {name} →
             </Link>
           </div>
         )}
