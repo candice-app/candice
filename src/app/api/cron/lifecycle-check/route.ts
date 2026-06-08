@@ -5,6 +5,9 @@ import { hardDeleteUser } from '@/lib/lifecycle/hard-delete';
 
 const JOB_NAME = 'lifecycle-check';
 
+// Phase de test — réactiver quand Stripe est branché (Phase 7)
+const ENABLE_TRIAL_LOCKOUT = false;
+
 async function getUserEmail(userId: string, admin: ReturnType<typeof createAdminClient>): Promise<string | null> {
   try {
     const { data } = await admin.auth.admin.getUserById(userId);
@@ -85,7 +88,7 @@ export async function GET(req: Request) {
         }
 
         // Trial expired → paused (Stripe Phase 7: check for payment method)
-        if (days >= 30) {
+        if (ENABLE_TRIAL_LOCKOUT && days >= 30) {
           await admin
             .from('my_profile')
             .update({ subscription_status: 'paused', subscription_paused_at: now.toISOString() })

@@ -10,19 +10,12 @@ export default async function AbonnementPage() {
 
   const { data: profile } = await supabase
     .from("my_profile")
-    .select("subscription_status, trial_started_at, subscription_paused_at, deletion_scheduled_at")
+    .select("subscription_status, deletion_scheduled_at")
     .eq("user_id", user.id)
     .maybeSingle();
 
   const status = (profile?.subscription_status as string) ?? "trial";
-  const trialStarted = profile?.trial_started_at ? new Date(profile.trial_started_at) : null;
   const deletionScheduledAt = profile?.deletion_scheduled_at as string | null;
-
-  let daysLeft: number | null = null;
-  if (status === "trial" && trialStarted) {
-    const elapsed = (Date.now() - trialStarted.getTime()) / (1000 * 60 * 60 * 24);
-    daysLeft = Math.max(0, Math.ceil(30 - elapsed));
-  }
 
   const statusLabels: Record<string, string> = {
     trial: "Essai gratuit",
@@ -57,16 +50,6 @@ export default async function AbonnementPage() {
               {statusLabels[status] ?? status}
             </span>
           </div>
-
-          {status === "trial" && daysLeft !== null && (
-            <div style={{ padding: "12px 14px", background: "var(--t2)", borderRadius: "var(--r-sm)", border: "0.5px solid var(--t3)", marginBottom: 12 }}>
-              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--con)", lineHeight: 1.6 }}>
-                {daysLeft === 0
-                  ? "Ton essai se termine aujourd'hui."
-                  : `Il te reste ${daysLeft} jour${daysLeft > 1 ? "s" : ""} d'essai gratuit.`}
-              </p>
-            </div>
-          )}
 
           {status === "active" && (
             <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.6 }}>

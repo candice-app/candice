@@ -72,17 +72,6 @@ export default function AbonnementActions({ status, deletionScheduledAt }: Props
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
       {/* Pause / Resume */}
-      {(status === "trial" || status === "active") && (
-        <button
-          onClick={handlePause}
-          disabled={loading === "pause"}
-          className="btn-ghost"
-          style={{ width: "100%", textAlign: "left", fontSize: 13, opacity: loading === "pause" ? 0.6 : 1 }}
-        >
-          {loading === "pause" ? "Mise en pause…" : "Mettre en pause"}
-        </button>
-      )}
-
       {status === "paused" && (
         <button
           onClick={handleResume}
