@@ -130,6 +130,7 @@ export default async function ContactPage({
     { count: feedbackCount },
     { data: memoriesData },
     { data: situationsData },
+    { data: inviteLinkData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -196,6 +197,13 @@ export default async function ContactPage({
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(5),
+    supabase
+      .from("invite_links")
+      .select("id")
+      .eq("pilote_id", user.id)
+      .eq("contact_id", id)
+      .limit(1)
+      .maybeSingle(),
   ]);
 
   if (!contact) notFound();
@@ -205,6 +213,11 @@ export default async function ContactPage({
   const cadenceResolution = await resolveCadenceForContact(user.id, id, admin);
   const isMemoryMode = !!typedContact.is_memory_mode;
   const procheUserId = typedContact.proche_user_id ?? null;
+  const inviteStatus: "none" | "pending" | "confirmed" = procheUserId
+    ? "confirmed"
+    : inviteLinkData
+      ? "pending"
+      : "none";
 
   // Fetch Proche's analysis when linked
   type ProcheAnalysis = {
@@ -392,17 +405,37 @@ export default async function ContactPage({
             <span style={{
               display: "inline-flex", alignItems: "center", gap: 5,
               fontSize: 10, fontWeight: 500, letterSpacing: ".18em", textTransform: "uppercase",
-              color: procheUserId ? "rgba(23,62,49,.85)" : "rgba(205,185,135,.8)",
-              background: procheUserId ? "rgba(23,62,49,.55)" : "rgba(205,185,135,.12)",
-              border: `0.5px solid ${procheUserId ? "rgba(23,62,49,.5)" : "rgba(205,185,135,.35)"}`,
+              color: inviteStatus === "confirmed"
+                ? "rgba(23,62,49,.85)"
+                : inviteStatus === "pending"
+                  ? "rgba(205,185,135,.9)"
+                  : "rgba(244,241,232,.38)",
+              background: inviteStatus === "confirmed"
+                ? "rgba(23,62,49,.55)"
+                : inviteStatus === "pending"
+                  ? "rgba(205,185,135,.15)"
+                  : "rgba(244,241,232,.07)",
+              border: `0.5px solid ${inviteStatus === "confirmed"
+                ? "rgba(23,62,49,.5)"
+                : inviteStatus === "pending"
+                  ? "rgba(205,185,135,.4)"
+                  : "rgba(244,241,232,.15)"}`,
               borderRadius: 20, padding: "3px 10px",
             }}>
               <span style={{
                 width: 5, height: 5, borderRadius: "50%",
-                background: procheUserId ? "var(--pine)" : "var(--champ)",
+                background: inviteStatus === "confirmed"
+                  ? "var(--pine)"
+                  : inviteStatus === "pending"
+                    ? "var(--champ)"
+                    : "rgba(244,241,232,.3)",
                 flexShrink: 0,
               }} />
-              {procheUserId ? "Profil confirmé" : "Incognito"}
+              {inviteStatus === "confirmed"
+                ? "Profil confirmé"
+                : inviteStatus === "pending"
+                  ? "Invitation envoyée"
+                  : "Pas encore invité(e)"}
             </span>
           </div>
 
@@ -710,8 +743,30 @@ export default async function ContactPage({
             <PointDivider label="À retenir" />
             <WishlistSection contactId={id} initialWishlist={wishlist} />
           </>
+        ) : inviteStatus === "pending" ? (
+          /* Invite sent — proche hasn't registered yet */
+          <>
+            <PointDivider label={`Connaître ${contactFirstName}`} />
+            <div style={{ padding: "28px 4px 20px" }}>
+              <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7, marginBottom: 8 }}>
+                L&apos;invitation a été envoyée à {contactFirstName}.
+              </p>
+              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, marginBottom: 20 }}>
+                Dès qu&apos;il ou elle crée son compte, Candice pourra anticiper les bons gestes pour lui ou elle.
+              </p>
+              <RelancerButton
+                contactId={id}
+                procheName={contactFirstName}
+                inviteStatus="pending"
+                contactEmail={typedContact.email}
+              />
+            </div>
+
+            <PointDivider label="À retenir" />
+            <WishlistSection contactId={id} initialWishlist={wishlist} />
+          </>
         ) : (
-          /* No profile and no proche account */
+          /* Never invited */
           <>
             <PointDivider label={`Connaître ${contactFirstName}`} />
             <div style={{ padding: "32px 4px 24px", textAlign: "center" }}>

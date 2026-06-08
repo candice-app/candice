@@ -91,6 +91,7 @@ export default async function ContactsPage() {
   const [
     { data: contacts },
     { data: pendingSuggestions },
+    { data: inviteLinks },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -103,10 +104,17 @@ export default async function ContactsPage() {
       .select("contact_id")
       .eq("user_id", user.id)
       .eq("status", "pending"),
+    supabase
+      .from("invite_links")
+      .select("contact_id")
+      .eq("pilote_id", user.id),
   ]);
 
   const pendingContactIds = new Set(
     (pendingSuggestions ?? []).map(s => s.contact_id).filter(Boolean) as string[]
+  );
+  const invitedContactIds = new Set(
+    (inviteLinks ?? []).map(l => l.contact_id).filter(Boolean) as string[]
   );
   const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
 
@@ -161,8 +169,10 @@ export default async function ContactsPage() {
               const pct = getCompletion(profile);
               const state = contactState(pct);
               const hasPending = pendingContactIds.has(contact.id);
-              const isAnticipe = pct >= 65;
-              const isDim = pct < 20;
+              const hasProche = !!contact.proche_user_id;
+              const hasInvite = invitedContactIds.has(contact.id);
+              const isAnticipe = pct >= 65 || hasProche;
+              const isDim = pct < 20 && !hasProche && !hasInvite;
               const signal = computeSignal(profile, pct, hasPending);
               const firstName = contact.name.split(" ")[0];
 
@@ -188,9 +198,14 @@ export default async function ContactsPage() {
                           fontWeight: 400,
                           marginTop: 4,
                         }}>
-                          {state} {firstName}
+                          {hasProche ? `Candice connaît ${firstName}` : `${state} ${firstName}`}
                         </div>
-                        {signal && (
+                        {!hasProche && hasInvite && (
+                          <div style={{ fontSize: 11, color: "rgba(205,185,135,.75)", fontWeight: 400, marginTop: 3, letterSpacing: ".04em" }}>
+                            Invitation envoyée · en attente
+                          </div>
+                        )}
+                        {signal && !hasInvite && !hasProche && (
                           <div style={{ fontSize: 12, color: "var(--ink-3)", fontWeight: 300, marginTop: 4 }}>
                             {typeof signal === "string" ? signal : (
                               <>{signal.pre}<b style={{ color: "var(--champ)", fontWeight: 600 }}>{signal.bold}</b></>
