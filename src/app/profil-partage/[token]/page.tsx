@@ -1,21 +1,7 @@
 import { createAdminClient } from "@/utils/supabase/admin";
-import SharedProfileFlow from "./SharedProfileFlow";
+import Wordmark from "@/components/presence/Wordmark";
 
-function InvalidLink() {
-  return (
-    <div style={{ minHeight: "100vh", background: "#FAF7F2", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px" }}>
-      <div style={{ maxWidth: 400, textAlign: "center" }}>
-        <p style={{ fontSize: 40, marginBottom: 20 }}>🔗</p>
-        <h1 style={{ fontSize: 22, fontWeight: 400, fontFamily: "'Playfair Display', Georgia, serif", color: "#1E1208", marginBottom: 12 }}>
-          Ce lien a expiré ou n&apos;est plus valide.
-        </h1>
-        <p style={{ fontSize: 15, fontWeight: 300, color: "#7A5E44", lineHeight: 1.65 }}>
-          Demande à la personne qui te l&apos;a envoyé de générer un nouveau lien depuis son application Candice.
-        </p>
-      </div>
-    </div>
-  );
-}
+export const dynamic = "force-dynamic";
 
 export default async function ProfilPartagePage({
   params,
@@ -25,14 +11,46 @@ export default async function ProfilPartagePage({
   const { token } = await params;
   const admin = createAdminClient();
 
+  // Legacy share_links — read sender name for a friendly message only
   const { data: shareLink } = await admin
     .from("share_links")
-    .select("sender_name, expires_at")
+    .select("sender_name")
     .eq("token", token)
     .maybeSingle();
 
-  if (!shareLink) return <InvalidLink />;
-  if (shareLink.expires_at && new Date(shareLink.expires_at) < new Date()) return <InvalidLink />;
+  const senderFirstName = shareLink?.sender_name?.split(" ")[0] ?? null;
 
-  return <SharedProfileFlow token={token} senderName={shareLink.sender_name} />;
+  return (
+    <div style={{
+      minHeight: "100svh",
+      background: "var(--canvas)",
+      fontFamily: "var(--font-sans)",
+      color: "var(--ink)",
+    }}>
+      <header style={{ padding: "20px 24px", borderBottom: "0.5px solid rgba(23,62,49,.1)" }}>
+        <Wordmark href="/" />
+      </header>
+
+      <div style={{
+        maxWidth: 480, margin: "0 auto",
+        padding: "80px 24px", textAlign: "center",
+      }}>
+        <h1 style={{
+          fontFamily: "var(--font-serif)", fontWeight: 300, fontSize: 26,
+          color: "var(--ink)", letterSpacing: "-.018em", lineHeight: 1.25,
+          marginBottom: 16,
+        } as React.CSSProperties}>
+          Ce lien n&apos;est plus valide.
+        </h1>
+        <p style={{
+          fontSize: 15, fontWeight: 300,
+          color: "rgba(26,26,26,.6)", lineHeight: 1.7,
+        }}>
+          {senderFirstName
+            ? `Demande à ${senderFirstName} de te renvoyer un nouveau lien d'invitation depuis son application Candice.`
+            : "Demande à la personne qui t'a invité(e) de te renvoyer un lien depuis son application Candice."}
+        </p>
+      </div>
+    </div>
+  );
 }

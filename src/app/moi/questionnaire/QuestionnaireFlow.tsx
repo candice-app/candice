@@ -62,6 +62,7 @@ type ExtendedProfile = MyProfile & {
 interface Props {
   userId: string;
   initial: MyProfile | null;
+  piloteFirstName?: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -110,7 +111,7 @@ const SINGULARITY_BREATH =
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export default function QuestionnaireFlow({ userId, initial }: Props) {
+export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: Props) {
   const supabase = createClient();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -568,5 +569,5 @@ export default function QuestionnaireFlow({ userId, initial }: Props) {
 
   // ─── Closing moment ───────────────────────────────────────────────────────
 
-  return <ClosingMoment />;
+  return <ClosingMoment piloteFirstName={piloteFirstName} />;
 }

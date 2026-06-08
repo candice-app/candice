@@ -11,7 +11,7 @@ const LINES = [
   "Tu pourras enrichir ton profil à tout moment.",
 ];
 
-export default function ClosingMoment() {
+export default function ClosingMoment({ piloteFirstName }: { piloteFirstName?: string }) {
   const router = useRouter();
   const [revealedLines, setRevealedLines] = useState<number[]>([]);
   const [ctaVisible, setCtaVisible] = useState(false);
@@ -70,6 +70,19 @@ export default function ClosingMoment() {
           </p>
         ))}
       </div>
+
+      {piloteFirstName && ctaVisible && (
+        <p style={{
+          fontFamily: "var(--font-serif)", fontWeight: 300,
+          fontSize: "clamp(15px, 2.8vw, 18px)", lineHeight: 1.55,
+          color: "rgba(252,251,247,.5)", letterSpacing: "-.01em",
+          paddingBottom: 20, paddingTop: 4,
+          borderTop: "0.5px solid rgba(255,255,255,.08)",
+          opacity: 1, transition: "opacity .6s ease",
+        } as React.CSSProperties}>
+          Ta dynamique avec {piloteFirstName} est maintenant disponible dans ton profil.
+        </p>
+      )}
 
       <div style={{
         paddingBottom: 52,
