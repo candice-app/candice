@@ -40,6 +40,7 @@ export interface Contact {
   proche_user_id?: string | null;
   relationship_register?: RelationshipRegister | null;
   gender?: 'femme' | 'homme' | 'non_binaire' | 'non_precise' | null;
+  date_de_naissance?: string | null;
 }
 
 export interface QuestionnaireResponse {

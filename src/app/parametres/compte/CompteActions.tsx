@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { calculateAge } from "@/lib/utils/age";
 
 const SEXE_OPTIONS = [
   { id: "femme",              label: "Femme" },
@@ -10,17 +11,6 @@ const SEXE_OPTIONS = [
   { id: "non_binaire",        label: "Non-binaire" },
   { id: "ne_se_prononce_pas", label: "Préfère ne pas préciser" },
 ];
-
-function calculateAge(dob: string): number | null {
-  if (!dob) return null;
-  const today = new Date();
-  const birth = new Date(dob);
-  if (isNaN(birth.getTime())) return null;
-  let age = today.getFullYear() - birth.getFullYear();
-  const m = today.getMonth() - birth.getMonth();
-  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-  return age;
-}
 
 interface Props {
   initialSexe: string;

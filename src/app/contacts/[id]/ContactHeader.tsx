@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ageSlice } from "@/lib/utils/age";
 
 function compressImage(file: File, maxPx: number, quality: number): Promise<Blob> {
   return new Promise((resolve, reject) => {
@@ -57,13 +58,14 @@ interface Props {
   email: string | null;
   signedUrl: string | null;
   memoryMode?: boolean;
+  dateDeNaissance?: string | null;
 }
 
 const RELATIONSHIP_LABEL: Record<string, string> = {
   partner: "Partenaire", friend: "Ami(e)", family: "Famille", colleague: "Collègue", other: "Autre",
 };
 
-export default function ContactHeader({ contactId, name, relationship, phone, email, signedUrl, memoryMode }: Props) {
+export default function ContactHeader({ contactId, name, relationship, phone, email, signedUrl, memoryMode, dateDeNaissance }: Props) {
   const [photo, setPhoto] = useState<string | null>(signedUrl);
   const [uploading, setUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -153,6 +155,7 @@ export default function ContactHeader({ contactId, name, relationship, phone, em
           textTransform: "uppercase",
         }}>
           {RELATIONSHIP_LABEL[relationship] ?? relationship}
+          {dateDeNaissance && ageSlice(dateDeNaissance) && ` · ${ageSlice(dateDeNaissance)}`}
           {memoryMode && " · En souvenir"}
         </div>
         {(phone || email) && (

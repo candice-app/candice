@@ -365,6 +365,7 @@ export default async function ContactPage({
             email={typedContact.email}
             signedUrl={photoSignedUrl}
             memoryMode={isMemoryMode}
+            dateDeNaissance={typedContact.date_de_naissance ?? null}
           />
           {!isMemoryMode && (
             <div style={{ flexShrink: 0, marginTop: 2 }}>

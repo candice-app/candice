@@ -180,6 +180,7 @@ export default function QuestionnaireForm() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState<string>("");
+  const [dateDeNaissance, setDateDeNaissance] = useState("");
   const [register, setRegister] = useState<string>("");
 
   const [complicatedContext, setComplicatedContext] = useState<string>("");
@@ -257,6 +258,7 @@ export default function QuestionnaireForm() {
         phone: phone || null,
         ...(register ? { relationship_register: register } : {}),
         ...(gender ? { gender } : {}),
+        ...(dateDeNaissance ? { date_de_naissance: dateDeNaissance } : {}),
         idempotency_key: idempotencyKey,
       })
       .select("id")
@@ -471,12 +473,12 @@ export default function QuestionnaireForm() {
               />
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+              <div style={{ flex: "1 1 140px" }}>
                 <label style={SHORT_LABEL}>E-mail</label>
                 <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="facultatif" />
               </div>
-              <div>
+              <div style={{ flex: "1 1 140px" }}>
                 <label style={SHORT_LABEL}>Téléphone</label>
                 <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="facultatif" />
               </div>
@@ -507,6 +509,17 @@ export default function QuestionnaireForm() {
                   </label>
                 ))}
               </div>
+            </div>
+
+            <div>
+              <label style={SHORT_LABEL}>Date de naissance</label>
+              <input
+                type="date"
+                value={dateDeNaissance}
+                onChange={(e) => setDateDeNaissance(e.target.value)}
+                max={new Date().toISOString().split("T")[0]}
+                style={{ colorScheme: "light" }}
+              />
             </div>
           </div>
         )}
