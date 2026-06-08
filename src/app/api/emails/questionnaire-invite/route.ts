@@ -5,85 +5,16 @@ export async function POST(request: NextRequest) {
   const { contactEmail, contactFirstName, senderFirstName, profileUrl } = await request.json();
   if (!contactEmail) return NextResponse.json({ error: "contactEmail required" }, { status: 400 });
 
+  const P = senderFirstName ?? null;
+  const subject = P
+    ? `Une invitation Candice de la part de ${P} ✦`
+    : "Une invitation Candice ✦";
+
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: contactEmail,
-    subject: `${senderFirstName ?? "Quelqu'un"} vous a ajouté sur Candice.`,
-    html: `<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ta fiche Candice</title>
-</head>
-<body style="margin:0;padding:0;background:#FAF7F2;font-family:'DM Sans',Helvetica,Arial,sans-serif;">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background:#FAF7F2;padding:48px 16px;">
-    <tr><td align="center">
-      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
-
-        <!-- Header -->
-        <tr>
-          <td style="padding-bottom:32px;">
-            <span style="font-size:13px;font-weight:500;letter-spacing:5px;text-transform:uppercase;color:#2C1A0E;">CANDICE</span>
-            <span style="display:inline-block;width:7px;height:7px;background:#C47A4A;border-radius:50%;vertical-align:top;margin-top:3px;margin-left:3px;"></span>
-          </td>
-        </tr>
-
-        <!-- Card -->
-        <tr>
-          <td style="background:#FFFFFF;border:1px solid #E8C4A0;border-radius:12px;padding:40px 36px;">
-
-            <!-- Title -->
-            <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:400;color:#2C1A0E;line-height:1.2;letter-spacing:-0.5px;margin:0 0 8px;">
-              Bonjour${contactFirstName ? ` ${contactFirstName}` : ""}.
-            </h1>
-            <p style="font-size:14px;font-weight:300;color:#C47A4A;margin:0 0 28px;">Une invitation de ${senderFirstName ?? "quelqu'un qui tient à toi"}.</p>
-
-            <!-- Body -->
-            <p style="font-size:15px;font-weight:300;color:#2C1A0E;line-height:1.75;margin:0 0 16px;">
-              <strong style="font-weight:500;">${senderFirstName ?? "Cette personne"}</strong> utilise Candice pour prendre soin des gens qu&rsquo;il/elle aime.
-            </p>
-            <p style="font-size:15px;font-weight:300;color:#7A5E44;line-height:1.75;margin:0 0 32px;">
-              Il/elle t&rsquo;invite à remplir ta fiche en 5 minutes — tes réponses resteront privées et aideront Candice à suggérer des attentions qui te correspondent vraiment.
-            </p>
-
-            <!-- CTA -->
-            <table cellpadding="0" cellspacing="0">
-              <tr>
-                <td style="background:#C47A4A;border-radius:8px;">
-                  <a href="${profileUrl ?? APP_URL}" style="display:inline-block;padding:14px 28px;font-size:14px;font-weight:500;color:#ffffff;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">
-                    Remplir ma fiche →
-                  </a>
-                </td>
-              </tr>
-            </table>
-
-            <!-- Divider -->
-            <div style="height:1px;background:#E8C4A0;margin:32px 0;"></div>
-
-            <!-- Privacy note -->
-            <p style="font-size:12px;font-weight:300;color:#9E7B5A;line-height:1.65;margin:0;">
-              🔒&nbsp; <strong style="color:#2C1A0E;font-weight:400;">${senderFirstName ?? "Cette personne"} ne lira jamais tes réponses.</strong>
-              Candice les analyse en silence pour personnaliser les attentions — jamais tes mots exacts ne seront partagés.
-            </p>
-          </td>
-        </tr>
-
-        <!-- Footer -->
-        <tr>
-          <td style="padding-top:24px;text-align:center;">
-            <p style="font-size:11px;font-weight:300;color:#9E7B5A;margin:0;">
-              Tu reçois cet e-mail car quelqu&rsquo;un t&rsquo;a invité(e) via Candice.<br />
-              <a href="${APP_URL}" style="color:#C47A4A;text-decoration:none;">candice.app</a>
-            </p>
-          </td>
-        </tr>
-
-      </table>
-    </td></tr>
-  </table>
-</body>
-</html>`,
+    subject,
+    html: buildInviteHtml(P, contactFirstName ?? null, profileUrl ?? APP_URL),
   });
 
   if (error) {
@@ -92,4 +23,57 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ success: true });
+}
+
+function buildInviteHtml(piloteFirstName: string | null, procheFirstName: string | null, inviteUrl: string): string {
+  const greeting = procheFirstName ? `Bonjour ${procheFirstName}.` : "Bonjour.";
+  const senderLine = piloteFirstName
+    ? `${piloteFirstName} t&rsquo;a invité(e) à créer ta fiche Candice.`
+    : "Tu as été invité(e) à créer ta fiche Candice.";
+  const helpLine = piloteFirstName
+    ? `Candice garde les informations fines et aide simplement ${piloteFirstName} à mieux choisir quand il veut te faire plaisir.`
+    : "Candice garde les informations fines et aide tes proches à mieux choisir quand ils veulent te faire plaisir.";
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><title>Ton invitation Candice</title></head>
+<body style="margin:0;padding:0;background:#FDFDFB;font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+  <span style="display:none;font-size:1px;max-height:0;overflow:hidden;opacity:0;">Pour aider tes proches à mieux penser à toi, sans avoir à tout expliquer.</span>
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#FDFDFB;padding:48px 16px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+        <tr><td style="padding-bottom:28px;">
+          <span style="font-size:13px;font-weight:500;letter-spacing:5px;text-transform:uppercase;color:#1A1A1A;">CANDICE</span><span style="display:inline-block;width:6px;height:6px;background:#173E31;border-radius:50%;vertical-align:top;margin-top:4px;margin-left:3px;"></span>
+        </td></tr>
+        <tr><td style="background:#FFFFFF;border:0.5px solid rgba(23,62,49,0.1);border-radius:16px;padding:40px 36px;">
+          <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:400;color:#1A1A1A;line-height:1.15;letter-spacing:-0.5px;margin:0 0 8px;">
+            ${greeting}
+          </h1>
+          <p style="font-size:14px;font-weight:300;color:rgba(26,26,26,0.55);margin:0 0 28px;">
+            ${senderLine}
+          </p>
+          <p style="font-size:15px;font-weight:300;color:#1A1A1A;line-height:1.75;margin:0 0 20px;">
+            Candice apprend ce qui te ressemble : les attentions qui te touchent, les détails qui comptent, les choses à éviter, les petits gestes qui font vraiment la différence.
+          </p>
+          <p style="font-size:15px;font-weight:300;color:#1A1A1A;line-height:1.75;margin:0 0 32px;">
+            L&rsquo;objectif n&rsquo;est pas de tout partager. Au contraire&nbsp;: ta fiche reste à toi. ${helpLine}
+          </p>
+          <table cellpadding="0" cellspacing="0"><tr><td style="background:#173E31;border-radius:8px;">
+            <a href="${inviteUrl}" style="display:inline-block;padding:14px 28px;font-size:14px;font-weight:500;color:#FDFDFB;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">
+              Découvrir mon invitation →
+            </a>
+          </td></tr></table>
+          <p style="font-size:12px;font-weight:300;color:rgba(26,26,26,0.45);line-height:1.65;margin:24px 0 0;">
+            Tu peux répondre à ton rythme et garder la main sur ce qui est visible.
+          </p>
+        </td></tr>
+        <tr><td style="padding-top:24px;text-align:center;">
+          <p style="font-size:11px;font-weight:300;color:rgba(26,26,26,0.4);margin:0;">
+            <a href="${APP_URL}" style="color:rgba(26,26,26,0.4);text-decoration:none;">candice.app</a>
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
 }

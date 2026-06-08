@@ -46,8 +46,8 @@ export async function POST(req: NextRequest) {
       from: FROM_EMAIL,
       to: contact.email,
       subject: piloteFirstName
-        ? `${piloteFirstName} t'a renvoyé un lien Candice ✦`
-        : "Ton lien Candice t'attend ✦",
+        ? `${piloteFirstName} t'invite sur Candice ✦`
+        : "Ton invitation Candice t'attend ✦",
       html: buildReinviteHtml(piloteFirstName, procheFirstName, inviteUrl),
     });
     return NextResponse.json({ method: "email", reason: "reinvite" });
@@ -151,13 +151,17 @@ function buildNudgeEmailHtml(piloteFirstName: string | null, procheFirstName: st
 function buildReinviteHtml(piloteFirstName: string | null, procheFirstName: string, inviteUrl: string): string {
   const greeting = procheFirstName ? `Bonjour ${procheFirstName}.` : "Bonjour.";
   const senderLine = piloteFirstName
-    ? `${piloteFirstName} aimerait mieux prendre soin de toi — ton invitation Candice t'attend.`
-    : "Ton invitation Candice t'attend.";
+    ? `${piloteFirstName} t&rsquo;a invité(e) à créer ta fiche Candice.`
+    : "Tu as été invité(e) à créer ta fiche Candice.";
+  const bodyLine = piloteFirstName
+    ? `En quelques questions, Candice comprend ce qui te fait plaisir, ce qui te touche et ce qu&rsquo;il vaut mieux éviter. Ensuite, elle aide ${piloteFirstName} à trouver des attentions vraiment adaptées &mdash; sans lui dévoiler tous les détails de ta fiche.`
+    : "En quelques questions, Candice comprend ce qui te fait plaisir, ce qui te touche et ce qu&rsquo;il vaut mieux éviter. Ensuite, elle aide tes proches à trouver des attentions vraiment adaptées &mdash; sans leur dévoiler tous les détails de ta fiche.";
 
   return `<!DOCTYPE html>
 <html lang="fr">
 <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><title>Ton invitation Candice</title></head>
 <body style="margin:0;padding:0;background:#FDFDFB;font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+  <span style="display:none;font-size:1px;max-height:0;overflow:hidden;opacity:0;">Pour recevoir des attentions plus justes, moins génériques.</span>
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#FDFDFB;padding:48px 16px;">
     <tr><td align="center">
       <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
@@ -171,14 +175,17 @@ function buildReinviteHtml(piloteFirstName: string | null, procheFirstName: stri
           <p style="font-size:14px;font-weight:300;color:rgba(26,26,26,0.55);margin:0 0 28px;">
             ${senderLine}
           </p>
-          <p style="font-size:15px;font-weight:300;color:#1A1A1A;line-height:1.75;margin:0 0 28px;">
-            Quelques questions sur ce qui te fait plaisir, ce qui te touche, ce qu&rsquo;il vaut mieux éviter. Ça prend une vingtaine de minutes &mdash; une seule fois.
+          <p style="font-size:15px;font-weight:300;color:#1A1A1A;line-height:1.75;margin:0 0 32px;">
+            ${bodyLine}
           </p>
           <table cellpadding="0" cellspacing="0"><tr><td style="background:#173E31;border-radius:8px;">
             <a href="${inviteUrl}" style="display:inline-block;padding:14px 28px;font-size:14px;font-weight:500;color:#FDFDFB;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">
-              Voir l&rsquo;invitation →
+              Créer ma fiche →
             </a>
           </td></tr></table>
+          <p style="font-size:12px;font-weight:300;color:rgba(26,26,26,0.45);line-height:1.65;margin:24px 0 0;">
+            Tu choisis ce que tu partages.
+          </p>
         </td></tr>
         <tr><td style="padding-top:24px;text-align:center;">
           <p style="font-size:11px;font-weight:300;color:rgba(26,26,26,0.4);margin:0;">
