@@ -5,6 +5,7 @@ import DashboardShell from "@/components/layout/DashboardShell";
 import CompteActions from "./CompteActions";
 
 type PracticalInfo = {
+  prenom?: string;
   sexe?: string;
   age?: string;
   profession?: string;
@@ -46,6 +47,18 @@ export default async function ComptePage() {
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
+
+          {/* Prénom — lecture seule, si renseigné */}
+          {pi?.prenom && (
+            <div style={{ borderBottom: "0.5px solid var(--line)", padding: "16px 0" }}>
+              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", marginBottom: 4 }}>
+                Prénom
+              </p>
+              <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink)" }}>
+                {pi.prenom}
+              </p>
+            </div>
+          )}
 
           {/* Email — lecture seule */}
           <div style={{ borderBottom: "0.5px solid var(--line)", padding: "16px 0" }}>
