@@ -1,20 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
 
 export async function POST(request: NextRequest) {
-  const { contactEmail, contactFirstName, senderFirstName, profileUrl } = await request.json();
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { contactEmail, contactFirstName, profileUrl } = await request.json();
   if (!contactEmail) return NextResponse.json({ error: "contactEmail required" }, { status: 400 });
 
-  const P = senderFirstName ?? null;
-  const subject = P
-    ? `Une invitation Candice de la part de ${P} ✦`
+  // Authoritative pilote name from auth metadata
+  const piloteFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null;
+
+  // Pilote gender from my_profile.practical_info.sexe
+  const { data: piloteProfile } = await supabase
+    .from("my_profile")
+    .select("practical_info")
+    .eq("user_id", user.id)
+    .maybeSingle();
+  const piloteSexe = ((piloteProfile?.practical_info as Record<string, unknown> | null)?.sexe as string | null) ?? null;
+
+  const subject = piloteFirstName
+    ? `Une invitation Candice de la part de ${piloteFirstName} ✦`
     : "Une invitation Candice ✦";
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
     to: contactEmail,
     subject,
-    html: buildInviteHtml(P, contactFirstName ?? null, profileUrl ?? APP_URL),
+    html: buildInviteHtml(piloteFirstName, contactFirstName ?? null, profileUrl ?? APP_URL, piloteSexe),
   });
 
   if (error) {
@@ -25,13 +40,25 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ success: true });
 }
 
-function buildInviteHtml(piloteFirstName: string | null, procheFirstName: string | null, inviteUrl: string): string {
+function pilotePronom(sexe: string | null): string {
+  if (sexe === "femme") return "elle";
+  if (sexe === "homme") return "il";
+  return "il ou elle";
+}
+
+function buildInviteHtml(
+  piloteFirstName: string | null,
+  procheFirstName: string | null,
+  inviteUrl: string,
+  piloteSexe: string | null,
+): string {
   const greeting = procheFirstName ? `Bonjour ${procheFirstName}.` : "Bonjour.";
   const senderLine = piloteFirstName
     ? `${piloteFirstName} t&rsquo;a invité(e) à créer ta fiche Candice.`
     : "Tu as été invité(e) à créer ta fiche Candice.";
+  const pronom = pilotePronom(piloteSexe);
   const helpLine = piloteFirstName
-    ? `Candice garde les informations fines et aide simplement ${piloteFirstName} à mieux choisir quand il veut te faire plaisir.`
+    ? `Candice garde les informations fines et aide simplement ${piloteFirstName} à mieux choisir quand ${pronom} veut te faire plaisir.`
     : "Candice garde les informations fines et aide tes proches à mieux choisir quand ils veulent te faire plaisir.";
 
   return `<!DOCTYPE html>
@@ -53,7 +80,7 @@ function buildInviteHtml(piloteFirstName: string | null, procheFirstName: string
             ${senderLine}
           </p>
           <p style="font-size:15px;font-weight:300;color:#1A1A1A;line-height:1.75;margin:0 0 20px;">
-            Candice apprend ce qui te ressemble : les attentions qui te touchent, les détails qui comptent, les choses à éviter, les petits gestes qui font vraiment la différence.
+            Candice apprend ce qui te ressemble&nbsp;: les attentions qui te touchent, les détails qui comptent, les choses à éviter, les petits gestes qui font vraiment la différence.
           </p>
           <p style="font-size:15px;font-weight:300;color:#1A1A1A;line-height:1.75;margin:0 0 32px;">
             L&rsquo;objectif n&rsquo;est pas de tout partager. Au contraire&nbsp;: ta fiche reste à toi. ${helpLine}

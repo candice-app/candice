@@ -349,7 +349,6 @@ export default function QuestionnaireForm() {
 
     // Send invite email if contact has an email — non-blocking
     if (email) {
-      const senderFirstName = (await supabase.auth.getUser()).data.user?.user_metadata?.full_name?.split(" ")[0] ?? "";
       const shareUrl = token ? `${origin}/invite/${token}` : `${origin}/profil/${contact.id}`;
       fetch("/api/emails/questionnaire-invite", {
         method: "POST",
@@ -357,7 +356,6 @@ export default function QuestionnaireForm() {
         body: JSON.stringify({
           contactEmail: email,
           contactFirstName: name.trim(),
-          senderFirstName,
           profileUrl: shareUrl,
         }),
       }).catch(() => {});
