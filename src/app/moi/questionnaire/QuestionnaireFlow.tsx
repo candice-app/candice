@@ -22,6 +22,7 @@ import SingularityStep from "@/components/questionnaire/SingularityStep";
 import PracticalStep from "@/components/questionnaire/PracticalStep";
 import ClosingMoment from "@/components/questionnaire/ClosingMoment";
 import EditMenu from "@/components/questionnaire/EditMenu";
+import OnboardingPopup from "@/components/questionnaire/OnboardingPopup";
 import type { SingularityAnswers } from "@/components/questionnaire/SingularityStep";
 import type { PracticalInfo } from "@/components/questionnaire/PracticalStep";
 
@@ -29,6 +30,7 @@ import type { PracticalInfo } from "@/components/questionnaire/PracticalStep";
 
 type Step =
   | "editMenu"
+  | "onboarding"
   | "gender"
   | "attention"
   | "attentionBreath"
@@ -109,6 +111,16 @@ const SINGULARITY_BREATH =
   "Ces réponses donnent à Candice la matière la plus personnelle : ce qui ne rentre dans aucune case. " +
   "Ton profil relationnel prend maintenant toute sa profondeur.";
 
+const STEP_ORDER: Step[] = [
+  "gender", "attention", "attentionBreath",
+  "temperament2", "temperament2Breath",
+  "temperament3", "temperament3Breath",
+  "lifestyle4", "lifestyle4Breath",
+  "lifestyle5", "lifestyle5Breath",
+  "singularity6", "singularity6Breath",
+  "practical7",
+];
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: Props) {
@@ -123,7 +135,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   const partParam = searchParams.get("part");
   const initialStep: Step = partParam
     ? partIdToStep(partParam)
-    : ext ? "editMenu" : "gender";
+    : ext ? "editMenu" : "onboarding";
 
   // ── Edit mode state ──────────────────────────────────────────────────────
   const [editMode, setEditMode] = useState<EditMode>(partParam ? "single" : null);
@@ -156,6 +168,27 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   }
 
   const canGoBack = stepHistory.length > 0;
+
+  function withProgress(content: React.ReactNode) {
+    const idx = STEP_ORDER.indexOf(step);
+    const progress = idx === -1 ? 0 : (idx + 1) / STEP_ORDER.length;
+    return (
+      <>
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0,
+          height: 3, zIndex: 20, background: "rgba(23,62,49,.10)",
+        }}>
+          <div style={{
+            height: "100%",
+            width: `${progress * 100}%`,
+            background: "var(--pine)",
+            transition: "width .5s ease",
+          }} />
+        </div>
+        {content}
+      </>
+    );
+  }
 
   // ── Invite-link: fire once when questionnaire closes ─────────────────────
   useEffect(() => {
@@ -223,10 +256,16 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
     );
   }
 
+  // ─── Onboarding (shown once, new users only) ─────────────────────────────
+
+  if (step === "onboarding") {
+    return <OnboardingPopup onStart={() => navigate("gender")} />;
+  }
+
   // ─── Step 0: Genre ───────────────────────────────────────────────────────
 
   if (step === "gender") {
-    return (
+    return withProgress(
       <GenderStep
         userId={userId}
         supabase={supabase}
@@ -238,7 +277,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   // ─── Step 1: Attention ────────────────────────────────────────────────────
 
   if (step === "attention") {
-    return (
+    return withProgress(
       <AttentionStep
         userId={userId}
         onBack={canGoBack ? goBack : undefined}
@@ -255,10 +294,11 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   }
 
   if (step === "attentionBreath") {
-    return (
+    return withProgress(
       <AttentionBreath
         breathText={attentionBreathText}
         onContinue={() => navigate("temperament2")}
+        progressLabel="Candice commence à te connaître."
       />
     );
   }
@@ -266,7 +306,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   // ─── Step 2: Énergie relationnelle ───────────────────────────────────────
 
   if (step === "temperament2") {
-    return (
+    return withProgress(
       <TemperamentStep
         questions={STEP2_QUESTIONS}
         stepNumber={2}
@@ -305,11 +345,12 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   }
 
   if (step === "temperament2Breath") {
-    return (
+    return withProgress(
       <TemperamentBreath
         breathText={step2BreathText}
         onContinue={() => navigate("temperament3")}
         ctaLabel="Continuer →"
+        progressLabel="Candice te connaît un peu mieux."
       />
     );
   }
@@ -317,7 +358,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   // ─── Step 3: Communication & décision ────────────────────────────────────
 
   if (step === "temperament3") {
-    return (
+    return withProgress(
       <TemperamentStep
         questions={STEP3_QUESTIONS}
         stepNumber={3}
@@ -357,11 +398,12 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   }
 
   if (step === "temperament3Breath") {
-    return (
+    return withProgress(
       <TemperamentBreath
         breathText={step3BreathText}
         onContinue={() => navigate("lifestyle4")}
-        ctaLabel="Continuer mon profil →"
+        ctaLabel="Continuer →"
+        progressLabel="Candice saisit ce qui compte pour toi."
       />
     );
   }
@@ -369,7 +411,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   // ─── Step 4: Ce que j'aime vivre ─────────────────────────────────────────
 
   if (step === "lifestyle4") {
-    return (
+    return withProgress(
       <LifestyleStep
         questions={STEP4_QUESTIONS}
         initialAnswers={lifestyleAnswers}
@@ -417,11 +459,12 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   }
 
   if (step === "lifestyle4Breath") {
-    return (
+    return withProgress(
       <TemperamentBreath
         breathText={lifestyle4BreathText}
         onContinue={() => navigate("lifestyle5")}
         ctaLabel="Continuer →"
+        progressLabel="Encore quelques questions, et Candice te connaîtra vraiment."
       />
     );
   }
@@ -434,7 +477,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
     const q17TextInit = typeof ext?.relational_filters?.q17Text === "string"
       ? ext.relational_filters.q17Text as string : "";
 
-    return (
+    return withProgress(
       <AvoidStep
         q18Question={q18}
         q19Question={q19}
@@ -488,11 +531,12 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   }
 
   if (step === "lifestyle5Breath") {
-    return (
+    return withProgress(
       <TemperamentBreath
         breathText={lifestyle5BreathText}
         onContinue={() => navigate("singularity6")}
         ctaLabel="Continuer →"
+        progressLabel="Encore quelques questions, et Candice te connaîtra vraiment."
       />
     );
   }
@@ -504,7 +548,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
       ? (ext.singularity_answers as unknown as SingularityAnswers)
       : undefined;
 
-    return (
+    return withProgress(
       <SingularityStep
         initialAnswers={singInit}
         onBack={canGoBack ? goBack : undefined}
@@ -531,11 +575,12 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   }
 
   if (step === "singularity6Breath") {
-    return (
+    return withProgress(
       <TemperamentBreath
         breathText={SINGULARITY_BREATH}
         onContinue={() => navigate("practical7")}
         ctaLabel="Continuer →"
+        progressLabel="Encore quelques questions, et Candice te connaîtra vraiment."
       />
     );
   }
@@ -543,7 +588,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   // ─── Step 7: Informations pratiques ──────────────────────────────────────
 
   if (step === "practical7") {
-    return (
+    return withProgress(
       <PracticalStep
         initialInfo={ext?.practical_info ?? undefined}
         onBack={canGoBack ? goBack : undefined}

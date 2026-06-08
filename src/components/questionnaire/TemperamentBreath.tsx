@@ -8,6 +8,7 @@ interface Props {
   breathText: string;
   onContinue: () => void;
   ctaLabel?: string;
+  progressLabel?: string;
 }
 
 function splitBreathText(text: string): string[] {
@@ -17,7 +18,7 @@ function splitBreathText(text: string): string[] {
   return parts.length >= 2 ? parts.slice(0, 3) : [text];
 }
 
-export default function TemperamentBreath({ breathText, onContinue, ctaLabel = "Continuer →" }: Props) {
+export default function TemperamentBreath({ breathText, onContinue, ctaLabel = "Continuer →", progressLabel }: Props) {
   const router = useRouter();
   const [revealedLines, setRevealedLines] = useState<number[]>([]);
   const [ctaVisible, setCtaVisible] = useState(false);
@@ -54,6 +55,20 @@ export default function TemperamentBreath({ breathText, onContinue, ctaLabel = "
       padding: "0 30px",
       zIndex: 10,
     }}>
+      {progressLabel && (
+        <p style={{
+          fontFamily: "var(--font-sans)",
+          fontSize: 11,
+          fontWeight: 500,
+          letterSpacing: "0.07em",
+          textTransform: "uppercase",
+          color: "rgba(252,251,247,.36)",
+          margin: 0,
+          paddingTop: 56,
+        } as React.CSSProperties}>
+          {progressLabel}
+        </p>
+      )}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center" }}>
         <LivePoint size={7} tone="glow" style={{ marginBottom: 26 }} />
 
