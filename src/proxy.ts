@@ -1,8 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, userAgent } from "next/server";
 import { createClient } from "@/utils/supabase/middleware";
 
-const protectedRoutes = ["/dashboard", "/contacts"];
-const authRoutes = ["/login", "/register"];
+// Personal routes inaccessible on desktop
+const DESKTOP_GATED_PREFIXES = [
+  "/moi",
+  "/contacts",
+  "/parametres",
+  "/dashboard",
+  "/historique",
+  "/idees",
+  "/parler-a-candice",
+  "/partage",
+  "/profil/",   // /profil/[id] only — /profil-partage/ stays public
+];
 
 // Routes that bypass the beta gate entirely
 const BETA_EXEMPT_EXACT = new Set(["/beta-access"]);
@@ -11,7 +21,16 @@ const BETA_EXEMPT_PREFIXES = ["/api/beta-access", "/api/auth/callback", "/beta-a
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // ── Beta gate ─────────────────────────────────────────────────────────────
+  // ── Desktop gating ─────────────────────────────────────────────────────────
+  // Redirect personal routes to "continue on phone" screen on non-mobile UA.
+  const { device } = userAgent(request);
+  const isDesktop = device.type !== "mobile" && device.type !== "tablet";
+
+  if (isDesktop && DESKTOP_GATED_PREFIXES.some(p => pathname.startsWith(p))) {
+    return NextResponse.redirect(new URL("/continuer-sur-telephone", request.url));
+  }
+
+  // ── Beta gate ──────────────────────────────────────────────────────────────
   const isBetaExempt =
     BETA_EXEMPT_EXACT.has(pathname) ||
     BETA_EXEMPT_PREFIXES.some((p) => pathname.startsWith(p));
@@ -22,8 +41,12 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
+  // ── Supabase session refresh ───────────────────────────────────────────────
   const { supabase, supabaseResponse } = createClient(request);
   const { data: { user } } = await supabase.auth.getUser();
+
+  const protectedRoutes = ["/dashboard", "/contacts"];
+  const authRoutes = ["/login", "/register"];
 
   if (!user && protectedRoutes.some((r) => pathname.startsWith(r))) {
     return NextResponse.redirect(new URL("/login", request.url));

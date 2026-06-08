@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import QRCode from "react-qr-code";
 import Wordmark from "@/components/presence/Wordmark";
 
 export default function LandingInvite({
@@ -13,7 +14,16 @@ export default function LandingInvite({
 }) {
   const router = useRouter();
   const [accepted, setAccepted] = useState(false);
+  const [isDesktopView, setIsDesktopView] = useState(false);
+  const [inviteUrl, setInviteUrl] = useState("");
   const P = piloteFirstName;
+
+  useEffect(() => {
+    const ua = navigator.userAgent;
+    const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(ua);
+    setIsDesktopView(!isMobile);
+    setInviteUrl(window.location.href);
+  }, []);
 
   return (
     <div style={{
@@ -100,52 +110,80 @@ export default function LandingInvite({
           bien. Candice t&apos;accompagne, une question à la fois.
         </p>
 
-        {/* CTA */}
-        <button
-          onClick={() => accepted && router.push(`/register?invite_token=${encodeURIComponent(token)}`)}
-          disabled={!accepted}
-          style={{
-            width: "100%",
-            background: accepted ? "var(--pine)" : "rgba(23,62,49,.2)",
-            color: "var(--canvas)",
-            border: "none",
-            borderRadius: 10,
-            padding: "16px 24px",
-            fontSize: 16,
-            fontWeight: 500,
-            cursor: accepted ? "pointer" : "not-allowed",
-            fontFamily: "var(--font-sans)",
-            marginBottom: 16,
-            transition: "background .2s",
-          }}
-        >
-          Créer mon compte et commencer
-        </button>
-
-        {/* Checkbox consentement */}
-        <label style={{ display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer" }}>
-          <span
-            onClick={() => setAccepted(v => !v)}
-            style={{
-              width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 2,
-              border: accepted ? "1.5px solid var(--pine)" : "1px solid rgba(23,62,49,.3)",
-              background: accepted ? "var(--pine)" : "transparent",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "background .15s, border .15s",
-              cursor: "pointer",
-            }}
-          >
-            {accepted && (
-              <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
-                <path d="M1 4L4 7L10 1" stroke="#FDFDFB" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+        {/* CTA — mobile: bouton + checkbox / desktop: QR code */}
+        {isDesktopView ? (
+          <div style={{ textAlign: "center" }}>
+            <p style={{
+              fontSize: 14, fontWeight: 300,
+              color: "rgba(26,26,26,.6)", lineHeight: 1.65,
+              marginBottom: 24,
+            }}>
+              Ouvre ce lien sur ton téléphone pour continuer.
+            </p>
+            {inviteUrl && (
+              <div style={{
+                background: "#fff",
+                padding: 22,
+                borderRadius: 12,
+                display: "inline-block",
+                border: "0.5px solid rgba(23,62,49,.1)",
+                marginBottom: 16,
+              }}>
+                <QRCode value={inviteUrl} size={160} fgColor="#173E31" bgColor="#fff" />
+              </div>
             )}
-          </span>
-          <span style={{ fontSize: 13, fontWeight: 300, color: "var(--ink)", lineHeight: 1.55 }}>
-            J&apos;accepte les conditions et je démarre mon mois d&apos;essai gratuit — sans carte bancaire, sans
-            engagement.
-          </span>
-        </label>
+            <p style={{ fontSize: 12, fontWeight: 300, color: "rgba(26,26,26,.35)", lineHeight: 1.6 }}>
+              Ou copie ce lien et ouvre-le dans ton navigateur mobile.
+            </p>
+          </div>
+        ) : (
+          <>
+            <button
+              onClick={() => accepted && router.push(`/register?invite_token=${encodeURIComponent(token)}`)}
+              disabled={!accepted}
+              style={{
+                width: "100%",
+                background: accepted ? "var(--pine)" : "rgba(23,62,49,.2)",
+                color: "var(--canvas)",
+                border: "none",
+                borderRadius: 10,
+                padding: "16px 24px",
+                fontSize: 16,
+                fontWeight: 500,
+                cursor: accepted ? "pointer" : "not-allowed",
+                fontFamily: "var(--font-sans)",
+                marginBottom: 16,
+                transition: "background .2s",
+              }}
+            >
+              Créer mon compte et commencer
+            </button>
+
+            <label style={{ display: "flex", alignItems: "flex-start", gap: 12, cursor: "pointer" }}>
+              <span
+                onClick={() => setAccepted(v => !v)}
+                style={{
+                  width: 20, height: 20, borderRadius: 5, flexShrink: 0, marginTop: 2,
+                  border: accepted ? "1.5px solid var(--pine)" : "1px solid rgba(23,62,49,.3)",
+                  background: accepted ? "var(--pine)" : "transparent",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  transition: "background .15s, border .15s",
+                  cursor: "pointer",
+                }}
+              >
+                {accepted && (
+                  <svg width="11" height="8" viewBox="0 0 11 8" fill="none">
+                    <path d="M1 4L4 7L10 1" stroke="#FDFDFB" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </span>
+              <span style={{ fontSize: 13, fontWeight: 300, color: "var(--ink)", lineHeight: 1.55 }}>
+                J&apos;accepte les conditions et je démarre mon mois d&apos;essai gratuit — sans carte bancaire, sans
+                engagement.
+              </span>
+            </label>
+          </>
+        )}
 
       </div>
     </div>
