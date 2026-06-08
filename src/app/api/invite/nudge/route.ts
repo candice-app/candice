@@ -16,13 +16,41 @@ export async function POST(req: NextRequest) {
 
   const { data: contact } = await admin
     .from("contacts")
-    .select("id, name, proche_user_id")
+    .select("id, name, email, proche_user_id")
     .eq("id", contactId)
     .eq("user_id", user.id)
     .maybeSingle();
 
-  if (!contact?.proche_user_id) {
-    return NextResponse.json({ error: "Contact not linked" }, { status: 404 });
+  if (!contact) return NextResponse.json({ error: "Contact not found" }, { status: 404 });
+
+  const piloteFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null;
+
+  // Case: proche hasn't registered yet — resend invite link by email
+  if (!contact.proche_user_id) {
+    if (!contact.email) {
+      return NextResponse.json({ method: "none", reason: "no_email" });
+    }
+    const { data: newLink } = await admin
+      .from("invite_links")
+      .insert({
+        pilote_id: user.id,
+        contact_id: contactId,
+        pilote_name: piloteFirstName ?? null,
+      })
+      .select("token")
+      .single();
+    if (!newLink) return NextResponse.json({ method: "none" });
+    const inviteUrl = `${APP_URL}/invite/${newLink.token}`;
+    const procheFirstName = contact.name.split(" ")[0];
+    await resend.emails.send({
+      from: FROM_EMAIL,
+      to: contact.email,
+      subject: piloteFirstName
+        ? `${piloteFirstName} t'a renvoyé un lien Candice ✦`
+        : "Ton lien Candice t'attend ✦",
+      html: buildReinviteHtml(piloteFirstName, procheFirstName, inviteUrl),
+    });
+    return NextResponse.json({ method: "email", reason: "reinvite" });
   }
 
   const procheUserId = contact.proche_user_id as string;
@@ -43,8 +71,6 @@ export async function POST(req: NextRequest) {
   if (procheComplete) {
     return NextResponse.json({ method: "none", reason: "already_complete" });
   }
-
-  const piloteFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null;
 
   const { sent } = await sendPushToUser(
     procheUserId,
@@ -108,6 +134,49 @@ function buildNudgeEmailHtml(piloteFirstName: string | null, procheFirstName: st
           <table cellpadding="0" cellspacing="0"><tr><td style="background:#173E31;border-radius:8px;">
             <a href="${APP_URL}/moi/questionnaire" style="display:inline-block;padding:14px 28px;font-size:14px;font-weight:500;color:#FDFDFB;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">
               Reprendre mon profil →
+            </a>
+          </td></tr></table>
+        </td></tr>
+        <tr><td style="padding-top:24px;text-align:center;">
+          <p style="font-size:11px;font-weight:300;color:rgba(26,26,26,0.4);margin:0;">
+            <a href="${APP_URL}" style="color:rgba(26,26,26,0.4);text-decoration:none;">candice.app</a>
+          </p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body></html>`;
+}
+
+function buildReinviteHtml(piloteFirstName: string | null, procheFirstName: string, inviteUrl: string): string {
+  const greeting = procheFirstName ? `Bonjour ${procheFirstName}.` : "Bonjour.";
+  const senderLine = piloteFirstName
+    ? `${piloteFirstName} aimerait mieux prendre soin de toi — ton invitation Candice t'attend.`
+    : "Ton invitation Candice t'attend.";
+
+  return `<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /><title>Ton invitation Candice</title></head>
+<body style="margin:0;padding:0;background:#FDFDFB;font-family:'DM Sans',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#FDFDFB;padding:48px 16px;">
+    <tr><td align="center">
+      <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+        <tr><td style="padding-bottom:28px;">
+          <span style="font-size:13px;font-weight:500;letter-spacing:5px;text-transform:uppercase;color:#1A1A1A;">CANDICE</span><span style="display:inline-block;width:6px;height:6px;background:#173E31;border-radius:50%;vertical-align:top;margin-top:4px;margin-left:3px;"></span>
+        </td></tr>
+        <tr><td style="background:#FFFFFF;border:0.5px solid rgba(23,62,49,0.1);border-radius:16px;padding:40px 36px;">
+          <h1 style="font-family:Georgia,serif;font-size:28px;font-weight:400;color:#1A1A1A;line-height:1.15;letter-spacing:-0.5px;margin:0 0 8px;">
+            ${greeting}
+          </h1>
+          <p style="font-size:14px;font-weight:300;color:rgba(26,26,26,0.55);margin:0 0 28px;">
+            ${senderLine}
+          </p>
+          <p style="font-size:15px;font-weight:300;color:#1A1A1A;line-height:1.75;margin:0 0 28px;">
+            Quelques questions sur ce qui te fait plaisir, ce qui te touche, ce qu&rsquo;il vaut mieux éviter. Ça prend une vingtaine de minutes &mdash; une seule fois.
+          </p>
+          <table cellpadding="0" cellspacing="0"><tr><td style="background:#173E31;border-radius:8px;">
+            <a href="${inviteUrl}" style="display:inline-block;padding:14px 28px;font-size:14px;font-weight:500;color:#FDFDFB;text-decoration:none;font-family:Helvetica,Arial,sans-serif;">
+              Voir l&rsquo;invitation →
             </a>
           </td></tr></table>
         </td></tr>

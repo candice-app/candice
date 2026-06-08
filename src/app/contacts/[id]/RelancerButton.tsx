@@ -1,14 +1,18 @@
 "use client";
 import { useState } from "react";
 
-type State = "idle" | "sending" | "sent" | "complete";
+type State = "idle" | "sending" | "sent" | "complete" | "no_email";
 
 export default function RelancerButton({
   contactId,
   procheName,
+  inviteStatus = "confirmed",
+  contactEmail,
 }: {
   contactId: string;
   procheName: string;
+  inviteStatus?: "pending" | "confirmed";
+  contactEmail?: string | null;
 }) {
   const [state, setState] = useState<State>("idle");
 
@@ -23,6 +27,8 @@ export default function RelancerButton({
       const json = await res.json() as { method?: string; reason?: string };
       if (json.reason === "already_complete") {
         setState("complete");
+      } else if (json.reason === "no_email") {
+        setState("no_email");
       } else {
         setState("sent");
       }
@@ -34,7 +40,9 @@ export default function RelancerButton({
   if (state === "sent") {
     return (
       <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", fontStyle: "italic" }}>
-        Relance envoyée à {procheName} ✓
+        {inviteStatus === "pending"
+          ? `Invitation renvoyée à ${procheName} ✓`
+          : `Relance envoyée à ${procheName} ✓`}
       </p>
     );
   }
@@ -46,6 +54,17 @@ export default function RelancerButton({
       </p>
     );
   }
+
+  if (state === "no_email") {
+    return (
+      <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", fontStyle: "italic" }}>
+        Aucun email enregistré pour {procheName} — envoie le lien manuellement depuis la fiche.
+      </p>
+    );
+  }
+
+  // Don't show a relance button for "pending" when no email is available
+  if (inviteStatus === "pending" && !contactEmail) return null;
 
   return (
     <button
@@ -64,7 +83,11 @@ export default function RelancerButton({
         opacity: state === "sending" ? 0.5 : 1,
       }}
     >
-      {state === "sending" ? "Envoi…" : `Relancer ${procheName}`}
+      {state === "sending"
+        ? "Envoi…"
+        : inviteStatus === "pending"
+          ? `Renvoyer l'invitation à ${procheName}`
+          : `Relancer ${procheName}`}
     </button>
   );
 }
