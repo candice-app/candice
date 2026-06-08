@@ -129,7 +129,7 @@ button { cursor: pointer; font-family: var(--font-sans); }
 /* ── App Shell — mobile-first, desktop rail ──────────────────────── */
 .app-shell {
   position: relative;
-  min-height: 100dvh;
+  min-height: 100svh;
   background: var(--canvas);
   overflow-x: hidden;
   max-width: 100%;

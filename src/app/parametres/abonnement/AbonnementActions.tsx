@@ -14,7 +14,6 @@ export default function AbonnementActions({ status, deletionScheduledAt }: Props
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [exportSent, setExportSent] = useState(false);
 
   const call = async (url: string, body?: object) => {
     const res = await fetch(url, {
@@ -46,13 +45,6 @@ export default function AbonnementActions({ status, deletionScheduledAt }: Props
     router.refresh();
   };
 
-  const handleExport = async () => {
-    setLoading("export");
-    await call("/api/account/export");
-    setLoading(null);
-    setExportSent(true);
-  };
-
   const handleDeleteSubmit = async () => {
     if (!password) return;
     setLoading("delete");
@@ -69,9 +61,11 @@ export default function AbonnementActions({ status, deletionScheduledAt }: Props
     router.refresh();
   };
 
+  void handlePause; // scaffolding — Phase 7 (Stripe)
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      {/* Pause / Resume */}
+      {/* Reprendre Candice */}
       {status === "paused" && (
         <button
           onClick={handleResume}
@@ -83,7 +77,7 @@ export default function AbonnementActions({ status, deletionScheduledAt }: Props
         </button>
       )}
 
-      {/* Cancel deletion */}
+      {/* Annuler la suppression */}
       {deletionScheduledAt && (
         <button
           onClick={handleCancelDeletion}
@@ -95,17 +89,7 @@ export default function AbonnementActions({ status, deletionScheduledAt }: Props
         </button>
       )}
 
-      {/* Export RGPD */}
-      <button
-        onClick={handleExport}
-        disabled={loading === "export" || exportSent}
-        className="btn-ghost"
-        style={{ width: "100%", textAlign: "left", fontSize: 13, opacity: (loading === "export" || exportSent) ? 0.6 : 1 }}
-      >
-        {loading === "export" ? "Préparation…" : exportSent ? "Export envoyé par email ✓" : "Exporter mes données (RGPD)"}
-      </button>
-
-      {/* Delete account */}
+      {/* Supprimer mon compte */}
       {!deletionScheduledAt && status !== "cancelled" && (
         <div style={{ paddingTop: 16, borderTop: "0.5px solid var(--brd)", marginTop: 8 }}>
           {!showDeleteConfirm ? (

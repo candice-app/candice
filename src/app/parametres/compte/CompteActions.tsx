@@ -11,24 +11,24 @@ const SEXE_OPTIONS = [
   { id: "ne_se_prononce_pas", label: "Préfère ne pas préciser" },
 ];
 
-const ROLE_OPTIONS = [
-  { id: "pere",          label: "Père" },
-  { id: "mere",          label: "Mère" },
-  { id: "enfant",        label: "Enfant" },
-  { id: "frere_soeur",   label: "Frère / Sœur" },
-  { id: "beaux_parents", label: "Beaux-parents" },
-  { id: "collegue",      label: "Collègue" },
-  { id: "autre",         label: "Autre" },
-];
+function calculateAge(dob: string): number | null {
+  if (!dob) return null;
+  const today = new Date();
+  const birth = new Date(dob);
+  if (isNaN(birth.getTime())) return null;
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
 
 interface Props {
   initialSexe: string;
-  initialAge: string;
   initialProfession: string;
-  initialRoleFamilial: string[];
+  initialDateDeNaissance: string;
 }
 
-export default function CompteActions({ initialSexe, initialAge, initialProfession, initialRoleFamilial }: Props) {
+export default function CompteActions({ initialSexe, initialProfession, initialDateDeNaissance }: Props) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -59,18 +59,13 @@ export default function CompteActions({ initialSexe, initialAge, initialProfessi
 
   // ── Informations personnelles ─────────────────────────────────────────────────
   const [sexe, setSexe] = useState(initialSexe);
-  const [age, setAge] = useState(initialAge);
   const [profession, setProfession] = useState(initialProfession);
-  const [roleFamilial, setRoleFamilial] = useState<string[]>(initialRoleFamilial);
+  const [dateDeNaissance, setDateDeNaissance] = useState(initialDateDeNaissance);
   const [infoLoading, setInfoLoading] = useState(false);
   const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [infoError, setInfoError] = useState<string | null>(null);
 
-  const toggleRole = (id: string) => {
-    setRoleFamilial(prev =>
-      prev.includes(id) ? prev.filter(r => r !== id) : [...prev, id]
-    );
-  };
+  const age = calculateAge(dateDeNaissance);
 
   const handleInfoSave = async () => {
     setInfoLoading(true);
@@ -90,14 +85,16 @@ export default function CompteActions({ initialSexe, initialAge, initialProfessi
     const merged = {
       ...(current?.practical_info as Record<string, unknown> ?? {}),
       sexe,
-      age,
       profession,
-      role_familial: roleFamilial,
     };
 
     const { error } = await supabase
       .from("my_profile")
-      .update({ practical_info: merged, updated_at: new Date().toISOString() })
+      .update({
+        practical_info: merged,
+        date_de_naissance: dateDeNaissance || null,
+        updated_at: new Date().toISOString(),
+      })
       .eq("user_id", user.id);
 
     setInfoLoading(false);
@@ -137,7 +134,7 @@ export default function CompteActions({ initialSexe, initialAge, initialProfessi
         </p>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Sexe */}
+          {/* Genre */}
           <div>
             <span style={labelStyle}>Genre</span>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -159,16 +156,20 @@ export default function CompteActions({ initialSexe, initialAge, initialProfessi
             </div>
           </div>
 
-          {/* Âge */}
+          {/* Date de naissance */}
           <div>
-            <label style={labelStyle}>Âge</label>
+            <label style={labelStyle}>Date de naissance</label>
             <input
-              type="text"
-              value={age}
-              onChange={e => setAge(e.target.value)}
-              placeholder="ex. 32"
+              type="date"
+              value={dateDeNaissance}
+              onChange={e => setDateDeNaissance(e.target.value)}
               style={inputStyle}
             />
+            {age !== null && (
+              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", marginTop: 4 }}>
+                {age} ans
+              </p>
+            )}
           </div>
 
           {/* Profession */}
@@ -181,31 +182,6 @@ export default function CompteActions({ initialSexe, initialAge, initialProfessi
               placeholder="ex. infirmière, développeur, enseignant…"
               style={inputStyle}
             />
-          </div>
-
-          {/* Rôle familial */}
-          <div>
-            <span style={labelStyle}>Rôle familial</span>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-              {ROLE_OPTIONS.map(opt => {
-                const active = roleFamilial.includes(opt.id);
-                return (
-                  <button
-                    key={opt.id}
-                    onClick={() => toggleRole(opt.id)}
-                    style={{
-                      padding: "7px 14px", borderRadius: 20, fontSize: 13, fontWeight: 300,
-                      border: active ? "1.5px solid var(--pine)" : "0.5px solid var(--line)",
-                      background: active ? "rgba(23,62,49,.07)" : "var(--white)",
-                      color: active ? "var(--pine)" : "var(--ink-2)",
-                      cursor: "pointer", fontFamily: "var(--font-sans)",
-                    }}
-                  >
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
           </div>
 
           {infoError && <p style={{ fontSize: 12, color: "#E05252", margin: 0 }}>{infoError}</p>}
