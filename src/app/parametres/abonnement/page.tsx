@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
 import AbonnementActions from "./AbonnementActions";
@@ -28,8 +29,10 @@ export default async function AbonnementPage() {
   return (
     <DashboardShell>
       <div style={{ marginBottom: 28 }}>
-        <p className="section-label">Paramètres</p>
-        <h1 className="page-title" style={{ marginBottom: 4 }}>Abonnement</h1>
+        <Link href="/parametres" style={{ textDecoration: "none" }}>
+          <span style={{ fontSize: 12, color: "var(--ink-3)", fontWeight: 300 }}>← Paramètres</span>
+        </Link>
+        <h1 className="page-title" style={{ marginBottom: 4, marginTop: 16 }}>Abonnement</h1>
         <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)" }}>
           Gérez votre abonnement Candice.
         </p>
