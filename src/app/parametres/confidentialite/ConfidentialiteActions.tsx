@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 
 type DeleteStep = "idle" | "confirm1" | "confirm2";
 type ConsentValue = "accepted" | "refused" | null;
@@ -45,6 +46,37 @@ export default function ConfidentialiteActions() {
     localStorage.removeItem(COOKIE_KEY);
     // Reload pour que CookieBanner (dans layout.tsx) réapparaisse
     window.location.reload();
+  };
+
+  // ── Visibilité dans la recherche (is_findable) ──────────────────────────────
+  const [isFindable, setIsFindable] = useState<boolean | null>(null);
+  const [findableLoading, setFindableLoading] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      if (!data.user) return;
+      supabase
+        .from("my_profile")
+        .select("is_findable")
+        .eq("user_id", data.user.id)
+        .maybeSingle()
+        .then(({ data: profile }) => {
+          setIsFindable(profile?.is_findable ?? true);
+        });
+    });
+  }, []);
+
+  const handleToggleFindable = async () => {
+    if (isFindable === null || findableLoading) return;
+    setFindableLoading(true);
+    const supabase = createClient();
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) { setFindableLoading(false); return; }
+    const newVal = !isFindable;
+    await supabase.from("my_profile").update({ is_findable: newVal }).eq("user_id", data.user.id);
+    setIsFindable(newVal);
+    setFindableLoading(false);
   };
 
   // ── Suppression de compte ────────────────────────────────────────────────────
@@ -157,6 +189,50 @@ export default function ConfidentialiteActions() {
           }}
         >
           Modifier mes préférences cookies
+        </button>
+      </div>
+
+      {/* ── Visibilité dans la recherche ── */}
+      <div style={rowStyle}>
+        <p style={titleStyle}>Visibilité dans la recherche</p>
+        <p style={descStyle}>
+          Quand quelqu&rsquo;un saisit ton email ou ton numéro en ajoutant un proche, Candice peut indiquer que tu as déjà un compte — sans révéler d&rsquo;autre information. Tu peux désactiver cette option à tout moment.
+        </p>
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "12px 14px", borderRadius: 10, border: "0.5px solid var(--line)",
+          background: "rgba(253,253,251,.5)", marginBottom: 12,
+        }}>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink)", margin: 0 }}>
+              Trouvable par mes proches
+            </p>
+            <p style={{ fontSize: 11, fontWeight: 300, color: "var(--ink-3)", margin: "2px 0 0" }}>
+              {isFindable === null ? "Chargement…" : isFindable ? "Activé" : "Désactivé"}
+            </p>
+          </div>
+          <span style={{
+            fontSize: 10, fontWeight: 500, letterSpacing: ".1em", textTransform: "uppercase",
+            color: isFindable ? "#4A7C59" : "var(--ink-3)",
+            background: isFindable ? "rgba(74,124,89,.08)" : "var(--line)",
+            padding: "3px 10px", borderRadius: 20,
+          }}>
+            {isFindable ? "Actif" : "Inactif"}
+          </span>
+        </div>
+        <button
+          onClick={handleToggleFindable}
+          disabled={isFindable === null || findableLoading}
+          style={{
+            fontSize: 13, fontWeight: 300, color: "var(--ink-2)",
+            background: "none", border: "0.5px solid var(--line)",
+            borderRadius: 20, padding: "8px 16px",
+            cursor: (isFindable === null || findableLoading) ? "not-allowed" : "pointer",
+            opacity: (isFindable === null || findableLoading) ? 0.5 : 1,
+            fontFamily: "var(--font-sans)",
+          }}
+        >
+          {findableLoading ? "Mise à jour…" : isFindable ? "Désactiver" : "Activer"}
         </button>
       </div>
 

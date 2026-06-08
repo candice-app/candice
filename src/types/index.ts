@@ -164,6 +164,7 @@ export interface MyProfile {
   deletion_scheduled_at?: string | null;
   physical_contact_with?: string[] | null;
   questionnaire_input_mode?: 'text' | 'voice' | null;
+  is_findable?: boolean;
 }
 
 export interface ProfileNote {

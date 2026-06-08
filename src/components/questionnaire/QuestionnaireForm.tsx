@@ -185,6 +185,10 @@ export default function QuestionnaireForm() {
 
   const [complicatedContext, setComplicatedContext] = useState<string>("");
 
+  const [dedupState, setDedupState] = useState<"idle" | "checking" | "found">("idle");
+  const [dedupFoundUserId, setDedupFoundUserId] = useState<string | null>(null);
+  const [linkedUserId, setLinkedUserId] = useState<string | null>(null);
+
   const [linkContactId, setLinkContactId] = useState<string | null>(null);
   const [inviteToken, setInviteToken] = useState<string | null>(null);
   const [linkLoading, setLinkLoading] = useState(false);
@@ -264,6 +268,7 @@ export default function QuestionnaireForm() {
         ...(register ? { relationship_register: register } : {}),
         ...(gender ? { gender } : {}),
         ...(dateDeNaissance ? { date_de_naissance: dateDeNaissance } : {}),
+        ...(linkedUserId ? { proche_user_id: linkedUserId } : {}),
         idempotency_key: idempotencyKey,
       })
       .select("id")
@@ -293,9 +298,32 @@ export default function QuestionnaireForm() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!name.trim()) { setError("Veuillez saisir un prénom."); return; }
     setError("");
+
+    // Lookup only if email or phone is provided and we haven't already shown the dedup banner
+    if ((email.trim() || phone.trim()) && dedupState === "idle") {
+      setDedupState("checking");
+      try {
+        const res = await fetch("/api/contacts/lookup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...(email.trim() ? { email: email.trim() } : {}),
+            ...(phone.trim() ? { phone: phone.trim() } : {}),
+          }),
+        });
+        const json = await res.json() as { found: boolean; userId?: string };
+        if (json.found && json.userId) {
+          setDedupFoundUserId(json.userId);
+          setDedupState("found");
+          return;
+        }
+      } catch { /* ignore network errors */ }
+      setDedupState("idle");
+    }
+
     setStep(1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -540,6 +568,57 @@ export default function QuestionnaireForm() {
                 style={{ colorScheme: "light" }}
               />
             </div>
+
+            {/* Dedup banner — shown when a matching Candice account is found */}
+            {dedupState === "found" && (
+              <div style={{
+                padding: "16px", borderRadius: 10,
+                background: "rgba(23,62,49,0.04)",
+                border: "0.5px solid rgba(23,62,49,0.18)",
+              }}>
+                <p style={{ fontSize: 14, fontWeight: 400, color: "var(--pine)", marginBottom: 6 }}>
+                  Cette personne a déjà un compte Candice.
+                </p>
+                <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.6, marginBottom: 14 }}>
+                  Tu peux lier son compte pour que Candice la connaisse déjà — ou continuer sans lier.
+                </p>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLinkedUserId(dedupFoundUserId);
+                      setDedupState("idle");
+                      setStep(1);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    style={{
+                      fontSize: 13, fontWeight: 500, color: "#fff",
+                      background: "var(--pine)", border: "none",
+                      borderRadius: 8, padding: "8px 16px",
+                      cursor: "pointer", fontFamily: "var(--font-sans)",
+                    }}
+                  >
+                    Lier le compte →
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDedupState("idle");
+                      setStep(1);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    style={{
+                      fontSize: 13, fontWeight: 300, color: "var(--ink-3)",
+                      background: "none", border: "0.5px solid var(--line)",
+                      borderRadius: 8, padding: "8px 16px",
+                      cursor: "pointer", fontFamily: "var(--font-sans)",
+                    }}
+                  >
+                    Continuer sans lier
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -1012,16 +1091,17 @@ export default function QuestionnaireForm() {
           }}>
             {step > 0 ? (
               <button
-                onClick={() => { setStep(s => s - 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+                onClick={() => { setDedupState("idle"); setStep(s => s - 1); window.scrollTo({ top: 0, behavior: "smooth" }); }}
                 className="btn-ghost"
               >
                 ← Retour
               </button>
             ) : <div />}
 
-            {step === 0 && (
-              <button onClick={handleNext} className="btn-primary">
-                Suivant →
+            {step === 0 && dedupState !== "found" && (
+              <button onClick={handleNext} disabled={dedupState === "checking"} className="btn-primary"
+                style={{ opacity: dedupState === "checking" ? 0.6 : 1 }}>
+                {dedupState === "checking" ? "Vérification…" : "Suivant →"}
               </button>
             )}
 
