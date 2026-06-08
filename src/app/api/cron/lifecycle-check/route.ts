@@ -51,7 +51,7 @@ export async function GET(req: Request) {
   try {
     const { data: profiles } = await admin
       .from('my_profile')
-      .select('user_id, subscription_status, trial_started_at, subscription_paused_at, last_active_at, deletion_scheduled_at');
+      .select('user_id, subscription_status, trial_started_at, lifetime_trial, subscription_paused_at, last_active_at, deletion_scheduled_at');
 
     for (const p of profiles ?? []) {
       const userId = p.user_id as string;
@@ -59,7 +59,7 @@ export async function GET(req: Request) {
       const email = await getUserEmail(userId, admin);
 
       // ── Trial end (30 days) ───────────────────────────────────────────────
-      if (status === 'trial' && p.trial_started_at) {
+      if (status === 'trial' && p.trial_started_at && !p.lifetime_trial) {
         const trialAge = now.getTime() - new Date(p.trial_started_at).getTime();
         const days = trialAge / (1000 * 60 * 60 * 24);
 
