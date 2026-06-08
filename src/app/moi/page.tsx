@@ -770,17 +770,6 @@ export default async function MoiPage() {
               <ShareButton userId={user.id} variant="full" />
             </div>
 
-            {/* ── Liens secondaires ── */}
-            <div style={{ borderTop: "0.5px solid var(--line)", paddingTop: 20, display: "flex", flexDirection: "column", gap: 0 }}>
-              <Link href="/parametres/notifications" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0", borderBottom: "0.5px solid var(--line)" }}>
-                <span>Préférences notifications</span>
-                <span style={{ fontSize: 12, color: "var(--ink-3)" }}>→</span>
-              </Link>
-              <Link href="/parametres/abonnement" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: 14, fontWeight: 300, color: "var(--ink-2)", textDecoration: "none", padding: "12px 0" }}>
-                <span>Abonnement</span>
-                <span style={{ fontSize: 12, color: "var(--ink-3)" }}>→</span>
-              </Link>
-            </div>
           </>
         )}
 
