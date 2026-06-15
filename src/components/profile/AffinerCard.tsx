@@ -3,10 +3,10 @@ import Link from "next/link";
 export type CompletionLevel = 'empty' | 'started' | 'well_filled' | 'precise';
 
 const LEVEL_META: Record<CompletionLevel, { badge: string | null; color: string }> = {
-  empty:      { badge: null,          color: 'rgba(23,62,49,.04)' },
-  started:    { badge: 'En cours',    color: 'rgba(23,62,49,.04)' },
-  well_filled:{ badge: 'Bien rempli', color: 'rgba(23,62,49,.06)' },
-  precise:    { badge: 'Très précis', color: 'rgba(205,185,135,.1)' },
+  empty:      { badge: null,          color: 'var(--surface)' },
+  started:    { badge: 'En cours',    color: 'var(--surface)' },
+  well_filled:{ badge: 'Bien rempli', color: 'var(--surface)' },
+  precise:    { badge: 'Très précis', color: 'var(--surface)' },
 };
 
 interface Props {
@@ -22,9 +22,8 @@ export default function AffinerCard({ level, showBadge = false }: Props) {
       padding: '20px 20px 18px',
       borderRadius: 16,
       background: color,
-      border: level === 'precise'
-        ? '0.5px solid rgba(205,185,135,.35)'
-        : '0.5px solid rgba(23,62,49,.1)',
+      border: '1px solid var(--line)',
+      boxShadow: 'var(--shadow)',
       marginBottom: 24,
     }}>
       {showBadge && badge && (

@@ -167,6 +167,7 @@ function formatUpdatedAt(iso: string): string {
 
 interface SectionDef {
   icon: string; title: string;
+  iconName?: string; iconBg?: string; iconColor?: string;
   summary: string | null; chips: string[];
   filled: boolean; editHref: string;
   ctaLabel: string; ctaHref?: string; sectionKey: string;
@@ -226,7 +227,8 @@ function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>
   return [
     // 1 — Langage d'attention
     {
-      icon: "❤️", title: "Langage d'attention",
+      icon: "❤️", iconName: "i-heart", iconBg: "rgba(194,74,60,.13)", iconColor: "var(--red)",
+      title: "Langage d'attention",
       filled: hasAttentionData || !!profile.love_language,
       chips: receptionDims.length > 0 ? receptionDims.map(d => DIM_FR[d]) : (profile.love_language?.split(",").filter(Boolean) ?? []),
       summary: receptionDims.length > 0
@@ -238,7 +240,8 @@ function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>
     },
     // 2 — Ce qui me touche
     {
-      icon: "✨", title: "Ce qui me touche",
+      icon: "✨", iconName: "i-spark", iconBg: "rgba(199,168,90,.2)", iconColor: "#9a7d2e",
+      title: "Ce qui me touche",
       filled: temperamentTraits.length > 0,
       chips: temperamentTraits.slice(0, 3),
       summary: temperamentTraits.length >= 2
@@ -250,7 +253,8 @@ function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>
     },
     // 3 — Ce qui me fait me sentir aimé·e
     {
-      icon: "🌟", title: ag("Ce qui me fait me sentir aimé·e"),
+      icon: "🌟", iconName: "i-spark", iconBg: "rgba(199,168,90,.2)", iconColor: "#9a7d2e",
+      title: ag("Ce qui me fait me sentir aimé·e"),
       filled: hasAttentionData || !!profile.appreciation_style,
       chips: expressionDims.length > 0 ? expressionDims.map(d => DIM_FR[d]) : [],
       summary: expressionDims.length > 0
@@ -262,7 +266,8 @@ function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>
     },
     // 4 — Ce qui pourrait te faire plaisir
     {
-      icon: "🎁", title: "Ce qui pourrait te faire plaisir",
+      icon: "🎁", iconName: "i-gift", iconBg: "var(--mist)", iconColor: "var(--pine)",
+      title: "Ce qui pourrait te faire plaisir",
       filled: !!profile.gift_preference || !!sing.plus_beau_cadeau || !!da['gifts.what_works'],
       chips: da['gifts.what_works']
         ? resolveDiscovery('gifts.what_works', da['gifts.what_works'])
@@ -281,7 +286,8 @@ function buildSections(profile: ExtendedProfile, discoveryAvailable: Set<string>
     },
     // 5 — À éviter
     {
-      icon: "🚫", title: "À éviter",
+      icon: "🚫", iconName: "i-block", iconBg: "var(--mist)", iconColor: "var(--pine)",
+      title: "À éviter",
       filled: !!profile.things_to_avoid || !!sing.cadeaux_non || !!q17Text || !!da['gifts.to_avoid'],
       chips: [profile.things_to_avoid, sing.cadeaux_non, q17Text, da['gifts.to_avoid'] as string]
         .filter(Boolean).flatMap(s => (s as string).split(/[,;·]/).map(p => p.trim()).filter(p => p.length > 2 && p.length < 40))
@@ -812,6 +818,9 @@ export default async function MoiPage() {
                 <ProfileSection
                   key={i}
                   icon={sec.icon}
+                  iconName={sec.iconName}
+                  iconBg={sec.iconBg}
+                  iconColor={sec.iconColor}
                   title={sec.title}
                   summary={sec.summary}
                   chips={sec.chips}

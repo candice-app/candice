@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Icon } from "@/components/ui/v4/IconSprite";
 
 interface ProfileSectionProps {
   icon: string;
+  iconName?: string;
+  iconBg?: string;
+  iconColor?: string;
   title: string;
   summary?: string | null;
   chips?: string[];
@@ -17,7 +21,8 @@ interface ProfileSectionProps {
 }
 
 export default function ProfileSection({
-  icon, title, summary, chips = [], filled, editHref, ctaLabel, ctaHref, sectionKey, children,
+  icon, iconName, iconBg, iconColor,
+  title, summary, chips = [], filled, editHref, ctaLabel, ctaHref, sectionKey, children,
 }: ProfileSectionProps) {
   const [expanded, setExpanded] = useState(false);
 
@@ -39,7 +44,18 @@ export default function ProfileSection({
         }}
         aria-expanded={expanded}
       >
-        <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>{icon}</span>
+        {iconName ? (
+          <div style={{
+            width: 42, height: 42, borderRadius: 13, flexShrink: 0,
+            background: iconBg ?? 'var(--mist)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            color: iconColor ?? 'var(--pine)',
+          }}>
+            <Icon name={iconName} size={20} />
+          </div>
+        ) : (
+          <span style={{ fontSize: 18, flexShrink: 0, marginTop: 2 }}>{icon}</span>
+        )}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
             <p style={{
