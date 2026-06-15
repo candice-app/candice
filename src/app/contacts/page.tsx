@@ -49,6 +49,19 @@ function getStatusLabel(pct: number, hasProche: boolean): string {
   return "Candice commence à apprendre";
 }
 
+const RELATIONSHIP_FR: Record<string, string> = {
+  partner:   "Conjoint·e",
+  friend:    "Ami·e",
+  family:    "Famille",
+  colleague: "Collègue",
+  other:     "Autre",
+};
+
+function relationLabel(raw: string | null | undefined): string {
+  if (!raw) return "";
+  return RELATIONSHIP_FR[raw] ?? raw;
+}
+
 // ── Inline styles ─────────────────────────────────────────────────────────────
 
 const TAG_WARN: React.CSSProperties = {
@@ -233,7 +246,7 @@ export default async function ContactsPage() {
                       {contact.name}
                     </div>
                     <div style={{ fontSize: 11, color: "var(--ink3)", marginTop: 1 }}>
-                      {contact.relationship ?? ""}
+                      {relationLabel(contact.relationship)}
                     </div>
                     <div style={{ fontSize: 11.5, color: "var(--ink2)", marginTop: 1 }}>
                       {getStatusLabel(pct, hasProche)}
