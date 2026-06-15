@@ -8,6 +8,9 @@ import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFac
 import type { BreathFacts } from "@/lib/attention/breathFacts";
 import { RECEPTION_QUESTIONS, EXPRESSION_QUESTION } from "@/lib/attention/questions";
 import type { AttentionQuestion } from "@/lib/attention/questions";
+import IconSprite, { Icon } from "@/components/ui/v4/IconSprite";
+import Brand from "@/components/ui/v4/Brand";
+import ProgressBar from "@/components/ui/v4/ProgressBar";
 
 interface Props {
   userId: string;
@@ -18,87 +21,145 @@ interface Props {
 
 type Selections = Record<string, string[]>;
 
-const EYEBROWS: Record<string, string> = {
-  q1: "Candice t'écoute",
-  q2: "Encore",
-  q3: "Plus profond",
-  q4: "Une préférence",
-  qe: "Et toi",
-};
+// ── Rank colors (s1/s2/s3) ──────────────────────────────────────────────────
 
-function QHeader({ progress, onBack, onExit }: { progress: number; onBack?: () => void; onExit?: () => void }) {
+const RANK_BORDER = ["var(--pine)", "var(--glow)", "var(--sage)"];
+const RANK_BG = [
+  "linear-gradient(90deg,rgba(23,62,49,.11),#fff 76%)",
+  "linear-gradient(90deg,rgba(62,115,97,.11),#fff 76%)",
+  "linear-gradient(90deg,rgba(141,166,151,.13),#fff 76%)",
+];
+const RANK_BADGE_BG = ["var(--pine)", "var(--glow)", "var(--sage)"];
+
+// ── Card component ──────────────────────────────────────────────────────────
+
+function QCard({
+  option,
+  rank,
+  disabled,
+  onClick,
+}: {
+  option: AttentionQuestion["options"][0];
+  rank: number;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  const isSelected = rank > 0;
+  const rankIdx = rank - 1;
+
   return (
-    <div className="q-header">
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <span className="q-logo">Candice<span className="q-logo-dot" /></span>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          {onBack && (
-            <button type="button" onClick={onBack} style={qNavBtn}>← Retour</button>
-          )}
-          <span className="q-idx">01 — 07</span>
-          {onExit && (
-            <button type="button" onClick={onExit} style={qNavBtn}>Quitter ×</button>
-          )}
+    <div
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      onClick={() => !disabled && onClick()}
+      onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && !disabled) { e.preventDefault(); onClick(); } }}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 13,
+        padding: 14,
+        border: isSelected ? `1.5px solid ${RANK_BORDER[rankIdx]}` : "1.5px solid var(--line)",
+        borderRadius: 17,
+        background: isSelected ? RANK_BG[rankIdx] : "var(--surface)",
+        marginBottom: 10,
+        cursor: disabled ? "default" : "pointer",
+        opacity: disabled ? 0.38 : 1,
+        boxShadow: "var(--shadow)",
+        transition: "border-color .18s, background .18s",
+      }}
+    >
+      {/* Picto */}
+      <div style={{
+        width: 42, height: 42, borderRadius: 13, flexShrink: 0,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        background: isSelected ? "var(--pine)" : "var(--mist)",
+        color: isSelected ? "#fff" : "var(--pine)",
+      }}>
+        {option.icon ? <Icon name={option.icon} size={19} /> : null}
+      </div>
+
+      {/* Text */}
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 14, fontWeight: 500, lineHeight: 1.3, color: "var(--ink)", fontFamily: "var(--font-sans)" }}>
+          {option.label}
+        </div>
+        <div style={{ fontSize: 11, color: "var(--ink3)", marginTop: 3, fontWeight: 400, lineHeight: 1.3, fontFamily: "var(--font-sans)" }}>
+          {option.subtext}
         </div>
       </div>
-      <div className="q-bar-track">
-        <div className="q-bar-fill" style={{ width: `${progress}%` }} />
-      </div>
+
+      {/* Rank badge or empty radio */}
+      {isSelected ? (
+        <div style={{
+          width: 24, height: 24, borderRadius: "50%", flexShrink: 0,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontWeight: 700, fontSize: 12, color: "#fff",
+          background: RANK_BADGE_BG[rankIdx],
+        }}>
+          {rank}
+        </div>
+      ) : (
+        <div style={{
+          width: 20, height: 20, borderRadius: "50%", flexShrink: 0,
+          border: "2px solid var(--line)",
+        }} />
+      )}
     </div>
   );
 }
 
-const qNavBtn: React.CSSProperties = {
-  background: "none", border: "none", cursor: "pointer", padding: 0,
-  fontSize: 11, letterSpacing: ".22em", color: "var(--ink-3)", fontWeight: 300,
-  fontFamily: "var(--font-sans)", WebkitTapHighlightColor: "transparent",
-};
+// ── Section ─────────────────────────────────────────────────────────────────
 
 function QuestionSection({
-  question, selectedIds, onToggle, active,
+  question,
+  selectedIds,
+  onToggle,
 }: {
   question: AttentionQuestion;
   selectedIds: string[];
   onToggle: (optId: string) => void;
-  active: boolean;
 }) {
   const maxReached = selectedIds.length >= 3;
-  const touched = selectedIds.length > 0;
-  const eyebrow = EYEBROWS[question.id] ?? "";
 
   return (
-    <div className={`q-section ${active ? "active" : "rest"}`}>
-      {eyebrow && <div className="q-eyebrow">{eyebrow}</div>}
-      <div className="q-prompt">{question.title}</div>
-      <div className="q-helper">{question.micro}</div>
-      <div className={`q-opts${touched ? " touched" : ""}`}>
-        {question.options.map((opt) => {
-          const rank = selectedIds.indexOf(opt.id) + 1;
-          const isSelected = rank > 0;
-          const isFirst = rank === 1;
-          const disabled = maxReached && !isSelected;
-          return (
-            <div
-              key={opt.id}
-              className={`q-opt${isSelected ? " sel" : ""}${isFirst ? " first" : ""}`}
-              style={{ opacity: disabled ? .35 : 1 }}
-              onClick={() => { if (!disabled) onToggle(opt.id); }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if ((e.key === "Enter" || e.key === " ") && !disabled) {
-                  e.preventDefault();
-                  onToggle(opt.id);
-                }
-              }}
-            >
-              <span className="q-node">{isSelected ? rank : ""}</span>
-              <div className="q-opt-t">{opt.label}</div>
-              <div className="q-opt-s">{opt.subtext}</div>
-            </div>
-          );
-        })}
+    <div style={{ paddingBottom: 22 }}>
+      <div style={{
+        fontSize: 10, letterSpacing: "1.8px", textTransform: "uppercase",
+        color: "var(--ink3)", fontWeight: 700, marginBottom: 8,
+        fontFamily: "var(--font-sans)",
+      }}>
+        Candice t&apos;écoute
       </div>
+      <div style={{
+        fontFamily: "var(--font-serif)",
+        fontSize: 19,
+        lineHeight: 1.22,
+        color: "var(--ink)",
+        marginBottom: 4,
+        letterSpacing: "-.01em",
+      }}>
+        {question.title}
+      </div>
+      <p style={{
+        fontSize: 11.5, color: "var(--ink3)", marginBottom: 14,
+        fontFamily: "var(--font-sans)",
+      }}>
+        {question.micro}
+      </p>
+      {question.options.map((opt) => {
+        const rank = selectedIds.indexOf(opt.id) + 1;
+        const isSelected = rank > 0;
+        const disabled = maxReached && !isSelected;
+        return (
+          <QCard
+            key={opt.id}
+            option={opt}
+            rank={rank}
+            disabled={disabled}
+            onClick={() => onToggle(opt.id)}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -115,10 +176,11 @@ function buildAnswers(selections: Selections): AttentionAnswers {
   };
 }
 
+// ── Main component ───────────────────────────────────────────────────────────
+
 export default function AttentionStep({ userId, onDone, onBack, onExit }: Props) {
   const supabase = createClient();
   const [selections, setSelections] = useState<Selections>({});
-  const [activeQId, setActiveQId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -129,7 +191,6 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
   const progress = Math.round((answeredCount / totalQuestions) * 100);
 
   function toggle(qId: string, optId: string) {
-    setActiveQId(qId);
     setSelections((prev) => {
       const cur = prev[qId] ?? [];
       if (cur.includes(optId)) return { ...prev, [qId]: cur.filter((id) => id !== optId) };
@@ -191,24 +252,45 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
   }
 
   return (
-    <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
-      <QHeader progress={progress} onBack={onBack} onExit={onExit} />
+    <div className="v4" style={{ background: "var(--canvas)", minHeight: "100vh" }}>
+      <IconSprite />
 
-      <div style={{ padding: "26px 24px 140px" }}>
-        <div style={{ marginBottom: 32 }}>
-          <p style={{
-            fontFamily: "var(--font-serif)",
-            fontOpticalSizing: "auto",
-            fontWeight: 300,
-            fontSize: "clamp(20px, 4vw, 24px)",
-            color: "var(--ink)", lineHeight: 1.3,
-            letterSpacing: "-.014em", marginBottom: 8,
-          } as React.CSSProperties}>
-            Comment tu reçois et donnes l&apos;attention.
-          </p>
-          <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.55 }}>
-            Il n&apos;y a pas de bonne réponse — seulement ta vérité.
-          </p>
+      {/* Brand + barre de progression */}
+      <div style={{
+        position: "sticky", top: 0, zIndex: 10,
+        background: "var(--canvas)",
+        padding: "10px 20px 12px",
+        borderBottom: "1px solid var(--line2)",
+      }}>
+        <Brand />
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
+          {onBack && (
+            <button
+              type="button"
+              onClick={onBack}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 14, color: "var(--ink2)", fontFamily: "var(--font-sans)" }}
+            >
+              ←
+            </button>
+          )}
+          <div style={{ flex: 1 }}>
+            <ProgressBar pct={progress} />
+          </div>
+          <div style={{
+            width: 7, height: 7, borderRadius: "50%",
+            background: "var(--pine)", boxShadow: "0 0 8px rgba(62,115,97,.55)",
+          }} />
+        </div>
+      </div>
+
+      {/* Questions */}
+      <div style={{ padding: "20px 20px 140px" }}>
+        <div style={{
+          fontSize: 10, letterSpacing: "1.8px", textTransform: "uppercase",
+          color: "var(--ink3)", fontWeight: 700, marginBottom: 14,
+          fontFamily: "var(--font-sans)",
+        }}>
+          Candice apprend ton langage d&apos;attention
         </div>
 
         {RECEPTION_QUESTIONS.map((q) => (
@@ -217,17 +299,24 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
             question={q}
             selectedIds={selections[q.id] ?? []}
             onToggle={(optId) => toggle(q.id, optId)}
-            active={activeQId === q.id}
           />
         ))}
 
-        <div className="q-section-divider">Comment tu donnes</div>
+        <div style={{
+          display: "flex", alignItems: "center", gap: 8,
+          margin: "18px 0 14px",
+          fontSize: 10, letterSpacing: "1.6px", textTransform: "uppercase",
+          color: "var(--ink3)", fontWeight: 700, fontFamily: "var(--font-sans)",
+        }}>
+          <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
+          Comment tu donnes
+          <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
+        </div>
 
         <QuestionSection
           question={EXPRESSION_QUESTION}
           selectedIds={selections[EXPRESSION_QUESTION.id] ?? []}
           onToggle={(optId) => toggle(EXPRESSION_QUESTION.id, optId)}
-          active={activeQId === EXPRESSION_QUESTION.id}
         />
 
         {error && (
@@ -236,21 +325,52 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
             background: "rgba(224,82,82,0.08)",
             border: "0.5px solid rgba(224,82,82,0.25)",
             borderRadius: 6, padding: "10px 14px", marginTop: 16,
+            fontFamily: "var(--font-sans)",
           }}>
             {error}
           </p>
         )}
       </div>
 
-      <div className="q-footer">
+      {/* Footer CTA */}
+      <div style={{
+        position: "fixed", inset: "auto 0 0",
+        padding: "10px 20px 20px",
+        background: "var(--canvas)",
+        borderTop: "1px solid var(--line2)",
+        zIndex: 10,
+      }}>
         <button
           type="button"
           onClick={handleContinue}
-          className={`q-continue${allAnswered && !loading ? " ready" : ""}`}
+          disabled={!allAnswered || loading}
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
+            height: 50, borderRadius: 15, width: "100%",
+            background: allAnswered && !loading ? "var(--pine)" : "var(--line)",
+            color: allAnswered && !loading ? "#fff" : "var(--ink3)",
+            fontWeight: 600, fontSize: 14.5,
+            border: "none", cursor: allAnswered && !loading ? "pointer" : "default",
+            boxShadow: allAnswered && !loading ? "0 6px 16px rgba(23,62,49,.18)" : "none",
+            transition: "background .2s, color .2s",
+            fontFamily: "var(--font-sans)",
+          }}
         >
-          <span>{loading ? "Enregistrement…" : "Continuer"}</span>
-          <span className="q-arr">→</span>
+          {loading ? "Enregistrement…" : "Continuer"}
+          {!loading && <span style={{ transition: "transform .3s" }}>→</span>}
         </button>
+        {onExit && (
+          <button
+            type="button"
+            onClick={onExit}
+            style={{
+              display: "block", margin: "10px auto 0", background: "none", border: "none",
+              cursor: "pointer", fontSize: 12, color: "var(--ink3)", fontFamily: "var(--font-sans)",
+            }}
+          >
+            Reprendre plus tard
+          </button>
+        )}
       </div>
     </div>
   );
