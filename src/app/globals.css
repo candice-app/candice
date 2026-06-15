@@ -129,7 +129,7 @@ button { cursor: pointer; font-family: var(--font-sans); }
 /* ── App Shell — mobile-first, desktop rail ──────────────────────── */
 .app-shell {
   position: relative;
-  min-height: 100svh;
+  min-height: 100dvh;
   background: var(--canvas);
   overflow-x: hidden;
   max-width: 100%;
@@ -138,8 +138,8 @@ button { cursor: pointer; font-family: var(--font-sans); }
 /* Rail — desktop only, hidden on mobile */
 .app-rail { display: none; }
 
-/* Main content — 128 px ensures LogoutButton clears bottom nav on iOS (76px nav + ~34px safe-area) */
-.app-main { padding-bottom: 128px; }
+/* Main content — padding-bottom clears BottomNav + iOS safe area */
+.app-main { padding-bottom: calc(74px + env(safe-area-inset-bottom, 0px) + 12px); }
 
 /* V4 brand bar — mobile only header, hidden on desktop */
 .v4-brand-bar {

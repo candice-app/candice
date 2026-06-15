@@ -45,6 +45,10 @@ export default function BottomNav({ active: activeProp }: BottomNavProps) {
 
   return (
     <div style={{
+      position: "fixed",
+      bottom: 0,
+      left: 0,
+      right: 0,
       height: 74,
       background: "rgba(255,255,255,.94)",
       backdropFilter: "blur(14px)",
@@ -52,8 +56,11 @@ export default function BottomNav({ active: activeProp }: BottomNavProps) {
       display: "flex",
       alignItems: "flex-start",
       justifyContent: "space-around",
-      padding: "10px 8px 0",
-      zIndex: 20,
+      paddingTop: 10,
+      paddingLeft: 8,
+      paddingRight: 8,
+      paddingBottom: "env(safe-area-inset-bottom)",
+      zIndex: 50,
     }}>
       <Link href="/dashboard" style={c("home")}>
         <Icon name="i-home" size={20} style={{ strokeWidth: 1.5 }} />
