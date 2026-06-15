@@ -1,12 +1,11 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import DashboardShell from "@/components/layout/DashboardShell";
-import Avatar from "@/components/presence/Avatar";
-import Thread, { ThreadItem } from "@/components/presence/Thread";
+import V4Shell from "@/components/layout/V4Shell";
+import { Icon } from "@/components/ui/v4/IconSprite";
 import type { Contact, QuestionnaireResponse } from "@/types";
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
+// ── Helpers ──────────────────────────────────────────────────────────────────
 
 const SCORED_FIELDS: (keyof QuestionnaireResponse)[] = [
   "love_language", "communication_style", "stress_response", "social_energy",
@@ -21,13 +20,7 @@ function getCompletion(profile?: QuestionnaireResponse): number {
   return Math.round((filled / SCORED_FIELDS.length) * 100);
 }
 
-function contactState(pct: number): string {
-  if (pct >= 65) return "Candice anticipe pour";
-  if (pct >= 30) return "Candice connaît bien";
-  return "Candice commence à connaître";
-}
-
-interface ImportantDate { label: string; date: string; }
+interface ImportantDate { label: string; date: string }
 
 function parseImportantDates(raw: string | null): ImportantDate[] {
   if (!raw) return [];
@@ -49,39 +42,33 @@ function daysUntil(dateStr: string): number {
   return Math.ceil((next.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 }
 
-type Signal = { pre: string; bold: string } | string | null;
-
-function computeSignal(
-  profile: QuestionnaireResponse | undefined,
-  pct: number,
-  hasPendingSuggestion: boolean,
-): Signal {
-  if (!profile) return "Complète son profil";
-
-  const dates = parseImportantDates(profile.important_dates ?? null);
-  const upcoming = dates
-    .map(d => ({ ...d, days: daysUntil(d.date) }))
-    .filter(d => d.days <= 30)
-    .sort((a, b) => a.days - b.days)[0];
-
-  if (upcoming) {
-    const dayLabel = upcoming.days === 0 ? "aujourd'hui"
-      : upcoming.days === 1 ? "demain"
-      : `dans ${upcoming.days} jours`;
-    return { pre: `${upcoming.label} `, bold: dayLabel };
-  }
-
-  if (hasPendingSuggestion) return "Une attention t'attend";
-  if (pct < 30) return "Complète son profil";
-
-  return null;
+function getStatusLabel(pct: number, hasProche: boolean): string {
+  if (hasProche) return "Candice connaît bien";
+  if (pct >= 65) return "Candice anticipe pour toi";
+  if (pct >= 30) return "Candice a quelques repères";
+  return "Candice commence à apprendre";
 }
 
-function avatarVariant(i: number): "g" | "c" {
-  return i % 2 === 0 ? "g" : "c";
-}
+// ── Inline styles ─────────────────────────────────────────────────────────────
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+const TAG_WARN: React.CSSProperties = {
+  fontSize: 10.5, color: "#7a4b1e", background: "rgba(205,185,135,.22)",
+  padding: "4px 9px", borderRadius: 8, display: "inline-block",
+};
+
+const TAG_SOFT: React.CSSProperties = {
+  fontSize: 10.5, color: "#3d5a4b", background: "var(--sage-bg)",
+  padding: "4px 9px", borderRadius: 8, display: "inline-block",
+};
+
+const CHIP: React.CSSProperties = {
+  display: "inline-block", padding: "5px 11px",
+  border: "1px solid var(--line)", borderRadius: 999,
+  fontSize: 11, color: "var(--ink2)", background: "var(--surface)",
+  textDecoration: "none",
+};
+
+// ── Page ──────────────────────────────────────────────────────────────────────
 
 export default async function ContactsPage() {
   const supabase = await createClient();
@@ -92,6 +79,7 @@ export default async function ContactsPage() {
     { data: contacts },
     { data: pendingSuggestions },
     { data: inviteLinks },
+    { data: recoData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -108,6 +96,10 @@ export default async function ContactsPage() {
       .from("invite_links")
       .select("contact_id")
       .eq("pilote_id", user.id),
+    supabase
+      .from("contact_recommendations")
+      .select("contact_id, ideas")
+      .eq("user_id", user.id),
   ]);
 
   const pendingContactIds = new Set(
@@ -116,111 +108,208 @@ export default async function ContactsPage() {
   const invitedContactIds = new Set(
     (inviteLinks ?? []).map(l => l.contact_id).filter(Boolean) as string[]
   );
-  const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
 
-  // Sort: most complete first
-  const sorted = [...typedContacts].sort((a, b) => {
-    const pA = getCompletion(a.questionnaire_responses?.[0]);
-    const pB = getCompletion(b.questionnaire_responses?.[0]);
-    return pB - pA;
-  });
+  type RecoRow = { contact_id: string; ideas: { title: string }[] };
+  const recoMap: Record<string, string> = {};
+  for (const row of ((recoData ?? []) as RecoRow[])) {
+    const firstTitle = row.ideas?.[0]?.title;
+    if (firstTitle) recoMap[row.contact_id] = firstTitle;
+  }
+
+  const typedContacts = (contacts ?? []) as (Contact & { questionnaire_responses: QuestionnaireResponse[] })[];
+  const sorted = [...typedContacts].sort((a, b) =>
+    getCompletion(b.questionnaire_responses?.[0]) - getCompletion(a.questionnaire_responses?.[0])
+  );
 
   return (
-    <DashboardShell>
-      <div className="content-col" style={{ paddingTop: "28px" }}>
+    <V4Shell active="people">
+      <div style={{ padding: "12px 20px 120px", fontFamily: "var(--font-sans)" }}>
 
-        {/* ptitle */}
+        {/* Header */}
         <div style={{
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-between",
-          marginBottom: 26,
-          padding: "0 4px",
+          display: "flex", justifyContent: "space-between", alignItems: "flex-end",
+          margin: "6px 0 12px",
         }}>
-          <h1 style={{
-            fontFamily: "var(--font-serif)",
-            fontOpticalSizing: "auto" as React.CSSProperties["fontOpticalSizing"],
-            fontWeight: 300,
-            fontSize: 35,
-            color: "var(--ink)",
-            letterSpacing: "-.022em",
-            lineHeight: 1,
-          } as React.CSSProperties}>
+          <h2 style={{
+            fontFamily: "var(--font-serif)", fontSize: 26, margin: 0,
+            color: "var(--ink)", letterSpacing: "-.012em",
+          }}>
             Mes proches
-          </h1>
-          <Link href="/contacts/new" style={{ textDecoration: "none" }}>
-            <span style={{ fontSize: 13, color: "var(--pine)", fontWeight: 500 }}>+ Ajouter</span>
+          </h2>
+          <Link href="/contacts/new" style={{
+            ...CHIP, borderColor: "var(--pine)", color: "var(--pine)", fontWeight: 600,
+          }}>
+            + Ajouter
           </Link>
         </div>
 
+        {/* Filter chips — decorative */}
+        <div style={{ display: "flex", gap: 7, overflow: "hidden", marginBottom: 14 }}>
+          {[
+            { label: "Tous", active: true },
+            { label: "Famille" },
+            { label: "Amis" },
+            { label: "À affiner" },
+          ].map(({ label, active }) => (
+            <span key={label} style={{
+              ...CHIP,
+              ...(active ? { background: "var(--pine)", color: "#fff", borderColor: "var(--pine)" } : {}),
+            }}>
+              {label}
+            </span>
+          ))}
+        </div>
+
+        {/* Empty state */}
         {sorted.length === 0 ? (
           <div style={{ textAlign: "center", padding: "64px 0" }}>
-            <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", marginBottom: 24, lineHeight: 1.7 }}>
+            <p style={{ fontSize: 15, color: "var(--ink2)", marginBottom: 24, lineHeight: 1.7 }}>
               Aucun proche encore — Candice attend de les connaître.
             </p>
-            <Link href="/contacts/new">
-              <button className="btn-primary">Ajouter un proche →</button>
+            <Link href="/contacts/new" style={{
+              display: "inline-block", padding: "13px 24px",
+              background: "var(--pine)", color: "#fff", borderRadius: 15,
+              fontWeight: 600, fontSize: 14.5, textDecoration: "none",
+            }}>
+              Ajouter un proche →
             </Link>
           </div>
         ) : (
-          <Thread>
-            {sorted.map((contact, i) => {
-              const profile = contact.questionnaire_responses?.[0];
-              const pct = getCompletion(profile);
-              const state = contactState(pct);
-              const hasPending = pendingContactIds.has(contact.id);
-              const hasProche = !!contact.proche_user_id;
-              const hasInvite = invitedContactIds.has(contact.id);
-              const isAnticipe = pct >= 65 || hasProche;
-              const isDim = pct < 20 && !hasProche && !hasInvite;
-              const signal = computeSignal(profile, pct, hasPending);
-              const firstName = contact.name.split(" ")[0];
+          sorted.map((contact) => {
+            const profile = contact.questionnaire_responses?.[0];
+            const pct = getCompletion(profile);
+            const circumference = 125.6;
+            const dashoffset = Math.round(circumference * (1 - pct / 100));
+            const hasProche = !!contact.proche_user_id;
+            const hasPending = pendingContactIds.has(contact.id);
+            const hasInvite = invitedContactIds.has(contact.id);
+            const recoTitle = recoMap[contact.id];
+            const firstName = contact.name.split(" ")[0];
+            const pronoun = contact.gender === "femme" ? "elle" : "lui";
 
-              return (
-                <Link key={contact.id} href={`/contacts/${contact.id}`} style={{ textDecoration: "none", display: "block" }}>
-                  <ThreadItem nodeType={isAnticipe ? "anticipe" : "soft"} dim={isDim}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                      <Avatar initial={contact.name[0]} size={54} variant={avatarVariant(i)} />
-                      <div>
-                        <div style={{
-                          fontFamily: "var(--font-serif)",
-                          fontOpticalSizing: "auto" as React.CSSProperties["fontOpticalSizing"],
-                          fontWeight: 400,
-                          fontSize: 20,
-                          color: "var(--ink)",
-                          letterSpacing: "-.012em",
-                        } as React.CSSProperties}>
-                          {contact.name}
-                        </div>
-                        <div style={{
-                          fontSize: 12.5,
-                          color: isAnticipe ? "var(--pine)" : "var(--ink-3)",
-                          fontWeight: 400,
-                          marginTop: 4,
-                        }}>
-                          {hasProche ? `Candice connaît ${firstName}` : `${state} ${firstName}`}
-                        </div>
-                        {!hasProche && hasInvite && (
-                          <div style={{ fontSize: 11, color: "rgba(205,185,135,.75)", fontWeight: 400, marginTop: 3, letterSpacing: ".04em" }}>
-                            Invitation envoyée · en attente
-                          </div>
-                        )}
-                        {signal && !hasInvite && !hasProche && (
-                          <div style={{ fontSize: 12, color: "var(--ink-3)", fontWeight: 300, marginTop: 4 }}>
-                            {typeof signal === "string" ? signal : (
-                              <>{signal.pre}<b style={{ color: "var(--champ)", fontWeight: 600 }}>{signal.bold}</b></>
-                            )}
-                          </div>
-                        )}
-                      </div>
+            // Nearest upcoming date (≤30 days)
+            const dates = parseImportantDates(profile?.important_dates ?? null);
+            const nearestDate = dates
+              .map(d => ({ ...d, days: daysUntil(d.date) }))
+              .filter(d => d.days >= 0 && d.days <= 30)
+              .sort((a, b) => a.days - b.days)[0];
+
+            return (
+              <div key={contact.id} style={{
+                background: "var(--surface)", border: "1px solid var(--line)",
+                borderRadius: 18, boxShadow: "var(--shadow)",
+                padding: 14, marginBottom: 12,
+              }}>
+                {/* Ring + info row */}
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  {/* ProgressRing (no % shown) */}
+                  <div style={{ position: "relative", width: 46, height: 46, flexShrink: 0 }}>
+                    <svg width="46" height="46">
+                      <circle cx="23" cy="23" r="20" fill="none" stroke="#E7E3D8" strokeWidth="3" />
+                      <circle
+                        cx="23" cy="23" r="20" fill="none"
+                        stroke="var(--pine)" strokeWidth="3" strokeLinecap="round"
+                        strokeDasharray="125.6" strokeDashoffset={dashoffset}
+                        transform="rotate(-90 23 23)"
+                      />
+                    </svg>
+                    <div style={{
+                      position: "absolute", inset: 0,
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                    }}>
+                      <span style={{
+                        width: 5, height: 5, borderRadius: "50%",
+                        background: "var(--glow)", display: "block",
+                      }} />
                     </div>
-                  </ThreadItem>
-                </Link>
-              );
-            })}
-          </Thread>
+                  </div>
+
+                  {/* Name / relationship / status */}
+                  <div style={{ flex: 1 }}>
+                    <div style={{
+                      fontFamily: "var(--font-serif)", fontSize: 18,
+                      color: "var(--ink)", letterSpacing: "-.012em",
+                    }}>
+                      {contact.name}
+                    </div>
+                    <div style={{ fontSize: 11, color: "var(--ink3)", marginTop: 1 }}>
+                      {contact.relationship ?? ""}
+                    </div>
+                    <div style={{ fontSize: 11.5, color: "var(--ink2)", marginTop: 1 }}>
+                      {getStatusLabel(pct, hasProche)}
+                    </div>
+                    {hasInvite && !hasProche && (
+                      <div style={{ fontSize: 11, color: "rgba(205,185,135,.75)", fontWeight: 400, marginTop: 2 }}>
+                        Invitation envoyée · en attente
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Open contact link */}
+                  <Link href={`/contacts/${contact.id}`} style={{
+                    fontSize: 13, color: "var(--ink3)", textDecoration: "none",
+                  }}>
+                    →
+                  </Link>
+                </div>
+
+                {/* Tags */}
+                {(nearestDate || recoTitle) && (
+                  <div style={{ display: "flex", gap: 7, margin: "11px 0 9px", flexWrap: "wrap" }}>
+                    {nearestDate && (
+                      <span style={TAG_WARN}>
+                        {nearestDate.label} dans {nearestDate.days === 0 ? "aujourd'hui" : `${nearestDate.days} j`}
+                      </span>
+                    )}
+                    {recoTitle && (
+                      <span style={TAG_SOFT}>Envie : {recoTitle}</span>
+                    )}
+                  </div>
+                )}
+
+                {/* Proactive signal */}
+                {hasPending && (
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: recoTitle ? 11 : 0 }}>
+                    <span style={{
+                      width: 5, height: 5, borderRadius: "50%",
+                      background: "var(--glow)", display: "inline-block", flexShrink: 0,
+                    }} />
+                    <span style={{ fontSize: 11.5, color: "var(--pine)", fontWeight: 600 }}>
+                      Une attention prête pour {firstName}
+                    </span>
+                  </div>
+                )}
+
+                {/* CTA buttons — only if contact_recommendations exists */}
+                {recoTitle && hasPending && (
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <Link href={`/contacts/${contact.id}`} style={{
+                      display: "inline-flex", alignItems: "center", gap: 6,
+                      height: 42, padding: "0 14px", borderRadius: 13,
+                      background: "var(--pine)", color: "#fff",
+                      fontSize: 13, fontWeight: 600, textDecoration: "none",
+                      fontFamily: "var(--font-sans)",
+                    }}>
+                      <Icon name="i-spark" size={16} />
+                      Voir mon idée pour {pronoun}
+                    </Link>
+                    <Link href={`/contacts/${contact.id}`} style={{
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      height: 42, padding: "0 13px", borderRadius: 13,
+                      background: "transparent", color: "var(--pine)",
+                      border: "1px solid var(--line)", boxShadow: "none",
+                      fontSize: 12.5, fontWeight: 600, textDecoration: "none",
+                      fontFamily: "var(--font-sans)",
+                    }}>
+                      Ouvrir
+                    </Link>
+                  </div>
+                )}
+              </div>
+            );
+          })
         )}
       </div>
-    </DashboardShell>
+    </V4Shell>
   );
 }
