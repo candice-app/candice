@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import DashboardShell from "@/components/layout/DashboardShell";
+import V4Shell from "@/components/layout/V4Shell";
+import { Icon } from "@/components/ui/v4/IconSprite";
 import { MyProfile, CadenceLevel } from "@/types";
 import ShareButton from "./ShareButton";
 import ResumePrompt from "@/components/questionnaire/ResumePrompt";
@@ -562,6 +563,35 @@ function mergeWithAnalysis(
   });
 }
 
+// ─── Donut helpers ────────────────────────────────────────────────────────────
+
+const DONUT_COLORS: Record<string, string> = {
+  MOT: "#173E31", CAD: "#3E7361", SER: "#8DA697",
+  EXP: "#CDB987", GES: "#B9A77C", SUR: "#E0D3B0",
+};
+const DONUT_LABELS: Record<string, string> = {
+  MOT: "Mots justes", CAD: "Cadeaux", SER: "Services",
+  EXP: "Moments", GES: "Esthétique", SUR: "Surprises",
+};
+const CENTER_LABELS: Record<string, string> = {
+  MOT: "Mots", CAD: "Cadeaux", SER: "Service",
+  EXP: "Moments", GES: "Détails", SUR: "Surprises",
+};
+
+function computeDonutData(reception: FaceResult | null): { id: string; weight: number }[] {
+  if (!reception) return [];
+  const weights: Record<string, number> = {};
+  const mergeId = (id: string) => (id === "CAD_C" || id === "CAD_S") ? "CAD" : id;
+  for (const id of reception.dominant ?? []) { const m = mergeId(id); weights[m] = (weights[m] ?? 0) + 3; }
+  for (const id of reception.secondaire ?? []) { const m = mergeId(id); weights[m] = (weights[m] ?? 0) + 2; }
+  for (const id of reception.tertiaire ?? []) { const m = mergeId(id); weights[m] = (weights[m] ?? 0) + 1; }
+  const total = Object.values(weights).reduce((a, b) => a + b, 0);
+  if (total === 0) return [];
+  return Object.entries(weights)
+    .map(([id, w]) => ({ id, weight: w / total }))
+    .sort((a, b) => b.weight - a.weight);
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function MoiPage() {
@@ -603,122 +633,171 @@ export default async function MoiPage() {
 
   const showGenderModal = !!profile && !profile.grammatical_gender;
 
+  const profilePct = rawSections.length > 0
+    ? Math.round((rawSections.filter(s => s.filled).length / rawSections.length) * 100)
+    : 0;
+
+  const ghStatusLabels: Record<string, string> = {
+    empty: "Candice ne te connaît pas encore",
+    started: "Candice commence à te connaître",
+    well_filled: "Candice te connaît bien",
+    precise: "Candice te connaît vraiment bien",
+  };
+  const ghStatusLabel = ghStatusLabels[level] ?? "Candice apprend à te connaître";
+
+  const donutData = computeDonutData(profile?.attention_reception ?? null);
+
   return (
-    <DashboardShell>
+    <V4Shell active="profile">
 
       {showGenderModal && <GenderModal userId={user.id} />}
 
-      {/* ── Header ── */}
-      <div
-        className="hero-mass"
-        style={{
-          padding: "0 0 28px",
-          background: "radial-gradient(130% 100% at 26% 0%, #1E4337 0%, #0E2219 44%, #060E0A 100%)",
-        }}
-      >
-        <div style={{ padding: "18px 24px 0", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <Link href="/dashboard" style={{ textDecoration: "none" }}>
-            <span style={{ fontSize: 12, fontWeight: 300, color: "rgba(244,241,232,.5)", letterSpacing: ".08em" }}>
-              ← Tableau de bord
-            </span>
-          </Link>
-          <Link href="/parametres" style={{ textDecoration: "none" }}>
-            <span style={{
-              fontSize: 18, color: "rgba(244,241,232,.45)",
-              display: "flex", alignItems: "center",
-            }}>
-              ⚙
-            </span>
-          </Link>
-        </div>
-
-        <div style={{ padding: "20px 24px 0", display: "flex", alignItems: "center", gap: 18 }}>
-          <div style={{
-            width: 72, height: 72, borderRadius: "50%",
-            background: "radial-gradient(120% 120% at 30% 22%, #FFFFFF, #F1E8D2 60%, #E0CFA6)",
-            boxShadow: "0 0 0 1px var(--champ-line)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            flexShrink: 0,
-          }}>
-            <span style={{ fontFamily: "var(--font-serif)", fontSize: 28, fontWeight: 300, color: "var(--pine)" } as React.CSSProperties}>
-              {initial}
-            </span>
-          </div>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5 }}>
-              <div style={{
-                fontFamily: "var(--font-serif)", fontWeight: 300,
-                fontSize: "clamp(22px, 4.5vw, 28px)",
-                color: "var(--canvas)", letterSpacing: "-.018em", lineHeight: 1.15,
-              } as React.CSSProperties}>
+      {/* GH Panel */}
+      <div style={{
+        background: "linear-gradient(157deg,#1D5040,#0C2A20)",
+        color: "#fff", position: "relative", overflow: "hidden",
+        padding: "16px 20px 19px",
+      }}>
+        <div style={{
+          position: "absolute", right: -22, top: -44,
+          width: 160, height: 160, borderRadius: "50%",
+          background: "radial-gradient(circle,rgba(205,185,135,.34),transparent 70%)",
+          pointerEvents: "none",
+        }} />
+        {/* Ring + name */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", position: "relative" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ position: "relative", width: 54, height: 54, flexShrink: 0 }}>
+              <svg width="54" height="54">
+                <circle cx="27" cy="27" r="23" fill="none" stroke="rgba(255,255,255,.25)" strokeWidth="3.5" />
+                <circle cx="27" cy="27" r="23" fill="none" stroke="var(--champ)" strokeWidth="3.5"
+                  strokeLinecap="round" strokeDasharray="144.5"
+                  strokeDashoffset={Math.round(144.5 * (1 - profilePct / 100))}
+                  transform="rotate(-90 27 27)"
+                />
+              </svg>
+              <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <span style={{ display: "block", width: 5, height: 5, borderRadius: "50%", background: "#fff", boxShadow: "0 0 10px var(--champ)" }} />
+              </div>
+            </div>
+            <div>
+              <div style={{ fontFamily: "var(--font-serif)", fontSize: 21, color: "#fff" }}>
                 {firstName !== "toi" ? firstName : "Mon profil"}
               </div>
-              <span style={{
-                fontSize: 10, fontWeight: 400, letterSpacing: ".18em",
-                textTransform: "uppercase", color: "rgba(244,241,232,.4)",
-                border: "0.5px solid rgba(244,241,232,.18)", borderRadius: 20,
-                padding: "2px 8px", flexShrink: 0,
-              }}>
-                Profil personnel
-              </span>
+              <div style={{ fontSize: 11.5, color: "rgba(255,255,255,.82)", marginTop: 2 }}>
+                {ghStatusLabel}
+              </div>
             </div>
-            {levelBadge && (
-              <span style={{
-                fontSize: 10, fontWeight: 500, letterSpacing: ".18em",
-                textTransform: "uppercase",
-                color: level === 'precise' ? "var(--champ)" : "rgba(205,185,135,.7)",
-              }}>
-                {levelBadge}
-              </span>
-            )}
           </div>
-          {profile && (
-            <Link href="/moi/questionnaire" style={{ fontSize: 13, color: "var(--champ)", fontWeight: 400, textDecoration: "none", flexShrink: 0 }}>
-              Modifier
-            </Link>
-          )}
+          <Link href="/moi/questionnaire" style={{
+            fontSize: 11.5, border: "1px solid rgba(255,255,255,.4)", color: "#fff",
+            padding: "6px 11px", borderRadius: 999, textDecoration: "none",
+          }}>
+            Modifier
+          </Link>
         </div>
-
-        <div style={{ padding: "14px 24px 0" }}>
-          <div style={{ height: "0.5px", background: "linear-gradient(90deg, var(--champ-line), transparent)", marginBottom: 12 }} />
-          {profile?.updated_at && (
-            <p style={{ fontSize: 11, fontWeight: 300, color: "rgba(244,241,232,.35)", letterSpacing: ".04em" }}>
-              {formatUpdatedAt(profile.updated_at)}
-            </p>
-          )}
+        {/* Chips row */}
+        <div style={{ display: "flex", gap: 7, marginTop: 12, position: "relative" }}>
+          <Link href="/parametres/profils-partages" style={{
+            fontSize: 11, color: "#fff", background: "rgba(255,255,255,.14)",
+            padding: "5px 11px", borderRadius: 999, textDecoration: "none",
+          }}>
+            Voir ma fiche partagée
+          </Link>
+          <Link href="/moi/resultats" style={{
+            fontSize: 11, color: "var(--champ)", background: "rgba(255,255,255,.12)",
+            padding: "5px 11px", borderRadius: 999, textDecoration: "none",
+          }}>
+            Lire l&apos;analyse →
+          </Link>
         </div>
+      </div>
 
-        {/* ── Analyse globale (directement sous le header, fond foncé) ── */}
+      {/* V4 body — summary + donut + modules */}
+      <div style={{ padding: "14px 20px 0" }}>
         {analysis?.summary && (
-          <div style={{ padding: "16px 24px 24px" }}>
-            <p style={{
-              fontFamily: "var(--font-serif)", fontWeight: 300,
-              fontSize: 16, color: "rgba(244,241,232,.9)",
-              lineHeight: 1.7, letterSpacing: "-.01em",
-              marginBottom: analysis.summary_chips?.length ? 14 : 0,
-            } as React.CSSProperties}>
-              {analysis.summary}
-            </p>
-            {analysis.summary_chips && analysis.summary_chips.length > 0 && (
-              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-                {analysis.summary_chips.map((chip, i) => (
-                  <span key={i} style={{
-                    fontSize: 11, fontWeight: 300,
-                    padding: "3px 10px", borderRadius: 20,
-                    background: "rgba(255,255,255,.08)",
-                    border: "0.5px solid rgba(255,255,255,.14)",
-                    color: "rgba(244,241,232,.75)",
-                  }}>
-                    {chip}
+          <p style={{
+            fontFamily: "var(--font-serif)", fontSize: 15.5, lineHeight: 1.5,
+            color: "var(--ink)", marginBottom: 14,
+          }}>
+            {analysis.summary}
+          </p>
+        )}
+
+        {donutData.length > 0 && (
+          <>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8, margin: "4px 0 11px",
+              fontSize: 10, letterSpacing: "1.6px", textTransform: "uppercase",
+              color: "var(--ink3)", fontWeight: 700, fontFamily: "var(--font-sans)",
+            }}>
+              <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
+              Ton langage d&apos;attention
+              <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
+            </div>
+            <div style={{
+              background: "var(--surface)", border: "1px solid var(--line)",
+              borderRadius: 18, boxShadow: "var(--shadow)", padding: 16,
+              display: "flex", alignItems: "center", gap: 14, marginBottom: 11,
+            }}>
+              <svg width="140" height="140" viewBox="0 0 140 140" style={{ flexShrink: 0 }}>
+                {(() => {
+                  let cum = 0;
+                  return donutData.map(({ id, weight }) => {
+                    const arc = weight * 326.73;
+                    const el = (
+                      <circle key={id} cx="70" cy="70" r="52" fill="none"
+                        stroke={DONUT_COLORS[id] ?? "#ccc"} strokeWidth="26"
+                        strokeDasharray={`${arc.toFixed(2)} ${(326.73 - arc).toFixed(2)}`}
+                        strokeDashoffset={cum === 0 ? 0 : -cum}
+                        transform="rotate(-90 70 70)"
+                      />
+                    );
+                    cum += arc;
+                    return el;
+                  });
+                })()}
+                <circle cx="70" cy="70" r="34" fill="#fff" />
+                <text x="70" y="67" textAnchor="middle" fontFamily="Fraunces" fontSize="12" fill="#173E31">
+                  {CENTER_LABELS[donutData[0]?.id ?? ""] ?? ""}
+                </text>
+                <text x="70" y="82" textAnchor="middle" fontSize="9" fill="#6F6A61">
+                  en tête
+                </text>
+              </svg>
+              <div style={{ flex: 1, display: "flex", flexWrap: "wrap", gap: "5px 12px" }}>
+                {donutData.map(({ id }) => (
+                  <span key={id} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "var(--ink2)" }}>
+                    <i style={{ width: 9, height: 9, borderRadius: 3, background: DONUT_COLORS[id], display: "inline-block", flexShrink: 0 }} />
+                    {DONUT_LABELS[id]}
                   </span>
                 ))}
               </div>
+            </div>
+
+            {profile?.attention_breath_text && (
+              <div style={{
+                background: "var(--surface)", border: "1px solid var(--line)",
+                borderRadius: 18, boxShadow: "var(--shadow)", padding: "13px 14px", marginBottom: 10,
+              }}>
+                <div style={{
+                  display: "flex", alignItems: "center", gap: 9,
+                  fontWeight: 600, fontSize: 13.5, color: "var(--ink)",
+                }}>
+                  <Icon name="i-detail" size={18} style={{ color: "var(--pine)" }} />
+                  Ce qui te touche
+                </div>
+                <div style={{ fontSize: 12, color: "var(--ink2)", margin: "5px 0 4px", lineHeight: 1.45 }}>
+                  {profile.attention_breath_text}
+                </div>
+              </div>
             )}
-          </div>
+          </>
         )}
       </div>
 
-      <div className="content-col" style={{ paddingTop: 24 }}>
+      {/* Existing profile content */}
+      <div style={{ padding: "0 20px 120px" }}>
 
         {!profile ? (
           <div style={{ textAlign: "center", padding: "48px 0" }}>
@@ -782,6 +861,6 @@ export default async function MoiPage() {
           <LogoutButton />
         </div>
       </div>
-    </DashboardShell>
+    </V4Shell>
   );
 }
