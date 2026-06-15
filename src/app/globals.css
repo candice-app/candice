@@ -141,6 +141,18 @@ button { cursor: pointer; font-family: var(--font-sans); }
 /* Main content — 128 px ensures LogoutButton clears bottom nav on iOS (76px nav + ~34px safe-area) */
 .app-main { padding-bottom: 128px; }
 
+/* V4 brand bar — mobile only header, hidden on desktop */
+.v4-brand-bar {
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px 6px;
+  border-bottom: 1px solid var(--line2, rgba(23,62,49,.06));
+  background: var(--canvas, #FEFEFB);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
 /* Hero mass — edge-to-edge mobile */
 .hero-mass {
   border-radius: 0 0 32px 32px;
@@ -236,6 +248,9 @@ button { cursor: pointer; font-family: var(--font-sans); }
 
   /* Hero top bar (Wordmark + avatar) — hidden, rail has Wordmark */
   .hero-top-bar { display: none; }
+
+  /* V4 brand bar — hidden on desktop (rail shows Brand instead) */
+  .v4-brand-bar { display: none; }
 
   /* Body and content columns centered */
   .body-pad {
