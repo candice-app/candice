@@ -1,0 +1,58 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Candice V4 — Design Tokens (source de vérité visuelle)
+   Référence : design/redisign/Candice_Redesign_Mockups_v4.html
+   ───────────────────────────────────────────────────────────────────────
+   Scoped sous .v4 (pas :root) pour ne pas écraser les tokens V11 existants
+   pendant la phase de migration.  Quand V4 est totalement déployé, déplacer
+   le bloc .v4 { … } vers :root dans globals.css et supprimer ce fichier.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.v4 {
+  /* ── Fond & surfaces ── */
+  --canvas:     #FEFEFB;
+  --surface:    #FFFFFF;
+  --mist:       #EEF3F0;
+
+  /* ── Encre ── */
+  --ink:        #16150E;
+  --ink2:       #5F5A51;
+  --ink3:       #ABA699;
+
+  /* ── Sapin ── */
+  --pine:       #173E31;
+  --pine2:      #1B4D3E;
+  --pine-lite:  #2A7B5C;
+  --glow:       #3E7361;
+
+  /* ── Sauge ── */
+  --sage:       #8DA697;
+  --sage-bg:    #E9F0EC;
+
+  /* ── Champagne / or ── */
+  --champ:      #CDB987;
+  --gold:       #C7A85A;
+  --champ-soft: #FBF8F0;
+
+  /* ── Corail ── */
+  --coral:      #B9583F;
+  --coral-bg:   #F7ECE7;
+
+  /* ── Aplats ── */
+  --aplat:      linear-gradient(157deg,#1D5040,#0C2A20);
+  --gtint:      rgba(23,62,49,.06);
+
+  /* ── Accents sémantiques ── */
+  --red:        #C24A3C;
+  --terra:      #C57B4E;
+  --blue:       #5F8190;
+  --plum:       #8A5A6B;
+
+  /* ── Lignes & ombres ── */
+  --line:       rgba(23,62,49,.11);
+  --line2:      rgba(23,62,49,.06);
+  --shadow:     0 10px 30px rgba(23,62,49,.07);
+
+  /* ── Typo (résout les variables next/font injectées par layout.tsx) ── */
+  --font-serif: var(--font-fraunces), Fraunces, Georgia, serif;
+  --font-sans:  var(--font-dm-sans), 'DM Sans', -apple-system, sans-serif;
+}
