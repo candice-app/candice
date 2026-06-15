@@ -218,8 +218,8 @@ export default async function ContactsPage() {
                       display: "flex", alignItems: "center", justifyContent: "center",
                     }}>
                       <span style={{
-                        width: 5, height: 5, borderRadius: "50%",
-                        background: "var(--glow)", display: "block",
+                        width: 7, height: 7, borderRadius: "50%", display: "block",
+                        background: "var(--pine)", boxShadow: "0 0 8px rgba(62,115,97,.55)",
                       }} />
                     </div>
                   </div>
@@ -245,12 +245,20 @@ export default async function ContactsPage() {
                     )}
                   </div>
 
-                  {/* Open contact link */}
-                  <Link href={`/contacts/${contact.id}`} style={{
-                    fontSize: 13, color: "var(--ink3)", textDecoration: "none",
-                  }}>
-                    →
-                  </Link>
+                  {/* Top-row: point proactif + flèche */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                    {hasPending && (
+                      <span style={{
+                        display: "inline-block", width: 7, height: 7, borderRadius: "50%",
+                        background: "var(--pine)", boxShadow: "0 0 8px rgba(62,115,97,.55)",
+                      }} />
+                    )}
+                    <Link href={`/contacts/${contact.id}`} style={{
+                      fontSize: 13, color: "var(--ink3)", textDecoration: "none",
+                    }}>
+                      →
+                    </Link>
+                  </div>
                 </div>
 
                 {/* Tags */}
@@ -269,10 +277,11 @@ export default async function ContactsPage() {
 
                 {/* Proactive signal */}
                 {hasPending && (
-                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: recoTitle ? 11 : 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 7, marginBottom: 11 }}>
                     <span style={{
-                      width: 5, height: 5, borderRadius: "50%",
-                      background: "var(--glow)", display: "inline-block", flexShrink: 0,
+                      width: 7, height: 7, borderRadius: "50%",
+                      background: "var(--pine)", boxShadow: "0 0 8px rgba(62,115,97,.55)",
+                      display: "inline-block", flexShrink: 0,
                     }} />
                     <span style={{ fontSize: 11.5, color: "var(--pine)", fontWeight: 600 }}>
                       Une attention prête pour {firstName}

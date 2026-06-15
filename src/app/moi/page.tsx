@@ -3,7 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import V4Shell from "@/components/layout/V4Shell";
 import { Icon } from "@/components/ui/v4/IconSprite";
-import { MyProfile, CadenceLevel } from "@/types";
+import { MyProfile } from "@/types";
 import ShareButton from "./ShareButton";
 import ResumePrompt from "@/components/questionnaire/ResumePrompt";
 import LogoutButton from "./LogoutButton";
@@ -621,15 +621,10 @@ export default async function MoiPage() {
     : new Set<string>();
 
   const firstName = user.user_metadata?.full_name?.split(" ")[0] ?? "toi";
-  const initial = firstName !== "toi" ? firstName[0].toUpperCase() : "M";
 
   const rawSections = profile ? buildSections(profile, discoveryAvailable) : [];
   const sections = mergeWithAnalysis(rawSections, analysis?.sections ?? null);
   const level = profile ? computeCompletionLevel(rawSections) : 'empty';
-  const levelLabels: Record<string, string> = {
-    started: 'En cours', well_filled: 'Bien rempli', precise: 'Très précis',
-  };
-  const levelBadge = levelLabels[level] ?? null;
 
   const showGenderModal = !!profile && !profile.grammatical_gender;
 
@@ -698,7 +693,7 @@ export default async function MoiPage() {
         </div>
         {/* Chips row */}
         <div style={{ display: "flex", gap: 7, marginTop: 12, position: "relative" }}>
-          <Link href="/parametres/profils-partages" style={{
+          <Link href={`/partage/${user.id}`} style={{
             fontSize: 11, color: "#fff", background: "rgba(255,255,255,.14)",
             padding: "5px 11px", borderRadius: 999, textDecoration: "none",
           }}>
