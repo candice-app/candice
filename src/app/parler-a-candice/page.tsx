@@ -1,13 +1,29 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import DashboardShell from "@/components/layout/DashboardShell";
+import V4Shell from "@/components/layout/V4Shell";
+import { Icon } from "@/components/ui/v4/IconSprite";
+
+// Icône dans un carré 40x40 radius 12 (même style que .intent .ii maquette)
+function IntentIcon({ name, bg, color }: { name: string; bg: string; color: string }) {
+  return (
+    <div style={{
+      width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+      background: bg, color,
+      display: "flex", alignItems: "center", justifyContent: "center",
+    }}>
+      <Icon name={name} size={19} />
+    </div>
+  );
+}
 
 const ACTIONS = [
   {
     id: "nouvelle",
     href: "/parler-a-candice/w1",
-    icon: "🩷",
+    iconName: "i-news",
+    iconBg: "rgba(95,129,144,.14)",
+    iconColor: "var(--blue)",
     title: "J'ai une nouvelle sur un proche",
     desc: "Partage ce qui se passe — Candice retient ce qui compte.",
     active: true,
@@ -15,7 +31,9 @@ const ACTIONS = [
   {
     id: "repere",
     href: "/parler-a-candice/w2",
-    icon: "🎁",
+    iconName: "i-bookmark",
+    iconBg: "var(--gtint)",
+    iconColor: "var(--pine)",
     title: "J'ai repéré quelque chose pour lui",
     desc: "Une photo, un lien, une description — Candice l'ajoute à son profil.",
     active: true,
@@ -23,7 +41,9 @@ const ACTIONS = [
   {
     id: "ne-va-pas",
     href: null,
-    icon: "😔",
+    iconName: "i-heart",
+    iconBg: "rgba(194,74,60,.13)",
+    iconColor: "var(--red)",
     title: "Quelqu'un ne va pas bien",
     desc: "Dis-moi ce qui se passe — je t'aide à être là.",
     active: false,
@@ -31,7 +51,9 @@ const ACTIONS = [
   {
     id: "conflit",
     href: null,
-    icon: "💬",
+    iconName: "i-mend",
+    iconBg: "rgba(138,90,107,.15)",
+    iconColor: "var(--plum)",
     title: "Je suis en conflit avec quelqu'un",
     desc: "Prends le temps d'y voir clair avant d'agir.",
     active: false,
@@ -39,7 +61,9 @@ const ACTIONS = [
   {
     id: "evenement",
     href: null,
-    icon: "🎂",
+    iconName: "i-cal",
+    iconBg: "rgba(197,123,78,.15)",
+    iconColor: "var(--terra)",
     title: "Je prépare un événement",
     desc: "Anniversaire, fête, surprise — je m'occupe du reste.",
     active: false,
@@ -47,7 +71,9 @@ const ACTIONS = [
   {
     id: "plaisir",
     href: null,
-    icon: "✨",
+    iconName: "i-spark",
+    iconBg: "rgba(199,168,90,.2)",
+    iconColor: "#9a7d2e",
     title: "Je veux faire plaisir à quelqu'un",
     desc: "Pas d'occasion particulière, juste l'envie.",
     active: false,
@@ -55,7 +81,9 @@ const ACTIONS = [
   {
     id: "fiche",
     href: null,
-    icon: "📝",
+    iconName: "i-words",
+    iconBg: "var(--gtint)",
+    iconColor: "var(--pine)",
     title: "Je veux mettre à jour une fiche",
     desc: "Quelque chose a changé — je note pour ne pas oublier.",
     active: false,
@@ -63,7 +91,9 @@ const ACTIONS = [
   {
     id: "moi",
     href: null,
-    icon: "💭",
+    iconName: "i-chat",
+    iconBg: "var(--sage-bg)",
+    iconColor: "var(--pine)",
     title: "Je veux dire ce qui me ferait plaisir",
     desc: "Exprime une envie — Candice garde ça pour toi.",
     active: false,
@@ -79,57 +109,37 @@ export default async function ParlerACandice() {
   const upcoming = ACTIONS.filter(a => !a.active);
 
   return (
-    <DashboardShell>
-      <div className="content-col" style={{ paddingTop: 40, paddingBottom: 40 }}>
+    <V4Shell>
+      <div style={{ padding: "12px 20px 120px", fontFamily: "var(--font-sans)" }}>
 
-        <p style={{
-          fontSize: 10, fontWeight: 500, letterSpacing: ".42em",
-          textTransform: "uppercase", color: "var(--pine)", marginBottom: 14,
-        }}>
-          Candice
-        </p>
-
-        <h1 style={{
-          fontFamily: "var(--font-serif)",
-          fontWeight: 300, fontSize: 34,
-          color: "var(--ink)", letterSpacing: "-.022em",
-          lineHeight: 1.1, marginBottom: 10,
-        } as React.CSSProperties}>
-          Que se passe-t-il ?
-        </h1>
-
-        <p style={{
-          fontSize: 14, fontWeight: 300, color: "var(--ink-2)",
-          lineHeight: 1.6, marginBottom: 32,
-        }}>
-          Dis-moi ce que tu as en tête, je m&apos;occupe du reste.
-        </p>
+        <div style={{ textAlign: "center", margin: "8px 0 4px" }}>
+          <h2 style={{
+            fontFamily: "var(--font-serif)", fontSize: 22,
+            color: "var(--ink)", letterSpacing: "-.012em", lineHeight: 1.25,
+          }}>
+            Que veux-tu confier à Candice&nbsp;?
+          </h2>
+          <p style={{ fontSize: 12.5, color: "var(--ink2)", margin: "4px 0 16px" }}>
+            Choisis un point de départ. Ensuite, parle librement.
+          </p>
+        </div>
 
         {/* Active actions */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 40 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
           {active.map((action) => (
             <Link key={action.id} href={action.href!} style={{ textDecoration: "none" }}>
               <div style={{
-                padding: "18px 20px",
-                borderRadius: 16,
-                border: "0.5px solid rgba(23,62,49,.18)",
-                background: "var(--white)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "flex-start",
-                gap: 14,
-                transition: "border-color .18s, box-shadow .18s",
+                display: "flex", alignItems: "flex-start", gap: 12,
+                padding: 13, border: "1px solid var(--line)", borderRadius: 16,
+                background: "var(--surface)", marginBottom: 10,
+                boxShadow: "var(--shadow)", cursor: "pointer",
               }}>
-                <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0, marginTop: 1 }}>
-                  {action.icon}
-                </span>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p style={{ fontSize: 15, fontWeight: 400, color: "var(--ink)", marginBottom: 4, lineHeight: 1.3 }}>
-                    {action.title}
-                  </p>
-                  <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.55 }}>
+                <IntentIcon name={action.iconName} bg={action.iconBg} color={action.iconColor} />
+                <div style={{ flex: 1 }}>
+                  <b style={{ fontSize: 14, color: "var(--ink)", display: "block" }}>{action.title}</b>
+                  <small style={{ fontSize: 11.5, color: "var(--ink2)", marginTop: 2, lineHeight: 1.35, display: "block" }}>
                     {action.desc}
-                  </p>
+                  </small>
                 </div>
               </div>
             </Link>
@@ -137,39 +147,35 @@ export default async function ParlerACandice() {
         </div>
 
         {/* Upcoming — visually secondary */}
-        <div>
-          <p style={{
-            fontSize: 10, fontWeight: 500, letterSpacing: ".32em",
-            textTransform: "uppercase", color: "var(--ink-3)",
-            marginBottom: 12,
-          }}>
-            À venir
-          </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-            {upcoming.map((action) => (
-              <div
-                key={action.id}
-                style={{
-                  padding: "12px 4px",
-                  borderBottom: "0.5px solid var(--line)",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  opacity: 0.55,
-                }}
-              >
-                <span style={{ fontSize: 16, width: 24, textAlign: "center", flexShrink: 0 }}>
-                  {action.icon}
-                </span>
-                <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.4, flex: 1 }}>
-                  {action.title}
-                </p>
-              </div>
-            ))}
-          </div>
+        <div style={{
+          fontSize: 10, fontWeight: 700, letterSpacing: "1.6px",
+          textTransform: "uppercase", color: "var(--ink3)",
+          margin: "14px 0 10px", display: "flex", alignItems: "center", gap: 8,
+        }}>
+          <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
+          À venir
+          <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+          {upcoming.map((action) => (
+            <div
+              key={action.id}
+              style={{
+                display: "flex", alignItems: "center", gap: 12,
+                padding: "12px 4px",
+                borderBottom: "1px solid var(--line2)",
+                opacity: 0.55,
+              }}
+            >
+              <IntentIcon name={action.iconName} bg={action.iconBg} color={action.iconColor} />
+              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink2)", lineHeight: 1.4, flex: 1 }}>
+                {action.title}
+              </p>
+            </div>
+          ))}
         </div>
 
       </div>
-    </DashboardShell>
+    </V4Shell>
   );
 }
