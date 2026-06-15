@@ -307,7 +307,7 @@ export default async function ContactsPage() {
                   <div style={{ display: "flex", gap: 8 }}>
                     <Link href={`/contacts/${contact.id}`} style={{
                       display: "inline-flex", alignItems: "center", gap: 6,
-                      height: 42, padding: "0 14px", borderRadius: 13,
+                      height: 42, padding: "0 14px", borderRadius: 15,
                       background: "var(--pine)", color: "#fff",
                       fontSize: 13, fontWeight: 600, textDecoration: "none",
                       fontFamily: "var(--font-sans)",
@@ -317,7 +317,7 @@ export default async function ContactsPage() {
                     </Link>
                     <Link href={`/contacts/${contact.id}`} style={{
                       display: "inline-flex", alignItems: "center", justifyContent: "center",
-                      height: 42, padding: "0 13px", borderRadius: 13,
+                      height: 42, padding: "0 13px", borderRadius: 15,
                       background: "transparent", color: "var(--pine)",
                       border: "1px solid var(--line)", boxShadow: "none",
                       fontSize: 12.5, fontWeight: 600, textDecoration: "none",

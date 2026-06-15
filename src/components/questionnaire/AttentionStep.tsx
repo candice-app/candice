@@ -357,7 +357,6 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
           }}
         >
           {loading ? "Enregistrement…" : "Continuer"}
-          {!loading && <span style={{ transition: "transform .3s" }}>→</span>}
         </button>
         {onExit && (
           <button

@@ -678,7 +678,7 @@ export default async function MoiPage() {
                 />
               </svg>
               <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <span style={{ display: "block", width: 5, height: 5, borderRadius: "50%", background: "#fff", boxShadow: "0 0 10px var(--champ)" }} />
+                <span style={{ display: "block", width: 7, height: 7, borderRadius: "50%", background: "#fff", boxShadow: "0 0 10px var(--champ)" }} />
               </div>
             </div>
             <div>

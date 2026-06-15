@@ -197,7 +197,7 @@ export default async function DashboardPage() {
         {/* Date + greeting */}
         <div style={{ margin: "6px 0 2px" }}>
           <div style={{
-            fontSize: 10, letterSpacing: "1.6px", textTransform: "uppercase",
+            fontSize: 10, letterSpacing: "1.8px", textTransform: "uppercase",
             color: "var(--ink3)", fontWeight: 700,
           }}>
             {dateLabelCap}
@@ -242,6 +242,12 @@ export default async function DashboardPage() {
             marginBottom: 14, background: "linear-gradient(157deg,#1D5040,#0C2A20)",
             color: "#fff", boxShadow: "0 14px 34px rgba(23,62,49,.22)",
           }}>
+            <div style={{
+              position: "absolute", right: -26, top: -46,
+              width: 160, height: 160, borderRadius: "50%",
+              background: "radial-gradient(circle,rgba(205,185,135,.4),transparent 70%)",
+              pointerEvents: "none",
+            }} />
             <span style={{
               display: "inline-flex", alignItems: "center", gap: 5,
               fontSize: 10, letterSpacing: "1px", textTransform: "uppercase",

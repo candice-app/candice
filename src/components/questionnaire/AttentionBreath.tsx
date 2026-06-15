@@ -159,7 +159,7 @@ export default function AttentionBreath({ breathText, onContinue }: Props) {
             cursor: "pointer",
           }}
         >
-          Continuer →
+          Continuer
         </button>
       </div>
     </div>

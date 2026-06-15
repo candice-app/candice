@@ -100,78 +100,59 @@ const ACTIONS = [
   },
 ];
 
+function IntentCard({ action }: { action: typeof ACTIONS[0] }) {
+  const card = (
+    <div style={{
+      display: "flex", alignItems: "flex-start", gap: 12,
+      padding: 13, border: "1px solid var(--line)", borderRadius: 16,
+      background: "var(--surface)", marginBottom: 10,
+      boxShadow: "var(--shadow)", cursor: action.href ? "pointer" : "default",
+    }}>
+      <IntentIcon name={action.iconName} bg={action.iconBg} color={action.iconColor} />
+      <div style={{ flex: 1 }}>
+        <b style={{ fontSize: 14, color: "var(--ink)", display: "block" }}>{action.title}</b>
+        <small style={{ fontSize: 11.5, color: "var(--ink2)", marginTop: 2, lineHeight: 1.35, display: "block" }}>
+          {action.desc}
+        </small>
+      </div>
+    </div>
+  );
+  if (action.href) {
+    return <Link key={action.id} href={action.href} style={{ textDecoration: "none" }}>{card}</Link>;
+  }
+  return <div key={action.id}>{card}</div>;
+}
+
 export default async function ParlerACandice() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const active = ACTIONS.filter(a => a.active);
-  const upcoming = ACTIONS.filter(a => !a.active);
-
   return (
     <V4Shell>
       <div style={{ padding: "12px 20px 120px", fontFamily: "var(--font-sans)" }}>
 
-        <div style={{ textAlign: "center", margin: "8px 0 4px" }}>
+        <div style={{ textAlign: "center", margin: "8px 0 16px" }}>
+          <div style={{
+            width: 52, height: 52, borderRadius: "50%",
+            margin: "0 auto 10px",
+            background: "radial-gradient(circle at 42% 34%,#2C6A52,#173E31 58%,#0D2A20)",
+            boxShadow: "0 0 28px rgba(62,115,97,.38)",
+          }} />
           <h2 style={{
             fontFamily: "var(--font-serif)", fontSize: 22,
             color: "var(--ink)", letterSpacing: "-.012em", lineHeight: 1.25,
           }}>
             Que veux-tu confier à Candice&nbsp;?
           </h2>
-          <p style={{ fontSize: 12.5, color: "var(--ink2)", margin: "4px 0 16px" }}>
+          <p style={{ fontSize: 12.5, color: "var(--ink2)", margin: "4px 0 0" }}>
             Choisis un point de départ. Ensuite, parle librement.
           </p>
         </div>
 
-        {/* Active actions */}
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-          {active.map((action) => (
-            <Link key={action.id} href={action.href!} style={{ textDecoration: "none" }}>
-              <div style={{
-                display: "flex", alignItems: "flex-start", gap: 12,
-                padding: 13, border: "1px solid var(--line)", borderRadius: 16,
-                background: "var(--surface)", marginBottom: 10,
-                boxShadow: "var(--shadow)", cursor: "pointer",
-              }}>
-                <IntentIcon name={action.iconName} bg={action.iconBg} color={action.iconColor} />
-                <div style={{ flex: 1 }}>
-                  <b style={{ fontSize: 14, color: "var(--ink)", display: "block" }}>{action.title}</b>
-                  <small style={{ fontSize: 11.5, color: "var(--ink2)", marginTop: 2, lineHeight: 1.35, display: "block" }}>
-                    {action.desc}
-                  </small>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        {/* Upcoming — visually secondary */}
-        <div style={{
-          fontSize: 10, fontWeight: 700, letterSpacing: "1.6px",
-          textTransform: "uppercase", color: "var(--ink3)",
-          margin: "14px 0 10px", display: "flex", alignItems: "center", gap: 8,
-        }}>
-          <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
-          À venir
-          <div style={{ flex: 1, height: 1, background: "var(--line2)" }} />
-        </div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          {upcoming.map((action) => (
-            <div
-              key={action.id}
-              style={{
-                display: "flex", alignItems: "center", gap: 12,
-                padding: "12px 4px",
-                borderBottom: "1px solid var(--line2)",
-                opacity: 0.55,
-              }}
-            >
-              <IntentIcon name={action.iconName} bg={action.iconBg} color={action.iconColor} />
-              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink2)", lineHeight: 1.4, flex: 1 }}>
-                {action.title}
-              </p>
-            </div>
+          {ACTIONS.map((action) => (
+            <IntentCard key={action.id} action={action} />
           ))}
         </div>
 
