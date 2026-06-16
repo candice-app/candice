@@ -244,8 +244,9 @@ export default async function ContactPage({
   };
   let procheAnalysis: ProcheAnalysis | null = null;
   let procheComplete = false;
+  let incomingConsentData: { id: string; status: string } | null = null;
   if (procheUserId) {
-    const [{ data: procheAnalysisRow }, { data: procheProfile }] = await Promise.all([
+    const [{ data: procheAnalysisRow }, { data: procheProfile }, { data: incomingConsentRaw }] = await Promise.all([
       admin
         .from("profile_analysis")
         .select("summary, sections, gender, confidence")
@@ -257,6 +258,16 @@ export default async function ContactPage({
         .select("attention_reception, temperament_axes, lifestyle_axes, practical_info")
         .eq("user_id", procheUserId)
         .maybeSingle(),
+      // B→A : consentement où B est pilote et A est proche (lecture via RLS proche_read_own_consents)
+      supabase
+        .from("contact_consents")
+        .select("id, status")
+        .eq("pilote_id", procheUserId)
+        .eq("proche_user_id", user.id)
+        .in("status", ["pending", "active", "revoked"])
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle(),
     ]);
     procheAnalysis = procheAnalysisRow as ProcheAnalysis | null;
     procheComplete = !!(
@@ -265,6 +276,7 @@ export default async function ContactPage({
       procheProfile?.lifestyle_axes &&
       procheProfile?.practical_info
     );
+    incomingConsentData = incomingConsentRaw as { id: string; status: string } | null;
   }
   const profile = typedContact.questionnaire_responses?.[0];
   const userHasProfile = !!myProfile;
@@ -598,21 +610,74 @@ export default async function ContactPage({
           </>
         )}
 
-        {/* ── Partager l'analyse avec le proche ── */}
+        {/* ── Partage d'analyse — deux directions indépendantes ── */}
         {/* Visible uniquement si B a un compte (procheUserId est posé) */}
         {procheUserId && (
           <>
             <PointDivider label="Partager avec ce proche" />
-            <div style={{ padding: "0 4px 4px" }}>
-              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, marginBottom: 14 }}>
-                Partage l&apos;analyse relationnelle avec {contactFirstName} — uniquement ce que Candice a déduit,
-                jamais tes notes ou données brutes.
-              </p>
-              <ShareAnalysisButton
-                contactId={id}
-                hasAnalysis={!!contactAnalysisData}
-                existingConsent={consentData ? { id: consentData.id, status: consentData.status } : null}
-              />
+            <div style={{ padding: "0 4px 4px", display: "flex", flexDirection: "column", gap: 20 }}>
+
+              {/* A→B : A partage son analyse avec B */}
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 8 }}>
+                  Ton analyse avec {contactFirstName}
+                </p>
+                <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, marginBottom: 12 }}>
+                  Partage l&apos;analyse relationnelle avec {contactFirstName} — uniquement ce que Candice a déduit,
+                  jamais tes notes ou données brutes.
+                </p>
+                <ShareAnalysisButton
+                  contactId={id}
+                  hasAnalysis={!!contactAnalysisData}
+                  existingConsent={consentData ? { id: consentData.id, status: consentData.status } : null}
+                />
+              </div>
+
+              {/* B→A : statut du partage de B vers A — purement informatif, aucune action possible ici */}
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 8 }}>
+                  {contactFirstName} avec toi
+                </p>
+                {incomingConsentData?.status === "active" ? (
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 7,
+                    padding: "10px 14px", borderRadius: 10,
+                    background: "rgba(23,62,49,.06)", border: "0.5px solid rgba(23,62,49,.14)",
+                  }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--pine)", flexShrink: 0 }} />
+                    <span style={{ fontSize: 12.5, color: "var(--pine)", fontWeight: 500 }}>
+                      {contactFirstName} partage son analyse avec toi.
+                    </span>
+                  </div>
+                ) : incomingConsentData?.status === "pending" ? (
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 7,
+                    padding: "10px 14px", borderRadius: 10,
+                    background: "rgba(205,185,135,.1)", border: "0.5px solid rgba(205,185,135,.3)",
+                  }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--champ)", flexShrink: 0 }} />
+                    <span style={{ fontSize: 12.5, color: "#7a6420", fontWeight: 500 }}>
+                      {contactFirstName} a demandé à partager son analyse — en attente de ta réponse.
+                    </span>
+                  </div>
+                ) : incomingConsentData?.status === "revoked" ? (
+                  <div style={{
+                    display: "flex", alignItems: "center", gap: 7,
+                    padding: "10px 14px", borderRadius: 10,
+                    background: "rgba(26,26,26,.04)", border: "0.5px solid var(--line)",
+                  }}>
+                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ink-3)", flexShrink: 0 }} />
+                    <span style={{ fontSize: 12.5, color: "var(--ink-3)", fontWeight: 300 }}>
+                      {contactFirstName} a révoqué le partage.
+                    </span>
+                  </div>
+                ) : (
+                  <p style={{ fontSize: 12.5, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.5 }}>
+                    {contactFirstName} n&apos;a pas partagé son analyse avec toi.
+                  </p>
+                )}
+              </div>
+
             </div>
           </>
         )}
