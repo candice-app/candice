@@ -3,11 +3,16 @@ import { createAdminClient } from "@/utils/supabase/admin";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
+  // 4.3c — data_source toujours 'pilot_input' : les données saisies ici appartiennent
+  // au Pilote A et ne doivent JAMAIS être copiées vers my_profile d'un proche B.
   const { contactId, userId, ...responses } = body;
 
   if (!contactId || !userId) {
     return NextResponse.json({ error: "Champs manquants." }, { status: 400 });
   }
+
+  // 4.3c — forcer data_source = 'pilot_input' : le client ne peut pas changer ce champ
+  const safeResponses = { ...responses, data_source: "pilot_input" };
 
   const supabase = createAdminClient();
 
@@ -32,13 +37,13 @@ export async function POST(request: NextRequest) {
   if (existing) {
     const { error } = await supabase
       .from("questionnaire_responses")
-      .update({ ...responses, updated_at: new Date().toISOString() })
+      .update({ ...safeResponses, updated_at: new Date().toISOString() })
       .eq("id", existing.id);
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   } else {
     const { error } = await supabase
       .from("questionnaire_responses")
-      .insert({ contact_id: contactId, user_id: userId, ...responses });
+      .insert({ contact_id: contactId, user_id: userId, ...safeResponses });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
