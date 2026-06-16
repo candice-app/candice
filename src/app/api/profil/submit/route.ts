@@ -1,22 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/utils/supabase/admin";
+import { createClient } from "@/utils/supabase/server";
 
 export async function POST(request: NextRequest) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Non authentifié." }, { status: 401 });
+
   const body = await request.json();
   // 4.3c — data_source toujours 'pilot_input' : les données saisies ici appartiennent
   // au Pilote A et ne doivent JAMAIS être copiées vers my_profile d'un proche B.
-  const { contactId, userId, ...responses } = body;
+  const { contactId, ...responses } = body;
 
-  if (!contactId || !userId) {
+  if (!contactId) {
     return NextResponse.json({ error: "Champs manquants." }, { status: 400 });
   }
 
   // 4.3c — forcer data_source = 'pilot_input' : le client ne peut pas changer ce champ
   const safeResponses = { ...responses, data_source: "pilot_input" };
 
-  const supabase = createAdminClient();
-
-  // Verify contact exists before writing
+  // RLS on contacts (auth.uid() = user_id) enforces ownership — no admin bypass needed
   const { data: contact } = await supabase
     .from("contacts")
     .select("id")
@@ -43,7 +45,7 @@ export async function POST(request: NextRequest) {
   } else {
     const { error } = await supabase
       .from("questionnaire_responses")
-      .insert({ contact_id: contactId, user_id: userId, ...safeResponses });
+      .insert({ contact_id: contactId, user_id: user.id, ...safeResponses });
     if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
