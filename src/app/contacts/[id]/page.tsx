@@ -633,50 +633,37 @@ export default async function ContactPage({
                 />
               </div>
 
-              {/* B→A : statut du partage de B vers A — purement informatif, aucune action possible ici */}
-              <div>
-                <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 8 }}>
-                  {contactFirstName} avec toi
-                </p>
-                {incomingConsentData?.status === "active" ? (
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 7,
-                    padding: "10px 14px", borderRadius: 10,
-                    background: "rgba(23,62,49,.06)", border: "0.5px solid rgba(23,62,49,.14)",
-                  }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--pine)", flexShrink: 0 }} />
-                    <span style={{ fontSize: 12.5, color: "var(--pine)", fontWeight: 500 }}>
-                      {contactFirstName} partage son analyse avec toi.
-                    </span>
-                  </div>
-                ) : incomingConsentData?.status === "pending" ? (
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 7,
-                    padding: "10px 14px", borderRadius: 10,
-                    background: "rgba(205,185,135,.1)", border: "0.5px solid rgba(205,185,135,.3)",
-                  }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--champ)", flexShrink: 0 }} />
-                    <span style={{ fontSize: 12.5, color: "#7a6420", fontWeight: 500 }}>
-                      {contactFirstName} a demandé à partager son analyse — en attente de ta réponse.
-                    </span>
-                  </div>
-                ) : incomingConsentData?.status === "revoked" ? (
-                  <div style={{
-                    display: "flex", alignItems: "center", gap: 7,
-                    padding: "10px 14px", borderRadius: 10,
-                    background: "rgba(26,26,26,.04)", border: "0.5px solid var(--line)",
-                  }}>
-                    <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--ink-3)", flexShrink: 0 }} />
-                    <span style={{ fontSize: 12.5, color: "var(--ink-3)", fontWeight: 300 }}>
-                      {contactFirstName} a révoqué le partage.
-                    </span>
-                  </div>
-                ) : (
-                  <p style={{ fontSize: 12.5, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.5 }}>
-                    {contactFirstName} n&apos;a pas partagé son analyse avec toi.
+              {/* B→A : purement informatif, affiché uniquement si un consent existe */}
+              {(incomingConsentData?.status === "active" || incomingConsentData?.status === "pending") && (
+                <div>
+                  <p style={{ fontSize: 11, fontWeight: 500, letterSpacing: ".18em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 8 }}>
+                    {contactFirstName} partage son analyse avec toi
                   </p>
-                )}
-              </div>
+                  {incomingConsentData.status === "active" ? (
+                    <div style={{
+                      display: "flex", alignItems: "center", gap: 7,
+                      padding: "10px 14px", borderRadius: 10,
+                      background: "rgba(23,62,49,.06)", border: "0.5px solid rgba(23,62,49,.14)",
+                    }}>
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--pine)", flexShrink: 0 }} />
+                      <span style={{ fontSize: 12.5, color: "var(--pine)", fontWeight: 500 }}>
+                        {contactFirstName} partage son analyse avec toi
+                      </span>
+                    </div>
+                  ) : (
+                    <div style={{
+                      display: "flex", alignItems: "center", gap: 7,
+                      padding: "10px 14px", borderRadius: 10,
+                      background: "rgba(205,185,135,.1)", border: "0.5px solid rgba(205,185,135,.3)",
+                    }}>
+                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--champ)", flexShrink: 0 }} />
+                      <span style={{ fontSize: 12.5, color: "#7a6420", fontWeight: 500 }}>
+                        {contactFirstName} t&apos;a proposé de partager son analyse
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
 
             </div>
           </>
