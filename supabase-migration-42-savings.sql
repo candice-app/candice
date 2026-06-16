@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS savings_goal (
   user_id        UUID          NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   contact_id     UUID                   REFERENCES contacts(id)   ON DELETE SET NULL,
   item_label     TEXT          NOT NULL,
-  target_amount  NUMERIC(10,2) NOT NULL CHECK (target_amount > 0),
-  monthly_amount NUMERIC(10,2) NOT NULL CHECK (monthly_amount > 0),
+  target_amount  INTEGER       NOT NULL CHECK (target_amount > 0),   -- centimes
+  monthly_amount INTEGER       NOT NULL CHECK (monthly_amount > 0),  -- centimes
   target_date    DATE,
   started_at     TIMESTAMPTZ   NOT NULL DEFAULT now(),
   status         TEXT          NOT NULL DEFAULT 'active'
@@ -40,7 +40,7 @@ CREATE POLICY "owner_savings_goal" ON savings_goal
 CREATE TABLE IF NOT EXISTS savings_contribution (
   id        UUID          PRIMARY KEY DEFAULT gen_random_uuid(),
   goal_id   UUID          NOT NULL REFERENCES savings_goal(id) ON DELETE CASCADE,
-  amount    NUMERIC(10,2) NOT NULL CHECK (amount > 0),
+  amount    INTEGER       NOT NULL CHECK (amount > 0),  -- centimes
   logged_at TIMESTAMPTZ   NOT NULL DEFAULT now()
 );
 
