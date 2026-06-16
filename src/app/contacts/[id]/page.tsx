@@ -21,6 +21,7 @@ import Thread, { ThreadItem } from "@/components/presence/Thread";
 import { resolveCadenceForContact } from "@/lib/cadence/resolver";
 import MemoriesSection, { type MemoryRow } from "@/components/contacts/MemoriesSection";
 import SituationCard, { type SituationRow } from "@/components/contacts/SituationCard";
+import ShareAnalysisButton from "./ShareAnalysisButton";
 
 // ─── Label maps ──────────────────────────────────────────────────────────────
 
@@ -131,6 +132,8 @@ export default async function ContactPage({
     { data: memoriesData },
     { data: situationsData },
     { data: inviteLinkData },
+    { data: consentData },
+    { data: contactAnalysisData },
   ] = await Promise.all([
     supabase
       .from("contacts")
@@ -203,6 +206,19 @@ export default async function ContactPage({
       .eq("pilote_id", user.id)
       .eq("contact_id", id)
       .limit(1)
+      .maybeSingle(),
+    supabase
+      .from("contact_consents")
+      .select("id, status")
+      .eq("pilote_id", user.id)
+      .eq("contact_id", id)
+      .in("status", ["pending", "active"])
+      .maybeSingle(),
+    supabase
+      .from("profile_analysis")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("contact_id", id)
       .maybeSingle(),
   ]);
 
@@ -579,6 +595,25 @@ export default async function ContactPage({
                 <RelancerButton contactId={id} procheName={contactFirstName} />
               </div>
             )}
+          </>
+        )}
+
+        {/* ── Partager l'analyse avec le proche ── */}
+        {/* Visible uniquement si B a un compte (procheUserId est posé) */}
+        {procheUserId && (
+          <>
+            <PointDivider label="Partager avec ce proche" />
+            <div style={{ padding: "0 4px 4px" }}>
+              <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.65, marginBottom: 14 }}>
+                Partage l&apos;analyse relationnelle avec {contactFirstName} — uniquement ce que Candice a déduit,
+                jamais tes notes ou données brutes.
+              </p>
+              <ShareAnalysisButton
+                contactId={id}
+                hasAnalysis={!!contactAnalysisData}
+                existingConsent={consentData ? { id: consentData.id, status: consentData.status } : null}
+              />
+            </div>
           </>
         )}
 
