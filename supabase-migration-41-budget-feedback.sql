@@ -11,7 +11,7 @@
 CREATE TABLE IF NOT EXISTS budget_feedback (
   id            UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id       UUID        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  contact_id    UUID        NOT NULL REFERENCES contacts(id)   ON DELETE CASCADE,
+  contact_id    UUID                 REFERENCES contacts(id)   ON DELETE CASCADE,
   suggestion_id UUID,
   reaction      TEXT        NOT NULL
                 CHECK (reaction IN (
