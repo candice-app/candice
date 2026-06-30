@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import Anthropic from "@anthropic-ai/sdk";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
 
@@ -117,9 +118,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Regenerate profile_analysis for this contact if they have a Candice account
+  // Regenerate profile_analysis for this contact if they have a Candice account.
+  // Uses admin client: reading another user's my_profile requires bypassing RLS
+  // (public_read_my_profile was removed in migration 45).
   if (contactUserId) {
-    generateProfileAnalysis(contactUserId, null, supabase).catch(() => {});
+    const adminClient = createAdminClient();
+    generateProfileAnalysis(contactUserId, null, adminClient).catch((err: unknown) => {
+      console.error("[memories/situation] generateProfileAnalysis failed for contact", contactUserId, err);
+    });
   }
 
   return NextResponse.json({ success: true, id: inserted?.id });

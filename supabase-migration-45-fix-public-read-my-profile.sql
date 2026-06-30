@@ -1,0 +1,23 @@
+-- Migration 45 — Fermer la faille public_read_my_profile
+--
+-- CONTEXTE :
+--   CREATE POLICY "public_read_my_profile" ON my_profile FOR SELECT USING (true)
+--   rendait my_profile lisible par toute requête, y compris anonyme.
+--
+-- IMPACT ANALYSÉ AVANT SUPPRESSION :
+--   • partage/[id]/page.tsx     → createAdminClient() — non affecté
+--   • contacts/[id]/page.tsx    → createAdminClient() — non affecté
+--   • recommendations/generate  → createAdminClient() — non affecté
+--   • invite/nudge              → createAdminClient() — non affecté
+--   • crons (detect, lifecycle) → createAdminClient() — non affecté
+--   • libs (signals, cadence…)  → supabaseAdmin passé en param — non affecté
+--   • memories/situation:122    → supabase user-session + userId tiers
+--                                  → corrigé dans le code (migration 45, commit associé)
+--
+-- POLICY CONSERVÉE : users_own_my_profile (FOR ALL USING auth.uid() = user_id)
+-- POLICY SUPPRIMÉE : public_read_my_profile (FOR SELECT USING true)
+--
+-- Le partage d'analyse (B voit profile_analysis) reste couvert par la policy
+-- "proche_read_consented_analysis" sur profile_analysis — my_profile n'est pas concerné.
+
+DROP POLICY IF EXISTS "public_read_my_profile" ON my_profile;
