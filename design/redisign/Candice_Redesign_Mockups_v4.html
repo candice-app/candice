@@ -1,0 +1,470 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>Candice — Redesign V2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=DM+Sans:opsz,wght@9..40,300..700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --canvas:#FEFEFB;--surface:#FFFFFF;--mist:#EEF3F0;--ink:#16150E;--ink2:#5F5A51;--ink3:#ABA699;
+ --pine:#173E31;--pine2:#1B4D3E;--pine-lite:#2A7B5C;--glow:#3E7361;--sage:#8DA697;--sage-bg:#E9F0EC;
+ --champ:#CDB987;--gold:#C7A85A;--champ-soft:#FBF8F0;--coral:#B9583F;--coral-bg:#F7ECE7;
+ --aplat:linear-gradient(157deg,#1D5040,#0C2A20);--gtint:rgba(23,62,49,.06);--red:#C24A3C;--terra:#C57B4E;--blue:#5F8190;--plum:#8A5A6B;
+ --line:rgba(23,62,49,.11);--line2:rgba(23,62,49,.06);--shadow:0 10px 30px rgba(23,62,49,.07)
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:#E4E7E1;color:var(--ink);padding:38px 18px 80px}
+.wrap{max-width:1320px;margin:0 auto}
+.lead{max-width:780px;margin:0 auto 8px}
+.lead h1{font-family:Fraunces,serif;font-weight:300;font-size:42px;letter-spacing:-.5px}
+.lead h1 em{color:var(--pine);font-style:italic}
+.lead p{color:var(--ink2);font-size:14px;margin-top:6px;line-height:1.5}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:14px auto 34px;max-width:780px}
+.legend b{color:var(--pine)}
+.grid{display:flex;flex-wrap:wrap;gap:46px 38px;justify-content:center;align-items:flex-start}
+.cell{width:372px}
+.caption{font-family:Fraunces,serif;font-size:17px;color:var(--pine);margin-bottom:3px;font-weight:500}
+.subcap{font-size:11.5px;color:var(--ink2);margin-bottom:13px;line-height:1.4;min-height:30px}
+.device{padding:10px;background:linear-gradient(160deg,#2a2a24,#0a0a08);border-radius:54px;box-shadow:0 24px 64px rgba(20,30,25,.26),inset 0 0 0 1.5px rgba(255,255,255,.05)}
+.phone{position:relative;width:352px;height:764px;background:var(--canvas);border-radius:44px;overflow:hidden}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;background:#000;border-radius:0 0 17px 17px;z-index:40}
+.sb{position:absolute;top:0;left:0;right:0;height:44px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 24px 7px;font-size:12.5px;font-weight:600;z-index:30}
+.screen{position:absolute;inset:0;top:44px;bottom:0;display:flex;flex-direction:column}
+.body{flex:1;overflow:hidden;padding:6px 20px 12px}
+.body.scroll{overflow-y:auto}
+.body::-webkit-scrollbar{width:0}
+svg{display:block}
+.icon{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.brand{height:30px;flex:0 0 30px;display:flex;align-items:center;justify-content:center;gap:7px;font-family:Fraunces,serif;font-style:italic;font-size:14.5px;color:var(--pine);letter-spacing:.2px}
+.brand .o{width:14px;height:14px;border-radius:50%;background:radial-gradient(circle at 42% 34%,#27604B,#173E31 60%,#0D2A20);box-shadow:0 0 7px rgba(62,115,97,.45)}
+.eyebrow{font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.h-serif{font-family:Fraunces,serif;font-weight:400}
+@keyframes think{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.06);opacity:.93}}
+@keyframes ringpulse{0%{transform:scale(.85);opacity:.55}100%{transform:scale(1.5);opacity:0}}
+.think-orb{width:96px;height:96px;border-radius:50%;margin:0 auto;position:relative;background:radial-gradient(circle at 42% 34%,#2C6A52,#173E31 58%,#0D2A20);animation:think 2.2s ease-in-out infinite;box-shadow:0 0 44px rgba(62,115,97,.45)}
+.think-orb .c{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}.think-orb .c i{width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#F3F8F4,#94C0AC);box-shadow:0 0 20px rgba(180,220,200,.9)}
+.think-orb:before,.think-orb:after{content:"";position:absolute;inset:-2px;border-radius:50%;border:1px solid rgba(205,185,135,.45);animation:ringpulse 2.6s ease-out infinite}.think-orb:after{animation-delay:1.3s}
+.point{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--pine);box-shadow:0 0 8px rgba(62,115,97,.55);vertical-align:middle}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:50px;border-radius:15px;background:var(--pine);color:#fff;font-weight:600;font-size:14.5px;border:none;width:100%;box-shadow:0 6px 16px rgba(23,62,49,.18)}
+.btn.ghost{background:transparent;color:var(--pine);border:1px solid var(--line);box-shadow:none}
+.btn.champ{background:linear-gradient(180deg,#e8d8ab,var(--champ));color:#3a2f10;box-shadow:0 6px 16px rgba(205,185,135,.3)}
+.chip{display:inline-block;padding:5px 11px;border:1px solid var(--line);border-radius:999px;font-size:11px;color:var(--ink2);background:var(--surface)}
+.prog{height:4px;background:var(--line2);border-radius:3px;overflow:hidden}
+.prog>i{display:block;height:100%;background:linear-gradient(90deg,var(--pine),var(--glow));border-radius:3px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.gh{background:var(--aplat);color:#fff;position:relative;overflow:hidden}
+.gh:after{content:"";position:absolute;right:-22px;top:-44px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.34),transparent 70%);pointer-events:none}
+.gh .eyebrow{color:var(--champ)}
+.nav{height:74px;background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line2);display:flex;align-items:flex-start;justify-content:space-around;padding:10px 8px 0;z-index:20}
+.nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;letter-spacing:.3px;color:var(--ink3);flex:1;text-transform:uppercase;font-weight:600}
+.nav .it.on{color:var(--pine)}
+.nav .it .icon{width:20px;height:20px;stroke-width:1.5}
+.nav .center{flex:0 0 60px;margin-top:-24px}
+.orb{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 42% 34%,#27604B 0%,#173E31 54%,#0D2A20 100%);box-shadow:0 9px 22px rgba(13,42,32,.45),inset 0 1px 3px rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.orb .d{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#F3F8F4,#94C0AC);box-shadow:0 0 14px rgba(180,220,200,.85)}
+.nav .center .lbl{font-size:9px;text-align:center;color:var(--pine);margin-top:5px;text-transform:uppercase;font-weight:700}
+/* questionnaire */
+.qcard{display:flex;align-items:center;gap:13px;padding:14px;border:1.5px solid var(--line);border-radius:17px;background:var(--surface);margin-bottom:10px;cursor:pointer;transition:.18s;box-shadow:var(--shadow)}
+.qcard:hover{border-color:var(--glow)}
+.qcard.s1{border-color:var(--pine);background:linear-gradient(90deg,rgba(23,62,49,.11),#fff 76%);box-shadow:var(--shadow)}
+.qcard.s2{border-color:var(--glow);background:linear-gradient(90deg,rgba(62,115,97,.11),#fff 76%);box-shadow:var(--shadow)}
+.qcard.s3{border-color:var(--sage);background:linear-gradient(90deg,rgba(141,166,151,.13),#fff 76%);box-shadow:var(--shadow)}
+.qrank{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex:0 0 24px}
+.s1 .qrank{background:var(--pine)}.s2 .qrank{background:var(--glow)}.s3 .qrank{background:var(--sage)}
+.qcard .qsub{font-size:11px;color:var(--ink3);margin-top:3px;font-weight:400;line-height:1.3}
+.qcard .ico{width:42px;height:42px;border-radius:13px;background:var(--mist);display:flex;align-items:center;justify-content:center;color:var(--pine);flex:0 0 42px}
+.qcard.s1 .ico,.qcard.s2 .ico,.qcard.s3 .ico{background:var(--pine);color:#fff}
+.qcard .tx{flex:1;font-size:14px;font-weight:500;line-height:1.3}
+.qcard .rd{width:20px;height:20px;border-radius:50%;border:2px solid var(--line)}
+
+.intens{display:flex;align-items:center;gap:8px;margin:8px 0}
+.intens .nm{font-size:13px;font-weight:500;flex:1}
+.intens .seg{display:flex;gap:3px}
+.intens .seg i{width:15px;height:6px;border-radius:3px;background:var(--line)}
+.intens .seg i.f{background:var(--pine)}
+.intens .lab{font-size:11.5px;color:var(--ink2);flex:0 0 80px;text-align:right}
+.ring{position:relative}
+.ring .pt{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.ask{border:1px solid var(--line);border-left:3px solid var(--champ);border-radius:13px;background:#fff;padding:13px 14px;margin-bottom:9px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:var(--shadow)}
+.ask .q{font-size:14px;font-weight:500}.ask .q small{display:block;font-size:11px;color:var(--ink3);font-weight:400;margin-top:2px}
+.ask .go{font-size:11.5px;font-weight:600;color:var(--pine);white-space:nowrap;border:1px solid var(--line);padding:7px 11px;border-radius:10px;background:#fff}
+.pro{border-radius:20px;padding:16px;position:relative;overflow:hidden;margin-bottom:14px;background:var(--aplat);color:#fff;box-shadow:0 14px 34px rgba(23,62,49,.22)}
+.pro:after{content:"";position:absolute;right:-26px;top:-46px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.4),transparent 70%);pointer-events:none}
+.pro .badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--champ);font-weight:700;background:rgba(255,255,255,.14);padding:4px 9px;border-radius:8px;position:relative}
+.pro .t{font-family:Fraunces,serif;font-size:19px;margin:9px 0 4px;line-height:1.2;color:#fff;position:relative}
+.pro .d{font-size:12.5px;color:rgba(255,255,255,.86);line-height:1.45;position:relative}
+.pro .row{display:flex;gap:8px;margin-top:13px}
+.pro .b1{background:#fff;color:var(--pine);font-weight:600;font-size:12.5px;padding:10px 14px;border-radius:12px;position:relative}
+.pro .b2{border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:600;font-size:12.5px;padding:10px 14px;border-radius:12px;background:transparent;position:relative}
+.statline{display:flex;gap:7px;margin:12px 0 16px}
+.statline .s{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:9px 8px;text-align:center;box-shadow:var(--shadow)}
+.statline .s b{font-family:Fraunces,serif;font-size:21px;color:var(--pine);display:block}
+.statline .s span{font-size:9.5px;color:var(--ink2);line-height:1.2;display:block;margin-top:1px}
+.todo{display:flex;align-items:center;gap:11px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:9px;box-shadow:var(--shadow)}
+.todo .ti{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:0 0 36px}
+.todo .tt{flex:1;font-size:13.5px;font-weight:500}
+.todo .tt small{display:block;font-size:11px;color:var(--ink3);font-weight:400}
+.todo .ar{color:var(--ink3)}
+.divtxt{display:flex;align-items:center;gap:8px;margin:18px 0 11px;font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.divtxt:before,.divtxt:after{content:"";flex:1;height:1px;background:var(--line2)}
+.tl{position:relative;padding-left:17px}
+.tl:before{content:"";position:absolute;left:3px;top:5px;bottom:6px;width:1.5px;background:var(--line)}
+.tl .ev{position:relative;margin-bottom:13px}
+.tl .ev:before{content:"";position:absolute;left:-17px;top:4px;width:7px;height:7px;border-radius:50%;background:var(--glow)}
+.tl .ev .k{font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--champ);font-weight:700;filter:saturate(.8) brightness(.85)}
+.tl .ev .w{font-size:13px;line-height:1.4;margin:2px 0 4px}
+.tl .ev .go{font-size:11.5px;color:var(--pine);font-weight:600}
+.av{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Fraunces,serif;font-size:19px;color:var(--pine);background:radial-gradient(circle at 35% 30%,#fff,var(--champ-soft));border:1px solid var(--line)}
+.pcard{padding:14px;margin-bottom:12px}
+.tag{font-size:10.5px;color:var(--pine2);background:rgba(23,62,49,.06);padding:4px 9px;border-radius:8px}
+.tag.warn{color:#7a4b1e;background:rgba(205,185,135,.22)}
+.tag.soft{color:#3d5a4b;background:var(--sage-bg)}
+.intent{display:flex;align-items:flex-start;gap:12px;padding:13px;border:1px solid var(--line);border-radius:16px;background:#fff;margin-bottom:10px;box-shadow:var(--shadow);cursor:pointer}
+.intent .ii{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex:0 0 40px}
+.intent .it2{flex:1}.intent .it2 b{font-size:14px}.intent .it2 small{display:block;font-size:11.5px;color:var(--ink2);margin-top:2px;line-height:1.35}
+.bub{max-width:84%;padding:11px 14px;border-radius:16px;font-size:13.5px;line-height:1.45;margin-bottom:9px}
+.bub.me{margin-left:auto;background:var(--pine);color:#fff;border-bottom-right-radius:5px}
+.bub.ca{background:#fff;border:1px solid var(--line);border-bottom-left-radius:5px;box-shadow:var(--shadow)}
+.inputbar{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:16px;background:#fff;padding:8px 10px;box-shadow:var(--shadow)}
+.inputbar .ph{flex:1;font-size:13px;color:var(--ink3)}
+.popmini{display:flex;align-items:center;gap:11px;margin-top:12px;padding:12px 13px;border-radius:15px;background:#fff;border:1px solid var(--line);box-shadow:0 16px 36px rgba(23,62,49,.13)}
+.popmini b{font-size:13px;display:block}.popmini em{font-size:11.5px;color:var(--ink2);display:block;margin-top:2px;line-height:1.35;font-style:normal}
+.iconbtn{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:var(--mist);color:var(--pine)}
+.iconbtn.send{background:var(--pine);color:#fff}
+.opt{border:1px solid var(--line);border-radius:18px;background:#fff;padding:15px;margin-bottom:12px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.opt .rk{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--pine)}
+.opt.champ .rk{color:#9a7d2e}
+.opt.sage{border-left:4px solid var(--pine)}
+.opt.champ{border-left:4px solid var(--gold)}
+.opt .t{font-family:Fraunces,serif;font-size:17px;margin:5px 0 4px;line-height:1.2}
+.opt .why{font-size:12px;color:var(--ink2);line-height:1.4}
+.opt .meta{display:flex;gap:6px;margin:10px 0;flex-wrap:wrap}
+.opt .acts{display:flex;gap:7px;flex-wrap:wrap}
+.opt .acts span{font-size:11.5px;font-weight:600;padding:8px 12px;border-radius:11px;border:1px solid var(--line);color:var(--pine);background:#fff}
+.opt .acts span.pri{background:var(--pine);color:#fff;border-color:var(--pine)}
+.mod{padding:13px 14px;margin-bottom:10px}
+.mod .mh{display:flex;align-items:center;gap:9px;font-weight:600;font-size:13.5px}
+.mod .mh .icon{width:18px;height:18px;color:var(--pine)}
+.mod .md{font-size:12px;color:var(--ink2);margin:5px 0 8px;line-height:1.45}
+.legend-row{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:10px}
+.legend-row .l{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink2)}
+.legend-row .l i{width:9px;height:9px;border-radius:3px}
+.idea{border:none;border-radius:16px;background:var(--aplat);color:#fff;padding:15px;margin:4px 0 14px;box-shadow:0 12px 30px rgba(23,62,49,.22);position:relative;overflow:hidden}
+.idea .g{width:42px;height:42px;border-radius:12px;background:var(--pine);color:#fff;display:flex;align-items:center;justify-content:center;flex:0 0 42px}
+.idea .t{flex:1}.idea .t b{font-size:14px}.idea .t small{display:block;font-size:11px;color:var(--ink2);margin-top:1px}
+.weekcard{flex:0 0 150px;scroll-snap-align:start;border:1px solid var(--line);border-radius:16px;padding:13px;background:#fff;box-shadow:var(--shadow)}
+.weekcard .wd{font-family:Fraunces,serif;font-size:14px;line-height:1.2;margin-bottom:6px}
+.weekcard .wt{font-size:11px;color:var(--ink2)}
+.weekcard .badge{display:inline-block;margin-top:9px;font-size:10px;font-weight:700;padding:4px 8px;border-radius:7px}
+.cal{padding:13px;margin-bottom:14px}
+.cal .mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.cal .mh b{font-family:Fraunces,serif;font-size:15px}
+.cal .dow{display:grid;grid-template-columns:repeat(7,1fr);font-size:9px;color:var(--ink3);text-align:center;margin-bottom:5px;font-weight:600}
+.cal .days{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal .d{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink2);border-radius:9px;position:relative}
+.cal .d.hi{background:var(--champ-soft);font-weight:700;color:var(--pine);box-shadow:inset 0 0 0 1px var(--champ)}
+.cal .d.today{background:var(--pine);color:#fff;font-weight:600}
+.cal .d .pip{position:absolute;bottom:3px;width:4px;height:4px;border-radius:50%}
+.prep{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--line2)}
+.prep .dt{flex:0 0 42px;text-align:center}.prep .dt b{font-family:Fraunces,serif;font-size:17px;display:block;color:var(--pine)}.prep .dt span{font-size:9px;color:var(--ink3);text-transform:uppercase}
+.prep .pi{flex:1}.prep .pi .t{font-size:13px;font-weight:600}.prep .pi .s{font-size:11px;color:var(--ink2);margin-top:1px}
+.state{font-size:9.5px;font-weight:700;padding:3px 7px;border-radius:7px;white-space:nowrap;align-self:center}
+.st-none{background:var(--mist);color:var(--ink2)} .st-idea{background:rgba(199,168,90,.18);color:#8a6d23} .st-done{background:var(--sage-bg);color:#3d5a4b}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;height:100%;padding:0 30px;gap:14px}
+.empty .ill{width:90px;height:90px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--champ-soft),var(--mist));display:flex;align-items:center;justify-content:center;color:var(--pine)}
+.empty h3{font-family:Fraunces,serif;font-size:20px}.empty p{font-size:13px;color:var(--ink2);line-height:1.5}
+.success-burst{width:84px;height:84px;border-radius:50%;background:radial-gradient(circle at 40% 35%,var(--glow),var(--pine));display:flex;align-items:center;justify-content:center;color:#fff;margin:0 auto 16px;box-shadow:0 12px 30px rgba(23,62,49,.3)}
+.wish{display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px;background:#fff;margin-bottom:9px;box-shadow:var(--shadow)}
+.wish .wi{width:38px;height:38px;border-radius:11px;background:var(--mist);display:flex;align-items:center;justify-content:center;color:var(--pine);flex:0 0 38px}
+.wish .ww{flex:1}.wish .ww b{font-size:13.5px}.wish .ww small{display:block;font-size:11px;color:var(--ink3)}
+.conf{display:flex;gap:3px;flex:0 0 auto}.conf i{width:8px;height:8px;border-radius:50%;background:var(--line)}.conf i.f{background:var(--pine)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs>
+<symbol id="i-detail" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M16 16l4 4"/><path d="M11 8.5l.9 1.8 1.9.3-1.4 1.3.3 1.9-1.7-.9-1.7.9.3-1.9-1.4-1.3 1.9-.3z"/></symbol>
+<symbol id="i-hand" viewBox="0 0 24 24"><path d="M4 12v4a3 3 0 003 3h6.5a3 3 0 002.6-1.5L20 15"/><path d="M4 12l2.5-1 3 1.5"/><path d="M9 13l5 .5a1.4 1.4 0 000-2.8l-3-.2-2-3a1.5 1.5 0 00-2.7 1.2z"/></symbol>
+<symbol id="i-gift" viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M4 13h16M12 9v11"/><path d="M12 9s-1.5-4-4-4-2.5 4 0 4 4 0 4 0 1.5-4 4-4 2.5 4 0 4z"/></symbol>
+<symbol id="i-moment" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="9" r="2.4"/><path d="M3 20c0-3 2.2-5 5-5s5 2 5 5"/><path d="M14 20c0-2.4 1.4-4 3.4-4s3.6 1.4 3.6 4"/></symbol>
+<symbol id="i-words" viewBox="0 0 24 24"><path d="M20 6.5l-9.5 9.5-3.5 1 1-3.5L17.5 4a1.5 1.5 0 012.5 2.5z"/><path d="M4 20h9"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></symbol>
+<symbol id="i-people" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 6.5a3 3 0 010 5.8M18 20c0-2.5-1-4.6-3-5.6"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M4 9h16M8 3v4M16 3v4"/><path d="M12 13.5a1.6 1.6 0 011.6 1.6c0 1.3-1.6 2.4-1.6 2.4s-1.6-1.1-1.6-2.4A1.6 1.6 0 0112 13.5z"/></symbol>
+<symbol id="i-profile" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0115 0"/></symbol>
+<symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></symbol>
+<symbol id="i-send" viewBox="0 0 24 24"><path d="M5 12h13M12 6l6 6-6 6"/></symbol>
+<symbol id="i-news" viewBox="0 0 24 24"><path d="M18 9a6 6 0 10-12 0c0 5-2 6-2 6h16s-2-1-2-6"/><path d="M10 19a2 2 0 004 0"/></symbol>
+<symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 4h12v16l-6-4-6 4z"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-9.5A3.5 3.5 0 0112 7a3.5 3.5 0 017 3.5c0 5.1-7 9.5-7 9.5z"/></symbol>
+<symbol id="i-mend" viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M9 8l3-3 3 3M9 16l3 3 3-3"/><path d="M6 12h3M15 12h3" stroke-dasharray="1.5 2"/></symbol>
+<symbol id="i-add" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20a7.5 7.5 0 0111-6.6"/><path d="M17 16v6M14 19h6"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 10h8M8 13h5" stroke-width="1.4"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-spark" viewBox="0 0 24 24"><path d="M12 4l1.6 4.4L18 10l-4.4 1.6L12 16l-1.6-4.4L6 10l4.4-1.6z"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></symbol>
+<symbol id="i-block" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M6.5 6.5l11 11"/></symbol>
+</defs></svg>
+<div class="wrap">
+<div class="lead"><h1>Candice — <em>redesign V4.</em></h1>
+<p>Plus de lumière (blanc marbre dominant, sapin réduit aux accents, champagne en lumière), pictos custom, vrais graphes sans %, Candice en 2 étapes, génération de 2-3 attentions, matching, calendrier attentionnel. Palette V11 respectée — pas de crème/pastel.</p></div>
+<div class="legend"><span><b>Lumière</b> marbre + champagne, sapin en accent</span><span><b>Graphes</b> donut + radar, intensité en mots</span><span><b>Candice</b> intention → chat contextuel</span><span><b>Attentions</b> 2-3 options générées, jamais de liste</span></div>
+<div class="grid">
+<div class="cell"><div class="caption">1 · Questionnaire — pictos justes</div><div class="subcap">Pictos custom qui matchent chaque phrase. Cartes lumineuses, sélection sapin + halo champagne, micro-anim au tap.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body"><div style="display:flex;align-items:center;gap:10px;margin:4px 0 8px"><span style="color:var(--ink2)">←</span><div class="prog" style="flex:1"><i style="width:42%"></i></div><span class="point"></span></div>
+<div class="eyebrow" style="margin-bottom:8px">Candice apprend ton langage d'attention</div>
+<h2 class="h-serif" style="font-size:22px;line-height:1.18;margin-bottom:6px">Quand quelqu'un veut te faire plaisir, ce qui compte le plus pour toi…</h2>
+<p style="font-size:11.5px;color:var(--ink3);margin-bottom:14px">Classe-en jusqu'à 3, dans l'ordre.</p>
+<div class="qcard s1" onclick="rankpick(this)"><div class="ico"><svg class="icon"><use href="#i-detail"/></svg></div><div class="tx" style="flex:1">Qu'il ait retenu un détail<div class="qsub">un mot, une date, une préférence que tu avais glissée</div></div><div class="qrank">1</div></div>
+<div class="qcard " onclick="rankpick(this)"><div class="ico"><svg class="icon"><use href="#i-hand"/></svg></div><div class="tx" style="flex:1">Qu'il m'aide concrètement<div class="qsub">un coup de main réel, au bon moment</div></div><div class="rd"></div></div>
+<div class="qcard " onclick="rankpick(this)"><div class="ico"><svg class="icon"><use href="#i-gift"/></svg></div><div class="tx" style="flex:1">Qu'il choisisse quelque chose de beau<div class="qsub">un objet ou un lieu avec une vraie intention</div></div><div class="rd"></div></div>
+<div class="qcard s2" onclick="rankpick(this)"><div class="ico"><svg class="icon"><use href="#i-moment"/></svg></div><div class="tx" style="flex:1">Qu'il organise un moment ensemble<div class="qsub">du temps partagé, pensé pour toi</div></div><div class="qrank">2</div></div>
+<div class="qcard s3" onclick="rankpick(this)"><div class="ico"><svg class="icon"><use href="#i-words"/></svg></div><div class="tx" style="flex:1">Qu'il trouve les bons mots<div class="qsub">une parole juste, sincère</div></div><div class="qrank">3</div></div>
+</div><div style="padding:8px 20px 14px;background:var(--canvas)"><button class="btn">Continuer</button></div></div></div></div></div>
+<div class="cell"><div class="caption">2 · Respiration / micro-analyse</div><div class="subcap">Conservé, version lumineuse. Barre + 1ʳᵉ analyse « tu sembles… » + l'aveu honnête « je n'ai que quelques repères ».</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body" style="background:var(--aplat);display:flex;flex-direction:column;justify-content:center;text-align:center;padding:6px 30px;position:relative;overflow:hidden">
+<div style="position:absolute;right:-30px;top:30px;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.28),transparent 70%);pointer-events:none"></div>
+<div class="prog" style="margin-bottom:34px;background:rgba(255,255,255,.18);position:relative"><i style="width:42%;background:var(--champ)"></i></div>
+<div class="think-orb"><div class="c"><i></i></div></div>
+<div class="eyebrow" style="color:var(--champ);margin:24px 0 12px;position:relative">Candice réfléchit…</div>
+<p class="h-serif" style="font-size:21px;line-height:1.4;color:#fff;position:relative">Tu sembles attaché aux attentions qui prouvent qu'on t'a vraiment écouté — un détail retenu, un mot juste.</p>
+<p style="font-size:13px;color:rgba(255,255,255,.78);margin-top:18px;line-height:1.5;position:relative">Je ne sais pas encore tout de toi. La suite affinera — et tu pourras toujours me reprendre.</p>
+</div><div style="padding:10px 20px 16px;background:var(--canvas)"><button class="btn ghost">Continuer →</button></div></div></div></div></div>
+<div class="cell"><div class="caption">3 · Le fil — accueil lumineux & proactif</div><div class="subcap">Header clair + dynamique du jour. Carte proactive douce. « À faire » actionnable. Timeline « tu m'as dit » (zéro surveillance).</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll"><div style="margin:6px 0 2px"><div class="eyebrow">Jeudi 11 juin</div><h2 class="h-serif" style="font-size:26px;margin-top:3px">Bonjour, Estelle</h2></div>
+<p style="font-size:13px;color:var(--ink2)">Ce qu'il ne faut pas laisser passer.</p>
+<div class="statline"><div class="s"><b>1</b><span>proche à soutenir</span></div><div class="s"><b>2</b><span>dates à venir</span></div><div class="s"><b>1</b><span>profil à affiner</span></div></div>
+<div class="pro"><span class="badge"><svg class="icon" style="width:13px;height:13px"><use href="#i-heart"/></svg> À soutenir</span>
+<div class="t">Sophie traverse une période compliquée</div>
+<div class="d">Tu m'as dit qu'elle avait perdu son travail. Je te propose une attention sobre, utile, sans en faire trop.</div>
+<div class="row"><span class="b1">Voir l'attention</span><span class="b2">Déjà fait</span></div></div>
+<div class="divtxt">À faire aujourd'hui</div>
+<div class="todo"><div class="ti" style="background:var(--sage-bg);color:var(--pine)"><svg class="icon" style="width:18px;height:18px"><use href="#i-words"/></svg></div><div class="tt">Prendre des nouvelles de Sophie<small>Un message court suffit</small></div><span class="ar">→</span></div>
+<div class="todo"><div class="ti" style="background:var(--gtint);color:var(--pine)"><svg class="icon" style="width:18px;height:18px"><use href="#i-gift"/></svg></div><div class="tt">Préparer l'anniversaire de Thibaud<small>Dans 32 jours · une envie repérée</small></div><span class="ar">→</span></div>
+<div class="todo"><div class="ti" style="background:var(--mist);color:var(--pine)"><svg class="icon" style="width:18px;height:18px"><use href="#i-bookmark"/></svg></div><div class="tt">Ajouter une envie repérée<small>Pour Marius</small></div><span class="ar">→</span></div>
+<div class="divtxt">On prend des nouvelles ?</div>
+<div class="ask"><div class="q">Comment vas-tu, Estelle ?<small>Quelques mots, et j'ajuste.</small></div><span class="go">Me raconter</span></div>
+<div class="ask"><div class="q">Des nouvelles de Thibaud ?</div><span class="go">Mettre à jour</span></div>
+<div class="divtxt">Tu m'as dit</div>
+<div class="tl"><div class="ev"><div class="k">Thibaud · envie repérée</div><div class="w">Week-end montagne, mais confortable.</div><div class="go">Transformer en attention →</div></div>
+<div class="ev"><div class="k">Marius</div><div class="w">Adore les expériences avec son père.</div></div></div>
+</div><div class="nav"><div class="it on"><svg class="icon"><use href="#i-home"/></svg>Le fil</div><div class="it"><svg class="icon"><use href="#i-people"/></svg>Proches</div><div class="it center"><div class="orb"><div class="d"></div></div><div class="lbl">Candice</div></div><div class="it"><svg class="icon"><use href="#i-cal"/></svg>Agenda</div><div class="it"><svg class="icon"><use href="#i-profile"/></svg>Profil</div></div></div></div></div></div>
+<div class="cell"><div class="caption">4 · Candice — étape 1 : l'intention</div><div class="subcap">Le point central ouvre d'abord un choix de point de départ. Cards lumineuses, pictos précis, aucune option grisée.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll"><div style="text-align:center;margin:8px 0 4px"><div class="orb" style="width:52px;height:52px;margin:0 auto 10px"><div class="d"></div></div>
+<h2 class="h-serif" style="font-size:22px">Que veux-tu confier à Candice ?</h2>
+<p style="font-size:12.5px;color:var(--ink2);margin:4px 0 16px">Choisis un point de départ. Ensuite, parle librement.</p></div>
+<div class="intent"><div class="ii" style="background:rgba(95,129,144,.14);color:var(--blue)"><svg class="icon" style="width:19px;height:19px"><use href="#i-news"/></svg></div><div class="it2"><b>J'ai une nouvelle sur un proche</b><small>Quelque chose a changé, je le garde en tête.</small></div></div>
+<div class="intent"><div class="ii" style="background:rgba(199,168,90,.2);color:#9a7d2e"><svg class="icon" style="width:19px;height:19px"><use href="#i-spark"/></svg></div><div class="it2"><b>J'ai besoin d'une attention</b><small>Cadeau, message, geste, expérience — je te propose.</small></div></div>
+<div class="intent"><div class="ii" style="background:var(--gtint);color:var(--pine)"><svg class="icon" style="width:19px;height:19px"><use href="#i-bookmark"/></svg></div><div class="it2"><b>J'ai repéré une envie</b><small>Un lien, une photo, une phrase.</small></div></div>
+<div class="intent"><div class="ii" style="background:rgba(197,123,78,.15);color:var(--terra)"><svg class="icon" style="width:19px;height:19px"><use href="#i-cal"/></svg></div><div class="it2"><b>Je prépare un événement</b><small>Anniversaire, date symbolique, moment.</small></div></div>
+<div class="intent"><div class="ii" style="background:rgba(194,74,60,.13);color:var(--red)"><svg class="icon" style="width:19px;height:19px"><use href="#i-heart"/></svg></div><div class="it2"><b>Quelqu'un ne va pas bien</b><small>Trouver un geste juste, sans maladresse.</small></div></div>
+<div class="intent"><div class="ii" style="background:rgba(138,90,107,.15);color:var(--plum)"><svg class="icon" style="width:19px;height:19px"><use href="#i-mend"/></svg></div><div class="it2"><b>Je suis en conflit</b><small>Réparer, reprendre contact, trouver les mots.</small></div></div>
+<div class="intent"><div class="ii" style="background:var(--sage-bg);color:var(--pine)"><svg class="icon" style="width:19px;height:19px"><use href="#i-chat"/></svg></div><div class="it2"><b>Je veux parler à Candice</b><small>Discussion libre.</small></div></div>
+</div></div></div></div></div>
+<div class="cell"><div class="caption">5 · Candice — étape 2 : discussion</div><div class="subcap">Candice extrait, reformule, puis une seule action proactive (mini pop-up de confirmation). Avant : l'action — elle ne pose pas 10 questions.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll" style="display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><span style="color:var(--ink2)">←</span><div><div class="eyebrow">Nouvelle sur un proche</div></div></div>
+<div class="bub ca">De qui s'agit-il ?</div>
+<div class="bub me">De Sophie. Elle vient de perdre son travail.</div>
+<div class="bub ca">Je garde ça pour Sophie : <b>perte d'emploi</b>, période sensible, besoin probable d'un soutien sobre.</div>
+<div style="margin-top:4px">
+<button class="btn" style="height:48px;font-size:13.5px"><svg class="icon" style="width:17px;height:17px"><use href="#i-check"/></svg> Ajouter à son profil — je m'occupe du reste</button>
+<div class="popmini"><span class="orb" style="width:34px;height:34px;flex:0 0 34px"><span class="d" style="width:9px;height:9px"></span></span><div><b>Je m'occupe du reste.</b><em>J'analyse, et j'agirai en fonction de cette information.</em></div></div></div>
+</div><div style="padding:8px 16px 14px;background:var(--canvas)"><div class="inputbar"><span class="iconbtn"><svg class="icon" style="width:18px;height:18px"><use href="#i-mic"/></svg></span><span class="ph">Dis quelque chose à Candice…</span><span class="orb" style="width:36px;height:36px;flex:0 0 36px"><span class="d" style="width:10px;height:10px"></span></span></div></div></div></div></div></div>
+<div class="cell"><div class="caption">6 · Mes proches — cards enrichies</div><div class="subcap">Anneau de connaissance (sans chiffre), prochaine date, dernier signal. CTA proactif : « Voir mon idée pour lui ».</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll"><div style="display:flex;justify-content:space-between;align-items:flex-end;margin:6px 0 12px"><h2 class="h-serif" style="font-size:26px">Mes proches</h2><span class="chip" style="border-color:var(--pine);color:var(--pine)">+ Ajouter</span></div>
+<div style="display:flex;gap:7px;overflow:hidden;margin-bottom:14px"><span class="chip" style="background:var(--pine);color:#fff;border-color:var(--pine)">Tous</span><span class="chip">Famille</span><span class="chip">Amis</span><span class="chip">À affiner</span></div>
+<div class="card pcard"><div style="display:flex;align-items:center;gap:12px">
+<div class="ring" style="width:46px;height:46px;flex:0 0 46px"><svg width="46" height="46"><circle cx="23" cy="23" r="20" fill="none" stroke="#E7E3D8" stroke-width="3"/><circle cx="23" cy="23" r="20" fill="none" stroke="var(--pine)" stroke-width="3" stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="55" transform="rotate(-90 23 23)"/></svg><div class="pt"><span class="point"></span></div></div>
+<div style="flex:1"><div class="h-serif" style="font-size:18px">Thibaud</div><div style="font-size:11px;color:var(--ink3)">Mari</div><div style="font-size:11.5px;color:var(--ink2)">Candice le connaît bien</div></div></div>
+<div style="display:flex;gap:7px;margin:11px 0 9px;flex-wrap:wrap"><span class="tag warn">Anniversaire dans 32 j</span><span class="tag soft">Envie : nature confortable</span></div>
+<div style="display:flex;align-items:center;gap:7px;margin-bottom:11px"><span class="point"></span><span style="font-size:11.5px;color:var(--pine);font-weight:600">Une attention prête pour lui</span></div>
+<div style="display:flex;gap:8px"><button class="btn" style="height:42px;font-size:13px"><svg class="icon" style="width:16px;height:16px"><use href="#i-spark"/></svg> Voir mon idée pour lui</button><button class="btn ghost" style="height:42px;width:auto;padding:0 13px;font-size:12.5px">Ouvrir</button></div></div>
+<div class="card pcard"><div style="display:flex;align-items:center;gap:12px">
+<div class="ring" style="width:46px;height:46px;flex:0 0 46px"><svg width="46" height="46"><circle cx="23" cy="23" r="20" fill="none" stroke="#E7E3D8" stroke-width="3"/><circle cx="23" cy="23" r="20" fill="none" stroke="var(--pine)" stroke-width="3" stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="92" transform="rotate(-90 23 23)"/></svg><div class="pt"><span class="point"></span></div></div>
+<div style="flex:1"><div class="h-serif" style="font-size:18px">Sophie</div><div style="font-size:11px;color:var(--ink3)">Amie proche</div><div style="font-size:11.5px;color:var(--ink2)">Candice a quelques repères</div></div></div>
+<div style="display:flex;gap:7px;margin:11px 0 9px;flex-wrap:wrap"><span class="tag warn">Période difficile · à soutenir</span></div>
+<div style="display:flex;align-items:center;gap:7px;margin-bottom:11px"><span class="point"></span><span style="font-size:11.5px;color:var(--pine);font-weight:600">Un geste doux pour elle</span></div>
+<div style="display:flex;gap:8px"><button class="btn" style="height:42px;font-size:13px"><svg class="icon" style="width:16px;height:16px"><use href="#i-spark"/></svg> Voir mon idée pour elle</button><button class="btn ghost" style="height:42px;width:auto;padding:0 13px;font-size:12.5px">Ouvrir</button></div></div>
+</div><div class="nav"><div class="it"><svg class="icon"><use href="#i-home"/></svg>Le fil</div><div class="it on"><svg class="icon"><use href="#i-people"/></svg>Proches</div><div class="it center"><div class="orb"><div class="d"></div></div><div class="lbl">Candice</div></div><div class="it"><svg class="icon"><use href="#i-cal"/></svg>Agenda</div><div class="it"><svg class="icon"><use href="#i-profile"/></svg>Profil</div></div></div></div></div></div>
+<div class="cell"><div class="caption">7 · Fiche proche — attention proactive</div><div class="subcap">Header allégé (plus de bloc vert massif). Mini-graphe de connaissance. CTA proactif, pas une liste.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll" style="padding:0">
+<div class="gh" style="padding:15px 20px 19px">
+<div style="font-size:12.5px;color:rgba(255,255,255,.8);margin-bottom:12px;position:relative">← Mes proches</div>
+<div style="display:flex;align-items:center;gap:13px;position:relative"><div class="av" style="width:52px;height:52px;font-size:21px;background:rgba(255,255,255,.16);color:#fff;border:1px solid rgba(255,255,255,.25)">T</div>
+<div style="flex:1"><div class="h-serif" style="font-size:22px;color:#fff">Thibaud</div><div style="font-size:11.5px;color:rgba(255,255,255,.82)">Mari · Candice le connaît bien</div></div></div>
+<div style="display:flex;gap:7px;margin-top:12px;position:relative"><span style="font-size:10.5px;color:#fff;background:rgba(255,255,255,.14);padding:4px 9px;border-radius:8px">Langage : actes &amp; moments</span><span style="font-size:10.5px;color:var(--champ);background:rgba(255,255,255,.12);padding:4px 9px;border-radius:8px">Analyse fiable</span></div></div>
+<div style="padding:14px 20px 16px">
+<div class="idea">
+<div class="eyebrow" style="position:relative">Pensé pour lui · il y a 3 jours, la dernière</div>
+<div class="h-serif" style="font-size:18px;margin:6px 0 5px;color:#fff;position:relative">J'ai une attention pour Thibaud</div>
+<div style="font-size:12.5px;color:rgba(255,255,255,.86);line-height:1.45;position:relative">Connaissant Thibaud — concret, confortable, peu démonstratif — je verrais bien une <b>soirée brasero + panier terroir</b>.</div>
+<div style="display:flex;gap:8px;margin-top:13px;position:relative"><span style="background:#fff;color:var(--pine);font-weight:600;font-size:12.5px;padding:9px 14px;border-radius:11px">Voir l'attention</span><span style="border:1px solid rgba(255,255,255,.4);color:#fff;font-weight:600;font-size:12.5px;padding:9px 14px;border-radius:11px">En voir une autre</span></div></div>
+<div style="display:flex;gap:7px;margin-bottom:15px;flex-wrap:wrap"><span class="chip">Ajouter une info</span><span class="chip">Votre matching</span><span class="chip">Sa wishlist</span><span class="chip">Ses dates</span></div>
+<div class="divtxt" style="margin-top:0">Son langage d'attention — ce que je devine</div>
+<div class="card" style="padding:16px;display:flex;align-items:center;gap:14px">
+<svg width="118" height="118" viewBox="0 0 140 140" style="flex:0 0 118px"><circle cx="70" cy="70" r="52" fill="none" stroke="#173E31" stroke-width="26" stroke-dasharray="88.22 238.51" stroke-dashoffset="0.00" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#3E7361" stroke-width="26" stroke-dasharray="65.35 261.38" stroke-dashoffset="-88.22" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#8DA697" stroke-width="26" stroke-dasharray="62.08 264.65" stroke-dashoffset="-153.56" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#CDB987" stroke-width="26" stroke-dasharray="49.01 277.72" stroke-dashoffset="-215.64" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#B9A77C" stroke-width="26" stroke-dasharray="39.21 287.52" stroke-dashoffset="-264.65" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#E0D3B0" stroke-width="26" stroke-dasharray="22.87 303.85" stroke-dashoffset="-303.85" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="34" fill="#fff"/><text x="70" y="66" text-anchor="middle" font-family="Fraunces" font-size="12" fill="#173E31">Actes</text><text x="70" y="82" text-anchor="middle" font-size="8.5" fill="#6F6A61">&amp; moments</text></svg>
+<div class="legend-row" style="flex:1"><span class="l"><i style="background:#173E31"></i>Mots justes</span><span class="l"><i style="background:#3E7361"></i>Cadeaux</span><span class="l"><i style="background:#8DA697"></i>Services</span><span class="l"><i style="background:#CDB987"></i>Moments</span><span class="l"><i style="background:#B9A77C"></i>Esthétique</span><span class="l"><i style="background:#E0D3B0"></i>Surprises</span></div></div>
+<div style="font-size:11px;color:var(--ink2);background:var(--gtint);border-radius:11px;padding:9px 12px;margin:10px 0 4px">Analyse encore <b>prudente</b> — ajoute des détails pour qu'elle s'affine.</div>
+<div class="card mod" style="margin-top:11px"><div class="mh"><svg class="icon"><use href="#i-spark"/></svg> Ce qui lui fait plaisir</div><div class="md">On devine qu'il est touché par le temps qu'on lui donne, sans charge mentale.</div><div style="display:flex;gap:6px;flex-wrap:wrap"><span class="chip">Nature confortable</span><span class="chip">Reconnaissance</span></div></div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-block"/></svg> À éviter</div><div class="md">Le démonstratif, les grandes déclarations, l'inconfort.</div></div>
+<div class="divtxt">Ce que tu as ajouté sur lui</div>
+<div class="card mod"><div style="display:flex;gap:6px;flex-wrap:wrap">
+<span class="chip" style="color:#3d5a4b;background:var(--sage-bg)">Aime la nature</span>
+<span class="chip" style="color:var(--terra);background:rgba(197,123,78,.12)">Café de spécialité</span>
+<span class="chip" style="color:var(--blue);background:rgba(95,129,144,.12)">Cuisine japonaise</span>
+<span class="chip" style="color:var(--red);background:rgba(194,74,60,.10)">N'aime pas le démonstratif</span>
+<span class="chip">Allergique aux fruits de mer</span></div></div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-cal"/></svg> Ses dates</div><div class="md">Anniversaire dans 32 jours · votre couple en septembre.</div></div>
+<div class="idea" style="margin-bottom:4px"><div class="eyebrow" style="position:relative;color:var(--champ)">Vous deux</div><div style="font-size:13px;color:#fff;margin-top:5px;position:relative">Votre dynamique est plutôt complémentaire — voir votre analyse.</div></div>
+</div></div></div></div></div></div>
+<div class="cell"><div class="caption">8 · Suggestions — 2-3 attentions générées</div><div class="subcap">Analyse courte puis 3 options max (juste / simple / marquante), chacune actionnable. Jamais de liste interminable.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll">
+<div class="eyebrow" style="margin:6px 0 6px">Connaissant Thibaud</div>
+<p class="h-serif" style="font-size:18px;line-height:1.35;margin-bottom:9px">Je verrais bien quelque chose dans cet esprit&nbsp;:</p>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:15px"><span class="chip">concret</span><span class="chip">confortable</span><span class="chip">peu démonstratif</span><span class="chip">son envie récente de nature</span></div>
+<div class="opt sage"><div class="rk">La plus juste</div><div class="t">Week-end nature confortable près d'un lac</div><div class="why">Parce qu'il a parlé de montagne/nature, mais sans inconfort.</div><div class="meta"><span class="chip">~250 €</span><span class="chip">2-3 sem.</span></div><div class="acts"><span class="pri">Choisir</span><span>Réserver</span><span>Remplacer</span></div></div>
+<div class="opt"><div class="rk">La plus simple</div><div class="t">Soirée brasero + panier terroir à la maison</div><div class="why">Le retour aux sources, sans logistique lourde.</div><div class="meta"><span class="chip">~80 €</span><span class="chip">Cette semaine</span></div><div class="acts"><span class="pri">Choisir</span><span>Commander</span><span>Remplacer</span></div></div>
+<div class="opt champ"><div class="rk">La plus marquante</div><div class="t">Lettre courte + journée sans charge mentale</div><div class="why">Reconnaissance concrète, pas de grand discours.</div><div class="meta"><span class="chip">Gratuit</span></div><div class="acts"><span class="pri">Choisir</span><span>Écrire le message</span></div></div>
+</div></div></div></div></div>
+<div class="cell"><div class="caption">9 · Mon profil — dashboard graphique</div><div class="subcap">Header allégé lumineux + anneau de complétion (sans %). Donut « langage d'attention ». Modules en cards.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll" style="padding:0">
+<div class="gh" style="padding:16px 20px 19px">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative"><div style="display:flex;align-items:center;gap:12px">
+<div class="ring" style="width:54px;height:54px;flex:0 0 54px"><svg width="54" height="54"><circle cx="27" cy="27" r="23" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3.5"/><circle cx="27" cy="27" r="23" fill="none" stroke="var(--champ)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="144.5" stroke-dashoffset="40" transform="rotate(-90 27 27)"/></svg><div class="pt"><span class="point" style="background:#fff;box-shadow:0 0 10px var(--champ)"></span></div></div>
+<div><div class="h-serif" style="font-size:21px;color:#fff">Estelle</div><div style="font-size:11.5px;color:rgba(255,255,255,.82)">Candice te connaît bien</div></div></div>
+<span style="font-size:11.5px;border:1px solid rgba(255,255,255,.4);color:#fff;padding:6px 11px;border-radius:999px">Modifier</span></div>
+<div style="display:flex;gap:7px;margin-top:12px;position:relative"><span style="font-size:11px;color:#fff;background:rgba(255,255,255,.14);padding:5px 11px;border-radius:999px">Voir ma fiche partagée</span><span style="font-size:11px;color:var(--champ);background:rgba(255,255,255,.12);padding:5px 11px;border-radius:999px">Lire l'analyse →</span></div></div>
+<div style="padding:14px 20px 16px">
+<p class="h-serif" style="font-size:15.5px;line-height:1.5">Tu sembles quelqu'un pour qui les détails ne sont jamais anodins — un mot choisi, une preuve qu'on t'a écoutée.</p>
+<div class="divtxt">Ton langage d'attention</div>
+<div class="card" style="padding:16px;display:flex;align-items:center;gap:14px">
+<svg width="140" height="140" viewBox="0 0 140 140" style="flex:0 0 140px"><circle cx="70" cy="70" r="52" fill="none" stroke="#173E31" stroke-width="26" stroke-dasharray="88.22 238.51" stroke-dashoffset="0.00" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#3E7361" stroke-width="26" stroke-dasharray="65.35 261.38" stroke-dashoffset="-88.22" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#8DA697" stroke-width="26" stroke-dasharray="62.08 264.65" stroke-dashoffset="-153.56" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#CDB987" stroke-width="26" stroke-dasharray="49.01 277.72" stroke-dashoffset="-215.64" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#B9A77C" stroke-width="26" stroke-dasharray="39.21 287.52" stroke-dashoffset="-264.65" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="52" fill="none" stroke="#E0D3B0" stroke-width="26" stroke-dasharray="22.87 303.85" stroke-dashoffset="-303.85" transform="rotate(-90 70 70)"/><circle cx="70" cy="70" r="34" fill="#fff"/><text x="70" y="66" text-anchor="middle" font-family="Fraunces" font-size="13" fill="#173E31">Mots</text><text x="70" y="82" text-anchor="middle" font-size="9" fill="#6F6A61">en tête</text></svg>
+<div class="legend-row" style="flex:1"><span class="l"><i style="background:#173E31"></i>Mots justes</span><span class="l"><i style="background:#3E7361"></i>Cadeaux</span><span class="l"><i style="background:#8DA697"></i>Services</span><span class="l"><i style="background:#CDB987"></i>Moments</span><span class="l"><i style="background:#B9A77C"></i>Esthétique</span><span class="l"><i style="background:#E0D3B0"></i>Surprises</span></div></div>
+<div class="card mod" style="margin-top:11px"><div class="mh"><svg class="icon"><use href="#i-detail"/></svg> Ce qui te touche</div><div class="md">Sentir qu'on s'est souvenu de toi — un détail dit, du soin dans l'exécution.</div></div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-block"/></svg> À éviter</div><div class="md">Le générique, l'impersonnel, les lieux sans âme.</div></div>
+</div></div><div class="nav"><div class="it"><svg class="icon"><use href="#i-home"/></svg>Le fil</div><div class="it"><svg class="icon"><use href="#i-people"/></svg>Proches</div><div class="it center"><div class="orb"><div class="d"></div></div><div class="lbl">Candice</div></div><div class="it"><svg class="icon"><use href="#i-cal"/></svg>Agenda</div><div class="it on"><svg class="icon"><use href="#i-profile"/></svg>Profil</div></div></div></div></div></div>
+<div class="cell"><div class="caption">10 · Analyse de ton profil</div><div class="subcap">Anneau de connaissance + donut langage + radar « style attentionnel » + ce que Candice a compris. Intensité en mots, zéro %.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll">
+<div class="eyebrow" style="margin:6px 0 2px">Analyse</div><h2 class="h-serif" style="font-size:24px;margin-bottom:14px">Ce qui aide Candice à viser juste</h2>
+<div class="card" style="padding:15px;display:flex;align-items:center;gap:14px;margin-bottom:12px">
+<div class="ring" style="width:70px;height:70px;flex:0 0 70px"><svg width="70" height="70"><circle cx="35" cy="35" r="29" fill="none" stroke="#E7E3D8" stroke-width="4"/><circle cx="35" cy="35" r="29" fill="none" stroke="var(--pine)" stroke-width="4" stroke-linecap="round" stroke-dasharray="182.2" stroke-dashoffset="50" transform="rotate(-90 35 35)"/></svg><div class="pt"><span class="point" style="width:10px;height:10px"></span></div></div>
+<div><div class="h-serif" style="font-size:16px;color:var(--pine)">Candice te connaît bien</div><div style="font-size:12px;color:var(--ink2);margin-top:3px;line-height:1.4">Plus tu ajoutes de détails, plus tes proches visent juste.</div></div></div>
+<div class="divtxt">Style attentionnel</div>
+<div class="card" style="padding:14px;display:flex;justify-content:center"><svg width="220" height="200" viewBox="0 0 200 200"><polygon points="100.0,74.3 120.1,84.0 125.1,105.7 111.2,123.2 88.8,123.2 74.9,105.7 79.9,84.0" fill="none" stroke="rgba(23,62,49,.08)" stroke-width="1"/><polygon points="100.0,48.5 140.2,67.9 150.2,111.5 122.3,146.4 77.7,146.4 49.8,111.5 59.8,67.9" fill="none" stroke="rgba(23,62,49,.08)" stroke-width="1"/><polygon points="100.0,22.0 161.0,51.4 176.0,117.4 133.8,170.3 66.2,170.3 24.0,117.4 39.0,51.4" fill="none" stroke="rgba(23,62,49,.08)" stroke-width="1"/><line x1="100" y1="100" x2="100.0" y2="22.0" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="161.0" y2="51.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="176.0" y2="117.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="133.8" y2="170.3" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="66.2" y2="170.3" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="24.0" y2="117.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="39.0" y2="51.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><polygon points="100.0,29.8 142.7,66.0 122.8,105.2 128.8,159.7 79.7,142.2 62.0,108.7 51.2,61.1" fill="rgba(23,62,49,.14)" stroke="var(--pine)" stroke-width="1.6"/><text x="100" y="8" text-anchor="middle" font-size="8" fill="#6F6A61" dominant-baseline="middle">Précision</text><text x="172" y="43" text-anchor="start" font-size="8" fill="#6F6A61" dominant-baseline="middle">Émotion</text><text x="190" y="120" text-anchor="start" font-size="8" fill="#6F6A61" dominant-baseline="middle">Surprise</text><text x="140" y="183" text-anchor="start" font-size="8" fill="#6F6A61" dominant-baseline="middle">Esthétique</text><text x="60" y="183" text-anchor="end" font-size="8" fill="#6F6A61" dominant-baseline="middle">Utilité</text><text x="10" y="120" text-anchor="end" font-size="8" fill="#6F6A61" dominant-baseline="middle">Temps partagé</text><text x="28" y="43" text-anchor="end" font-size="8" fill="#6F6A61" dominant-baseline="middle">Discrétion</text></svg></div>
+<div class="divtxt">Ce que Candice a compris</div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-check"/></svg> Tu es touchée par les détails retenus</div></div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-check"/></svg> Tu n'aimes pas le générique</div></div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-check"/></svg> Tu préfères qu'on se donne du mal plutôt qu'un grand geste approximatif</div></div>
+<div class="divtxt">À compléter</div>
+<div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px"><span class="chip">Wishlist</span><span class="chip">Restaurants</span><span class="chip">Voyages</span><span class="chip">Contraintes</span></div>
+<button class="btn">Affiner mon profil</button>
+</div></div></div></div></div>
+<div class="cell"><div class="caption">11 · Vous deux — matching</div><div class="subcap">Double radar superposé (Estelle + Thibaud) + score VERBAL, pas froid. Cards « ce qui marche venant de toi ».</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll">
+<div class="eyebrow" style="margin:6px 0 2px">Votre dynamique</div><h2 class="h-serif" style="font-size:24px;margin-bottom:4px">Estelle &amp; Thibaud</h2>
+<p style="font-size:12.5px;color:var(--ink2);margin-bottom:12px">Ce que Candice comprend de votre lien.</p>
+<div class="card" style="padding:14px;display:flex;flex-direction:column;align-items:center"><svg width="230" height="205" viewBox="0 0 200 200"><polygon points="100.0,74.3 120.1,84.0 125.1,105.7 111.2,123.2 88.8,123.2 74.9,105.7 79.9,84.0" fill="none" stroke="rgba(23,62,49,.08)" stroke-width="1"/><polygon points="100.0,48.5 140.2,67.9 150.2,111.5 122.3,146.4 77.7,146.4 49.8,111.5 59.8,67.9" fill="none" stroke="rgba(23,62,49,.08)" stroke-width="1"/><polygon points="100.0,22.0 161.0,51.4 176.0,117.4 133.8,170.3 66.2,170.3 24.0,117.4 39.0,51.4" fill="none" stroke="rgba(23,62,49,.08)" stroke-width="1"/><line x1="100" y1="100" x2="100.0" y2="22.0" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="161.0" y2="51.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="176.0" y2="117.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="133.8" y2="170.3" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="66.2" y2="170.3" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="24.0" y2="117.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><line x1="100" y1="100" x2="39.0" y2="51.4" stroke="rgba(23,62,49,.12)" stroke-width="1"/><polygon points="100.0,28.2 143.9,65.0 122.8,105.2 128.8,159.7 79.7,142.2 58.2,109.5 51.2,61.1" fill="rgba(23,62,49,.16)" stroke="var(--pine)" stroke-width="1.6"/><polygon points="100.0,53.2 125.6,79.6 124.3,105.6 115.2,131.6 70.2,161.8 45.2,112.5 63.4,70.8" fill="rgba(205,185,135,.22)" stroke="var(--champ)" stroke-width="1.6"/><text x="100" y="8" text-anchor="middle" font-size="8" fill="#6F6A61" dominant-baseline="middle">Précision</text><text x="172" y="43" text-anchor="start" font-size="8" fill="#6F6A61" dominant-baseline="middle">Émotion</text><text x="190" y="120" text-anchor="start" font-size="8" fill="#6F6A61" dominant-baseline="middle">Surprise</text><text x="140" y="183" text-anchor="start" font-size="8" fill="#6F6A61" dominant-baseline="middle">Esthétique</text><text x="60" y="183" text-anchor="end" font-size="8" fill="#6F6A61" dominant-baseline="middle">Utilité</text><text x="10" y="120" text-anchor="end" font-size="8" fill="#6F6A61" dominant-baseline="middle">Temps partagé</text><text x="28" y="43" text-anchor="end" font-size="8" fill="#6F6A61" dominant-baseline="middle">Discrétion</text></svg>
+<div class="legend-row" style="justify-content:center"><span class="l"><i style="background:var(--pine)"></i>Estelle</span><span class="l"><i style="background:var(--champ)"></i>Thibaud</span></div></div>
+<div class="card" style="padding:13px;margin-top:12px;text-align:center;background:linear-gradient(135deg,#fff,var(--sage-bg))"><p class="h-serif" style="font-size:15px;color:var(--pine)">Votre dynamique est plutôt complémentaire.</p><p style="font-size:12px;color:var(--ink2);margin-top:4px">Vous vous rejoignez surtout sur les moments simples et les preuves concrètes.</p></div>
+<div class="card mod" style="margin-top:11px"><div class="mh"><svg class="icon"><use href="#i-spark"/></svg> Ce qui marche venant de toi</div><div class="md">Venant de toi, Thibaud sera plus touché par une attention concrète et organisée que par une grande déclaration.</div></div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-mend"/></svg> Là où vous pouvez vous rater</div><div class="md">Penser que l'autre devine. Attendre trop longtemps pour agir.</div></div>
+<button class="btn" style="margin-top:6px"><svg class="icon" style="width:16px;height:16px"><use href="#i-spark"/></svg> Voir une attention pour lui</button>
+</div></div></div></div></div>
+<div class="cell"><div class="caption">12 · Calendrier attentionnel</div><div class="subcap">Pas un agenda iPhone : « Cette semaine » en cards, mois stylisé, puis « À préparer » avec états (rien / idée / fait).</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll"><h2 class="h-serif" style="font-size:26px;margin:6px 0 2px">Agenda</h2><p style="font-size:12.5px;color:var(--ink2);margin-bottom:12px">Les moments à ne pas laisser passer.</p>
+<div class="divtxt" style="margin-top:4px">Cette semaine</div>
+<div style="display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;margin-bottom:6px">
+<div class="weekcard"><div class="wd">Anniversaire de Sophie</div><div class="wt">dans 6 jours</div><span class="badge" style="background:rgba(199,168,90,.18);color:#8a6d23">Idée proposée</span></div>
+<div class="weekcard"><div class="wd">Fête des pères</div><div class="wt">à préparer</div><span class="badge" style="background:var(--mist);color:var(--ink2)">Rien de prévu</span></div>
+<div class="weekcard"><div class="wd">Marius · spectacle</div><div class="wt">samedi</div><span class="badge" style="background:var(--sage-bg);color:#3d5a4b">Noté</span></div></div>
+<div class="card cal"><div class="mh"><b>Juin 2026</b><span style="color:var(--ink3)">‹ ›</span></div>
+<div class="dow"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="days"><div class="d">1</div><div class="d">2</div><div class="d">3</div><div class="d">4<span class="pip" style="background:var(--sage)"></span></div><div class="d">5</div><div class="d">6</div><div class="d">7</div><div class="d">8</div><div class="d">9</div><div class="d">10</div><div class="d today">11</div><div class="d">12</div><div class="d hi">13<span class="pip" style="background:var(--champ)"></span></div><div class="d">14</div><div class="d">15</div><div class="d">16</div><div class="d hi">17<span class="pip" style="background:var(--coral)"></span></div><div class="d">18</div><div class="d">19</div><div class="d">20</div><div class="d hi">21<span class="pip" style="background:var(--pine)"></span></div><div class="d">22</div><div class="d">23</div><div class="d">24</div><div class="d">25</div><div class="d">26</div><div class="d">27</div><div class="d">28</div><div class="d">29</div><div class="d">30</div></div></div>
+<div class="divtxt">À préparer</div>
+<div class="prep"><div class="dt"><b>17</b><span>juil</span></div><div class="pi"><div class="t">Anniversaire de Sophie</div><div class="s">Recommandé : cadeau + message</div></div><span class="state st-idea">Idée proposée</span></div>
+<div class="prep"><div class="dt"><b>21</b><span>juin</span></div><div class="pi"><div class="t">Fête des pères</div><div class="s">Recommandé : expérience père-enfant</div></div><span class="state st-none">Rien de prévu</span></div>
+<div class="prep"><div class="dt"><b>13</b><span>juil</span></div><div class="pi"><div class="t">Anniversaire de Thibaud</div><div class="s">Envie repérée : montagne confortable</div></div><span class="state st-done">Validé</span></div>
+</div><div class="nav"><div class="it"><svg class="icon"><use href="#i-home"/></svg>Le fil</div><div class="it"><svg class="icon"><use href="#i-people"/></svg>Proches</div><div class="it center"><div class="orb"><div class="d"></div></div><div class="lbl">Candice</div></div><div class="it on"><svg class="icon"><use href="#i-cal"/></svg>Agenda</div><div class="it"><svg class="icon"><use href="#i-profile"/></svg>Profil</div></div></div></div></div></div>
+<div class="cell"><div class="caption">13 · Détail d'un événement</div><div class="subcap">Contexte + profil résumé + ce qui marche / à éviter + 3 suggestions Candice + CTA « Valider une attention ».</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll" style="padding:0">
+<div class="gh" style="padding:15px 20px 19px">
+<div style="font-size:12.5px;color:rgba(255,255,255,.8);margin-bottom:10px;position:relative">← Agenda</div>
+<div class="eyebrow" style="position:relative">Dans 6 jours</div><h2 class="h-serif" style="font-size:23px;margin-top:3px;color:#fff;position:relative">Anniversaire de Sophie</h2>
+<div style="font-size:12px;color:rgba(255,255,255,.82);margin-top:4px;position:relative">Amie proche · période sensible en ce moment</div></div>
+<div style="padding:14px 20px 16px">
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-check"/></svg> Ce qui marche</div><div class="md">Sobre, sincère, sans surcharge. Un mot juste compte plus qu'un gros cadeau.</div></div>
+<div class="card mod"><div class="mh"><svg class="icon"><use href="#i-block"/></svg> À éviter</div><div class="md">Le festif appuyé vu le contexte. Calibrer le ton.</div></div>
+<div class="divtxt">Suggestions de Candice</div>
+<div class="opt sage"><div class="rk">La plus juste</div><div class="t">Petit-déjeuner livré + mot manuscrit</div><div class="why">Une douceur concrète, sans en faire trop.</div><div class="acts"><span class="pri">Valider</span><span>Remplacer</span></div></div>
+<div class="opt"><div class="rk">La plus simple</div><div class="t">Message vocal sincère</div><div class="acts"><span class="pri">Valider</span><span>Écrire</span></div></div>
+</div></div></div></div></div></div>
+<div class="cell"><div class="caption">14 · Idées (wishlist sans fuite)</div><div class="subcap">Candice ne dit jamais « il a demandé ». Elle recommande avec un niveau de confiance. Toi, tu remplis ta propre wishlist de ton côté.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body scroll"><h2 class="h-serif" style="font-size:25px;margin:6px 0 2px">Idées pour Thibaud</h2>
+<p style="font-size:12px;color:var(--ink2);margin-bottom:8px">Ce dont je suis sûre qu'il aimerait — selon son profil.</p>
+<div style="font-size:11px;color:var(--ink2);background:var(--gtint);border-radius:11px;padding:9px 12px;margin-bottom:15px;line-height:1.45">Je ne révèle jamais qui a demandé quoi. Toi, tu remplis <b>ta</b> wishlist de ton côté.</div>
+<div class="wish"><div class="wi"><svg class="icon" style="width:17px;height:17px"><use href="#i-gift"/></svg></div><div class="ww"><b>Couteau de cuisine japonais</b><small style="color:var(--pine);font-weight:600">Connaissant Thibaud, j'en suis sûre</small></div><span class="conf"><i class="f"></i><i class="f"></i><i class="f"></i><i class="f"></i></span></div>
+<div class="wish"><div class="wi"><svg class="icon" style="width:17px;height:17px"><use href="#i-spark"/></svg></div><div class="ww"><b>Abonnement café de spécialité</b><small>Je le verrais bien tenté</small></div><span class="conf"><i class="f"></i><i class="f"></i><i class="f"></i><i></i></span></div>
+<div class="wish"><div class="wi"><svg class="icon" style="width:17px;height:17px"><use href="#i-bookmark"/></svg></div><div class="ww"><b>Week-end montagne confortable</b><small>Une piste à explorer</small></div><span class="conf"><i class="f"></i><i class="f"></i><i></i><i></i></span></div>
+<button class="btn" style="height:44px;font-size:13px;margin-top:14px"><svg class="icon" style="width:16px;height:16px"><use href="#i-spark"/></svg> Me proposer une autre idée</button>
+<div class="divtxt">Ma wishlist à moi</div>
+<div class="wish"><div class="wi"><svg class="icon" style="width:17px;height:17px"><use href="#i-plus"/></svg></div><div class="ww"><b>Ajoute ce qui te ferait plaisir</b><small>Candice guidera tes proches sans tout leur montrer</small></div></div>
+</div></div></div></div></div>
+<div class="cell"><div class="caption">15a · État vide</div><div class="subcap">Une page vide est une invitation à agir, pas un message triste.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body"><div class="empty"><div class="ill"><svg class="icon" style="width:34px;height:34px"><use href="#i-people"/></svg></div>
+<h3>Ajoute une première personne</h3><p>À qui as-tu envie de mieux penser ? Candice apprend à partir d'elle.</p>
+<button class="btn" style="width:auto;padding:0 22px"><svg class="icon" style="width:16px;height:16px"><use href="#i-plus"/></svg> Ajouter un proche</button></div></div><div class="nav"><div class="it"><svg class="icon"><use href="#i-home"/></svg>Le fil</div><div class="it on"><svg class="icon"><use href="#i-people"/></svg>Proches</div><div class="it center"><div class="orb"><div class="d"></div></div><div class="lbl">Candice</div></div><div class="it"><svg class="icon"><use href="#i-cal"/></svg>Agenda</div><div class="it"><svg class="icon"><use href="#i-profile"/></svg>Profil</div></div></div></div></div></div>
+<div class="cell"><div class="caption">15b · Onboarding non terminé</div><div class="subcap">Module persistant, jamais culpabilisant, toujours actionnable.</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body"><div style="margin:6px 0 14px"><div class="eyebrow">Jeudi 11 juin</div><h2 class="h-serif" style="font-size:24px;margin-top:3px">Bonjour, Estelle</h2></div>
+<div class="gh" style="padding:17px;border-radius:18px">
+<div style="display:flex;align-items:center;gap:13px;margin-bottom:13px;position:relative"><div class="ring" style="width:48px;height:48px;flex:0 0 48px"><svg width="48" height="48"><circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="3.5"/><circle cx="24" cy="24" r="20" fill="none" stroke="var(--champ)" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="125.6" stroke-dashoffset="78" transform="rotate(-90 24 24)"/></svg><div class="pt"><span class="point" style="background:#fff;box-shadow:0 0 10px var(--champ)"></span></div></div>
+<div><div class="h-serif" style="font-size:17px;color:#fff">Ta fiche prend forme</div><div style="font-size:12px;color:rgba(255,255,255,.82)">Encore quelques détails et Candice vise bien plus juste.</div></div></div>
+<button class="btn" style="background:#fff;color:var(--pine);position:relative">Continuer ma fiche</button></div>
+<div class="divtxt">En attendant</div>
+<div class="todo"><div class="ti" style="background:var(--mist);color:var(--pine)"><svg class="icon" style="width:18px;height:18px"><use href="#i-people"/></svg></div><div class="tt">Ajouter un proche<small>Candice peut déjà l'aider</small></div><span class="ar">→</span></div>
+</div><div class="nav"><div class="it on"><svg class="icon"><use href="#i-home"/></svg>Le fil</div><div class="it"><svg class="icon"><use href="#i-people"/></svg>Proches</div><div class="it center"><div class="orb"><div class="d"></div></div><div class="lbl">Candice</div></div><div class="it"><svg class="icon"><use href="#i-cal"/></svg>Agenda</div><div class="it"><svg class="icon"><use href="#i-profile"/></svg>Profil</div></div></div></div></div></div>
+<div class="cell"><div class="caption">15c · Succès — attention validée</div><div class="subcap">Confirmation chaleureuse, et la suite immédiate (écrire le mot, planifier le rappel).</div>
+<div class="device"><div class="phone"><div class="notch"></div>
+<div class="sb"><span>9:41</span><span>＊⌃▮</span></div>
+<div class="screen"><div class="brand"><span class="o"></span>Candice</div><div class="body" style="display:flex;flex-direction:column;justify-content:center;text-align:center;padding:6px 28px">
+<div class="success-burst"><svg class="icon" style="width:34px;height:34px;stroke-width:2"><use href="#i-check"/></svg></div>
+<h2 class="h-serif" style="font-size:22px">C'est noté pour Thibaud</h2>
+<p style="font-size:13px;color:var(--ink2);margin:8px 0 22px;line-height:1.5">Week-end nature confortable. Je m'occupe de la réservation et je te tiens au courant.</p>
+<button class="btn" style="margin-bottom:9px">Écrire le mot qui l'accompagne</button>
+<button class="btn ghost">Voir dans l'agenda</button>
+</div></div></div></div></div>
+</div></div>
+<script>
+function pick(el){el.parentNode.querySelectorAll('.qcard').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+var R=[];
+function rankpick(el){var i=R.indexOf(el);if(i>=0)R.splice(i,1);else if(R.length<3)R.push(el);
+el.parentNode.querySelectorAll('.qcard').forEach(function(c){c.classList.remove('s1','s2','s3');var b=c.querySelector('.qrank')||c.querySelector('.rd');var p=R.indexOf(c);
+if(p>=0){c.classList.add('s'+(p+1));if(b){b.className='qrank';b.textContent=p+1;}}else if(b){b.className='rd';b.textContent='';}});}
+</script>
+</body></html>
