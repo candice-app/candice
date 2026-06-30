@@ -86,7 +86,7 @@ function IncognitoForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim() || !address.trim()) return;
+    if (!name.trim() || !phone.trim()) return;
     if (loading) return; // guard against programmatic double-submit
     setLoading(true);
     setError(null);
@@ -321,13 +321,12 @@ function IncognitoForm() {
 
       <div>
         <label style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", display: "block", marginBottom: 6 }}>
-          Adresse postale * <span style={{ fontWeight: 300, textTransform: "none", letterSpacing: 0 }}>(pour les livraisons)</span>
+          Adresse postale <span style={{ fontWeight: 300, textTransform: "none", letterSpacing: 0 }}>(pour les livraisons)</span>
         </label>
         <textarea
           value={address}
           onChange={e => setAddress(e.target.value)}
           placeholder="Ex : 12 rue de la Paix, 75001 Paris"
-          required
           rows={2}
           style={{ ...fieldStyle, resize: "vertical" }}
         />
@@ -354,7 +353,7 @@ function IncognitoForm() {
 
       <button
         type="submit"
-        disabled={loading || !phone.trim() || !address.trim()}
+        disabled={loading || !phone.trim()}
         className="btn-primary"
         style={{ opacity: loading ? 0.6 : 1 }}
       >

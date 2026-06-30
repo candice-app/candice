@@ -16,7 +16,6 @@ export async function POST(req: Request) {
   if (!name?.trim()) return NextResponse.json({ error: 'Nom requis' }, { status: 400 });
   if (!VALID_RELATIONSHIPS.includes(relationship)) return NextResponse.json({ error: 'Relation invalide' }, { status: 400 });
   if (!phone?.trim()) return NextResponse.json({ error: 'Téléphone requis' }, { status: 400 });
-  if (!postal_address?.trim()) return NextResponse.json({ error: 'Adresse requise' }, { status: 400 });
 
   // ── Idempotency check: return existing row if same key already processed ──
   if (idempotency_key && typeof idempotency_key === 'string') {
@@ -62,29 +61,24 @@ export async function POST(req: Request) {
       ...(safeRegister ? { relationship_register: safeRegister } : {}),
       ...(safeGender ? { gender: safeGender } : {}),
       ...(safeKey ? { idempotency_key: safeKey } : {}),
+      ...(postal_address?.trim() ? { postal_address: postal_address.trim() } : {}),
     })
     .select('id')
     .single();
 
   if (error || !data) return NextResponse.json({ error: error?.message ?? 'Insert failed' }, { status: 500 });
 
-  // Store address in questionnaire_responses
-  await supabase.from('questionnaire_responses').insert({
-    contact_id: data.id,
-    user_id: user.id,
-    postal_address: postal_address.trim(),
-  });
-
   // Store complicated register context if provided
   const safeContext = typeof complicated_context === 'string' ? complicated_context.trim() : '';
   if (safeRegister === 'compliquée_fragile' && safeContext) {
-    await supabase.from('context_journal').insert({
+    const { error: ctxError } = await supabase.from('context_journal').insert({
       user_id: user.id,
       contact_id: data.id,
       type: 'register_complicated_context',
       question: 'Comment tu aimes entretenir le lien, malgré ce qui est compliqué',
       answer: safeContext,
     });
+    if (ctxError) console.error('context_journal insert failed:', ctxError.message);
   }
 
   return NextResponse.json({ contactId: data.id });
