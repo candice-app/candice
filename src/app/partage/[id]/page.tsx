@@ -1,26 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { MyProfile } from "@/types";
 
 type AnalysisSection = { text?: string; chips?: string[] };
-
-// ─── Label maps ───────────────────────────────────────────────────────────────
-
-const LABEL: Record<string, Record<string, string>> = {
-  love_language:  { words: "Mots d'affirmation", acts: "Actes de service", gifts: "Cadeaux", time: "Temps de qualité", touch: "" },
-  social_energy:  { very_introverted: "Très introverti(e)", introverted: "Introverti(e)", ambivert: "Ambiverti(e)", extroverted: "Extraverti(e)", very_extroverted: "Très extraverti(e)" },
-  appreciation_style: { verbal: "Reconnaissance verbale", practical: "Aide pratique", gifts: "Cadeaux réfléchis", time: "Temps dédié", physical: "Gestes physiques" },
-  gift_preference: { experiences: "Expériences", physical: "Cadeaux matériels", both: "Les deux" },
-  gastronomy:     { anywhere: "Aime manger partout", gourmet: "Gourmand(e)", fine_dining: "Belles tables", passion: "Passionné(e) de gastronomie", functional: "Mange pour vivre" },
-  accommodation:  { destination_only: "La destination prime", comfortable: "3-4 étoiles", charming: "Boutique hôtel / lieu unique", luxury: "5 étoiles / palace", together: "L'important c'est d'être ensemble" },
-};
-
-function resolve(field: string, value: string | null): string | null {
-  if (!value) return null;
-  const parts = value.split(",").filter(Boolean).map(v => LABEL[field]?.[v.trim()] ?? v.trim()).filter(Boolean);
-  return parts.length > 0 ? parts.join(", ") : null;
-}
 
 // ─── 3rd-person transform ─────────────────────────────────────────────────────
 
@@ -59,20 +41,6 @@ function Section({ label, children }: { label: string; children: React.ReactNode
   );
 }
 
-function Row({ label, value }: { label: string; value: string | null }) {
-  if (!value) return null;
-  return (
-    <div style={{ padding: "10px 0", borderBottom: "0.5px solid var(--line)" }}>
-      <p style={{ fontSize: 11, fontWeight: 400, letterSpacing: ".1em", textTransform: "uppercase", color: "var(--ink-3)", marginBottom: 4 }}>
-        {label}
-      </p>
-      <p style={{ fontSize: 14, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.55 }}>
-        {value}
-      </p>
-    </div>
-  );
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function PartagePage({ params }: { params: Promise<{ id: string }> }) {
@@ -80,7 +48,7 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
   const supabase = createAdminClient();
 
   const [{ data }, { data: analysisRow }] = await Promise.all([
-    supabase.from("my_profile").select("*").eq("user_id", id).maybeSingle(),
+    supabase.from("my_profile").select("grammatical_gender").eq("user_id", id).maybeSingle(),
     supabase.from("profile_analysis")
       .select("summary, summary_third_person, summary_chips, sections, must_haves")
       .eq("user_id", id).is("contact_id", null).maybeSingle(),
@@ -88,10 +56,6 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
 
   if (!data) notFound();
 
-  const profile = data as MyProfile & {
-    attention_breath_text?: string | null;
-    grammatical_gender?: string | null;
-  };
   const analysis = analysisRow as {
     summary: string | null;
     summary_third_person: string | null;
@@ -100,7 +64,7 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
     must_haves: string[] | null;
   } | null;
 
-  const gender = profile.grammatical_gender ?? null;
+  const gender = (data as { grammatical_gender: string | null }).grammatical_gender;
 
   return (
     <div style={{ minHeight: "100vh", background: "var(--canvas)" }}>
@@ -146,7 +110,7 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
         </div>
 
         {/* Résumé Candice en 3e personne */}
-        {(analysis?.summary_third_person || analysis?.summary || profile.attention_breath_text) && (
+        {(analysis?.summary_third_person || analysis?.summary) && (
           <div style={{
             padding: "20px 22px",
             borderRadius: 16,
@@ -159,8 +123,7 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
               color: "#FAF8F1", lineHeight: 1.65, letterSpacing: "-.012em",
             } as React.CSSProperties}>
               {analysis?.summary_third_person
-                ?? (analysis?.summary ? to3rdPerson(analysis.summary, gender) : null)
-                ?? profile.attention_breath_text}
+                ?? (analysis?.summary ? to3rdPerson(analysis.summary, gender) : null)}
             </p>
           </div>
         )}
@@ -242,34 +205,6 @@ export default async function PartagePage({ params }: { params: Promise<{ id: st
             </Section>
           );
         })()}
-
-        {/* Profil relationnel — réduit aux données non-intimes */}
-        {(resolve("love_language", profile.love_language) || resolve("social_energy", profile.social_energy) || resolve("appreciation_style", profile.appreciation_style)) && (
-          <Section label="Profil">
-            <Row label="Se sent aimé(e) par" value={resolve("love_language", profile.love_language)} />
-            <Row label="Énergie sociale" value={resolve("social_energy", profile.social_energy)} />
-            <Row label="Se sent apprécié(e) par" value={resolve("appreciation_style", profile.appreciation_style)} />
-          </Section>
-        )}
-
-        {/* Goûts & préférences */}
-        {(profile.hobbies || resolve("gift_preference", profile.gift_preference) || resolve("gastronomy", profile.gastronomy) || resolve("accommodation", profile.accommodation) || profile.conversation_topics) && (
-          <Section label="Goûts &amp; préférences">
-            <Row label="Loisirs et passions" value={profile.hobbies} />
-            <Row label="Cadeaux" value={resolve("gift_preference", profile.gift_preference)} />
-            <Row label="Gastronomie" value={resolve("gastronomy", profile.gastronomy)} />
-            <Row label="Hébergement" value={resolve("accommodation", profile.accommodation)} />
-            <Row label="Adore parler de" value={profile.conversation_topics} />
-          </Section>
-        )}
-
-        {/* À savoir */}
-        {(profile.things_to_avoid || profile.important_dates) && (
-          <Section label="À savoir">
-            <Row label="À éviter" value={profile.things_to_avoid} />
-            <Row label="Dates importantes" value={profile.important_dates} />
-          </Section>
-        )}
 
         {/* Viral CTA */}
         <div style={{
