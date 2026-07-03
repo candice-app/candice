@@ -91,7 +91,7 @@ export default function ClosingMoment({ piloteFirstName }: { piloteFirstName?: s
       }}>
         <button
           type="button"
-          onClick={() => router.push("/moi/resultats")}
+          onClick={() => router.push("/moi")}
           style={{
             display: "inline-flex",
             alignItems: "center",

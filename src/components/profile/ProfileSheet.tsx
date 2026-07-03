@@ -381,10 +381,11 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
               <svg viewBox="0 0 24 24" style={{ width: 26, height: 26, fill: "none", stroke: T.pine, strokeWidth: 1.7 }}>{ICONS.shield}</svg>
             </span>
             <p style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: T.ink, lineHeight: 1.4, marginBottom: 12 }}>
-              Cette fiche t&apos;est volontairement invisible.
+              {data.firstName} a choisi de partager sa fiche avec toi sans la rendre visible.
             </p>
             <p style={{ fontSize: 13.5, color: T.ink2, lineHeight: 1.65 }}>
-              Candice aiguille tes proches pour te faire plaisir — sans jamais rien leur dévoiler de ce que tu lui as confié.
+              Mais Candice s&apos;appuie sur tout ce qu&apos;{data.gender === "feminine" ? "elle" : "il"} a confié pour te faire des recommandations très précises pour lui faire plaisir.
+              Et de ton côté, n&apos;hésite pas à me donner ce que tu sais déjà sur {data.firstName} : je l&apos;ajoute pour affiner encore.
             </p>
           </div>
         )}
@@ -685,8 +686,9 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
 
         {/* ── Ligne "non partagé" discrète (invite_filtre) ── */}
         {show("not_shared_notice").shown && (
-          <p style={{ fontSize: 11, color: T.ink3, fontStyle: "italic", textAlign: "center", margin: "18px 0 4px" }}>
-            {data.firstName} n&apos;a pas tout partagé — Candice ne montre que ce qui a été choisi.
+          <p style={{ fontSize: 11.5, color: T.ink3, fontStyle: "italic", textAlign: "center", margin: "18px 0 4px", lineHeight: 1.5 }}>
+            {data.firstName} a choisi de ne pas tout partager avec toi. Candice connaît le reste
+            et s&apos;en sert pour te faire les recommandations les plus justes.
           </p>
         )}
 
