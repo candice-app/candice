@@ -19,7 +19,14 @@ export interface SingularityInput {
   envies_reves?: string;
   remarquer?: string;
   sentir_special?: string;
-  interests?: { items?: Array<{ id: string; rank: number }>; freeText?: string };
+  interests?: {
+    items?: Array<{
+      id: string;
+      rank: number;
+      details?: Record<string, unknown>;
+    }>;
+    freeText?: string;
+  };
 }
 
 export interface VetosInput {
@@ -32,7 +39,21 @@ export interface VetosInput {
 
 export interface PracticalInput {
   vetos?: VetosInput;
+  parfums?: string[];
+  odeurs_detestees?: string;
+  couleurs_matieres?: string;
+  mobilite_sante?: string;
 }
+
+export type StyleRadar = {
+  precision:  number;
+  emotion:    number;
+  surprise:   number;
+  esthetique: number;
+  utilite:    number;
+  temps:      number;
+  discretion: number;
+};
 
 export interface ProfileInput {
   reception: FaceResult;
@@ -68,6 +89,21 @@ export interface ProfileSynthesisFacts {
   // Context for AI
   lifestyleHighlights: string[];
   singularityContext: string[];
+
+  // Deterministic radar for the "Style attentionnel" heptagon (0-100)
+  styleRadar: StyleRadar;
+
+  // Raw texts routed to Claude for tone/nuance preservation
+  rawTexts: {
+    q17:              string;
+    mobiliteSante:    string;
+    odeursDetestees:  string;
+    couleursMatieres: string;
+    interestsFreeText: string;
+  };
+
+  // Structured interests summary (13 categories + ranks + details)
+  interestsSummary: string[];
 
   hasTemperamentData: boolean;
   hasLifestyleData: boolean;
@@ -167,6 +203,129 @@ const DIM_TOUCH: Record<AttentionDim, string> = {
   GES: "les petits gestes réguliers, discrets, glissés dans le quotidien",
   SUR: "l'inattendu bien pensé — pas le chaos, la surprise juste",
 };
+
+// Weight of a dimension in the reception face (0..3, dominant=3, secondaire=2, tertiaire=1)
+function dimWeight(face: FaceResult, dim: AttentionDim): number {
+  if (face.dominant.includes(dim))   return 3;
+  if (face.secondaire.includes(dim)) return 2;
+  if (face.tertiaire.includes(dim))  return 1;
+  return 0;
+}
+
+// Clamp helper
+function clamp01(x: number): number {
+  return Math.max(0, Math.min(100, Math.round(x)));
+}
+
+// Normalize a signed axis score (-100..+100) to 0..100 on its positive pole
+function axisPos(score: number): number {
+  return clamp01(50 + score / 2);
+}
+
+function computeStyleRadar(
+  reception: FaceResult,
+  temperamentAxes: AxisMap,
+  lifestyleAxes: AxisMap,
+  relationalFilters: RelationalFilters | null,
+  temperamentModes: ModeMap,
+): StyleRadar {
+  const wCADC = dimWeight(reception, 'CAD_C');
+  const wCADS = dimWeight(reception, 'CAD_S');
+  const wMOT  = dimWeight(reception, 'MOT');
+  const wSER  = dimWeight(reception, 'SER');
+  const wGES  = dimWeight(reception, 'GES');
+  const wEXP  = dimWeight(reception, 'EXP');
+  const wSUR  = dimWeight(reception, 'SUR');
+
+  // Précision : détails + cadeaux ciblés
+  const precision = clamp01(
+    axisPos(getAxis(temperamentAxes, 'sensibiliteDetails')) * 0.55
+    + (wCADC + wGES) * 6
+    + Math.max(0, getAxis(temperamentAxes, 'exigenceStanding')) * 0.15
+  );
+
+  // Émotion : chargé de sens + expressivité
+  const emotion = clamp01(
+    (wCADS + wMOT) * 8
+    + axisPos(-getAxis(temperamentAxes, 'expressiviteReserve')) * 0.35
+    + (relationalFilters?.besoinProfondeur ? 8 : 0)
+    + (relationalFilters?.besoinEcoute ? 6 : 0)
+  );
+
+  // Surprise : ouverture à l'inattendu (moins les anti-surprises)
+  const anti =
+    (relationalFilters?.antiSurprisePublique ? 15 : 0)
+    + (relationalFilters?.antiSurprisePlanning ? 12 : 0)
+    + (relationalFilters?.antiSurpriseIntime ? 12 : 0);
+  const surprise = clamp01(
+    wSUR * 12
+    + (relationalFilters?.ouvertSurprise ? 20 : 0)
+    - anti
+    + 30
+  );
+
+  // Esthétique : lifestyle esthétique + premium
+  const esthetique = clamp01(
+    axisPos(getAxis(lifestyleAxes, 'esthetiqueFonctionnel')) * 0.5
+    + axisPos(getAxis(lifestyleAxes, 'premiumSimplicite')) * 0.3
+    + wCADC * 5
+  );
+
+  // Utilité : services + gestes + fonctionnel
+  const utilite = clamp01(
+    (wSER + wGES) * 8
+    + axisPos(-getAxis(lifestyleAxes, 'esthetiqueFonctionnel')) * 0.3
+  );
+
+  // Temps : expérience partagée + expérience>objet
+  const temps = clamp01(
+    wEXP * 12
+    + axisPos(getAxis(lifestyleAxes, 'experienceObjet')) * 0.35
+    + axisPos(-getAxis(temperamentAxes, 'energieSociale')) * 0.1
+  );
+
+  // Discrétion : réservé + anti-surprises publiques + conflit "évitant"
+  const conflitMode = getMode(temperamentModes, 'conflit');
+  const discretion = clamp01(
+    axisPos(getAxis(temperamentAxes, 'expressiviteReserve')) * 0.45
+    + (relationalFilters?.antiSurprisePublique ? 15 : 0)
+    + (relationalFilters?.antiSurpriseIntime ? 8 : 0)
+    + (conflitMode === 'évitant' || conflitMode === 'temporisateur' ? 8 : 0)
+    + Math.max(0, -getAxis(temperamentAxes, 'energieSociale')) * 0.1
+  );
+
+  return { precision, emotion, surprise, esthetique, utilite, temps, discretion };
+}
+
+// ─── Structured interests summary ─────────────────────────────────────────────
+
+const INTEREST_LABELS: Record<string, string> = {
+  lecture: 'Lecture', cuisine: 'Cuisine & gastronomie', sport: 'Sport',
+  musique: 'Musique', cinema: 'Ciné & séries', art: 'Art & culture',
+  voyage: 'Voyage', mode: 'Mode & beauté', tech: 'Tech & jeux',
+  nature: 'Nature & jardinage', bienetre: 'Bien-être',
+  deco: 'Déco & maison', vin: 'Vin & spiritueux',
+};
+
+function summarizeInterests(
+  interests: SingularityInput['interests'],
+): string[] {
+  if (!interests?.items || interests.items.length === 0) return [];
+  return interests.items
+    .filter(it => it.rank > 0)
+    .sort((a, b) => a.rank - b.rank)
+    .slice(0, 5)
+    .map(it => {
+      const label = INTEREST_LABELS[it.id] ?? it.id;
+      const detail = it.details && typeof it.details === 'object'
+        ? Object.entries(it.details)
+            .filter(([, v]) => v && (typeof v !== 'string' || v.trim().length > 0))
+            .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(', ') : String(v).slice(0, 60)}`)
+            .join(' · ')
+        : '';
+      return detail ? `${label} (${detail})` : label;
+    });
+}
 
 const DIM_IDEAL: Record<AttentionDim, string> = {
   MOT: "un message sincère et bien formulé, au bon moment",
@@ -367,6 +526,29 @@ export function computeProfileSynthesis(input: ProfileInput): ProfileSynthesisFa
     singularityContext.push(`peu savent que : ${singularity.peu_savent.trim().slice(0, 50)}`);
   }
 
+  // --- Style radar (deterministic 7-axis heptagon for the "Style attentionnel" viz) ---
+  const styleRadar = computeStyleRadar(
+    reception, temperamentAxes, lifestyleAxes, relationalFilters, temperamentModes,
+  );
+
+  // --- Raw texts to preserve tone in Claude prompt (never displayed brut) ---
+  const rawTexts = {
+    q17:               (relationalFilters?.q17Text ?? '').trim().slice(0, 300),
+    mobiliteSante:     (practicalInfo as Record<string, unknown> | null)?.mobilite_sante
+                         ? String((practicalInfo as Record<string, unknown>).mobilite_sante).trim().slice(0, 200)
+                         : '',
+    odeursDetestees:   (practicalInfo as Record<string, unknown> | null)?.odeurs_detestees
+                         ? String((practicalInfo as Record<string, unknown>).odeurs_detestees).trim().slice(0, 200)
+                         : '',
+    couleursMatieres:  (practicalInfo as Record<string, unknown> | null)?.couleurs_matieres
+                         ? String((practicalInfo as Record<string, unknown>).couleurs_matieres).trim().slice(0, 300)
+                         : '',
+    interestsFreeText: (singularity?.interests?.freeText ?? '').trim().slice(0, 200),
+  };
+
+  // --- Interests structured summary (13 categories × ranks × details) ---
+  const interestsSummary = summarizeInterests(singularity?.interests);
+
   return {
     topReceptionDims,
     topExpressionDims,
@@ -383,6 +565,9 @@ export function computeProfileSynthesis(input: ProfileInput): ProfileSynthesisFa
     besoinEspaceLabel: espace,
     lifestyleHighlights: lifestyleHighlights.slice(0, 4),
     singularityContext: singularityContext.slice(0, 4),
+    styleRadar,
+    rawTexts,
+    interestsSummary,
     hasTemperamentData,
     hasLifestyleData,
     hasPracticalData,
