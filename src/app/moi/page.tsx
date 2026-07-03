@@ -31,7 +31,7 @@ interface ProfileRow {
     prenom?: string;
     allergies?: string[]; regime?: string; alcool?: string;
     taille_vetements?: string; taille_chaussures?: string;
-    parfums?: string[];
+    parfums?: string[]; odeurs_detestees?: string;
     adresse_livraison?: string; animaux?: string;
     dates_importantes?: ImportantDate[];
   } | null;
@@ -134,7 +134,12 @@ function buildFacts(pi: ProfileRow["practical_info"]): ProfileSheetData["facts"]
     pi.regime ? (REGIME_FR[pi.regime] ?? pi.regime) : null,
     pi.alcool ? (ALCOOL_FR[pi.alcool] ?? pi.alcool) : null,
   ].filter(Boolean).join(" · ");
-  const parfums = (pi.parfums ?? []).map(p => PARFUM_FR[p] ?? p).join(", ");
+  const parfumsAimes = (pi.parfums ?? []).map(p => PARFUM_FR[p] ?? p).join(", ");
+  const odeurs = pi.odeurs_detestees?.trim();
+  const parfums = [
+    parfumsAimes || null,
+    odeurs ? (odeurs.length > 26 ? odeurs.slice(0, 26) + "…" : odeurs) : null,
+  ].filter(Boolean).join(" / ");
   const dates = pi.dates_importantes ?? [];
   const datesCles = dates.length > 0
     ? `${formatDateCle(dates[0])}${dates.length > 1 ? ` · +${dates.length - 1}` : ""}`

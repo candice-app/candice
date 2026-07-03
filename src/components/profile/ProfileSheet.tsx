@@ -167,19 +167,25 @@ function Chip({ children, variant }: { children: React.ReactNode; variant?: "pin
   );
 }
 
-function Card({ children, style }: { children: React.ReactNode; style?: React.CSSProperties }) {
+// .card maquette : pas de padding ni margin par défaut ; .mod ajoute padding 13/14 + mb 10
+function Card({ children, mod = true, style }: { children: React.ReactNode; mod?: boolean; style?: React.CSSProperties }) {
   return (
-    <div style={{ background: "#fff", border: `1px solid ${T.line}`, borderRadius: 16, boxShadow: T.shadow, padding: "13px 14px", marginBottom: 10, ...style }}>
+    <div style={{
+      background: "#fff", border: `1px solid ${T.line}`, borderRadius: 16, boxShadow: T.shadow,
+      ...(mod ? { padding: "13px 14px", marginBottom: 10 } : {}),
+      ...style,
+    }}>
       {children}
     </div>
   );
 }
 
 function ModCard({
-  icon, family, title, text, chips, warmChips, italic,
+  icon, family, title, text, chips, warmChips, italic, firstChipPine,
 }: {
   icon: string; family: keyof typeof PASTILLE; title: string;
   text?: string; chips?: string[]; warmChips?: string[]; italic?: boolean;
+  firstChipPine?: boolean; // maquette : seul « Cadeaux qui visent juste » a son 1er chip en pine
 }) {
   return (
     <Card>
@@ -195,7 +201,7 @@ function ModCard({
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 9 }}>
           {(chips ?? []).map((c, i) => {
             const isWarm = /^(éviter|déteste|peur)/i.test(c);
-            return <Chip key={i} variant={isWarm ? "warm" : i === 0 ? "pine" : undefined}>{c}</Chip>;
+            return <Chip key={i} variant={isWarm ? "warm" : firstChipPine && i === 0 ? "pine" : undefined}>{c}</Chip>;
           })}
           {(warmChips ?? []).map((c, i) => <Chip key={`w${i}`} variant="warm">{c}</Chip>)}
         </div>
@@ -297,7 +303,7 @@ const RADAR_LABEL_POS: Array<{ x: number; y: number; anchor: string }> = [
 function Radar({ radar }: { radar: StyleRadar }) {
   const pts = RADAR_AXES.map((a, i) => radarPoint(i, radar[a.key])).map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(" ");
   return (
-    <Card style={{ padding: 10, display: "flex", justifyContent: "center" }}>
+    <Card mod={false} style={{ padding: 10, display: "flex", justifyContent: "center" }}>
       <svg width="210" height="190" viewBox="0 0 200 200">
         <polygon points={heptagon(78)} fill="none" stroke="rgba(23,62,49,.1)" />
         <polygon points={heptagon(48)} fill="none" stroke="rgba(23,62,49,.08)" />
@@ -405,8 +411,10 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
       <Card style={{ borderStyle: "dashed", boxShadow: "none" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <span style={{ fontSize: 12, color: T.ink2 }}>{label}</span>
-          <Link href={editHref} style={{ fontSize: 11.5, fontWeight: 600, color: T.pine, whiteSpace: "nowrap", textDecoration: "none" }}>
-            Affiner avec Candice →
+          <Link href={editHref} style={{ padding: "13px 4px", margin: "-13px -4px", textDecoration: "none", display: "inline-flex", flexShrink: 0 }}>
+            <span style={{ fontSize: 11.5, fontWeight: 600, color: T.pine, whiteSpace: "nowrap" }}>
+              Affiner avec Candice →
+            </span>
           </Link>
         </div>
       </Card>
@@ -446,22 +454,31 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
           </div>
           {show("header_actions").shown && (
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <Link href={editHref} style={{ fontSize: 11.5, border: "1px solid rgba(255,255,255,.4)", color: "#fff", padding: "6px 11px", borderRadius: 999, textDecoration: "none" }}>
-                Modifier
+              {/* zone de tap ≥44px (padding transparent + marge négative) — visuel maquette inchangé */}
+              <Link href={editHref} style={{ padding: "9px 4px", margin: "-9px -4px", textDecoration: "none", display: "inline-flex" }}>
+                <span style={{ fontSize: 11.5, border: "1px solid rgba(255,255,255,.4)", color: "#fff", padding: "6px 11px", borderRadius: 999 }}>
+                  Modifier
+                </span>
               </Link>
-              <Link href="/parametres" style={{ width: 32, height: 32, borderRadius: 999, border: "1px solid rgba(255,255,255,.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, stroke: "#fff", fill: "none", strokeWidth: 1.6 }}>{ICONS.gear}</svg>
+              <Link href="/parametres" aria-label="Réglages" style={{ padding: 6, margin: -6, display: "inline-flex" }}>
+                <span style={{ width: 32, height: 32, borderRadius: 999, border: "1px solid rgba(255,255,255,.3)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg viewBox="0 0 24 24" style={{ width: 16, height: 16, stroke: "#fff", fill: "none", strokeWidth: 1.6 }}>{ICONS.gear}</svg>
+                </span>
               </Link>
             </div>
           )}
         </div>
         {show("header_share_chips").shown && (
           <div style={{ display: "flex", gap: 7, marginTop: 12, position: "relative", flexWrap: "wrap" }}>
-            <Link href="/moi/partage/apercu" style={{ fontSize: 11, color: "#fff", background: "rgba(255,255,255,.14)", padding: "5px 11px", borderRadius: 999, textDecoration: "none" }}>
-              Voir ma fiche partagée
+            <Link href="/moi/partage/apercu" style={{ padding: "10px 3px", margin: "-10px -3px", textDecoration: "none", display: "inline-flex" }}>
+              <span style={{ fontSize: 11, color: "#fff", background: "rgba(255,255,255,.14)", padding: "5px 11px", borderRadius: 999 }}>
+                Voir ma fiche partagée
+              </span>
             </Link>
-            <Link href="/moi/partage" style={{ fontSize: 11, color: T.champ, background: "rgba(255,255,255,.12)", padding: "5px 11px", borderRadius: 999, textDecoration: "none" }}>
-              Partager →
+            <Link href="/moi/partage" style={{ padding: "10px 3px", margin: "-10px -3px", textDecoration: "none", display: "inline-flex" }}>
+              <span style={{ fontSize: 11, color: T.champ, background: "rgba(255,255,255,.12)", padding: "5px 11px", borderRadius: 999 }}>
+                Partager →
+              </span>
             </Link>
           </div>
         )}
@@ -485,7 +502,7 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
         {show("donut").shown && (data.donutData.length > 0 ? (
           <>
             <DivTxt>{show("donut").thirdPerson ? "Son langage d'attention" : "Ton langage d'attention"}</DivTxt>
-            <Card style={{ padding: 0 }}>
+            <Card mod={false}>
               <Donut data={data.donutData} centerLabel={data.donutCenterLabel} />
             </Card>
           </>
@@ -575,7 +592,8 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
               return (
                 <ModCard key={c.section} icon={c.icon} family={c.family} title={tt(c.section, c.title)}
                   text={t(c.section, sec(c.section)?.text) ?? undefined}
-                  chips={sec(c.section)?.chips} />
+                  chips={sec(c.section)?.chips}
+                  firstChipPine={c.section === "gifts"} />
               );
             })}
           </>
@@ -647,22 +665,28 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                   visible par toi seul · réglable au partage
                 </div>
               )}
-              {([
-                ["facts_tailles",     "Vêtements / chaussures",       data.facts.tailles],
-                ["facts_alimentaire", "Allergies",                    data.facts.allergies],
-                ["facts_alimentaire", "Régime · alcool",              data.facts.regimeAlcool],
-                ["facts_parfums",     "Parfums aimés / détestés",     data.facts.parfums],
-                ["facts_adresse",     "Adresse de livraison",         data.facts.adresseRenseignee ? "renseignée ✓" : undefined],
-                ["facts_animaux",     "Animaux",                      data.facts.animaux],
-                ["facts_dates",       "Dates clés",                   data.facts.datesCles],
-              ] as Array<[SectionKey, string, string | undefined]>)
-                .filter(([s, , v]) => show(s).shown && v)
-                .map(([, label, value], i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: `1px solid ${T.line2}`, fontSize: 12.5 }}>
+              {(() => {
+                const rows = ([
+                  ["facts_tailles",     "Vêtements / chaussures",       data.facts.tailles],
+                  ["facts_alimentaire", "Allergies",                    data.facts.allergies],
+                  ["facts_alimentaire", "Régime · alcool",              data.facts.regimeAlcool],
+                  ["facts_parfums",     "Parfums aimés / détestés",     data.facts.parfums],
+                  ["facts_adresse",     "Adresse de livraison",         data.facts.adresseRenseignee ? "renseignée ✓" : undefined],
+                  ["facts_animaux",     "Animaux",                      data.facts.animaux],
+                  ["facts_dates",       "Dates clés",                   data.facts.datesCles],
+                ] as Array<[SectionKey, string, string | undefined]>)
+                  .filter(([s, , v]) => show(s).shown && v);
+                return rows.map(([, label, value], i) => (
+                  <div key={i} style={{
+                    display: "flex", justifyContent: "space-between", alignItems: "center",
+                    padding: "9px 0", fontSize: 12.5,
+                    borderBottom: i === rows.length - 1 ? "none" : `1px solid ${T.line2}`, // .fact:last-child
+                  }}>
                     <span style={{ color: T.ink2 }}>{label}</span>
                     <span style={{ color: T.ink, fontWeight: 500, textAlign: "right" }}>{value}</span>
                   </div>
-                ))}
+                ));
+              })()}
               {show("art9").shown && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 9, paddingTop: 10, borderTop: `1px dashed ${T.line}` }}>
                   <div style={{ fontSize: 11.5, color: T.ink2 }}>
@@ -674,8 +698,10 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                       <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, stroke: T.pine, fill: "none", strokeWidth: 1.6 }}>{ICONS.eye}</svg> Masquer
                     </span>
                   ) : (
-                    <Link href={editHref} style={{ fontSize: 10.5, color: T.pine, border: `1px solid ${T.line}`, borderRadius: 999, padding: "4px 10px", textDecoration: "none" }}>
-                      Compléter →
+                    <Link href={editHref} style={{ padding: "11px 4px", margin: "-11px -4px", textDecoration: "none", display: "inline-flex", flexShrink: 0 }}>
+                      <span style={{ fontSize: 10.5, color: T.pine, border: `1px solid ${T.line}`, borderRadius: 999, padding: "4px 10px" }}>
+                        Compléter →
+                      </span>
                     </Link>
                   )}
                 </div>
@@ -703,8 +729,10 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
             <p style={{ fontSize: 11.5, color: T.ink2, lineHeight: 1.45 }}>
               Plus ton profil est complet, plus Candice vise juste pour toi et tes proches.
             </p>
-            <Link href="/moi/discovery?mode=full" style={{ marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6, background: T.pine, color: "#fff", fontSize: 11.5, fontWeight: 600, padding: "7px 13px", borderRadius: 999, textDecoration: "none" }}>
-              Répondre <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, stroke: T.champ, fill: "none", strokeWidth: 1.8 }}>{ICONS.arrow}</svg>
+            <Link href="/moi/discovery?mode=full" style={{ marginTop: 10, padding: "8px 3px", margin: "10px -3px -8px", textDecoration: "none", display: "inline-flex" }}>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: T.pine, color: "#fff", fontSize: 11.5, fontWeight: 600, padding: "7px 13px", borderRadius: 999 }}>
+                Répondre <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, stroke: T.champ, fill: "none", strokeWidth: 1.8 }}>{ICONS.arrow}</svg>
+              </span>
             </Link>
           </div>
         )}
