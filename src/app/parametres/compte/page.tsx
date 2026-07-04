@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import DashboardShell from "@/components/layout/DashboardShell";
 import CompteActions from "./CompteActions";
+import HandleEditor from "./HandleEditor";
 
 type PracticalInfo = {
   prenom?: string;
@@ -17,7 +18,7 @@ export default async function ComptePage() {
 
   const { data: profile } = await supabase
     .from("my_profile")
-    .select("phone, practical_info, date_de_naissance")
+    .select("phone, practical_info, date_de_naissance, handle")
     .eq("user_id", user.id)
     .maybeSingle();
 
@@ -54,6 +55,9 @@ export default async function ComptePage() {
               </p>
             </div>
           )}
+
+          {/* Identifiant — choix / modification */}
+          <HandleEditor initialHandle={(profile?.handle as string | null) ?? null} />
 
           {/* Email — lecture seule */}
           <div style={{ borderBottom: "0.5px solid var(--line)", padding: "16px 0" }}>

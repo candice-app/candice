@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Wordmark from "@/components/presence/Wordmark";
+import { normalizeHandle, handleFormatError } from "@/lib/handle";
 
 const BG = "var(--canvas)";
 const WHITE = "var(--white)";
@@ -41,6 +42,7 @@ function RegisterForm() {
   const supabase = createClient();
 
   const [name, setName] = useState("");
+  const [handle, setHandle] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -48,6 +50,7 @@ function RegisterForm() {
 
   const [globalError, setGlobalError] = useState("");
   const [isDuplicate, setIsDuplicate] = useState(false);
+  const [handleError, setHandleError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -61,11 +64,16 @@ function RegisterForm() {
     e.preventDefault();
 
     // Clear all errors
-    setEmailError(""); setPasswordError(""); setPhoneError("");
+    setEmailError(""); setPasswordError(""); setPhoneError(""); setHandleError("");
     setTermsError(""); setGlobalError(""); setIsDuplicate(false);
 
     let hasError = false;
 
+    const normalizedHandle = normalizeHandle(handle);
+    const handleFormatMsg = handleFormatError(normalizedHandle);
+    if (handleFormatMsg) {
+      setHandleError(handleFormatMsg); hasError = true;
+    }
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setEmailError("Adresse email invalide."); hasError = true;
     }
@@ -86,6 +94,24 @@ function RegisterForm() {
     if (hasError) return;
 
     setLoading(true);
+
+    // Disponibilité de l'identifiant AVANT la création du compte
+    try {
+      const checkRes = await fetch("/api/handle/check", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ handle: normalizedHandle }),
+      });
+      const check = await checkRes.json() as { available: boolean; error?: string };
+      if (!check.available) {
+        setHandleError(check.error ?? "Cet identifiant est déjà pris.");
+        setLoading(false);
+        return;
+      }
+    } catch {
+      // Vérification indisponible : on laisse la création continuer,
+      // l'unicité reste garantie en base (index) au moment de l'écriture.
+    }
 
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
@@ -114,6 +140,16 @@ function RegisterForm() {
         return;
       }
     }
+
+    // Enregistrer l'identifiant (et le téléphone) sur my_profile.
+    // L'identifiant passe par l'API (validation + unicité serveur) ; en cas
+    // de course perdue, le compte reste valide et l'identifiant se choisit
+    // dans Paramètres → Mon compte.
+    await fetch("/api/handle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ handle: normalizedHandle }),
+    }).catch(() => {});
 
     // Save phone to my_profile — non-blocking
     if (phone.trim()) {
@@ -224,6 +260,39 @@ function RegisterForm() {
                 placeholder="Alex"
                 autoComplete="given-name"
               />
+            </div>
+
+            {/* Identifiant */}
+            <div style={{ marginBottom: 4 }}>
+              <div style={LABEL_STYLE}>
+                <span>Identifiant</span>
+                <span style={{ color: PINE, fontWeight: 700, fontSize: 11 }}>*</span>
+              </div>
+              <div style={{ position: "relative" }}>
+                <span style={{
+                  position: "absolute", left: 16, top: "50%", transform: "translateY(-50%)",
+                  fontSize: 16, fontWeight: 300, color: "var(--ink-3)", pointerEvents: "none",
+                }}>@</span>
+                <input
+                  id="handle"
+                  className="reg-input"
+                  type="text"
+                  value={handle}
+                  onChange={(e) => { setHandle(e.target.value.toLowerCase()); if (handleError) setHandleError(""); }}
+                  placeholder="alex.dupont"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  spellCheck={false}
+                  style={{ paddingLeft: 34 }}
+                />
+              </div>
+              <div style={{ minHeight: 28 }}>
+                {handleError
+                  ? <p style={ERR_STYLE}>{handleError}</p>
+                  : <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", margin: "6px 0 0", lineHeight: 1.4 }}>
+                      Unique, comme sur Instagram — c&apos;est lui que tes proches saisiront pour te trouver.
+                    </p>}
+              </div>
             </div>
 
             {/* Email */}
