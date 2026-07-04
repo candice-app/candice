@@ -7,7 +7,7 @@ import {
   VISIBILITY_MATRIX,
   checkableSections,
   type SectionKey,
-} from "@/lib/profile/visibility";
+} from "./visibility";
 
 export interface ShareItem {
   keys: SectionKey[];
