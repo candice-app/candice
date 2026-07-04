@@ -102,7 +102,7 @@ async function notifyTarget(
   await resend.emails.send({
     from: FROM_EMAIL,
     to: target.email,
-    subject: `${requesterFirstName} veut voir ton profil ✦`,
+    subject: `${requesterFirstName} veut voir ton profil`,
     html: buildEmail(requesterFirstName, targetFirstName, consentId),
   });
 }
