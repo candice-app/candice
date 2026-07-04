@@ -78,7 +78,6 @@ export type SectionKey =
   | "edit_button"         // bouton "Affiner mon profil"
   | "bottom_nav"
   | "wishlist"            // JAMAIS côté tiers — ne ressort que fondue dans une idée Candice
-  | "not_shared_notice"   // ligne discrète "X n'a pas tout partagé"
   | "blind_message";      // message du mode aveugle
 
 export const ALL_SECTION_KEYS: SectionKey[] = [
@@ -91,7 +90,7 @@ export const ALL_SECTION_KEYS: SectionKey[] = [
   "facts_tailles", "facts_alimentaire", "facts_parfums", "facts_adresse",
   "facts_animaux", "facts_dates", "facts_mobilite", "art9", "constraints_row",
   "discovery", "edit_button", "bottom_nav", "wishlist",
-  "not_shared_notice", "blind_message",
+  "blind_message",
 ];
 
 export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibility>> = {
@@ -131,7 +130,6 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     edit_button:        "visible",
     bottom_nav:         "visible",
     wishlist:           "hidden",  // vit sur son propre écran, pas sur la fiche
-    not_shared_notice:  "hidden",
     blind_message:      "hidden",
   },
 
@@ -171,7 +169,6 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     edit_button:        "hidden",
     bottom_nav:         "hidden",
     wishlist:           "never",   // JAMAIS — fondue dans une idée Candice sans nommer la source
-    not_shared_notice:  "visible", // ligne discrète, jamais la liste de ce qui manque
     blind_message:      "hidden",
   },
 
@@ -211,7 +208,6 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     edit_button:        "hidden",
     bottom_nav:         "visible", // dans l'app du pilote
     wishlist:           "never",   // la wishlist du proche n'apparaît que fondue dans les idées
-    not_shared_notice:  "hidden",
     blind_message:      "hidden",
   },
 
@@ -251,7 +247,6 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     edit_button:        "never",
     bottom_nav:         "never",
     wishlist:           "never",
-    not_shared_notice:  "never",
     blind_message:      "visible", // seul contenu du mode aveugle
   },
 };
@@ -263,6 +258,12 @@ export interface ResolvedVisibility {
   shown: boolean;
   /** Le texte doit-il être converti à la 3e personne ? */
   thirdPerson: boolean;
+  /**
+   * Section cochable (filtered_on/off) refusée au partage → placeholder
+   * « non partagé » à son emplacement exact (invite_filtre).
+   * Jamais true pour hidden/never : on ne révèle pas leur existence.
+   */
+  notShared: boolean;
 }
 
 /**
@@ -287,12 +288,12 @@ export function resolveVisibility(
 
   switch (v) {
     case "visible":
-      return { shown: true, thirdPerson: false };
+      return { shown: true, thirdPerson: false, notShared: false };
     case "third_person":
-      return { shown: true, thirdPerson: true };
+      return { shown: true, thirdPerson: true, notShared: false };
     case "socle":
       // Toujours visible, même si absent des sections cochées
-      return { shown: true, thirdPerson: true };
+      return { shown: true, thirdPerson: true, notShared: false };
     case "filtered_on":
     case "filtered_off": {
       // Intersection : la case cochée décide, dans les limites de la matrice.
@@ -300,12 +301,13 @@ export function resolveVisibility(
       const chosen = sharedSections
         ? sharedSections.includes(section)
         : v === "filtered_on";
-      return { shown: chosen, thirdPerson: true };
+      return { shown: chosen, thirdPerson: true, notShared: !chosen };
     }
     case "hidden":
     case "never":
       // Jamais rendu — même coché par erreur (intersection, pas union).
-      return { shown: false, thirdPerson: false };
+      // Et jamais de placeholder : leur existence n'est pas révélée.
+      return { shown: false, thirdPerson: false, notShared: false };
   }
 }
 

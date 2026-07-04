@@ -451,6 +451,62 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
       </Card>
     ) : null;
 
+  // ── Placeholders « non partagé » par section (invite_filtre) ─────────────
+  // Option A validée : microcopy complet sur le PREMIER placeholder rendu,
+  // version courte sur les suivants. L'évaluation JSX (haut → bas) suit
+  // l'ordre visuel de la fiche, le compteur est donc fiable.
+  let notSharedSeq = 0;
+  const notSharedBody = () => {
+    const full = notSharedSeq === 0;
+    notSharedSeq += 1;
+    return (
+      <p style={{ fontSize: 13, color: T.ink3, fontStyle: "italic", lineHeight: 1.55 }}>
+        {data.firstName} a choisi de ne pas partager cette section avec toi.
+        {full && <>{" "}Candice la connaît et s&apos;en sert pour te faire les recommandations les plus justes.</>}
+      </p>
+    );
+  };
+  // Carte placeholder : fond neutre, sans ombre, sans pastille, rien de cliquable.
+  const notSharedCard = (s: SectionKey, title?: string) =>
+    show(s).notShared ? (
+      <Card style={{ background: "#FBFBF7", boxShadow: "none" }}>
+        {title && <div style={{ fontWeight: 600, fontSize: 15, color: T.ink2, marginBottom: 5 }}>{title}</div>}
+        {notSharedBody()}
+      </Card>
+    ) : null;
+  // Groupe titré (radar, insights, tempérament, art de vivre) : DivTxt + carte.
+  const notSharedGroup = (s: SectionKey, label: string, gold?: boolean) =>
+    show(s).notShared ? (
+      <>
+        <DivTxt gold={gold}>{label}</DivTxt>
+        {notSharedCard(s)}
+      </>
+    ) : null;
+  // Titre de card en 3e personne (un placeholder est toujours une vue tierce)
+  const tt3 = (title: string): string =>
+    title.replace(/\bTes\b/g, "Ses").replace(/\bTon\b/g, "Son").replace(/\bTa\b/g, "Sa")
+      .replace(/\btoi\b/g, data.gender === "feminine" ? "elle" : "lui");
+
+  // Faits pratiques : sections cochables du bloc (adresse/art9 = never, exclus)
+  const FACTS_FILTERABLE: SectionKey[] = [
+    "facts_tailles", "facts_alimentaire", "facts_parfums",
+    "facts_animaux", "facts_dates", "facts_mobilite",
+  ];
+  // Placeholder UNIQUE pour le bloc (validé) : si partiel, les partagées
+  // s'affichent et un placeholder ferme le bloc.
+  const factsNotShared = FACTS_FILTERABLE.some(s => show(s).notShared);
+  const factsRows = ([
+    ["facts_tailles",     "Vêtements / chaussures",       data.facts.tailles],
+    ["facts_alimentaire", "Allergies",                    data.facts.allergies],
+    ["facts_alimentaire", "Régime · alcool",              data.facts.regimeAlcool],
+    ["facts_parfums",     "Parfums aimés / détestés",     data.facts.parfums],
+    ["facts_adresse",     "Adresse de livraison",         data.facts.adresseRenseignee ? "renseignée ✓" : undefined],
+    ["facts_animaux",     "Animaux",                      data.facts.animaux],
+    ["facts_mobilite",    "Mobilité / santé",             data.facts.mobilite],
+    ["facts_dates",       "Dates clés",                   data.facts.datesCles],
+  ] as Array<[SectionKey, string, string | undefined]>)
+    .filter(([s, , v]) => show(s).shown && v);
+
   const lead = show("lead").thirdPerson
     ? (data.summaryThirdPerson ?? (data.summary ? to3rdPerson(data.summary, data.gender) : null))
     : data.summary;
@@ -551,11 +607,13 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
             <Radar radar={data.styleRadar} />
           </>
         )}
+        {notSharedGroup("radar", "Son style attentionnel")}
         {show("what_touches").shown && (hasSec("what_touches") ? (
           <ModCard icon="touch" family="pine" title={tt("what_touches", "Ce qui te touche")}
             text={t("what_touches", sec("what_touches")?.text) ?? undefined}
             chips={sec("what_touches")?.chips} />
         ) : emptyCta("Précise ce qui te touche vraiment.", sectionCtaHref("what_touches", editHref)))}
+        {notSharedCard("what_touches", data.gender === "feminine" ? "Ce qui la touche" : "Ce qui le touche")}
 
         {/* ── Ce que Candice a compris ── */}
         {show("insights").shown && data.insights.length > 0 && (
@@ -573,6 +631,7 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
             ))}
           </>
         )}
+        {notSharedGroup("insights", "Ce que Candice a compris", true)}
 
         {/* ── Tempérament : 9 axes + modes ── */}
         {show("temperament_axes").shown && data.temperamentAxes && (
@@ -598,6 +657,9 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
             </Card>
           </>
         )}
+        {/* temperament_modes vit DANS la card tempérament : le placeholder
+            du groupe couvre l'ensemble, pas de placeholder dédié aux modes */}
+        {notSharedGroup("temperament_axes", "Son tempérament")}
 
         {/* ── Art de vivre : 6 axes ── */}
         {show("lifestyle_axes").shown && data.lifestyleAxes && (
@@ -612,12 +674,14 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
             </Card>
           </>
         )}
+        {notSharedGroup("lifestyle_axes", "Son art de vivre")}
 
         {/* ── Ce qui te fait vibrer ── */}
-        {THEME_CARDS.some(c => show(c.section).shown) && (
+        {THEME_CARDS.some(c => show(c.section).shown || show(c.section).notShared) && (
           <>
             <DivTxt>{show("gifts").thirdPerson ? "Ce qui lui fait vibrer" : "Ce qui te fait vibrer"}</DivTxt>
             {THEME_CARDS.map(c => {
+              if (show(c.section).notShared) return <span key={c.section}>{notSharedCard(c.section, tt3(c.title))}</span>;
               if (!show(c.section).shown) return null;
               if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>;
               return (
@@ -631,7 +695,8 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
         )}
 
         {/* ── Ton univers ── */}
-        {(show("brands").shown || UNIVERS_CARDS.some(c => show(c.section).shown)) && (
+        {(show("brands").shown || show("brands").notShared
+          || UNIVERS_CARDS.some(c => show(c.section).shown || show(c.section).notShared)) && (
           <>
             <DivTxt>{show("brands").thirdPerson ? "Son univers" : "Ton univers"}</DivTxt>
             {show("brands").shown && (((data.entities?.brands?.length ?? 0) > 0 || hasSec("brands")) ? (
@@ -651,7 +716,9 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                 </div>
               </Card>
             ) : emptyCta("Ajoute les marques et lieux où tu te sens bien.", sectionCtaHref("brands", editHref)))}
+            {notSharedCard("brands", "Marques & lieux où il/elle se sent bien")}
             {UNIVERS_CARDS.map(c => {
+              if (show(c.section).notShared) return <span key={c.section}>{notSharedCard(c.section, tt3(c.title))}</span>;
               if (!show(c.section).shown) return null;
               if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>;
               return (
@@ -689,7 +756,8 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
 
         {/* ── Infos pratiques (faits) ── */}
         {(show("facts_tailles").shown || show("facts_alimentaire").shown || show("facts_parfums").shown
-          || show("facts_adresse").shown || show("facts_animaux").shown || show("facts_dates").shown || show("art9").shown) && (
+          || show("facts_adresse").shown || show("facts_animaux").shown || show("facts_dates").shown || show("art9").shown
+          || factsNotShared) && (
           <>
             <DivTxt>Infos pratiques</DivTxt>
             <Card>
@@ -700,17 +768,7 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                 </div>
               )}
               {(() => {
-                const rows = ([
-                  ["facts_tailles",     "Vêtements / chaussures",       data.facts.tailles],
-                  ["facts_alimentaire", "Allergies",                    data.facts.allergies],
-                  ["facts_alimentaire", "Régime · alcool",              data.facts.regimeAlcool],
-                  ["facts_parfums",     "Parfums aimés / détestés",     data.facts.parfums],
-                  ["facts_adresse",     "Adresse de livraison",         data.facts.adresseRenseignee ? "renseignée ✓" : undefined],
-                  ["facts_animaux",     "Animaux",                      data.facts.animaux],
-                  ["facts_mobilite",    "Mobilité / santé",             data.facts.mobilite],
-                  ["facts_dates",       "Dates clés",                   data.facts.datesCles],
-                ] as Array<[SectionKey, string, string | undefined]>)
-                  .filter(([s, , v]) => show(s).shown && v);
+                const rows = factsRows;
                 return rows.map(([key, label, value], i) => {
                   const rowStyle: React.CSSProperties = {
                     display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -735,6 +793,15 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                   );
                 });
               })()}
+              {/* Placeholder unique du bloc (validé) : ferme le bloc si partiel,
+                  seul contenu de la card si rien n'est partagé */}
+              {factsNotShared && (
+                <div style={factsRows.length > 0
+                  ? { marginTop: 9, paddingTop: 10, borderTop: `1px dashed ${T.line}` }
+                  : undefined}>
+                  {notSharedBody()}
+                </div>
+              )}
               {show("art9").shown && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 9, paddingTop: 10, borderTop: `1px dashed ${T.line}` }}>
                   <div style={{ fontSize: 13, color: T.ink2 }}>
@@ -753,14 +820,6 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
               )}
             </Card>
           </>
-        )}
-
-        {/* ── Ligne "non partagé" discrète (invite_filtre) ── */}
-        {show("not_shared_notice").shown && (
-          <p style={{ fontSize: 11.5, color: T.ink3, fontStyle: "italic", textAlign: "center", margin: "18px 0 4px", lineHeight: 1.5 }}>
-            {data.firstName} a choisi de ne pas tout partager avec toi. Candice connaît le reste
-            et s&apos;en sert pour te faire les recommandations les plus justes.
-          </p>
         )}
 
         {/* ── Discovery ── */}

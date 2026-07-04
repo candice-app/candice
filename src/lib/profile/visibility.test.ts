@@ -47,7 +47,7 @@ describe("pilote — tout visible sauf hors-écran", () => {
     constraints_row: false, // redondant avec facts_alimentaire
     discovery: true, edit_button: true, bottom_nav: true,
     wishlist: false,        // vit sur son propre écran
-    not_shared_notice: false, blind_message: false,
+    blind_message: false,
   };
 
   for (const section of ALL_SECTION_KEYS) {
@@ -80,7 +80,7 @@ describe("invite_filtre — défauts (aucun choix enregistré)", () => {
     facts_mobilite: false, art9: false,
     constraints_row: false,
     discovery: false, edit_button: false, bottom_nav: false,
-    wishlist: false, not_shared_notice: true, blind_message: false,
+    wishlist: false, blind_message: false,
   };
 
   for (const section of ALL_SECTION_KEYS) {
@@ -131,8 +131,47 @@ describe("invite_filtre — règle d'INTERSECTION (jamais union)", () => {
   it("tout texte visible côté invite est en 3e personne", () => {
     for (const section of ALL_SECTION_KEYS) {
       const r = resolveVisibility("invite_filtre", section, ALL_SECTION_KEYS);
-      if (r.shown && !["header_identity", "not_shared_notice"].includes(section)) {
+      if (r.shown && section !== "header_identity") {
         expect(r.thirdPerson, `${section} devrait être en 3e personne`).toBe(true);
+      }
+    }
+  });
+});
+
+describe("invite_filtre — placeholders « non partagé » (notShared)", () => {
+  it("une section cochable refusée porte notShared, une cochée non", () => {
+    const onlyGifts: SectionKey[] = ["gifts"];
+    expect(resolveVisibility("invite_filtre", "radar", onlyGifts).notShared).toBe(true);
+    expect(resolveVisibility("invite_filtre", "avoid", onlyGifts).notShared).toBe(true);
+    expect(resolveVisibility("invite_filtre", "gifts", onlyGifts).notShared).toBe(false);
+  });
+
+  it("hidden/never n'ont JAMAIS de placeholder (existence non révélée)", () => {
+    const nothingChecked: SectionKey[] = [];
+    for (const s of ["wishlist", "art9", "facts_adresse", "discovery", "edit_button", "constraints_row", "header_ring"] as SectionKey[]) {
+      expect(resolveVisibility("invite_filtre", s, nothingChecked).notShared, `${s} ne doit pas avoir de placeholder`).toBe(false);
+    }
+  });
+
+  it("le socle n'est jamais notShared (toujours visible)", () => {
+    const nothingChecked: SectionKey[] = [];
+    for (const s of ["lead", "topchips", "donut"] as SectionKey[]) {
+      const r = resolveVisibility("invite_filtre", s, nothingChecked);
+      expect(r.shown).toBe(true);
+      expect(r.notShared).toBe(false);
+    }
+  });
+
+  it("sans choix enregistré, seuls les filtered_off portent le placeholder", () => {
+    expect(resolveVisibility("invite_filtre", "temperament_axes").notShared).toBe(true);
+    expect(resolveVisibility("invite_filtre", "points_fixes").notShared).toBe(true);
+    expect(resolveVisibility("invite_filtre", "radar").notShared).toBe(false);
+  });
+
+  it("hors invite_filtre, jamais de notShared", () => {
+    for (const view of ["pilote", "contact_consulte", "aveugle"] as ProfileView[]) {
+      for (const section of ALL_SECTION_KEYS) {
+        expect(resolveVisibility(view, section, []).notShared, `${view} × ${section}`).toBe(false);
       }
     }
   });
