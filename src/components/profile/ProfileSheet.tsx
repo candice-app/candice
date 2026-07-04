@@ -46,11 +46,12 @@ export interface ProfileSheetData {
     adresseRenseignee?: boolean;
     animaux?: string;
     datesCles?: string;            // « anniv. 14 mars · +2 »
+    mobilite?: string;             // « genou fragile · à prendre en compte » — TOUJOURS avec intensité
   };
   art9Filled: boolean;
 
-  // Rangée sécurité contact_consulte (allergies + régime uniquement)
-  constraints?: { allergies?: string; regime?: string };
+  // Rangée sécurité contact_consulte (allergies + régime + mobilité nuancée)
+  constraints?: { allergies?: string; regime?: string; mobilite?: string };
 
   // Discovery (pilote uniquement)
   discoveryAvailable: boolean;
@@ -323,25 +324,32 @@ function Radar({ radar }: { radar: StyleRadar }) {
 
 // ─── Sections d'affichage nommées ────────────────────────────────────────────
 
+// Chantier 3.1 — règle : UN CURSEUR = UN ARBITRAGE RÉEL (choisir l'un =
+// renoncer à l'autre). Ce qui peut coexister devient un tag, jamais un axe.
+// Le scoring sous-jacent (my_profile.*_axes) reste intact — seul l'affichage
+// est filtré/reformulé.
 const TEMPERAMENT_AXES_DISPLAY: Array<{ key: string; left: string; right: string }> = [
   { key: "energieSociale",      left: "Introvertie",             right: "Sociable" },
   { key: "espaceProsimite",     left: "Besoin d'espace",         right: "À l'aise en proximité" },
-  { key: "spontaneiteControle", left: "Spontanée",               right: "Planifie" },
+  { key: "spontaneiteControle", left: "Spontanée",               right: "Organisée" },
   { key: "communicationStyle",  left: "Directe",                 right: "Nuancée" },
   { key: "expressiviteReserve", left: "Expressive",              right: "Réservée" },
   { key: "stabiliteNouveaute",  left: "Attachée aux habitudes",  right: "Ouverte au nouveau" },
   { key: "sensibiliteDetails",  left: "Vision d'ensemble",       right: "Attentive aux détails" },
   { key: "exigenceStanding",    left: "Simplicité",              right: "Raffinement" },
-  { key: "rapportTemps",        left: "Flexible",                right: "Ponctuelle" },
+  // rapportTemps retiré de l'affichage (doublon de lecture avec
+  // spontaneiteControle « Spontanée ↔ Organisée ») — 8 axes nets.
 ];
 
 const LIFESTYLE_AXES_DISPLAY: Array<{ key: string; left: string; right: string }> = [
-  { key: "foodie",                left: "Pragmatique",  right: "Curieuse en gastronomie" },
-  { key: "premiumSimplicite",     left: "Simplicité",   right: "Raffinement" },
-  { key: "experienceObjet",       left: "Objets",       right: "Expériences" },
-  { key: "esthetiqueFonctionnel", left: "Fonctionnel",  right: "Esthétique" },
-  { key: "aventureConfort",       left: "Confort",      right: "Aventure" },
-  { key: "authenticiteLuxe",      left: "Luxe",         right: "Authenticité" },
+  { key: "foodie",                left: "Repas pratique",   right: "Expérience gastronomique" },
+  // premiumSimplicite retiré : doublon avec le tempérament (Simplicité ↔ Raffinement).
+  { key: "experienceObjet",       left: "Objets",           right: "Expériences" },
+  { key: "esthetiqueFonctionnel", left: "L'utile d'abord",  right: "Le beau d'abord" },
+  { key: "aventureConfort",       left: "Confort",          right: "Aventure" },
+  // authenticiteLuxe supprimé : luxe et authenticité coexistent (pas un
+  // arbitrage) — la sensibilité au luxe devient un tag d'analyse dans
+  // « Ce qui te fait vibrer » (règle ajoutée au prompt).
 ];
 
 const THEME_CARDS: Array<{ section: SectionKey; icon: string; family: keyof typeof PASTILLE; title: string }> = [
@@ -656,22 +664,25 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
         )}
 
         {/* ── Contraintes à respecter (contact_consulte seulement) ── */}
-        {show("constraints_row").shown && (data.constraints?.allergies || data.constraints?.regime) && (
+        {show("constraints_row").shown && (data.constraints?.allergies || data.constraints?.regime || data.constraints?.mobilite) && (
           <>
             <DivTxt>Contraintes à respecter</DivTxt>
             <Card>
-              {data.constraints?.allergies && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: `1px solid ${T.line2}`, fontSize: 14 }}>
-                  <span style={{ color: T.ink2 }}>Allergies</span>
-                  <span style={{ color: T.ink, fontWeight: 500 }}>{data.constraints.allergies}</span>
-                </div>
-              )}
-              {data.constraints?.regime && (
-                <div style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", fontSize: 14 }}>
-                  <span style={{ color: T.ink2 }}>Régime</span>
-                  <span style={{ color: T.ink, fontWeight: 500 }}>{data.constraints.regime}</span>
-                </div>
-              )}
+              {(() => {
+                const rows = ([
+                  ["Allergies", data.constraints?.allergies],
+                  ["Régime",    data.constraints?.regime],
+                  // Mobilité : toujours avec son intensité (« gêne légère » /
+                  // « à prendre en compte ») — jamais un binaire.
+                  ["Mobilité",  data.constraints?.mobilite],
+                ] as Array<[string, string | undefined]>).filter(([, v]) => v);
+                return rows.map(([label, value], i) => (
+                  <div key={label} style={{ display: "flex", justifyContent: "space-between", padding: "11px 0", borderBottom: i === rows.length - 1 ? "none" : `1px solid ${T.line2}`, fontSize: 14 }}>
+                    <span style={{ color: T.ink2 }}>{label}</span>
+                    <span style={{ color: T.ink, fontWeight: 500, textAlign: "right" }}>{value}</span>
+                  </div>
+                ));
+              })()}
             </Card>
           </>
         )}
@@ -696,6 +707,7 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                   ["facts_parfums",     "Parfums aimés / détestés",     data.facts.parfums],
                   ["facts_adresse",     "Adresse de livraison",         data.facts.adresseRenseignee ? "renseignée ✓" : undefined],
                   ["facts_animaux",     "Animaux",                      data.facts.animaux],
+                  ["facts_mobilite",    "Mobilité / santé",             data.facts.mobilite],
                   ["facts_dates",       "Dates clés",                   data.facts.datesCles],
                 ] as Array<[SectionKey, string, string | undefined]>)
                   .filter(([s, , v]) => show(s).shown && v);

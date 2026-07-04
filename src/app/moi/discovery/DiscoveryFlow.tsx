@@ -103,6 +103,212 @@ function ChipsQuestion({
   );
 }
 
+// ── Styles partagés follow-ups (chantier 3.2) ─────────────────────────────────
+
+const chipBtn = (active: boolean, disabled: boolean): React.CSSProperties => ({
+  padding: "12px 18px",
+  minHeight: 44,
+  borderRadius: 40,
+  border: active ? "1.5px solid var(--pine)" : "0.5px solid var(--line)",
+  background: active ? "rgba(23,62,49,.08)" : "var(--white)",
+  fontSize: 14, fontWeight: active ? 400 : 300,
+  color: active ? "var(--pine)" : "var(--ink-2)",
+  cursor: disabled ? "default" : "pointer",
+  transition: "all 0.15s",
+});
+
+const followUpArea: React.CSSProperties = {
+  width: "100%", padding: "12px 14px", borderRadius: 12,
+  border: "0.5px solid var(--line)", background: "var(--white)",
+  fontFamily: "var(--font-sans)", fontSize: 15, fontWeight: 300,
+  color: "var(--ink)", lineHeight: 1.6, resize: "none", outline: "none",
+  boxSizing: "border-box", marginTop: 10,
+};
+
+function ValidateRow({ onSkip, onSubmit, canSubmit, disabled }: {
+  onSkip: () => void; onSubmit: () => void; canSubmit: boolean; disabled: boolean;
+}) {
+  return (
+    <div style={{ display: "flex", gap: 12, marginTop: 28 }}>
+      <button onClick={onSkip} disabled={disabled} style={{
+        padding: "12px 20px", minHeight: 44, borderRadius: 12,
+        border: "0.5px solid var(--line)", background: "none",
+        fontSize: 13, fontWeight: 300, color: "var(--ink-3)", cursor: "pointer",
+      }}>
+        Passer
+      </button>
+      <button onClick={() => { if (canSubmit) onSubmit(); }} disabled={disabled || !canSubmit} style={{
+        flex: 1, padding: "12px 20px", minHeight: 44, borderRadius: 12, border: "none",
+        background: canSubmit ? "var(--pine)" : "var(--line)",
+        fontSize: 14, fontWeight: 400,
+        color: canSubmit ? "var(--canvas)" : "var(--ink-3)",
+        cursor: canSubmit ? "pointer" : "not-allowed",
+        transition: "background 0.15s",
+      }}>
+        Valider
+      </button>
+    </div>
+  );
+}
+
+// ── practical.dietary — contraintes alimentaires + précision allergie ────────
+
+function DietaryQuestion({ question, onAnswer, onSkip, disabled }: {
+  question: DiscoveryQuestion;
+  onAnswer: (v: Record<string, unknown>) => void;
+  onSkip: () => void;
+  disabled: boolean;
+}) {
+  const [selected, setSelected] = useState<string[]>([]);
+  const [allergyDetail, setAllergyDetail] = useState("");
+  const options: QuestionOption[] = question.options ?? [];
+
+  function toggle(val: string) {
+    setSelected(prev => {
+      if (val === "none") return prev.includes("none") ? [] : ["none"];
+      const next = prev.includes(val) ? prev.filter(v => v !== val) : [...prev.filter(v => v !== "none"), val];
+      return next;
+    });
+  }
+
+  const needsDetail = selected.includes("food_allergy");
+  // Follow-up OBLIGATOIRE : pas de validation d'une allergie sans précision
+  const canSubmit = selected.length > 0 && (!needsDetail || allergyDetail.trim().length > 1);
+
+  return (
+    <div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 24 }}>
+        {options.map(opt => (
+          <button key={opt.value} onClick={() => toggle(opt.value)} disabled={disabled}
+            style={chipBtn(selected.includes(opt.value), disabled)}>
+            {opt.label}
+          </button>
+        ))}
+      </div>
+      {needsDetail && (
+        <div style={{ marginTop: 16 }}>
+          <p style={{ fontSize: 13, fontWeight: 400, color: "var(--pine)" }}>
+            Précise l&apos;allergie — c&apos;est important pour ne jamais se tromper.
+          </p>
+          <textarea
+            value={allergyDetail}
+            onChange={e => setAllergyDetail(e.target.value)}
+            placeholder="ex. arachide, kiwi, crustacés…"
+            rows={2}
+            autoFocus
+            style={followUpArea}
+          />
+        </div>
+      )}
+      <ValidateRow
+        onSkip={onSkip}
+        onSubmit={() => onAnswer({
+          choices: selected,
+          ...(needsDetail ? { allergy_detail: allergyDetail.trim() } : {}),
+        })}
+        canSubmit={canSubmit}
+        disabled={disabled}
+      />
+    </div>
+  );
+}
+
+// ── practical.mobility — accessibilité avec type + intensité obligatoires ────
+
+const MOBILITY_TYPES = [
+  { value: "marche_longue",  label: "Marche longue" },
+  { value: "escaliers",      label: "Escaliers" },
+  { value: "station_debout", label: "Station debout prolongée" },
+  { value: "autre",          label: "Autre" },
+];
+
+const MOBILITY_INTENSITIES = [
+  { value: "legere",        label: "Une gêne légère, bon à savoir" },
+  { value: "systematique",  label: "À prendre en compte systématiquement" },
+];
+
+function MobilityQuestion({ onAnswer, onSkip, disabled }: {
+  onAnswer: (v: Record<string, unknown>) => void;
+  onSkip: () => void;
+  disabled: boolean;
+}) {
+  const [has, setHas] = useState<boolean | null>(null);
+  const [types, setTypes] = useState<string[]>([]);
+  const [detail, setDetail] = useState("");
+  const [intensity, setIntensity] = useState<string>("");
+
+  const needsAutre = types.includes("autre");
+  // Follow-up OBLIGATOIRE : type (option ou champ libre) + intensité —
+  // jamais de binaire « contrainte de mobilité » sans nuance.
+  const canSubmit =
+    has === false
+    || (has === true
+        && (types.filter(t => t !== "autre").length > 0 || detail.trim().length > 2)
+        && (!needsAutre || detail.trim().length > 2)
+        && intensity !== "");
+
+  return (
+    <div>
+      <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
+        {[{ v: true, l: "Oui" }, { v: false, l: "Non" }].map(o => (
+          <button key={o.l} onClick={() => setHas(o.v)} disabled={disabled}
+            style={{ ...chipBtn(has === o.v, disabled), flex: 1 }}>
+            {o.l}
+          </button>
+        ))}
+      </div>
+
+      {has === true && (
+        <>
+          <p style={{ fontSize: 13, fontWeight: 400, color: "var(--pine)", marginTop: 18 }}>
+            Qu&apos;est-ce qui est concerné ?
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 10 }}>
+            {MOBILITY_TYPES.map(t => (
+              <button key={t.value} disabled={disabled}
+                onClick={() => setTypes(prev => prev.includes(t.value) ? prev.filter(x => x !== t.value) : [...prev, t.value])}
+                style={chipBtn(types.includes(t.value), disabled)}>
+                {t.label}
+              </button>
+            ))}
+          </div>
+          {(needsAutre || types.length === 0) && (
+            <textarea
+              value={detail}
+              onChange={e => setDetail(e.target.value)}
+              placeholder="Dis-le avec tes mots — ex. genou fragile, fatigue rapide…"
+              rows={2}
+              style={followUpArea}
+            />
+          )}
+          <p style={{ fontSize: 13, fontWeight: 400, color: "var(--pine)", marginTop: 18 }}>
+            À quel point ?
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 10 }}>
+            {MOBILITY_INTENSITIES.map(o => (
+              <button key={o.value} onClick={() => setIntensity(o.value)} disabled={disabled}
+                style={{ ...chipBtn(intensity === o.value, disabled), borderRadius: 14, textAlign: "left" }}>
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      <ValidateRow
+        onSkip={onSkip}
+        onSubmit={() => onAnswer(
+          has
+            ? { has_constraint: true, types: types.filter(t => t !== "autre"), detail: detail.trim(), intensity }
+            : { has_constraint: false },
+        )}
+        canSubmit={canSubmit && has !== null}
+        disabled={disabled}
+      />
+    </div>
+  );
+}
+
 // ── Text question ─────────────────────────────────────────────────────────────
 
 function TextQuestion({
@@ -260,7 +466,7 @@ export default function DiscoveryFlow({ initial, mode }: Props) {
   const [loading, setLoading] = useState(false);
   const [intro, setIntro] = useState(mode === "full");
 
-  async function handleAnswer(answer: string | string[], skip = false) {
+  async function handleAnswer(answer: string | string[] | Record<string, unknown>, skip = false) {
     if (!current || loading) return;
     setLoading(true);
 
@@ -362,8 +568,21 @@ export default function DiscoveryFlow({ initial, mode }: Props) {
         {question.question_text}
       </h2>
 
-      {/* Input */}
-      {question.question_type === "text" ? (
+      {/* Input — les questions à follow-up obligatoire ont leur composant dédié */}
+      {question.question_key === "practical.dietary" ? (
+        <DietaryQuestion
+          question={question}
+          onAnswer={v => handleAnswer(v)}
+          onSkip={() => handleAnswer([], true)}
+          disabled={loading}
+        />
+      ) : question.question_key === "practical.mobility" ? (
+        <MobilityQuestion
+          onAnswer={v => handleAnswer(v)}
+          onSkip={() => handleAnswer([], true)}
+          disabled={loading}
+        />
+      ) : question.question_type === "text" ? (
         <TextQuestion
           question={question}
           onAnswer={v => handleAnswer(v)}

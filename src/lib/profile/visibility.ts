@@ -70,6 +70,7 @@ export type SectionKey =
   | "facts_adresse"       // existence seulement, jamais le contenu
   | "facts_animaux"
   | "facts_dates"
+  | "facts_mobilite"      // mobilité/santé AVEC intensité — jamais de binaire
   | "art9"                // religion · handicap · santé (CTA Compléter + Masquer)
   | "constraints_row"     // rangée sécurité (allergies + régime) — contact_consulte seul
   // Périphérie
@@ -88,7 +89,7 @@ export const ALL_SECTION_KEYS: SectionKey[] = [
   "gifts", "restaurants", "travel", "hobbies",
   "brands", "style", "parfums", "points_fixes", "avoid",
   "facts_tailles", "facts_alimentaire", "facts_parfums", "facts_adresse",
-  "facts_animaux", "facts_dates", "art9", "constraints_row",
+  "facts_animaux", "facts_dates", "facts_mobilite", "art9", "constraints_row",
   "discovery", "edit_button", "bottom_nav", "wishlist",
   "not_shared_notice", "blind_message",
 ];
@@ -123,6 +124,7 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     facts_adresse:      "visible", // « renseignée ✓ » seulement — jamais le contenu
     facts_animaux:      "visible",
     facts_dates:        "visible",
+    facts_mobilite:     "visible",      // intensité affichée (légère / systématique)
     art9:               "visible", // CTA « Compléter → » + bouton « Masquer »
     constraints_row:    "hidden",  // redondant : facts_alimentaire couvre
     discovery:          "visible",
@@ -162,6 +164,7 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     facts_adresse:      "never",
     facts_animaux:      "filtered_off",
     facts_dates:        "filtered_off",
+    facts_mobilite:     "filtered_off",
     art9:               "never",   // réglage éventuel = lot RGPD dédié
     constraints_row:    "hidden",
     discovery:          "hidden",
@@ -201,6 +204,7 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     facts_adresse:      "never",
     facts_animaux:      "hidden",
     facts_dates:        "hidden",
+    facts_mobilite:     "hidden",       // la nuance passe par constraints_row
     art9:               "never",
     constraints_row:    "visible", // sécurité : allergies + régime, pour ne pas se planter hors moteur
     discovery:          "hidden",
@@ -240,6 +244,7 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     facts_adresse:      "never",
     facts_animaux:      "never",
     facts_dates:        "never",
+    facts_mobilite:     "never",
     art9:               "never",
     constraints_row:    "never",
     discovery:          "never",

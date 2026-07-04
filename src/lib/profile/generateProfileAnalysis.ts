@@ -330,6 +330,12 @@ RÈGLES SUR LES CHIPS :
 - Courts (2-5 mots max), nets, non-redondants
 - INTERDIT : fragments bruts ("Aime planifier et anticiper"), mots répétés dans 3+ sections
 - Chips informatifs et actionables pour un proche (ex: "Cadeaux expérience", "Hôtel boutique", "Pas de surprises")
+- Chips TOUJOURS compréhensibles hors contexte, du point de vue de la personne.
+  INTERDIT : formulations ambiguës dont on ne sait pas qui est « toi »
+  (ex. INTERDIT : "Marque connue de toi" → écrire "Une de tes marques fétiches")
+- Si une sensibilité au luxe ou au premium ressort des réponses, traduis-la en
+  un chip dans "gifts" (ex: "sensible au luxe", "belles maisons") — ce n'est
+  plus un axe affiché, c'est un tag d'analyse
 
 RÈGLES SPÉCIFIQUES POUR L'ENRICHISSEMENT :
 - ANALYSER = ENRICHIR, jamais résumer. Rends la fiche la plus riche et la plus vivante possible sans jamais citer verbatim les réponses ouvertes.

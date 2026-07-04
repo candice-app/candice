@@ -279,11 +279,13 @@ async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQ
 
 // ── Record answer ─────────────────────────────────────────────────────────────
 
+export type DiscoveryAnswer = string | string[] | Record<string, unknown> | null;
+
 export async function recordAnswer(
   userId: string,
   sessionId: string,
   questionKey: string,
-  answer: string | string[] | null,
+  answer: DiscoveryAnswer,
   skip: boolean,
   supabase: SupaDB,
 ): Promise<{ next: NextQuestionResult | null; done: boolean }> {

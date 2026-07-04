@@ -42,7 +42,8 @@ describe("pilote — tout visible sauf hors-écran", () => {
     gifts: true, restaurants: true, travel: true, hobbies: true,
     brands: true, style: true, parfums: true, points_fixes: true, avoid: true,
     facts_tailles: true, facts_alimentaire: true, facts_parfums: true,
-    facts_adresse: true, facts_animaux: true, facts_dates: true, art9: true,
+    facts_adresse: true, facts_animaux: true, facts_dates: true,
+    facts_mobilite: true, art9: true,
     constraints_row: false, // redondant avec facts_alimentaire
     discovery: true, edit_button: true, bottom_nav: true,
     wishlist: false,        // vit sur son propre écran
@@ -75,7 +76,8 @@ describe("invite_filtre — défauts (aucun choix enregistré)", () => {
     points_fixes: false,                            // le plus intime → OFF
     avoid: true,
     facts_tailles: false, facts_alimentaire: false, facts_parfums: false,
-    facts_adresse: false, facts_animaux: false, facts_dates: false, art9: false,
+    facts_adresse: false, facts_animaux: false, facts_dates: false,
+    facts_mobilite: false, art9: false,
     constraints_row: false,
     discovery: false, edit_button: false, bottom_nav: false,
     wishlist: false, not_shared_notice: true, blind_message: false,
@@ -156,7 +158,7 @@ describe("contact_consulte — analyse seulement + contraintes sécurité", () =
   });
 
   it("les autres faits pratiques du proche sont masqués", () => {
-    for (const s of ["facts_tailles", "facts_alimentaire", "facts_parfums", "facts_adresse", "facts_animaux", "facts_dates", "art9"] as SectionKey[]) {
+    for (const s of ["facts_tailles", "facts_alimentaire", "facts_parfums", "facts_adresse", "facts_animaux", "facts_dates", "facts_mobilite", "art9"] as SectionKey[]) {
       expect(resolveVisibility("contact_consulte", s).shown, `${s} devrait être masqué`).toBe(false);
     }
   });

@@ -30,10 +30,12 @@ interface ProfileRow {
   practical_info: {
     prenom?: string;
     allergies?: string[]; regime?: string; alcool?: string;
+    allergies_detail?: string;
     taille_vetements?: string; taille_chaussures?: string;
     parfums?: string[]; odeurs_detestees?: string;
     adresse_livraison?: string; animaux?: string;
     dates_importantes?: ImportantDate[];
+    mobilite_sante?: string; mobilite_intensite?: string;
   } | null;
   religion: string | null;
   disability: string | null;
@@ -146,14 +148,27 @@ function buildFacts(pi: ProfileRow["practical_info"]): ProfileSheetData["facts"]
   const datesCles = dates.length > 0
     ? `${formatDateCle(dates[0])}${dates.length > 1 ? ` · +${dates.length - 1}` : ""}`
     : undefined;
+  // Mobilité : TOUJOURS avec son intensité quand elle est connue — jamais de binaire.
+  const INTENSITE_FR: Record<string, string> = {
+    legere: "gêne légère", systematique: "à prendre en compte",
+  };
+  const mobiliteTexte = pi.mobilite_sante?.trim();
+  const mobilite = mobiliteTexte
+    ? `${mobiliteTexte.length > 30 ? mobiliteTexte.slice(0, 30) + "…" : mobiliteTexte}${pi.mobilite_intensite ? ` · ${INTENSITE_FR[pi.mobilite_intensite] ?? pi.mobilite_intensite}` : ""}`
+    : undefined;
+  const allergiesFull = [
+    allergies || null,
+    pi.allergies_detail?.trim() || null,
+  ].filter(Boolean).join(" — ");
   return {
     tailles: tailles || undefined,
-    allergies: allergies || undefined,
+    allergies: allergiesFull || undefined,
     regimeAlcool: regimeAlcool || undefined,
     parfums: parfums || undefined,
     adresseRenseignee: !!pi.adresse_livraison?.trim(),
     animaux: pi.animaux?.trim() || undefined,
     datesCles,
+    mobilite,
   };
 }
 
