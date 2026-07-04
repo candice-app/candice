@@ -409,6 +409,17 @@ export default async function DashboardPage() {
           </div>
         )}
 
+        {/* B.2 Phase 6 — entrée du moteur de recherche (Sens 1) */}
+        <div style={{ marginTop: 22, textAlign: "center" }}>
+          <Link href="/recherche" style={{
+            display: "inline-flex", alignItems: "center", minHeight: 44,
+            padding: "0 12px", fontSize: 12.5, fontWeight: 600,
+            color: "var(--pine)", textDecoration: "none",
+          }}>
+            Quelqu&apos;un est déjà sur Candice ? Demande à voir sa fiche →
+          </Link>
+        </div>
+
         {(archivedCount ?? 0) > 0 && (
           <div style={{ marginTop: 24, paddingTop: 16, borderTop: ".5px solid var(--line)" }}>
             <Link href="/dashboard/archives" style={{ fontSize: 12, fontWeight: 300, color: "var(--ink3)" }}>
