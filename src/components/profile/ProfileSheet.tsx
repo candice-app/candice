@@ -358,6 +358,27 @@ const UNIVERS_CARDS: Array<{ section: SectionKey; icon: string; family: keyof ty
   { section: "avoid",        icon: "block",  family: "coral", title: "À éviter avec toi" },
 ];
 
+// Chantier 2.1 — deep-links : chaque CTA ouvre DIRECTEMENT la question
+// concernée (l'écran « Comment veux-tu procéder ? » n'apparaît que via
+// « Modifier » global). Sections analyse → Discovery ciblé par section.
+const SECTION_TO_DISCOVERY: Partial<Record<SectionKey, string>> = {
+  what_touches: "attention-dna",
+  gifts:        "gifts-what-works",
+  restaurants:  "food-restaurants",
+  travel:       "travel-style",
+  hobbies:      "hobbies-main",
+  brands:       "brands-favorites",
+  style:        "style-clothing",
+  parfums:      "fragrance-family",
+  points_fixes: "dreams-current",
+  avoid:        "gifts-to-avoid",
+};
+
+function sectionCtaHref(section: SectionKey, fallback: string): string {
+  const disc = SECTION_TO_DISCOVERY[section];
+  return disc ? `/moi/discovery?mode=full&section=${disc}` : fallback;
+}
+
 // ─── Composant principal ──────────────────────────────────────────────────────
 
 export default function ProfileSheet({ view, data, sharedSections, editHref = "/moi/questionnaire" }: Props) {
@@ -408,12 +429,12 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
   };
 
   // CTA « Affiner avec Candice » : pilote seulement — chez un tiers la section est omise
-  const emptyCta = (label: string) =>
+  const emptyCta = (label: string, href?: string) =>
     view === "pilote" ? (
       <Card style={{ borderStyle: "dashed", boxShadow: "none" }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
           <span style={{ fontSize: 13.5, color: T.ink2 }}>{label}</span>
-          <Link href={editHref} style={{ padding: "13px 4px", margin: "-13px -4px", textDecoration: "none", display: "inline-flex", flexShrink: 0 }}>
+          <Link href={href ?? editHref} style={{ padding: "13px 4px", margin: "-13px -4px", textDecoration: "none", display: "inline-flex", flexShrink: 0 }}>
             <span style={{ fontSize: 12.5, fontWeight: 600, color: T.pine, whiteSpace: "nowrap" }}>
               Affiner avec Candice →
             </span>
@@ -511,7 +532,7 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
         ) : (view === "pilote" && (
           <>
             <DivTxt>Ton langage d&apos;attention</DivTxt>
-            {emptyCta("Réponds au questionnaire attention pour révéler ton langage.")}
+            {emptyCta("Réponds au questionnaire attention pour révéler ton langage.", "/moi/questionnaire?part=attention")}
           </>
         )))}
 
@@ -526,7 +547,7 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
           <ModCard icon="touch" family="pine" title={tt("what_touches", "Ce qui te touche")}
             text={t("what_touches", sec("what_touches")?.text) ?? undefined}
             chips={sec("what_touches")?.chips} />
-        ) : emptyCta("Précise ce qui te touche vraiment."))}
+        ) : emptyCta("Précise ce qui te touche vraiment.", sectionCtaHref("what_touches", editHref)))}
 
         {/* ── Ce que Candice a compris ── */}
         {show("insights").shown && data.insights.length > 0 && (
@@ -590,7 +611,7 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
             <DivTxt>{show("gifts").thirdPerson ? "Ce qui lui fait vibrer" : "Ce qui te fait vibrer"}</DivTxt>
             {THEME_CARDS.map(c => {
               if (!show(c.section).shown) return null;
-              if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`)}</span>;
+              if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>;
               return (
                 <ModCard key={c.section} icon={c.icon} family={c.family} title={tt(c.section, c.title)}
                   text={t(c.section, sec(c.section)?.text) ?? undefined}
@@ -621,10 +642,10 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                   ))}
                 </div>
               </Card>
-            ) : emptyCta("Ajoute les marques et lieux où tu te sens bien."))}
+            ) : emptyCta("Ajoute les marques et lieux où tu te sens bien.", sectionCtaHref("brands", editHref)))}
             {UNIVERS_CARDS.map(c => {
               if (!show(c.section).shown) return null;
-              if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`)}</span>;
+              if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>;
               return (
                 <ModCard key={c.section} icon={c.icon} family={c.family} title={tt(c.section, c.title)}
                   text={t(c.section, sec(c.section)?.text) ?? undefined}
@@ -678,16 +699,29 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                   ["facts_dates",       "Dates clés",                   data.facts.datesCles],
                 ] as Array<[SectionKey, string, string | undefined]>)
                   .filter(([s, , v]) => show(s).shown && v);
-                return rows.map(([, label, value], i) => (
-                  <div key={i} style={{
+                return rows.map(([key, label, value], i) => {
+                  const rowStyle: React.CSSProperties = {
                     display: "flex", justifyContent: "space-between", alignItems: "center",
                     padding: "11px 0", fontSize: 14,
                     borderBottom: i === rows.length - 1 ? "none" : `1px solid ${T.line2}`, // .fact:last-child
-                  }}>
-                    <span style={{ color: T.ink2 }}>{label}</span>
-                    <span style={{ color: T.ink, fontWeight: 500, textAlign: "right" }}>{value}</span>
-                  </div>
-                ));
+                  };
+                  // Chantier 2.3(c) : tap sur « Dates clés » → édition directe (bloc Agenda)
+                  if (key === "facts_dates" && view === "pilote") {
+                    return (
+                      <Link key={i} href="/moi/questionnaire?part=practical7#agenda"
+                        style={{ ...rowStyle, textDecoration: "none" }}>
+                        <span style={{ color: T.ink2 }}>{label}</span>
+                        <span style={{ color: T.ink, fontWeight: 500, textAlign: "right" }}>{value} <span style={{ color: T.ink3 }}>›</span></span>
+                      </Link>
+                    );
+                  }
+                  return (
+                    <div key={i} style={rowStyle}>
+                      <span style={{ color: T.ink2 }}>{label}</span>
+                      <span style={{ color: T.ink, fontWeight: 500, textAlign: "right" }}>{value}</span>
+                    </div>
+                  );
+                });
               })()}
               {show("art9").shown && (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 9, paddingTop: 10, borderTop: `1px dashed ${T.line}` }}>
@@ -695,16 +729,13 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                     <b style={{ color: T.pine }}>Religion · handicap · santé</b><br />
                     <span style={{ fontSize: 11.5 }}>Sensible — tu choisis de renseigner ou non</span>
                   </div>
-                  {data.art9Filled ? (
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 10.5, color: T.pine, border: `1px solid ${T.line}`, borderRadius: 999, padding: "4px 10px" }}>
-                      <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, stroke: T.pine, fill: "none", strokeWidth: 1.6 }}>{ICONS.eye}</svg> Masquer
+                  {/* Décision Estelle (iii) : pas de CTA « Compléter » tant que le lot
+                      Art.9/RGPD n'a pas livré sa vraie question cible — un CTA qui
+                      n'atterrit pas sur sa question exacte est interdit (règle 2.1). */}
+                  {data.art9Filled && (
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11.5, color: T.pine, border: `1px solid ${T.line}`, borderRadius: 999, padding: "4px 10px" }}>
+                      <svg viewBox="0 0 24 24" style={{ width: 13, height: 13, stroke: T.pine, fill: "none", strokeWidth: 1.6 }}>{ICONS.eye}</svg> Masquer
                     </span>
-                  ) : (
-                    <Link href={editHref} style={{ padding: "11px 4px", margin: "-11px -4px", textDecoration: "none", display: "inline-flex", flexShrink: 0 }}>
-                      <span style={{ fontSize: 10.5, color: T.pine, border: `1px solid ${T.line}`, borderRadius: 999, padding: "4px 10px" }}>
-                        Compléter →
-                      </span>
-                    </Link>
                   )}
                 </div>
               )}

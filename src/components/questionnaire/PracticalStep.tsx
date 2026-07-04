@@ -358,6 +358,10 @@ function DatesManager({
   dates: ImportantDate[];
   onChange: (d: ImportantDate[]) => void;
 }) {
+  // Chantier 2.3 : typologie + date = une entrée complète.
+  // Tant qu'une entrée n'a pas sa date, impossible d'en ajouter une nouvelle.
+  const hasIncomplete = dates.some(d => !d.date);
+
   function add() {
     onChange([...dates, { ...EMPTY_DATE }]);
   }
@@ -383,9 +387,14 @@ function DatesManager({
           marginBottom: 14,
           padding: "16px 16px 14px",
           borderRadius: 14,
-          border: "0.5px solid var(--line)",
+          border: d.date ? "0.5px solid var(--line)" : "1.5px solid var(--pine)",
           background: "var(--white)",
         }}>
+          {!d.date && (
+            <p style={{ fontSize: 12, fontWeight: 500, color: "var(--pine)", marginBottom: 8 }}>
+              Date à préciser — obligatoire
+            </p>
+          )}
           {/* Type + Date row */}
           <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
             <select
@@ -403,6 +412,7 @@ function DatesManager({
                 color: "var(--ink-2)",
                 outline: "none",
                 cursor: "pointer",
+                minHeight: 44,
               }}
             >
               {DATE_TYPES.map(t => (
@@ -413,12 +423,14 @@ function DatesManager({
             <input
               type="date"
               value={d.date}
+              autoFocus={!d.date && i === dates.length - 1}
               onChange={e => update(i, "date", e.target.value)}
               style={{
                 flex: 1,
                 padding: "9px 10px",
+                minHeight: 44,
                 borderRadius: 8,
-                border: "0.5px solid var(--line)",
+                border: d.date ? "0.5px solid var(--line)" : "1.5px solid var(--pine)",
                 background: "var(--canvas)",
                 fontFamily: "var(--font-sans)",
                 fontSize: 13,
@@ -431,14 +443,15 @@ function DatesManager({
             <button
               type="button"
               onClick={() => remove(i)}
+              aria-label="Supprimer cette date"
               style={{
                 flexShrink: 0,
-                width: 32, height: 32,
+                width: 44, height: 44,
                 borderRadius: 8,
                 border: "0.5px solid var(--line)",
                 background: "none",
                 color: "var(--ink-3)",
-                fontSize: 15,
+                fontSize: 17,
                 cursor: "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}
@@ -535,20 +548,28 @@ function DatesManager({
       <button
         type="button"
         onClick={add}
+        disabled={hasIncomplete}
         style={{
-          padding: "9px 16px",
-          borderRadius: 20,
+          padding: "12px 18px",
+          minHeight: 44,
+          borderRadius: 22,
           border: "0.5px solid var(--pine)",
           background: "none",
           color: "var(--pine)",
           fontFamily: "var(--font-sans)",
           fontSize: 13,
           fontWeight: 400,
-          cursor: "pointer",
+          cursor: hasIncomplete ? "default" : "pointer",
+          opacity: hasIncomplete ? 0.45 : 1,
         }}
       >
         + Ajouter une date
       </button>
+      {hasIncomplete && (
+        <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", marginTop: 8 }}>
+          Choisis d&apos;abord la date de l&apos;entrée en cours pour en ajouter une autre.
+        </p>
+      )}
     </div>
   );
 }
@@ -812,6 +833,7 @@ export default function PracticalStep({ onDone, initialInfo, onBack, onExit }: P
         />
 
         {/* ── Agenda ── */}
+        <div id="agenda" style={{ scrollMarginTop: 80 }} />
         <SectionLabel>Agenda</SectionLabel>
 
         <FieldLabel note="Anniversaire, fête, mariage, dates symboliques — pour ne jamais les rater.">

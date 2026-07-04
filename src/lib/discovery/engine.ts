@@ -3,6 +3,7 @@
 // JSON validated + deterministic fallback. Never re-asks answered questions.
 
 import Anthropic from '@anthropic-ai/sdk';
+import { questionDataPresent, type ProfileDataSnapshot } from './dataPresence';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -79,6 +80,19 @@ async function getAnsweredKeys(
     .is('contact_id', null)
     .eq('is_filled', true);
   return new Set((data ?? []).map((r: { question_key: string }) => r.question_key));
+}
+
+// Chantier 2.2 — snapshot my_profile pour la garde par présence de donnée
+async function getProfileDataSnapshot(
+  supabase: SupaDB,
+  userId: string,
+): Promise<ProfileDataSnapshot | null> {
+  const { data } = await supabase
+    .from('my_profile')
+    .select('practical_info, singularity_answers, relational_filters, discovery_answers')
+    .eq('user_id', userId)
+    .maybeSingle();
+  return (data as ProfileDataSnapshot | null) ?? null;
 }
 
 async function getAllQuestions(supabase: SupaDB): Promise<DiscoveryQuestion[]> {
@@ -370,7 +384,7 @@ const DIMENSION_TO_ANALYSIS_SECTION: Record<string, string> = {
   style:      'style',
   brands:     'brands',
   food:       'restaurants',
-  fragrance:  'style',
+  fragrance:  'parfums', // section dédiée depuis l'engine 2.1 (était 'style')
   travel:     'travel',
   hobbies:    'hobbies',
   dreams:     'hobbies',
@@ -470,14 +484,17 @@ export async function getNextMicroQuestion(
   mode: 'quick' | 'full',
   sectionKey?: string,
 ): Promise<NextQuestionResult | null> {
-  const [answered, allQuestions] = await Promise.all([
+  const [answered, allQuestions, profileData] = await Promise.all([
     getAnsweredKeys(supabase, userId),
     getAllQuestionsWithTrigger(supabase),
+    getProfileDataSnapshot(supabase, userId),
   ]);
 
-  // Unanswered + trigger passes
+  // Unanswered + donnée absente de la fiche (garde 2.2) + trigger passes
   let candidates = allQuestions.filter(
-    q => !answered.has(q.question_key) && evaluateTrigger(q, analysis),
+    q => !answered.has(q.question_key)
+      && !questionDataPresent(q.question_key, profileData)
+      && evaluateTrigger(q, analysis),
   );
 
   // If sectionKey: restrict to relevant dimensions
@@ -539,13 +556,16 @@ export async function getAvailableDiscoverySections(
   supabase: SupaDB,
   analysis: ProfileAnalysisSnapshot | null,
 ): Promise<Set<string>> {
-  const [answered, allQuestions] = await Promise.all([
+  const [answered, allQuestions, profileData] = await Promise.all([
     getAnsweredKeys(supabase, userId),
     getAllQuestionsWithTrigger(supabase),
+    getProfileDataSnapshot(supabase, userId),
   ]);
 
   const candidates = allQuestions.filter(
-    q => !answered.has(q.question_key) && evaluateTrigger(q, analysis),
+    q => !answered.has(q.question_key)
+      && !questionDataPresent(q.question_key, profileData)
+      && evaluateTrigger(q, analysis),
   );
 
   const available = new Set<string>();

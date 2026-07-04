@@ -121,8 +121,10 @@ function computeCompletion(p: ProfileRow | null): { ratio: number; label: string
 
 function formatDateCle(d: ImportantDate): string {
   const label = DATE_TYPE_FR[d.type] ?? d.type;
-  const [, m, day] = d.date.split("-").map(Number);
-  if (!m || !day) return d.label || label;
+  const [, m, day] = (d.date ?? "").split("-").map(Number);
+  // Entrées legacy sans date (chantier 2.3) : signalées, jamais masquées —
+  // le tap sur la rangée ouvre l'édition pour compléter.
+  if (!m || !day) return `${d.label || label} — date à préciser`;
   return `${label} ${day} ${MONTHS_FR[m - 1]}`;
 }
 
