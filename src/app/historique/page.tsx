@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
 import Thread, { ThreadItem } from "@/components/presence/Thread";
 import PointDivider from "@/components/presence/PointDivider";
@@ -28,6 +29,27 @@ export default async function HistoriquePage() {
     .limit(50);
 
   const confidences = ((data ?? []) as unknown) as Confidence[];
+
+  // B.2 Phase 6 — demandes de vue de profil reçues (en attente de MA réponse)
+  const { data: requestsRaw } = await supabase
+    .from("contact_consents")
+    .select("id, requested_by, requested_at")
+    .eq("kind", "profile_view")
+    .eq("pilote_id", user.id)
+    .eq("status", "pending")
+    .order("requested_at", { ascending: false });
+
+  const admin = createAdminClient();
+  const viewRequests = await Promise.all(
+    ((requestsRaw ?? []) as Array<{ id: string; requested_by: string | null; requested_at: string }>).map(async r => {
+      let firstName = "Quelqu'un";
+      if (r.requested_by) {
+        const { data: { user: requester } } = await admin.auth.admin.getUserById(r.requested_by);
+        firstName = (requester?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "Quelqu'un";
+      }
+      return { id: r.id, firstName };
+    })
+  );
 
   const groups: Record<string, Confidence[]> = {};
   for (const conf of confidences) {
@@ -60,6 +82,23 @@ export default async function HistoriquePage() {
             Parler à Candice
           </h1>
         </div>
+
+        {/* Demandes reçues — « X veut voir ton profil » */}
+        {viewRequests.map(r => (
+          <Link key={r.id} href={`/moi/partage/demandes/${r.id}`} style={{
+            display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
+            border: "1px solid var(--line)", borderLeft: "3px solid var(--pine)",
+            borderRadius: 13, background: "var(--white, #fff)", padding: "14px 16px",
+            marginBottom: 10, textDecoration: "none", minHeight: 44,
+          }}>
+            <span style={{ fontSize: 14, fontWeight: 500, color: "var(--ink)" }}>
+              {r.firstName} veut voir ton profil.
+            </span>
+            <span style={{ fontSize: 12.5, fontWeight: 600, color: "var(--pine)", whiteSpace: "nowrap" }}>
+              Que partages-tu ? →
+            </span>
+          </Link>
+        ))}
 
         {confidences.length === 0 ? (
           <div style={{ textAlign: "center", padding: "64px 0" }}>
