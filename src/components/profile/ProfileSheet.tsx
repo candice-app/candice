@@ -260,7 +260,7 @@ function Donut({ data, centerLabel }: { data: Array<{ id: string; weight: number
       </svg>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "5px 11px", flex: 1 }}>
         {data.map(d => (
-          <span key={d.id} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10.5, color: T.ink2 }}>
+          <span key={d.id} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: T.ink2 }}>
             <i style={{ width: 8, height: 8, borderRadius: 3, background: DONUT_COLORS[d.id] ?? T.sage }} />
             {DONUT_LABELS[d.id] ?? d.id}
           </span>
@@ -775,8 +775,8 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
               Plus ton profil est complet, plus Candice vise juste pour toi et tes proches.
             </p>
             <Link href="/moi/discovery?mode=full" style={{ marginTop: 10, padding: "8px 3px", margin: "10px -3px -8px", textDecoration: "none", display: "inline-flex" }}>
-              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: T.pine, color: "#fff", fontSize: 11.5, fontWeight: 600, padding: "7px 13px", borderRadius: 999 }}>
-                Répondre <svg viewBox="0 0 24 24" style={{ width: 12, height: 12, stroke: T.champ, fill: "none", strokeWidth: 1.8 }}>{ICONS.arrow}</svg>
+              <span style={{ display: "inline-flex", alignItems: "center", gap: 6, background: T.pine, color: "#fff", fontSize: 12.5, fontWeight: 600, padding: "8px 14px", borderRadius: 999 }}>
+                Répondre <svg viewBox="0 0 24 24" style={{ width: 13, height: 13, stroke: T.champ, fill: "none", strokeWidth: 1.8 }}>{ICONS.arrow}</svg>
               </span>
             </Link>
           </div>
