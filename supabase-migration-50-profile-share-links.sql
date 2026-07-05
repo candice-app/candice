@@ -15,7 +15,13 @@
 -- 4. contact_consents : le demandeur X peut ANNULER (DELETE) sa propre
 --    demande profile_view tant qu'elle est 'pending' — jamais après réponse.
 --
--- Additive uniquement.
+-- Additive — à UNE exception près, vérifiée : la V1 de ce fichier (token en
+-- clair, sans expiration) a été appliquée avant la revue. La table V1 est
+-- VIDE (0 ligne, vérifié le 2026-07-05 via l'API) et n'a jamais servi :
+-- le DROP ci-dessous ne détruit AUCUNE donnée réelle. Sans lui, le
+-- CREATE TABLE IF NOT EXISTS serait un no-op silencieux sur le schéma V1.
+
+DROP TABLE IF EXISTS profile_share_links;
 
 -- ── 1. Table ───────────────────────────────────────────────────────────────────
 
