@@ -7,8 +7,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { checkableSections } from "@/lib/profile/visibility";
-import { sanitizeScope, SCOPE_BLIND } from "@/lib/profile/share-sections";
+import { scopeForSelection } from "@/lib/profile/share-sections";
 
 type Action = "all" | "sections" | "blind" | "reject";
 
@@ -43,22 +42,12 @@ export async function POST(
   }
 
   const now = new Date().toISOString();
-  let update: Record<string, unknown>;
-
-  switch (action) {
-    case "all":
-      update = { status: "active", scope: checkableSections("invite_filtre"), responded_at: now, consented_at: now };
-      break;
-    case "sections":
-      update = { status: "active", scope: sanitizeScope(body.sections), responded_at: now, consented_at: now };
-      break;
-    case "blind":
-      update = { status: "active", scope: [SCOPE_BLIND], responded_at: now, consented_at: now };
-      break;
-    case "reject":
-      update = { status: "rejected", responded_at: now };
-      break;
-  }
+  // Source unique du scope (harmonisation Estelle) : même geste, même
+  // comportement que le lien sortant — zéro case cochée → ['socle'].
+  const update: Record<string, unknown> =
+    action === "reject"
+      ? { status: "rejected", responded_at: now }
+      : { status: "active", scope: scopeForSelection(action, body.sections), responded_at: now, consented_at: now };
 
   const { error } = await supabase
     .from("contact_consents")

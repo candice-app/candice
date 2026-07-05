@@ -84,3 +84,21 @@ export function sanitizeScope(scope: string[] | null | undefined): SectionKey[] 
   const checkable = new Set<string>(checkableSections("invite_filtre"));
   return (scope ?? []).filter((s): s is SectionKey => checkable.has(s));
 }
+
+export type ShareMode = "all" | "sections" | "blind";
+
+/**
+ * Scope stocké pour un choix de partage — SOURCE UNIQUE pour les deux
+ * gestes (réponse à une demande ET lien sortant) : un même choix produit
+ * toujours le même scope, quel que soit l'écran.
+ *   all      → toutes les sections cochables (snapshot au consentement)
+ *   blind    → ['blind']
+ *   sections → sections cochées assainies ; ZÉRO cochée → ['socle']
+ *              (« Partager l'essentiel seulement » — jamais un scope vide)
+ */
+export function scopeForSelection(mode: ShareMode, sections?: string[]): string[] {
+  if (mode === "all") return checkableSections("invite_filtre");
+  if (mode === "blind") return [SCOPE_BLIND];
+  const checked = sanitizeScope(sections);
+  return checked.length > 0 ? checked : [SCOPE_SOCLE];
+}

@@ -8,6 +8,7 @@ import {
   allShareGroupKeys,
   defaultCheckedKeys,
   sanitizeScope,
+  scopeForSelection,
   SCOPE_BLIND,
   SCOPE_SOCLE,
 } from "./share-sections";
@@ -46,6 +47,32 @@ describe("sanitizeScope — intersection stricte", () => {
   it("null/undefined → vide", () => {
     expect(sanitizeScope(null)).toEqual([]);
     expect(sanitizeScope(undefined)).toEqual([]);
+  });
+});
+
+describe("scopeForSelection — source unique des deux gestes (réponse + lien)", () => {
+  it("all → snapshot de toutes les sections cochables", () => {
+    expect(scopeForSelection("all").sort()).toEqual(checkableSections("invite_filtre").sort());
+  });
+
+  it("blind → ['blind']", () => {
+    expect(scopeForSelection("blind")).toEqual([SCOPE_BLIND]);
+  });
+
+  it("sections cochées → sections assainies", () => {
+    expect(scopeForSelection("sections", ["gifts", "wishlist", "n_importe_quoi"])).toEqual(["gifts"]);
+  });
+
+  it("ZÉRO case cochée → ['socle'] (jamais un scope vide)", () => {
+    expect(scopeForSelection("sections", [])).toEqual([SCOPE_SOCLE]);
+    expect(scopeForSelection("sections", undefined)).toEqual([SCOPE_SOCLE]);
+    expect(scopeForSelection("sections", ["wishlist"])).toEqual([SCOPE_SOCLE]); // rien de cochable ne survit
+  });
+
+  it("aucun mode ne peut produire un scope vide (CHECK ≥ 1 en base)", () => {
+    for (const mode of ["all", "sections", "blind"] as const) {
+      expect(scopeForSelection(mode, []).length).toBeGreaterThanOrEqual(1);
+    }
   });
 });
 
