@@ -39,6 +39,9 @@ function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const inviteToken = searchParams.get("invite_token");
+  // B.2 Phase 7 — lien de partage sortant : après inscription, retour sur
+  // /rejoindre/[token] (le claim se fait là, côté serveur, une fois connecté)
+  const shareToken = searchParams.get("share_token");
   const supabase = createClient();
 
   const [name, setName] = useState("");
@@ -171,7 +174,9 @@ function RegisterForm() {
 
     const destination = inviteToken
       ? `/moi/questionnaire?invite_token=${encodeURIComponent(inviteToken)}`
-      : "/dashboard";
+      : shareToken
+        ? `/rejoindre/${encodeURIComponent(shareToken)}`
+        : "/dashboard";
     router.push(destination);
     router.refresh();
   };

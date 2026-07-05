@@ -14,6 +14,7 @@ import ProfileSheet, { type ProfileSheetData } from "@/components/profile/Profil
 import {
   buildProfileSheetData,
   stripSheetDataForView,
+  isQuestionnaireComplete,
   PROFILE_ROW_SELECT,
   ANALYSIS_ROW_SELECT,
   type ProfileRow,
@@ -63,15 +64,41 @@ export default async function FichePartageePage({
 
   // Identité minimale du partageur (prénom + genre grammatical pour la 3e pers.)
   const admin = createAdminClient();
-  const [{ data: { user: sharer } }, { data: sharerProfileRaw }] = await Promise.all([
+  const [{ data: { user: sharer } }, { data: sharerProfileRaw }, { data: viewerProfileRaw }] = await Promise.all([
     admin.auth.admin.getUserById(consent.pilote_id),
     admin.from("my_profile").select(PROFILE_ROW_SELECT).eq("user_id", consent.pilote_id).maybeSingle(),
+    supabase.from("my_profile").select(PROFILE_ROW_SELECT).eq("user_id", user.id).maybeSingle(),
   ]);
   const sharerProfile = sharerProfileRaw as unknown as ProfileRow | null;
   const firstName =
     sharerProfile?.practical_info?.prenom?.trim()
     || (sharer?.user_metadata?.full_name as string | undefined)?.split(" ")[0]
     || "Cette personne";
+
+  // Garde participation : le lecteur doit avoir rempli SON questionnaire (5/5)
+  // avant de découvrir la fiche — porte d'entrée de l'onboarding (Phase 8).
+  if (!isQuestionnaireComplete(viewerProfileRaw as unknown as ProfileRow | null)) {
+    return (
+      <V4Shell active="people">
+        <div style={{ maxWidth: 400, margin: "0 auto", padding: "64px 24px", textAlign: "center" }}>
+          <p style={{ fontFamily: "var(--font-serif)", fontSize: 20, color: "var(--ink)", lineHeight: 1.4, marginBottom: 10 }}>
+            {firstName} partage sa fiche avec toi.
+          </p>
+          <p style={{ fontSize: 13.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.65, marginBottom: 20 }}>
+            Remplis d&apos;abord ton questionnaire pour la découvrir — c&apos;est ce qui
+            permet à Candice d&apos;être utile dans les deux sens.
+          </p>
+          <Link href="/moi/questionnaire" style={{
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            minHeight: 44, padding: "0 18px", background: "var(--pine)", color: "#fff",
+            borderRadius: 999, fontSize: 13.5, fontWeight: 600, textDecoration: "none",
+          }}>
+            Remplir mon questionnaire →
+          </Link>
+        </div>
+      </V4Shell>
+    );
+  }
 
   const scope = (consent.scope ?? []) as string[];
   const isBlind = scope.includes(SCOPE_BLIND);

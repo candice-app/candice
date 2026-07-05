@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Wordmark from "@/components/presence/Wordmark";
 
@@ -23,8 +23,12 @@ const LABEL_STYLE: React.CSSProperties = {
   marginBottom: 8,
 };
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  // Redirection post-connexion : chemins internes uniquement (pas d'open redirect)
+  const rawNext = searchParams.get("next");
+  const next = rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/dashboard";
   const supabase = createClient();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,7 +44,7 @@ export default function LoginPage() {
       setError("E-mail ou mot de passe incorrect.");
       setLoading(false);
     } else {
-      router.push("/dashboard");
+      router.push(next);
       router.refresh();
     }
   };
@@ -146,5 +150,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }
