@@ -10,7 +10,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import Wordmark from "@/components/presence/Wordmark";
-import { claimShareLink } from "@/lib/share-links";
+import { claimShareLink, hashShareToken } from "@/lib/share-links";
 
 export default async function RejoindrePage({
   params,
@@ -45,14 +45,15 @@ export default async function RejoindrePage({
 
   // ── Sans compte : porte d'entrée ──────────────────────────────────────────
   // Le prénom du partageur n'est montré que si le lien est encore valable.
+  // Résolution par empreinte SHA-256 : le token n'est jamais stocké en clair.
   const admin = createAdminClient();
   const { data: link } = await admin
     .from("profile_share_links")
-    .select("owner_id, claimed_at, revoked_at")
-    .eq("token", token)
+    .select("owner_id, claimed_at, revoked_at, expires_at")
+    .eq("token_hash", hashShareToken(token))
     .maybeSingle();
 
-  if (!link || link.revoked_at || link.claimed_at) {
+  if (!link || link.revoked_at || link.claimed_at || new Date(link.expires_at as string) <= new Date()) {
     return (
       <Landing>
         <h1 style={h1Style}>Ce lien n&apos;est plus valide.</h1>

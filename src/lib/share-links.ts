@@ -1,107 +1,119 @@
-// B.2 Phase 7 — réclamation d'un lien de partage sortant (SERVEUR uniquement).
+// B.2 Phase 7 — lien de partage sortant, côté SERVEUR uniquement.
+// (Révision post-revue Estelle : token hashé SHA-256, expiration 30 jours,
+//  réclamation par UPDATE atomique.)
 //
-// Le lien est à usage unique : la première personne CONNECTÉE qui le réclame
-// obtient un consent profile_view ACTIF (le consentement de Y date de la
-// génération du lien, scope choisi avant envoi). Un lien ne donne jamais
-// accès sans compte. Utilisé par l'API de claim ET par /rejoindre/[token].
+// Le token brut n'existe qu'à la génération et dans l'URL envoyée : seule
+// son empreinte SHA-256 est stockée. Le lien est à usage unique et expire.
+// Ordre de réclamation : GAGNER le lien d'abord (UPDATE atomique), créer le
+// consent ensuite — aucune course ne peut laisser un consent actif orphelin.
 
+import { createHash } from "crypto";
 import { createAdminClient } from "@/utils/supabase/admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+export function hashShareToken(token: string): string {
+  return createHash("sha256").update(token).digest("hex");
+}
 
 export type ClaimResult =
   | { ok: true; consentId: string; alreadyClaimed: boolean }
   | { ok: false; reason: "invalid" | "self" };
 
+const INVALID: ClaimResult = { ok: false, reason: "invalid" };
+
 export async function claimShareLink(token: string, userId: string): Promise<ClaimResult> {
-  if (!token || !userId) return { ok: false, reason: "invalid" };
+  if (!token || !userId) return INVALID;
   const admin = createAdminClient();
 
   const { data: link } = await admin
     .from("profile_share_links")
-    .select("id, owner_id, scope, claimed_by, claimed_at, consent_id, revoked_at")
-    .eq("token", token)
+    .select("id, owner_id, scope, claimed_by, claimed_at, consent_id, revoked_at, expires_at")
+    .eq("token_hash", hashShareToken(token))
     .maybeSingle();
 
-  if (!link || link.revoked_at) return { ok: false, reason: "invalid" };
+  if (!link || link.revoked_at) return INVALID;
+  // Le propriétaire ne réclame JAMAIS son propre lien (erreur douce)
   if (link.owner_id === userId) return { ok: false, reason: "self" };
 
-  // Déjà réclamé : uniquement par la même personne (usage unique)
+  // Déjà réclamé : uniquement re-visitable par la même personne (usage unique)
   if (link.claimed_at) {
-    if (link.claimed_by === userId && link.consent_id) {
-      return { ok: true, consentId: link.consent_id as string, alreadyClaimed: true };
+    if (link.claimed_by !== userId) return INVALID;
+    const consentId = link.consent_id
+      ?? await ensureConsent(admin, link.owner_id, userId, link.scope ?? []);
+    if (!consentId) return INVALID;
+    if (!link.consent_id) {
+      await admin.from("profile_share_links").update({ consent_id: consentId }).eq("id", link.id);
     }
-    return { ok: false, reason: "invalid" };
+    return { ok: true, consentId, alreadyClaimed: true };
   }
 
-  // Consent actif déjà existant pour cette paire → on le réutilise
+  if (new Date(link.expires_at as string) <= new Date()) return INVALID;
+
+  // UPDATE ATOMIQUE : usage unique garanti contre les réclamations simultanées
+  const { data: won } = await admin
+    .from("profile_share_links")
+    .update({ claimed_by: userId, claimed_at: new Date().toISOString() })
+    .eq("id", link.id)
+    .is("claimed_at", null)
+    .is("revoked_at", null)
+    .gt("expires_at", new Date().toISOString())
+    .select("id")
+    .maybeSingle();
+
+  if (!won) return INVALID; // quelqu'un d'autre a gagné la course (ou révocation/expiration entre-temps)
+
+  const consentId = await ensureConsent(admin, link.owner_id, userId, link.scope ?? []);
+  if (!consentId) return INVALID;
+
+  await admin.from("profile_share_links").update({ consent_id: consentId }).eq("id", link.id);
+  return { ok: true, consentId, alreadyClaimed: false };
+}
+
+/** Consent profile_view ACTIF pour (partageur, lecteur) : réutilise ou crée. */
+async function ensureConsent(
+  admin: SupabaseClient,
+  ownerId: string,
+  userId: string,
+  scope: string[],
+): Promise<string | null> {
   const { data: existing } = await admin
     .from("contact_consents")
     .select("id")
     .eq("kind", "profile_view")
-    .eq("pilote_id", link.owner_id)
+    .eq("pilote_id", ownerId)
     .eq("proche_user_id", userId)
     .eq("status", "active")
     .maybeSingle();
+  if (existing) return existing.id as string;
 
-  let consentId = existing?.id as string | undefined;
-
-  if (!consentId) {
-    const now = new Date().toISOString();
-    const { data: inserted, error } = await admin
-      .from("contact_consents")
-      .insert({
-        pilote_id:      link.owner_id,
-        proche_user_id: userId,
-        requested_by:   link.owner_id, // Y a initié le partage
-        contact_id:     null,
-        kind:           "profile_view",
-        status:         "active",
-        scope:          link.scope ?? [],
-        responded_at:   now,
-        consented_at:   now,
-      })
-      .select("id")
-      .single();
-
-    if (error?.code === "23505") {
-      // Course perdue : un consent actif vient d'être créé — on le récupère
-      const { data: raced } = await admin
-        .from("contact_consents")
-        .select("id")
-        .eq("kind", "profile_view")
-        .eq("pilote_id", link.owner_id)
-        .eq("proche_user_id", userId)
-        .eq("status", "active")
-        .maybeSingle();
-      consentId = raced?.id as string | undefined;
-    } else if (!error && inserted) {
-      consentId = inserted.id as string;
-    }
-  }
-
-  if (!consentId) return { ok: false, reason: "invalid" };
-
-  // Marquer le lien réclamé — usage unique (condition claimed_at IS NULL :
-  // en cas de course sur le lien lui-même, un seul claim gagne)
-  const { data: marked } = await admin
-    .from("profile_share_links")
-    .update({ claimed_by: userId, claimed_at: new Date().toISOString(), consent_id: consentId })
-    .eq("id", link.id)
-    .is("claimed_at", null)
+  const now = new Date().toISOString();
+  const { data: inserted, error } = await admin
+    .from("contact_consents")
+    .insert({
+      pilote_id:      ownerId,
+      proche_user_id: userId,
+      requested_by:   ownerId, // Y a initié le partage
+      contact_id:     null,
+      kind:           "profile_view",
+      status:         "active",
+      scope,
+      responded_at:   now,
+      consented_at:   now,
+    })
     .select("id")
-    .maybeSingle();
+    .single();
 
-  if (!marked) {
-    // Quelqu'un d'autre a réclamé entre-temps
-    const { data: recheck } = await admin
-      .from("profile_share_links")
-      .select("claimed_by, consent_id")
-      .eq("id", link.id)
+  if (error?.code === "23505") {
+    // Course perdue sur l'index unique : un consent actif vient d'être créé
+    const { data: raced } = await admin
+      .from("contact_consents")
+      .select("id")
+      .eq("kind", "profile_view")
+      .eq("pilote_id", ownerId)
+      .eq("proche_user_id", userId)
+      .eq("status", "active")
       .maybeSingle();
-    if (recheck?.claimed_by === userId && recheck.consent_id) {
-      return { ok: true, consentId: recheck.consent_id as string, alreadyClaimed: true };
-    }
-    return { ok: false, reason: "invalid" };
+    return (raced?.id as string) ?? null;
   }
-
-  return { ok: true, consentId, alreadyClaimed: false };
+  return inserted ? (inserted.id as string) : null;
 }

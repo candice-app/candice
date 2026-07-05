@@ -101,8 +101,8 @@ export default function PartageClient() {
           <p style={{ fontSize: 14.5, fontWeight: 600, color: T.ink }}>Ton lien est prêt.</p>
         </div>
         <p style={{ fontSize: 13, fontWeight: 300, color: T.ink2, lineHeight: 1.6, marginBottom: 12 }}>
-          Envoie-le à la personne de ton choix. Il ne fonctionne qu&apos;une fois :
-          la première personne connectée qui l&apos;ouvre y accède, puis il expire.
+          Envoie-le à la personne de ton choix. Il ne fonctionne qu&apos;une fois —
+          la première personne connectée qui l&apos;ouvre y accède — et expire dans 30 jours.
         </p>
         <p style={{
           fontSize: 12.5, fontWeight: 300, color: T.ink2, lineHeight: 1.5,

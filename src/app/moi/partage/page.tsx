@@ -64,13 +64,14 @@ export default async function PartagePage() {
     })),
   );
 
-  // Liens générés, pas encore réclamés ni annulés
+  // Liens générés, pas encore réclamés ni annulés ni expirés
   const { data: linksRaw } = await supabase
     .from("profile_share_links")
     .select("id, scope, created_at")
     .eq("owner_id", user.id)
     .is("claimed_at", null)
     .is("revoked_at", null)
+    .gt("expires_at", new Date().toISOString())
     .order("created_at", { ascending: false });
 
   const openLinks = (linksRaw ?? []) as Array<{ id: string; scope: string[] | null; created_at: string }>;

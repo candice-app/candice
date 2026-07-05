@@ -10,6 +10,7 @@ import { createClient } from "@/utils/supabase/server";
 import { APP_URL } from "@/lib/resend";
 import { checkableSections } from "@/lib/profile/visibility";
 import { sanitizeScope, SCOPE_BLIND } from "@/lib/profile/share-sections";
+import { hashShareToken } from "@/lib/share-links";
 import { isQuestionnaireComplete, PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
 
 type Mode = "all" | "sections" | "blind";
@@ -39,12 +40,19 @@ export async function POST(req: NextRequest) {
     : mode === "blind" ? [SCOPE_BLIND]
     : sanitizeScope(body.sections);
 
+  // Un lien sans scope est impossible (CHECK en base — 'blind' compte pour un)
+  if (scope.length === 0) {
+    return NextResponse.json({ error: "Choisis au moins une section." }, { status: 400 });
+  }
+
+  // Le token brut n'existe qu'ici et dans l'URL retournée — seule son
+  // empreinte SHA-256 est stockée (expiration : 30 jours, DEFAULT en base).
   const token = randomBytes(24).toString("base64url");
 
   // Insert via client utilisateur → RLS owner_manage_share_links
   const { error } = await supabase
     .from("profile_share_links")
-    .insert({ owner_id: user.id, token, scope });
+    .insert({ owner_id: user.id, token_hash: hashShareToken(token), scope });
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
