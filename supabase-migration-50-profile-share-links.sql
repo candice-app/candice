@@ -15,13 +15,22 @@
 -- 4. contact_consents : le demandeur X peut ANNULER (DELETE) sa propre
 --    demande profile_view tant qu'elle est 'pending' — jamais après réponse.
 --
--- Additive — à UNE exception près, vérifiée : la V1 de ce fichier (token en
--- clair, sans expiration) a été appliquée avant la revue. La table V1 est
--- VIDE (0 ligne, vérifié le 2026-07-05 via l'API) et n'a jamais servi :
--- le DROP ci-dessous ne détruit AUCUNE donnée réelle. Sans lui, le
--- CREATE TABLE IF NOT EXISTS serait un no-op silencieux sur le schéma V1.
+-- Additive — à UNE exception près : la V1 de ce fichier (token en clair,
+-- sans expiration) a été appliquée avant la revue et doit être remplacée.
+-- Le DROP est GARDÉ DANS LE SQL : il n'a lieu que si la table est vide,
+-- sinon la migration échoue explicitement (aucune donnée réelle ne peut
+-- être détruite). Sans ce remplacement, le CREATE TABLE IF NOT EXISTS
+-- serait un no-op silencieux sur le schéma V1 obsolète.
 
-DROP TABLE IF EXISTS profile_share_links;
+DO $$ BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name =
+    'profile_share_links') THEN
+    IF EXISTS (SELECT 1 FROM profile_share_links LIMIT 1) THEN
+      RAISE EXCEPTION 'profile_share_links non vide — DROP refusé';
+    END IF;
+    DROP TABLE profile_share_links;
+  END IF;
+END $$;
 
 -- ── 1. Table ───────────────────────────────────────────────────────────────────
 
