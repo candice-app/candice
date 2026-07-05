@@ -15,7 +15,7 @@ import {
   PROFILE_ROW_SELECT,
   type ProfileRow,
 } from "@/lib/profile/sheet-data";
-import { SCOPE_BLIND } from "@/lib/profile/share-sections";
+import { SCOPE_BLIND, SCOPE_SOCLE } from "@/lib/profile/share-sections";
 
 export default async function PartagePage() {
   const supabase = await createClient();
@@ -50,11 +50,16 @@ export default async function PartagePage() {
     return (u?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "Quelqu'un";
   };
 
+  const scopeLabel = (scope: string[] | null) =>
+    (scope ?? []).includes(SCOPE_BLIND) ? "aveugle"
+    : (scope ?? []).includes(SCOPE_SOCLE) ? "essentiel seulement"
+    : "sections choisies";
+
   const activeShares = await Promise.all(
     consents.filter(c => c.status === "active").map(async c => ({
       id: c.id,
       firstName: await firstNameOf(c.proche_user_id),
-      blind: (c.scope ?? []).includes(SCOPE_BLIND),
+      scopeLabel: scopeLabel(c.scope),
     })),
   );
   const pendingRequests = await Promise.all(
@@ -152,7 +157,7 @@ export default async function PartagePage() {
                 <span style={{ fontSize: 14, fontWeight: 500, color: "var(--ink)" }}>
                   {s.firstName}
                   <span style={{ fontSize: 11.5, fontWeight: 400, color: "var(--ink-3)", marginLeft: 8 }}>
-                    {s.blind ? "aveugle" : "sections choisies"}
+                    {s.scopeLabel}
                   </span>
                 </span>
                 <RevokeShareButton consentId={s.id} firstName={s.firstName} />
@@ -172,7 +177,7 @@ export default async function PartagePage() {
                 padding: "12px 16px", marginBottom: 9,
               }}>
                 <span style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-2)" }}>
-                  {(l.scope ?? []).includes(SCOPE_BLIND) ? "Aveugle" : "Sections choisies"}
+                  {(() => { const s = scopeLabel(l.scope); return s.charAt(0).toUpperCase() + s.slice(1); })()}
                   {" · "}
                   {new Date(l.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
                 </span>

@@ -71,6 +71,14 @@ export function defaultCheckedKeys(): SectionKey[] {
 /** Marqueur du mode aveugle dans contact_consents.scope. */
 export const SCOPE_BLIND = "blind";
 
+/**
+ * Marqueur « essentiel seulement » (A.1 GO Estelle) : zéro section cochée
+ * sur un LIEN sortant → scope = ['socle'] (le CHECK ≥ 1 reste valable).
+ * Au rendu, sanitizeScope l'écarte → sharedSections = [] → le socle seul
+ * s'affiche (lead + topchips + donut), tout le reste en placeholder.
+ */
+export const SCOPE_SOCLE = "socle";
+
 /** Nettoie un scope stocké → sections cochables valides uniquement. */
 export function sanitizeScope(scope: string[] | null | undefined): SectionKey[] {
   const checkable = new Set<string>(checkableSections("invite_filtre"));

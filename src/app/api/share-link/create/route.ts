@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { APP_URL } from "@/lib/resend";
 import { checkableSections } from "@/lib/profile/visibility";
-import { sanitizeScope, SCOPE_BLIND } from "@/lib/profile/share-sections";
+import { sanitizeScope, SCOPE_BLIND, SCOPE_SOCLE } from "@/lib/profile/share-sections";
 import { hashShareToken } from "@/lib/share-links";
 import { isQuestionnaireComplete, PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
 
@@ -35,15 +35,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Mode invalide" }, { status: 400 });
   }
 
-  const scope =
+  const checked = sanitizeScope(body.sections);
+  const scope: string[] =
     mode === "all" ? checkableSections("invite_filtre")
     : mode === "blind" ? [SCOPE_BLIND]
-    : sanitizeScope(body.sections);
-
-  // Un lien sans scope est impossible (CHECK en base — 'blind' compte pour un)
-  if (scope.length === 0) {
-    return NextResponse.json({ error: "Choisis au moins une section." }, { status: 400 });
-  }
+    // Zéro case cochée = « Partager l'essentiel seulement » (A.1 validé) :
+    // sentinelle 'socle' — le CHECK scope ≥ 1 reste satisfait.
+    : checked.length > 0 ? checked : [SCOPE_SOCLE];
 
   // Le token brut n'existe qu'ici et dans l'URL retournée — seule son
   // empreinte SHA-256 est stockée (expiration : 30 jours, DEFAULT en base).

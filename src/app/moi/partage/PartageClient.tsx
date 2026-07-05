@@ -166,7 +166,22 @@ export default function PartageClient() {
         </span>
       </button>
 
-      {mode === "sections" && <SectionPicker checked={checked} onToggle={toggle} />}
+      {mode === "sections" && (
+        <>
+          <SectionPicker checked={checked} onToggle={toggle} />
+          {/* Zéro case cochée : état explicite, jamais ambigu (A.1 validé) */}
+          {checked.size === 0 && (
+            <p style={{
+              fontSize: 13, fontWeight: 500, color: T.pine, lineHeight: 1.5,
+              background: "#EAF1EC", border: `1px solid ${T.line}`, borderRadius: 12,
+              padding: "10px 14px", margin: "0 0 10px",
+            }}>
+              Partager l&apos;essentiel seulement
+              <span style={{ fontWeight: 300, color: T.ink2 }}> — résumé, traits, langage d&apos;attention.</span>
+            </p>
+          )}
+        </>
+      )}
 
       {/* Option 3 — aveugle */}
       <button onClick={() => setMode("blind")} style={optionCard(mode === "blind")}>

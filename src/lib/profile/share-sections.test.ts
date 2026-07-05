@@ -9,6 +9,7 @@ import {
   defaultCheckedKeys,
   sanitizeScope,
   SCOPE_BLIND,
+  SCOPE_SOCLE,
 } from "./share-sections";
 
 describe("SHARE_GROUPS ↔ matrice", () => {
@@ -33,9 +34,13 @@ describe("SHARE_GROUPS ↔ matrice", () => {
 });
 
 describe("sanitizeScope — intersection stricte", () => {
-  it("filtre tout ce qui n'est pas cochable (blind, never, inconnu)", () => {
-    expect(sanitizeScope([SCOPE_BLIND, "wishlist", "art9", "facts_adresse", "n_importe_quoi", "gifts"]))
+  it("filtre tout ce qui n'est pas cochable (blind, socle, never, inconnu)", () => {
+    expect(sanitizeScope([SCOPE_BLIND, SCOPE_SOCLE, "wishlist", "art9", "facts_adresse", "n_importe_quoi", "gifts"]))
       .toEqual(["gifts"]);
+  });
+
+  it("['socle'] (essentiel seulement) → sharedSections vide : le socle seul s'affiche", () => {
+    expect(sanitizeScope([SCOPE_SOCLE])).toEqual([]);
   });
 
   it("null/undefined → vide", () => {
