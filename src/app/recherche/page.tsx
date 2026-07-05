@@ -9,6 +9,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import V4Shell from "@/components/layout/V4Shell";
 import RechercheClient from "./RechercheClient";
+import CancelRequestButton from "./CancelRequestButton";
 import {
   isQuestionnaireComplete,
   PROFILE_ROW_SELECT,
@@ -131,16 +132,17 @@ export default async function RecherchePage() {
             <SectionLabel>Demandes envoyées</SectionLabel>
             {pending.map(p => (
               <div key={p.id} style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
+                display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8,
                 border: "1px dashed rgba(23,62,49,.2)", borderRadius: 14,
-                padding: "13px 16px", marginBottom: 9,
+                padding: "6px 6px 6px 16px", marginBottom: 9,
               }}>
                 <span style={{ fontSize: 13.5, fontWeight: 300, color: "var(--ink-2)" }}>
                   En attente de réponse
+                  <span style={{ fontSize: 12, color: "var(--ink-3)", marginLeft: 8 }}>
+                    {new Date(p.requested_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
+                  </span>
                 </span>
-                <span style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)" }}>
-                  {new Date(p.requested_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}
-                </span>
+                <CancelRequestButton consentId={p.id} />
               </div>
             ))}
           </>
