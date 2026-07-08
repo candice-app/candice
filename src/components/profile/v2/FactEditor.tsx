@@ -4,7 +4,7 @@
 // pratiques (pattern de la sheet mobilité). Plus aucun renvoi vers la page
 // questionnaire legacy. Brut affiché UNIQUEMENT ici (mode modification).
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { T2 } from "./ui";
 import { Sheet } from "./Sheet";
@@ -32,6 +32,16 @@ const DATE_TYPES = [
   { id: "mariage", label: "Mariage" }, { id: "perso", label: "Date perso" },
   { id: "symbolique", label: "Date symbolique" },
 ];
+// P2.8 : Anniversaire et Fête = récurrents annuels → jour + mois, année optionnelle
+const RECURRING_TYPES = ["anniversaire", "fete"];
+const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+const splitDate = (d: string) => {
+  const [y, m, day] = (d ?? "").split("-");
+  return { y: y === "0000" ? "" : (y ?? ""), m: m ?? "", d: day ?? "" };
+};
+const joinDate = (y: string, m: string, d: string) =>
+  m && d ? `${y || "0000"}-${m.padStart(2, "0")}-${d.padStart(2, "0")}` : "";
 
 const TITLES: Record<FactEditorKind, string> = {
   adresse: "Adresse de livraison",
@@ -81,6 +91,27 @@ export default function FactEditor({
   const router = useRouter();
   const pe = data.practicalEdit;
   const [adresse, setAdresse] = useState(pe.adresse_livraison);
+  // P2.9 — autocomplétion API Adresse nationale (gratuite, sans clé)
+  const [addrQuery, setAddrQuery] = useState("");
+  const [addrSuggestions, setAddrSuggestions] = useState<string[]>([]);
+  const [addrFree, setAddrFree] = useState(!!pe.adresse_livraison);
+
+  const addrSeq = useRef(0);
+  const searchAddr = (q: string) => {
+    setAddrQuery(q);
+    if (q.trim().length < 4) { setAddrSuggestions([]); return; }
+    const seq = ++addrSeq.current; // debounce : seule la dernière saisie aboutit
+    setTimeout(async () => {
+      if (seq !== addrSeq.current) return;
+      const res = await fetch(
+        `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=5&type=housenumber`,
+      ).catch(() => null);
+      if (!res?.ok || seq !== addrSeq.current) return;
+      const json = await res.json() as { features?: Array<{ properties?: { label?: string } }> };
+      if (seq !== addrSeq.current) return;
+      setAddrSuggestions((json.features ?? []).map(f => f.properties?.label ?? "").filter(Boolean));
+    }, 300);
+  };
   const [tv, setTv] = useState(pe.taille_vetements);
   const [tc, setTc] = useState(pe.taille_chaussures);
   const [regime, setRegime] = useState(pe.regime);
@@ -117,14 +148,67 @@ export default function FactEditor({
     <Sheet open={kind !== null} onClose={onClose} title={kind ? TITLES[kind] : ""}>
       {kind === "adresse" && (
         <>
-          <Label>Adresse (visible par toi et Candice uniquement)</Label>
-          <textarea
-            value={adresse}
-            onChange={e => setAdresse(e.target.value)}
-            rows={3}
-            placeholder="Numéro, rue, code postal, ville"
-            style={{ ...inputStyle, padding: "12px 14px", resize: "vertical", lineHeight: 1.5 }}
-          />
+          {adresse && (
+            <>
+              <Label>Adresse actuelle</Label>
+              <p style={{ fontSize: 14, color: T2.ink, lineHeight: 1.5, marginBottom: 4 }}>{adresse}</p>
+            </>
+          )}
+          {!addrFree ? (
+            <>
+              <Label>Chercher une adresse</Label>
+              <input
+                value={addrQuery}
+                onChange={e => searchAddr(e.target.value)}
+                placeholder="ex. 12 rue de la Paix Paris"
+                autoComplete="off"
+                style={inputStyle}
+              />
+              {addrSuggestions.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setAdresse(s); setAddrQuery(""); setAddrSuggestions([]); }}
+                  style={{
+                    display: "block", width: "100%", textAlign: "left", minHeight: 44,
+                    padding: "10px 12px", fontSize: 13.5, color: T2.ink,
+                    background: "#fff", border: `1px solid ${T2.line}`, borderRadius: 10,
+                    marginTop: 6, cursor: "pointer", fontFamily: "var(--font-sans)",
+                  }}
+                >
+                  {s}
+                </button>
+              ))}
+              <button
+                onClick={() => setAddrFree(true)}
+                style={{
+                  minHeight: 44, background: "none", border: "none", cursor: "pointer",
+                  fontSize: 12.5, color: T2.ink3, padding: "6px 2px", fontFamily: "var(--font-sans)",
+                }}
+              >
+                Je ne trouve pas mon adresse
+              </button>
+            </>
+          ) : (
+            <>
+              <Label>Adresse (visible par toi et Candice uniquement)</Label>
+              <textarea
+                value={adresse}
+                onChange={e => setAdresse(e.target.value)}
+                rows={3}
+                placeholder="Numéro, rue, code postal, ville"
+                style={{ ...inputStyle, padding: "12px 14px", resize: "vertical", lineHeight: 1.5 }}
+              />
+              <button
+                onClick={() => setAddrFree(false)}
+                style={{
+                  minHeight: 44, background: "none", border: "none", cursor: "pointer",
+                  fontSize: 12.5, color: T2.ink3, padding: "6px 2px", fontFamily: "var(--font-sans)",
+                }}
+              >
+                Chercher mon adresse
+              </button>
+            </>
+          )}
         </>
       )}
 
@@ -180,6 +264,9 @@ export default function FactEditor({
 
       {kind === "dates" && (
         <>
+          <p style={{ fontSize: 12.5, color: T2.ink3, lineHeight: 1.5, marginBottom: 12 }}>
+            Ici, tes dates à toi. Celles de tes proches vivent sur leur fiche.
+          </p>
           {dates.map((d, i) => (
             <div key={i} style={{
               border: `1px solid ${T2.line}`, borderRadius: 14, padding: "12px 12px 4px",
@@ -193,15 +280,49 @@ export default function FactEditor({
               <input
                 value={d.label}
                 onChange={e => setDate(i, { label: e.target.value })}
-                placeholder="Intitulé (ex. Anniversaire de Maman)"
+                placeholder="Intitulé (ex. Mon anniversaire)"
                 style={{ ...inputStyle, marginBottom: 10 }}
               />
-              <input
-                type="date"
-                value={d.date ?? ""}
-                onChange={e => setDate(i, { date: e.target.value })}
-                style={{ ...inputStyle, marginBottom: 10 }}
-              />
+              {RECURRING_TYPES.includes(d.type) ? (
+                // Récurrent annuel : jour + mois obligatoires, année optionnelle
+                (() => {
+                  const p = splitDate(d.date ?? "");
+                  return (
+                    <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
+                      <select
+                        value={p.d ? String(Number(p.d)) : ""}
+                        onChange={e => setDate(i, { date: joinDate(p.y, p.m, e.target.value) })}
+                        style={{ ...inputStyle, width: 90, flex: "0 0 90px" }}
+                      >
+                        <option value="">Jour</option>
+                        {Array.from({ length: 31 }, (_, j) => <option key={j + 1} value={j + 1}>{j + 1}</option>)}
+                      </select>
+                      <select
+                        value={p.m ? String(Number(p.m)) : ""}
+                        onChange={e => setDate(i, { date: joinDate(p.y, e.target.value, p.d) })}
+                        style={{ ...inputStyle, flex: 1, minWidth: 130 }}
+                      >
+                        <option value="">Mois</option>
+                        {MONTHS.map((mo, j) => <option key={j + 1} value={j + 1}>{mo}</option>)}
+                      </select>
+                      <input
+                        type="number"
+                        value={p.y}
+                        onChange={e => setDate(i, { date: joinDate(e.target.value.slice(0, 4), p.m, p.d) })}
+                        placeholder="Année — optionnel, utile pour l'âge"
+                        style={{ ...inputStyle, flex: "1 1 100%" }}
+                      />
+                    </div>
+                  );
+                })()
+              ) : (
+                <input
+                  type="date"
+                  value={d.date ?? ""}
+                  onChange={e => setDate(i, { date: e.target.value })}
+                  style={{ ...inputStyle, marginBottom: 10 }}
+                />
+              )}
               <button
                 onClick={() => setDates(ds => ds.filter((_, j) => j !== i))}
                 style={{

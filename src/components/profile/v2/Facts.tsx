@@ -48,6 +48,7 @@ function FactRow({
 
 export default function FactsV2({ data }: { data: ProfileV2Data }) {
   const [mobOpen, setMobOpen] = useState(false);
+  const [art9Open, setArt9Open] = useState(false);
   // C3 STOP C : édition DIRECTE en sheet — plus aucun renvoi vers la page
   // questionnaire legacy depuis la fiche.
   const [editor, setEditor] = useState<FactEditorKind | null>(null);
@@ -102,13 +103,16 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
 
       {rows}
 
-      {/* Art.9 — badge Privé, « Gérer » MASQUÉ (arbitrage A.1 STOP C) :
-          aucune cible exacte n'existe avant le lot A3/RGPD — un CTA qui
-          n'atterrit pas sur sa question exacte est interdit. */}
-      <div style={{
-        display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
-        padding: "12px 0", minHeight: 50,
-      }}>
+      {/* Art.9 — badge Privé, pas de CTA de saisie (lot A3 inchangé).
+          P2.10 : le tap ouvre une sheet d'explication — jamais de tap muet. */}
+      <button
+        onClick={() => setArt9Open(true)}
+        style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
+          padding: "12px 0", minHeight: 50, width: "100%", background: "none",
+          border: "none", cursor: "pointer", textAlign: "left", fontFamily: "var(--font-sans)",
+        }}
+      >
         <span style={{ fontSize: 13, color: T2.ink2 }}>
           Santé · handicap · religion
           <small style={{ display: "block", fontSize: 11, color: T2.ink3, marginTop: 2 }}>
@@ -122,7 +126,15 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
         }}>
           Privé
         </span>
-      </div>
+      </button>
+
+      <Sheet open={art9Open} onClose={() => setArt9Open(false)} title="Santé · handicap · religion">
+        <p style={{ fontSize: 14, lineHeight: 1.6, color: T2.ink2, marginBottom: 13 }}>
+          Cet espace sensible arrive bientôt. Tu choisiras d&apos;y renseigner — ou
+          non — ce qui compte pour bien t&apos;accueillir. Ces informations restent
+          toujours privées.
+        </p>
+      </Sheet>
 
       {/* Sheets d'édition dédiées (C3) — recréées à l'ouverture (key) pour
           repartir des valeurs fraîches après router.refresh() */}

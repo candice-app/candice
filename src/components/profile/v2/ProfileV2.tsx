@@ -16,6 +16,7 @@ import TerritoryV2Block from "./Territory";
 import UniverseV2Block from "./Universe";
 import FactsV2 from "./Facts";
 import ViserV2 from "./Viser";
+import BottomCtas from "./BottomCtas";
 import type { ProfileV2Data } from "@/lib/profile/v2-data";
 
 export default function ProfileV2({ data }: { data: ProfileV2Data }) {
@@ -100,6 +101,9 @@ export default function ProfileV2({ data }: { data: ProfileV2Data }) {
 
       {/* C7 STOP C : « Voir ma fiche partagée » MASQUÉE jusqu'à la livraison
           de /moi/partage/apercu (Phase D) — aucun CTA mort en prod. */}
+
+      {/* P2.11 : mêmes gestes qu'en haut, sans remonter toute la fiche */}
+      <BottomCtas />
 
       <div style={{ height: 22 }} />
     </div>
