@@ -79,6 +79,9 @@ export async function personalizeQuestion(
       max_tokens: 80,
       system: `Tu es Candice. Reformule cette question en 1 phrase douce, chaleureuse, jamais analytique.
 Garde exactement le même sens. Réponds UNIQUEMENT avec la question reformulée, sans guillemets.
+RÈGLE ABSOLUE (C6) : question toujours CONCRÈTE, jamais lyrique ni métaphorique.
+INTERDIT : « ton cœur », « ton âme », « t'appelle », « résonne », envolées poétiques.
+Si tu ne peux pas améliorer sans t'éloigner du texte, rends le texte ORIGINAL tel quel.
 Ton : ${contextHint ? `Contexte : ${contextHint}. ` : ''}Doux, précis, jamais corporate.`,
       messages: [{ role: 'user', content: base.question_text }],
     });
