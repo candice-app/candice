@@ -33,6 +33,7 @@ Ces règles priment sur toute habitude par défaut. En cas de conflit avec une a
 6. Respecte l'ordre d'exécution demandé. Commits atomiques, un par étape. TypeScript clean.
 7. Migrations additives par défaut, jamais destructives sur des données réelles. Signale toujours toute migration Supabase à appliquer, avec le nom exact du fichier.
 8. Quand un point de STOP est demandé, tu t'arrêtes, tu récapitules, et tu attends la validation avant de continuer.
+9. PUSH SYSTÉMATIQUE : à chaque STOP et à chaque fin de lot, `git push` sans exception — un STOP validé sur device suppose que le device voit le code.
 
 ## RAPPORT D'HYPOTHÈSES — OBLIGATOIRE EN FIN DE CHAQUE TÂCHE
 
