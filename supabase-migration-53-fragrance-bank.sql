@@ -87,7 +87,7 @@ INSERT INTO discovery_questions (
   ARRAY['fragrance_families'],
   false, false,
   NULL, 425, 'self', 'active',
-  'Des idées parfum qui te ressemblent', '20 sec'
+  'Des cadeaux parfum qui te ressemblent', '20 sec'
 )
 ON CONFLICT (question_key) DO UPDATE SET
   question_text = EXCLUDED.question_text,
