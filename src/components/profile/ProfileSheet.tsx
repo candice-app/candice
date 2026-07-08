@@ -55,6 +55,14 @@ export interface ProfileSheetData {
 
   // Discovery (pilote uniquement)
   discoveryAvailable: boolean;
+  /**
+   * Garde unifiée (Phase B) : sections Discovery ayant AU MOINS une question
+   * disponible (statuts + donnée en fiche + triggers). Un CTA « Complète X »
+   * ne s'affiche que si sa section est disponible — sinon la question serait
+   * déjà répondue ou la donnée déjà en fiche. undefined = pas de garde
+   * (rétro-compatibilité des appelants sans CTA).
+   */
+  availableSections?: string[];
 }
 
 interface Props {
@@ -436,6 +444,14 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
     return !!(s?.text && s.text.trim().length > 3) || (s?.chips?.length ?? 0) > 0;
   };
 
+  // Garde unifiée (Phase B) : le CTA d'une section mappée Discovery n'apparaît
+  // que si le moteur a une question disponible (jamais de re-demande).
+  const completable = (s: SectionKey): boolean => {
+    const disc = SECTION_TO_DISCOVERY[s];
+    if (!disc || data.availableSections === undefined) return true;
+    return data.availableSections.includes(disc);
+  };
+
   // CTA « Affiner avec Candice » : pilote seulement — chez un tiers la section est omise
   const emptyCta = (label: string, href?: string) =>
     view === "pilote" ? (
@@ -612,7 +628,9 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
           <ModCard icon="touch" family="pine" title={tt("what_touches", "Ce qui te touche")}
             text={t("what_touches", sec("what_touches")?.text) ?? undefined}
             chips={sec("what_touches")?.chips} />
-        ) : emptyCta("Précise ce qui te touche vraiment.", sectionCtaHref("what_touches", editHref)))}
+        ) : (completable("what_touches")
+          ? emptyCta("Précise ce qui te touche vraiment.", sectionCtaHref("what_touches", editHref))
+          : null))}
         {notSharedCard("what_touches", data.gender === "feminine" ? "Ce qui la touche" : "Ce qui le touche")}
 
         {/* ── Ce que Candice a compris ── */}
@@ -683,7 +701,9 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
             {THEME_CARDS.map(c => {
               if (show(c.section).notShared) return <span key={c.section}>{notSharedCard(c.section, tt3(c.title))}</span>;
               if (!show(c.section).shown) return null;
-              if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>;
+              if (!hasSec(c.section)) return completable(c.section)
+                ? <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>
+                : null;
               return (
                 <ModCard key={c.section} icon={c.icon} family={c.family} title={tt(c.section, c.title)}
                   text={t(c.section, sec(c.section)?.text) ?? undefined}
@@ -715,12 +735,16 @@ export default function ProfileSheet({ view, data, sharedSections, editHref = "/
                   ))}
                 </div>
               </Card>
-            ) : emptyCta("Ajoute les marques et lieux où tu te sens bien.", sectionCtaHref("brands", editHref)))}
+            ) : (completable("brands")
+              ? emptyCta("Ajoute les marques et lieux où tu te sens bien.", sectionCtaHref("brands", editHref))
+              : null))}
             {notSharedCard("brands", "Marques & lieux où il/elle se sent bien")}
             {UNIVERS_CARDS.map(c => {
               if (show(c.section).notShared) return <span key={c.section}>{notSharedCard(c.section, tt3(c.title))}</span>;
               if (!show(c.section).shown) return null;
-              if (!hasSec(c.section)) return <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>;
+              if (!hasSec(c.section)) return completable(c.section)
+                ? <span key={c.section}>{emptyCta(`Complète « ${c.title} » avec Candice.`, sectionCtaHref(c.section, editHref))}</span>
+                : null;
               return (
                 <ModCard key={c.section} icon={c.icon} family={c.family} title={tt(c.section, c.title)}
                   text={t(c.section, sec(c.section)?.text) ?? undefined}

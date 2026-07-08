@@ -74,12 +74,15 @@ export default async function MoiPage() {
   const analysisSnapshot: ProfileAnalysisSnapshot | null = analysis?.sections
     ? { sections: analysis.sections as Record<string, { text?: string; chips?: string[] }> }
     : null;
-  const discoveryAvailable =
-    (await getAvailableDiscoverySections(user.id, supabase, analysisSnapshot)).size > 0;
+  // Garde unifiée (Phase B) : le même ensemble pilote le bloc « Pour affiner »
+  // ET chaque CTA « Complète X » de la fiche — jamais de re-demande.
+  const availableSections = await getAvailableDiscoverySections(user.id, supabase, analysisSnapshot);
+  const discoveryAvailable = availableSections.size > 0;
 
-  const data: ProfileSheetData = buildProfileSheetData({
-    profile, analysis, firstName, discoveryAvailable,
-  });
+  const data: ProfileSheetData = {
+    ...buildProfileSheetData({ profile, analysis, firstName, discoveryAvailable }),
+    availableSections: Array.from(availableSections),
+  };
 
   return (
     <V4Shell active="profile">
