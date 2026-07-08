@@ -17,6 +17,7 @@ import UniverseV2Block from "./Universe";
 import FactsV2 from "./Facts";
 import ViserV2 from "./Viser";
 import BottomCtas from "./BottomCtas";
+import Link from "next/link";
 import { resolveVisibility, type ProfileView, type SectionKey } from "@/lib/profile/visibility";
 import type { ProfileV2Data } from "@/lib/profile/v2-data";
 import type { WishlistItemV1 } from "@/app/moi/wishlist/WishlistClient";
@@ -235,6 +236,24 @@ export default function ProfileV2({
           <DivTxt2>Pour mieux viser</DivTxt2>
           <ViserV2 nudges={data.nudges} />
         </>
+      )}
+
+      {/* « Voir ma fiche partagée » — réactivée (C7) : /moi/partage/apercu livré */}
+      {view === "pilote" && (
+        <Link href="/moi/partage/apercu" style={{
+          margin: "18px 14px 0", display: "flex", alignItems: "center",
+          justifyContent: "space-between", gap: 12, border: `1px solid ${T2.line}`,
+          borderRadius: 7, background: "#fff", padding: "14px 16px",
+          boxShadow: T2.shadow, minHeight: 54, textDecoration: "none", color: "inherit",
+        }}>
+          <span style={{ fontSize: 14, fontWeight: 550 }}>
+            Voir ma fiche partagée
+            <small style={{ display: "block", fontSize: 12.5, color: T2.ink3, fontWeight: 400, marginTop: 2 }}>
+              Ce que voient tes proches — jamais l&apos;intime
+            </small>
+          </span>
+          <Icon name="chevron" size={15} style={{ color: T2.pine }} />
+        </Link>
       )}
 
       {show("bottom_ctas").shown && <BottomCtas />}
