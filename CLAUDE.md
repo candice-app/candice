@@ -39,6 +39,7 @@ Ces règles priment sur toute habitude par défaut. En cas de conflit avec une a
 7. Migrations additives par défaut, jamais destructives sur des données réelles. Signale toujours toute migration Supabase à appliquer, avec le nom exact du fichier.
 8. Quand un point de STOP est demandé, tu t'arrêtes, tu récapitules, et tu attends la validation avant de continuer.
 9. PUSH SYSTÉMATIQUE : à chaque STOP et à chaque fin de lot, `git push` sans exception — un STOP validé sur device suppose que le device voit le code.
+10. COMPTE QA PERMANENT : test-perf-claude@candice.app (fiche 100 % synthétique) — sert aux vérifications navigateur (WebKit/Playwright) contre la prod à chaque lot. Ne jamais le supprimer, ne jamais y mettre de vraies données.
 
 ## RAPPORT D'HYPOTHÈSES — OBLIGATOIRE EN FIN DE CHAQUE TÂCHE
 

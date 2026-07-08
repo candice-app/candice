@@ -52,7 +52,7 @@ export default function CookieBanner() {
       {/* Text */}
       <div style={{ flex: 1, minWidth: 260 }}>
         <p style={{ fontSize: 13, fontWeight: 400, color: "#2C1A0E", marginBottom: 4, lineHeight: 1.5 }}>
-          🍪 Candice utilise des cookies pour faire fonctionner l&apos;application et, si vous l&apos;acceptez, pour analyser l&apos;usage de façon anonyme.
+          Candice utilise des cookies pour faire fonctionner l&apos;application et, si vous l&apos;acceptez, pour analyser l&apos;usage de façon anonyme.
         </p>
         <p style={{ fontSize: 11, fontWeight: 300, color: "#9E7B5A", lineHeight: 1.5 }}>
           Cookies nécessaires toujours actifs.{" "}
