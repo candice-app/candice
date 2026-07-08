@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Candice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=DM+Sans:opsz,wght@9..40,300..700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --canvas:#FEFEFB;--surface:#FFFFFF;--mist:#EEF3F0;--ink:#16150E;--ink2:#5F5A51;--ink3:#ABA699;
+ --pine:#173E31;--pine2:#1B4D3E;--pine-lite:#2A7B5C;--glow:#3E7361;--sage:#8DA697;--sage-bg:#E9F0EC;
+ --champ:#CDB987;--gold:#C7A85A;--champ-soft:#FBF8F0;--coral:#B9583F;--coral-bg:#F7ECE7;
+ --terra:#C57B4E;--blue:#5F8190;
+ --aplat:linear-gradient(157deg,#1D5040,#0C2A20);
+ --line:rgba(23,62,49,.11);--line2:rgba(23,62,49,.06);--shadow:0 10px 30px rgba(23,62,49,.07)
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--canvas)}
+body{font-family:'DM Sans',sans-serif;color:var(--ink);max-width:480px;margin:0 auto;min-height:100vh}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit;text-align:left}
+.screen{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+.icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── HEADER APLAT PLEINE LARGEUR ── */
+.gh{background:var(--aplat);color:#fff;position:relative;overflow:hidden;border-radius:0 0 30px 30px;box-shadow:0 18px 40px rgba(23,62,49,.24)}
+.gh:before{content:"";position:absolute;left:-60px;bottom:-90px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(62,115,97,.35),transparent 70%);pointer-events:none}
+.gh:after{content:"";position:absolute;right:-30px;top:-56px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.38),transparent 70%);pointer-events:none}
+.ghBrand{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top)) 22px 0}
+.brand{display:flex;align-items:center;gap:9px;font-family:Fraunces,serif;font-style:italic;font-size:19px;color:#fff;letter-spacing:.2px}
+.brand .o{width:17px;height:17px;border-radius:50%;background:radial-gradient(circle at 42% 34%,#F4E7C4,#CDB987 58%,#9A7D2E);box-shadow:0 0 12px rgba(205,185,135,.75)}
+.ghActs{display:flex;gap:8px}
+.ghActs button{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;color:#fff}
+.ghActs .icon{width:17px;height:17px}
+.ghIn{position:relative;z-index:2;padding:26px 22px 26px}
+.ghTop{display:flex;align-items:center;gap:17px}
+.av{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:Fraunces,serif;font-size:32px;color:var(--pine);background:radial-gradient(circle at 35% 30%,#fff,var(--champ-soft));border:1px solid rgba(205,185,135,.55);flex-shrink:0;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.ghTop h1{font-family:Fraunces,serif;font-weight:400;font-size:34px;letter-spacing:.2px}
+.knows{display:flex;align-items:center;gap:9px;margin-top:7px}
+.kring{width:19px;height:19px;border-radius:50%;background:conic-gradient(var(--champ) 0 316deg,rgba(255,255,255,.16) 316deg 360deg);position:relative;flex-shrink:0;box-shadow:0 0 10px rgba(205,185,135,.45)}
+.kring:before{content:"";position:absolute;inset:3.5px;border-radius:50%;background:#164534}
+.knowMore{position:relative;z-index:2;display:inline-flex;align-items:center;gap:5px;margin:2px 0 0 28px;font-size:12.5px;font-weight:500;color:rgba(235,221,182,.72);min-height:34px}
+.knowMore .icon{width:13px;height:13px}
+.knows p{font-size:14.5px;color:rgba(255,255,255,.84)}
+.knows p b{color:#EBDDB6;font-weight:600}
+.ghCtas{display:flex;gap:10px;margin-top:24px}
+.gbtn{flex:1;min-height:50px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600}
+.gbtn.w{background:#fff;color:var(--pine);box-shadow:0 6px 16px rgba(0,0,0,.14)}
+.gbtn.g{border:1px solid rgba(255,255,255,.4);color:#fff}
+.gbtn.w small{font-weight:500;font-size:11px;color:var(--ink3);margin-left:7px}
+.wishRow{position:relative;z-index:2;display:flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;font-weight:600;color:#EBDDB6;min-height:40px}
+.wishRow .icon{width:15px;height:15px}
+.sharedRow{margin:18px 14px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid var(--line);border-radius:7px;background:#fff;padding:14px 16px;box-shadow:var(--shadow);min-height:54px}
+.sharedRow .l{font-size:13.5px;font-weight:550}
+.sharedRow .l small{display:block;font-size:11.5px;color:var(--ink3);font-weight:400;margin-top:2px}
+.sharedRow .icon{width:15px;height:15px;color:var(--pine);flex-shrink:0}
+
+/* ── Résumé ── */
+.resume{padding:26px 22px 4px}
+.resume p{font-family:Fraunces,serif;font-size:19px;line-height:1.5;font-weight:400}
+.resume p em{font-style:italic;color:var(--pine)}
+.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.tag{font-size:11px;color:var(--pine2);background:rgba(23,62,49,.06);padding:6px 11px;border-radius:9px;font-weight:500}
+.tag.warn{color:#7a4b1e;background:rgba(205,185,135,.22)}
+.tag.soft{color:var(--pine2);background:rgba(23,62,49,.06)}
+.readmore{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:13.5px;font-weight:600;color:var(--pine);min-height:44px}
+.readmore .icon{width:14px;height:14px}
+
+.divtxt{display:flex;align-items:center;gap:10px;margin:26px 20px 13px;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.divtxt:before,.divtxt:after{content:"";flex:1;height:1px;background:var(--line2)}
+.pt{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(62,115,97,.75);flex-shrink:0}
+.pt.pine{background:var(--glow);box-shadow:0 0 6px rgba(62,115,97,.7)}
+.avBadge{position:absolute;right:-2px;bottom:0;width:20px;height:20px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.avBadge i{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle at 40% 34%,#27604B,#0D2A20);box-shadow:0 0 6px rgba(62,115,97,.8)}
+.avCam{position:absolute;left:-3px;bottom:0;width:24px;height:24px;border-radius:50%;background:var(--pine);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.25);border:1.5px solid rgba(255,255,255,.85)}
+.avCam .icon{width:12px;height:12px;color:#fff}
+.avWrap{position:relative;flex-shrink:0}
+.barDot{position:absolute;top:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 40% 34%,#F4E7C4,var(--champ));box-shadow:0 0 8px rgba(205,185,135,.9)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.mod{margin:0 14px 12px;padding:17px 16px}
+.mh{font-family:Fraunces,serif;font-size:18px;font-weight:450;margin-bottom:4px}
+.md{font-size:13.5px;color:var(--ink2);line-height:1.52;margin-top:8px}
+.md b{color:var(--ink);font-weight:600}
+.msub{font-size:12.5px;color:var(--ink2);line-height:1.45}
+
+/* ── PODIUM (B) ── */
+.pod{margin-top:15px}
+.rowB{margin-bottom:12px}
+.rowB:last-child{margin-bottom:2px}
+.rowB .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px}
+.rowB .top b{font-size:14.5px;font-weight:560}
+.rowB .top span{font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;font-weight:700;color:var(--ink3)}
+.rowB .bar{height:26px;border-radius:9px;background:var(--line2);overflow:hidden}
+.rowB .bar i{display:block;height:100%;border-radius:9px}
+.ginsights{margin-top:16px;border-top:1px solid var(--line2);padding-top:13px}
+.gin{display:flex;gap:9px;font-size:13px;line-height:1.45;color:var(--ink2);margin-bottom:7px}
+.gin i{color:var(--gold);font-style:normal;font-family:Fraunces,serif}
+
+/* ── Carrousel ── */
+.caro{display:flex;gap:11px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 18px 10px;scrollbar-width:none}
+.caro::-webkit-scrollbar{display:none}
+.cc{flex:0 0 232px;scroll-snap-align:start;border-radius:18px;padding:16px;min-height:132px;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.cc .eyebrow{font-size:9.5px;letter-spacing:1.6px;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.cc p{font-size:13.5px;line-height:1.48;font-weight:450}
+.cc.green{background:var(--aplat);color:#fff;position:relative;overflow:hidden}
+.cc.green:after{content:"";position:absolute;right:-22px;top:-40px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.34),transparent 70%)}
+.cc.green .eyebrow{color:var(--champ)}
+.cc.green p{position:relative;color:rgba(255,255,255,.94)}
+.cc.ivory{background:#fff;border:1px solid var(--line)}
+.cc.ivory .eyebrow{color:var(--pine-lite)}
+.cc.champs{background:linear-gradient(160deg,#FBF8F0,#F3EAD3);border:1px solid rgba(199,168,90,.25)}
+.cc.champs .eyebrow{color:#9a7d2e}
+.cc.sagec{background:var(--sage-bg);border:1px solid rgba(141,166,151,.3)}
+.cc.sagec .eyebrow{color:#3d5a4b}
+
+/* ── Deep / Lire plus ── */
+.deep .more{max-height:0;overflow:hidden;transition:max-height .32s ease}
+.deep.open .more{max-height:300px}
+.deep .more p{font-size:13.5px;line-height:1.56;color:var(--ink2);padding-top:10px}
+.plus{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--pine);min-height:44px;margin-top:2px}
+.plus .icon{width:14px;height:14px;transition:transform .25s}
+.deep.open .plus .icon{transform:rotate(90deg)}
+.thIc{width:36px;height:36px;border-radius:12px;background:var(--mist);color:var(--pine);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.thIc .icon{width:18px;height:18px}
+.thIc.ch{background:rgba(205,185,135,.22);color:#7a4b1e}
+.thHead{display:flex;align-items:center;gap:11px;margin-bottom:6px}
+.thHead .mh{margin-bottom:0}
+
+/* ── Ce qui marche ── */
+.wk{padding:12px 0;border-bottom:1px solid var(--line2)}
+.wk:last-child{border-bottom:none;padding-bottom:2px}
+.wkTop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.wkTop b{font-size:14.5px;font-weight:600}
+.lv{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:4px 9px;border-radius:8px}
+.lv.vf{background:rgba(23,62,49,.08);color:var(--pine)}
+.lv.f{background:var(--sage-bg);color:#3d5a4b}
+.lv.d{background:rgba(205,185,135,.22);color:#7a4b1e}
+.wk p{font-size:12.5px;color:var(--ink2);line-height:1.45;margin-top:4px}
+.wk .seg{display:flex;gap:3px;margin-top:8px}
+.wk .seg i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.wk .seg i.f{background:linear-gradient(90deg,var(--pine),var(--glow))}
+.wk .seg i.fg{background:linear-gradient(90deg,#e0cf9d,var(--gold))}
+
+/* ── Territoire ── */
+.terr{margin:0 14px 12px;border-radius:22px;background:var(--aplat);color:#fff;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(23,62,49,.22);padding:22px 18px 18px}
+.terr:after{content:"";position:absolute;right:-30px;top:-50px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.32),transparent 70%);pointer-events:none}
+.terr .eyebrow{color:var(--champ);font-size:10px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;position:relative}
+.terr h3{font-family:Fraunces,serif;font-size:21px;font-weight:420;margin:7px 0 8px;position:relative}
+.terr>p{font-size:13.5px;line-height:1.52;color:rgba(255,255,255,.87);position:relative}
+.tcards{display:flex;flex-direction:column;gap:9px;margin-top:15px;position:relative}
+.tc{background:rgba(254,254,251,.97);border-radius:15px;padding:13px 14px;color:var(--ink);display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.tc .l b{font-size:14px;font-weight:600;display:block}
+.tc .l p{font-size:12px;color:var(--ink2);line-height:1.4;margin-top:3px}
+.tc .st{font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;font-weight:700;padding:5px 9px;border-radius:8px;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.st.yes{background:rgba(23,62,49,.09);color:var(--pine)}
+.st.no{background:var(--coral-bg);color:var(--coral)}
+
+/* ── Univers ── */
+.mood{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
+.bt{border-radius:15px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:15px 8px;background:#fff;border:1px solid var(--line);box-shadow:var(--shadow)}
+.bt span{font-size:9px;letter-spacing:1.1px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.c2{grid-column:span 2}.c3{grid-column:span 3}
+.bt.dark{background:var(--aplat);border:none}
+.bt.dark span{color:rgba(255,255,255,.55)}
+.bt.champt{background:linear-gradient(160deg,#FBF8F0,#F3EAD3);border-color:rgba(199,168,90,.3)}
+.w-sez{font-family:Fraunces,serif;font-style:italic;font-size:19px;color:var(--pine)}
+.w-herm{font-size:13.5px;letter-spacing:.22em;font-weight:600;color:#9a7d2e}
+.w-chanel{font-size:14px;letter-spacing:.3em;font-weight:700;color:#fff}
+.w-aesop{font-family:Fraunces,serif;font-size:16px;letter-spacing:.05em;color:var(--ink)}
+.w-carel{font-size:12.5px;letter-spacing:.2em;font-weight:600;color:var(--coral)}
+.w-balzac{font-family:Fraunces,serif;font-style:italic;font-size:15px;color:var(--pine2)}
+.w-gemmyo{font-size:13px;font-weight:700;letter-spacing:.06em;color:var(--terra)}
+.w-livy{font-family:Fraunces,serif;font-style:italic;font-size:16px;color:#8A5A6B}
+.w-bonsoirs{font-family:Fraunces,serif;font-size:14.5px;color:var(--pine)}
+.w-nv{font-size:12px;letter-spacing:.18em;font-weight:700;color:var(--ink2)}
+.w-apple{font-size:13.5px;font-weight:600;color:var(--ink)}
+.w-claudie{font-family:Fraunces,serif;font-size:13.5px;color:var(--ink)}
+.subhead{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--ink3);font-weight:700;margin:16px 0 8px}
+.univQuote{margin-top:15px;background:linear-gradient(160deg,#FBF8F0,#F3EAD3);border:1px solid rgba(199,168,90,.28);border-radius:15px;padding:14px 15px}
+.univQuote p{font-family:Fraunces,serif;font-size:15px;line-height:1.5;color:#6b551f}
+
+/* ── Infos pratiques ── */
+.lockline{display:flex;align-items:center;gap:7px;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#9a7d2e;font-weight:700;margin-bottom:4px}
+.lockline .icon{width:12px;height:12px}
+.fact{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;min-height:50px;border-bottom:1px solid var(--line2)}
+.fact:last-child{border-bottom:none}
+.fact:active{background:rgba(23,62,49,.03)}
+.fact .k{font-size:13px;color:var(--ink2)}
+.fact .v{display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:550;text-align:right}
+.fact .v small{display:block;font-size:11px;color:var(--ink3);font-weight:400}
+.fact .v .icon{width:13px;height:13px;color:var(--ink3);flex-shrink:0}
+.fact.hl .v{color:var(--pine)}
+.pv{font-size:9.5px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;background:rgba(205,185,135,.22);color:#7a4b1e;padding:3px 8px;border-radius:8px}
+
+/* ── Pour mieux viser ── */
+.ask{border:1px solid var(--line);border-left:3px solid var(--champ);border-radius:13px;background:#fff;padding:13px 14px;margin:0 14px 9px;display:flex;align-items:center;justify-content:space-between;gap:10px;box-shadow:var(--shadow)}
+.ask .q{font-size:14px;font-weight:500}
+.ask .q small{display:block;font-size:11px;color:var(--ink3);font-weight:400;margin-top:3px}
+.ask .go{font-size:11.5px;font-weight:600;color:var(--pine);white-space:nowrap;border:1px solid var(--line);padding:9px 12px;border-radius:5px;background:#fff;min-height:38px}
+.ask.done{border-left-color:var(--sage)}
+.ask.done .go{color:var(--ink2)}
+.viserIntro{margin:0 22px 12px;font-size:13px;color:var(--ink2);line-height:1.45}
+
+/* ── Nav ── */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;height:calc(76px + env(safe-area-inset-bottom));background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line2);display:flex;align-items:flex-start;justify-content:space-around;padding:10px 8px calc(env(safe-area-inset-bottom));z-index:50}
+.nav .it{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;letter-spacing:.3px;color:var(--ink3);flex:1;text-transform:uppercase;font-weight:600}
+.nav .it .icon{width:20px;height:20px;stroke-width:1.5}
+.nav .it.on{color:var(--pine)}
+.nav .center{flex:0 0 60px;margin-top:-26px}
+.orb{width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 42% 34%,#27604B 0%,#173E31 54%,#0D2A20 100%);box-shadow:0 9px 22px rgba(13,42,32,.45),inset 0 1px 3px rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;margin:0 auto}
+.orb .d{width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#F3F8F4,#94C0AC);box-shadow:0 0 14px rgba(180,220,200,.85)}
+.nav .center .lbl{font-size:9px;text-align:center;color:var(--pine);margin-top:5px;text-transform:uppercase;font-weight:700}
+
+/* ── Sheets / overlays ── */
+.backdrop{position:fixed;inset:0;background:rgba(13,42,32,.4);opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+.backdrop.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:50%;transform:translate(-50%,102%);bottom:0;width:100%;max-width:480px;background:var(--canvas);border-radius:24px 24px 0 0;z-index:70;transition:transform .32s cubic-bezier(.32,.72,.28,1);max-height:86vh;display:flex;flex-direction:column;box-shadow:0 -12px 40px rgba(13,42,32,.2)}
+.sheet.on{transform:translate(-50%,0)}
+.grab{width:36px;height:4px;border-radius:3px;background:rgba(23,62,49,.18);margin:10px auto 4px;flex-shrink:0}
+.shHead{display:flex;align-items:center;justify-content:space-between;padding:8px 20px 12px;flex-shrink:0}
+.shHead h3{font-family:Fraunces,serif;font-size:20px;font-weight:440}
+.shHead button{font-size:13.5px;font-weight:600;color:var(--ink3);min-height:44px}
+.shBody{overflow-y:auto;padding:0 20px calc(28px + env(safe-area-inset-bottom))}
+.shBody p{font-size:14px;line-height:1.6;color:var(--ink2);margin-bottom:13px}
+.shBody p b{color:var(--ink);font-weight:600}
+.ov{position:fixed;inset:0;z-index:80;background:var(--canvas);transform:translateY(103%);transition:transform .34s cubic-bezier(.32,.72,.28,1);overflow-y:auto;max-width:480px;left:50%;margin-left:-240px}
+@media(max-width:480px){.ov{margin-left:0;left:0;max-width:none}}
+.ov.on{transform:translateY(0)}
+.ovTop{position:sticky;top:0;display:flex;align-items:center;justify-content:space-between;padding:calc(14px + env(safe-area-inset-top)) 18px 12px;background:rgba(254,254,251,.94);backdrop-filter:blur(12px);z-index:5}
+.ovTop b{font-family:Fraunces,serif;font-size:17px;font-weight:500}
+.ovTop button{font-size:13.5px;font-weight:600;color:var(--pine);min-height:44px}
+.ovBanner{margin:8px 16px 0;background:var(--aplat);color:#fff;border-radius:16px;padding:14px 15px;font-size:12.5px;line-height:1.5;position:relative;overflow:hidden}
+.ovBanner:after{content:"";position:absolute;right:-20px;top:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.35),transparent 70%)}
+.ovBanner b{color:#EBDDB6}
+.ph-sec{margin:12px 16px 0;background:#fff;border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow)}
+.ph-sec h4{font-family:Fraunces,serif;font-size:15.5px;font-weight:500;margin-bottom:7px}
+.ph-sec .ns{font-size:12.5px;font-style:italic;color:var(--ink3);line-height:1.5}
+.flow{position:fixed;inset:0;z-index:90;background:var(--canvas);transform:translateX(103%);transition:transform .3s cubic-bezier(.32,.72,.28,1);max-width:480px;left:50%;margin-left:-240px;display:flex;flex-direction:column}
+@media(max-width:480px){.flow{margin-left:0;left:0;max-width:none}}
+.flow.on{transform:translateX(0)}
+.flTop{padding:calc(14px + env(safe-area-inset-top)) 20px 0}
+.flTop button{font-size:13.5px;color:var(--ink3);min-height:44px;display:flex;align-items:center;gap:6px}
+.flTop .icon{width:15px;height:15px}
+.prog{height:4px;background:var(--line2);border-radius:3px;overflow:hidden;margin:8px 0 5px}
+.prog i{display:block;width:33%;height:100%;background:linear-gradient(90deg,var(--pine),var(--glow));border-radius:3px}
+.flTop em{font-size:11px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink3);font-style:normal;font-weight:700}
+.flBody{flex:1;padding:16px 20px;overflow-y:auto}
+.flBody h2{font-family:Fraunces,serif;font-size:24px;line-height:1.32;font-weight:420;margin-bottom:18px}
+.qopt{display:flex;align-items:center;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:15px 16px;font-size:14px;margin-bottom:10px;min-height:52px;width:100%;box-shadow:var(--shadow);transition:border-color .15s,background .15s}
+.qopt.sel{border-color:var(--pine);background:linear-gradient(90deg,rgba(23,62,49,.09),#fff 70%)}
+.flFoot{display:flex;gap:12px;padding:12px 20px calc(18px + env(safe-area-inset-bottom))}
+.skip{font-size:13.5px;color:var(--ink3);min-height:50px;padding:0 12px}
+.valid{flex:1;background:var(--pine);color:#fff;font-size:14.5px;font-weight:600;border-radius:6px;min-height:50px;opacity:.35;transition:opacity .2s;box-shadow:0 6px 16px rgba(23,62,49,.18)}
+.valid.ready{opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="screen">
+
+<!-- HEADER APLAT PLEINE LARGEUR -->
+<div class="gh">
+  <div class="ghBrand">
+    <div class="brand"><span class="o"></span>Candice</div>
+    <div class="ghActs">
+      <button aria-label="Modifier"><svg class="icon" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></button>
+      <button aria-label="Réglages"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 110-4h.09a1.65 1.65 0 001.51-1 1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33h0a1.65 1.65 0 001-1.51V3a2 2 0 114 0v.09a1.65 1.65 0 001 1.51h0a1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82v0a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></button>
+    </div>
+  </div>
+  <div class="ghIn">
+    <div class="ghTop">
+      <div class="avWrap"><button class="av" aria-label="Changer ma photo" style="border:1px solid rgba(205,185,135,.55)">E</button><div class="avCam"><svg class="icon" viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div></div>
+      <div>
+        <h1>Estelle</h1>
+        <div class="knows"><span class="kring"></span><p>Candice te connaît <b>très bien</b></p></div>
+        <button class="knowMore" onclick="open_('flParfum')">Améliorer encore sa connaissance <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+    </div>
+    <div class="ghCtas">
+      <button class="gbtn w">Partager mon profil</button>
+      <button class="gbtn g"><svg class="icon" style="width:15px;height:15px;margin-right:7px" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Ma wishlist</button>
+    </div>
+  </div>
+</div>
+
+<!-- RÉSUMÉ -->
+<div class="resume">
+  <p>Tu es touchée par les attentions <em>précises</em> : un détail retenu, un mot juste, une expérience choisie avec soin. Chez toi, la valeur d'une attention se joue dans la justesse plus que dans la démonstration.</p>
+  <div class="tags"><span class="tag">Détail retenu</span><span class="tag">Écoute réelle</span><span class="tag">Expérience choisie</span><span class="tag">Exécution soignée</span><span class="tag">Univers raffiné</span></div>
+  <button class="readmore" onclick="open_('shAnalyse')">Lire l'analyse complète <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<!-- LANGAGE D'ATTENTION (PODIUM) -->
+<div class="divtxt"><span class="pt"></span>Ton langage d'attention</div>
+<div class="card mod">
+  <div class="mh">Ce qui te fait te sentir aimée</div>
+  <p class="md">Chez toi, tous les langages comptent, mais ils ne se valent pas. Tu es surtout touchée quand l'attention <b>prouve qu'on t'a écoutée</b>.</p>
+  <div class="pod">
+    <div class="rowB"><div class="top"><b>Mots justes</b><span>Dominant</span></div><div class="bar" style="position:relative"><i style="width:96%;background:linear-gradient(90deg,#173E31,#2A7B5C)"></i><span class="barDot" style="left:96%"></span></div></div>
+    <div class="rowB"><div class="top"><b>Cadeaux choisis</b><span>Très présent</span></div><div class="bar"><i style="width:84%;background:linear-gradient(90deg,#20573F,#457D66)"></i></div></div>
+    <div class="rowB"><div class="top"><b>Moments partagés</b><span>Très présent</span></div><div class="bar"><i style="width:74%;background:linear-gradient(90deg,#457D66,#79A08B)"></i></div></div>
+    <div class="rowB"><div class="top"><b>Esthétique · qualité</b><span>Présent</span></div><div class="bar"><i style="width:58%;background:linear-gradient(90deg,#8AAC97,#B3C3AC)"></i></div></div>
+    <div class="rowB"><div class="top"><b>Actes de service</b><span>Présent</span></div><div class="bar"><i style="width:46%;background:linear-gradient(90deg,#BCC8AF,#D3D5B8)"></i></div></div>
+    <div class="rowB"><div class="top"><b>Présence</b><span>Présent</span></div><div class="bar"><i style="width:40%;background:linear-gradient(90deg,#D8D2B0,#E4DCBE)"></i></div></div>
+    <div class="rowB"><div class="top"><b>Surprise</b><span>À doser</span></div><div class="bar"><i style="width:24%;background:linear-gradient(90deg,#EAE1C6,#F1EAD5)"></i></div></div>
+  </div>
+  <div class="ginsights">
+    <div class="gin"><span class="pt pine" style="margin-top:6px"></span>Le cadeau marche s'il prouve l'écoute.</div>
+    <div class="gin"><span class="pt pine" style="margin-top:6px"></span>Les mots comptent quand ils sont précis.</div>
+    <div class="gin"><span class="pt pine" style="margin-top:6px"></span>Les expériences fonctionnent si elles sont choisies avec soin.</div>
+  </div>
+</div>
+
+<!-- CE QUE CANDICE A COMPRIS -->
+<div class="divtxt"><span class="pt"></span>Ce que Candice a compris</div>
+<div class="caro">
+  <div class="cc green"><span class="eyebrow">Écoute</span><p>Tu retiens les détails des autres — et tu es particulièrement touchée quand on te rend cette précision.</p></div>
+  <div class="cc champs"><span class="eyebrow">Exécution</span><p>Le soin apporté à un geste compte plus que sa valeur.</p></div>
+  <div class="cc ivory"><span class="eyebrow">Lieux</span><p>Un beau lieu peut porter toute une attention à lui seul.</p></div>
+  <div class="cc sagec"><span class="eyebrow">Surprise</span><p>La surprise fonctionne si elle est maîtrisée, jamais imposée.</p></div>
+</div>
+
+<!-- ANALYSE PROFONDE -->
+<div class="divtxt"><span class="pt"></span>En profondeur</div>
+
+<div class="card mod deep" id="d1">
+  <div class="mh">Ce qui te touche</div>
+  <p class="md">Tu es touchée quand une attention prouve qu'on a retenu quelque chose de toi : une phrase, une envie, une préférence, une nuance.</p>
+  <div class="tags"><span class="tag">Détail retenu</span><span class="tag">Écoute réelle</span><span class="tag">Geste précis</span><span class="tag">Exécution soignée</span><span class="tag">Empathie reconnue</span></div>
+  <div class="more"><p>Chez toi, l'attention n'est pas seulement le geste. C'est le signal qu'on t'a observée avec précision. Un cadeau générique peut avoir de la valeur, mais il ne produit pas le même effet qu'une attention qui semble avoir été pensée uniquement pour toi. Ce qui compte, c'est moins la dépense que la justesse.</p></div>
+  <button class="plus" onclick="tg('d1')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<div class="card mod deep" id="d2">
+  <div class="mh">Ce qui te fait te sentir aimée</div>
+  <p class="md">Tu te sens aimée quand quelqu'un se démène avec soin, sans faire peser l'effort sur toi.</p>
+  <div class="tags"><span class="tag">Se démener</span><span class="tag">Soin dans l'exécution</span><span class="tag">Présence choisie</span><span class="tag soft">Charge mentale en moins</span></div>
+  <div class="more"><p>Ce qui compte n'est pas uniquement que l'autre pense à toi, mais qu'il aille au bout de l'intention. Tu es sensible aux gestes complets : pas seulement l'idée, mais la réservation, le bon timing, le bon mot, le détail qui prouve que l'attention n'a pas été expédiée.</p></div>
+  <button class="plus" onclick="tg('d2')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<div class="card mod deep" id="d3">
+  <div class="mh">Ce qui pourrait te faire plaisir</div>
+  <p class="md">Les attentions qui te parlent sont personnelles, esthétiques et vraiment choisies.</p>
+  <div class="tags"><span class="tag">Marque aimée</span><span class="tag">Expérience sur mesure</span><span class="tag">Moment culturel</span><span class="tag">Soin expert</span><span class="tag">Lieu avec âme</span></div>
+  <div class="more"><p>Tu peux être touchée par un cadeau matériel, mais seulement s'il s'inscrit dans ton univers. Une marque aimée, une matière noble, un objet bien choisi ou une expérience raffinée ont plus d'impact qu'un cadeau spectaculaire mais impersonnel.</p></div>
+  <button class="plus" onclick="tg('d3')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<div class="card mod deep" id="d4">
+  <div class="mh">Ce qui tombe à côté</div>
+  <p class="md">Le générique, l'approximatif ou le sans âme peut faire pire qu'un petit geste simple mais juste.</p>
+  <div class="tags"><span class="tag warn">Cadeau impersonnel</span><span class="tag warn">Bas de gamme</span><span class="tag warn">Lieu sans âme</span><span class="tag warn">Surprise approximative</span><span class="tag warn">Effort bâclé</span></div>
+  <div class="more"><p>Ce qui peut blesser dans une attention ratée, ce n'est pas seulement le cadeau. C'est ce qu'il semble dire : qu'on n'a pas pris le temps de te regarder vraiment. Chez toi, une attention approximative peut donner l'impression d'une absence d'écoute.</p></div>
+  <button class="plus" onclick="tg('d4')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<!-- TES MONDES (questions ouvertes réintégrées) -->
+<div class="divtxt"><span class="pt"></span>Tes mondes</div>
+
+<div class="card mod deep" id="m1">
+  <div class="thHead"><div class="thIc"><svg class="icon" viewBox="0 0 24 24"><path d="M3 11h18M5 11V7a2 2 0 012-2h10a2 2 0 012 2v4M4 11v9M20 11v9"/></svg></div><div class="mh">Tes tables</div></div>
+  <p class="md">Tu es sensible aux tables qui ont une âme : un beau cadre et une cuisine cuisinée avec intention te parlent bien plus qu'un endroit connu pour sa notoriété seule.</p>
+  <div class="tags"><span class="tag">Lieu avec une âme</span><span class="tag">Cuisine vraiment cuisinée</span><span class="tag">Ambiance chaleureuse</span><span class="tag warn">Décor générique</span></div>
+  <div class="more"><p>La propreté, l'intention esthétique, la qualité des produits et l'atmosphère comptent autant que l'assiette. Les restaurants sans soin, sales ou génériques sont rédhibitoires.</p></div>
+  <button class="plus" onclick="tg('m1')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<div class="card mod deep" id="m2">
+  <div class="thHead"><div class="thIc"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg></div><div class="mh">Tes voyages</div></div>
+  <p class="md">Tu voyages pour te nourrir : tes envies mêlent dépaysement profond, expériences uniques et beauté des lieux.</p>
+  <div class="tags"><span class="tag">Pérou</span><span class="tag">Orient Express</span><span class="tag">Retraite en Asie</span><span class="tag">Coachella</span><span class="tag">Le Ritz</span></div>
+  <div class="more"><p>Tu aimes l'idée de dormir dans un endroit d'exception, et les week-ends surprises dans de beaux endroits font partie de tes plus beaux souvenirs — à condition que le confort et l'exécution suivent.</p></div>
+  <button class="plus" onclick="tg('m2')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<div class="card mod deep" id="m3">
+  <div class="thHead"><div class="thIc"><svg class="icon" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div><div class="mh">Tes passions</div></div>
+  <p class="md">Les expériences culturelles te nourrissent autant que la création manuelle et sensorielle.</p>
+  <div class="tags"><span class="tag">Musées &amp; théâtre</span><span class="tag">Opéra · ballet</span><span class="tag">Céramique</span><span class="tag">Ateliers thé · cuisine</span><span class="tag">Apprendre à peindre</span><span class="tag">Flamenco</span></div>
+  <div class="more"><p>Tu rêves d'apprendre à peindre et de reprendre la danse, notamment le flamenco — ce qui dit quelque chose de ton rapport au mouvement, à l'expression et au beau fait avec le corps.</p></div>
+  <button class="plus" onclick="tg('m3')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<div class="card mod deep" id="m4">
+  <div class="thHead"><div class="thIc ch"><svg class="icon" viewBox="0 0 24 24"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.2 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg></div><div class="mh">Tes goûts esthétiques</div></div>
+  <p class="md">Ton univers esthétique est celui du beau soigné : luxe discret, matières nobles, lignes épurées.</p>
+  <div class="tags"><span class="tag">Luxe discret</span><span class="tag">Matières nobles</span><span class="tag">Lignes épurées</span><span class="tag">Qualité constante</span></div>
+  <div class="more"><p>On retrouve dans tes références — de Sézane à Hermès, d'Aesop à Chanel — une cohérence entre l'élégance française, le raffinement de niche et une modernité assumée.</p></div>
+  <button class="plus" onclick="tg('m4')">Lire plus <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+</div>
+
+<!-- CE QUI MARCHE -->
+<div class="divtxt"><span class="pt"></span>Ce qui marche avec toi</div>
+<div class="card mod">
+  <div class="wk"><div class="wkTop"><b>Le beau</b><span class="lv vf">Très fort</span></div><p>Tu es sensible aux matières, à la lumière, aux lieux, à la qualité visible.</p><div class="seg"><i class="f"></i><i class="f"></i><i class="f"></i></div></div>
+  <div class="wk"><div class="wkTop"><b>Le personnel</b><span class="lv vf">Très fort</span></div><p>L'attention doit donner le sentiment d'avoir été choisie pour toi.</p><div class="seg"><i class="f"></i><i class="f"></i><i class="f"></i></div></div>
+  <div class="wk"><div class="wkTop"><b>L'expérientiel</b><span class="lv vf">Très fort</span></div><p>Tu es marquée par les moments, les lieux, les voyages, les expériences.</p><div class="seg"><i class="f"></i><i class="f"></i><i class="f"></i></div></div>
+  <div class="wk"><div class="wkTop"><b>L'utile</b><span class="lv f">Fort si bien exécuté</span></div><p>Une attention pratique peut te toucher si elle soulage vraiment.</p><div class="seg"><i class="f"></i><i class="f"></i><i></i></div></div>
+  <div class="wk"><div class="wkTop"><b>Le premium</b><span class="lv f">Fort</span></div><p>Tu aimes le luxe discret, jamais ostentatoire.</p><div class="seg"><i class="f"></i><i class="f"></i><i></i></div></div>
+  <div class="wk"><div class="wkTop"><b>La surprise</b><span class="lv d">À doser</span></div><p>Elle fonctionne si elle est élégante, maîtrisée et bien calibrée.</p><div class="seg"><i class="fg"></i><i></i><i></i></div></div>
+</div>
+
+<!-- TERRITOIRE -->
+<div class="terr">
+  <span class="eyebrow">Ton territoire idéal</span>
+  <h3>Sortir du quotidien, sans l'inconfort subi</h3>
+  <p>Tu peux aimer le dépaysement, la nature ou l'aventure — mais le bon territoire pour toi allie confort, beauté et une vraie qualité d'exécution.</p>
+  <div class="tcards">
+    <div class="tc"><div class="l"><b>Nature confortable</b><p>Cabane premium, lodge, lac, feu, montagne douce.</p></div><span class="st yes">Très désirable</span></div>
+    <div class="tc"><div class="l"><b>Cocon d'exception</b><p>Hôtel confidentiel, spa, beau lieu calme, literie parfaite.</p></div><span class="st yes">Très désirable</span></div>
+    <div class="tc"><div class="l"><b>Aventure brute</b><p>Improvisation totale, inconfort, logistique floue.</p></div><span class="st no">À éviter</span></div>
+  </div>
+</div>
+
+<!-- UNIVERS -->
+<div class="divtxt"><span class="pt"></span>Ton univers</div>
+<div class="card mod">
+  <div class="subhead" style="margin-top:0">Marques repères</div>
+  <div class="mood">
+    <div class="bt c3"><span class="w-sez">Sézane</span><span>Mode</span></div>
+    <div class="bt champt c3"><span class="w-herm">HERMÈS</span><span>Accessoires</span></div>
+    <div class="bt dark c2"><span class="w-chanel">CHANEL</span><span>Beauté</span></div>
+    <div class="bt c2"><span class="w-aesop">Aēsop</span><span>Soin</span></div>
+    <div class="bt c2"><span class="w-carel">CAREL</span><span>Souliers</span></div>
+    <div class="bt c3"><span class="w-claudie">Claudie Pierlot</span><span>Mode</span></div>
+    <div class="bt c3"><span class="w-balzac">Balzac Paris</span><span>Mode</span></div>
+    <div class="bt c2"><span class="w-gemmyo">gemmyo</span><span>Bijoux</span></div>
+    <div class="bt c2"><span class="w-livy">Livy</span><span>Lingerie</span></div>
+    <div class="bt c2"><span class="w-bonsoirs">Bonsoirs</span><span>Maison</span></div>
+    <div class="bt c3"><span class="w-nv">NV GALLERY</span><span>Maison</span></div>
+    <div class="bt c3"><span class="w-apple">Apple</span><span>Design</span></div>
+  </div>
+  <div class="univQuote"><p>Ton univers raconte une élégance française, des lignes nettes, une qualité visible — un luxe discret porté par les matières.</p></div>
+  <div class="subhead">Lieux &amp; ambiances</div>
+  <div class="tags" style="margin-top:0"><span class="tag soft">Hôtels de caractère</span><span class="tag soft">Cafés lumineux</span><span class="tag soft">Spas silencieux</span><span class="tag soft">Galeries &amp; musées</span><span class="tag soft">Restaurants avec âme</span><span class="tag soft">Beaux villages</span></div>
+  <div class="subhead">Matières &amp; esthétique</div>
+  <div class="tags" style="margin-top:0"><span class="tag">Lin lavé</span><span class="tag">Or fin</span><span class="tag">Céramique</span><span class="tag">Cuir</span><span class="tag">Bois</span><span class="tag">Lignes nettes</span></div>
+  <div class="subhead">Rêves &amp; envies</div>
+  <div class="tags" style="margin-top:0"><span class="tag">Pérou</span><span class="tag">Orient Express</span><span class="tag">Retraite en Asie</span><span class="tag">Coachella</span><span class="tag">Le Ritz</span><span class="tag">Apprendre à peindre</span><span class="tag">Flamenco</span></div>
+</div>
+
+<!-- INFOS PRATIQUES -->
+<div class="divtxt"><span class="pt"></span>Infos pratiques</div>
+<div class="card mod">
+  <div class="lockline"><svg class="icon" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>Visible par toi seule · réglable au partage</div>
+  <div class="fact"><span class="k">Tailles</span><span class="v">34 / XS-S · 37 <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  <div class="fact"><span class="k">Alimentation</span><span class="v">Sans régime spécifique · alcool ok <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  <div class="fact"><span class="k">Parfums</span><span class="v"><span>Notes poudrées<small>éviter : trop sucré · patchouli</small></span> <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  <div class="fact"><span class="k">Livraison</span><span class="v">Adresse renseignée <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  <div class="fact" onclick="open_('shMob')"><span class="k">Mobilité &amp; confort</span><span class="v"><span>Attente debout · assise prolongée<small>à prendre en compte</small></span> <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  <div class="fact hl"><span class="k">Dates clés</span><span class="v">5 dates à compléter <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+  <div class="fact"><span class="k">Santé · handicap · religion</span><span class="v"><span class="pv">Privé</span> Gérer <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+</div>
+
+<!-- POUR MIEUX VISER -->
+<div class="divtxt"><span class="pt"></span>Pour mieux viser</div>
+<p class="viserIntro">Quelques précisions suffisent pour que Candice évite les attentions à côté.</p>
+<div class="ask" onclick="open_('flParfum')">
+  <div class="q">Parfums<small>Éviter les cadeaux beauté à côté · 2 questions · 30 sec</small></div>
+  <button class="go">Affiner →</button>
+</div>
+<div class="ask">
+  <div class="q">Dates clés<small>Ne plus rater les moments sensibles · 5 dates · 1 min</small></div>
+  <button class="go">Compléter →</button>
+</div>
+<div class="ask">
+  <div class="q">Tables<small>Mieux choisir les lieux qui te ressemblent · 3 questions</small></div>
+  <button class="go">Affiner →</button>
+</div>
+<div class="ask done">
+  <div class="q">Familles olfactives<small>Répondu — poudré · musqué propre</small></div>
+  <button class="go">Modifier ma réponse</button>
+</div>
+
+<button class="sharedRow" onclick="open_('ovShare')">
+  <span class="l">Voir ma fiche partagée<small>Ce que voient tes proches — jamais l'intime</small></span>
+  <svg class="icon" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+</button>
+
+<div style="height:22px"></div>
+</div><!-- /screen -->
+
+<!-- NAV -->
+<div class="nav">
+  <div class="it"><svg class="icon" viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5M5 9.5V21h14V9.5"/></svg>Le fil</div>
+  <div class="it"><svg class="icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/><circle cx="9" cy="7" r="4"/></svg>Proches</div>
+  <div class="center"><div class="orb"><span class="d"></span></div><div class="lbl">Candice</div></div>
+  <div class="it"><svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Agenda</div>
+  <div class="it on"><svg class="icon" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Profil</div>
+</div>
+
+<!-- BACKDROP -->
+<div class="backdrop" id="bk" onclick="closeAll()"></div>
+
+<!-- SHEET ANALYSE -->
+<div class="sheet" id="shAnalyse">
+  <div class="grab"></div>
+  <div class="shHead"><h3>Ton analyse</h3><button onclick="closeAll()">Fermer</button></div>
+  <div class="shBody">
+    <p>Tu sembles être quelqu'un pour qui <b>les détails ne sont jamais anodins</b> : un mot choisi au bon moment, un cadeau qui prouve qu'on t'a vraiment écoutée — ce sont ces petites preuves d'attention soignée qui te touchent infiniment plus que les grands gestes approximatifs.</p>
+    <p>On devine chez toi un <b>univers exigeant et raffiné</b>, nourri par l'art, la mode, les voyages et une sensibilité esthétique profonde qui se retrouve dans chaque aspect de ta vie.</p>
+    <p>Ce qui te fait te sentir vraiment aimée, c'est qu'on se démène pour toi — pas par obligation, mais parce qu'on t'a <b>écoutée, retenue, choisie</b>.</p>
+  </div>
+</div>
+
+<!-- SHEET MOBILITÉ -->
+<div class="sheet" id="shMob">
+  <div class="grab"></div>
+  <div class="shHead"><h3>Mobilité &amp; confort</h3><button onclick="closeAll()">Fermer</button></div>
+  <div class="shBody">
+    <p><b>À prendre en compte :</b> l'attente debout et l'assise prolongée.</p>
+    <p>Détail confié : douleurs chroniques au dos. Candice s'en sert pour écarter les expériences mal adaptées — jamais pour l'afficher.</p>
+    <p style="color:var(--ink3);font-size:12.5px">Visible par toi seule · réglable au partage</p>
+  </div>
+</div>
+
+<!-- OVERLAY FICHE PARTAGÉE -->
+<div class="ov" id="ovShare">
+  <div class="ovTop"><b>Ta fiche, vue par un proche</b><button onclick="closeAll()">Fermer</button></div>
+  <div class="ovBanner">Tes proches voient une <b>version utile, jamais intime</b>. Candice garde les détails et les utilise pour les aider à viser juste.</div>
+  <div class="ph-sec">
+    <h4>Résumé</h4>
+    <p style="font-family:Fraunces,serif;font-size:15px;line-height:1.5">Estelle est touchée par les attentions précises : un détail retenu, un mot juste, une expérience choisie avec soin.</p>
+  </div>
+  <div class="ph-sec">
+    <h4>Son langage d'attention</h4>
+    <div class="tags" style="margin-top:2px"><span class="tag">Mots justes</span><span class="tag">Cadeaux choisis</span><span class="tag">Moments partagés</span></div>
+  </div>
+  <div class="ph-sec">
+    <h4>Préférences clés</h4>
+    <div class="tags" style="margin-top:2px"><span class="tag">Le beau</span><span class="tag">Le personnel</span><span class="tag">L'expérientiel</span><span class="tag soft">Luxe discret</span></div>
+  </div>
+  <div class="ph-sec">
+    <h4>À éviter</h4>
+    <div class="tags" style="margin-top:2px"><span class="tag warn">Générique</span><span class="tag warn">Bas de gamme</span><span class="tag warn">Surprise approximative</span></div>
+  </div>
+  <div class="ph-sec">
+    <h4>Ses envies</h4>
+    <p class="ns">Estelle a choisi de ne pas partager cette section avec toi. Candice la connaît et s'en sert pour te faire les recommandations les plus justes.</p>
+  </div>
+  <div style="height:40px"></div>
+</div>
+
+<!-- FLOW PARFUM -->
+<div class="flow" id="flParfum">
+  <div class="flTop">
+    <button onclick="closeAll()"><svg class="icon" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg> Mon profil</button>
+    <div class="prog"><i></i></div>
+    <em>Parfums · 1 sur 2</em>
+  </div>
+  <div class="flBody">
+    <h2>Recevoir un parfum, pour toi, c'est…</h2>
+    <button class="qopt" onclick="pick(this)">Je préfère choisir moi-même</button>
+    <button class="qopt" onclick="pick(this)">Possible si la personne connaît très bien mes goûts</button>
+    <button class="qopt" onclick="pick(this)">Seulement une marque que j'aime déjà</button>
+    <button class="qopt" onclick="pick(this)">Plutôt une bougie ou un parfum d'intérieur</button>
+    <button class="qopt" onclick="pick(this)">Je n'aime pas recevoir de parfum</button>
+  </div>
+  <div class="flFoot"><button class="skip">Passer</button><button class="valid" id="vbtn">Valider</button></div>
+</div>
+
+<script>
+const ids=['shAnalyse','shMob','ovShare','flParfum'];
+function open_(id){document.getElementById('bk').classList.add('on');document.getElementById(id).classList.add('on');}
+function closeAll(){document.getElementById('bk').classList.remove('on');ids.forEach(i=>document.getElementById(i).classList.remove('on'));}
+function tg(id){document.getElementById(id).classList.toggle('open');}
+function pick(el){document.querySelectorAll('#flParfum .qopt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');document.getElementById('vbtn').classList.add('ready');}
+</script>
+</body>
+</html>
