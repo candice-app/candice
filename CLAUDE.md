@@ -1,4 +1,5 @@
 DA figée « Présence » V11 — référence obligatoire : docs/design-system.html, docs/reference-app.html, docs/reference-questionnaire.html, docs/ton-candice.md. Lire avant tout travail UI.
+Fiche profil (pilote ET vues tierces) : référence visuelle absolue = design/redisign/Candice_Maquette_Profil_V2_REFERENCE_GELEE.html (barème typographique inclus). L'ancienne maquette REFERENCE_VALIDEE est supprimée — bascule V2 actée en Phase D du lot Refonte Profil V2.
 @AGENTS.md
 
 ## Source de verite produit
