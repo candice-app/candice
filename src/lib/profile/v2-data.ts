@@ -104,6 +104,8 @@ export interface ProfileV2Data {
     taille_chaussures: string;
     regime: string;
     alcool: string;
+    allergies: string[];
+    allergies_detail: string;
     dates_importantes: ImportantDate[];
   };
 
@@ -186,6 +188,8 @@ export function buildProfileV2Data(args: {
       taille_chaussures: pi?.taille_chaussures ?? "",
       regime: pi?.regime ?? "",
       alcool: pi?.alcool ?? "",
+      allergies: pi?.allergies ?? [],
+      allergies_detail: pi?.allergies_detail ?? "",
       dates_importantes: dates,
     },
 

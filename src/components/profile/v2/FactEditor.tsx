@@ -22,6 +22,11 @@ const ALCOOLS = [
   { id: "je_bois", label: "Je bois" }, { id: "ne_bois_pas", label: "Je n'en bois pas" },
   { id: "occasionnel", label: "Occasionnel" }, { id: "eviter_lieux", label: "Éviter les lieux centrés alcool" },
 ];
+const ALLERGIES = [
+  { id: "aucune", label: "Aucune" }, { id: "gluten", label: "Gluten" },
+  { id: "lactose", label: "Lactose" }, { id: "fruits_a_coque", label: "Fruits à coque" },
+  { id: "fruits_de_mer", label: "Fruits de mer" }, { id: "autre", label: "Autre" },
+];
 const DATE_TYPES = [
   { id: "anniversaire", label: "Anniversaire" }, { id: "fete", label: "Fête" },
   { id: "mariage", label: "Mariage" }, { id: "perso", label: "Date perso" },
@@ -80,6 +85,8 @@ export default function FactEditor({
   const [tc, setTc] = useState(pe.taille_chaussures);
   const [regime, setRegime] = useState(pe.regime);
   const [alcool, setAlcool] = useState(pe.alcool);
+  const [allergies, setAllergies] = useState<string[]>(pe.allergies);
+  const [allergiesDetail, setAllergiesDetail] = useState(pe.allergies_detail);
   const [dates, setDates] = useState(pe.dates_importantes);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -90,7 +97,7 @@ export default function FactEditor({
     const body =
       kind === "adresse" ? { adresse_livraison: adresse }
       : kind === "tailles" ? { taille_vetements: tv, taille_chaussures: tc }
-      : kind === "alimentation" ? { regime, alcool }
+      : kind === "alimentation" ? { regime, alcool, allergies, allergies_detail: allergiesDetail }
       : { dates_importantes: dates };
     const res = await fetch("/api/profile/practical", {
       method: "POST",
@@ -132,6 +139,30 @@ export default function FactEditor({
 
       {kind === "alimentation" && (
         <>
+          <Label>Allergies</Label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {ALLERGIES.map(a => (
+              <Pill
+                key={a.id}
+                on={allergies.includes(a.id)}
+                onClick={() => setAllergies(prev =>
+                  prev.includes(a.id)
+                    ? prev.filter(x => x !== a.id)
+                    // « Aucune » est exclusive des autres
+                    : a.id === "aucune" ? ["aucune"] : [...prev.filter(x => x !== "aucune"), a.id],
+                )}
+              >
+                {a.label}
+              </Pill>
+            ))}
+          </div>
+          <Label>Précision (champ libre)</Label>
+          <input
+            value={allergiesDetail}
+            onChange={e => setAllergiesDetail(e.target.value)}
+            placeholder="ex. arachide sévère, kiwi…"
+            style={inputStyle}
+          />
           <Label>Régime alimentaire</Label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
             {REGIMES.map(r => (

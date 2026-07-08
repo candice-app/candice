@@ -19,6 +19,8 @@ export interface DiscoveryQuestion {
   question_type: 'chips_single' | 'chips_multi' | 'text';
   options: QuestionOption[] | null;
   sort_order: number;
+  /** A.3 : texte validé mot pour mot par Estelle → JAMAIS reformulé. */
+  locked_text?: boolean;
 }
 
 export interface NextQuestionResult {
@@ -108,14 +110,17 @@ async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQ
   const currentKey = pendingKeys[idx];
   const { data: q } = await supabase
     .from('discovery_questions')
-    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order')
+    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
     .eq('question_key', currentKey)
     .maybeSingle();
 
   if (!q) return null;
 
   const question = q as DiscoveryQuestion;
-  const personalizedText = await personalizeQuestion(question, '');
+  // A.3 : texte verrouillé → servi mot pour mot, jamais reformulé
+  const personalizedText = question.locked_text
+    ? question.question_text
+    : await personalizeQuestion(question, '');
 
   return {
     question: { ...question, question_text: personalizedText },
@@ -267,7 +272,7 @@ export const SECTION_KEY_TO_DIMENSIONS: Record<string, string[]> = {
 async function getAllQuestionsWithTrigger(supabase: SupaDB): Promise<DiscoveryQuestionFull[]> {
   const { data } = await supabase
     .from('discovery_questions')
-    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, trigger_condition, priority, benefit_label, duration_label')
+    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, trigger_condition, priority, benefit_label, duration_label, locked_text')
     .eq('statut', 'active')
     .eq('target', 'self')
     .order('sort_order');
@@ -393,10 +398,13 @@ export async function getNextMicroQuestion(
       { onConflict: 'user_id,question_key' },
     );
 
-  const personalizedText = await personalizeQuestion(
-    picks[0],
-    sectionKey ? `Section ciblée : ${DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension}` : '',
-  );
+  // A.3 : texte verrouillé → servi mot pour mot, jamais reformulé
+  const personalizedText = picks[0].locked_text
+    ? picks[0].question_text
+    : await personalizeQuestion(
+        picks[0],
+        sectionKey ? `Section ciblée : ${DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension}` : '',
+      );
 
   return {
     question: { ...picks[0], question_text: personalizedText },

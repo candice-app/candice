@@ -7,6 +7,7 @@ import { createClient } from "@/utils/supabase/server";
 
 const REGIMES = ["", "omnivore", "vegetarien", "vegan", "halal", "casher", "sans_preference", "autre"];
 const ALCOOLS = ["", "je_bois", "ne_bois_pas", "occasionnel", "eviter_lieux"];
+const ALLERGIES = ["aucune", "gluten", "lactose", "fruits_a_coque", "fruits_de_mer", "autre"];
 const DATE_TYPES = ["anniversaire", "fete", "mariage", "perso", "symbolique"];
 
 interface PatchBody {
@@ -15,6 +16,8 @@ interface PatchBody {
   taille_chaussures?: string;
   regime?: string;
   alcool?: string;
+  allergies?: string[];
+  allergies_detail?: string;
   dates_importantes?: Array<{ type: string; label: string; date: string }>;
 }
 
@@ -31,6 +34,14 @@ export async function POST(req: NextRequest) {
   if (typeof body.taille_chaussures === "string") patch.taille_chaussures = body.taille_chaussures.trim().slice(0, 40);
   if (typeof body.regime === "string" && REGIMES.includes(body.regime)) patch.regime = body.regime;
   if (typeof body.alcool === "string" && ALCOOLS.includes(body.alcool)) patch.alcool = body.alcool;
+  // Allergies (A.1) : donnée de sécurité — enum structuré (moteur de vetos)
+  // + précision libre
+  if (Array.isArray(body.allergies)) {
+    patch.allergies = body.allergies.filter(a => ALLERGIES.includes(a)).slice(0, 6);
+  }
+  if (typeof body.allergies_detail === "string") {
+    patch.allergies_detail = body.allergies_detail.trim().slice(0, 300);
+  }
   if (Array.isArray(body.dates_importantes)) {
     patch.dates_importantes = body.dates_importantes
       .filter(d => d && DATE_TYPES.includes(d.type))
