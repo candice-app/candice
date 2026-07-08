@@ -4,6 +4,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { questionDataPresent, type ProfileDataSnapshot } from './dataPresence';
+import { syncStatusesWithData, blockedKeys } from './status';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -29,37 +30,20 @@ export interface NextQuestionResult {
 
 // ── Dimension → section label map ────────────────────────────────────────────
 
+// DA V11 : jamais d'émoji — libellés texte seuls.
 export const DIMENSION_LABELS: Record<string, string> = {
-  attention:  '❤️ Langage d\'attention',
-  gifts:      '🎁 Cadeaux',
-  style:      '👗 Style',
-  brands:     '🛍 Marques',
-  food:       '🍽 Restaurants',
-  fragrance:  '🌸 Parfums',
-  travel:     '✈️ Voyages',
-  hobbies:    '🎭 Loisirs',
-  dreams:     '💭 Rêves',
-  surprises:  '🎉 Surprises',
-  conflicts:  '💬 Conflits',
-  practical:  '🧭 Pratique',
-};
-
-// Signals that suggest a dimension to explore
-const SIGNAL_DIMENSION_MAP: Record<string, string> = {
-  celebration_appropriate:     'gifts',
-  gift_precision_needed:       'gifts',
-  premium_gift_preference:     'style',
-  gastronomy_interest:         'food',
-  travel_desire:               'travel',
-  wellness_importance:         'fragrance',
-  surprise_tolerance:          'surprises',
-  direct_communication_preference: 'conflicts',
-  fashion_affinity:            'style',
-  reading_affinity:            'hobbies',
-  music_affinity:              'hobbies',
-  nature_affinity:             'travel',
-  handmade_gift_preference:    'gifts',
-  public_recognition_avoidance:'surprises',
+  attention:  'Langage d\'attention',
+  gifts:      'Cadeaux',
+  style:      'Style',
+  brands:     'Marques',
+  food:       'Restaurants',
+  fragrance:  'Parfums',
+  travel:     'Voyages',
+  hobbies:    'Loisirs',
+  dreams:     'Rêves',
+  surprises:  'Surprises',
+  conflicts:  'Conflits',
+  practical:  'Pratique',
 };
 
 // ── Supabase type ────────────────────────────────────────────────────────────
@@ -68,19 +52,6 @@ const SIGNAL_DIMENSION_MAP: Record<string, string> = {
 type SupaDB = any;
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-
-async function getAnsweredKeys(
-  supabase: SupaDB,
-  userId: string,
-): Promise<Set<string>> {
-  const { data } = await supabase
-    .from('profile_completion')
-    .select('question_key')
-    .eq('user_id', userId)
-    .is('contact_id', null)
-    .eq('is_filled', true);
-  return new Set((data ?? []).map((r: { question_key: string }) => r.question_key));
-}
 
 // Chantier 2.2 — snapshot my_profile pour la garde par présence de donnée
 async function getProfileDataSnapshot(
@@ -93,16 +64,6 @@ async function getProfileDataSnapshot(
     .eq('user_id', userId)
     .maybeSingle();
   return (data as ProfileDataSnapshot | null) ?? null;
-}
-
-async function getAllQuestions(supabase: SupaDB): Promise<DiscoveryQuestion[]> {
-  const { data } = await supabase
-    .from('discovery_questions')
-    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order')
-    .eq('statut', 'active')
-    .eq('target', 'self')
-    .order('sort_order');
-  return (data ?? []) as DiscoveryQuestion[];
 }
 
 // LLM: reformulate question in Candice voice given context (layer 3)
@@ -128,127 +89,11 @@ Ton : ${contextHint ? `Contexte : ${contextHint}. ` : ''}Doux, précis, jamais c
   }
 }
 
-// ── Drip mode ────────────────────────────────────────────────────────────────
-
-export async function getNextDripQuestion(
-  userId: string,
-  supabase: SupaDB,
-): Promise<NextQuestionResult | null> {
-  const [answered, allQuestions] = await Promise.all([
-    getAnsweredKeys(supabase, userId),
-    getAllQuestions(supabase),
-  ]);
-
-  const unanswered = allQuestions.filter(q => !answered.has(q.question_key));
-  if (unanswered.length === 0) return null;
-
-  // Drip: prefer questions triggered by existing signals
-  let pick: DiscoveryQuestion | null = null;
-  const { data: recentSignals } = await supabase
-    .from('signals')
-    .select('signal_type')
-    .eq('pilot_id', userId)
-    .eq('status', 'actif')
-    .order('created_at', { ascending: false })
-    .limit(20);
-
-  if (recentSignals?.length) {
-    const sigTypes = new Set((recentSignals as { signal_type: string }[]).map(s => s.signal_type));
-    const matchedDimension = Array.from(sigTypes)
-      .map(t => SIGNAL_DIMENSION_MAP[t])
-      .find(Boolean);
-    if (matchedDimension) {
-      pick = unanswered.find(q => q.dimension === matchedDimension) ?? null;
-    }
-  }
-
-  // Fallback: first unanswered in sort order
-  if (!pick) pick = unanswered[0];
-
-  // Create ephemeral session
-  const { data: session } = await supabase
-    .from('discovery_sessions')
-    .insert({
-      user_id: userId,
-      mode: 'quick',
-      pending_keys: [pick.question_key],
-      current_index: 0,
-      status: 'active',
-    })
-    .select('id')
-    .single();
-
-  const sessionId: string = session?.id ?? crypto.randomUUID();
-
-  // Mark last_asked_at
-  await supabase
-    .from('profile_completion')
-    .upsert({
-      user_id: userId,
-      question_key: pick.question_key,
-      last_asked_at: new Date().toISOString(),
-    }, { onConflict: 'user_id,question_key' });
-
-  // Layer 3: LLM personalization (non-blocking, fallback to base)
-  const personalizedText = await personalizeQuestion(pick, '');
-
-  return {
-    question: { ...pick, question_text: personalizedText },
-    sessionId,
-    sectionLabel: DIMENSION_LABELS[pick.dimension] ?? pick.dimension,
-    progress: null,
-  };
-}
-
-// ── Full session mode ─────────────────────────────────────────────────────────
-
-export async function createOrResumeSession(
-  userId: string,
-  supabase: SupaDB,
-): Promise<NextQuestionResult | null> {
-  // Check for existing active session
-  const { data: existing } = await supabase
-    .from('discovery_sessions')
-    .select('*')
-    .eq('user_id', userId)
-    .is('contact_id', null)
-    .eq('mode', 'full')
-    .eq('status', 'active')
-    .order('last_activity_at', { ascending: false })
-    .limit(1)
-    .maybeSingle();
-
-  if (existing) {
-    return getSessionQuestion(existing, supabase);
-  }
-
-  // Build new session plan: all unanswered questions in order
-  const [answered, allQuestions] = await Promise.all([
-    getAnsweredKeys(supabase, userId),
-    getAllQuestions(supabase),
-  ]);
-
-  const pending = allQuestions
-    .filter(q => !answered.has(q.question_key))
-    .map(q => q.question_key);
-
-  if (pending.length === 0) return null;
-
-  const { data: session } = await supabase
-    .from('discovery_sessions')
-    .insert({
-      user_id: userId,
-      mode: 'full',
-      pending_keys: pending,
-      current_index: 0,
-      status: 'active',
-    })
-    .select('*')
-    .single();
-
-  if (!session) return null;
-  return getSessionQuestion(session, supabase);
-}
+// ── Chemins legacy supprimés (Refonte Profil V2, Phase B) ────────────────────
+// getNextDripQuestion et createOrResumeSession servaient des questions SANS
+// la garde anti-redemande (ni dataPresence ni statuts). Morts côté UI mais
+// vivants via GET /api/discovery/next : neutralisés — la route renvoie 410.
+// Le seul sélecteur autorisé est getNextMicroQuestion (garde complète).
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQuestionResult | null> {
@@ -291,7 +136,7 @@ export async function recordAnswer(
 ): Promise<{ next: NextQuestionResult | null; done: boolean }> {
   const now = new Date().toISOString();
 
-  // Update profile_completion
+  // Update profile_completion — status = source unique de la re-proposition
   await supabase
     .from('profile_completion')
     .upsert({
@@ -302,6 +147,7 @@ export async function recordAnswer(
       answered_at: skip ? null : now,
       last_asked_at: now,
       skipped_count: skip ? 1 : 0,
+      status: skip ? 'skipped' : 'answered',
     }, { onConflict: 'user_id,question_key' });
 
   // If answered (not skipped): save into my_profile.discovery_answers
@@ -486,15 +332,17 @@ export async function getNextMicroQuestion(
   mode: 'quick' | 'full',
   sectionKey?: string,
 ): Promise<NextQuestionResult | null> {
-  const [answered, allQuestions, profileData] = await Promise.all([
-    getAnsweredKeys(supabase, userId),
+  const [allQuestions, profileData] = await Promise.all([
     getAllQuestionsWithTrigger(supabase),
     getProfileDataSnapshot(supabase, userId),
   ]);
+  // Statuts + rétro-alimentation (donnée en fiche → answered) — Phase B
+  const statuses = await syncStatusesWithData(supabase, userId, profileData);
+  const blocked = blockedKeys(statuses);
 
-  // Unanswered + donnée absente de la fiche (garde 2.2) + trigger passes
+  // Non bloquée (answered/archived) + donnée absente de la fiche + trigger passe
   let candidates = allQuestions.filter(
-    q => !answered.has(q.question_key)
+    q => !blocked.has(q.question_key)
       && !questionDataPresent(q.question_key, profileData)
       && evaluateTrigger(q, analysis),
   );
@@ -558,14 +406,15 @@ export async function getAvailableDiscoverySections(
   supabase: SupaDB,
   analysis: ProfileAnalysisSnapshot | null,
 ): Promise<Set<string>> {
-  const [answered, allQuestions, profileData] = await Promise.all([
-    getAnsweredKeys(supabase, userId),
+  const [allQuestions, profileData] = await Promise.all([
     getAllQuestionsWithTrigger(supabase),
     getProfileDataSnapshot(supabase, userId),
   ]);
+  const statuses = await syncStatusesWithData(supabase, userId, profileData);
+  const blocked = blockedKeys(statuses);
 
   const candidates = allQuestions.filter(
-    q => !answered.has(q.question_key)
+    q => !blocked.has(q.question_key)
       && !questionDataPresent(q.question_key, profileData)
       && evaluateTrigger(q, analysis),
   );
