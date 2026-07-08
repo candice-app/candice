@@ -5,8 +5,6 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import V4Shell from "@/components/layout/V4Shell";
 import { Icon } from "@/components/ui/v4/IconSprite";
 import { trackActivity } from "@/lib/lifecycle/track-activity";
-import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
-import TourReplay from "@/components/onboarding/TourReplay";
 import PauseBanner from "@/components/dashboard/PauseBanner";
 import PushPrompt from "@/components/dashboard/PushPrompt";
 import type { SuggestionWithContact } from "@/components/dashboard/ProactiveDashboardCard";
@@ -187,8 +185,10 @@ export default async function DashboardPage() {
 
   return (
     <V4Shell active="home">
-      {!onboardingDone && <OnboardingOverlay userId={user.id} userName={firstName} />}
-      <TourReplay />
+      {/* Tour d'accueil NEUTRALISÉ (arbitrage diagnostic perf) : vouvoiement +
+          émoji = violation DA, et son overlay interceptait les taps (il se
+          montait à CHAQUE visite à cause de la colonne fantôme, migration 61).
+          Refonte propre au lot Harmonisation design — TourReplay suit. */}
       {isPaused && <PauseBanner />}
       {showPushPrompt && <PushPrompt />}
 
