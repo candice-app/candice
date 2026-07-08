@@ -9,7 +9,6 @@ import IconSprite from "@/components/ui/v4/IconSprite";
 import Brand from "@/components/ui/v4/Brand";
 import V4BottomNav from "@/components/ui/v4/BottomNav";
 import LivePoint from "@/components/presence/LivePoint";
-import ScrollMemory from "@/components/layout/ScrollMemory";
 
 interface Props {
   children: React.ReactNode;
@@ -75,8 +74,7 @@ export default function V4Shell({ children, active, noBrandBar = false }: Props)
   return (
     <div className="v4 app-shell">
       <IconSprite />
-      {/* V3.1 : restauration du scroll par onglet (la nav push remet à zéro) */}
-      <ScrollMemory />
+      {/* F3 : ScrollMemory est monté au layout racine (tous les shells) */}
 
       {/* ── Desktop rail ≥1024px (hidden on mobile via .app-rail CSS) ── */}
       <aside className="app-rail" aria-label="Navigation principale">
