@@ -54,7 +54,8 @@ export default function WishlistSection({ contactId, initialWishlist }: Props) {
   return (
     <div className="card">
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-        <h2 style={{ fontSize: 13, fontWeight: 400, color: "var(--con)" }}>Liste de souhaits</h2>
+        {/* Vocabulaire verrouillé : côté proche = « Carnet d'envies », jamais « wishlist » */}
+        <h2 style={{ fontSize: 13, fontWeight: 400, color: "var(--con)" }}>Carnet d&apos;envies</h2>
         <button
           onClick={() => setShowForm(v => !v)}
           style={{ fontSize: 11, fontWeight: 400, color: "var(--terra)", background: "none", border: "none", cursor: "pointer" }}

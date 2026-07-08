@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Contact introuvable" }, { status: 404 });
 
   const { data: item, error: itemErr } = await supabase
-    .from("wishlist_items")
+    .from("carnet_envies_items") // vocabulaire verrouillé : sourcing proche = carnet d'envies
     .insert({
       contact_id: contactId,
       pilot_id: user.id,

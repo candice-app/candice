@@ -150,27 +150,17 @@ export default function HeaderV2({
           }}>
             Partager mon profil
           </Link>
-          <button
-            onClick={() => setWishOpen(true)}
-            style={{
-              flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
-              justifyContent: "center", fontSize: 14, fontWeight: 600,
-              border: "1px solid rgba(255,255,255,.4)", color: "#fff",
-              background: "none", cursor: "pointer", fontFamily: "var(--font-sans)",
-            }}
-          >
+          {/* Point 13 : la wishlist V1 est réelle — les deux boutons ouvrent l'écran */}
+          <Link href="/moi/wishlist" style={{
+            flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
+            justifyContent: "center", fontSize: 14, fontWeight: 600,
+            border: "1px solid rgba(255,255,255,.4)", color: "#fff",
+            textDecoration: "none",
+          }}>
             <Icon name="plus" size={15} style={{ marginRight: 7 }} />Ma wishlist
-          </button>
+          </Link>
         </div>
       </div>
-
-      {/* C5 STOP C : stub avec retour — jamais un tap muet */}
-      <Sheet open={wishOpen} onClose={() => setWishOpen(false)} title="Ma wishlist">
-        <p style={{ fontSize: 14, lineHeight: 1.6, color: T2.ink2, marginBottom: 13 }}>
-          Ta wishlist arrive bientôt. Tu pourras y déposer tes envies pour que
-          tes proches visent toujours juste.
-        </p>
-      </Sheet>
     </div>
   );
 }

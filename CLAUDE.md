@@ -7,6 +7,11 @@ DA figée « Présence » V11 — référence obligatoire : docs/design-system.h
 - Avant de commencer un lot, lis la section concernee de cette spec.
 - Ce document vit et evolue : refere-toi toujours a sa derniere version dans le repo.
 
+## Lexique verrouillé (interdiction de croiser les termes)
+- WISHLIST = la liste personnelle de l'utilisateur, sur SON profil (ce qu'il aimerait recevoir). Table my_wishlist_items. Candice s'en inspire pour recommander sans jamais dévoiler que la personne l'a demandé.
+- CARNET D'ENVIES = les envies REPÉRÉES pour un proche (photo, lien, boutique, phrase entendue, note). Vit sur la fiche du proche. Table carnet_envies_items. Côté proche, on ne dit JAMAIS « wishlist ».
+- IDÉES = les propositions de Candice.
+
 ## Regles produit dures
 - Modele : 100 % abonnement (9 EUR/mois, 1 mois offert, CB demandee seulement a J-7). Questionnaire et analyse toujours gratuits.
 - Equilibre gratuit/payant : Candice propose souvent des attentions NON payantes ; le mix ne penche jamais plus vers le payant que vers le gratuit.
