@@ -7,6 +7,10 @@ import type { NextQuestionResult, DiscoveryQuestion, QuestionOption } from "@/li
 interface Props {
   initial: NextQuestionResult | null;
   mode: "quick" | "full";
+  /** C4 STOP C : deep-link ciblé (nudge, CTA section) → question DIRECTE,
+   *  jamais d'écran intercalaire. L'intro ne subsiste que pour l'entrée
+   *  générique du header. */
+  skipIntro?: boolean;
 }
 
 // ── Chips question ────────────────────────────────────────────────────────────
@@ -460,11 +464,11 @@ function IntroScreen({ onStart, onQuick }: { onStart: () => void; onQuick: () =>
 
 // ── Main component ─────────────────────────────────────────────────────────────
 
-export default function DiscoveryFlow({ initial, mode }: Props) {
+export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Props) {
   const [current, setCurrent] = useState<NextQuestionResult | null>(initial);
   const [done, setDone] = useState(initial === null);
   const [loading, setLoading] = useState(false);
-  const [intro, setIntro] = useState(mode === "full");
+  const [intro, setIntro] = useState(mode === "full" && !skipIntro);
 
   async function handleAnswer(answer: string | string[] | Record<string, unknown>, skip = false) {
     if (!current || loading) return;
