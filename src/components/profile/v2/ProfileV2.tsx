@@ -1,6 +1,6 @@
-"use client";
-
 // Refonte Profil V2 — assemblage de la fiche pilote, ORDRE DE LA MAQUETTE
+// SERVEUR (P1.4) : seules les feuilles interactives (Header, Resume,
+// DeepCard, Facts) sont hydratées — bundle et hydratation réduits.
 // GELÉE : header aplat → résumé → podium → carrousel compris → en
 // profondeur (4) → Tes mondes (4) → Ce qui marche → Territoire → Univers →
 // Infos pratiques → Pour mieux viser → « Voir ma fiche partagée ».

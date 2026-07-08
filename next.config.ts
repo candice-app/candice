@@ -7,6 +7,16 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // P1.4 STOP C — cache client des segments dynamiques (défaut Next 15+ :
+  // 0 s → chaque navigation refetchait tout : squelettes systématiques,
+  // scroll perdu). 180 s : retours instantanés sans squelette ; les
+  // éditions rafraîchissent via router.refresh(), non affecté.
+  experimental: {
+    staleTimes: {
+      dynamic: 180,
+      static: 300,
+    },
+  },
   async headers() {
     return [
       {

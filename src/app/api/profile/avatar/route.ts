@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { invalidateAvatarUrl } from "@/lib/profile/avatar-url";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
@@ -41,6 +42,8 @@ export async function POST(request: NextRequest) {
       { user_id: user.id, avatar_path: path, updated_at: new Date().toISOString() },
       { onConflict: "user_id" },
     );
+
+  invalidateAvatarUrl(path); // nouvelle photo → nouvelle URL signée au prochain rendu
 
   const { data: signed, error: signError } = await admin.storage
     .from("avatars")

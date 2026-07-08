@@ -515,15 +515,16 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
   const { question, sectionLabel, progress } = current;
 
   return (
-    <div style={{ paddingTop: 40, paddingBottom: 40 }}>
+    <div style={{ paddingTop: 40, paddingBottom: 40, maxWidth: "100%", overflowX: "hidden" }}>
       {/* Back */}
       <Link href="/moi" style={{ textDecoration: "none" }}>
         <span style={{ fontSize: 12, color: "var(--ink-3)", fontWeight: 300 }}>← Mon profil</span>
       </Link>
 
-      {/* Progress (full mode only) */}
+      {/* P1.7 : zone d'en-tête à hauteur RÉSERVÉE (identique avec ou sans
+          barre de progression) — aucun saut entre deux questions */}
       {progress && (
-        <div style={{ marginTop: 20, marginBottom: 4 }}>
+        <div style={{ marginTop: 20, marginBottom: 4, minHeight: 56 }}>
           <p style={{
             fontSize: 10, fontWeight: 500,
             letterSpacing: ".22em", textTransform: "uppercase",
@@ -551,28 +552,33 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
         </div>
       )}
 
-      {/* Quick mode: section label */}
+      {/* Quick mode: section label — même hauteur réservée que la barre */}
       {!progress && (
-        <p style={{
-          fontSize: 10, fontWeight: 500,
-          letterSpacing: ".22em", textTransform: "uppercase",
-          color: "var(--pine)", marginTop: 20,
-        }}>
-          {sectionLabel}
-        </p>
+        <div style={{ marginTop: 20, marginBottom: 4, minHeight: 56 }}>
+          <p style={{
+            fontSize: 10, fontWeight: 500,
+            letterSpacing: ".22em", textTransform: "uppercase",
+            color: "var(--pine)",
+          }}>
+            {sectionLabel}
+          </p>
+        </div>
       )}
 
-      {/* Question */}
+      {/* Question — hauteur minimale 2 lignes : le titre court d'une question
+          suivante ne fait pas remonter les options (P1.7) */}
       <h2 style={{
         fontFamily: "var(--font-serif)",
         fontWeight: 300, fontSize: 26,
         color: "var(--ink)", letterSpacing: "-.018em",
-        lineHeight: 1.25, marginTop: 14,
+        lineHeight: 1.25, marginTop: 14, minHeight: 66,
+        overflowWrap: "break-word",
       } as React.CSSProperties}>
         {question.question_text}
       </h2>
 
-      {/* Input — les questions à follow-up obligatoire ont leur composant dédié */}
+      {/* Zone de réponse à hauteur réservée (P1.7) */}
+      <div style={{ minHeight: 280 }}>
       {question.question_key === "practical.dietary" ? (
         <DietaryQuestion
           question={question}
@@ -601,6 +607,7 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
           disabled={loading}
         />
       )}
+      </div>
     </div>
   );
 }

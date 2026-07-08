@@ -19,6 +19,7 @@ import GenerateAnalysisOnMount from "./GenerateAnalysisOnMount";
 import { getDiscoveryOverview, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
 import { PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
 import { buildProfileV2Data, ANALYSIS_ROW_V2_SELECT, type AnalysisRowV2 } from "@/lib/profile/v2-data";
+import { getSignedAvatarUrl } from "@/lib/profile/avatar-url";
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -71,17 +72,10 @@ export default async function MoiPage() {
     ? { sections: analysis.sections as Record<string, { text?: string; chips?: string[] }> }
     : null;
   // C2 : passe UNIQUE du moteur (sections + nudges), signature avatar EN
-  // PARALLÈLE — le double appel dupliquait questions/snapshot/statuts.
-  const signAvatar = async (): Promise<string | null> => {
-    if (!profile.avatar_path) return null;
-    const { createAdminClient } = await import("@/utils/supabase/admin");
-    const { data: signed } = await createAdminClient()
-      .storage.from("avatars").createSignedUrl(profile.avatar_path, 3600);
-    return signed?.signedUrl ?? null;
-  };
+  // PARALLÈLE et MÉMOÏSÉE (P1.6 : URL stable → image en cache navigateur).
   const [{ availableSections, nudges }, avatarUrl] = await Promise.all([
     getDiscoveryOverview(user.id, supabase, analysisSnapshot),
-    signAvatar(),
+    getSignedAvatarUrl(profile.avatar_path),
   ]);
 
   const data = buildProfileV2Data({
