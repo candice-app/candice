@@ -72,12 +72,16 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
       v={f.mobilite?.split(" · ")[0] ?? "Renseignée"}
       sub={data.mobiliteDetail.intensite ?? undefined}
       onClick={() => setMobOpen(true)} />);
+  // Dates clés — 3 états (arbitrage A.2) : aucune entrée → CTA ajouter ;
+  // entrées sans date exploitable → « N à compléter » ; toutes datées → résumé.
   rows.push(
     <FactRow key="dates" k="Dates clés"
-      v={data.datesACompleter > 0
-        ? `${data.datesACompleter} date${data.datesACompleter > 1 ? "s" : ""} à compléter`
-        : (f.datesCles ?? "À compléter")}
-      hl={data.datesACompleter > 0}
+      v={data.datesTotal === 0
+        ? "Ajouter tes dates clés"
+        : data.datesACompleter > 0
+          ? `${data.datesACompleter} date${data.datesACompleter > 1 ? "s" : ""} à compléter`
+          : (f.datesCles ?? "")}
+      hl={data.datesTotal === 0 || data.datesACompleter > 0}
       href="/moi/questionnaire?part=practical7#agenda" />);
 
   return (
@@ -93,23 +97,27 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
 
       {rows}
 
-      {/* Art.9 — badge Privé + Gérer → gestion privée volontaire */}
-      <Link href="/moi/questionnaire?part=practical" style={{
+      {/* Art.9 — badge Privé, « Gérer » MASQUÉ (arbitrage A.1 STOP C) :
+          aucune cible exacte n'existe avant le lot A3/RGPD — un CTA qui
+          n'atterrit pas sur sa question exacte est interdit. */}
+      <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12,
-        padding: "12px 0", minHeight: 50, textDecoration: "none",
+        padding: "12px 0", minHeight: 50,
       }}>
-        <span style={{ fontSize: 13, color: T2.ink2 }}>Santé · handicap · religion</span>
-        <span style={{ display: "flex", alignItems: "center", gap: 7, fontSize: 13.5, fontWeight: 550, color: T2.ink }}>
-          <span style={{
-            fontSize: 9.5, fontWeight: 700, letterSpacing: 0.8, textTransform: "uppercase",
-            background: "rgba(205,185,135,.22)", color: "#7a4b1e", padding: "3px 8px", borderRadius: 8,
-          }}>
-            Privé
-          </span>
-          Gérer
-          <Icon name="chevron" size={13} style={{ color: T2.ink3 }} />
+        <span style={{ fontSize: 13, color: T2.ink2 }}>
+          Santé · handicap · religion
+          <small style={{ display: "block", fontSize: 11, color: T2.ink3, marginTop: 2 }}>
+            Sensible — tu choisis de renseigner ou non
+          </small>
         </span>
-      </Link>
+        <span style={{
+          fontSize: 9.5, fontWeight: 700, letterSpacing: 0.8, textTransform: "uppercase",
+          background: "rgba(205,185,135,.22)", color: "#7a4b1e", padding: "3px 8px", borderRadius: 8,
+          flexShrink: 0,
+        }}>
+          Privé
+        </span>
+      </div>
 
       {/* Sheet mobilité — détail COMPLET, jamais tronqué */}
       {data.mobiliteDetail && (

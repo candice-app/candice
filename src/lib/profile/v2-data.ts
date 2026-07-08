@@ -92,6 +92,7 @@ export interface ProfileV2Data {
 
   facts: ReturnType<typeof buildFacts>;
   mobiliteDetail: { texte: string; intensite: string | null } | null; // sheet — jamais tronqué
+  datesTotal: number;       // entrées saisies (3 états : 0 → CTA ajouter)
   datesACompleter: number;  // entrées sans date exploitable
   art9Filled: boolean;
 
@@ -173,6 +174,7 @@ export async function buildProfileV2Data(args: {
           intensite: pi?.mobilite_intensite ? (INTENSITE_FR[pi.mobilite_intensite] ?? pi.mobilite_intensite) : null,
         }
       : null,
+    datesTotal: dates.length,
     datesACompleter,
     art9Filled: !!(profile.religion || profile.disability || profile.health_comfort),
 
