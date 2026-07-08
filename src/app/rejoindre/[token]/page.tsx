@@ -83,7 +83,7 @@ export default async function RejoindrePage({
         choisi de te confier, et remplis ta fiche à ton tour.
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 10, alignItems: "center", marginTop: 24 }}>
-        <Link href={`/register?share_token=${encodeURIComponent(token)}`} style={{
+        <Link href={`/register?share_token=${encodeURIComponent(token)}&de=${encodeURIComponent(ownerFirstName)}`} style={{
           display: "inline-flex", alignItems: "center", justifyContent: "center",
           minHeight: 52, padding: "0 28px", background: "var(--pine)", color: "#fff",
           borderRadius: 999, fontSize: 15, fontWeight: 600, textDecoration: "none",

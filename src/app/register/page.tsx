@@ -42,7 +42,10 @@ function RegisterForm() {
   // B.2 Phase 7 — lien de partage sortant : après inscription, retour sur
   // /rejoindre/[token] (le claim se fait là, côté serveur, une fois connecté)
   const shareToken = searchParams.get("share_token");
+  // P0.2 — prénom du partageur (passé par /rejoindre) pour l'écran de confirmation
+  const sharerFirstName = searchParams.get("de");
   const supabase = createClient();
+  const [created, setCreated] = useState(false);
 
   const [name, setName] = useState("");
   const [handle, setHandle] = useState("");
@@ -116,12 +119,26 @@ function RegisterForm() {
       // l'unicité reste garantie en base (index) au moment de l'écriture.
     }
 
+    // P0.1 — le lien de confirmation doit TOUJOURS revenir sur la prod
+    // (jamais localhost/preview) et atterrir sur la bonne destination
+    // (lien de partage → /rejoindre/[token], pas /dashboard).
+    const appOrigin = process.env.NODE_ENV === "production"
+      ? "https://candice.app"
+      : window.location.origin;
+    const destination = inviteToken
+      ? `/moi/questionnaire?invite_token=${encodeURIComponent(inviteToken)}`
+      : shareToken
+        ? `/rejoindre/${encodeURIComponent(shareToken)}`
+        : "/dashboard";
+
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        data: { full_name: name, phone },
-        emailRedirectTo: `${window.location.origin}/api/auth/callback?next=/dashboard`,
+        // handle en metadata : récupérable même si la session n'ouvre
+        // qu'après confirmation email (rattrapage Paramètres sinon)
+        data: { full_name: name, phone, handle: normalizedHandle },
+        emailRedirectTo: `${appOrigin}/api/auth/callback?next=${encodeURIComponent(destination)}`,
       },
     });
 
@@ -138,7 +155,9 @@ function RegisterForm() {
     if (!data.session) {
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
       if (signInError) {
-        setGlobalError("Compte créé ! Vérifiez votre boîte e-mail pour confirmer votre adresse avant de vous connecter.");
+        // P0.2 — confirmation email requise : VRAI écran de confirmation,
+        // plus jamais un texte d'erreur perdu sous le formulaire.
+        setCreated(true);
         setLoading(false);
         return;
       }
@@ -172,14 +191,47 @@ function RegisterForm() {
       body: JSON.stringify({ firstName: name.trim(), email }),
     }).catch(() => {});
 
-    const destination = inviteToken
-      ? `/moi/questionnaire?invite_token=${encodeURIComponent(inviteToken)}`
-      : shareToken
-        ? `/rejoindre/${encodeURIComponent(shareToken)}`
-        : "/dashboard";
     router.push(destination);
     router.refresh();
   };
+
+  // P0.2 — écran de confirmation post-inscription (DA Candice)
+  if (created) {
+    return (
+      <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: BG, fontFamily: DM }}>
+        <header style={{ padding: "20px 24px", borderBottom: "0.5px solid var(--line)" }}>
+          <Wordmark href="/" />
+        </header>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "48px 24px" }}>
+          <div style={{ maxWidth: 420, textAlign: "center" }}>
+            <span style={{
+              width: 52, height: 52, borderRadius: 16, background: "#EAF1EC",
+              display: "inline-flex", alignItems: "center", justifyContent: "center", marginBottom: 22,
+            }}>
+              <svg viewBox="0 0 24 24" style={{ width: 26, height: 26, fill: "none", stroke: "var(--pine)", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" }}>
+                <rect x="2" y="4" width="20" height="16" rx="2" /><path d="M22 6l-10 7L2 6" />
+              </svg>
+            </span>
+            <h1 style={{
+              fontFamily: SERIF, fontWeight: 300, fontSize: 27, color: INK,
+              letterSpacing: "-.018em", lineHeight: 1.3, marginBottom: 14,
+            } as React.CSSProperties}>
+              Ton compte est créé.
+            </h1>
+            <p style={{ fontSize: 15.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.7 }}>
+              Va voir ta boîte mail pour confirmer ton adresse
+              {sharerFirstName
+                ? <> — puis tu découvriras ce que {sharerFirstName} a partagé avec toi.</>
+                : "."}
+            </p>
+            <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", lineHeight: 1.6, marginTop: 18 }}>
+              Rien reçu ? Regarde tes indésirables — l&apos;email vient de candice.app.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: BG, fontFamily: DM }}>
