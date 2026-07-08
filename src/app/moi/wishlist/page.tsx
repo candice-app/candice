@@ -22,7 +22,7 @@ export default async function WishlistPage() {
 
   return (
     <V4Shell active="profile">
-      <div style={{ padding: "16px 20px 120px" }}>
+      <div data-page-ready="wishlist" style={{ padding: "16px 20px 120px" }}>
         <Link href="/moi" style={{ textDecoration: "none" }}>
           <span style={{ fontSize: 12, color: "var(--ink-3)", fontWeight: 300 }}>← Ma fiche</span>
         </Link>

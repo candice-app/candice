@@ -373,6 +373,7 @@ export default async function ContactPage({
 
   return (
     <DashboardShell>
+      <div data-page-ready="contact" style={{ display: "contents" }} />
 
       {/* ── Header band — pine encre ── */}
       <div

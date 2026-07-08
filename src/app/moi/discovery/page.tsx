@@ -38,7 +38,7 @@ export default async function DiscoveryPage({
 
   return (
     <DashboardShell>
-      <div className="content-col">
+      <div className="content-col" data-page-ready="discovery">
         {/* C4 : une section ciblée (nudge, CTA) ouvre DIRECTEMENT sa question */}
         <DiscoveryFlow initial={initial} mode={mode} skipIntro={!!sectionKey} />
       </div>

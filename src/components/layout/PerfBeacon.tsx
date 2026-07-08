@@ -1,10 +1,12 @@
 "use client";
 
-// F2 STOP final — instrumentation TEMPORAIRE (diagnostic perf device réel).
-// À SUPPRIMER après le diagnostic. Mesure ce que le device vit :
-//   · chargements durs : TTFB, DOM interactif, load (PerformanceNavigationTiming)
-//   · navigations douces : tap → changement de route → contenu peint
-// Envoi en beacon vers /api/perf-log (table perf_beacons, service role).
+// F2 v2 — instrumentation TEMPORAIRE corrigée (constat Estelle : le v1
+// s'arrêtait au premier paint = LE SQUELETTE, pas l'attente réelle).
+// Mesure désormais jusqu'au CONTENU RÉEL : chaque page pose un marqueur
+// [data-page-ready] sur son contenu — le squelette n'en a pas.
+//   · to_content_ms : tap → contenu réel affiché
+//   · skeleton_shown : un premier paint SANS marqueur a précédé le contenu
+// À SUPPRIMER après le diagnostic (dernier commit du lot).
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
@@ -20,27 +22,45 @@ function send(payload: Record<string, unknown>) {
   } catch {}
 }
 
+const hasContent = () => !!document.querySelector("[data-page-ready]");
+
+/** Attend le marqueur de contenu réel (poll rAF, plafond 30 s). */
+function waitForContent(): Promise<number> {
+  return new Promise(resolve => {
+    const t0 = performance.now();
+    const tick = () => {
+      if (hasContent()) return resolve(performance.now() - t0);
+      if (performance.now() - t0 > 30000) return resolve(-1);
+      requestAnimationFrame(tick);
+    };
+    tick();
+  });
+}
+
 export default function PerfBeacon() {
   const pathname = usePathname();
   const lastClick = useRef<{ t: number; from: string } | null>(null);
   const prevPath = useRef<string | null>(null);
 
-  // Chargement DUR : timings navigateur
+  // Chargement DUR : TTFB navigateur + délai jusqu'au contenu réel
   useEffect(() => {
     const nav = performance.getEntriesByType("navigation")[0] as PerformanceNavigationTiming | undefined;
     if (!nav) return;
-    send({
-      kind: "hard",
-      path: window.location.pathname,
-      nav_type: nav.type, // navigate | reload | back_forward
-      ttfb_ms: Math.round(nav.responseStart),
-      dom_ms: Math.round(nav.domContentLoadedEventEnd),
-      load_ms: Math.round(nav.loadEventEnd || nav.domContentLoadedEventEnd),
+    waitForContent().then(wait => {
+      send({
+        kind: "hard",
+        path: window.location.pathname,
+        nav_type: nav.type,
+        ttfb_ms: Math.round(nav.responseStart),
+        dom_ms: Math.round(nav.domContentLoadedEventEnd),
+        to_content_ms: wait >= 0 ? Math.round(performance.now()) : null, // depuis navigationStart
+        skeleton_shown: false,
+      });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Tap sur un lien : point de départ des navigations douces
+  // Tap sur un lien interne
   useEffect(() => {
     const onClick = (e: Event) => {
       const a = (e.target as Element | null)?.closest?.("a[href^='/']");
@@ -50,7 +70,7 @@ export default function PerfBeacon() {
     return () => document.removeEventListener("click", onClick, { capture: true } as EventListenerOptions);
   }, []);
 
-  // Changement de route : mesure tap → route, puis route → contenu peint
+  // Navigation douce : tap → route → CONTENU RÉEL (le squelette ne compte pas)
   useEffect(() => {
     const from = prevPath.current;
     prevPath.current = pathname;
@@ -59,16 +79,21 @@ export default function PerfBeacon() {
     const click = lastClick.current;
     lastClick.current = null;
     const routeAt = performance.now();
-    // double rAF ≈ premier paint du nouveau contenu (ou du squelette)
+
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      const paintAt = performance.now();
-      send({
-        kind: "soft",
-        path: pathname,
-        from_path: from,
-        click_to_route_ms: click ? Math.round(routeAt - click.t) : null,
-        route_to_paint_ms: Math.round(paintAt - routeAt),
-        total_ms: click ? Math.round(paintAt - click.t) : null,
+      const skeletonShown = !hasContent(); // premier paint sans marqueur = squelette
+      waitForContent().then(wait => {
+        const contentAt = performance.now();
+        send({
+          kind: "soft",
+          path: pathname,
+          from_path: from,
+          click_to_route_ms: click ? Math.round(routeAt - click.t) : null,
+          route_to_paint_ms: Math.round(contentAt - routeAt), // conservé : route → contenu
+          to_content_ms: wait >= 0 ? Math.round(contentAt - routeAt) : null,
+          total_ms: click ? Math.round(contentAt - click.t) : null, // TAP → CONTENU RÉEL
+          skeleton_shown: skeletonShown,
+        });
       });
     }));
   }, [pathname]);

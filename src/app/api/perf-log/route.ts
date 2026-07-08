@@ -21,6 +21,8 @@ export async function POST(req: NextRequest) {
     click_to_route_ms: numOrNull(body.click_to_route_ms),
     route_to_paint_ms: numOrNull(body.route_to_paint_ms),
     total_ms: numOrNull(body.total_ms),
+    to_content_ms: numOrNull(body.to_content_ms),
+    skeleton_shown: typeof body.skeleton_shown === "boolean" ? body.skeleton_shown : null,
     ua: body.ua ? String(body.ua).slice(0, 160) : null,
   });
   return NextResponse.json({ ok: true });

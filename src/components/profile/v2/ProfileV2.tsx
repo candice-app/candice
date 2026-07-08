@@ -109,7 +109,7 @@ export default function ProfileV2({
     .some(k => show(k as SectionKey).notShared);
 
   return (
-    <div style={{ background: T2.canvas, minHeight: "100svh", paddingBottom: "calc(92px + env(safe-area-inset-bottom))" }}>
+    <div data-page-ready="fiche" style={{ background: T2.canvas, minHeight: "100svh", paddingBottom: "calc(92px + env(safe-area-inset-bottom))" }}>
       {view === "pilote" ? (
         <HeaderV2
           firstName={data.firstName}

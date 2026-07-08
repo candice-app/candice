@@ -136,7 +136,7 @@ export default async function ContactsPage() {
 
   return (
     <V4Shell active="people">
-      <div style={{ padding: "12px 20px 120px", fontFamily: "var(--font-sans)" }}>
+      <div data-page-ready="contacts" style={{ padding: "12px 20px 120px", fontFamily: "var(--font-sans)" }}>
 
         {/* Header */}
         <div style={{

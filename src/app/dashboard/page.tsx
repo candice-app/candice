@@ -192,7 +192,7 @@ export default async function DashboardPage() {
       {isPaused && <PauseBanner />}
       {showPushPrompt && <PushPrompt />}
 
-      <div style={{ padding: "12px 20px 120px", fontFamily: "var(--font-sans)" }}>
+      <div data-page-ready="dashboard" style={{ padding: "12px 20px 120px", fontFamily: "var(--font-sans)" }}>
 
         {/* Date + greeting */}
         <div style={{ margin: "6px 0 2px" }}>
