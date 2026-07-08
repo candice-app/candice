@@ -3,26 +3,22 @@
 // design/redisign/Candice_Maquette_Profil_REFERENCE_VALIDEE.html.
 // JAMAIS de réponse brute : analyse (profile_analysis) + scores agrégés + FAITS pratiques.
 
+// Refonte Profil V2, Phase C — la fiche pilote est rendue par ProfileV2
+// (maquette gelée). Les vues TIERCES restent sur ProfileSheet jusqu'à la
+// Phase D (elles restent fonctionnelles à chaque commit).
+
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import V4Shell from "@/components/layout/V4Shell";
-import ProfileSheet, { type ProfileSheetData } from "@/components/profile/ProfileSheet";
+import ProfileV2 from "@/components/profile/v2/ProfileV2";
 import GenderModal from "@/components/profile/GenderModal";
 import ResumePrompt from "@/components/questionnaire/ResumePrompt";
 import LogoutButton from "./LogoutButton";
 import GenerateAnalysisOnMount from "./GenerateAnalysisOnMount";
-import { getAvailableDiscoverySections, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
-import {
-  buildProfileSheetData,
-  PROFILE_ROW_SELECT,
-  ANALYSIS_ROW_SELECT,
-  type ProfileRow,
-  type AnalysisRow,
-} from "@/lib/profile/sheet-data";
-
-// Types, label maps, donut, complétion et faits pratiques : extraits en
-// Phase 6 vers lib/profile/sheet-data.ts (réutilisés par la fiche partagée).
+import { getAvailableDiscoverySections, getViserNudges, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
+import { PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
+import { buildProfileV2Data, ANALYSIS_ROW_V2_SELECT, type AnalysisRowV2 } from "@/lib/profile/v2-data";
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -34,19 +30,19 @@ export default async function MoiPage() {
   const [{ data: profileRaw }, { data: analysisRaw }] = await Promise.all([
     supabase
       .from("my_profile")
-      .select(PROFILE_ROW_SELECT)
+      .select(`${PROFILE_ROW_SELECT}, avatar_path`)
       .eq("user_id", user.id)
       .maybeSingle(),
     supabase
       .from("profile_analysis")
-      .select(ANALYSIS_ROW_SELECT)
+      .select(ANALYSIS_ROW_V2_SELECT)
       .eq("user_id", user.id)
       .is("contact_id", null)
       .maybeSingle(),
   ]);
 
-  const profile = profileRaw as unknown as ProfileRow | null;
-  const analysis = analysisRaw as unknown as AnalysisRow | null;
+  const profile = profileRaw as unknown as (ProfileRow & { avatar_path?: string | null }) | null;
+  const analysis = analysisRaw as unknown as AnalysisRowV2 | null;
 
   // ── État vide : pas encore de profil ──────────────────────────────────────
   if (!profile) {
@@ -74,22 +70,27 @@ export default async function MoiPage() {
   const analysisSnapshot: ProfileAnalysisSnapshot | null = analysis?.sections
     ? { sections: analysis.sections as Record<string, { text?: string; chips?: string[] }> }
     : null;
-  // Garde unifiée (Phase B) : le même ensemble pilote le bloc « Pour affiner »
-  // ET chaque CTA « Complète X » de la fiche — jamais de re-demande.
-  const availableSections = await getAvailableDiscoverySections(user.id, supabase, analysisSnapshot);
-  const discoveryAvailable = availableSections.size > 0;
+  // Garde unifiée (Phase B) : même moteur pour les questions restantes
+  // (état 4 de la phrase) et les nudges « Pour mieux viser ».
+  const [availableSections, nudges] = await Promise.all([
+    getAvailableDiscoverySections(user.id, supabase, analysisSnapshot),
+    getViserNudges(user.id, supabase, analysisSnapshot),
+  ]);
 
-  const data: ProfileSheetData = {
-    ...buildProfileSheetData({ profile, analysis, firstName, discoveryAvailable }),
-    availableSections: Array.from(availableSections),
-  };
+  const data = await buildProfileV2Data({
+    profile,
+    analysis,
+    firstName,
+    nudges,
+    hasAvailableQuestions: availableSections.size > 0,
+  });
 
   return (
     <V4Shell active="profile">
       {showGenderModal && <GenderModal userId={user.id} />}
       {needsAnalysis && <GenerateAnalysisOnMount />}
 
-      <ProfileSheet view="pilote" data={data} />
+      <ProfileV2 data={data} />
 
       <div style={{ padding: "0 18px 120px" }}>
         <FooterLinks />
