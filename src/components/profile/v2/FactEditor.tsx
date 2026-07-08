@@ -91,10 +91,14 @@ export default function FactEditor({
   const router = useRouter();
   const pe = data.practicalEdit;
   const [adresse, setAdresse] = useState(pe.adresse_livraison);
-  // P2.9 — autocomplétion API Adresse nationale (gratuite, sans clé)
+  // V3.5 — UNE adresse, jamais deux : view (LA valeur + Modifier) →
+  // search (suggestion = REMPLACE, ancienne barrée) → save confirme.
+  const [addrMode, setAddrMode] = useState<"view" | "search" | "free">(
+    pe.adresse_livraison ? "view" : "search",
+  );
+  const [addrPending, setAddrPending] = useState<string | null>(null);
   const [addrQuery, setAddrQuery] = useState("");
   const [addrSuggestions, setAddrSuggestions] = useState<string[]>([]);
-  const [addrFree, setAddrFree] = useState(!!pe.adresse_livraison);
 
   const addrSeq = useRef(0);
   const searchAddr = (q: string) => {
@@ -126,7 +130,7 @@ export default function FactEditor({
     setSaving(true);
     setError("");
     const body =
-      kind === "adresse" ? { adresse_livraison: adresse }
+      kind === "adresse" ? { adresse_livraison: addrPending ?? adresse }
       : kind === "tailles" ? { taille_vetements: tv, taille_chaussures: tc }
       : kind === "alimentation" ? { regime, alcool, allergies, allergies_detail: allergiesDetail }
       : { dates_importantes: dates };
@@ -148,15 +152,42 @@ export default function FactEditor({
     <Sheet open={kind !== null} onClose={onClose} title={kind ? TITLES[kind] : ""}>
       {kind === "adresse" && (
         <>
+          {/* LA valeur actuelle — barrée dès qu'un remplacement est choisi */}
           {adresse && (
             <>
-              <Label>Adresse actuelle</Label>
-              <p style={{ fontSize: 14, color: T2.ink, lineHeight: 1.5, marginBottom: 4 }}>{adresse}</p>
+              <Label>Ton adresse (visible par toi et Candice uniquement)</Label>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10, marginBottom: 6 }}>
+                <p style={{
+                  fontSize: 14, color: addrPending ? T2.ink3 : T2.ink, lineHeight: 1.5,
+                  textDecoration: addrPending ? "line-through" : "none", margin: 0,
+                }}>
+                  {adresse}
+                </p>
+                {addrMode === "view" && (
+                  <button
+                    onClick={() => setAddrMode("search")}
+                    style={{
+                      fontSize: 12.5, fontWeight: 600, color: T2.pine, background: "none",
+                      border: `1px solid rgba(23,62,49,.2)`, borderRadius: 20, padding: "8px 14px",
+                      minHeight: 38, cursor: "pointer", fontFamily: "var(--font-sans)", flexShrink: 0,
+                    }}
+                  >
+                    Modifier
+                  </button>
+                )}
+              </div>
             </>
           )}
-          {!addrFree ? (
+
+          {addrPending && (
+            <p style={{ fontSize: 14, color: T2.pine, fontWeight: 500, lineHeight: 1.5, marginBottom: 6 }}>
+              Remplacer par : {addrPending}
+            </p>
+          )}
+
+          {addrMode === "search" && (
             <>
-              <Label>Chercher une adresse</Label>
+              <Label>{adresse ? "Chercher la nouvelle adresse" : "Chercher ton adresse"}</Label>
               <input
                 value={addrQuery}
                 onChange={e => searchAddr(e.target.value)}
@@ -167,7 +198,7 @@ export default function FactEditor({
               {addrSuggestions.map((s, i) => (
                 <button
                   key={i}
-                  onClick={() => { setAdresse(s); setAddrQuery(""); setAddrSuggestions([]); }}
+                  onClick={() => { setAddrPending(s); setAddrQuery(""); setAddrSuggestions([]); }}
                   style={{
                     display: "block", width: "100%", textAlign: "left", minHeight: 44,
                     padding: "10px 12px", fontSize: 13.5, color: T2.ink,
@@ -179,7 +210,7 @@ export default function FactEditor({
                 </button>
               ))}
               <button
-                onClick={() => setAddrFree(true)}
+                onClick={() => { setAddrMode("free"); setAddrPending(null); }}
                 style={{
                   minHeight: 44, background: "none", border: "none", cursor: "pointer",
                   fontSize: 12.5, color: T2.ink3, padding: "6px 2px", fontFamily: "var(--font-sans)",
@@ -188,18 +219,20 @@ export default function FactEditor({
                 Je ne trouve pas mon adresse
               </button>
             </>
-          ) : (
+          )}
+
+          {addrMode === "free" && (
             <>
-              <Label>Adresse (visible par toi et Candice uniquement)</Label>
+              <Label>{adresse ? "Nouvelle adresse" : "Ton adresse"}</Label>
               <textarea
-                value={adresse}
-                onChange={e => setAdresse(e.target.value)}
+                defaultValue=""
+                onChange={e => setAddrPending(e.target.value.trim() || null)}
                 rows={3}
                 placeholder="Numéro, rue, code postal, ville"
                 style={{ ...inputStyle, padding: "12px 14px", resize: "vertical", lineHeight: 1.5 }}
               />
               <button
-                onClick={() => setAddrFree(false)}
+                onClick={() => { setAddrMode("search"); setAddrPending(null); }}
                 style={{
                   minHeight: 44, background: "none", border: "none", cursor: "pointer",
                   fontSize: 12.5, color: T2.ink3, padding: "6px 2px", fontFamily: "var(--font-sans)",
