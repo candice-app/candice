@@ -8,6 +8,7 @@
 // Phase D (elles restent fonctionnelles à chaque commit).
 
 import { redirect } from "next/navigation";
+import { after } from "next/server";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import V4Shell from "@/components/layout/V4Shell";
@@ -16,7 +17,10 @@ import GenderModal from "@/components/profile/GenderModal";
 import ResumePrompt from "@/components/questionnaire/ResumePrompt";
 import LogoutButton from "./LogoutButton";
 import GenerateAnalysisOnMount from "./GenerateAnalysisOnMount";
-import { getDiscoveryOverview, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
+import {
+  getDiscoveryOverview, fetchDiscoveryOverviewSources,
+  type ProfileAnalysisSnapshot,
+} from "@/lib/discovery/engine";
 import { PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
 import { buildProfileV2Data, ANALYSIS_ROW_V2_SELECT, type AnalysisRowV2 } from "@/lib/profile/v2-data";
 import { getSignedAvatarUrl } from "@/lib/profile/avatar-url";
@@ -28,7 +32,10 @@ export default async function MoiPage() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profileRaw }, { data: analysisRaw }] = await Promise.all([
+  // D3 : UNE seule passe — profil, analyse ET sources de l'overview partent
+  // ensemble (l'étage séquentiel « overview après analyse » est supprimé ;
+  // seul le FILTRAGE dépend de l'analyse, pas les requêtes).
+  const [{ data: profileRaw }, { data: analysisRaw }, overviewSources] = await Promise.all([
     supabase
       .from("my_profile")
       .select(`${PROFILE_ROW_SELECT}, avatar_path`)
@@ -40,6 +47,7 @@ export default async function MoiPage() {
       .eq("user_id", user.id)
       .is("contact_id", null)
       .maybeSingle(),
+    fetchDiscoveryOverviewSources(user.id, supabase),
   ]);
 
   const profile = profileRaw as unknown as (ProfileRow & { avatar_path?: string | null }) | null;
@@ -73,10 +81,13 @@ export default async function MoiPage() {
     : null;
   // C2 : passe UNIQUE du moteur (sections + nudges), signature avatar EN
   // PARALLÈLE et MÉMOÏSÉE (P1.6 : URL stable → image en cache navigateur).
-  const [{ availableSections, nudges }, avatarUrl] = await Promise.all([
-    getDiscoveryOverview(user.id, supabase, analysisSnapshot),
+  // D3 : l'overview consomme les sources déjà chargées (zéro requête ici) ;
+  // les écritures de rétro-alimentation partent APRÈS la réponse (after).
+  const [{ availableSections, nudges, flushStatusWrites }, avatarUrl] = await Promise.all([
+    getDiscoveryOverview(user.id, supabase, analysisSnapshot, overviewSources),
     getSignedAvatarUrl(profile.avatar_path),
   ]);
+  after(() => flushStatusWrites().catch(() => {}));
 
   const data = buildProfileV2Data({
     profile,
