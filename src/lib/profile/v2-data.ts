@@ -9,6 +9,7 @@ import {
   computeCompletion,
   type ProfileRow,
   type AnalysisRow,
+  type ImportantDate,
 } from "./sheet-data";
 import {
   computePodium,
@@ -96,6 +97,16 @@ export interface ProfileV2Data {
   datesTotal: number;       // entrées saisies (3 états : 0 → CTA ajouter)
   datesACompleter: number;  // entrées sans date exploitable
   art9Filled: boolean;
+  /** Valeurs BRUTES pour les sheets d'édition (C3) — mode modification
+   *  uniquement, seule exception à « jamais de brut affiché ». */
+  practicalEdit: {
+    adresse_livraison: string;
+    taille_vetements: string;
+    taille_chaussures: string;
+    regime: string;
+    alcool: string;
+    dates_importantes: ImportantDate[];
+  };
 
   nudges: ViserNudge[];
 }
@@ -176,6 +187,14 @@ export async function buildProfileV2Data(args: {
     datesTotal: dates.length,
     datesACompleter,
     art9Filled: !!(profile.religion || profile.disability || profile.health_comfort),
+    practicalEdit: {
+      adresse_livraison: pi?.adresse_livraison ?? "",
+      taille_vetements: pi?.taille_vetements ?? "",
+      taille_chaussures: pi?.taille_chaussures ?? "",
+      regime: pi?.regime ?? "",
+      alcool: pi?.alcool ?? "",
+      dates_importantes: dates,
+    },
 
     nudges,
   };

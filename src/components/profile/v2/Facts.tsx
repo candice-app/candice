@@ -9,6 +9,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { T2, Mod, Icon } from "./ui";
 import { Sheet } from "./Sheet";
+import FactEditor, { type FactEditorKind } from "./FactEditor";
 import type { ProfileV2Data } from "@/lib/profile/v2-data";
 
 function FactRow({
@@ -28,7 +29,7 @@ function FactRow({
           {v}
           {sub && <small style={{ display: "block", fontSize: 11, color: T2.ink3, fontWeight: 400 }}>{sub}</small>}
         </span>
-        <Icon name="chevron" size={13} style={{ color: T2.ink3 }} />
+        {(onClick || href) && <Icon name="chevron" size={13} style={{ color: T2.ink3 }} />}
       </span>
     </>
   );
@@ -47,6 +48,9 @@ function FactRow({
 
 export default function FactsV2({ data }: { data: ProfileV2Data }) {
   const [mobOpen, setMobOpen] = useState(false);
+  // C3 STOP C : édition DIRECTE en sheet — plus aucun renvoi vers la page
+  // questionnaire legacy depuis la fiche.
+  const [editor, setEditor] = useState<FactEditorKind | null>(null);
   const f = data.facts;
 
   const alimentation = [f.regimeAlcool, f.allergies ? `allergies : ${f.allergies}` : null]
@@ -54,11 +58,11 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
 
   const rows: React.ReactNode[] = [];
   if (f.tailles) rows.push(
-    <FactRow key="tailles" k="Tailles" v={f.tailles} href="/moi/questionnaire?part=practical" />);
+    <FactRow key="tailles" k="Tailles" v={f.tailles} onClick={() => setEditor("tailles")} />);
   if (alimentation) rows.push(
-    <FactRow key="alim" k="Alimentation" v={alimentation} href="/moi/questionnaire?part=practical" />);
+    <FactRow key="alim" k="Alimentation" v={alimentation} onClick={() => setEditor("alimentation")} />);
   if (f.animaux) rows.push(
-    <FactRow key="animaux" k="Animaux" v={f.animaux} href="/moi/questionnaire?part=practical" />);
+    <FactRow key="animaux" k="Animaux" v={f.animaux} />);
   if (f.parfums) rows.push(
     <FactRow key="parfums" k="Parfums" v={f.parfums.split(" / ")[0] ?? f.parfums}
       sub={f.parfums.includes(" / ") ? `éviter : ${f.parfums.split(" / ")[1]}` : undefined}
@@ -66,7 +70,8 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
   if (f.adresseRenseignee !== undefined) rows.push(
     <FactRow key="livraison" k="Livraison"
       v={f.adresseRenseignee ? "Adresse renseignée" : "À renseigner"}
-      href="/moi/questionnaire?part=practical" />);
+      hl={!f.adresseRenseignee}
+      onClick={() => setEditor("adresse")} />);
   if (data.mobiliteDetail) rows.push(
     <FactRow key="mobilite" k="Mobilité & confort"
       v={f.mobilite?.split(" · ")[0] ?? "Renseignée"}
@@ -82,7 +87,7 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
           ? `${data.datesACompleter} date${data.datesACompleter > 1 ? "s" : ""} à compléter`
           : (f.datesCles ?? "")}
       hl={data.datesTotal === 0 || data.datesACompleter > 0}
-      href="/moi/questionnaire?part=practical7#agenda" />);
+      onClick={() => setEditor("dates")} />);
 
   return (
     <Mod>
@@ -118,6 +123,10 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
           Privé
         </span>
       </div>
+
+      {/* Sheets d'édition dédiées (C3) — recréées à l'ouverture (key) pour
+          repartir des valeurs fraîches après router.refresh() */}
+      {editor && <FactEditor key={editor} kind={editor} data={data} onClose={() => setEditor(null)} />}
 
       {/* Sheet mobilité — détail COMPLET, jamais tronqué */}
       {data.mobiliteDetail && (
