@@ -31,7 +31,7 @@ export default function ResumeV2({
             onClick={() => setOpen(true)}
             style={{
               display: "inline-flex", alignItems: "center", gap: 6, marginTop: 12,
-              fontSize: 13.5, fontWeight: 600, color: T2.pine, minHeight: 44,
+              fontSize: 14, fontWeight: 600, color: T2.pine, minHeight: 44,
               background: "none", border: "none", cursor: "pointer", padding: 0,
               fontFamily: "var(--font-sans)",
             }}

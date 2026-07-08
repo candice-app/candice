@@ -10,7 +10,7 @@ export default function ViserV2({ nudges }: { nudges: ViserNudge[] }) {
   if (nudges.length === 0) return null;
   return (
     <>
-      <p style={{ margin: "0 22px 12px", fontSize: 13, color: T2.ink2, lineHeight: 1.45 }}>
+      <p style={{ margin: "0 22px 12px", fontSize: 13.5, color: T2.ink2, lineHeight: 1.45 }}>
         Quelques précisions suffisent pour que Candice évite les attentions à côté.
       </p>
       {nudges.map(n => {
@@ -25,9 +25,9 @@ export default function ViserV2({ nudges }: { nudges: ViserNudge[] }) {
             display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10,
             boxShadow: T2.shadow, textDecoration: "none", color: "inherit",
           }}>
-            <span style={{ fontSize: 14, fontWeight: 500 }}>
+            <span style={{ fontSize: 14.5, fontWeight: 500 }}>
               {n.title}
-              <small style={{ display: "block", fontSize: 11, color: T2.ink3, fontWeight: 400, marginTop: 3 }}>
+              <small style={{ display: "block", fontSize: 12.5, color: T2.ink3, fontWeight: 400, marginTop: 3 }}>
                 {n.subtitle}
               </small>
             </span>

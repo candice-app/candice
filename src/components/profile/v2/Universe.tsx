@@ -25,7 +25,7 @@ const WORDMARK_STYLES: Array<{ span: 2 | 3; dark?: boolean; champ?: boolean; tex
 
 function Subhead({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ fontSize: 10, letterSpacing: 1.6, textTransform: "uppercase", color: T2.ink3, fontWeight: 700, margin: "16px 0 8px" }}>
+    <div style={{ fontSize: 11.5, letterSpacing: 1.6, textTransform: "uppercase", color: T2.ink3, fontWeight: 700, margin: "16px 0 8px" }}>
       {children}
     </div>
   );
@@ -69,7 +69,7 @@ export default function UniverseV2Block({
                 }}>
                   <span style={{ textAlign: "center", ...s.text }}>{b.name}</span>
                   <span style={{
-                    fontSize: 9, letterSpacing: 1.1, textTransform: "uppercase", fontWeight: 700,
+                    fontSize: 10.5, letterSpacing: 1.1, textTransform: "uppercase", fontWeight: 700,
                     color: s.dark ? "rgba(255,255,255,.55)" : T2.ink3,
                   }}>
                     {b.category}
@@ -86,7 +86,7 @@ export default function UniverseV2Block({
           marginTop: 15, background: "linear-gradient(160deg,#FBF8F0,#F3EAD3)",
           border: "1px solid rgba(199,168,90,.28)", borderRadius: 15, padding: "14px 15px",
         }}>
-          <p style={{ fontFamily: "var(--font-serif)", fontSize: 15, lineHeight: 1.5, color: "#6b551f", margin: 0 }}>
+          <p style={{ fontFamily: "var(--font-serif)", fontSize: 15.5, lineHeight: 1.5, color: "#6b551f", margin: 0 }}>
             {universe.phrase}
           </p>
         </div>

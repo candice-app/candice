@@ -59,7 +59,7 @@ export function DivTxt2({ children }: { children: React.ReactNode }) {
   return (
     <div style={{
       display: "flex", alignItems: "center", gap: 10, margin: "26px 20px 13px",
-      fontSize: 10, letterSpacing: 1.8, textTransform: "uppercase",
+      fontSize: 11.5, letterSpacing: 1.8, textTransform: "uppercase",
       color: T2.ink3, fontWeight: 700,
     }}>
       <span style={line} />
@@ -87,7 +87,7 @@ export function Mod({ children, style }: { children: React.ReactNode; style?: Re
 export function Tag({ children, warn }: { children: React.ReactNode; warn?: boolean }) {
   return (
     <span style={{
-      fontSize: 11, fontWeight: 500, padding: "6px 11px", borderRadius: 9,
+      fontSize: 12.5, fontWeight: 500, padding: "6px 11px", borderRadius: 9,
       color: warn ? "#7a4b1e" : T2.pine2,
       background: warn ? "rgba(205,185,135,.22)" : "rgba(23,62,49,.06)",
     }}>

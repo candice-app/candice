@@ -21,14 +21,14 @@ function FactRow({
 }) {
   const inner = (
     <>
-      <span style={{ fontSize: 13, color: T2.ink2 }}>{k}</span>
+      <span style={{ fontSize: 13.5, color: T2.ink2 }}>{k}</span>
       <span style={{
-        display: "flex", alignItems: "center", gap: 7, fontSize: 13.5,
+        display: "flex", alignItems: "center", gap: 7, fontSize: 14,
         fontWeight: 550, textAlign: "right", color: hl ? T2.pine : T2.ink,
       }}>
         <span>
           {v}
-          {sub && <small style={{ display: "block", fontSize: 11, color: T2.ink3, fontWeight: 400 }}>{sub}</small>}
+          {sub && <small style={{ display: "block", fontSize: 12.5, color: T2.ink3, fontWeight: 400 }}>{sub}</small>}
         </span>
         {(onClick || href) && <Icon name="chevron" size={13} style={{ color: T2.ink3 }} />}
       </span>
@@ -94,7 +94,7 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
   return (
     <Mod>
       <div style={{
-        display: "flex", alignItems: "center", gap: 7, fontSize: 10,
+        display: "flex", alignItems: "center", gap: 7, fontSize: 11.5,
         letterSpacing: 1.4, textTransform: "uppercase", color: "#9a7d2e",
         fontWeight: 700, marginBottom: 4,
       }}>
@@ -114,15 +114,15 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
           border: "none", cursor: "pointer", textAlign: "left", fontFamily: "var(--font-sans)",
         }}
       >
-        <span style={{ fontSize: 13, color: T2.ink2 }}>
+        <span style={{ fontSize: 13.5, color: T2.ink2 }}>
           Santé · handicap · religion
-          <small style={{ display: "block", fontSize: 11, color: T2.ink3, marginTop: 2 }}>
+          <small style={{ display: "block", fontSize: 12.5, color: T2.ink3, marginTop: 2 }}>
             {data.art9Filled ? "Renseigné — privé" : "Sensible — tu choisis de renseigner ou non"}
           </small>
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
           <span style={{
-            fontSize: 9.5, fontWeight: 700, letterSpacing: 0.8, textTransform: "uppercase",
+            fontSize: 11, fontWeight: 700, letterSpacing: 0.8, textTransform: "uppercase",
             background: "rgba(205,185,135,.22)", color: "#7a4b1e", padding: "3px 8px", borderRadius: 8,
           }}>
             Privé

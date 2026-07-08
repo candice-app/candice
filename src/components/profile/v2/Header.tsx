@@ -123,7 +123,7 @@ export default function HeaderV2({
               }}>
                 <span style={{ position: "absolute", inset: 3.5, borderRadius: "50%", background: "#164534" }} />
               </span>
-              <p style={{ fontSize: 14.5, color: "rgba(255,255,255,.84)", margin: 0 }}>
+              <p style={{ fontSize: 15, color: "rgba(255,255,255,.84)", margin: 0 }}>
                 {phrase.before}<b style={{ color: "#EBDDB6", fontWeight: 600 }}>{phrase.bold}</b>{phrase.after}
               </p>
             </div>
@@ -131,7 +131,7 @@ export default function HeaderV2({
             {knowState < 4 && (
               <Link href="/moi/discovery?mode=full" style={{
                 display: "inline-flex", alignItems: "center", gap: 5, margin: "2px 0 0 28px",
-                fontSize: 12.5, fontWeight: 500, color: "rgba(235,221,182,.72)",
+                fontSize: 13, fontWeight: 500, color: "rgba(235,221,182,.72)",
                 minHeight: 34, textDecoration: "none",
               }}>
                 Améliorer encore sa connaissance <Icon name="chevron" size={13} />
@@ -144,7 +144,7 @@ export default function HeaderV2({
         <div style={{ display: "flex", gap: 10, marginTop: 24 }}>
           <Link href="/moi/partage" style={{
             flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
-            justifyContent: "center", fontSize: 14, fontWeight: 600,
+            justifyContent: "center", fontSize: 14.5, fontWeight: 600,
             background: "#fff", color: T2.pine, boxShadow: "0 6px 16px rgba(0,0,0,.14)",
             textDecoration: "none",
           }}>
@@ -153,7 +153,7 @@ export default function HeaderV2({
           {/* Point 13 : la wishlist V1 est réelle — les deux boutons ouvrent l'écran */}
           <Link href="/moi/wishlist" style={{
             flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
-            justifyContent: "center", fontSize: 14, fontWeight: 600,
+            justifyContent: "center", fontSize: 14.5, fontWeight: 600,
             border: "1px solid rgba(255,255,255,.4)", color: "#fff",
             textDecoration: "none",
           }}>

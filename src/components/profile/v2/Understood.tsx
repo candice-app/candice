@@ -44,10 +44,10 @@ export default function UnderstoodV2({ cards }: { cards: Array<{ eyebrow: string
             {i === 0 && (
               <span style={{ position: "absolute", right: -22, top: -40, width: 130, height: 130, borderRadius: "50%", background: "radial-gradient(circle,rgba(205,185,135,.34),transparent 70%)" }} />
             )}
-            <span style={{ fontSize: 9.5, letterSpacing: 1.6, textTransform: "uppercase", fontWeight: 700, marginBottom: 8, ...s.eyebrow }}>
+            <span style={{ fontSize: 11, letterSpacing: 1.6, textTransform: "uppercase", fontWeight: 700, marginBottom: 8, ...s.eyebrow }}>
               {c.eyebrow}
             </span>
-            <p style={{ fontSize: 13.5, lineHeight: 1.48, fontWeight: 450, margin: 0, ...s.text }}>{c.text}</p>
+            <p style={{ fontSize: 14, lineHeight: 1.48, fontWeight: 450, margin: 0, ...s.text }}>{c.text}</p>
           </div>
         );
       })}

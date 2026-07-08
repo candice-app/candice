@@ -40,16 +40,16 @@ export default function WorksV2({
             borderBottom: idx === ORDER.length - 1 ? "none" : `1px solid ${T2.line2}`,
           }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 }}>
-              <b style={{ fontSize: 14.5, fontWeight: 600 }}>{WORKS_LABELS[key]}</b>
+              <b style={{ fontSize: 15, fontWeight: 600 }}>{WORKS_LABELS[key]}</b>
               <span style={{
-                fontSize: 10, letterSpacing: 1, textTransform: "uppercase", fontWeight: 700,
+                fontSize: 11.5, letterSpacing: 1, textTransform: "uppercase", fontWeight: 700,
                 padding: "4px 9px", borderRadius: 8, ...BADGE[level],
               }}>
                 {WORKS_LEVEL_LABELS[level]}
               </span>
             </div>
             {phrases[key] && (
-              <p style={{ fontSize: 12.5, color: T2.ink2, lineHeight: 1.45, marginTop: 4 }}>{phrases[key]}</p>
+              <p style={{ fontSize: 13, color: T2.ink2, lineHeight: 1.45, marginTop: 4 }}>{phrases[key]}</p>
             )}
             <div style={{ display: "flex", gap: 3, marginTop: 8 }}>
               {[0, 1, 2].map(i => (

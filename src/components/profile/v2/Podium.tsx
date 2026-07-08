@@ -31,14 +31,14 @@ export default function PodiumV2({
     <Mod>
       <Mh>Ce qui te fait te sentir aimée</Mh>
       {intro && (
-        <p style={{ fontSize: 13.5, color: T2.ink2, lineHeight: 1.52, marginTop: 8 }}>{intro}</p>
+        <p style={{ fontSize: 14, color: T2.ink2, lineHeight: 1.52, marginTop: 8 }}>{intro}</p>
       )}
       <div style={{ marginTop: 15 }}>
         {rows.map((r, i) => (
           <div key={r.dim} style={{ marginBottom: i === rows.length - 1 ? 2 : 12 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 5 }}>
-              <b style={{ fontSize: 14.5, fontWeight: 560 }}>{r.label}</b>
-              <span style={{ fontSize: 10.5, letterSpacing: 0.9, textTransform: "uppercase", fontWeight: 700, color: T2.ink3 }}>
+              <b style={{ fontSize: 15, fontWeight: 560 }}>{r.label}</b>
+              <span style={{ fontSize: 12, letterSpacing: 0.9, textTransform: "uppercase", fontWeight: 700, color: T2.ink3 }}>
                 {r.intensityLabel}
               </span>
             </div>
@@ -64,7 +64,7 @@ export default function PodiumV2({
       {insights.length > 0 && (
         <div style={{ marginTop: 16, borderTop: `1px solid ${T2.line2}`, paddingTop: 13 }}>
           {insights.slice(0, 3).map((ins, i) => (
-            <div key={i} style={{ display: "flex", gap: 9, fontSize: 13, lineHeight: 1.45, color: T2.ink2, marginBottom: 7 }}>
+            <div key={i} style={{ display: "flex", gap: 9, fontSize: 13.5, lineHeight: 1.45, color: T2.ink2, marginBottom: 7 }}>
               <Pt style={{ marginTop: 6 }} />
               {ins}
             </div>

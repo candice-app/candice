@@ -45,7 +45,7 @@ export default function DeepCard({
         <Mh>{title}</Mh>
       )}
       {text && (
-        <p style={{ fontSize: 13.5, color: T2.ink2, lineHeight: 1.52, marginTop: icon ? 0 : 8 }}>{text}</p>
+        <p style={{ fontSize: 14, color: T2.ink2, lineHeight: 1.52, marginTop: icon ? 0 : 8 }}>{text}</p>
       )}
       <Tags
         items={warnChips ? undefined : chips}
@@ -57,7 +57,7 @@ export default function DeepCard({
             maxHeight: open ? 300 : 0, overflow: "hidden",
             transition: "max-height .32s ease",
           }}>
-            <p style={{ fontSize: 13.5, lineHeight: 1.56, color: T2.ink2, paddingTop: 10, margin: 0 }}>{more}</p>
+            <p style={{ fontSize: 14, lineHeight: 1.56, color: T2.ink2, paddingTop: 10, margin: 0 }}>{more}</p>
           </div>
           <button
             onClick={() => setOpen(o => !o)}

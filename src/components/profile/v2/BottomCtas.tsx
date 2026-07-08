@@ -11,7 +11,7 @@ export default function BottomCtas() {
     <div style={{ display: "flex", gap: 10, margin: "18px 14px 0" }}>
       <Link href="/moi/partage" style={{
         flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
-        justifyContent: "center", fontSize: 14, fontWeight: 600,
+        justifyContent: "center", fontSize: 14.5, fontWeight: 600,
         background: T2.pine, color: "#fff", textDecoration: "none",
         boxShadow: "0 6px 16px rgba(23,62,49,.18)",
       }}>
@@ -19,7 +19,7 @@ export default function BottomCtas() {
       </Link>
       <Link href="/moi/wishlist" style={{
         flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
-        justifyContent: "center", fontSize: 14, fontWeight: 600,
+        justifyContent: "center", fontSize: 14.5, fontWeight: 600,
         border: `1px solid rgba(23,62,49,.3)`, color: T2.pine,
         textDecoration: "none",
       }}>
