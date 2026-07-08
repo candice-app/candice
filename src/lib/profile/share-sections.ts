@@ -1,7 +1,5 @@
-// B.2 Phase 6 — Libellés et regroupements des sections cochables au partage.
-// Source de vérité des clés : checkableSections("invite_filtre") (matrice).
-// Un item peut porter plusieurs clés (tempérament = axes + modes : un seul
-// choix utilisateur, les deux clés suivent).
+// Phase D — Libellés et regroupements des sections cochables au partage (V2).
+// Source de vérité des clés : checkableSections("invite_filtre") (matrice V2).
 
 import {
   VISIBILITY_MATRIX,
@@ -23,25 +21,24 @@ export const SHARE_GROUPS: ShareGroup[] = [
   {
     title: "Analyse",
     items: [
-      { keys: ["radar"],                                  label: "Style attentionnel" },
-      { keys: ["what_touches"],                           label: "Ce qui te touche" },
-      { keys: ["insights"],                               label: "Ce que Candice a compris" },
-      { keys: ["temperament_axes", "temperament_modes"],  label: "Tempérament" },
-      { keys: ["lifestyle_axes"],                         label: "Art de vivre" },
+      { keys: ["understood"],    label: "Ce que Candice a compris" },
+      { keys: ["deep_touch"],    label: "Ce qui te touche" },
+      { keys: ["deep_loved"],    label: "Ce qui te fait te sentir aimée" },
+      { keys: ["deep_pleasure"], label: "Ce qui pourrait te faire plaisir" },
+      { keys: ["deep_miss"],     label: "Ce qui tombe à côté" },
+      { keys: ["works"],         label: "Ce qui marche avec toi" },
     ],
   },
   {
-    title: "Univers",
+    title: "Mondes & univers",
     items: [
-      { keys: ["gifts"],        label: "Cadeaux qui visent juste" },
-      { keys: ["restaurants"],  label: "Tables" },
-      { keys: ["travel"],       label: "Voyages" },
-      { keys: ["hobbies"],      label: "Passions" },
-      { keys: ["brands"],       label: "Marques & lieux" },
-      { keys: ["style"],        label: "Goûts esthétiques" },
-      { keys: ["parfums"],      label: "Parfums" },
-      { keys: ["points_fixes"], label: "Points fixes" },
-      { keys: ["avoid"],        label: "À éviter" },
+      { keys: ["monde_tables"],   label: "Tables" },
+      { keys: ["monde_voyages"],  label: "Voyages" },
+      { keys: ["monde_passions"], label: "Passions" },
+      { keys: ["monde_gouts"],    label: "Goûts esthétiques" },
+      { keys: ["territoire"],     label: "Territoire idéal" },
+      { keys: ["univers"],        label: "Univers & marques" },
+      { keys: ["wishlist"],       label: "Ma wishlist" },
     ],
   },
   {
@@ -72,10 +69,9 @@ export function defaultCheckedKeys(): SectionKey[] {
 export const SCOPE_BLIND = "blind";
 
 /**
- * Marqueur « essentiel seulement » (A.1 GO Estelle) : zéro section cochée
- * sur un LIEN sortant → scope = ['socle'] (le CHECK ≥ 1 reste valable).
- * Au rendu, sanitizeScope l'écarte → sharedSections = [] → le socle seul
- * s'affiche (lead + topchips + donut), tout le reste en placeholder.
+ * Marqueur « essentiel seulement » : zéro section cochée → scope = ['socle']
+ * (le CHECK ≥ 1 reste valable). Au rendu, sanitizeScope l'écarte →
+ * sharedSections = [] → le socle seul s'affiche (résumé + podium).
  */
 export const SCOPE_SOCLE = "socle";
 
@@ -89,12 +85,7 @@ export type ShareMode = "all" | "sections" | "blind";
 
 /**
  * Scope stocké pour un choix de partage — SOURCE UNIQUE pour les deux
- * gestes (réponse à une demande ET lien sortant) : un même choix produit
- * toujours le même scope, quel que soit l'écran.
- *   all      → toutes les sections cochables (snapshot au consentement)
- *   blind    → ['blind']
- *   sections → sections cochées assainies ; ZÉRO cochée → ['socle']
- *              (« Partager l'essentiel seulement » — jamais un scope vide)
+ * gestes (réponse à une demande ET lien sortant).
  */
 export function scopeForSelection(mode: ShareMode, sections?: string[]): string[] {
   if (mode === "all") return checkableSections("invite_filtre");

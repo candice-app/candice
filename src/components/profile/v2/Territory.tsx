@@ -4,7 +4,7 @@
 import { T2 } from "./ui";
 import type { TerritoryV2 } from "@/lib/profile/v2-data";
 
-export default function TerritoryV2Block({ territory }: { territory: TerritoryV2 | null }) {
+export default function TerritoryV2Block({ territory, eyebrow = "Ton territoire idéal" }: { territory: TerritoryV2 | null; eyebrow?: string }) {
   if (!territory || territory.cartes.length === 0) return null;
   return (
     <div style={{
@@ -14,7 +14,7 @@ export default function TerritoryV2Block({ territory }: { territory: TerritoryV2
     }}>
       <span style={{ position: "absolute", right: -30, top: -50, width: 180, height: 180, borderRadius: "50%", background: "radial-gradient(circle,rgba(205,185,135,.32),transparent 70%)", pointerEvents: "none" }} />
       <span style={{ color: T2.champ, fontSize: 11.5, letterSpacing: 1.8, textTransform: "uppercase", fontWeight: 700, position: "relative" }}>
-        Ton territoire idéal
+        {eyebrow}
       </span>
       <h3 style={{ fontFamily: "var(--font-serif)", fontSize: 21, fontWeight: 420, margin: "7px 0 8px", position: "relative" }}>
         {territory.titre}

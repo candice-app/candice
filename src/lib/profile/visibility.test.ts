@@ -1,6 +1,5 @@
-// B.2.1 Phase 3 — tests de la matrice de visibilité.
-// Objectif : garantir qu'AUCUNE fuite n'est possible, quel que soit
-// le type de fiche et les cases cochées au partage.
+// Phase D — tests de la matrice V2. Objectif inchangé : AUCUNE fuite
+// possible, quel que soit le type de fiche et les cases cochées.
 
 import { describe, it, expect } from "vitest";
 import {
@@ -15,14 +14,11 @@ import {
 
 const ALL_VIEWS: ProfileView[] = ["pilote", "invite_filtre", "contact_consulte", "aveugle"];
 
-describe("VISIBILITY_MATRIX — complétude", () => {
+describe("VISIBILITY_MATRIX V2 — complétude", () => {
   it("couvre chaque type × chaque section (aucun trou)", () => {
     for (const view of ALL_VIEWS) {
       for (const section of ALL_SECTION_KEYS) {
-        expect(
-          VISIBILITY_MATRIX[view][section],
-          `matrice incomplète : ${view} × ${section}`,
-        ).toBeDefined();
+        expect(VISIBILITY_MATRIX[view][section], `matrice incomplète : ${view} × ${section}`).toBeDefined();
       }
     }
   });
@@ -34,227 +30,138 @@ describe("VISIBILITY_MATRIX — complétude", () => {
 });
 
 describe("pilote — tout visible sauf hors-écran", () => {
-  const expected: Record<SectionKey, boolean> = {
-    header_identity: true, header_ring: true, header_actions: true, header_share_chips: true,
-    lead: true, topchips: true, donut: true,
-    radar: true, what_touches: true, insights: true,
-    temperament_axes: true, temperament_modes: true, lifestyle_axes: true,
-    gifts: true, restaurants: true, travel: true, hobbies: true,
-    brands: true, style: true, parfums: true, points_fixes: true, avoid: true,
-    facts_tailles: true, facts_alimentaire: true, facts_parfums: true,
-    facts_adresse: true, facts_animaux: true, facts_dates: true,
-    facts_mobilite: true, art9: true,
-    constraints_row: false, // redondant avec facts_alimentaire
-    discovery: true, edit_button: true, bottom_nav: true,
-    wishlist: false,        // vit sur son propre écran
-    blind_message: false,
-  };
-
-  for (const section of ALL_SECTION_KEYS) {
-    it(`${section} → ${expected[section] ? "visible" : "masqué"}`, () => {
-      const r = resolveVisibility("pilote", section);
-      expect(r.shown).toBe(expected[section]);
-    });
-  }
-
-  it("le pilote lit ses textes en 2e personne (jamais de conversion)", () => {
-    for (const section of ALL_SECTION_KEYS) {
-      expect(resolveVisibility("pilote", section).thirdPerson).toBe(false);
+  it("modules de la fiche visibles en 2e personne", () => {
+    for (const s of ["summary", "podium", "understood", "deep_touch", "deep_loved",
+      "deep_pleasure", "deep_miss", "works", "monde_tables", "territoire", "univers",
+      "facts_tailles", "art9", "viser", "bottom_ctas"] as SectionKey[]) {
+      const r = resolveVisibility("pilote", s);
+      expect(r.shown, s).toBe(true);
+      expect(r.thirdPerson).toBe(false);
     }
   });
+
+  it("wishlist vit sur son propre écran, constraints_row redondante", () => {
+    expect(resolveVisibility("pilote", "wishlist").shown).toBe(false);
+    expect(resolveVisibility("pilote", "constraints_row").shown).toBe(false);
+  });
 });
 
-describe("invite_filtre — défauts (aucun choix enregistré)", () => {
-  const expectedDefaults: Record<SectionKey, boolean> = {
-    header_identity: true, header_ring: false, header_actions: false, header_share_chips: false,
-    lead: true, topchips: true, donut: true,       // SOCLE
-    radar: true, what_touches: true, insights: true,
-    temperament_axes: false, temperament_modes: false, // intime → OFF
-    lifestyle_axes: true,
-    gifts: true, restaurants: true, travel: true, hobbies: true,
-    brands: true, style: true, parfums: true,
-    points_fixes: false,                            // le plus intime → OFF
-    avoid: true,
-    facts_tailles: false, facts_alimentaire: false, facts_parfums: false,
-    facts_adresse: false, facts_animaux: false, facts_dates: false,
-    facts_mobilite: false, art9: false,
-    constraints_row: false,
-    discovery: false, edit_button: false, bottom_nav: false,
-    wishlist: false, blind_message: false,
-  };
-
-  for (const section of ALL_SECTION_KEYS) {
-    it(`${section} → ${expectedDefaults[section] ? "visible" : "masqué"} par défaut`, () => {
-      const r = resolveVisibility("invite_filtre", section);
-      expect(r.shown).toBe(expectedDefaults[section]);
-    });
-  }
-});
-
-describe("invite_filtre — règle d'INTERSECTION (jamais union)", () => {
-  it("le SOCLE reste visible même si tout est décoché", () => {
-    const nothingChecked: SectionKey[] = [];
-    expect(resolveVisibility("invite_filtre", "lead", nothingChecked).shown).toBe(true);
-    expect(resolveVisibility("invite_filtre", "topchips", nothingChecked).shown).toBe(true);
-    expect(resolveVisibility("invite_filtre", "donut", nothingChecked).shown).toBe(true);
+describe("invite_filtre — socle + intersection", () => {
+  it("SOCLE = résumé + podium exactement (validé)", () => {
+    expect(socleSections("invite_filtre").sort()).toEqual(["podium", "summary"]);
   });
 
-  it("une section 'never' reste invisible MÊME COCHÉE (wishlist, Art.9, adresse)", () => {
-    const maliciouslyChecked = ALL_SECTION_KEYS; // tout coché, y compris l'interdit
-    expect(resolveVisibility("invite_filtre", "wishlist", maliciouslyChecked).shown).toBe(false);
-    expect(resolveVisibility("invite_filtre", "art9", maliciouslyChecked).shown).toBe(false);
-    expect(resolveVisibility("invite_filtre", "facts_adresse", maliciouslyChecked).shown).toBe(false);
+  it("le socle reste visible même tout décoché", () => {
+    expect(resolveVisibility("invite_filtre", "summary", []).shown).toBe(true);
+    expect(resolveVisibility("invite_filtre", "podium", []).shown).toBe(true);
   });
 
-  it("une section 'hidden' reste invisible même cochée (discovery, edit, nav…)", () => {
+  it("défauts : deep_loved, wishlist et facts_* décochés ; le reste de l'analyse coché", () => {
+    expect(resolveVisibility("invite_filtre", "deep_loved").shown).toBe(false);
+    expect(resolveVisibility("invite_filtre", "wishlist").shown).toBe(false);
+    expect(resolveVisibility("invite_filtre", "facts_tailles").shown).toBe(false);
+    expect(resolveVisibility("invite_filtre", "understood").shown).toBe(true);
+    expect(resolveVisibility("invite_filtre", "works").shown).toBe(true);
+    expect(resolveVisibility("invite_filtre", "territoire").shown).toBe(true);
+  });
+
+  it("wishlist est PARTAGEABLE (cochable, pas socle — revirement validé)", () => {
+    expect(checkableSections("invite_filtre")).toContain("wishlist");
+    expect(resolveVisibility("invite_filtre", "wishlist", ["wishlist"]).shown).toBe(true);
+    expect(socleSections("invite_filtre")).not.toContain("wishlist");
+  });
+
+  it("never reste invisible MÊME COCHÉ (art9, adresse)", () => {
     const all = ALL_SECTION_KEYS;
-    expect(resolveVisibility("invite_filtre", "discovery", all).shown).toBe(false);
-    expect(resolveVisibility("invite_filtre", "edit_button", all).shown).toBe(false);
-    expect(resolveVisibility("invite_filtre", "header_ring", all).shown).toBe(false);
-    expect(resolveVisibility("invite_filtre", "constraints_row", all).shown).toBe(false);
+    expect(resolveVisibility("invite_filtre", "art9", all).shown).toBe(false);
+    expect(resolveVisibility("invite_filtre", "facts_adresse", all).shown).toBe(false);
   });
 
-  it("cocher une section filtered_off la rend visible (dans la limite matrice)", () => {
-    const checked: SectionKey[] = ["temperament_axes", "points_fixes", "facts_alimentaire"];
-    expect(resolveVisibility("invite_filtre", "temperament_axes", checked).shown).toBe(true);
-    expect(resolveVisibility("invite_filtre", "points_fixes", checked).shown).toBe(true);
-    expect(resolveVisibility("invite_filtre", "facts_alimentaire", checked).shown).toBe(true);
+  it("hidden reste invisible même coché (viser, bottom_ctas, header_ring)", () => {
+    const all = ALL_SECTION_KEYS;
+    for (const s of ["viser", "bottom_ctas", "header_ring", "constraints_row"] as SectionKey[]) {
+      expect(resolveVisibility("invite_filtre", s, all).shown, s).toBe(false);
+    }
   });
 
-  it("décocher une section filtered_on la masque", () => {
-    const onlyGifts: SectionKey[] = ["gifts"];
-    expect(resolveVisibility("invite_filtre", "gifts", onlyGifts).shown).toBe(true);
-    expect(resolveVisibility("invite_filtre", "radar", onlyGifts).shown).toBe(false);
-    expect(resolveVisibility("invite_filtre", "avoid", onlyGifts).shown).toBe(false);
-  });
-
-  it("tout texte visible côté invite est en 3e personne", () => {
+  it("tout texte visible côté invité est en 3e personne (hors identité)", () => {
     for (const section of ALL_SECTION_KEYS) {
       const r = resolveVisibility("invite_filtre", section, ALL_SECTION_KEYS);
       if (r.shown && section !== "header_identity") {
-        expect(r.thirdPerson, `${section} devrait être en 3e personne`).toBe(true);
+        expect(r.thirdPerson, section).toBe(true);
       }
     }
   });
 });
 
-describe("invite_filtre — placeholders « non partagé » (notShared)", () => {
-  it("une section cochable refusée porte notShared, une cochée non", () => {
-    const onlyGifts: SectionKey[] = ["gifts"];
-    expect(resolveVisibility("invite_filtre", "radar", onlyGifts).notShared).toBe(true);
-    expect(resolveVisibility("invite_filtre", "avoid", onlyGifts).notShared).toBe(true);
-    expect(resolveVisibility("invite_filtre", "gifts", onlyGifts).notShared).toBe(false);
+describe("invite_filtre — placeholders notShared (option A conservée)", () => {
+  it("cochable refusée → notShared ; cochée → non", () => {
+    const only: SectionKey[] = ["deep_pleasure"];
+    expect(resolveVisibility("invite_filtre", "works", only).notShared).toBe(true);
+    expect(resolveVisibility("invite_filtre", "wishlist", only).notShared).toBe(true);
+    expect(resolveVisibility("invite_filtre", "deep_pleasure", only).notShared).toBe(false);
   });
 
-  it("hidden/never n'ont JAMAIS de placeholder (existence non révélée)", () => {
-    const nothingChecked: SectionKey[] = [];
-    for (const s of ["wishlist", "art9", "facts_adresse", "discovery", "edit_button", "constraints_row", "header_ring"] as SectionKey[]) {
-      expect(resolveVisibility("invite_filtre", s, nothingChecked).notShared, `${s} ne doit pas avoir de placeholder`).toBe(false);
+  it("hidden/never n'ont JAMAIS de placeholder ; le socle non plus", () => {
+    for (const s of ["art9", "facts_adresse", "viser", "summary", "podium"] as SectionKey[]) {
+      expect(resolveVisibility("invite_filtre", s, []).notShared, s).toBe(false);
     }
-  });
-
-  it("le socle n'est jamais notShared (toujours visible)", () => {
-    const nothingChecked: SectionKey[] = [];
-    for (const s of ["lead", "topchips", "donut"] as SectionKey[]) {
-      const r = resolveVisibility("invite_filtre", s, nothingChecked);
-      expect(r.shown).toBe(true);
-      expect(r.notShared).toBe(false);
-    }
-  });
-
-  it("sans choix enregistré, seuls les filtered_off portent le placeholder", () => {
-    expect(resolveVisibility("invite_filtre", "temperament_axes").notShared).toBe(true);
-    expect(resolveVisibility("invite_filtre", "points_fixes").notShared).toBe(true);
-    expect(resolveVisibility("invite_filtre", "radar").notShared).toBe(false);
   });
 
   it("hors invite_filtre, jamais de notShared", () => {
     for (const view of ["pilote", "contact_consulte", "aveugle"] as ProfileView[]) {
       for (const section of ALL_SECTION_KEYS) {
-        expect(resolveVisibility(view, section, []).notShared, `${view} × ${section}`).toBe(false);
+        expect(resolveVisibility(view, section, []).notShared, `${view}×${section}`).toBe(false);
       }
     }
   });
 });
 
-describe("contact_consulte — analyse seulement + contraintes sécurité", () => {
-  it("l'analyse est visible, en 3e personne", () => {
-    for (const s of ["lead", "gifts", "avoid", "points_fixes", "what_touches", "insights"] as SectionKey[]) {
+describe("contact_consulte — analyse seulement + sécurité", () => {
+  it("analyse visible en 3e personne, podium/works agrégés visibles", () => {
+    for (const s of ["summary", "deep_touch", "deep_miss", "univers"] as SectionKey[]) {
       const r = resolveVisibility("contact_consulte", s);
-      expect(r.shown).toBe(true);
-      expect(r.thirdPerson).toBe(true);
+      expect(r.shown, s).toBe(true);
+      expect(r.thirdPerson, s).toBe(true);
     }
+    expect(resolveVisibility("contact_consulte", "podium").shown).toBe(true);
+    expect(resolveVisibility("contact_consulte", "works").shown).toBe(true);
   });
 
-  it("les visualisations agrégées sont visibles", () => {
-    for (const s of ["donut", "radar", "temperament_axes", "temperament_modes", "lifestyle_axes"] as SectionKey[]) {
-      expect(resolveVisibility("contact_consulte", s).shown).toBe(true);
-    }
-  });
-
-  it("la rangée contraintes (allergies + régime) est VISIBLE — sécurité", () => {
+  it("contraintes sécurité visibles, faits masqués, wishlist jamais", () => {
     expect(resolveVisibility("contact_consulte", "constraints_row").shown).toBe(true);
-  });
-
-  it("les autres faits pratiques du proche sont masqués", () => {
-    for (const s of ["facts_tailles", "facts_alimentaire", "facts_parfums", "facts_adresse", "facts_animaux", "facts_dates", "facts_mobilite", "art9"] as SectionKey[]) {
-      expect(resolveVisibility("contact_consulte", s).shown, `${s} devrait être masqué`).toBe(false);
-    }
-  });
-
-  it("la wishlist du proche n'est JAMAIS visible", () => {
-    expect(resolveVisibility("contact_consulte", "wishlist").shown).toBe(false);
+    expect(resolveVisibility("contact_consulte", "facts_tailles").shown).toBe(false);
     expect(resolveVisibility("contact_consulte", "wishlist", ALL_SECTION_KEYS).shown).toBe(false);
   });
 });
 
 describe("aveugle — AUCUN contenu sauf le message", () => {
-  it("seul blind_message est visible", () => {
+  it("seul blind_message est visible, même tout coché", () => {
     for (const section of ALL_SECTION_KEYS) {
-      const r = resolveVisibility("aveugle", section, ALL_SECTION_KEYS); // même tout coché
-      expect(r.shown, `aveugle ne doit montrer que blind_message, pas ${section}`)
+      expect(resolveVisibility("aveugle", section, ALL_SECTION_KEYS).shown, section)
         .toBe(section === "blind_message");
     }
   });
 });
 
 describe("garanties anti-fuite transverses", () => {
-  it("la wishlist n'est visible pour AUCUN type sur la fiche", () => {
-    for (const view of ALL_VIEWS) {
-      expect(
-        resolveVisibility(view, "wishlist", ALL_SECTION_KEYS).shown,
-        `wishlist ne doit jamais apparaître sur la fiche (${view})`,
-      ).toBe(false);
-    }
-  });
-
-  it("l'adresse de livraison n'est jamais visible pour un tiers", () => {
+  it("l'adresse et l'Art.9 ne sont JAMAIS visibles pour un tiers", () => {
     for (const view of ["invite_filtre", "contact_consulte", "aveugle"] as ProfileView[]) {
       expect(resolveVisibility(view, "facts_adresse", ALL_SECTION_KEYS).shown).toBe(false);
-    }
-  });
-
-  it("Art.9 n'est jamais visible ni cochable pour un tiers", () => {
-    for (const view of ["invite_filtre", "contact_consulte", "aveugle"] as ProfileView[]) {
       expect(resolveVisibility(view, "art9", ALL_SECTION_KEYS).shown).toBe(false);
       expect(checkableSections(view)).not.toContain("art9");
     }
   });
 
-  it("les sections never ne sont jamais dans les cochables", () => {
+  it("les sections cochables sont exactement les filtered_*", () => {
     for (const view of ALL_VIEWS) {
-      const checkable = checkableSections(view);
-      for (const s of checkable) {
+      for (const s of checkableSections(view)) {
         expect(VISIBILITY_MATRIX[view][s]).toMatch(/^filtered_(on|off)$/);
       }
     }
   });
 
-  it("le socle invite_filtre = lead + topchips + donut exactement", () => {
-    expect(socleSections("invite_filtre").sort()).toEqual(["donut", "lead", "topchips"]);
-  });
-
-  it("les autres types n'ont pas de socle (concept propre au partage)", () => {
+  it("les autres types n'ont pas de socle", () => {
     expect(socleSections("pilote")).toEqual([]);
     expect(socleSections("contact_consulte")).toEqual([]);
     expect(socleSections("aveugle")).toEqual([]);

@@ -11,10 +11,12 @@ export default function ResumeV2({
   summary,
   chips,
   summaryLong,
+  sheetTitle = "Ton analyse",
 }: {
   summary: string | null;
   chips: string[];
   summaryLong: string | null;
+  sheetTitle?: string;
 }) {
   const [open, setOpen] = useState(false);
   if (!summary) return null;
@@ -38,7 +40,7 @@ export default function ResumeV2({
           >
             Lire l&apos;analyse complète <Icon name="chevron" size={14} />
           </button>
-          <Sheet open={open} onClose={() => setOpen(false)} title="Ton analyse">
+          <Sheet open={open} onClose={() => setOpen(false)} title={sheetTitle}>
             {summaryLong.split(/\n\s*\n/).map((para, i) => (
               <p key={i} style={{ fontSize: 14, lineHeight: 1.6, color: T2.ink2, marginBottom: 13 }}>
                 {para.trim()}

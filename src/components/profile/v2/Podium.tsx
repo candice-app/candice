@@ -21,15 +21,17 @@ export default function PodiumV2({
   intro,
   rows,
   insights,
+  title = "Ce qui te fait te sentir aimée",
 }: {
   intro: string | null;
   rows: PodiumRow[];
   insights: string[];
+  title?: string;
 }) {
   if (rows.length === 0) return null;
   return (
     <Mod>
-      <Mh>Ce qui te fait te sentir aimée</Mh>
+      <Mh>{title}</Mh>
       {intro && (
         <p style={{ fontSize: 14, color: T2.ink2, lineHeight: 1.52, marginTop: 8 }}>{intro}</p>
       )}

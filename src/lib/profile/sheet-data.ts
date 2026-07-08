@@ -6,13 +6,21 @@
 // non partagées sont vidées AVANT d'atteindre ProfileSheet, la matrice de
 // visibilité restant la garde de rendu.
 
-import type { ProfileSheetData, AnalysisSection } from "@/components/profile/ProfileSheet";
-import type { StyleRadar } from "@/lib/profile/synthesis";
-import {
-  resolveVisibility,
-  type ProfileView,
-  type SectionKey,
-} from "@/lib/profile/visibility";
+import type { StyleRadar } from "./synthesis";
+
+export interface AnalysisSection { text?: string; chips?: string[] }
+
+/** Faits pratiques affichables (jamais de brut hors mode modification). */
+export interface PracticalFacts {
+  tailles?: string;
+  allergies?: string;
+  regimeAlcool?: string;
+  parfums?: string;
+  adresseRenseignee?: boolean;
+  animaux?: string;
+  datesCles?: string;
+  mobilite?: string;
+}
 
 // ─── Types du profil (colonnes agrégées — jamais de brut affiché) ─────────────
 
@@ -98,27 +106,6 @@ function cutAtWord(s: string, max: number): string {
   return (lastSpace > max * 0.5 ? cut.slice(0, lastSpace) : s.slice(0, max)).replace(/[,;:–-]\s*$/, "").trim();
 }
 
-// ─── Donut (fusion CAD_C + CAD_S en CAD) ─────────────────────────────────────
-
-export const CENTER_LABELS: Record<string, string> = {
-  MOT: "Mots", CAD: "Cadeaux", SER: "Service",
-  EXP: "Moments", GES: "Esthétique · qualité", SUR: "Surprises",
-};
-
-export function computeDonutData(reception: FaceResult | null): { id: string; weight: number }[] {
-  if (!reception) return [];
-  const weights: Record<string, number> = {};
-  const mergeId = (id: string) => (id === "CAD_C" || id === "CAD_S") ? "CAD" : id;
-  for (const id of reception.dominant ?? []) { const m = mergeId(id); weights[m] = (weights[m] ?? 0) + 3; }
-  for (const id of reception.secondaire ?? []) { const m = mergeId(id); weights[m] = (weights[m] ?? 0) + 2; }
-  for (const id of reception.tertiaire ?? []) { const m = mergeId(id); weights[m] = (weights[m] ?? 0) + 1; }
-  const total = Object.values(weights).reduce((a, b) => a + b, 0);
-  if (total === 0) return [];
-  return Object.entries(weights)
-    .map(([id, w]) => ({ id, weight: w / total }))
-    .sort((a, b) => b.weight - a.weight);
-}
-
 // ─── Complétion (5 grandes parties — jamais affichée en %) ────────────────────
 
 export function computeCompletion(p: ProfileRow | null): { ratio: number; label: string } {
@@ -155,7 +142,7 @@ function formatDateCle(d: ImportantDate): string {
   return `${label} · ${day} ${MONTHS_FR[m - 1]}`;
 }
 
-export function buildFacts(pi: ProfileRow["practical_info"]): ProfileSheetData["facts"] {
+export function buildFacts(pi: ProfileRow["practical_info"]): PracticalFacts {
   if (!pi) return {};
   const tailles = [pi.taille_vetements, pi.taille_chaussures].filter(Boolean).join(" · ");
   const allergies = (pi.allergies ?? []).filter(a => a !== "aucune").map(a => ALLERGIE_FR[a] ?? a).join(", ");
@@ -199,97 +186,3 @@ export function buildFacts(pi: ProfileRow["practical_info"]): ProfileSheetData["
   };
 }
 
-// ─── Assemblage ───────────────────────────────────────────────────────────────
-
-export function buildProfileSheetData(args: {
-  profile: ProfileRow;
-  analysis: AnalysisRow | null;
-  firstName: string;
-  discoveryAvailable: boolean;
-}): ProfileSheetData {
-  const { profile, analysis, firstName, discoveryAvailable } = args;
-  const completion = computeCompletion(profile);
-  const donutData = computeDonutData(profile.attention_reception);
-
-  return {
-    firstName,
-    knowledgeLabel: completion.label,
-    completionRatio: completion.ratio,
-    gender: analysis?.gender ?? profile.grammatical_gender,
-
-    summary: analysis?.summary ?? null,
-    summaryThirdPerson: analysis?.summary_third_person ?? null,
-    summaryChips: analysis?.summary_chips ?? [],
-    insights: analysis?.insights ?? [],
-    sections: analysis?.sections ?? {},
-    modes: analysis?.modes ?? null,
-    styleRadar: analysis?.style_radar ?? null,
-    entities: analysis?.entities ?? null,
-
-    donutData,
-    donutCenterLabel: CENTER_LABELS[donutData[0]?.id ?? ""] ?? "",
-    temperamentAxes: profile.temperament_axes,
-    lifestyleAxes: profile.lifestyle_axes,
-
-    facts: buildFacts(profile.practical_info),
-    art9Filled: !!(profile.religion || profile.disability || profile.health_comfort),
-
-    discoveryAvailable,
-  };
-}
-
-// ─── Strip par visibilité (défense en profondeur) ────────────────────────────
-
-/** Sections analysées portées par data.sections (clé = SectionKey). */
-const ANALYSIS_SECTION_KEYS: SectionKey[] = [
-  "what_touches", "gifts", "restaurants", "travel", "hobbies",
-  "brands", "style", "parfums", "points_fixes", "avoid",
-];
-
-/**
- * Vide toute donnée dont la section n'est pas rendue pour (view, sharedSections).
- * La matrice reste la garde de rendu — ceci garantit qu'une donnée non
- * partagée ne quitte JAMAIS le serveur, même en cas de régression du rendu.
- */
-export function stripSheetDataForView(
-  data: ProfileSheetData,
-  view: ProfileView,
-  sharedSections?: SectionKey[],
-): ProfileSheetData {
-  const shown = (s: SectionKey) => resolveVisibility(view, s, sharedSections).shown;
-
-  const sections: Record<string, AnalysisSection> = {};
-  for (const key of ANALYSIS_SECTION_KEYS) {
-    if (shown(key) && data.sections[key]) sections[key] = data.sections[key];
-  }
-
-  return {
-    ...data,
-    completionRatio: shown("header_ring") ? data.completionRatio : 0,
-    summary: shown("lead") ? data.summary : null,
-    summaryThirdPerson: shown("lead") ? data.summaryThirdPerson : null,
-    summaryChips: shown("topchips") ? data.summaryChips : [],
-    donutData: shown("donut") ? data.donutData : [],
-    donutCenterLabel: shown("donut") ? data.donutCenterLabel : "",
-    styleRadar: shown("radar") ? data.styleRadar : null,
-    insights: shown("insights") ? data.insights : [],
-    temperamentAxes: shown("temperament_axes") ? data.temperamentAxes : null,
-    modes: shown("temperament_modes") ? data.modes : null,
-    lifestyleAxes: shown("lifestyle_axes") ? data.lifestyleAxes : null,
-    entities: shown("brands") ? data.entities : null,
-    sections,
-    facts: {
-      tailles: shown("facts_tailles") ? data.facts.tailles : undefined,
-      allergies: shown("facts_alimentaire") ? data.facts.allergies : undefined,
-      regimeAlcool: shown("facts_alimentaire") ? data.facts.regimeAlcool : undefined,
-      parfums: shown("facts_parfums") ? data.facts.parfums : undefined,
-      adresseRenseignee: shown("facts_adresse") ? data.facts.adresseRenseignee : undefined,
-      animaux: shown("facts_animaux") ? data.facts.animaux : undefined,
-      datesCles: shown("facts_dates") ? data.facts.datesCles : undefined,
-      mobilite: shown("facts_mobilite") ? data.facts.mobilite : undefined,
-    },
-    art9Filled: shown("art9") ? data.art9Filled : false,
-    constraints: shown("constraints_row") ? data.constraints : undefined,
-    discoveryAvailable: shown("discovery") ? data.discoveryAvailable : false,
-  };
-}
