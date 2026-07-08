@@ -109,7 +109,7 @@ const DONUT_COLORS: Record<string, string> = {
 };
 const DONUT_LABELS: Record<string, string> = {
   MOT: "Mots justes", CAD: "Cadeaux", SER: "Services",
-  EXP: "Moments", GES: "Esthétique", SUR: "Surprises",
+  EXP: "Moments", GES: "Esthétique · qualité", SUR: "Surprises",
 };
 
 // Pastilles pictos (5 familles — jamais d'émoji)
@@ -370,7 +370,7 @@ const THEME_CARDS: Array<{ section: SectionKey; icon: string; family: keyof type
 const UNIVERS_CARDS: Array<{ section: SectionKey; icon: string; family: keyof typeof PASTILLE; title: string; italic?: boolean }> = [
   { section: "style",        icon: "fabric", family: "champ", title: "Tes goûts esthétiques" },
   { section: "parfums",      icon: "drop",   family: "champ", title: "Tes parfums" },
-  { section: "points_fixes", icon: "person", family: "pine",  title: "Tes points fixes", italic: true },
+  { section: "points_fixes", icon: "person", family: "pine",  title: "À savoir pour viser juste", italic: true },
   { section: "avoid",        icon: "block",  family: "coral", title: "À éviter avec toi" },
 ];
 

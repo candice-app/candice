@@ -31,17 +31,27 @@ describe("questionDataPresent — donnée ABSENTE → question proposée", () =>
 });
 
 describe("questionDataPresent — donnée PRÉSENTE → question exclue", () => {
-  it("fragrance.family : parfums structurés en fiche (le bug d'Estelle)", () => {
+  it("fragrance.families : parfums structurés en fiche (le bug d'Estelle)", () => {
     const p: ProfileDataSnapshot = {
       ...EMPTY,
       practical_info: { parfums: ["poudre"], odeurs_detestees: "Trop sucrés Patchouli" },
     };
-    expect(questionDataPresent("fragrance.family", p)).toBe(true);
+    expect(questionDataPresent("fragrance.families", p)).toBe(true);
   });
 
-  it("fragrance.family : odeurs détestées seules suffisent", () => {
+  it("fragrance.families : une réponse legacy fragrance.family suffit", () => {
+    const p: ProfileDataSnapshot = { ...EMPTY, discovery_answers: { "fragrance.family": ["poudre"] } };
+    expect(questionDataPresent("fragrance.families", p)).toBe(true);
+  });
+
+  it("fragrance.scent_deal_breakers : odeurs détestées suffisent", () => {
     const p: ProfileDataSnapshot = { ...EMPTY, practical_info: { odeurs_detestees: "patchouli" } };
-    expect(questionDataPresent("fragrance.family", p)).toBe(true);
+    expect(questionDataPresent("fragrance.scent_deal_breakers", p)).toBe(true);
+  });
+
+  it("fragrance.perfume_risk : parfums en fiche ne suffisent PAS (question manquante posée)", () => {
+    const p: ProfileDataSnapshot = { ...EMPTY, practical_info: { parfums: ["poudre"] } };
+    expect(questionDataPresent("fragrance.perfume_risk", p)).toBe(false);
   });
 
   it("practical.constraints : allergies renseignées", () => {

@@ -89,7 +89,7 @@ const MONTHS_FR = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "a
 
 export const CENTER_LABELS: Record<string, string> = {
   MOT: "Mots", CAD: "Cadeaux", SER: "Service",
-  EXP: "Moments", GES: "Détails", SUR: "Surprises",
+  EXP: "Moments", GES: "Esthétique · qualité", SUR: "Surprises",
 };
 
 export function computeDonutData(reception: FaceResult | null): { id: string; weight: number }[] {

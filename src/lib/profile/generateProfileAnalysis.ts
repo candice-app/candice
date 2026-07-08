@@ -4,6 +4,7 @@
 // Sauvegarde dans profile_analysis (source de vérité).
 
 import Anthropic from "@anthropic-ai/sdk";
+import { computeWorksLevels, WORKS_LEVEL_LABELS, type WorksKey, type WorksLevel } from "./v2-metrics";
 import { computeProfileSynthesis } from "./synthesis";
 import type { FaceResult } from "@/lib/attention/scoring";
 import type { RelationalFilters } from "@/lib/lifestyle/scoring";
@@ -33,6 +34,22 @@ interface ProfileAnalysisResult {
   constraints: string[];
   entities: { brands: string[]; places: string[]; hobbies: string[]; events: string[] };
   confidence: number;
+  // ── Champs V2 (Refonte Profil, engine 2.2 — migration 54) ──
+  summary_long: string;
+  podium_intro: string;
+  understood_cards: Array<{ eyebrow: string; text: string }>;
+  works_phrases: Record<string, string>;
+  territory: {
+    titre: string;
+    phrase: string;
+    cartes: Array<{ nom: string; description: string; statut: "desirable" | "eviter" }>;
+  } | null;
+  universe: {
+    lieux_ambiances: string[];
+    matieres: string[];
+    reves_envies: string[];
+    phrase: string;
+  } | null;
 }
 
 // ── Gender helpers ────────────────────────────────────────────────────────────
@@ -64,7 +81,10 @@ function genderInstruction(gender: Gender): string {
 
 async function extractEntities(
   textFields: string[],
-): Promise<{ brands: string[]; places: string[]; hobbies: string[]; events: string[] }> {
+): Promise<{
+  brands: string[]; places: string[]; hobbies: string[]; events: string[];
+  brands_categorized?: Array<{ name: string; category: string }>;
+}> {
   const combined = textFields.filter(Boolean).join("\n");
   if (combined.trim().length < 10) {
     return { brands: [], places: [], hobbies: [], events: [] };
@@ -73,13 +93,15 @@ async function extractEntities(
   try {
     const msg = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 400,
+      max_tokens: 500,
       system: `Extrais les entités nommées du texte. Retourne uniquement du JSON valide :
-{"brands":["..."],"places":["..."],"hobbies":["..."],"events":["..."]}
+{"brands":["..."],"places":["..."],"hobbies":["..."],"events":["..."],"brands_categorized":[{"name":"...","category":"..."}]}
 - brands : marques, enseignes, créateurs
 - places : restaurants, villes, lieux nommés
 - hobbies : activités, passions nommées
 - events : occasions, fêtes, événements nommés
+- brands_categorized : chaque marque de "brands" avec sa catégorie parmi EXACTEMENT :
+  Mode, Beauté, Soin, Bijoux, Maison, Accessoires, Design, Autre
 Ne génère que le JSON, sans explication.`,
       messages: [{ role: "user", content: combined.slice(0, 800) }],
     });
@@ -348,6 +370,16 @@ RÈGLES SPÉCIFIQUES POUR L'ENRICHISSEMENT :
 - "parfums" : synthèse olfactive (types aimés + ce qui répulse). 1 phrase + 2-3 chips (dont au maximum un chip "warm" type "déteste : X").
 - Si une donnée manque totalement pour une section, laisser text: "" et chips: [] — sera géré côté UI avec un CTA.
 
+RÈGLES V2 (nouvelle fiche) :
+- Chaque section de "sections" (sauf attention_dna) porte AUSSI un champ "more" : un paragraphe long (3-4 phrases complètes) qui approfondit le "text" sans le répéter — c'est le contenu du « Lire plus ». Si la section est vide, "more" est "".
+- "summary_long" : l'analyse complète, 3 paragraphes séparés par une ligne vide, chacun 2-3 phrases. Même ton que summary, plus profond. C'est ce que la personne lit en ouvrant « Lire l'analyse complète ».
+- "podium_intro" : 1 phrase qui introduit le classement des langages d'attention (ex: « Chez toi, tous les langages comptent, mais ils ne se valent pas. ») en s'appuyant sur la dimension dominante. La 7e dimension GES se nomme TOUJOURS « Esthétique · qualité ».
+- "understood_cards" : EXACTEMENT 4 cartes { "eyebrow": 1 mot-thème (ex: Écoute, Exécution, Lieux, Surprise), "text": 1-2 phrases }. Angles NON-évidents, distincts des insights.
+- "works_phrases" : pour CHACUNE des 6 clés (beau, personnel, experientiel, utile, premium, surprise), 1 phrase courte qui illustre comment cette famille d'attention fonctionne chez la personne. Les NIVEAUX (Très fort / Fort / À doser) te sont fournis dans les données — ta phrase doit être cohérente avec le niveau indiqué, tu ne décides JAMAIS du niveau.
+- "territory" : le territoire idéal de sortie/évasion. { "titre": accroche courte (ex: « Sortir du quotidien, sans l'inconfort subi »), "phrase": 1-2 phrases, "cartes": EXACTEMENT 3 cartes { "nom": 2-3 mots, "description": 1 ligne concrète, "statut": "desirable" ou "eviter" } — 2 désirables + 1 à éviter, déduites du profil (confort, aventure, lieux). }
+- "universe" : { "lieux_ambiances": 4-6 tags de types de lieux où la personne se sent bien (ex: « Hôtels de caractère »), "matieres": 3-6 tags de matières/esthétique (depuis couleurs_matieres paraphrasé), "reves_envies": 4-7 tags courts (depuis envies_reves + rêves détectés), "phrase": 1 phrase élégante « ce que ça dit de ton univers » (sans commencer par « Ton univers raconte » à chaque fois — varie). }
+- Si les données manquent pour territory ou universe, mettre null.
+
 Retourne UNIQUEMENT ce JSON valide (aucun markdown, aucune explication) :
 {
   "summary": "string — 2-3 phrases, résumé global en 2e personne (ton 'tu sembles')",
@@ -359,20 +391,26 @@ Retourne UNIQUEMENT ce JSON valide (aucun markdown, aucune explication) :
     "string — phrase courte 'Tu préfères…' ou équivalent"
   ],
   "sections": {
-    "attention":    { "text": "string — comment reçoit l'attention (2-3 phrases complètes)", "chips": ["string", "string", "string"] },
-    "what_touches": { "text": "string — ce qui la/le touche vraiment (2-3 phrases)", "chips": ["string", "string", "string"] },
-    "feels_loved":  { "text": "string — situations concrètes de réception (2-3 phrases) — si trop similaire à 'attention', laisser vide", "chips": ["string", "string"] },
-    "gifts":        { "text": "string — quel type de cadeau lui parle (2-3 phrases)", "chips": ["string", "string", "string"] },
-    "avoid":        { "text": "string — ce qu'il vaut mieux éviter, en intégrant le texte libre q17 et cadeaux_non paraphrasés", "chips": ["string", "string", "string"] },
-    "style":        { "text": "string — univers esthétique, en intégrant couleurs_matieres paraphrasé", "chips": ["string", "string"] },
-    "brands":       { "text": "string — marques / univers (1-2 phrases, ou vide si aucune donnée)", "chips": [] },
-    "restaurants":  { "text": "string — tables et cuisines (1-2 phrases, ou vide si aucune donnée)", "chips": ["string", "string"] },
-    "travel":       { "text": "string — comment voyage (1-2 phrases, ou vide si aucune donnée)", "chips": ["string", "string"] },
-    "hobbies":      { "text": "string — passions et loisirs (1-2 phrases, ou vide si aucune donnée)", "chips": ["string", "string", "string"] },
-    "parfums":      { "text": "string — synthèse olfactive (1 phrase, ou vide si aucune donnée)", "chips": ["string", "string"] },
-    "points_fixes": { "text": "string — 1 phrase de synthèse OU une paraphrase italique courte (jamais citation brute)", "chips": ["string", "string", "string", "string", "string"] },
+    "attention":    { "text": "string — comment reçoit l'attention (2-3 phrases complètes)", "chips": ["string", "string", "string"], "more": "string — paragraphe long Lire plus" },
+    "what_touches": { "text": "string — ce qui la/le touche vraiment (2-3 phrases)", "chips": ["string", "string", "string"], "more": "string" },
+    "feels_loved":  { "text": "string — situations concrètes de réception (2-3 phrases) — si trop similaire à 'attention', laisser vide", "chips": ["string", "string"], "more": "string" },
+    "gifts":        { "text": "string — quel type de cadeau lui parle (2-3 phrases)", "chips": ["string", "string", "string"], "more": "string" },
+    "avoid":        { "text": "string — ce qu'il vaut mieux éviter, en intégrant le texte libre q17 et cadeaux_non paraphrasés", "chips": ["string", "string", "string"], "more": "string" },
+    "style":        { "text": "string — univers esthétique, en intégrant couleurs_matieres paraphrasé", "chips": ["string", "string"], "more": "string" },
+    "brands":       { "text": "string — marques / univers (1-2 phrases, ou vide si aucune donnée)", "chips": [], "more": "string" },
+    "restaurants":  { "text": "string — tables et cuisines (1-2 phrases, ou vide si aucune donnée)", "chips": ["string", "string"], "more": "string" },
+    "travel":       { "text": "string — comment voyage (1-2 phrases, ou vide si aucune donnée)", "chips": ["string", "string"], "more": "string" },
+    "hobbies":      { "text": "string — passions et loisirs (1-2 phrases, ou vide si aucune donnée)", "chips": ["string", "string", "string"], "more": "string" },
+    "parfums":      { "text": "string — synthèse olfactive (1 phrase, ou vide si aucune donnée)", "chips": ["string", "string"], "more": "string" },
+    "points_fixes": { "text": "string — « À savoir pour viser juste » : 1 phrase de synthèse OU une paraphrase italique courte (jamais citation brute)", "chips": ["string", "string", "string", "string", "string"], "more": "string" },
     "attention_dna":{ "text": "string — synthèse ADN attentions (2-3 phrases)", "chips": ["string", "string"] }
   },
+  "summary_long": "string — 3 paragraphes séparés par une ligne vide",
+  "podium_intro": "string — 1 phrase d'introduction du podium",
+  "understood_cards": [{ "eyebrow": "string — 1 mot", "text": "string — 1-2 phrases" }],
+  "works_phrases": { "beau": "string", "personnel": "string", "experientiel": "string", "utile": "string", "premium": "string", "surprise": "string" },
+  "territory": { "titre": "string", "phrase": "string", "cartes": [{ "nom": "string", "description": "string", "statut": "desirable" }] },
+  "universe": { "lieux_ambiances": ["string"], "matieres": ["string"], "reves_envies": ["string"], "phrase": "string" },
   "modes": {
     "conflit":  "string — 1-3 mots doux (ex: 'temporise', 'confronte', 'humour')",
     "stress":   "string — 1-3 mots doux (ex: 'se replie', 'agit', 'partage')",
@@ -513,6 +551,17 @@ export async function generateProfileAnalysis(
 
   const t6 = Date.now();
   const systemPrompt = buildSystemPrompt(gender);
+  // V2 : niveaux « Ce qui marche » calculés DÉTERMINISTES (arbitrage 9) —
+  // injectés au prompt pour que les phrases collent aux niveaux, jamais l'inverse.
+  const worksLevels = computeWorksLevels(
+    facts.styleRadar,
+    (profile.temperament_axes as Record<string, { score: number; intensity: number }> | null) ?? null,
+  );
+  const worksLevelsLine = worksLevels
+    ? `\nNIVEAUX « CE QUI MARCHE » (calculés, à respecter tels quels) : ${
+        (Object.entries(worksLevels) as Array<[WorksKey, WorksLevel]>)
+          .map(([k, v]) => `${k}=${WORKS_LEVEL_LABELS[v]}`).join(" · ")}`
+    : "";
   const userMessage = buildAnalysisPrompt({
     facts,
     practicalInfo:     (profile.practical_info as Record<string, unknown> | null) ?? null,
@@ -520,7 +569,7 @@ export async function generateProfileAnalysis(
     discoveryAnswers:  (profile.discovery_answers as Record<string, unknown> | null) ?? null,
     recentMemories,
     gender,
-  });
+  }) + worksLevelsLine;
 
   let result: ProfileAnalysisResult;
   let aiStatus = "success";
@@ -587,6 +636,13 @@ export async function generateProfileAnalysis(
       ),
       entities,
       confidence: facts.hasTemperamentData && facts.hasSingularityData ? 0.6 : 0.3,
+      // V2 : le fallback ne fabrique jamais de narratif — champs vides, l'UI gère
+      summary_long: "",
+      podium_intro: "",
+      understood_cards: [],
+      works_phrases: {},
+      territory: null,
+      universe: null,
     };
     await logStep("generate_narrative", aiStatus, Date.now() - t6, String(err));
   }
@@ -638,7 +694,32 @@ export async function generateProfileAnalysis(
     confidence:       Math.min(1, Math.max(0, result.confidence ?? 0.5)),
     source,
     generated_at:     new Date().toISOString(),
-    engine_version:   "2.1",
+    engine_version:   "2.2",
+    // ── Champs V2 (migration 54) — statuts territory assainis côté code ──
+    summary_long:     result.summary_long?.trim() || null,
+    podium_intro:     result.podium_intro?.trim() || null,
+    understood_cards: (result.understood_cards ?? [])
+      .filter(c => c?.eyebrow && c?.text).slice(0, 4),
+    works_phrases:    result.works_phrases ?? null,
+    territory: result.territory?.cartes?.length
+      ? {
+          titre: result.territory.titre ?? "",
+          phrase: result.territory.phrase ?? "",
+          cartes: result.territory.cartes.slice(0, 3).map(c => ({
+            nom: c.nom ?? "",
+            description: c.description ?? "",
+            statut: c.statut === "eviter" ? "eviter" : "desirable",
+          })),
+        }
+      : null,
+    universe: result.universe
+      ? {
+          lieux_ambiances: result.universe.lieux_ambiances ?? [],
+          matieres: result.universe.matieres ?? [],
+          reves_envies: result.universe.reves_envies ?? [],
+          phrase: result.universe.phrase ?? "",
+        }
+      : null,
   };
 
   let analysisId: string | undefined;

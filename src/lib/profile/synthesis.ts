@@ -190,7 +190,8 @@ const DIM_LABELS: Record<AttentionDim, string> = {
   CAD_C: "les cadeaux pensés avec soin et précision",
   CAD_S: "les attentions chargées de sens et d'intention",
   EXP: "les moments vraiment partagés",
-  GES: "les petites attentions glissées dans le quotidien",
+  // Libellé verrouillé (arbitrage Estelle 3) : « Esthétique · qualité » partout
+  GES: "l'esthétique et la qualité (le beau, le soigné, l'exécution)",
   SUR: "les surprises bien pensées",
 };
 
