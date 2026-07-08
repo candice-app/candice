@@ -1,7 +1,7 @@
 // Refonte Profil V2 — tests des métriques déterministes (jamais de LLM).
 
 import { describe, it, expect } from "vitest";
-import { computePodium, computeWorksLevels, PODIUM_LABELS } from "./v2-metrics";
+import { computePodium, computeWorksLevels, computeKnowledge, KNOW_RING_CAP, PODIUM_LABELS } from "./v2-metrics";
 import type { FaceResult } from "./sheet-data";
 import type { StyleRadar } from "./synthesis";
 
@@ -46,6 +46,32 @@ describe("computePodium — arbitrages 1 + 2", () => {
 
   it("null → vide (jamais de podium fabriqué)", () => {
     expect(computePodium(null)).toEqual([]);
+  });
+});
+
+describe("computeKnowledge — C1 : source UNIQUE anneau + phrase + CTA", () => {
+  it("questionnaire complet MAIS questions restantes → anneau plafonné, jamais fermé, état 3 (le bug device d'Estelle)", () => {
+    const k = computeKnowledge(1, true);
+    expect(k.state).toBe(3);
+    expect(k.ring).toBe(KNOW_RING_CAP);
+    expect(k.ring).toBeLessThan(1);
+  });
+
+  it("état 4 + anneau fermé UNIQUEMENT à zéro question et questionnaire complet", () => {
+    expect(computeKnowledge(1, false)).toEqual({ state: 4, ring: 1 });
+    expect(computeKnowledge(0.8, false).state).toBe(3); // incomplet → jamais 4
+    expect(computeKnowledge(1, true).state).toBe(3);    // questions → jamais 4
+  });
+
+  it("états 1/2/3 par le ratio, anneau plafonné tant qu'il reste des questions", () => {
+    expect(computeKnowledge(0.2, true).state).toBe(1);
+    expect(computeKnowledge(0.6, true).state).toBe(2);
+    expect(computeKnowledge(0.9, true).ring).toBe(KNOW_RING_CAP);
+    expect(computeKnowledge(0.6, true).ring).toBe(0.6); // sous le plafond : le vrai ratio
+  });
+
+  it("sans micro-question, questionnaire incomplet : l'anneau dit le vrai", () => {
+    expect(computeKnowledge(0.6, false)).toEqual({ state: 2, ring: 0.6 });
   });
 });
 

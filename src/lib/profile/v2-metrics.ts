@@ -80,6 +80,29 @@ export function computePodium(reception: FaceResult | null): PodiumRow[] {
   });
 }
 
+// ── Connaissance (correction C1 STOP C — SOURCE UNIQUE) ──────────────────────
+// Anneau, phrase et CTA dérivent du MÊME calcul : questionnaire (ratio)
+// ET micro-questions restantes. Tant qu'il reste une question disponible :
+// anneau JAMAIS fermé (plafonné ~85 %) et état ≤ 3. État 4 (« anticipe
+// pour toi ») uniquement à questionnaire complet ET zéro question.
+
+export const KNOW_RING_CAP = 0.85;
+
+export function computeKnowledge(
+  questionnaireRatio: number,
+  hasAvailableQuestions: boolean,
+): { state: 1 | 2 | 3 | 4; ring: number } {
+  const ratio = Math.max(0, Math.min(1, questionnaireRatio));
+  if (!hasAvailableQuestions && ratio >= 1) {
+    return { state: 4, ring: 1 }; // anneau fermé — plus rien à demander
+  }
+  const state = ratio < 0.4 ? 1 : ratio < 0.8 ? 2 : 3;
+  const ring = hasAvailableQuestions
+    ? Math.min(ratio, KNOW_RING_CAP)
+    : ratio; // questionnaire incomplet sans micro-question : l'anneau dit le vrai
+  return { state, ring: Math.max(0.04, ring) };
+}
+
 // ── Ce qui marche avec toi (arbitrage 9 — niveaux déterministes) ─────────────
 
 export type WorksKey = "beau" | "personnel" | "experientiel" | "utile" | "premium" | "surprise";

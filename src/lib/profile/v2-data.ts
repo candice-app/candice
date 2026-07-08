@@ -13,6 +13,7 @@ import {
 import {
   computePodium,
   computeWorksLevels,
+  computeKnowledge,
   type PodiumRow,
   type WorksKey,
   type WorksLevel,
@@ -114,12 +115,10 @@ export async function buildProfileV2Data(args: {
 }): Promise<ProfileV2Data> {
   const { profile, analysis, firstName, nudges, hasAvailableQuestions } = args;
 
+  // C1 — SOURCE UNIQUE : anneau + phrase + CTA dérivent du même calcul
   const completion = computeCompletion(profile);
-  const knowState: KnowState =
-    completion.ratio < 0.4 ? 1
-    : completion.ratio < 0.8 ? 2
-    : (completion.ratio === 1 && !hasAvailableQuestions) ? 4
-    : 3;
+  const knowledge = computeKnowledge(completion.ratio, hasAvailableQuestions);
+  const knowState: KnowState = knowledge.state;
 
   // Avatar : URL signée 1 h (bucket privé — pattern contact-photos)
   let avatarUrl: string | null = null;
@@ -142,7 +141,7 @@ export async function buildProfileV2Data(args: {
     gender: analysis?.gender ?? profile.grammatical_gender,
     avatarUrl,
     knowState,
-    knowRatio: Math.max(0.04, completion.ratio),
+    knowRatio: knowledge.ring,
 
     summary: analysis?.summary ?? null,
     summaryChips: analysis?.summary_chips ?? [],
