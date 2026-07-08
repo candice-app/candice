@@ -3,7 +3,6 @@
 // JAMAIS de brut utilisateur : analyse (profile_analysis V2) + métriques
 // déterministes + FAITS pratiques.
 
-import { createAdminClient } from "@/utils/supabase/admin";
 import {
   buildFacts,
   computeCompletion,
@@ -117,27 +116,21 @@ const INTENSITE_FR: Record<string, string> = {
   legere: "gêne légère", systematique: "à prendre en compte",
 };
 
-export async function buildProfileV2Data(args: {
+export function buildProfileV2Data(args: {
   profile: ProfileRow & { avatar_path?: string | null };
   analysis: AnalysisRowV2 | null;
   firstName: string;
   nudges: ViserNudge[];
   hasAvailableQuestions: boolean;
-}): Promise<ProfileV2Data> {
-  const { profile, analysis, firstName, nudges, hasAvailableQuestions } = args;
+  /** URL signée 1 h, calculée par l'appelant EN PARALLÈLE du moteur (C2) */
+  avatarUrl: string | null;
+}): ProfileV2Data {
+  const { profile, analysis, firstName, nudges, hasAvailableQuestions, avatarUrl } = args;
 
   // C1 — SOURCE UNIQUE : anneau + phrase + CTA dérivent du même calcul
   const completion = computeCompletion(profile);
   const knowledge = computeKnowledge(completion.ratio, hasAvailableQuestions);
   const knowState: KnowState = knowledge.state;
-
-  // Avatar : URL signée 1 h (bucket privé — pattern contact-photos)
-  let avatarUrl: string | null = null;
-  if (profile.avatar_path) {
-    const admin = createAdminClient();
-    const { data } = await admin.storage.from("avatars").createSignedUrl(profile.avatar_path, 3600);
-    avatarUrl = data?.signedUrl ?? null;
-  }
 
   const pi = profile.practical_info;
   const mobiliteTexte = pi?.mobilite_sante?.trim();

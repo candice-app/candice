@@ -16,7 +16,7 @@ import GenderModal from "@/components/profile/GenderModal";
 import ResumePrompt from "@/components/questionnaire/ResumePrompt";
 import LogoutButton from "./LogoutButton";
 import GenerateAnalysisOnMount from "./GenerateAnalysisOnMount";
-import { getAvailableDiscoverySections, getViserNudges, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
+import { getDiscoveryOverview, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
 import { PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
 import { buildProfileV2Data, ANALYSIS_ROW_V2_SELECT, type AnalysisRowV2 } from "@/lib/profile/v2-data";
 
@@ -70,19 +70,27 @@ export default async function MoiPage() {
   const analysisSnapshot: ProfileAnalysisSnapshot | null = analysis?.sections
     ? { sections: analysis.sections as Record<string, { text?: string; chips?: string[] }> }
     : null;
-  // Garde unifiée (Phase B) : même moteur pour les questions restantes
-  // (état 4 de la phrase) et les nudges « Pour mieux viser ».
-  const [availableSections, nudges] = await Promise.all([
-    getAvailableDiscoverySections(user.id, supabase, analysisSnapshot),
-    getViserNudges(user.id, supabase, analysisSnapshot),
+  // C2 : passe UNIQUE du moteur (sections + nudges), signature avatar EN
+  // PARALLÈLE — le double appel dupliquait questions/snapshot/statuts.
+  const signAvatar = async (): Promise<string | null> => {
+    if (!profile.avatar_path) return null;
+    const { createAdminClient } = await import("@/utils/supabase/admin");
+    const { data: signed } = await createAdminClient()
+      .storage.from("avatars").createSignedUrl(profile.avatar_path, 3600);
+    return signed?.signedUrl ?? null;
+  };
+  const [{ availableSections, nudges }, avatarUrl] = await Promise.all([
+    getDiscoveryOverview(user.id, supabase, analysisSnapshot),
+    signAvatar(),
   ]);
 
-  const data = await buildProfileV2Data({
+  const data = buildProfileV2Data({
     profile,
     analysis,
     firstName,
     nudges,
     hasAvailableQuestions: availableSections.size > 0,
+    avatarUrl,
   });
 
   return (

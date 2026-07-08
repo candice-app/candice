@@ -50,24 +50,27 @@ export async function syncStatusesWithData(
   supabase: SupaDB,
   userId: string,
   snapshot: ProfileDataSnapshot | null,
+  /** C2 : statuts préchargés (évite un aller-retour quand l'appelant les a déjà) */
+  prefetched?: Record<string, QuestionStatus>,
 ): Promise<Record<string, QuestionStatus>> {
-  const statuses = await getQuestionStatuses(supabase, userId);
+  const statuses = prefetched ?? await getQuestionStatuses(supabase, userId);
   if (!snapshot) return statuses;
 
   const now = new Date().toISOString();
-  for (const key of GUARDED_QUESTION_KEYS) {
+  const toSync = GUARDED_QUESTION_KEYS.filter(key => {
     const stored = statuses[key] ?? "not_started";
-    if (BLOCKING_STATUSES.includes(stored)) continue;
-    if (!questionDataPresent(key, snapshot)) continue;
-    // Donnée présente en fiche → answered (rétro-alimentation)
-    await supabase
+    return !BLOCKING_STATUSES.includes(stored) && questionDataPresent(key, snapshot);
+  });
+  // Écritures en PARALLÈLE (C2) — zéro écriture sur un profil déjà synchronisé
+  await Promise.all(toSync.map(key =>
+    supabase
       .from("profile_completion")
       .upsert(
         { user_id: userId, question_key: key, status: "answered", answered_at: now },
         { onConflict: "user_id,question_key" },
-      );
-    statuses[key] = "answered";
-  }
+      ),
+  ));
+  for (const key of toSync) statuses[key] = "answered";
   return statuses;
 }
 

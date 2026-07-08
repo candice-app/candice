@@ -4,7 +4,7 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { questionDataPresent, type ProfileDataSnapshot } from './dataPresence';
-import { syncStatusesWithData, blockedKeys } from './status';
+import { syncStatusesWithData, blockedKeys, getQuestionStatuses } from './status';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -425,16 +425,24 @@ function dimensionToSectionKey(dimension: string): string | null {
   return null;
 }
 
-export async function getViserNudges(
+/**
+ * C2 STOP C — passe UNIQUE du moteur pour /moi : sections disponibles +
+ * nudges avec UN seul jeu de requêtes (questions, snapshot, statuts+sync),
+ * là où deux appels séparés doublaient tout.
+ */
+export async function getDiscoveryOverview(
   userId: string,
   supabase: SupaDB,
   analysis: ProfileAnalysisSnapshot | null,
-): Promise<ViserNudgeData[]> {
-  const [allQuestions, profileData] = await Promise.all([
+): Promise<{ availableSections: Set<string>; nudges: ViserNudgeData[] }> {
+  // C2 : UN seul étage d'allers-retours — questions, snapshot ET statuts
+  // partent ensemble ; la sync n'écrit que les diffs, en parallèle.
+  const [allQuestions, profileData, prefetchedStatuses] = await Promise.all([
     getAllQuestionsWithTrigger(supabase),
     getProfileDataSnapshot(supabase, userId),
+    getQuestionStatuses(supabase, userId),
   ]);
-  const statuses = await syncStatusesWithData(supabase, userId, profileData);
+  const statuses = await syncStatusesWithData(supabase, userId, profileData, prefetchedStatuses);
   const blocked = blockedKeys(statuses);
 
   const candidates = allQuestions.filter(
@@ -443,6 +451,23 @@ export async function getViserNudges(
       && evaluateTrigger(q, analysis),
   );
 
+  const availableSections = new Set<string>();
+  for (const [sk, dims] of Object.entries(SECTION_KEY_TO_DIMENSIONS)) {
+    if (candidates.some(q => dims.includes(q.dimension))) availableSections.add(sk);
+  }
+
+  return {
+    availableSections,
+    nudges: buildNudges(allQuestions, candidates, statuses, profileData),
+  };
+}
+
+function buildNudges(
+  allQuestions: DiscoveryQuestionFull[],
+  candidates: DiscoveryQuestionFull[],
+  statuses: Record<string, string>,
+  profileData: ProfileDataSnapshot | null,
+): ViserNudgeData[] {
   // Disponibles : groupées par dimension (un nudge par thème), max 4
   const byDim = new Map<string, DiscoveryQuestionFull[]>();
   for (const q of candidates) {
