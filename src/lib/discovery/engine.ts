@@ -219,6 +219,8 @@ const FULL_SESSION_MAX = 3;
 export interface DiscoveryQuestionFull extends DiscoveryQuestion {
   trigger_condition: string | null;
   priority: number;
+  benefit_label?: string | null;
+  duration_label?: string | null;
 }
 
 export interface ProfileAnalysisSnapshot {
@@ -262,7 +264,7 @@ export const SECTION_KEY_TO_DIMENSIONS: Record<string, string[]> = {
 async function getAllQuestionsWithTrigger(supabase: SupaDB): Promise<DiscoveryQuestionFull[]> {
   const { data } = await supabase
     .from('discovery_questions')
-    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, trigger_condition, priority')
+    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, trigger_condition, priority, benefit_label, duration_label')
     .eq('statut', 'active')
     .eq('target', 'self')
     .order('sort_order');
@@ -399,6 +401,88 @@ export async function getNextMicroQuestion(
     sectionLabel: DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension,
     progress: mode === 'full' ? { current: 1, total: picks.length } : null,
   };
+}
+
+// ── Nudges « Pour mieux viser » (Refonte V2, Phase C) ────────────────────────
+// Même garde que le sélecteur : seules les questions réellement disponibles
+// produisent un nudge. Les répondues deviennent « Répondu — Modifier ma réponse ».
+
+export interface ViserNudgeData {
+  key: string;
+  title: string;
+  subtitle: string;
+  sectionKey: string | null;
+  done: boolean;
+}
+
+function dimensionToSectionKey(dimension: string): string | null {
+  for (const [sk, dims] of Object.entries(SECTION_KEY_TO_DIMENSIONS)) {
+    if (dims.includes(dimension)) return sk;
+  }
+  return null;
+}
+
+export async function getViserNudges(
+  userId: string,
+  supabase: SupaDB,
+  analysis: ProfileAnalysisSnapshot | null,
+): Promise<ViserNudgeData[]> {
+  const [allQuestions, profileData] = await Promise.all([
+    getAllQuestionsWithTrigger(supabase),
+    getProfileDataSnapshot(supabase, userId),
+  ]);
+  const statuses = await syncStatusesWithData(supabase, userId, profileData);
+  const blocked = blockedKeys(statuses);
+
+  const candidates = allQuestions.filter(
+    q => !blocked.has(q.question_key)
+      && !questionDataPresent(q.question_key, profileData)
+      && evaluateTrigger(q, analysis),
+  );
+
+  // Disponibles : groupées par dimension (un nudge par thème), max 4
+  const byDim = new Map<string, DiscoveryQuestionFull[]>();
+  for (const q of candidates) {
+    byDim.set(q.dimension, [...(byDim.get(q.dimension) ?? []), q]);
+  }
+  const available: ViserNudgeData[] = Array.from(byDim.entries()).slice(0, 4).map(([dim, qs]) => {
+    const top = qs[0];
+    const parts = [
+      top.benefit_label ?? "Quelques précisions utiles",
+      `${qs.length} question${qs.length > 1 ? "s" : ""}`,
+      ...(top.duration_label ? [top.duration_label] : []),
+    ];
+    return {
+      key: dim,
+      title: DIMENSION_LABELS[dim] ?? dim,
+      subtitle: parts.join(" · "),
+      sectionKey: dimensionToSectionKey(dim),
+      done: false,
+    };
+  });
+
+  // Répondues récentes : « Répondu — … » (labels des options si résolubles)
+  const answers = (profileData?.discovery_answers ?? {}) as Record<string, unknown>;
+  const answered: ViserNudgeData[] = allQuestions
+    .filter(q => statuses[q.question_key] === "answered" && q.benefit_label)
+    .slice(0, 2)
+    .map(q => {
+      const raw = answers[q.question_key];
+      const values = Array.isArray(raw) ? raw : typeof raw === "string" ? [raw] : [];
+      const labels = values
+        .map(v => (q.options ?? []).find(o => o.value === v)?.label)
+        .filter((l): l is string => !!l)
+        .slice(0, 2);
+      return {
+        key: q.question_key,
+        title: q.subdimension === "families" ? "Familles olfactives" : (DIMENSION_LABELS[q.dimension] ?? q.dimension),
+        subtitle: labels.length > 0 ? `Répondu — ${labels.join(" · ").toLowerCase()}` : "Répondu",
+        sectionKey: dimensionToSectionKey(q.dimension),
+        done: true,
+      };
+    });
+
+  return [...available, ...answered];
 }
 
 export async function getAvailableDiscoverySections(
