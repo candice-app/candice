@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
-import { recordAnswer } from "@/lib/discovery/engine";
+import { recordAnswer, precomputePersonalizationsForKeys } from "@/lib/discovery/engine";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
 
 export async function POST(req: Request) {
@@ -97,10 +97,17 @@ export async function POST(req: Request) {
   // Invalider le cache de /moi pour que les CTAs Discovery soient recalculés
   revalidatePath('/moi');
 
+  // D1 : réponse précédente → pré-calcul EN TÂCHE DE FOND des reformulations
+  // des questions suivantes de la session (jamais dans le rendu)
+  const upcoming = result.upcomingKeys ?? [];
+  if (upcoming.length > 0) {
+    after(() => precomputePersonalizationsForKeys(user.id, supabase, upcoming, { onlyMissing: true }));
+  }
+
   // Quand la session est terminée, régénérer l'analyse (fire-and-forget)
   if (result.done) {
     generateProfileAnalysis(user.id, null, supabase).catch(() => {});
   }
 
-  return NextResponse.json(result);
+  return NextResponse.json({ next: result.next, done: result.done });
 }

@@ -4,7 +4,10 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { questionDataPresent, type ProfileDataSnapshot } from './dataPresence';
-import { syncStatusesWithData, blockedKeys, getQuestionStatuses } from './status';
+import {
+  syncStatusesWithData, blockedKeys, getQuestionStatuses,
+  applyDataSync, writeSyncedStatuses, type QuestionStatus,
+} from './status';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -108,11 +111,22 @@ async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQ
   if (idx >= pendingKeys.length) return null;
 
   const currentKey = pendingKeys[idx];
-  const { data: q } = await supabase
-    .from('discovery_questions')
-    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
-    .eq('question_key', currentKey)
-    .maybeSingle();
+  // D1 : AUCUN appel LLM dans le rendu — la reformulation est PRÉ-CALCULÉE
+  // en tâche de fond et lue ici ; sinon texte de banque, immédiat.
+  const [{ data: q }, { data: pc }] = await Promise.all([
+    supabase
+      .from('discovery_questions')
+      .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
+      .eq('question_key', currentKey)
+      .maybeSingle(),
+    supabase
+      .from('profile_completion')
+      .select('personalized_text')
+      .eq('user_id', session.user_id)
+      .eq('question_key', currentKey)
+      .is('contact_id', null)
+      .maybeSingle(),
+  ]);
 
   if (!q) return null;
 
@@ -120,7 +134,7 @@ async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQ
   // A.3 : texte verrouillé → servi mot pour mot, jamais reformulé
   const personalizedText = question.locked_text
     ? question.question_text
-    : await personalizeQuestion(question, '');
+    : ((pc as { personalized_text?: string | null } | null)?.personalized_text ?? question.question_text);
 
   return {
     question: { ...question, question_text: personalizedText },
@@ -141,7 +155,7 @@ export async function recordAnswer(
   answer: DiscoveryAnswer,
   skip: boolean,
   supabase: SupaDB,
-): Promise<{ next: NextQuestionResult | null; done: boolean }> {
+): Promise<{ next: NextQuestionResult | null; done: boolean; upcomingKeys?: string[] }> {
   const now = new Date().toISOString();
 
   // Update profile_completion — status = source unique de la re-proposition
@@ -206,7 +220,9 @@ export async function recordAnswer(
     .single();
 
   const next = updated.data ? await getSessionQuestion(updated.data, supabase) : null;
-  return { next, done: false };
+  // D1 : les clés APRÈS la question servie — à pré-calculer en tâche de fond
+  // par l'appelant (route answer), jamais dans le rendu.
+  return { next, done: false, upcomingKeys: pendingKeys.slice(nextIndex + 1) };
 }
 
 export async function pauseSession(sessionId: string, supabase: SupaDB): Promise<void> {
@@ -390,21 +406,28 @@ export async function getNextMicroQuestion(
 
   if (!session) return null;
 
-  // Mark first question as last_asked
-  await supabase
-    .from('profile_completion')
-    .upsert(
-      { user_id: userId, question_key: picks[0].question_key, last_asked_at: new Date().toISOString() },
-      { onConflict: 'user_id,question_key' },
-    );
+  // Mark first question as last_asked + lire la reformulation pré-calculée
+  // (D1 : AUCUN appel LLM dans le rendu — pré-calculé sinon texte de banque)
+  const [, { data: pc }] = await Promise.all([
+    supabase
+      .from('profile_completion')
+      .upsert(
+        { user_id: userId, question_key: picks[0].question_key, last_asked_at: new Date().toISOString() },
+        { onConflict: 'user_id,question_key' },
+      ),
+    supabase
+      .from('profile_completion')
+      .select('personalized_text')
+      .eq('user_id', userId)
+      .eq('question_key', picks[0].question_key)
+      .is('contact_id', null)
+      .maybeSingle(),
+  ]);
 
   // A.3 : texte verrouillé → servi mot pour mot, jamais reformulé
   const personalizedText = picks[0].locked_text
     ? picks[0].question_text
-    : await personalizeQuestion(
-        picks[0],
-        sectionKey ? `Section ciblée : ${DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension}` : '',
-      );
+    : ((pc as { personalized_text?: string | null } | null)?.personalized_text ?? picks[0].question_text);
 
   return {
     question: { ...picks[0], question_text: personalizedText },
@@ -412,6 +435,87 @@ export async function getNextMicroQuestion(
     sectionLabel: DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension,
     progress: mode === 'full' ? { current: 1, total: picks.length } : null,
   };
+}
+
+// ── D1 CORRIGÉ : PRÉ-CALCUL des reformulations (jamais dans le rendu) ────────
+// Déclencheurs (Estelle) : recalcul d'analyse (generateProfileAnalysis) et
+// réponse précédente (route answer, via after()). Le rendu sert
+// personalized_text s'il existe, sinon le texte de banque — affichage
+// instantané. locked_text : jamais reformulé, jamais pré-calculé.
+// Anti-lyrisme (C6) inchangé : même personalizeQuestion, même règle absolue.
+
+/** Pré-calcule (et stocke) la reformulation des questions données. */
+export async function precomputePersonalizationsForKeys(
+  userId: string,
+  supabase: SupaDB,
+  keys: string[],
+  opts: { onlyMissing?: boolean } = {},
+): Promise<void> {
+  if (keys.length === 0) return;
+  try {
+    const [{ data: qs }, { data: existing }] = await Promise.all([
+      supabase
+        .from('discovery_questions')
+        .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
+        .in('question_key', keys),
+      supabase
+        .from('profile_completion')
+        .select('question_key, personalized_text')
+        .eq('user_id', userId)
+        .in('question_key', keys)
+        .is('contact_id', null),
+    ]);
+    const already = new Set(
+      ((existing ?? []) as Array<{ question_key: string; personalized_text: string | null }>)
+        .filter(r => !!r.personalized_text)
+        .map(r => r.question_key),
+    );
+    const targets = ((qs ?? []) as DiscoveryQuestion[]).filter(
+      q => !q.locked_text && !(opts.onlyMissing && already.has(q.question_key)),
+    );
+    await Promise.all(targets.map(async q => {
+      const text = await personalizeQuestion(q, '');
+      await supabase
+        .from('profile_completion')
+        .upsert(
+          { user_id: userId, question_key: q.question_key, personalized_text: text },
+          { onConflict: 'user_id,question_key' },
+        );
+    }));
+  } catch { /* tâche de fond — jamais bloquante, le rendu retombe sur la banque */ }
+}
+
+/**
+ * Pré-calcule les reformulations des PROCHAINES questions du profil.
+ * Sélection = COPIE LECTURE SEULE du filtre/score de getNextMicroQuestion
+ * (le moteur de sélection reste intouché : aucune session créée, aucune
+ * écriture de statut, aucun last_asked_at).
+ */
+export async function precomputeUpcomingPersonalizations(
+  userId: string,
+  supabase: SupaDB,
+  analysis: ProfileAnalysisSnapshot | null,
+): Promise<void> {
+  try {
+    const [allQuestions, profileData, stored] = await Promise.all([
+      getAllQuestionsWithTrigger(supabase),
+      getProfileDataSnapshot(supabase, userId),
+      getQuestionStatuses(supabase, userId),
+    ]);
+    const { statuses } = applyDataSync(stored, profileData); // pur, zéro écriture
+    const blocked = blockedKeys(statuses);
+    const candidates = allQuestions.filter(
+      q => !blocked.has(q.question_key)
+        && !questionDataPresent(q.question_key, profileData)
+        && evaluateTrigger(q, analysis),
+    );
+    const picks = candidates
+      .map(q => ({ q, score: computeGapScore(q, analysis) * 100 + (q.priority ?? 50) }))
+      .sort((a, b) => b.score - a.score || a.q.sort_order - b.q.sort_order)
+      .slice(0, FULL_SESSION_MAX)
+      .map(s => s.q.question_key);
+    await precomputePersonalizationsForKeys(userId, supabase, picks);
+  } catch { /* tâche de fond — jamais bloquante */ }
 }
 
 // ── Nudges « Pour mieux viser » (Refonte V2, Phase C) ────────────────────────
@@ -433,24 +537,47 @@ function dimensionToSectionKey(dimension: string): string | null {
   return null;
 }
 
+/** D3 — sources brutes de l'overview (préchargeables par la page en UNE passe). */
+export interface DiscoveryOverviewSources {
+  allQuestions: DiscoveryQuestionFull[];
+  profileData: ProfileDataSnapshot | null;
+  storedStatuses: Record<string, QuestionStatus>;
+}
+
+/** D3 — les 3 requêtes de l'overview, en parallèle (fusionnables avec celles de la page). */
+export async function fetchDiscoveryOverviewSources(
+  userId: string,
+  supabase: SupaDB,
+): Promise<DiscoveryOverviewSources> {
+  const [allQuestions, profileData, storedStatuses] = await Promise.all([
+    getAllQuestionsWithTrigger(supabase),
+    getProfileDataSnapshot(supabase, userId),
+    getQuestionStatuses(supabase, userId),
+  ]);
+  return { allQuestions, profileData, storedStatuses };
+}
+
 /**
  * C2 STOP C — passe UNIQUE du moteur pour /moi : sections disponibles +
  * nudges avec UN seul jeu de requêtes (questions, snapshot, statuts+sync),
  * là où deux appels séparés doublaient tout.
+ * D3 — les écritures de rétro-alimentation SORTENT du rendu : l'appelant
+ * doit programmer flushStatusWrites en tâche de fond (after()). Les statuts
+ * retournés sont déjà à jour en mémoire — sélection et nudges identiques.
  */
 export async function getDiscoveryOverview(
   userId: string,
   supabase: SupaDB,
   analysis: ProfileAnalysisSnapshot | null,
-): Promise<{ availableSections: Set<string>; nudges: ViserNudgeData[] }> {
-  // C2 : UN seul étage d'allers-retours — questions, snapshot ET statuts
-  // partent ensemble ; la sync n'écrit que les diffs, en parallèle.
-  const [allQuestions, profileData, prefetchedStatuses] = await Promise.all([
-    getAllQuestionsWithTrigger(supabase),
-    getProfileDataSnapshot(supabase, userId),
-    getQuestionStatuses(supabase, userId),
-  ]);
-  const statuses = await syncStatusesWithData(supabase, userId, profileData, prefetchedStatuses);
+  prefetched?: DiscoveryOverviewSources,
+): Promise<{
+  availableSections: Set<string>;
+  nudges: ViserNudgeData[];
+  flushStatusWrites: () => Promise<void>;
+}> {
+  const { allQuestions, profileData, storedStatuses } =
+    prefetched ?? await fetchDiscoveryOverviewSources(userId, supabase);
+  const { statuses, toSync } = applyDataSync(storedStatuses, profileData);
   const blocked = blockedKeys(statuses);
 
   const candidates = allQuestions.filter(
@@ -467,6 +594,7 @@ export async function getDiscoveryOverview(
   return {
     availableSections,
     nudges: buildNudges(allQuestions, candidates, statuses, profileData),
+    flushStatusWrites: () => writeSyncedStatuses(supabase, userId, toSync),
   };
 }
 

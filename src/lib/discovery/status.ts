@@ -41,6 +41,43 @@ export async function getQuestionStatuses(
 }
 
 /**
+ * D3 — partie PURE de la rétro-alimentation : calcule les statuts à jour
+ * (donnée en fiche → answered) SANS écrire. Les écritures (writeSyncedStatuses)
+ * peuvent alors sortir du chemin de rendu.
+ */
+export function applyDataSync(
+  statuses: Record<string, QuestionStatus>,
+  snapshot: ProfileDataSnapshot | null,
+): { statuses: Record<string, QuestionStatus>; toSync: string[] } {
+  if (!snapshot) return { statuses, toSync: [] };
+  const toSync = GUARDED_QUESTION_KEYS.filter(key => {
+    const stored = statuses[key] ?? "not_started";
+    return !BLOCKING_STATUSES.includes(stored) && questionDataPresent(key, snapshot);
+  });
+  const merged = { ...statuses };
+  for (const key of toSync) merged[key] = "answered";
+  return { statuses: merged, toSync };
+}
+
+/** D3 — écritures de la rétro-alimentation (idempotentes, en parallèle). */
+export async function writeSyncedStatuses(
+  supabase: SupaDB,
+  userId: string,
+  toSync: string[],
+): Promise<void> {
+  if (toSync.length === 0) return;
+  const now = new Date().toISOString();
+  await Promise.all(toSync.map(key =>
+    supabase
+      .from("profile_completion")
+      .upsert(
+        { user_id: userId, question_key: key, status: "answered", answered_at: now },
+        { onConflict: "user_id,question_key" },
+      ),
+  ));
+}
+
+/**
  * Rétro-alimentation : toute question dont la donnée existe déjà en fiche
  * passe answered si elle ne l'est pas encore. Idempotent — n'écrit que les
  * différences (aucune écriture sur un profil déjà synchronisé).
@@ -53,24 +90,9 @@ export async function syncStatusesWithData(
   /** C2 : statuts préchargés (évite un aller-retour quand l'appelant les a déjà) */
   prefetched?: Record<string, QuestionStatus>,
 ): Promise<Record<string, QuestionStatus>> {
-  const statuses = prefetched ?? await getQuestionStatuses(supabase, userId);
-  if (!snapshot) return statuses;
-
-  const now = new Date().toISOString();
-  const toSync = GUARDED_QUESTION_KEYS.filter(key => {
-    const stored = statuses[key] ?? "not_started";
-    return !BLOCKING_STATUSES.includes(stored) && questionDataPresent(key, snapshot);
-  });
-  // Écritures en PARALLÈLE (C2) — zéro écriture sur un profil déjà synchronisé
-  await Promise.all(toSync.map(key =>
-    supabase
-      .from("profile_completion")
-      .upsert(
-        { user_id: userId, question_key: key, status: "answered", answered_at: now },
-        { onConflict: "user_id,question_key" },
-      ),
-  ));
-  for (const key of toSync) statuses[key] = "answered";
+  const stored = prefetched ?? await getQuestionStatuses(supabase, userId);
+  const { statuses, toSync } = applyDataSync(stored, snapshot);
+  await writeSyncedStatuses(supabase, userId, toSync);
   return statuses;
 }
 

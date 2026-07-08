@@ -4,6 +4,7 @@
 // Sauvegarde dans profile_analysis (source de vérité).
 
 import Anthropic from "@anthropic-ai/sdk";
+import { precomputeUpcomingPersonalizations } from "@/lib/discovery/engine";
 import { computeWorksLevels, WORKS_LEVEL_LABELS, type WorksKey, type WorksLevel } from "./v2-metrics";
 import { computeProfileSynthesis } from "./synthesis";
 import type { FaceResult } from "@/lib/attention/scoring";
@@ -752,6 +753,15 @@ export async function generateProfileAnalysis(
     source,
     confidence: payload.confidence,
   });
+
+  // D1 : recalcul d'analyse → pré-calcul des reformulations des prochaines
+  // questions (le rendu Discovery ne fait plus JAMAIS d'appel LLM).
+  // Jamais bloquant pour l'analyse elle-même (erreurs avalées en interne).
+  await precomputeUpcomingPersonalizations(
+    userId,
+    supabase,
+    { sections: (payload.sections as Record<string, { text?: string; chips?: string[] }> | null) ?? null },
+  );
 
   return { success: true, analysisId };
 }
