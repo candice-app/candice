@@ -5,8 +5,7 @@
 // profondeur (4) → Tes mondes (4) → Ce qui marche → Territoire → Univers →
 // Infos pratiques → Pour mieux viser → « Voir ma fiche partagée ».
 
-import Link from "next/link";
-import { T2, DivTxt2, Icon } from "./ui";
+import { T2, DivTxt2 } from "./ui";
 import HeaderV2 from "./Header";
 import ResumeV2 from "./Resume";
 import PodiumV2 from "./Podium";
@@ -99,21 +98,8 @@ export default function ProfileV2({ data }: { data: ProfileV2Data }) {
         </>
       )}
 
-      {/* Voir ma fiche partagée — bas de page */}
-      <Link href="/moi/partage/apercu" style={{
-        margin: "18px 14px 0", display: "flex", alignItems: "center",
-        justifyContent: "space-between", gap: 12, border: `1px solid ${T2.line}`,
-        borderRadius: 7, background: "#fff", padding: "14px 16px",
-        boxShadow: T2.shadow, minHeight: 54, textDecoration: "none", color: "inherit",
-      }}>
-        <span style={{ fontSize: 13.5, fontWeight: 550 }}>
-          Voir ma fiche partagée
-          <small style={{ display: "block", fontSize: 11.5, color: T2.ink3, fontWeight: 400, marginTop: 2 }}>
-            Ce que voient tes proches — jamais l&apos;intime
-          </small>
-        </span>
-        <Icon name="chevron" size={15} style={{ color: T2.pine }} />
-      </Link>
+      {/* C7 STOP C : « Voir ma fiche partagée » MASQUÉE jusqu'à la livraison
+          de /moi/partage/apercu (Phase D) — aucun CTA mort en prod. */}
 
       <div style={{ height: 22 }} />
     </div>

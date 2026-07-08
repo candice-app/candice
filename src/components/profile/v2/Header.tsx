@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { T2, Icon } from "./ui";
+import { Sheet } from "./Sheet";
 import { KNOW_PHRASES, type KnowState } from "@/lib/profile/v2-data";
 
 export default function HeaderV2({
@@ -27,6 +28,7 @@ export default function HeaderV2({
   const fileRef = useRef<HTMLInputElement>(null);
   const [localUrl, setLocalUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [wishOpen, setWishOpen] = useState(false);
 
   const photo = localUrl ?? avatarUrl;
   const phrase = KNOW_PHRASES[knowState];
@@ -148,16 +150,27 @@ export default function HeaderV2({
           }}>
             Partager mon profil
           </Link>
-          <button style={{
-            flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
-            justifyContent: "center", fontSize: 14, fontWeight: 600,
-            border: "1px solid rgba(255,255,255,.4)", color: "#fff",
-            background: "none", cursor: "default", fontFamily: "var(--font-sans)",
-          }}>
+          <button
+            onClick={() => setWishOpen(true)}
+            style={{
+              flex: 1, minHeight: 50, borderRadius: 6, display: "flex", alignItems: "center",
+              justifyContent: "center", fontSize: 14, fontWeight: 600,
+              border: "1px solid rgba(255,255,255,.4)", color: "#fff",
+              background: "none", cursor: "pointer", fontFamily: "var(--font-sans)",
+            }}
+          >
             <Icon name="plus" size={15} style={{ marginRight: 7 }} />Ma wishlist
           </button>
         </div>
       </div>
+
+      {/* C5 STOP C : stub avec retour — jamais un tap muet */}
+      <Sheet open={wishOpen} onClose={() => setWishOpen(false)} title="Ma wishlist">
+        <p style={{ fontSize: 14, lineHeight: 1.6, color: T2.ink2, marginBottom: 13 }}>
+          Ta wishlist arrive bientôt. Tu pourras y déposer tes envies pour que
+          tes proches visent toujours juste.
+        </p>
+      </Sheet>
     </div>
   );
 }
