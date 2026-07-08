@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import Wordmark from "@/components/presence/Wordmark";
+import FloatField from "@/components/auth/FloatField";
 
 const BG = "var(--canvas)";
 const WHITE = "var(--white)";
@@ -96,31 +97,15 @@ function LoginForm() {
               </div>
             )}
 
-            <div style={{ marginBottom: 20 }}>
-              <div style={LABEL_STYLE}><span>E-mail</span></div>
-              <input
-                id="email"
-                className="login-input"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="vous@exemple.com"
-                autoComplete="email"
-              />
-            </div>
-
-            <div style={{ marginBottom: 32 }}>
-              <div style={LABEL_STYLE}><span>Mot de passe</span></div>
-              <input
-                id="password"
-                className="login-input"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="••••••••"
-                autoComplete="current-password"
+            {/* F4.1 — labels flottants DANS les champs, zone entière cliquable */}
+            <FloatField
+              label="E-mail" type="email" value={email}
+              onChange={setEmail} autoComplete="email" inputMode="email"
+            />
+            <div style={{ marginBottom: 12 }}>
+              <FloatField
+                label="Mot de passe" type="password" value={password}
+                onChange={setPassword} autoComplete="current-password"
               />
             </div>
 
