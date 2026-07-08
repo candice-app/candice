@@ -1,19 +1,14 @@
+// NEUTRALISÉ — Refonte Profil V2, Phase B.
+// Cette route servait les sélecteurs legacy (getNextDripQuestion /
+// createOrResumeSession) SANS la garde anti-redemande. Morte côté UI,
+// elle restait joignable en HTTP. Le seul chemin de sélection autorisé
+// est getNextMicroQuestion (page /moi/discovery, garde complète).
+
 import { NextResponse } from "next/server";
-import { createClient } from "@/utils/supabase/server";
-import { getNextDripQuestion, createOrResumeSession } from "@/lib/discovery/engine";
 
-export async function GET(req: Request) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-
-  const { searchParams } = new URL(req.url);
-  const mode = searchParams.get("mode") ?? "quick";
-
-  const result = mode === "full"
-    ? await createOrResumeSession(user.id, supabase)
-    : await getNextDripQuestion(user.id, supabase);
-
-  if (!result) return NextResponse.json({ done: true });
-  return NextResponse.json(result);
+export async function GET() {
+  return NextResponse.json(
+    { error: "Ce point d'entrée n'existe plus." },
+    { status: 410 },
+  );
 }
