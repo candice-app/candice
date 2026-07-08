@@ -63,27 +63,40 @@ export const ANALYSIS_ROW_SELECT =
 
 // ─── Label maps (faits pratiques) ─────────────────────────────────────────────
 
+// V3.4 — niveau de langue : JAMAIS d'abréviation, majuscule initiale sur
+// les valeurs, jamais de troncature « … » (le détail complet vit en sheet).
 const ALLERGIE_FR: Record<string, string> = {
   gluten: "gluten", lactose: "lactose",
   fruits_a_coque: "fruits à coque", fruits_de_mer: "fruits de mer", autre: "autres",
 };
 const REGIME_FR: Record<string, string> = {
-  omnivore: "omnivore", vegetarien: "végétarien", vegan: "vegan",
-  halal: "halal", casher: "casher", sans_preference: "sans préférence", autre: "particulier",
+  omnivore: "Omnivore", vegetarien: "Végétarien", vegan: "Vegan",
+  halal: "Halal", casher: "Casher", sans_preference: "Sans préférence", autre: "Particulier",
 };
 const ALCOOL_FR: Record<string, string> = {
-  je_bois: "alcool ok", ne_bois_pas: "sans alcool",
-  occasionnel: "occasionnel", eviter_lieux: "évite les lieux alcool",
+  je_bois: "Alcool accepté", ne_bois_pas: "Sans alcool",
+  occasionnel: "Alcool occasionnel", eviter_lieux: "Éviter les lieux centrés alcool",
 };
 const PARFUM_FR: Record<string, string> = {
   frais: "frais", poudre: "poudré", boise: "boisé", floral: "floral",
   gourmand: "gourmand", ambre: "ambré", discret: "discret", sans_parfum: "sans parfum",
 };
 const DATE_TYPE_FR: Record<string, string> = {
-  anniversaire: "anniv.", fete: "fête", mariage: "mariage",
-  perso: "date perso", symbolique: "date symbolique",
+  anniversaire: "Anniversaire", fete: "Fête", mariage: "Mariage",
+  perso: "Date perso", symbolique: "Date symbolique",
 };
-const MONTHS_FR = ["janv.", "févr.", "mars", "avr.", "mai", "juin", "juil.", "août", "sept.", "oct.", "nov.", "déc."];
+const MONTHS_FR = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+
+const cap = (s: string): string => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s);
+
+/** Coupe à la frontière de mot, sans jamais d'« … » — résumé digne,
+ *  le détail complet reste accessible (sheet). */
+function cutAtWord(s: string, max: number): string {
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max + 1);
+  const lastSpace = cut.lastIndexOf(" ");
+  return (lastSpace > max * 0.5 ? cut.slice(0, lastSpace) : s.slice(0, max)).replace(/[,;:–-]\s*$/, "").trim();
+}
 
 // ─── Donut (fusion CAD_C + CAD_S en CAD) ─────────────────────────────────────
 
@@ -134,12 +147,12 @@ export function isQuestionnaireComplete(p: ProfileRow | null): boolean {
 // ─── Faits pratiques ──────────────────────────────────────────────────────────
 
 function formatDateCle(d: ImportantDate): string {
-  const label = DATE_TYPE_FR[d.type] ?? d.type;
+  const label = DATE_TYPE_FR[d.type] ?? cap(d.type);
   const [, m, day] = (d.date ?? "").split("-").map(Number);
   // Entrées legacy sans date (chantier 2.3) : signalées, jamais masquées —
   // le tap sur la rangée ouvre l'édition pour compléter.
-  if (!m || !day) return `${d.label || label} — date à préciser`;
-  return `${label} ${day} ${MONTHS_FR[m - 1]}`;
+  if (!m || !day) return `${cap(d.label || label)} — date à préciser`;
+  return `${label} · ${day} ${MONTHS_FR[m - 1]}`;
 }
 
 export function buildFacts(pi: ProfileRow["practical_info"]): ProfileSheetData["facts"] {
@@ -150,11 +163,11 @@ export function buildFacts(pi: ProfileRow["practical_info"]): ProfileSheetData["
     pi.regime ? (REGIME_FR[pi.regime] ?? pi.regime) : null,
     pi.alcool ? (ALCOOL_FR[pi.alcool] ?? pi.alcool) : null,
   ].filter(Boolean).join(" · ");
-  const parfumsAimes = (pi.parfums ?? []).map(p => PARFUM_FR[p] ?? p).join(", ");
+  const parfumsAimes = cap((pi.parfums ?? []).map(p => PARFUM_FR[p] ?? p).join(", "));
   const odeurs = pi.odeurs_detestees?.trim();
   const parfums = [
     parfumsAimes || null,
-    odeurs ? (odeurs.length > 26 ? odeurs.slice(0, 26) + "…" : odeurs) : null,
+    odeurs ? cutAtWord(odeurs, 26) : null, // jamais de « … » — détail en édition
   ].filter(Boolean).join(" / ");
   const dates = pi.dates_importantes ?? [];
   const datesCles = dates.length > 0
@@ -165,13 +178,15 @@ export function buildFacts(pi: ProfileRow["practical_info"]): ProfileSheetData["
     legere: "gêne légère", systematique: "à prendre en compte",
   };
   const mobiliteTexte = pi.mobilite_sante?.trim();
+  // Résumé digne à la frontière de mot, JAMAIS d'« … » — le détail complet
+  // vit dans la sheet Mobilité & confort.
   const mobilite = mobiliteTexte
-    ? `${mobiliteTexte.length > 30 ? mobiliteTexte.slice(0, 30) + "…" : mobiliteTexte}${pi.mobilite_intensite ? ` · ${INTENSITE_FR[pi.mobilite_intensite] ?? pi.mobilite_intensite}` : ""}`
+    ? `${cap(cutAtWord(mobiliteTexte, 30))}${pi.mobilite_intensite ? ` · ${INTENSITE_FR[pi.mobilite_intensite] ?? pi.mobilite_intensite}` : ""}`
     : undefined;
-  const allergiesFull = [
+  const allergiesFull = cap([
     allergies || null,
     pi.allergies_detail?.trim() || null,
-  ].filter(Boolean).join(" — ");
+  ].filter(Boolean).join(" — "));
   return {
     tailles: tailles || undefined,
     allergies: allergiesFull || undefined,
