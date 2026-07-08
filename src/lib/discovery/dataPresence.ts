@@ -35,8 +35,20 @@ const has = (s: string | undefined | null): boolean => !!s && s.trim().length > 
 
 // question_key → prédicat « la donnée existe déjà en fiche »
 const GUARDS: Record<string, (p: ProfileDataSnapshot) => boolean> = {
-  "fragrance.family": p =>
-    (p.practical_info?.parfums?.length ?? 0) > 0 || has(p.practical_info?.odeurs_detestees),
+  // Banque parfums Phase B (migration 53) : si parfums/odeurs déjà
+  // renseignés (questionnaire OU legacy fragrance.family), seules les
+  // questions MANQUANTES sont posées.
+  "fragrance.families": p =>
+    (p.practical_info?.parfums?.length ?? 0) > 0
+    || !!p.discovery_answers?.["fragrance.families"]
+    || !!p.discovery_answers?.["fragrance.family"],
+
+  "fragrance.scent_deal_breakers": p =>
+    has(p.practical_info?.odeurs_detestees)
+    || !!p.discovery_answers?.["fragrance.scent_deal_breakers"],
+
+  "fragrance.perfume_risk": p =>
+    !!p.discovery_answers?.["fragrance.perfume_risk"],
 
   "practical.constraints": p =>
     (p.practical_info?.allergies?.filter(a => a !== "aucune").length ?? 0) > 0
