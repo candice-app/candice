@@ -88,7 +88,7 @@ export default async function MoiPage() {
   });
 
   return (
-    <V4Shell active="profile">
+    <V4Shell active="profile" noBrandBar>
       {showGenderModal && <GenderModal userId={user.id} />}
       {needsAnalysis && <GenerateAnalysisOnMount />}
 

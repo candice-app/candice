@@ -9,10 +9,14 @@ import IconSprite from "@/components/ui/v4/IconSprite";
 import Brand from "@/components/ui/v4/Brand";
 import V4BottomNav from "@/components/ui/v4/BottomNav";
 import LivePoint from "@/components/presence/LivePoint";
+import ScrollMemory from "@/components/layout/ScrollMemory";
 
 interface Props {
   children: React.ReactNode;
   active?: "home" | "people" | "cal" | "profile";
+  /** V3.2 : pages qui portent leur propre marque (header vert de la fiche)
+   *  — la topbar globale est masquée pour ne jamais doubler « Candice ». */
+  noBrandBar?: boolean;
 }
 
 const RAIL_ITEMS = [
@@ -65,12 +69,14 @@ const RAIL_ITEMS = [
   },
 ];
 
-export default function V4Shell({ children, active }: Props) {
+export default function V4Shell({ children, active, noBrandBar = false }: Props) {
   const pathname = usePathname();
 
   return (
     <div className="v4 app-shell">
       <IconSprite />
+      {/* V3.1 : restauration du scroll par onglet (la nav push remet à zéro) */}
+      <ScrollMemory />
 
       {/* ── Desktop rail ≥1024px (hidden on mobile via .app-rail CSS) ── */}
       <aside className="app-rail" aria-label="Navigation principale">
@@ -121,10 +127,13 @@ export default function V4Shell({ children, active }: Props) {
 
       {/* ── Main content ── */}
       <main id="main-content" role="main" className="app-main">
-        {/* Brand bar — mobile only (≥1024px hidden via CSS) */}
-        <div className="v4-brand-bar">
-          <Brand />
-        </div>
+        {/* Brand bar — mobile only (≥1024px hidden via CSS). Masquée quand la
+            page porte sa propre marque (V3.2 : jamais deux « Candice »). */}
+        {!noBrandBar && (
+          <div className="v4-brand-bar">
+            <Brand />
+          </div>
+        )}
         {children}
       </main>
 
