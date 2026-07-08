@@ -10,6 +10,7 @@ import Link from "next/link";
 import { T2, Mod, Icon } from "./ui";
 import { Sheet } from "./Sheet";
 import FactEditor, { type FactEditorKind } from "./FactEditor";
+import Art9Editor from "./Art9Editor";
 import type { ProfileV2Data } from "@/lib/profile/v2-data";
 
 function FactRow({
@@ -103,8 +104,8 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
 
       {rows}
 
-      {/* Art.9 — badge Privé, pas de CTA de saisie (lot A3 inchangé).
-          P2.10 : le tap ouvre une sheet d'explication — jamais de tap muet. */}
+      {/* Art.9 — ESPACE SENSIBLE RÉEL (point 12) : sheet d'édition dédiée,
+          hors de tout scope de partage (never non négociable). */}
       <button
         onClick={() => setArt9Open(true)}
         style={{
@@ -116,25 +117,30 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
         <span style={{ fontSize: 13, color: T2.ink2 }}>
           Santé · handicap · religion
           <small style={{ display: "block", fontSize: 11, color: T2.ink3, marginTop: 2 }}>
-            Sensible — tu choisis de renseigner ou non
+            {data.art9Filled ? "Renseigné — privé" : "Sensible — tu choisis de renseigner ou non"}
           </small>
         </span>
-        <span style={{
-          fontSize: 9.5, fontWeight: 700, letterSpacing: 0.8, textTransform: "uppercase",
-          background: "rgba(205,185,135,.22)", color: "#7a4b1e", padding: "3px 8px", borderRadius: 8,
-          flexShrink: 0,
-        }}>
-          Privé
+        <span style={{ display: "flex", alignItems: "center", gap: 7, flexShrink: 0 }}>
+          <span style={{
+            fontSize: 9.5, fontWeight: 700, letterSpacing: 0.8, textTransform: "uppercase",
+            background: "rgba(205,185,135,.22)", color: "#7a4b1e", padding: "3px 8px", borderRadius: 8,
+          }}>
+            Privé
+          </span>
+          <span style={{ fontSize: 13.5, fontWeight: 550, color: T2.ink }}>Gérer</span>
+          <Icon name="chevron" size={13} style={{ color: T2.ink3 }} />
         </span>
       </button>
 
-      <Sheet open={art9Open} onClose={() => setArt9Open(false)} title="Santé · handicap · religion">
-        <p style={{ fontSize: 14, lineHeight: 1.6, color: T2.ink2, marginBottom: 13 }}>
-          Cet espace sensible arrive bientôt. Tu choisiras d&apos;y renseigner — ou
-          non — ce qui compte pour bien t&apos;accueillir. Ces informations restent
-          toujours privées.
-        </p>
-      </Sheet>
+      {art9Open && (
+        <Art9Editor
+          key={`${data.art9Edit.religion}|${data.art9Edit.disability}|${data.art9Edit.health_comfort}`}
+          open={art9Open}
+          onClose={() => setArt9Open(false)}
+          initial={data.art9Edit}
+          mobiliteRenseignee={!!data.mobiliteDetail}
+        />
+      )}
 
       {/* Sheets d'édition dédiées (C3) — recréées à l'ouverture (key) pour
           repartir des valeurs fraîches après router.refresh() */}

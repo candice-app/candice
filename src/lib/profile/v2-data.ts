@@ -96,6 +96,9 @@ export interface ProfileV2Data {
   datesTotal: number;       // entrées saisies (3 états : 0 → CTA ajouter)
   datesACompleter: number;  // entrées sans date exploitable
   art9Filled: boolean;
+  /** Espace sensible (point 12) — brut en mode modification uniquement,
+   *  JAMAIS dans un scope de partage. */
+  art9Edit: { religion: string; disability: string; health_comfort: string };
   /** Valeurs BRUTES pour les sheets d'édition (C3) — mode modification
    *  uniquement, seule exception à « jamais de brut affiché ». */
   practicalEdit: {
@@ -182,6 +185,11 @@ export function buildProfileV2Data(args: {
     datesTotal: dates.length,
     datesACompleter,
     art9Filled: !!(profile.religion || profile.disability || profile.health_comfort),
+    art9Edit: {
+      religion: profile.religion ?? "",
+      disability: profile.disability ?? "",
+      health_comfort: profile.health_comfort ?? "",
+    },
     practicalEdit: {
       adresse_livraison: pi?.adresse_livraison ?? "",
       taille_vetements: pi?.taille_vetements ?? "",
