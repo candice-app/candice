@@ -71,8 +71,44 @@ async function getProfileDataSnapshot(
   return (data as ProfileDataSnapshot | null) ?? null;
 }
 
+// Décision Estelle (revue de banque) : la reformulation IA est COUPÉE.
+// Toutes les questions servent leur texte de banque MOT POUR MOT. Le
+// pré-calcul D1 reste en place techniquement mais INACTIF (ce drapeau) ;
+// il ne resservira que si une personnalisation à base de gabarits validés
+// est réactivée ici. Passer à true réactive lecture + pré-calcul, sans
+// autre changement (les textes pré-calculés sont déjà lus si présents).
+const PERSONALIZATION_ACTIVE = true;
+
+/** Texte servi : verrouillé/banque mot pour mot, sinon pré-calculé SI actif. */
+function servedQuestionText(
+  q: DiscoveryQuestion,
+  personalized: Record<string, string> | null,
+): string {
+  if (q.locked_text || !PERSONALIZATION_ACTIVE || !personalized) return q.question_text;
+  return personalized[q.question_key] || q.question_text;
+}
+
 // LLM: reformulate question in Candice voice given context (layer 3)
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+/** D4 : profile_completion lu UNE fois → statuts + textes pré-calculés. */
+async function getCompletionState(
+  supabase: SupaDB,
+  userId: string,
+): Promise<{ statuses: Record<string, QuestionStatus>; personalized: Record<string, string> }> {
+  const { data } = await supabase
+    .from('profile_completion')
+    .select('question_key, status, personalized_text')
+    .eq('user_id', userId)
+    .is('contact_id', null);
+  const statuses: Record<string, QuestionStatus> = {};
+  const personalized: Record<string, string> = {};
+  for (const r of (data ?? []) as Array<{ question_key: string; status: QuestionStatus; personalized_text: string | null }>) {
+    statuses[r.question_key] = r.status;
+    if (r.personalized_text) personalized[r.question_key] = r.personalized_text;
+  }
+  return { statuses, personalized };
+}
 
 export async function personalizeQuestion(
   base: DiscoveryQuestion,
@@ -111,30 +147,29 @@ async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQ
   if (idx >= pendingKeys.length) return null;
 
   const currentKey = pendingKeys[idx];
-  // D1 : AUCUN appel LLM dans le rendu — la reformulation est PRÉ-CALCULÉE
-  // en tâche de fond et lue ici ; sinon texte de banque, immédiat.
-  const [{ data: q }, { data: pc }] = await Promise.all([
-    supabase
-      .from('discovery_questions')
-      .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
-      .eq('question_key', currentKey)
-      .maybeSingle(),
-    supabase
+  const { data: q } = await supabase
+    .from('discovery_questions')
+    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
+    .eq('question_key', currentKey)
+    .maybeSingle();
+
+  if (!q) return null;
+
+  const question = q as DiscoveryQuestion;
+  // Reformulation coupée : texte de banque mot pour mot. Si réactivée, le
+  // texte pré-calculé (AUCUN appel LLM dans le rendu) est lu ici.
+  let personalizedText = question.question_text;
+  if (PERSONALIZATION_ACTIVE && !question.locked_text) {
+    const { data: pc } = await supabase
       .from('profile_completion')
       .select('personalized_text')
       .eq('user_id', session.user_id)
       .eq('question_key', currentKey)
       .is('contact_id', null)
-      .maybeSingle(),
-  ]);
-
-  if (!q) return null;
-
-  const question = q as DiscoveryQuestion;
-  // A.3 : texte verrouillé → servi mot pour mot, jamais reformulé
-  const personalizedText = question.locked_text
-    ? question.question_text
-    : ((pc as { personalized_text?: string | null } | null)?.personalized_text ?? question.question_text);
+      .maybeSingle();
+    const t = (pc as { personalized_text?: string | null } | null)?.personalized_text;
+    if (t) personalizedText = t;
+  }
 
   return {
     question: { ...question, question_text: personalizedText },
@@ -358,12 +393,17 @@ export async function getNextMicroQuestion(
   mode: 'quick' | 'full',
   sectionKey?: string,
 ): Promise<NextQuestionResult | null> {
-  const [allQuestions, profileData] = await Promise.all([
+  // D4 : les 3 lectures partent ENSEMBLE (questions, snapshot fiche, statuts
+  // + textes pré-calculés lus en une fois) — l'étage « statuts après » disparaît.
+  const [allQuestions, profileData, completion] = await Promise.all([
     getAllQuestionsWithTrigger(supabase),
     getProfileDataSnapshot(supabase, userId),
+    getCompletionState(supabase, userId),
   ]);
-  // Statuts + rétro-alimentation (donnée en fiche → answered) — Phase B
-  const statuses = await syncStatusesWithData(supabase, userId, profileData);
+  // Rétro-alimentation (donnée en fiche → answered) : calcul PUR + écritures
+  // idempotentes (rares — zéro sur un profil déjà synchronisé) — Phase B.
+  const { statuses, toSync } = applyDataSync(completion.statuses, profileData);
+  await writeSyncedStatuses(supabase, userId, toSync);
   const blocked = blockedKeys(statuses);
 
   // Non bloquée (answered/archived) + donnée absente de la fiche + trigger passe
@@ -391,43 +431,34 @@ export async function getNextMicroQuestion(
   const limit = mode === 'quick' ? 1 : FULL_SESSION_MAX;
   const picks = scored.slice(0, limit).map(s => s.q);
 
-  // Create session
-  const { data: session } = await supabase
-    .from('discovery_sessions')
-    .insert({
-      user_id: userId,
-      mode,
-      pending_keys: picks.map(q => q.question_key),
-      current_index: 0,
-      status: 'active',
-    })
-    .select('id')
-    .single();
-
-  if (!session) return null;
-
-  // Mark first question as last_asked + lire la reformulation pré-calculée
-  // (D1 : AUCUN appel LLM dans le rendu — pré-calculé sinon texte de banque)
-  const [, { data: pc }] = await Promise.all([
+  // D4 : création de session ET marquage last_asked en UNE passe (aucune ne
+  // dépend de l'autre ; seule la session renvoie l'id nécessaire au rendu).
+  const now = new Date().toISOString();
+  const [{ data: session }] = await Promise.all([
+    supabase
+      .from('discovery_sessions')
+      .insert({
+        user_id: userId,
+        mode,
+        pending_keys: picks.map(q => q.question_key),
+        current_index: 0,
+        status: 'active',
+      })
+      .select('id')
+      .single(),
     supabase
       .from('profile_completion')
       .upsert(
-        { user_id: userId, question_key: picks[0].question_key, last_asked_at: new Date().toISOString() },
+        { user_id: userId, question_key: picks[0].question_key, last_asked_at: now },
         { onConflict: 'user_id,question_key' },
       ),
-    supabase
-      .from('profile_completion')
-      .select('personalized_text')
-      .eq('user_id', userId)
-      .eq('question_key', picks[0].question_key)
-      .is('contact_id', null)
-      .maybeSingle(),
   ]);
 
-  // A.3 : texte verrouillé → servi mot pour mot, jamais reformulé
-  const personalizedText = picks[0].locked_text
-    ? picks[0].question_text
-    : ((pc as { personalized_text?: string | null } | null)?.personalized_text ?? picks[0].question_text);
+  if (!session) return null;
+
+  // Texte servi : banque mot pour mot (reformulation coupée) — pré-calcul lu
+  // depuis completion.personalized si réactivé, sans requête supplémentaire.
+  const personalizedText = servedQuestionText(picks[0], completion.personalized);
 
   return {
     question: { ...picks[0], question_text: personalizedText },
