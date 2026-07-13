@@ -1,0 +1,1623 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revue de banque — questions Discovery · Candice</title>
+</head>
+<body>
+<style>
+:root{--ink:#2b2622;--ink2:#6b6157;--ink3:#9a9088;--line:#e7e0d8;--bg:#faf7f2;--card:#fff;--accent:#8a7a66;}
+@media(prefers-color-scheme:dark){:root{--ink:#ece6df;--ink2:#b3aaa0;--ink3:#847b72;--line:#332e29;--bg:#1a1714;--card:#221e1a;--accent:#c7b299;}}
+:root[data-theme="dark"]{--ink:#ece6df;--ink2:#b3aaa0;--ink3:#847b72;--line:#332e29;--bg:#1a1714;--card:#221e1a;--accent:#c7b299;}
+:root[data-theme="light"]{--ink:#2b2622;--ink2:#6b6157;--ink3:#9a9088;--line:#e7e0d8;--bg:#faf7f2;--card:#fff;--accent:#8a7a66;}
+*{box-sizing:border-box}body{margin:0}
+.wrap{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);padding:32px 24px 80px;line-height:1.55;max-width:1180px;margin:0 auto;font-size:14px}
+h1{font-weight:300;letter-spacing:-.02em;font-size:26px;margin:0 0 8px}
+.lead{color:var(--ink2);max-width:820px;margin:0 0 18px}
+.notes{background:var(--card);border:.5px solid var(--line);border-radius:12px;padding:14px 18px;margin-bottom:22px}
+.notes p{margin:6px 0;color:var(--ink2);font-size:13px}
+.scroll{overflow-x:auto;border:.5px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:900px;background:var(--card)}
+th{position:sticky;top:0;background:var(--card);text-align:left;font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink3);padding:12px 12px;border-bottom:1px solid var(--line)}
+td{padding:14px 12px;border-bottom:.5px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.num{color:var(--ink3);font-variant-numeric:tabular-nums;width:34px}
+.key{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;color:var(--accent);font-weight:600}
+.meta{color:var(--ink3);font-size:11.5px;margin-top:3px}
+.cond{color:var(--ink);font-size:12.5px}.cond em{color:var(--ink3);font-style:italic}
+.guard{color:var(--ink2);font-size:11.5px;margin-top:5px}
+.qtext{color:var(--ink);font-size:13px;margin-bottom:4px}
+.opts{margin-top:6px;display:flex;flex-wrap:wrap;gap:5px}
+.opt{display:inline-block;background:var(--bg);border:.5px solid var(--line);border-radius:999px;padding:2px 8px;font-size:11px;color:var(--ink2)}
+.opt code,.key+*, code{font-family:ui-monospace,Menlo,monospace}
+.opt code{color:var(--ink3);font-size:10px}
+code{font-size:11.5px;color:var(--accent)}
+.benefit{color:var(--ink);font-size:12px}
+.badge{display:inline-block;margin-top:6px;font-size:10px;padding:1px 7px;border-radius:999px;border:.5px solid var(--line)}
+.badge.lock{color:#a8632a;border-color:#e3c39f}
+.muted{color:var(--ink3)}
+b{font-weight:600}
+</style>
+<div class="wrap">
+<h1>Revue de banque — questions Discovery</h1>
+<p class="lead"><b>68 questions actives</b> (target = self, statut = active), exportées de <code>discovery_questions</code> en production. Contenu brut, aucune interprétation. Document préparatoire — la revue elle-même se fera après la clôture du lot perf.</p>
+<div class="notes">
+  <p><b>Structure de la banque</b> — la banque ne contient <b>aucun follow-up structuré</b> : les champs <code>trigger_key</code> et <code>trigger_from_main_question</code> sont vides sur les 68 questions. L'enchaînement se fait par <b>score</b> (gap analyse × 100 + priorité, tri secondaire par ordre), pas par arbre de follow-up.</p>
+  <p><b>locked_text</b> = vrai sur 3 questions (servies mot pour mot). <b>benefit_label</b> présent sur 67/68.</p>
+  <p><b>Colonne « déclenchement »</b> : texte brut de <code>trigger_condition</code>. La « garde donnée » indique quelle donnée déjà en fiche empêche la question de réapparaître (source : <code>dataPresence.ts</code>).</p>
+</div>
+<div class="scroll">
+<table>
+  <thead><tr><th>#</th><th>Question · section</th><th>Déclenchement · priorité · garde</th><th>Texte exact · type · options</th><th>Nudge</th></tr></thead>
+  <tbody>
+<tr>
+    <td class="num">1</td>
+    <td>
+      <div class="key">attention.reception</div>
+      <div class="meta">Langage d'attention / reception</div>
+      <div class="meta">sections&nbsp;: attention-reception, attention-expression, attention-dna</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>10</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Comment tu te sens vraiment aimé·e ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Par les mots <code>MOT</code></span><span class="opt">Par les actes <code>SER</code></span><span class="opt">Par des cadeaux <code>CAD_C</code></span><span class="opt">Par le temps partagé <code>EXP</code></span><span class="opt">Par les petites attentions <code>GES</code></span><span class="opt">Par les surprises <code>SUR</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions qui te ressemblent vraiment »</div>
+      <div class="meta">1 min</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">2</td>
+    <td>
+      <div class="key">gifts.what_works</div>
+      <div class="meta">Cadeaux / works</div>
+      <div class="meta">sections&nbsp;: gifts-what-works, gifts-to-avoid</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>20</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quel type de cadeau te touche vraiment ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Expériences <code>experiences</code></span><span class="opt">Personnalisé <code>personalized</code></span><span class="opt">Utile et beau <code>practical</code></span><span class="opt">Beauté / bien-être <code>beauty</code></span><span class="opt">Livres / culture <code>culture</code></span><span class="opt">Fait main <code>handmade</code></span><span class="opt">Surprise totale <code>surprise</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des idées cadeaux qui visent juste »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">3</td>
+    <td>
+      <div class="key">gifts.to_avoid</div>
+      <div class="meta">Cadeaux / avoid</div>
+      <div class="meta">sections&nbsp;: gifts-what-works, gifts-to-avoid</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>30</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: « cadeaux à éviter » renseignés, ou texte Q17 (filtres relationnels)</div>
+    </td>
+    <td>
+      <div class="qtext">« Des cadeaux ou attentions à éviter absolument ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des idées cadeaux qui visent juste »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">4</td>
+    <td>
+      <div class="key">style.clothing</div>
+      <div class="meta">Style / clothing</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>40</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: couleurs/matières renseignées en fiche</div>
+    </td>
+    <td>
+      <div class="qtext">« Tu te décrirais avec quel style ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Classique <code>classic</code></span><span class="opt">Bohème <code>boho</code></span><span class="opt">Minimaliste <code>minimal</code></span><span class="opt">Chic parisien <code>chic</code></span><span class="opt">Décontracté <code>casual</code></span><span class="opt">Sportswear <code>sport</code></span><span class="opt">Mode / tendance <code>trendy</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">5</td>
+    <td>
+      <div class="key">style.colors</div>
+      <div class="meta">Style / colors</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>50</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Tes couleurs et matières préférées pour te faire plaisir ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">6</td>
+    <td>
+      <div class="key">brands.favorites</div>
+      <div class="meta">Marques / favorites</div>
+      <div class="meta">sections&nbsp;: brands-favorites</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>60</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: marques/lieux renseignés en fiche</div>
+    </td>
+    <td>
+      <div class="qtext">« Des marques, enseignes ou créateurs que tu adores ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Tes maisons préférées en tête des idées »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">7</td>
+    <td>
+      <div class="key">food.restaurants</div>
+      <div class="meta">Restaurants / restaurants</div>
+      <div class="meta">sections&nbsp;: food-restaurants</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>70</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Tu préfères quel type de table ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Bistrot convivial <code>bistro</code></span><span class="opt">Gastronomique <code>gastronomic</code></span><span class="opt">Bonne adresse décontractée <code>casual_good</code></span><span class="opt">Cuisine du monde <code>world</code></span><span class="opt">Végétarien / healthy <code>veggie</code></span><span class="opt">Tout si c'est bon <code>anything_good</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des tables choisies comme tu les aimes »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">8</td>
+    <td>
+      <div class="key">travel.style</div>
+      <div class="meta">Voyages / style</div>
+      <div class="meta">sections&nbsp;: travel-style</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>90</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quand tu voyages, tu cherches… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">L'aventure <code>adventure</code></span><span class="opt">La culture <code>culture</code></span><span class="opt">Le repos total <code>relax</code></span><span class="opt">La nature <code>nature</code></span><span class="opt">Les villes animées <code>city</code></span><span class="opt">La gastronomie locale <code>gastro</code></span><span class="opt">Le luxe discret <code>luxury</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des escapades taillées pour toi »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">9</td>
+    <td>
+      <div class="key">hobbies.main</div>
+      <div class="meta">Loisirs / main</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>100</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: « ce que j'adore faire » renseigné, ou centres d'intérêt classés</div>
+    </td>
+    <td>
+      <div class="qtext">« Qu'est-ce qui te ressource vraiment ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">10</td>
+    <td>
+      <div class="key">dreams.current</div>
+      <div class="meta">Rêves / current</div>
+      <div class="meta">sections&nbsp;: dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>110</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: envies/rêves renseignés en fiche</div>
+    </td>
+    <td>
+      <div class="qtext">« Tu as des envies ou des rêves en ce moment ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Ce dont tu rêves, gardé pour le bon moment »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">11</td>
+    <td>
+      <div class="key">surprises.preference</div>
+      <div class="meta">Surprises / preference</div>
+      <div class="meta">sections&nbsp;: surprises-preference</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>120</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Tu es plutôt… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">J'adore les surprises <code>loves</code></span><span class="opt">Ça dépend du contexte <code>depends</code></span><span class="opt">Je préfère être prévenu·e <code>notice</code></span><span class="opt">Les surprises me stressent <code>dislikes</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des surprises bien dosées, jamais subies »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">12</td>
+    <td>
+      <div class="key">conflicts.style</div>
+      <div class="meta">Conflits / style</div>
+      <div class="meta">sections&nbsp;: conflicts-style</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>130</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Face à une tension, comment tu réagis ? »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">J'en parle directement <code>direct</code></span><span class="opt">J'ai besoin de recul <code>space</code></span><span class="opt">Je préfère éviter <code>avoids</code></span><span class="opt">Je dédramatise <code>humor</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions justes, même les jours sensibles »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">13</td>
+    <td>
+      <div class="key">practical.dietary</div>
+      <div class="meta">Pratique / dietary</div>
+      <div class="meta">sections&nbsp;: practical-constraints</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>140</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: allergies (hors « aucune »), régime, alcool renseignés, ou réponse practical.constraints/practical.dietary</div>
+    </td>
+    <td>
+      <div class="qtext">« Côté repas, y a-t-il des règles que tes proches doivent absolument connaître ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Végétarien·ne <code>vegetarian</code></span><span class="opt">Vegan <code>vegan</code></span><span class="opt">Halal <code>halal</code></span><span class="opt">Casher <code>casher</code></span><span class="opt">Sans alcool <code>no_alcohol</code></span><span class="opt">Allergie alimentaire <code>food_allergy</code></span><span class="opt">Aucune <code>none</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Zéro faux pas sur l'essentiel »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">14</td>
+    <td>
+      <div class="key">practical.mobility</div>
+      <div class="meta">Pratique / mobility</div>
+      <div class="meta">sections&nbsp;: practical-constraints</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>141</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: mobilité/santé renseignée, ou réponse practical.mobility</div>
+    </td>
+    <td>
+      <div class="qtext">« Y a-t-il quelque chose que ton corps te demande de respecter ? (marche, escaliers, station debout…) »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Oui <code>yes</code></span><span class="opt">Non <code>no</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Zéro faux pas sur l'essentiel »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">15</td>
+    <td>
+      <div class="key">attention.detail_quality</div>
+      <div class="meta">Langage d'attention / detail_quality</div>
+      <div class="meta">sections&nbsp;: attention-reception, attention-expression, attention-dna</div>
+      
+    </td>
+    <td>
+      <div class="cond">petites_attentions selected or detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>150</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quand tu dis aimer les petites attentions, qu'est-ce qui te touche le plus concrètement ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Que l'autre se souvienne d'un détail que j'ai dit <code>remembers_details</code></span><span class="opt">Qu'il/elle anticipe un besoin avant que je demande <code>anticipates_needs</code></span><span class="opt">Qu'il/elle fasse quelque chose de simple mais régulier <code>regular_simple</code></span><span class="opt">Qu'il/elle choisisse quelque chose uniquement pour moi <code>chosen_only_for_me</code></span><span class="opt">Qu'il/elle pense à moi dans un moment ordinaire <code>thinks_in_ordinary</code></span><span class="opt">Qu'il/elle m'enlève une petite charge du quotidien <code>relieves_daily_charge</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions qui te ressemblent vraiment »</div>
+      <div class="meta">1 min</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">16</td>
+    <td>
+      <div class="key">attention.words_quality</div>
+      <div class="meta">Langage d'attention / words_quality</div>
+      <div class="meta">sections&nbsp;: attention-reception, attention-expression, attention-dna</div>
+      
+    </td>
+    <td>
+      <div class="cond">mots selected or detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>160</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Les mots qui te touchent vraiment sont plutôt… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Très précis sur ce que l'autre aime chez moi <code>precise_about_me</code></span><span class="opt">Courts mais sincères <code>short_sincere</code></span><span class="opt">Longs et détaillés <code>long_detailed</code></span><span class="opt">Écrits pour que je puisse les relire <code>written_to_reread</code></span><span class="opt">Dits spontanément <code>spontaneous</code></span><span class="opt">Liés à un effort qu'on a remarqué <code>effort_recognition</code></span><span class="opt">Liés à une période difficile <code>support_in_hard_times</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions qui te ressemblent vraiment »</div>
+      <div class="meta">1 min</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">17</td>
+    <td>
+      <div class="key">attention.words_avoid</div>
+      <div class="meta">Langage d'attention / words_avoid</div>
+      <div class="meta">sections&nbsp;: attention-reception, attention-expression, attention-dna</div>
+      
+    </td>
+    <td>
+      <div class="cond">mots selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>170</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Les mots peuvent tomber à plat quand… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Ils sont trop génériques <code>too_generic</code></span><span class="opt">Ils arrivent trop tard <code>too_late</code></span><span class="opt">Ils ne sont pas suivis d'actes <code>need_actions</code></span><span class="opt">Ils sont trop grandiloquents <code>too_dramatic</code></span><span class="opt">Ils évitent le vrai sujet <code>avoid_real_topic</code></span><span class="opt">Ils ressemblent à une formule toute faite <code>formulaic</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions qui te ressemblent vraiment »</div>
+      <div class="meta">1 min</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">18</td>
+    <td>
+      <div class="key">attention.service_quality</div>
+      <div class="meta">Langage d'attention / service_quality</div>
+      <div class="meta">sections&nbsp;: attention-reception, attention-expression, attention-dna</div>
+      
+    </td>
+    <td>
+      <div class="cond">actes / aide concrète / service selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>180</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quand quelqu'un t'aide, ce qui te touche vraiment c'est qu'il/elle… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Voie ce qu'il y a à faire sans que je demande <code>proactive</code></span><span class="opt">Prenne en charge quelque chose jusqu'au bout <code>end_to_end</code></span><span class="opt">Me libère du temps <code>time_relief</code></span><span class="opt">Me facilite une journée compliquée <code>day_smoothing</code></span><span class="opt">Fasse quelque chose d'utile mais avec délicatesse <code>discreet_service</code></span><span class="opt">N'attende pas de reconnaissance immédiate <code>no_recognition_needed</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions qui te ressemblent vraiment »</div>
+      <div class="meta">1 min</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">19</td>
+    <td>
+      <div class="key">attention.gift_precision</div>
+      <div class="meta">Langage d'attention / gift_precision</div>
+      <div class="meta">sections&nbsp;: attention-reception, attention-expression, attention-dna</div>
+      
+    </td>
+    <td>
+      <div class="cond">cadeau choisi / cadeau symbolique selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>190</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Un cadeau pensé pour toi doit surtout montrer que… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">L'autre connaît mes goûts <code>knows_taste</code></span><span class="opt">L'autre a retenu quelque chose que j'ai dit <code>remembered_signal</code></span><span class="opt">L'autre a cherché quelque chose de précis <code>search_effort</code></span><span class="opt">L'objet a une histoire ou un sens <code>symbolic_object</code></span><span class="opt">Le cadeau n'aurait pas pu être offert à n'importe qui <code>non_generic</code></span><span class="opt">La qualité est au rendez-vous <code>quality</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions qui te ressemblent vraiment »</div>
+      <div class="meta">1 min</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">20</td>
+    <td>
+      <div class="key">attention.experience_quality</div>
+      <div class="meta">Langage d'attention / experience_quality</div>
+      <div class="meta">sections&nbsp;: attention-reception, attention-expression, attention-dna</div>
+      
+    </td>
+    <td>
+      <div class="cond">experience selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>200</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Une expérience réussie pour toi, c'est surtout… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Un moment qui sort du quotidien <code>escape</code></span><span class="opt">Un lieu vraiment beau <code>beautiful_place</code></span><span class="opt">Une organisation fluide <code>logistics_smooth</code></span><span class="opt">Une émotion forte <code>strong_emotion</code></span><span class="opt">Une découverte <code>discovery</code></span><span class="opt">Un moment de qualité à deux <code>quality_time</code></span><span class="opt">Une parenthèse où je n'ai rien à gérer <code>no_logistics</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions qui te ressemblent vraiment »</div>
+      <div class="meta">1 min</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">21</td>
+    <td>
+      <div class="key">gifts.object_quality</div>
+      <div class="meta">Cadeaux / object_quality</div>
+      <div class="meta">sections&nbsp;: gifts-what-works, gifts-to-avoid</div>
+      
+    </td>
+    <td>
+      <div class="cond">cadeau matériel selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>210</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quand on t'offre un objet, qu'est-ce qui fait la différence entre "sympa" et "vraiment réussi" ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">La qualité de la matière <code>material_quality</code></span><span class="opt">La marque ou le créateur <code>brand</code></span><span class="opt">Le fait que ce soit exactement mon style <code>my_style</code></span><span class="opt">Le fait que ce soit rare ou difficile à trouver <code>rare</code></span><span class="opt">Le fait que ce soit personnalisé <code>personalized</code></span><span class="opt">Le fait que ce soit utile au quotidien <code>useful</code></span><span class="opt">Le fait que ça ait une histoire <code>has_story</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des idées cadeaux qui visent juste »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">22</td>
+    <td>
+      <div class="key">gifts.risky_categories</div>
+      <div class="meta">Cadeaux / risky_categories</div>
+      <div class="meta">sections&nbsp;: gifts-what-works, gifts-to-avoid</div>
+      
+    </td>
+    <td>
+      <div class="cond">objet / mode / beauté / bijou / déco detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>220</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quel type d'objet est le plus risqué à t'offrir sans te demander ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Vêtement <code>clothing</code></span><span class="opt">Bijou <code>jewelry</code></span><span class="opt">Parfum <code>perfume</code></span><span class="opt">Décoration <code>decoration</code></span><span class="opt">Livre <code>book</code></span><span class="opt">Beauté / skincare <code>beauty</code></span><span class="opt">Tech <code>tech</code></span><span class="opt">Accessoire <code>accessory</code></span><span class="opt">Tout objet trop personnel est risqué <code>all_personal</code></span><span class="opt">Rien, je suis assez facile <code>none</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des idées cadeaux qui visent juste »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">23</td>
+    <td>
+      <div class="key">gifts.quality_non_negotiable</div>
+      <div class="meta">Cadeaux / quality_non_negotiable</div>
+      <div class="meta">sections&nbsp;: gifts-what-works, gifts-to-avoid</div>
+      
+    </td>
+    <td>
+      <div class="cond">qualité / standing / raffinement detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>230</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Dans quelles catégories la qualité est non négociable pour toi ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Hôtel <code>hotel</code></span><span class="opt">Restaurant <code>restaurant</code></span><span class="opt">Bijou <code>jewelry</code></span><span class="opt">Vêtement <code>clothing</code></span><span class="opt">Sac / maroquinerie <code>bag</code></span><span class="opt">Parfum <code>perfume</code></span><span class="opt">Beauté / soin <code>beauty</code></span><span class="opt">Literie <code>bedding</code></span><span class="opt">Spa / massage <code>spa</code></span><span class="opt">Alimentaire <code>food</code></span><span class="opt">Je suis assez flexible <code>flexible</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des idées cadeaux qui visent juste »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">24</td>
+    <td>
+      <div class="key">gifts.impersonal_definition</div>
+      <div class="meta">Cadeaux / impersonal_definition</div>
+      <div class="meta">sections&nbsp;: gifts-what-works, gifts-to-avoid</div>
+      
+    </td>
+    <td>
+      <div class="cond">cadeau impersonnel mentioned in avoidances</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>240</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour toi, un cadeau devient impersonnel quand… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Il pourrait être offert à n'importe qui <code>could_be_for_anyone</code></span><span class="opt">Il ne tient pas compte de mon style <code>ignores_style</code></span><span class="opt">Il est acheté à la dernière minute <code>last_minute</code></span><span class="opt">Il vient d'une enseigne trop générique <code>generic_store</code></span><span class="opt">Il n'a aucun mot ou contexte <code>no_note</code></span><span class="opt">Il ne correspond pas à ce que je vis en ce moment <code>not_current</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des idées cadeaux qui visent juste »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">25</td>
+    <td>
+      <div class="key">food.deal_breakers</div>
+      <div class="meta">Restaurants / deal_breakers</div>
+      <div class="meta">sections&nbsp;: food-restaurants</div>
+      
+    </td>
+    <td>
+      <div class="cond">gastronomie / restaurant / belles tables selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>250</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour un restaurant surprise, qu'est-ce qui peut vraiment gâcher l'expérience ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Trop bruyant <code>too_loud</code></span><span class="opt">Tables trop serrées <code>too_crowded</code></span><span class="opt">Service froid <code>cold_service</code></span><span class="opt">Cuisine moyenne <code>average_food</code></span><span class="opt">Lieu sans charme <code>no_charm</code></span><span class="opt">Mauvaise lumière <code>bad_light</code></span><span class="opt">Trop prétentieux <code>too_pretentious</code></span><span class="opt">Trop simple / cheap <code>too_cheap</code></span><span class="opt">Trop loin <code>too_far</code></span><span class="opt">Menu trop limité <code>limited_menu</code></span><span class="opt">Mauvais rapport qualité-prix <code>bad_value</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des tables choisies comme tu les aimes »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">26</td>
+    <td>
+      <div class="key">food.success_driver</div>
+      <div class="meta">Restaurants / success_driver</div>
+      <div class="meta">sections&nbsp;: food-restaurants</div>
+      
+    </td>
+    <td>
+      <div class="cond">restaurant selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>260</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Un restaurant réussi pour toi, c'est d'abord… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">La cuisine <code>cuisine</code></span><span class="opt">L'ambiance <code>ambiance</code></span><span class="opt">Le service <code>service</code></span><span class="opt">Le lieu <code>venue</code></span><span class="opt">La vue <code>view</code></span><span class="opt">Le confort <code>comfort</code></span><span class="opt">La rareté de l'adresse <code>rarity</code></span><span class="opt">Le fait que ce soit vivant <code>lively</code></span><span class="opt">Le fait que ce soit intime <code>intimate</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des tables choisies comme tu les aimes »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">27</td>
+    <td>
+      <div class="key">food.cuisine_preferences</div>
+      <div class="meta">Restaurants / cuisine_preferences</div>
+      <div class="meta">sections&nbsp;: food-restaurants</div>
+      
+    </td>
+    <td>
+      <div class="cond">cuisine du monde / gastronomie / restaurant selected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>270</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Côté cuisine, ce qui te ferait vraiment plaisir en ce moment serait plutôt… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Français <code>french</code></span><span class="opt">Italien <code>italian</code></span><span class="opt">Japonais <code>japanese</code></span><span class="opt">Libanais <code>lebanese</code></span><span class="opt">Méditerranéen <code>mediterranean</code></span><span class="opt">Thaï <code>thai</code></span><span class="opt">Indien <code>indian</code></span><span class="opt">Mexicain <code>mexican</code></span><span class="opt">Tapas <code>tapas</code></span><span class="opt">Fruits de mer <code>seafood</code></span><span class="opt">Pâtisserie / tea time <code>pastry</code></span><span class="opt">Cuisine végétale <code>plant_based</code></span><span class="opt">Je préfère être surpris·e si c'est très bon <code>surprise_me</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des tables choisies comme tu les aimes »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">28</td>
+    <td>
+      <div class="key">food.reference_address</div>
+      <div class="meta">Restaurants / reference_address</div>
+      <div class="meta">sections&nbsp;: food-restaurants</div>
+      
+    </td>
+    <td>
+      <div class="cond">restaurants aimés non renseignés</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>280</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Donne une adresse que tu adores, même simple. Candice s'en servira comme référence de goût. »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des tables choisies comme tu les aimes »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">29</td>
+    <td>
+      <div class="key">food.reco_strategy</div>
+      <div class="meta">Restaurants / reco_strategy</div>
+      <div class="meta">sections&nbsp;: food-restaurants</div>
+      
+    </td>
+    <td>
+      <div class="cond">restaurants score fort</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>290</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour une recommandation restaurant, Candice doit plutôt viser… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Très bien noté, même simple <code>well_rated</code></span><span class="opt">Beau lieu avant tout <code>beautiful_venue</code></span><span class="opt">Cuisine excellente avant tout <code>excellent_cuisine</code></span><span class="opt">Ambiance vivante <code>lively</code></span><span class="opt">Adresse chic <code>chic</code></span><span class="opt">Adresse cachée <code>hidden</code></span><span class="opt">Valeur sûre <code>safe_bet</code></span><span class="opt">Surprise originale <code>original_surprise</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des tables choisies comme tu les aimes »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">30</td>
+    <td>
+      <div class="key">travel.hotel_criteria</div>
+      <div class="meta">Voyages / hotel_criteria</div>
+      <div class="meta">sections&nbsp;: travel-style</div>
+      
+    </td>
+    <td>
+      <div class="cond">voyage / week-end / hôtel / luxe detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>300</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quand tu parles d'un "bel endroit", qu'est-ce qui compte vraiment ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Literie parfaite <code>perfect_bedding</code></span><span class="opt">Décoration / architecture <code>decor</code></span><span class="opt">Service impeccable <code>service</code></span><span class="opt">Spa / piscine <code>spa</code></span><span class="opt">Vue <code>view</code></span><span class="opt">Calme <code>quiet</code></span><span class="opt">Chambre spacieuse <code>spacious</code></span><span class="opt">Très bon restaurant <code>great_restaurant</code></span><span class="opt">Emplacement idéal <code>location</code></span><span class="opt">Atmosphère intime <code>intimate</code></span><span class="opt">Palace / grand luxe <code>palace</code></span><span class="opt">Boutique-hôtel de charme <code>boutique</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des escapades taillées pour toi »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">31</td>
+    <td>
+      <div class="key">travel.deal_breakers</div>
+      <div class="meta">Voyages / deal_breakers</div>
+      <div class="meta">sections&nbsp;: travel-style</div>
+      
+    </td>
+    <td>
+      <div class="cond">voyage / week-end detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>310</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Ce qui peut vraiment gâcher un week-end pour toi… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Mauvaise literie <code>bad_bedding</code></span><span class="opt">Hôtel moyen <code>average_hotel</code></span><span class="opt">Trop de route <code>too_much_driving</code></span><span class="opt">Trop de logistique <code>too_much_logistics</code></span><span class="opt">Lieu sans charme <code>no_charm</code></span><span class="opt">Programme trop chargé <code>overloaded_schedule</code></span><span class="opt">Mauvaise nourriture <code>bad_food</code></span><span class="opt">Trop rustique <code>too_rustic</code></span><span class="opt">Pas assez confortable <code>not_comfortable</code></span><span class="opt">Trop isolé <code>too_isolated</code></span><span class="opt">Trop touristique <code>too_touristy</code></span><span class="opt">Pas assez premium <code>not_premium</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des escapades taillées pour toi »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">32</td>
+    <td>
+      <div class="key">travel.hotel_standard</div>
+      <div class="meta">Voyages / hotel_standard</div>
+      <div class="meta">sections&nbsp;: travel-style</div>
+      
+    </td>
+    <td>
+      <div class="cond">hôtel / confort / luxe detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>320</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour un week-end surprise, ton niveau de confort minimum serait plutôt… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Peu importe si l'expérience est forte <code>experience_first</code></span><span class="opt">Hôtel confortable et propre <code>comfortable</code></span><span class="opt">Très bon 4 étoiles <code>four_stars</code></span><span class="opt">5 étoiles si possible <code>five_stars</code></span><span class="opt">Boutique-hôtel très soigné <code>boutique</code></span><span class="opt">Palace / très luxe pour les grandes occasions <code>palace</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des escapades taillées pour toi »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">33</td>
+    <td>
+      <div class="key">travel.distance_tolerance</div>
+      <div class="meta">Voyages / distance_tolerance</div>
+      <div class="meta">sections&nbsp;: travel-style</div>
+      
+    </td>
+    <td>
+      <div class="cond">week-end / voyage surprise detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>330</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour une surprise week-end, tu es prêt·e à faire combien de trajet ? »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Moins d'1h <code>under_1h</code></span><span class="opt">1 à 2h <code>1_2h</code></span><span class="opt">2 à 3h <code>2_3h</code></span><span class="opt">3 à 5h <code>3_5h</code></span><span class="opt">Train OK <code>train_ok</code></span><span class="opt">Avion OK <code>plane_ok</code></span><span class="opt">Ça dépend si le lieu vaut vraiment le coup <code>depends</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des escapades taillées pour toi »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">34</td>
+    <td>
+      <div class="key">dreams.destination</div>
+      <div class="meta">Rêves / destination</div>
+      <div class="meta">sections&nbsp;: dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">destination rêve non renseignée</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>340</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Une destination, un hôtel ou une expérience dont tu rêves en ce moment ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Ce dont tu rêves, gardé pour le bon moment »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">35</td>
+    <td>
+      <div class="key">hobbies.book_conditions</div>
+      <div class="meta">Loisirs / book_conditions</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">lecture / livre / BD detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>350</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Un livre en cadeau peut vraiment te plaire si… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">C'est un auteur que j'aime déjà <code>known_author</code></span><span class="opt">C'est une très belle édition <code>beautiful_edition</code></span><span class="opt">C'est recommandé avec un mot personnel <code>with_personal_note</code></span><span class="opt">C'est un livre qui correspond à une période de ma vie <code>matches_life_period</code></span><span class="opt">C'est une BD / un roman graphique choisi avec soin <code>graphic_novel</code></span><span class="opt">C'est un livre rare ou signé <code>rare_signed</code></span><span class="opt">C'est plutôt risqué, je préfère choisir moi-même <code>prefer_choose</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">36</td>
+    <td>
+      <div class="key">hobbies.book_avoidance</div>
+      <div class="meta">Loisirs / book_avoidance</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">lecture detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>360</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Un livre risque de tomber à plat si… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Il est trop "développement personnel" évident <code>too_self_help</code></span><span class="opt">Il est trop intellectuel <code>too_intellectual</code></span><span class="opt">Il est trop léger <code>too_light</code></span><span class="opt">Il ne correspond pas à mon style <code>wrong_style</code></span><span class="opt">Il est choisi parce qu'il est à la mode <code>too_trendy</code></span><span class="opt">Il ressemble à une leçon déguisée <code>moralizing</code></span><span class="opt">Il parle d'un sujet sensible <code>sensitive_topic</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">37</td>
+    <td>
+      <div class="key">hobbies.book_reference</div>
+      <div class="meta">Loisirs / book_reference</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">auteur / livre préféré non renseigné</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>370</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Cite un auteur, une autrice, une BD ou un livre que tu aimes vraiment. »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">38</td>
+    <td>
+      <div class="key">style.fashion_gift_risk</div>
+      <div class="meta">Style / fashion_gift_risk</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond">mode / vêtements / marques detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>380</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Si quelqu'un veut t'offrir quelque chose lié à la mode, le moins risqué serait… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">M'emmener choisir <code>choose_together</code></span><span class="opt">Carte cadeau d'une marque que j'aime <code>gift_card</code></span><span class="opt">Accessoire <code>accessory</code></span><span class="opt">Bijou <code>jewelry</code></span><span class="opt">Foulard / belle matière <code>scarf</code></span><span class="opt">Sac / petite maroquinerie <code>bag</code></span><span class="opt">Vêtement uniquement si taille et style sûrs <code>clothing_if_sure</code></span><span class="opt">Ne pas m'offrir de mode <code>avoid_fashion</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">39</td>
+    <td>
+      <div class="key">style.jewelry_style</div>
+      <div class="meta">Style / jewelry_style</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond">bijoux detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>390</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Un bijou réussi pour toi, c'est plutôt… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Fin et discret <code>delicate</code></span><span class="opt">Visible / affirmé <code>bold</code></span><span class="opt">Doré <code>gold</code></span><span class="opt">Argenté <code>silver</code></span><span class="opt">Avec pierre <code>with_stone</code></span><span class="opt">Personnalisé / gravé <code>personalized</code></span><span class="opt">Symbolique <code>symbolic</code></span><span class="opt">Très mode <code>trendy</code></span><span class="opt">Intemporel <code>timeless</code></span><span class="opt">D'une marque précise <code>specific_brand</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">40</td>
+    <td>
+      <div class="key">style.fashion_deal_breakers</div>
+      <div class="meta">Style / fashion_deal_breakers</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond">mode / style detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>400</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Côté style, ce qu'il faut éviter absolument… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Trop classique <code>too_classic</code></span><span class="opt">Trop cheap <code>too_cheap</code></span><span class="opt">Trop voyant <code>too_flashy</code></span><span class="opt">Trop discret <code>too_discreet</code></span><span class="opt">Mauvaise matière <code>bad_material</code></span><span class="opt">Mauvaise coupe <code>bad_fit</code></span><span class="opt">Mauvaise taille <code>wrong_size</code></span><span class="opt">Trop "cadeau par défaut" <code>default_gift</code></span><span class="opt">Marque que je n'aime pas <code>wrong_brand</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">41</td>
+    <td>
+      <div class="key">brands.reference_free</div>
+      <div class="meta">Marques / brand_reference_free</div>
+      <div class="meta">sections&nbsp;: brands-favorites</div>
+      
+    </td>
+    <td>
+      <div class="cond">marques aimées non détaillées</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>410</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Cite 3 marques ou créateurs que tu aimes vraiment — même très différents. »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Tes maisons préférées en tête des idées »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">42</td>
+    <td>
+      <div class="key">fragrance.perfume_risk</div>
+      <div class="meta">Parfums / perfume_risk</div>
+      <div class="meta">sections&nbsp;: fragrance-family</div>
+      <span class="badge lock">locked_text</span>
+    </td>
+    <td>
+      <div class="cond">parfum / beauté detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>420</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: réponse fragrance.perfume_risk déjà donnée</div>
+    </td>
+    <td>
+      <div class="qtext">« Recevoir un parfum, pour toi, c'est… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Je préfère choisir moi-même <code>choose_myself</code></span><span class="opt">Possible si la personne connaît très bien mes goûts <code>if_knows_taste</code></span><span class="opt">Seulement une marque que j'aime déjà <code>known_brand_only</code></span><span class="opt">Plutôt une bougie ou un parfum d'intérieur <code>home_fragrance</code></span><span class="opt">Je n'aime pas recevoir de parfum <code>avoid</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Éviter les cadeaux beauté à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">43</td>
+    <td>
+      <div class="key">fragrance.families</div>
+      <div class="meta">Parfums / families</div>
+      <div class="meta">sections&nbsp;: fragrance-family</div>
+      <span class="badge lock">locked_text</span>
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>425</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: parfums renseignés en fiche (questionnaire) ou réponse fragrance.families/fragrance.family</div>
+    </td>
+    <td>
+      <div class="qtext">« Les familles olfactives qui te plaisent le plus »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Poudré <code>powdery</code></span><span class="opt">Musqué propre <code>clean_musk</code></span><span class="opt">Floral blanc <code>white_floral</code></span><span class="opt">Floral frais <code>fresh_floral</code></span><span class="opt">Ambré doux <code>soft_amber</code></span><span class="opt">Vanillé léger <code>light_vanilla</code></span><span class="opt">Boisé <code>woody</code></span><span class="opt">Hespéridé <code>citrus</code></span><span class="opt">Thé-aromatique <code>tea_aromatic</code></span><span class="opt">Peau propre <code>clean_skin</code></span><span class="opt">Je ne sais pas <code>unknown</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des cadeaux parfum qui te ressemblent »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">44</td>
+    <td>
+      <div class="key">fragrance.gender_orientation</div>
+      <div class="meta">Parfums / gender_orientation</div>
+      <div class="meta">sections&nbsp;: fragrance-family</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>425</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour les parfums, tu te guides plutôt vers… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Les parfums rayon femme <code>femme</code></span><span class="opt">Les parfums rayon homme <code>homme</code></span><span class="opt">Les parfums mixtes / unisexes <code>mixte</code></span><span class="opt">Peu importe le rayon si j'aime le parfum <code>indifferent</code></span><span class="opt">Je préfère ne pas préciser <code>unspecified</code></span></div>
+    </td>
+    <td>
+      <div class="benefit"><span class='muted'>—</span></div>
+      <div class="meta">—</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">45</td>
+    <td>
+      <div class="key">fragrance.scent_deal_breakers</div>
+      <div class="meta">Parfums / scent_deal_breakers</div>
+      <div class="meta">sections&nbsp;: fragrance-family</div>
+      <span class="badge lock">locked_text</span>
+    </td>
+    <td>
+      <div class="cond">odeurs / parfums detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>440</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: odeurs détestées renseignées, ou réponse fragrance.scent_deal_breakers</div>
+    </td>
+    <td>
+      <div class="qtext">« À éviter absolument »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Trop sucré <code>too_sweet</code></span><span class="opt">Patchouli <code>patchouli</code></span><span class="opt">Très entêtant <code>too_heady</code></span><span class="opt">Trop fruité <code>too_fruity</code></span><span class="opt">Trop vanillé <code>too_vanilla</code></span><span class="opt">Trop masculin <code>too_masculine</code></span><span class="opt">Trop floral <code>too_floral</code></span><span class="opt">Parfum trop connu <code>too_common</code></span><span class="opt">Je ne sais pas <code>unknown</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Écarter ce qui gâche un parfum »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">46</td>
+    <td>
+      <div class="key">brands.beauty_reference</div>
+      <div class="meta">Marques / beauty_brands</div>
+      <div class="meta">sections&nbsp;: brands-favorites</div>
+      
+    </td>
+    <td>
+      <div class="cond">marques beauté non renseignées</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>450</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Une marque beauté, parfum ou soin que tu aimes vraiment ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Tes maisons préférées en tête des idées »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">47</td>
+    <td>
+      <div class="key">surprises.conditions</div>
+      <div class="meta">Surprises / conditions</div>
+      <div class="meta">sections&nbsp;: surprises-preference</div>
+      
+    </td>
+    <td>
+      <div class="cond">surprise ouverte / partielle detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>460</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Tu peux aimer une surprise si… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Je connais au moins l'horaire <code>know_schedule</code></span><span class="opt">Je sais comment m'habiller <code>know_dress_code</code></span><span class="opt">Je sais combien de temps ça dure <code>know_duration</code></span><span class="opt">Je peux refuser sans gêne <code>can_decline</code></span><span class="opt">Ce n'est pas devant trop de monde <code>not_too_public</code></span><span class="opt">C'est organisé par quelqu'un de très proche <code>very_close_person</code></span><span class="opt">C'est très bien préparé <code>well_prepared</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des surprises bien dosées, jamais subies »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">48</td>
+    <td>
+      <div class="key">surprises.briefing_needed</div>
+      <div class="meta">Surprises / briefing_needed</div>
+      <div class="meta">sections&nbsp;: surprises-preference</div>
+      
+    </td>
+    <td>
+      <div class="cond">surprise detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>470</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Avant une surprise, tu as besoin de savoir au minimum… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">L'heure <code>time</code></span><span class="opt">La tenue <code>dress_code</code></span><span class="opt">La durée <code>duration</code></span><span class="opt">Le lieu approximatif <code>approx_location</code></span><span class="opt">Si je dois prévoir une garde d'enfant <code>childcare</code></span><span class="opt">Si c'est intime ou social <code>intimate_or_social</code></span><span class="opt">Rien, j'aime la surprise totale <code>total_surprise</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des surprises bien dosées, jamais subies »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">49</td>
+    <td>
+      <div class="key">surprises.deal_breakers</div>
+      <div class="meta">Surprises / deal_breakers</div>
+      <div class="meta">sections&nbsp;: surprises-preference</div>
+      
+    </td>
+    <td>
+      <div class="cond">surprise négative ou prudente detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>480</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« La surprise à éviter absolument pour toi, ce serait… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Une surprise en public <code>public</code></span><span class="opt">Une surprise avec trop de monde <code>too_many_people</code></span><span class="opt">Une surprise qui change mon planning <code>changes_plans</code></span><span class="opt">Une surprise où je ne sais pas comment m'habiller <code>no_dress_code</code></span><span class="opt">Une surprise trop chère <code>too_expensive</code></span><span class="opt">Une surprise trop intime <code>too_intimate</code></span><span class="opt">Une surprise qui ne me ressemble pas <code>not_me</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des surprises bien dosées, jamais subies »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">50</td>
+    <td>
+      <div class="key">practical.logistics_relief</div>
+      <div class="meta">Pratique / logistics_relief</div>
+      <div class="meta">sections&nbsp;: practical-constraints</div>
+      
+    </td>
+    <td>
+      <div class="cond">charge mentale / fatigue / besoin d'organisation detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>490</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quand quelqu'un veut te faire du bien, qu'est-ce qui t'enlève un vrai poids des épaules ? »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Qu'on réserve à ma place <code>reservation</code></span><span class="opt">Qu'on gère le trajet <code>transport</code></span><span class="opt">Qu'on s'occupe des enfants <code>children</code></span><span class="opt">Qu'on pense au repas <code>meal</code></span><span class="opt">Qu'on fasse les courses <code>groceries</code></span><span class="opt">Qu'on gère le ménage <code>cleaning</code></span><span class="opt">Qu'on cale le bon moment <code>timing</code></span><span class="opt">Qu'on prenne la décision pour moi <code>decision</code></span><span class="opt">Qu'on règle les détails <code>practical_details</code></span><span class="opt">Qu'on assure le suivi après <code>follow_up</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Zéro faux pas sur l'essentiel »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">51</td>
+    <td>
+      <div class="key">practical.control_delegation</div>
+      <div class="meta">Pratique / control_delegation</div>
+      <div class="meta">sections&nbsp;: practical-constraints</div>
+      
+    </td>
+    <td>
+      <div class="cond">aime qu'on organise / surprise / charge mentale detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>500</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Quand quelqu'un organise pour toi, tu préfères… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Qu'il décide vraiment <code>decide_all</code></span><span class="opt">Qu'il me propose 2 options <code>two_options</code></span><span class="opt">Qu'il me laisse valider les détails <code>validate_details</code></span><span class="opt">Qu'il gère tout sauf la date <code>all_except_date</code></span><span class="opt">Qu'il me surprenne mais me rassure <code>surprise_but_reassure</code></span><span class="opt">Qu'il ne décide pas à ma place <code>no_decide_for_me</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Zéro faux pas sur l'essentiel »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">52</td>
+    <td>
+      <div class="key">conflicts.repair_strategy</div>
+      <div class="meta">Conflits / repair_strategy</div>
+      <div class="meta">sections&nbsp;: conflicts-style</div>
+      
+    </td>
+    <td>
+      <div class="cond">conflit / réparation non précisé</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>510</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Après une tension, ce qui aide vraiment à réparer pour toi, c'est… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Des excuses précises <code>precise_apology</code></span><span class="opt">Un message écrit <code>written_message</code></span><span class="opt">Une discussion calme <code>calm_discussion</code></span><span class="opt">Une preuve que l'autre a compris <code>proof_understood</code></span><span class="opt">Un geste concret <code>concrete_gesture</code></span><span class="opt">Un moment ensemble <code>time_together</code></span><span class="opt">Un peu de temps <code>time_alone</code></span><span class="opt">Pas de cadeau, surtout une vraie parole <code>words_not_gift</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions justes, même les jours sensibles »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">53</td>
+    <td>
+      <div class="key">conflicts.repair_avoid</div>
+      <div class="meta">Conflits / repair_avoid</div>
+      <div class="meta">sections&nbsp;: conflicts-style</div>
+      
+    </td>
+    <td>
+      <div class="cond">conflit / réparation non précisé</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>520</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Après une dispute, ce qui serait maladroit… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Faire comme si rien ne s'était passé <code>ignore_conflict</code></span><span class="opt">Offrir un cadeau sans parler <code>gift_without_words</code></span><span class="opt">Mettre de l'humour trop vite <code>humor_too_soon</code></span><span class="opt">Insister alors que j'ai besoin d'espace <code>insist_when_need_space</code></span><span class="opt">Dramatiser <code>dramatize</code></span><span class="opt">Se justifier <code>justify</code></span><span class="opt">Attendre trop longtemps <code>wait_too_long</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des attentions justes, même les jours sensibles »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">54</td>
+    <td>
+      <div class="key">style.material_preferences</div>
+      <div class="meta">Style / material_preferences</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond">mode / déco / beauté / matières detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>530</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Les matières qui te donnent vraiment une impression de qualité… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Cachemire <code>cashmere</code></span><span class="opt">Soie <code>silk</code></span><span class="opt">Cuir <code>leather</code></span><span class="opt">Daim <code>suede</code></span><span class="opt">Lin <code>linen</code></span><span class="opt">Coton épais <code>thick_cotton</code></span><span class="opt">Laine mérinos <code>merino</code></span><span class="opt">Céramique <code>ceramic</code></span><span class="opt">Bois <code>wood</code></span><span class="opt">Verre soufflé <code>blown_glass</code></span><span class="opt">Métal doré <code>gold_metal</code></span><span class="opt">Pierre naturelle <code>natural_stone</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">55</td>
+    <td>
+      <div class="key">style.material_avoidance</div>
+      <div class="meta">Style / material_avoidance</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond">mode / déco / matières detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>540</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Les matières qui peuvent te déplaire… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Synthétique <code>synthetic</code></span><span class="opt">Laine qui gratte <code>scratchy_wool</code></span><span class="opt">Polyester <code>polyester</code></span><span class="opt">Matière trop rigide <code>too_rigid</code></span><span class="opt">Matière trop fragile <code>too_fragile</code></span><span class="opt">Faux cuir <code>faux_leather</code></span><span class="opt">Fourrure <code>fur</code></span><span class="opt">Plastique <code>plastic</code></span><span class="opt">Je ne sais pas <code>unknown</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">56</td>
+    <td>
+      <div class="key">style.cross_gender</div>
+      <div class="meta">Style / cross_gender</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond"><em>aucune condition — toujours proposable (tant que la donnée est absente de la fiche)</em></div>
+      <div class="meta">priorité <b>50</b> · ordre <b>545</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour les vêtements et accessoires, tu te repères plutôt dans… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Le rayon femme <code>femme</code></span><span class="opt">Le rayon homme <code>homme</code></span><span class="opt">Les deux — je mélange <code>mixte</code></span><span class="opt">Les pièces unisexes avant tout <code>unisexe</code></span><span class="opt">Ça dépend de la pièce <code>depends</code></span><span class="opt">Je préfère ne pas préciser <code>unspecified</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">57</td>
+    <td>
+      <div class="key">style.color_safe</div>
+      <div class="meta">Style / color_safe</div>
+      <div class="meta">sections&nbsp;: style-clothing</div>
+      
+    </td>
+    <td>
+      <div class="cond">mode / déco / objet detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>550</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Si on t'offre un objet, un vêtement ou un accessoire, les couleurs les plus sûres sont… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Noir <code>black</code></span><span class="opt">Blanc <code>white</code></span><span class="opt">Beige <code>beige</code></span><span class="opt">Bleu ciel <code>light_blue</code></span><span class="opt">Marine <code>navy</code></span><span class="opt">Vert <code>green</code></span><span class="opt">Rouge <code>red</code></span><span class="opt">Rose pâle <code>pale_pink</code></span><span class="opt">Doré <code>gold</code></span><span class="opt">Argenté <code>silver</code></span><span class="opt">Tons neutres <code>neutral_tones</code></span><span class="opt">Couleurs fortes <code>bold_colors</code></span><span class="opt">Je préfère choisir <code>prefer_choose</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des choix à ton goût, jamais à côté »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">58</td>
+    <td>
+      <div class="key">hobbies.home_gift_safe</div>
+      <div class="meta">Loisirs / home_gift_safe</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">déco / maison detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>560</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour la maison, ce qui est le moins risqué à t'offrir… »</div>
+      <div class="meta">choix unique</div>
+      <div class="opts"><span class="opt">Bougie / parfum d'intérieur <code>candle</code></span><span class="opt">Art de la table <code>tableware</code></span><span class="opt">Linge de maison <code>linen</code></span><span class="opt">Beau livre <code>coffee_table_book</code></span><span class="opt">Petit objet design <code>design_object</code></span><span class="opt">Plante <code>plant</code></span><span class="opt">Céramique <code>ceramic</code></span><span class="opt">Rien, je préfère choisir moi-même <code>prefer_choose</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">59</td>
+    <td>
+      <div class="key">hobbies.home_deal_breakers</div>
+      <div class="meta">Loisirs / home_deal_breakers</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">déco / maison detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>570</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« En déco, ce qui peut vite tomber à côté pour toi… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Objet trop kitsch <code>too_kitsch</code></span><span class="opt">Mauvaise couleur <code>bad_color</code></span><span class="opt">Mauvaise matière <code>bad_material</code></span><span class="opt">Objet trop imposant <code>too_imposing</code></span><span class="opt">Style trop froid <code>too_cold</code></span><span class="opt">Style trop rustique <code>too_rustic</code></span><span class="opt">Objet sans utilité <code>useless</code></span><span class="opt">Cadeau qui encombre <code>clutters</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">60</td>
+    <td>
+      <div class="key">hobbies.wellness_gift</div>
+      <div class="meta">Loisirs / wellness_gift</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">sport / bien-être detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>580</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Une attention bien-être réussie pour toi, c'est plutôt… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Massage <code>massage</code></span><span class="opt">Spa <code>spa</code></span><span class="opt">Cours privé <code>private_class</code></span><span class="opt">Retraite <code>retreat</code></span><span class="opt">Moment de calme <code>quiet_time</code></span><span class="opt">Accessoire de qualité <code>quality_accessory</code></span><span class="opt">Abonnement <code>subscription</code></span><span class="opt">Expérience douce <code>gentle_experience</code></span><span class="opt">Je préfère éviter les cadeaux bien-être <code>avoid</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">61</td>
+    <td>
+      <div class="key">hobbies.sport_risk</div>
+      <div class="meta">Loisirs / sport_risk</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">sport detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>590</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Un cadeau sport est risqué si… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Il n'est pas adapté à ma pratique <code>wrong_practice</code></span><span class="opt">Il est trop technique <code>too_technical</code></span><span class="opt">Il est trop bas de gamme <code>low_quality</code></span><span class="opt">Il suppose que je veux performer <code>performance_assumption</code></span><span class="opt">Il touche au corps / au poids <code>body_related</code></span><span class="opt">Il est choisi sans connaître mes habitudes <code>unknown_habits</code></span><span class="opt">Je préfère choisir moi-même <code>prefer_choose</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">62</td>
+    <td>
+      <div class="key">hobbies.culture_success</div>
+      <div class="meta">Loisirs / culture_success</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">culture / art detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>600</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Une sortie culturelle réussie pour toi, c'est surtout… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Une très belle œuvre <code>great_artwork</code></span><span class="opt">Un lieu magnifique <code>beautiful_venue</code></span><span class="opt">Une émotion forte <code>strong_emotion</code></span><span class="opt">Une découverte <code>discovery</code></span><span class="opt">Un moment élégant <code>elegant</code></span><span class="opt">Une sortie facile à organiser <code>easy_logistics</code></span><span class="opt">Une discussion après <code>discussion_after</code></span><span class="opt">Un événement rare <code>rare_event</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">63</td>
+    <td>
+      <div class="key">hobbies.concert_criteria</div>
+      <div class="meta">Loisirs / concert_criteria</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">musique / concert detected</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>610</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour un concert ou spectacle, ce qui compte le plus… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">L'artiste <code>artist</code></span><span class="opt">La qualité des places <code>seat_quality</code></span><span class="opt">L'ambiance <code>ambiance</code></span><span class="opt">Le lieu <code>venue</code></span><span class="opt">Le confort <code>comfort</code></span><span class="opt">Y aller avec la bonne personne <code>right_company</code></span><span class="opt">Ne pas être trop loin / mal placé <code>good_position</code></span><span class="opt">Le côté événement rare <code>rare_event</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">64</td>
+    <td>
+      <div class="key">hobbies.artist_reference</div>
+      <div class="meta">Loisirs / artist_reference</div>
+      <div class="meta">sections&nbsp;: hobbies-main, dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">artiste non renseigné</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>620</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Un artiste, spectacle ou lieu culturel que tu aimerais voir ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Des moments qui te nourrissent vraiment »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">65</td>
+    <td>
+      <div class="key">dreams.wish_priority</div>
+      <div class="meta">Rêves / wish_priority</div>
+      <div class="meta">sections&nbsp;: dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">envies / rêves du moment renseignés</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>630</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Parmi tes envies du moment, laquelle te ferait le plus plaisir si quelqu'un t'aidait à la réaliser ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Ce dont tu rêves, gardé pour le bon moment »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">66</td>
+    <td>
+      <div class="key">dreams.wishlist_first</div>
+      <div class="meta">Rêves / wishlist_first</div>
+      <div class="meta">sections&nbsp;: dreams-current</div>
+      
+    </td>
+    <td>
+      <div class="cond">wishlist vide</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>640</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Une chose que tu aimerais recevoir, vivre ou faire dans les prochains mois ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Ce dont tu rêves, gardé pour le bon moment »</div>
+      <div class="meta">20 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">67</td>
+    <td>
+      <div class="key">practical.important_dates</div>
+      <div class="meta">Pratique / important_dates_detail</div>
+      <div class="meta">sections&nbsp;: practical-constraints</div>
+      
+    </td>
+    <td>
+      <div class="cond">dates importantes incomplètes</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>650</b> · min. 30 j</div>
+      <div class="guard">Garde donnée&nbsp;: au moins une date importante en fiche</div>
+    </td>
+    <td>
+      <div class="qtext">« Y a-t-il une date que tes proches ne devraient pas oublier ? »</div>
+      <div class="meta">texte libre</div>
+      <div class="opts"><span class='muted'>—</span></div>
+    </td>
+    <td>
+      <div class="benefit">« Zéro faux pas sur l'essentiel »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+<tr>
+    <td class="num">68</td>
+    <td>
+      <div class="key">practical.date_attention</div>
+      <div class="meta">Pratique / date_attention_pref</div>
+      <div class="meta">sections&nbsp;: practical-constraints</div>
+      
+    </td>
+    <td>
+      <div class="cond">date ajoutée sans préférence d'attention</div>
+      <div class="meta">priorité <b>50</b> · ordre <b>660</b> · min. 30 j</div>
+      <div class="guard"><span class="muted">pas de garde par donnée (statut/réponse seuls)</span></div>
+    </td>
+    <td>
+      <div class="qtext">« Pour cette date, tu aimerais plutôt… »</div>
+      <div class="meta">choix multiple</div>
+      <div class="opts"><span class="opt">Un message <code>message</code></span><span class="opt">Un moment ensemble <code>time_together</code></span><span class="opt">Un cadeau <code>gift</code></span><span class="opt">Une surprise <code>surprise</code></span><span class="opt">Une expérience <code>experience</code></span><span class="opt">Rien de grand, juste qu'on y pense <code>just_remember</code></span><span class="opt">Quelque chose organisé à l'avance <code>planned_ahead</code></span></div>
+    </td>
+    <td>
+      <div class="benefit">« Zéro faux pas sur l'essentiel »</div>
+      <div class="meta">30 sec</div>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+</div>
+</body>
+</html>
