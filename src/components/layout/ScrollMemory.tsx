@@ -50,28 +50,37 @@ export default function ScrollMemory() {
     } catch {}
     if (!winTarget && !innerTarget) return;
 
-    let tries = 0;
+    // Budget ADAPTATIF (D2/scroll) : on retente tant que le contenu réel n'est
+    // pas peint ([data-page-ready]) ET que la hauteur ne permet pas la cible.
+    // Sur un rendu FROID, le contenu arrive derrière le squelette en 1,3–2,4 s :
+    // l'ancien plafond fixe (20 × 60 ms = 1,2 s) abandonnait avant, d'où le
+    // scroll qui revenait en haut. Plafond dur porté à 5 s (garde-fou).
+    const MAX_MS = 5000;
+    const start = performance.now();
     let cancelled = false;
     const attempt = () => {
       if (cancelled) return;
-      let settled = true;
+      const painted = !!document.querySelector("[data-page-ready]");
+      const giveUp = performance.now() - start >= MAX_MS;
+      let heightReady = true;
       if (winTarget) {
         const max = document.documentElement.scrollHeight - window.innerHeight;
-        if (max >= winTarget || tries >= 20) {
+        if (max >= winTarget || giveUp) {
           window.scrollTo(0, Math.min(winTarget, Math.max(0, max)));
-        } else settled = false;
+        } else heightReady = false;
       }
       if (innerTarget) {
         const inner = document.querySelector(".main-content");
         if (inner) {
           const max = inner.scrollHeight - inner.clientHeight;
-          if (max >= innerTarget || tries >= 20) {
+          if (max >= innerTarget || giveUp) {
             inner.scrollTop = Math.min(innerTarget, Math.max(0, max));
-          } else settled = false;
-        } else if (tries < 20) settled = false;
+          } else heightReady = false;
+        } else if (!giveUp) heightReady = false;
       }
-      if (!settled && tries < 20) {
-        tries += 1;
+      // Réglé seulement quand le contenu réel est peint ET la hauteur atteinte.
+      // Sinon on continue (re-assertion après le layout shift du streaming).
+      if ((!painted || !heightReady) && !giveUp) {
         setTimeout(attempt, 60);
       }
     };
