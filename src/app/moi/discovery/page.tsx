@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getAuthClaims } from "@/utils/supabase/claims";
 import DashboardShell from "@/components/layout/DashboardShell";
 import DiscoveryFlow from "./DiscoveryFlow";
 import { getNextMicroQuestion, type ProfileAnalysisSnapshot } from "@/lib/discovery/engine";
@@ -10,8 +11,10 @@ export default async function DiscoveryPage({
   searchParams: Promise<{ mode?: string; section?: string }>;
 }) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  // Levier 2 : auth vérifiée en LOCAL (getClaims) — pas d'aller-retour réseau.
+  const claims = await getAuthClaims(supabase);
+  if (!claims) redirect("/login");
+  const userId = claims.sub as string;
 
   const { mode: rawMode, section: sectionKey } = await searchParams;
   const mode = rawMode === "full" ? "full" : "quick";
@@ -20,7 +23,7 @@ export default async function DiscoveryPage({
   const { data: analysisRow } = await supabase
     .from("profile_analysis")
     .select("sections")
-    .eq("user_id", user.id)
+    .eq("user_id", userId)
     .is("contact_id", null)
     .maybeSingle();
 
@@ -29,7 +32,7 @@ export default async function DiscoveryPage({
     : null;
 
   const initial = await getNextMicroQuestion(
-    user.id,
+    userId,
     supabase,
     analysis,
     mode,

@@ -11,6 +11,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import { getAuthClaims } from "@/utils/supabase/claims";
 import V4Shell from "@/components/layout/V4Shell";
 import ProfileV2 from "@/components/profile/v2/ProfileV2";
 import GenderModal from "@/components/profile/GenderModal";
@@ -29,8 +30,10 @@ import { getSignedAvatarUrl } from "@/lib/profile/avatar-url";
 
 export default async function MoiPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  // Levier 2 : auth vérifiée en LOCAL (getClaims) — pas d'aller-retour réseau.
+  const claims = await getAuthClaims(supabase);
+  if (!claims) redirect("/login");
+  const userId = claims.sub as string;
 
   // D3 : UNE seule passe — profil, analyse ET sources de l'overview partent
   // ensemble (l'étage séquentiel « overview après analyse » est supprimé ;
@@ -39,15 +42,15 @@ export default async function MoiPage() {
     supabase
       .from("my_profile")
       .select(`${PROFILE_ROW_SELECT}, avatar_path`)
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .maybeSingle(),
     supabase
       .from("profile_analysis")
       .select(ANALYSIS_ROW_V2_SELECT)
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .is("contact_id", null)
       .maybeSingle(),
-    fetchDiscoveryOverviewSources(user.id, supabase),
+    fetchDiscoveryOverviewSources(userId, supabase),
   ]);
 
   const profile = profileRaw as unknown as (ProfileRow & { avatar_path?: string | null }) | null;
@@ -61,7 +64,7 @@ export default async function MoiPage() {
           <p style={{ fontSize: 15, fontWeight: 300, color: "var(--ink-2)", marginBottom: 24, lineHeight: 1.7 }}>
             Réponds à quelques questions — tes proches pourront consulter ta fiche pour mieux prendre soin de toi.
           </p>
-          <ResumePrompt userId={user.id} />
+          <ResumePrompt userId={userId} />
         </div>
         <FooterLinks />
       </V4Shell>
@@ -73,7 +76,7 @@ export default async function MoiPage() {
 
   const firstName =
     profile.practical_info?.prenom?.trim()
-    || user.user_metadata?.full_name?.split(" ")[0]
+    || (claims.user_metadata?.full_name as string | undefined)?.split(" ")[0]
     || "Mon profil";
 
   const analysisSnapshot: ProfileAnalysisSnapshot | null = analysis?.sections
@@ -84,7 +87,7 @@ export default async function MoiPage() {
   // D3 : l'overview consomme les sources déjà chargées (zéro requête ici) ;
   // les écritures de rétro-alimentation partent APRÈS la réponse (after).
   const [{ availableSections, nudges, flushStatusWrites }, avatarUrl] = await Promise.all([
-    getDiscoveryOverview(user.id, supabase, analysisSnapshot, overviewSources),
+    getDiscoveryOverview(userId, supabase, analysisSnapshot, overviewSources),
     getSignedAvatarUrl(profile.avatar_path),
   ]);
   after(() => flushStatusWrites().catch(() => {}));
@@ -100,7 +103,7 @@ export default async function MoiPage() {
 
   return (
     <V4Shell active="profile" noBrandBar>
-      {showGenderModal && <GenderModal userId={user.id} />}
+      {showGenderModal && <GenderModal userId={userId} />}
       {needsAnalysis && <GenerateAnalysisOnMount />}
 
       <ProfileV2 data={data} />
