@@ -3,13 +3,13 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import DashboardShell from "@/components/layout/DashboardShell";
-import { Contact, QuestionnaireResponse, ProfileNote, WishlistItem, CadenceLevel } from "@/types";
+import { Contact, QuestionnaireResponse, ProfileNote, CadenceLevel } from "@/types";
 import type { ContactRecommendations } from "@/lib/recommendations/types";
 import { generateProactiveQuestion } from "@/lib/recommendations/questions";
 import ContactActions from "./ContactActions";
 import ContactNotes from "@/components/dashboard/ContactNotes";
 import ContactHeader from "./ContactHeader";
-import WishlistSection from "./WishlistSection";
+import CarnetV2Section, { type CarnetItemV2 } from "./CarnetV2Section";
 import RelancerButton from "./RelancerButton";
 import AttentionContextuelle from "./AttentionContextuelle";
 import ProactiveQuestion from "./ProactiveQuestion";
@@ -286,7 +286,35 @@ export default async function ContactPage({
   const senderFirstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
   const contactFirstName = typedContact.name.split(" ")[0];
   const importantDates = parseImportantDates(profile?.important_dates ?? null).sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
-  const wishlist = (typedContact.gift_wishlist ?? []) as WishlistItem[];
+  // Carnet d'envies V2 — backing carnet_envies_items (fusion faite, migration 67).
+  const { data: carnetRows } = await supabase
+    .from("carnet_envies_items")
+    .select("id, description, brand_name, source_link, heard_quote, price_indicative, occasion, source, photo_url, statut, created_at")
+    .eq("contact_id", id)
+    .order("created_at", { ascending: false });
+  const carnetItems: CarnetItemV2[] = await Promise.all(
+    ((carnetRows ?? []) as Array<Record<string, unknown>>).map(async r => {
+      const photo = (r.photo_url as string | null) ?? null;
+      let signed: string | null = null;
+      if (photo) signed = /^https?:\/\//i.test(photo)
+        ? photo
+        : ((await admin.storage.from("contact-photos").createSignedUrl(photo, 3600)).data?.signedUrl ?? null);
+      return {
+        id: r.id as string,
+        description: r.description as string,
+        brand_name: (r.brand_name as string | null) ?? null,
+        source_link: (r.source_link as string | null) ?? null,
+        heard_quote: (r.heard_quote as string | null) ?? null,
+        price_indicative: (r.price_indicative as string | null) ?? null,
+        occasion: (r.occasion as CarnetItemV2["occasion"]) ?? null,
+        source: (r.source as CarnetItemV2["source"]) ?? null,
+        photo_url: photo,
+        photoSignedUrl: signed,
+        statut: (r.statut as string | null) ?? null,
+        created_at: r.created_at as string,
+      };
+    }),
+  );
 
   // Recommendations — pre-loaded from contact_recommendations table
   const initialRecommendations: ContactRecommendations | null = recoData
@@ -799,7 +827,7 @@ export default async function ContactPage({
 
             {/* À retenir */}
             <PointDivider label="À retenir" />
-            <WishlistSection contactId={id} initialWishlist={wishlist} />
+            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
 
             {/* Cadence */}
             <PointDivider label="Fréquence d'attention" />
@@ -829,7 +857,7 @@ export default async function ContactPage({
               </>
             )}
             <PointDivider label="À retenir" />
-            <WishlistSection contactId={id} initialWishlist={wishlist} />
+            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
           </>
         ) : inviteStatus === "pending" ? (
           /* Invite sent — proche hasn't registered yet */
@@ -851,7 +879,7 @@ export default async function ContactPage({
             </div>
 
             <PointDivider label="À retenir" />
-            <WishlistSection contactId={id} initialWishlist={wishlist} />
+            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
           </>
         ) : (
           /* Never invited */
@@ -870,7 +898,7 @@ export default async function ContactPage({
             </div>
 
             <PointDivider label="À retenir" />
-            <WishlistSection contactId={id} initialWishlist={wishlist} />
+            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
           </>
         )}
 
