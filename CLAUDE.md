@@ -1,5 +1,6 @@
 DA figée « Présence » V11 — référence obligatoire : docs/design-system.html, docs/reference-app.html, docs/reference-questionnaire.html, docs/ton-candice.md. Lire avant tout travail UI.
 Fiche profil (pilote ET vues tierces) : référence visuelle absolue = design/redisign/Candice_Maquette_Profil_V2_REFERENCE_GELEE.html (barème typographique inclus). L'ancienne maquette REFERENCE_VALIDEE est supprimée — bascule V2 actée en Phase D du lot Refonte Profil V2.
+Wishlist perso + Carnet d'envies : références gelées = design/redisign/Candice_Maquette_Wishlist_V2.html et Candice_Maquette_Carnet_Envies_V2.html (lot Wishlist V2 + Carnet, CLOS). Écran wishlist = /moi/wishlist ; carnet = contenu intégré dans la fiche proche (le header/onglets de la maquette carnet relèvent de la refonte fiche proche, reportée au lot Harmonisation design).
 @AGENTS.md
 
 ## Source de verite produit
@@ -9,9 +10,11 @@ Fiche profil (pilote ET vues tierces) : référence visuelle absolue = design/re
 - Ce document vit et evolue : refere-toi toujours a sa derniere version dans le repo.
 
 ## Lexique verrouillé (interdiction de croiser les termes)
-- WISHLIST = la liste personnelle de l'utilisateur, sur SON profil (ce qu'il aimerait recevoir). Table my_wishlist_items. Candice s'en inspire pour recommander sans jamais dévoiler que la personne l'a demandé.
-- CARNET D'ENVIES = les envies REPÉRÉES pour un proche (photo, lien, boutique, phrase entendue, note). Vit sur la fiche du proche. Table carnet_envies_items. Côté proche, on ne dit JAMAIS « wishlist ».
+- WISHLIST = la liste personnelle de l'utilisateur, sur SON profil (ce qu'il aimerait recevoir). Table my_wishlist_items. Candice s'en inspire pour recommander sans jamais dévoiler que la personne l'a demandé. STRICTEMENT PRIVÉE (RLS owner-only, jamais de vue tierce). Champs V2 : photo_url (bucket contact-photos, URL signée 1h), brand, web_link, size_ref, price_indicative (texte), occasion (enum), envy_level (dream/pleasure), target_recipients (uuid[], vide = n'importe qui), source_trace (declared).
+- CARNET D'ENVIES = les envies REPÉRÉES pour un proche (photo, lien, boutique, phrase entendue, note). Vit sur la fiche du proche. Table carnet_envies_items. Côté proche, on ne dit JAMAIS « wishlist ». Champs V2 : source (heard/seen/link → badge Vu/Entendu, null = neutre), heard_quote, occasion, price_indicative, source_trace (spotted). Ajout par photo (identification IA « à vérifier ») ou manuel. Le legacy contacts.gift_wishlist est DÉPRÉCIÉ (fusionné, migration 67, jamais droppé).
 - IDÉES = les propositions de Candice.
+- TRAÇABILITÉ SOURCE (source_trace, pour le futur moteur de reco, NON câblé) : declared (wishlist du proche lui-même) / spotted (carnet) / deduced (profil).
+- RÉSERVATION INVISIBLE (my_wishlist_items.reservation_status via RPC reserve_wishlist_item / confirm_wishlist_purchase, SECURITY DEFINER atomiques, péremption 30 j) : intention molle → confirmation d'achat. Invisible du pilote ; un proche ne voit jamais qu'un autre a réservé. Surface proche-facing (réclamation) = lot Moteur de reco à venir.
 
 ## Regles produit dures
 - Modele : 100 % abonnement (9 EUR/mois, 1 mois offert, CB demandee seulement a J-7). Questionnaire et analyse toujours gratuits.
