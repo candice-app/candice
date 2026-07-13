@@ -77,7 +77,7 @@ async function getProfileDataSnapshot(
 // il ne resservira que si une personnalisation à base de gabarits validés
 // est réactivée ici. Passer à true réactive lecture + pré-calcul, sans
 // autre changement (les textes pré-calculés sont déjà lus si présents).
-const PERSONALIZATION_ACTIVE = true;
+const PERSONALIZATION_ACTIVE = false;
 
 /** Texte servi : verrouillé/banque mot pour mot, sinon pré-calculé SI actif. */
 function servedQuestionText(
@@ -482,7 +482,7 @@ export async function precomputePersonalizationsForKeys(
   keys: string[],
   opts: { onlyMissing?: boolean } = {},
 ): Promise<void> {
-  if (keys.length === 0) return;
+  if (!PERSONALIZATION_ACTIVE || keys.length === 0) return; // reformulation coupée
   try {
     const [{ data: qs }, { data: existing }] = await Promise.all([
       supabase
@@ -527,6 +527,7 @@ export async function precomputeUpcomingPersonalizations(
   supabase: SupaDB,
   analysis: ProfileAnalysisSnapshot | null,
 ): Promise<void> {
+  if (!PERSONALIZATION_ACTIVE) return; // reformulation coupée
   try {
     const [allQuestions, profileData, stored] = await Promise.all([
       getAllQuestionsWithTrigger(supabase),
