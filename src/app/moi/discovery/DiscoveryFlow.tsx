@@ -479,7 +479,13 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // Levier 1 : à la 1re réponse sessionId est null → on envoie le
+          // contexte (lot déterministe + position + mode) pour que la session
+          // naisse côté serveur maintenant, pas au rendu du GET.
           sessionId: current.sessionId,
+          pendingKeys: current.pendingKeys,
+          currentIndex: current.currentIndex,
+          mode: current.mode ?? mode,
           questionKey: current.question.question_key,
           answer: skip ? null : answer,
           skip,

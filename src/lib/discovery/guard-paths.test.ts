@@ -76,7 +76,7 @@ beforeAll(async () => {
 });
 
 describe("chemins ②/③ — moteur Discovery (garde complète)", () => {
-  it("③ donnée en fiche (parfums saisis au questionnaire) → question JAMAIS servie + rétro-alimentation answered", async () => {
+  it("③ donnée en fiche (parfums saisis) → question JAMAIS servie, ET GET sans écriture (levier 1)", async () => {
     const state: MockState = {
       questions: [FRAG_QUESTION],
       profile: { practical_info: { parfums: ["poudre"] }, singularity_answers: null, relational_filters: null, discovery_answers: null },
@@ -86,7 +86,20 @@ describe("chemins ②/③ — moteur Discovery (garde complète)", () => {
     };
     const result = await engine.getNextMicroQuestion("u1", makeDb(state), null, "quick");
     expect(result).toBeNull();
-    // Rétro-alimentation : le statut answered a été écrit
+    // Levier 1 : le GET est en lecture seule — AUCUNE écriture au rendu
+    // (ni session, ni rétro-alimentation). La garde reste correcte en mémoire.
+    expect(state.writes.length).toBe(0);
+  });
+
+  it("③ rétro-alimentation persistée hors du GET — via getAvailableDiscoverySections (chemin /moi)", async () => {
+    const state: MockState = {
+      questions: [FRAG_QUESTION],
+      profile: { practical_info: { parfums: ["poudre"] }, singularity_answers: null, relational_filters: null, discovery_answers: null },
+      completion: [],
+      session: null,
+      writes: [],
+    };
+    await engine.getAvailableDiscoverySections("u1", makeDb(state), null);
     const retro = state.writes.find(w => w.table === "profile_completion" && w.op === "upsert"
       && (w.payload as { question_key?: string; status?: string }).question_key === "fragrance.families");
     expect((retro?.payload as { status?: string })?.status).toBe("answered");

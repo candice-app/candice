@@ -1,7 +1,7 @@
 import { NextResponse, after } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
-import { recordAnswer, precomputePersonalizationsForKeys } from "@/lib/discovery/engine";
+import { recordAnswer, createDiscoverySession, precomputePersonalizationsForKeys } from "@/lib/discovery/engine";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
 
 export async function POST(req: Request) {
@@ -10,16 +10,35 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const body = await req.json() as {
-    sessionId: string;
+    sessionId?: string | null;
+    // Levier 1 : contexte de session envoyé à la PREMIÈRE réponse (session pas
+    // encore née — le GET /moi/discovery est désormais sans effet de bord).
+    pendingKeys?: string[];
+    currentIndex?: number;
+    mode?: "quick" | "full";
     questionKey: string;
     answer?: string | string[] | Record<string, unknown> | null;
     skip?: boolean;
   };
 
-  const { sessionId, questionKey, answer = null, skip = false } = body;
+  const { questionKey, answer = null, skip = false } = body;
+  let sessionId = body.sessionId ?? null;
 
-  if (!sessionId || !questionKey) {
-    return NextResponse.json({ error: "sessionId et questionKey requis" }, { status: 400 });
+  if (!questionKey) {
+    return NextResponse.json({ error: "questionKey requis" }, { status: 400 });
+  }
+
+  // Levier 1 : première réponse → la session naît MAINTENANT (pas au rendu).
+  if (!sessionId) {
+    if (!body.pendingKeys?.length) {
+      return NextResponse.json({ error: "contexte de session manquant" }, { status: 400 });
+    }
+    sessionId = await createDiscoverySession(
+      user.id, supabase, body.mode ?? "full", body.pendingKeys, body.currentIndex ?? 0,
+    );
+    if (!sessionId) {
+      return NextResponse.json({ error: "création de session impossible" }, { status: 500 });
+    }
   }
 
   const result = await recordAnswer(

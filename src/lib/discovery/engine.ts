@@ -28,7 +28,15 @@ export interface DiscoveryQuestion {
 
 export interface NextQuestionResult {
   question: DiscoveryQuestion;
-  sessionId: string;
+  /** Levier 1 : null tant que la session n'est pas née (GET sans effet de bord).
+   *  La session est créée à la PREMIÈRE réponse (route answer). */
+  sessionId: string | null;
+  /** Lot calculé (déterministe), présent quand sessionId est null. */
+  pendingKeys?: string[];
+  /** Position dans le lot au rendu (0 au départ). */
+  currentIndex?: number;
+  /** Mode de la session à créer à la première réponse. */
+  mode?: 'quick' | 'full';
   sectionLabel: string;
   progress: { current: number; total: number } | null;
 }
@@ -386,6 +394,15 @@ function computeGapScore(
   return 0;
 }
 
+/**
+ * Levier 1 — SÉLECTION EN LECTURE SEULE.
+ * Aucune écriture : ni session, ni last_asked, ni rétro-alimentation. Le GET
+ * /moi/discovery devient sans effet de bord → la page est cacheable côté client
+ * (aller instantané comme le retour). La session naît à la PREMIÈRE réponse
+ * (route answer, via createDiscoverySession). La rétro-alimentation des statuts
+ * (donnée en fiche → answered) est calculée EN MÉMOIRE ici (garde correcte) et
+ * persistée ailleurs, sur /moi (getDiscoveryOverview.flushStatusWrites).
+ */
 export async function getNextMicroQuestion(
   userId: string,
   supabase: SupaDB,
@@ -393,17 +410,14 @@ export async function getNextMicroQuestion(
   mode: 'quick' | 'full',
   sectionKey?: string,
 ): Promise<NextQuestionResult | null> {
-  // D4 : les 3 lectures partent ENSEMBLE (questions, snapshot fiche, statuts
-  // + textes pré-calculés lus en une fois) — l'étage « statuts après » disparaît.
+  // Lectures parallèles — AUCUNE écriture ensuite.
   const [allQuestions, profileData, completion] = await Promise.all([
     getAllQuestionsWithTrigger(supabase),
     getProfileDataSnapshot(supabase, userId),
     getCompletionState(supabase, userId),
   ]);
-  // Rétro-alimentation (donnée en fiche → answered) : calcul PUR + écritures
-  // idempotentes (rares — zéro sur un profil déjà synchronisé) — Phase B.
-  const { statuses, toSync } = applyDataSync(completion.statuses, profileData);
-  await writeSyncedStatuses(supabase, userId, toSync);
+  // Rétro-alimentation calculée en mémoire (pur) — la garde reste exacte.
+  const { statuses } = applyDataSync(completion.statuses, profileData);
   const blocked = blockedKeys(statuses);
 
   // Non bloquée (answered/archived) + donnée absente de la fiche + trigger passe
@@ -431,41 +445,55 @@ export async function getNextMicroQuestion(
   const limit = mode === 'quick' ? 1 : FULL_SESSION_MAX;
   const picks = scored.slice(0, limit).map(s => s.q);
 
-  // D4 : création de session ET marquage last_asked en UNE passe (aucune ne
-  // dépend de l'autre ; seule la session renvoie l'id nécessaire au rendu).
-  const now = new Date().toISOString();
-  const [{ data: session }] = await Promise.all([
-    supabase
-      .from('discovery_sessions')
-      .insert({
-        user_id: userId,
-        mode,
-        pending_keys: picks.map(q => q.question_key),
-        current_index: 0,
-        status: 'active',
-      })
-      .select('id')
-      .single(),
-    supabase
-      .from('profile_completion')
-      .upsert(
-        { user_id: userId, question_key: picks[0].question_key, last_asked_at: now },
-        { onConflict: 'user_id,question_key' },
-      ),
-  ]);
-
-  if (!session) return null;
-
   // Texte servi : banque mot pour mot (reformulation coupée) — pré-calcul lu
   // depuis completion.personalized si réactivé, sans requête supplémentaire.
   const personalizedText = servedQuestionText(picks[0], completion.personalized);
 
   return {
     question: { ...picks[0], question_text: personalizedText },
-    sessionId: session.id as string,
+    sessionId: null,                          // session non née — GET sans écriture
+    pendingKeys: picks.map(q => q.question_key),
+    currentIndex: 0,
+    mode,
     sectionLabel: DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension,
     progress: mode === 'full' ? { current: 1, total: picks.length } : null,
   };
+}
+
+/**
+ * Levier 1 — création de la session à la PREMIÈRE réponse (route answer).
+ * Reprend le lot déterministe calculé au rendu (pendingKeys) et marque la
+ * question courante « posée » (last_asked_at). Retourne l'id de session.
+ */
+export async function createDiscoverySession(
+  userId: string,
+  supabase: SupaDB,
+  mode: 'quick' | 'full',
+  pendingKeys: string[],
+  currentIndex: number,
+): Promise<string | null> {
+  const { data: session } = await supabase
+    .from('discovery_sessions')
+    .insert({
+      user_id: userId,
+      mode,
+      pending_keys: pendingKeys,
+      current_index: currentIndex,
+      status: 'active',
+    })
+    .select('id')
+    .single();
+  if (!session) return null;
+  const currentKey = pendingKeys[currentIndex];
+  if (currentKey) {
+    await supabase
+      .from('profile_completion')
+      .upsert(
+        { user_id: userId, question_key: currentKey, last_asked_at: new Date().toISOString() },
+        { onConflict: 'user_id,question_key' },
+      );
+  }
+  return session.id as string;
 }
 
 // ── D1 CORRIGÉ : PRÉ-CALCUL des reformulations (jamais dans le rendu) ────────
