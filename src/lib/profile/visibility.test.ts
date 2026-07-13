@@ -65,9 +65,10 @@ describe("invite_filtre — socle + intersection", () => {
     expect(resolveVisibility("invite_filtre", "territoire").shown).toBe(true);
   });
 
-  it("wishlist est PARTAGEABLE (cochable, pas socle — revirement validé)", () => {
-    expect(checkableSections("invite_filtre")).toContain("wishlist");
-    expect(resolveVisibility("invite_filtre", "wishlist", ["wishlist"]).shown).toBe(true);
+  it("wishlist JAMAIS partagée aux tiers (retirée du partage — clôture V2)", () => {
+    expect(checkableSections("invite_filtre")).not.toContain("wishlist");
+    // never : invisible même explicitement « cochée » dans le scope
+    expect(resolveVisibility("invite_filtre", "wishlist", ["wishlist"]).shown).toBe(false);
     expect(socleSections("invite_filtre")).not.toContain("wishlist");
   });
 
@@ -95,11 +96,13 @@ describe("invite_filtre — socle + intersection", () => {
 });
 
 describe("invite_filtre — placeholders notShared (option A conservée)", () => {
-  it("cochable refusée → notShared ; cochée → non", () => {
+  it("cochable refusée → notShared ; cochée → non ; never → jamais de placeholder", () => {
     const only: SectionKey[] = ["deep_pleasure"];
     expect(resolveVisibility("invite_filtre", "works", only).notShared).toBe(true);
-    expect(resolveVisibility("invite_filtre", "wishlist", only).notShared).toBe(true);
+    expect(resolveVisibility("invite_filtre", "deep_miss", only).notShared).toBe(true);
     expect(resolveVisibility("invite_filtre", "deep_pleasure", only).notShared).toBe(false);
+    // wishlist (never) : ni montrée, ni placeholder « non partagé »
+    expect(resolveVisibility("invite_filtre", "wishlist", only).notShared).toBe(false);
   });
 
   it("hidden/never n'ont JAMAIS de placeholder ; le socle non plus", () => {

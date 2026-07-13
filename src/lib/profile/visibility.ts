@@ -1,7 +1,8 @@
 // Refonte Profil V2, Phase D — Matrice de visibilité de la fiche (V2).
 // SOURCE UNIQUE DE VÉRITÉ : tout rendu de fiche passe par resolveVisibility().
 // Découpage validé (STOP A + GO) : socle = résumé (+tags) + podium ;
-// wishlist = SECTION PARTAGEABLE (cochable, PAS socle — revirement acté) ;
+// wishlist = JAMAIS partagée aux tiers — elle ne s'exprime que fondue dans
+// les idées de Candice (clôture lot V2 : section partageable retirée) ;
 // art9 et adresse = never non négociable.
 //
 // Types de fiche (le type 'lien_public' n'existe pas : décision produit,
@@ -53,7 +54,7 @@ export type SectionKey =
   | "monde_gouts"
   | "territoire"        // territoire idéal (3 cartes statuées)
   | "univers"           // marques + lieux + matières + rêves + À savoir pour viser juste
-  | "wishlist"          // MA wishlist — partageable (cochable), liste simple côté tiers
+  | "wishlist"          // MA wishlist — visible pilote seulement (jamais partagée aux tiers)
   // Faits pratiques
   | "facts_tailles"
   | "facts_alimentaire"
@@ -109,7 +110,7 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     monde_tables: "filtered_on", monde_voyages: "filtered_on",
     monde_passions: "filtered_on", monde_gouts: "filtered_on",
     territoire: "filtered_on", univers: "filtered_on",
-    wishlist: "filtered_off",     // partageable, PAS socle (revirement validé)
+    wishlist: "never",            // jamais partagée — ne ressort que fondue dans les idées
     facts_tailles: "filtered_off", facts_alimentaire: "filtered_off",
     facts_parfums: "filtered_off", facts_adresse: "never",
     facts_animaux: "filtered_off", facts_dates: "filtered_off", facts_mobilite: "filtered_off",

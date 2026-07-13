@@ -20,18 +20,15 @@ import BottomCtas from "./BottomCtas";
 import Link from "next/link";
 import { resolveVisibility, type ProfileView, type SectionKey } from "@/lib/profile/visibility";
 import type { ProfileV2Data } from "@/lib/profile/v2-data";
-import type { WishlistItemV1 } from "@/app/moi/wishlist/WishlistClient";
 
 export default function ProfileV2({
   data,
   view = "pilote",
   sharedSections,
-  wishlistItems = [],
 }: {
   data: ProfileV2Data;
   view?: ProfileView;
   sharedSections?: SectionKey[];
-  wishlistItems?: WishlistItemV1[];
 }) {
   const show = (s: SectionKey) => resolveVisibility(view, s, sharedSections);
   const tiers = view !== "pilote";
@@ -193,28 +190,9 @@ export default function ProfileV2({
       )}
       {notSharedCard("univers", undefined, tiers ? "Son univers" : "Ton univers")}
 
-      {/* Wishlist partagée (revirement validé) — liste simple lisible */}
-      {show("wishlist").shown && wishlistItems.length > 0 && (
-        <>
-          <DivTxt2>Sa wishlist</DivTxt2>
-          <Mod>
-            {wishlistItems.map((it, i) => (
-              <div key={it.id} style={{
-                padding: "11px 0", borderBottom: i === wishlistItems.length - 1 ? "none" : `1px solid ${T2.line2}`,
-              }}>
-                <span style={{ fontSize: 14.5, fontWeight: 550, color: T2.ink }}>{it.title}</span>
-                {it.note && <span style={{ display: "block", fontSize: 13, fontWeight: 300, color: T2.ink2, marginTop: 2, lineHeight: 1.5 }}>{it.note}</span>}
-                {it.url && (
-                  <a href={it.url} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, color: T2.pine, fontWeight: 600, marginTop: 3, textDecoration: "none", minHeight: 32 }}>
-                    Voir le lien <Icon name="chevron" size={12} />
-                  </a>
-                )}
-              </div>
-            ))}
-          </Mod>
-        </>
-      )}
-      {notSharedCard("wishlist", undefined, "Sa wishlist")}
+      {/* Wishlist : jamais partagée aux tiers (clôture lot V2) — elle ne
+          s'exprime que fondue dans les idées de Candice. La wishlist pilote
+          vit sur son propre écran (/moi/wishlist). */}
 
       {factsAny && (
         <>

@@ -4,7 +4,6 @@ import "./globals.css";
 import { siteMetadata, schemaOrg } from "./metadata";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollMemory from "@/components/layout/ScrollMemory";
-import PerfBeacon from "@/components/layout/PerfBeacon";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -31,10 +30,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main-content" className="skip-to-content">
           Passer au contenu principal
         </a>
-        {/* F3 : restauration du scroll — tous les shells, tous les retours */}
+        {/* F3 : restauration du scroll — tous les shells, tous les retours.
+            S'appuie sur les marqueurs [data-page-ready] posés sur le contenu
+            réel de chaque page (contenu peint = budget de restauration réglé). */}
         <ScrollMemory />
-        {/* F2 : instrumentation perf TEMPORAIRE (diagnostic device réel) */}
-        <PerfBeacon />
         {children}
         <CookieBanner />
         <script

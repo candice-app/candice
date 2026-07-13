@@ -38,7 +38,6 @@ export const SHARE_GROUPS: ShareGroup[] = [
       { keys: ["monde_gouts"],    label: "Goûts esthétiques" },
       { keys: ["territoire"],     label: "Territoire idéal" },
       { keys: ["univers"],        label: "Univers & marques" },
-      { keys: ["wishlist"],       label: "Ma wishlist" },
     ],
   },
   {

@@ -37,8 +37,8 @@ describe("SHARE_GROUPS ↔ matrice V2", () => {
     expect(SHARE_GROUPS.map(g => g.title)).toEqual(["Analyse", "Mondes & univers", "Infos pratiques"]);
   });
 
-  it("la wishlist est proposée au partage (revirement validé)", () => {
-    expect(allShareGroupKeys()).toContain("wishlist");
+  it("la wishlist n'est JAMAIS proposée au partage (clôture V2)", () => {
+    expect(allShareGroupKeys()).not.toContain("wishlist");
   });
 });
 

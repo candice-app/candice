@@ -18,7 +18,6 @@ import { buildProfileV2Data, ANALYSIS_ROW_V2_SELECT, type AnalysisRowV2 } from "
 import { stripProfileV2Data, thirdPersonV2 } from "@/lib/profile/v2-tiers";
 import { getSignedAvatarUrl } from "@/lib/profile/avatar-url";
 import { sanitizeScope, SCOPE_BLIND } from "@/lib/profile/share-sections";
-import type { WishlistItemV1 } from "@/app/moi/wishlist/WishlistClient";
 
 export default async function FichePartageePage({
   params,
@@ -123,17 +122,13 @@ export default async function FichePartageePage({
     );
   }
 
-  // ── invite_filtre : données + wishlist si partagée ────────────────────────
-  const wishlistShared = sharedSections.includes("wishlist");
-  const [{ data: analysisRaw }, avatarUrl, wishlistRaw] = await Promise.all([
+  // ── invite_filtre : données de la fiche partagée ──────────────────────────
+  // (Clôture lot V2 : la wishlist n'est JAMAIS partagée aux tiers — elle ne
+  //  s'exprime que fondue dans les idées de Candice.)
+  const [{ data: analysisRaw }, avatarUrl] = await Promise.all([
     admin.from("profile_analysis").select(ANALYSIS_ROW_V2_SELECT)
       .eq("user_id", consent.pilote_id).is("contact_id", null).maybeSingle(),
     getSignedAvatarUrl(sharerProfile.avatar_path),
-    wishlistShared
-      ? admin.from("my_wishlist_items").select("id, title, url, note, created_at")
-          .eq("user_id", consent.pilote_id).order("created_at", { ascending: false })
-          .then(r => r.data)
-      : Promise.resolve(null),
   ]);
 
   const full = buildProfileV2Data({
@@ -152,7 +147,6 @@ export default async function FichePartageePage({
         data={data}
         view="invite_filtre"
         sharedSections={sharedSections}
-        wishlistItems={(wishlistRaw ?? []) as WishlistItemV1[]}
       />
     </V4Shell>
   );
