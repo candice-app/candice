@@ -1,6 +1,38 @@
 import { NextRequest, NextResponse, userAgent } from "next/server";
 import { createClient } from "@/utils/supabase/middleware";
 
+// ── D2 : auth du proxy dé-réseautée ─────────────────────────────────────────
+// Avant : getUser() faisait un aller-retour réseau à l'API Auth de Supabase
+// sur CHAQUE requête (donc chaque navigation), sur le chemin critique.
+// Maintenant : getClaims() vérifie le JWT en LOCAL (clés asymétriques ES256).
+// La JWKS est mise en cache au niveau MODULE (survit entre requêtes sur une
+// instance tiède) et passée à getClaims → zéro appel réseau par requête.
+// Le rafraîchissement de session (cookies) reste assuré : getClaims appelle
+// getSession() qui ne va au réseau QUE si le token est près d'expirer.
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+const JWKS_TTL_MS = 10 * 60 * 1000;
+let jwksCache: { keys: unknown[] } | null = null;
+let jwksCachedAt = 0;
+
+async function cachedJwksKeys(): Promise<unknown[] | undefined> {
+  if (jwksCache && Date.now() - jwksCachedAt < JWKS_TTL_MS) return jwksCache.keys;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/.well-known/jwks.json`, {
+      headers: { apikey: SUPABASE_KEY },
+    });
+    if (!res.ok) return jwksCache?.keys;
+    const data = (await res.json()) as { keys: unknown[] };
+    if (data?.keys?.length) {
+      jwksCache = data;
+      jwksCachedAt = Date.now();
+    }
+    return jwksCache?.keys;
+  } catch {
+    return jwksCache?.keys; // repli : dernière JWKS connue, jamais bloquant
+  }
+}
+
 // Personal routes inaccessible on desktop
 const DESKTOP_GATED_PREFIXES = [
   "/moi",
@@ -41,9 +73,15 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // ── Supabase session refresh ───────────────────────────────────────────────
+  // ── Supabase session refresh + auth locale (D2) ────────────────────────────
   const { supabase, supabaseResponse } = createClient(request);
-  const { data: { user } } = await supabase.auth.getUser();
+  const keys = await cachedJwksKeys();
+  type ClaimsOpts = Parameters<typeof supabase.auth.getClaims>[1];
+  const { data: claimsData } = await supabase.auth.getClaims(
+    undefined,
+    keys ? ({ keys } as ClaimsOpts) : undefined,
+  );
+  const user = claimsData?.claims ?? null;
 
   const protectedRoutes = ["/dashboard", "/contacts"];
   const authRoutes = ["/login", "/register"];
