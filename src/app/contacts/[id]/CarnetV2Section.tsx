@@ -42,10 +42,11 @@ const EMPTY = {
 type Draft = typeof EMPTY;
 
 export default function CarnetV2Section({
-  contactId, contactFirstName, initialItems,
-}: { contactId: string; contactFirstName: string; initialItems: CarnetItemV2[] }) {
+  contactId, pilotId, contactFirstName, initialItems,
+}: { contactId: string; pilotId: string; contactFirstName: string; initialItems: CarnetItemV2[] }) {
   const supabase = createClient();
   const [items, setItems] = useState<CarnetItemV2[]>(initialItems.filter(i => (i.statut ?? "actif") === "actif"));
+  const [err, setErr] = useState<string | null>(null);
   const [sheet, setSheet] = useState<"mode" | "ai" | "form" | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
   const [draft, setDraft] = useState<Draft>(EMPTY);
@@ -117,7 +118,7 @@ export default function CarnetV2Section({
   const save = async () => {
     const description = draft.description.trim();
     if (!description || busy) return;
-    setBusy(true);
+    setBusy(true); setErr(null);
     const patch = {
       description,
       brand_name: draft.brand_name.trim() || null,
@@ -131,13 +132,16 @@ export default function CarnetV2Section({
     };
     if (editId) {
       const { error } = await supabase.from("carnet_envies_items").update(patch).eq("id", editId);
-      if (!error) setItems(prev => prev.map(it => it.id === editId
+      if (error) { setErr("Modification impossible. Réessaie."); setBusy(false); return; }
+      setItems(prev => prev.map(it => it.id === editId
         ? { ...it, ...patch, photoSignedUrl: draft.photo_preview ?? it.photoSignedUrl } : it));
     } else {
+      // R1 : pilot_id déterministe (prop serveur) — RLS pilot_id = auth.uid().
       const { data, error } = await supabase.from("carnet_envies_items")
-        .insert({ ...patch, contact_id: contactId, pilot_id: (await supabase.auth.getUser()).data.user?.id, statut: "actif" })
+        .insert({ ...patch, contact_id: contactId, pilot_id: pilotId, statut: "actif" })
         .select("id, created_at").single();
-      if (!error && data) setItems(prev => [{
+      if (error || !data) { setErr("Ajout impossible. Réessaie."); setBusy(false); return; }
+      setItems(prev => [{
         ...patch, id: data.id as string, statut: "actif", created_at: data.created_at as string,
         photoSignedUrl: draft.photo_preview ?? null,
       }, ...prev]);
@@ -240,13 +244,20 @@ export default function CarnetV2Section({
             <div className={s.aiResult}>
               {draft.photo_preview ? <img className={s.th} src={draft.photo_preview} alt="" /> : <div className={s.th} />}
               <div className={s.txt}>
-                <b>{identifying ? "Candice regarde…" : (ai?.brand || ai?.product ? [ai?.brand, ai?.product].filter(Boolean).join(" ") : "Produit non reconnu")}</b>
-                <p>Candice pense avoir reconnu ce produit — vérifie avant d&apos;enregistrer.</p>
+                {/* R4 : hypothèse FAIBLE, jamais affirmative. Correction facile à l'étape suivante. */}
+                <b>{identifying
+                  ? "Candice regarde…"
+                  : (ai?.brand || ai?.product) ? `Peut-être : ${[ai?.brand, ai?.product].filter(Boolean).join(" ")} ?` : "Pas sûre de reconnaître"}</b>
+                <p>Simple supposition, souvent imprécise — vérifie et corrige à l&apos;étape suivante, ou ressaisis tout à la main.</p>
               </div>
             </div>
           )}
-          <button className={s.saveBtn} disabled={uploading} onClick={continueFromAi}>Continuer avec ce produit →</button>
-          <button className={s.ghost} onClick={() => setSheet("form")}>Ce n&apos;est pas ça — je renseigne moi-même</button>
+        </div>
+        <div className={s.shFoot}>
+          {(ai?.brand || ai?.product) && (
+            <button className={s.saveBtn} disabled={uploading} onClick={continueFromAi}>Continuer et corriger →</button>
+          )}
+          <button className={s.ghost} onClick={() => { setDraft(d => ({ ...EMPTY, photo_path: d.photo_path, photo_preview: d.photo_preview, viaPhoto: true })); setSheet("form"); }}>Ressaisir moi-même</button>
         </div>
       </div>
 
@@ -278,8 +289,11 @@ export default function CarnetV2Section({
               ))}
             </div>
           </div>
+          {err && <p className={s.errMsg}>{err}</p>}
+        </div>
+        <div className={s.shFoot}>
           <button className={s.saveBtn} disabled={!draft.description.trim() || busy || uploading} onClick={save}>
-            {editId ? "Enregistrer" : `Ajouter au carnet de ${contactFirstName}`}
+            {busy ? "…" : editId ? "Enregistrer" : `Ajouter au carnet de ${contactFirstName}`}
           </button>
         </div>
       </div>

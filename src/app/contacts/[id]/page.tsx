@@ -827,7 +827,7 @@ export default async function ContactPage({
 
             {/* À retenir */}
             <PointDivider label="À retenir" />
-            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
+            <CarnetV2Section contactId={id} pilotId={user.id} contactFirstName={contactFirstName} initialItems={carnetItems} />
 
             {/* Cadence */}
             <PointDivider label="Fréquence d'attention" />
@@ -857,7 +857,7 @@ export default async function ContactPage({
               </>
             )}
             <PointDivider label="À retenir" />
-            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
+            <CarnetV2Section contactId={id} pilotId={user.id} contactFirstName={contactFirstName} initialItems={carnetItems} />
           </>
         ) : inviteStatus === "pending" ? (
           /* Invite sent — proche hasn't registered yet */
@@ -879,7 +879,7 @@ export default async function ContactPage({
             </div>
 
             <PointDivider label="À retenir" />
-            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
+            <CarnetV2Section contactId={id} pilotId={user.id} contactFirstName={contactFirstName} initialItems={carnetItems} />
           </>
         ) : (
           /* Never invited */
@@ -898,7 +898,7 @@ export default async function ContactPage({
             </div>
 
             <PointDivider label="À retenir" />
-            <CarnetV2Section contactId={id} contactFirstName={contactFirstName} initialItems={carnetItems} />
+            <CarnetV2Section contactId={id} pilotId={user.id} contactFirstName={contactFirstName} initialItems={carnetItems} />
           </>
         )}
 

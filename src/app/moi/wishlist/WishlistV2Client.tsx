@@ -60,10 +60,11 @@ const EMPTY_DRAFT = {
 type Draft = typeof EMPTY_DRAFT;
 
 export default function WishlistV2Client({
-  initialItems, contacts,
+  userId, initialItems, contacts,
 }: { userId: string; initialItems: WishlistItemV2[]; contacts: ContactLite[] }) {
   const supabase = createClient();
   const [items, setItems] = useState<WishlistItemV2[]>(initialItems);
+  const [err, setErr] = useState<string | null>(null);
   const [filter, setFilter] = useState<Occasion | "all">("all");
   const [sheet, setSheet] = useState<"form" | "offered" | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
@@ -105,7 +106,7 @@ export default function WishlistV2Client({
   const save = async () => {
     const title = draft.title.trim();
     if (!title || busy) return;
-    setBusy(true);
+    setBusy(true); setErr(null);
     // Aperçu de lien : pas de photo mais un lien → tenter l'image OpenGraph.
     let photo = draft.photo_path;
     if (!photo && draft.web_link.trim()) {
@@ -132,18 +133,19 @@ export default function WishlistV2Client({
     };
     if (editId) {
       const { error } = await supabase.from("my_wishlist_items").update(patch).eq("id", editId);
-      if (!error) setItems(prev => prev.map(it => it.id === editId
+      if (error) { setErr("Modification impossible. Réessaie."); setBusy(false); return; }
+      setItems(prev => prev.map(it => it.id === editId
         ? { ...it, ...patch, photoSignedUrl: draft.photo_preview ?? (photo?.startsWith("http") ? photo : it.photoSignedUrl) }
         : it));
     } else {
+      // R1 : user_id OBLIGATOIRE (RLS auth.uid() = user_id) — sinon INSERT rejeté.
       const { data, error } = await supabase.from("my_wishlist_items")
-        .insert(patch).select("id, created_at").single();
-      if (!error && data) {
-        setItems(prev => [{
-          ...patch, id: data.id as string, note_text: null, created_at: data.created_at as string,
-          photoSignedUrl: draft.photo_preview ?? (photo?.startsWith("http") ? photo : null),
-        }, ...prev]);
-      }
+        .insert({ ...patch, user_id: userId }).select("id, created_at").single();
+      if (error || !data) { setErr("Ajout impossible. Réessaie."); setBusy(false); return; }
+      setItems(prev => [{
+        ...patch, id: data.id as string, note_text: null, created_at: data.created_at as string,
+        photoSignedUrl: draft.photo_preview ?? (photo?.startsWith("http") ? photo : null),
+      }, ...prev]);
     }
     setBusy(false);
     close();
@@ -312,9 +314,11 @@ export default function WishlistV2Client({
             </div>
             <p className={s.hintDest}>Cette envie n&apos;apparaîtra que chez les proches choisis. Une bague ne sera jamais suggérée à ta grand-mère si tu la réserves à ton mari.</p>
           </div>
-
+          {err && <p className={s.errMsg}>{err}</p>}
+        </div>
+        <div className={s.shFoot}>
           <button className={s.saveBtn} disabled={!draft.title.trim() || busy || uploading} onClick={save}>
-            {editId ? "Enregistrer" : "Ajouter à ma wishlist"}
+            {busy ? "…" : editId ? "Enregistrer" : "Ajouter à ma wishlist"}
           </button>
         </div>
       </div>
@@ -340,6 +344,8 @@ export default function WishlistV2Client({
               En le notant, Candice retiendra que <b>{contacts.find(c => c.id === offeredContact)?.name}</b> a visé juste — et pourra te demander si ça t&apos;a plu, pour l&apos;aider à mieux te connaître encore.
             </p>
           )}
+        </div>
+        <div className={s.shFoot}>
           <button className={s.saveBtn} disabled={busy} onClick={confirmOffered}>
             {offeredContact ? `C'est ${contacts.find(c => c.id === offeredContact)?.name} →` : "Noter comme offert →"}
           </button>

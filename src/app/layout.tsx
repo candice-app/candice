@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, DM_Sans } from "next/font/google";
 import "./globals.css";
 import { siteMetadata, schemaOrg } from "./metadata";
@@ -22,6 +22,15 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = siteMetadata;
+
+// R2 : viewport verrouillé — pas de zoom/pincement sur mobile (comportement app).
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: "cover",
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
