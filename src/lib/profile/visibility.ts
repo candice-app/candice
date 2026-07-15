@@ -20,7 +20,8 @@ export type ProfileView =
   | "pilote"
   | "invite_filtre"
   | "contact_consulte"
-  | "aveugle";
+  | "aveugle"
+  | "proche_espace";  // Espace Proche V2 : le pilote voit tout ce qu'il sait du proche (3e pers.)
 
 export type Visibility =
   | "visible"
@@ -150,6 +151,25 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     art9: "never", constraints_row: "never",
     viser: "never", bottom_ctas: "never",
     blind_message: "visible",     // seul contenu du mode aveugle
+  },
+
+  // Espace Proche V2 — le pilote voit TOUT ce qu'il sait de son proche (contact
+  // non-utilisateur : sa propre connaissance). Vue tierce → libellés « Son… » +
+  // texte 3e personne (thirdPersonV2). Chrome (header/CTAs/viser) fourni par
+  // l'espace-proche → masqué ici. Pour un proche-UTILISATEUR partagé, on utilise
+  // plutôt invite_filtre + le scope du consentement (visibilité réelle).
+  proche_espace: {
+    header_identity: "hidden", header_ring: "hidden", header_actions: "hidden", header_ctas: "hidden",
+    summary: "third_person", podium: "visible",
+    understood: "third_person", deep_touch: "third_person", deep_loved: "third_person",
+    deep_pleasure: "third_person", deep_miss: "third_person", works: "visible",
+    monde_tables: "third_person", monde_voyages: "third_person", monde_passions: "third_person", monde_gouts: "third_person",
+    territoire: "third_person", univers: "third_person",
+    wishlist: "never",
+    facts_tailles: "visible", facts_alimentaire: "visible", facts_parfums: "visible",
+    facts_adresse: "visible", facts_animaux: "visible", facts_dates: "visible", facts_mobilite: "visible",
+    art9: "visible", constraints_row: "hidden",
+    viser: "hidden", bottom_ctas: "hidden", blind_message: "hidden",
   },
 };
 

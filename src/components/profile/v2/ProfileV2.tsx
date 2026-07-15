@@ -25,10 +25,14 @@ export default function ProfileV2({
   data,
   view = "pilote",
   sharedSections,
+  embedded = false,
 }: {
   data: ProfileV2Data;
   view?: ProfileView;
   sharedSections?: SectionKey[];
+  /** Espace Proche V2 : monté SOUS une chrome existante → masque le header et
+   *  le wrapper plein écran (§15, rendu identique au pilote pour les sections). */
+  embedded?: boolean;
 }) {
   const show = (s: SectionKey) => resolveVisibility(view, s, sharedSections);
   const tiers = view !== "pilote";
@@ -106,8 +110,11 @@ export default function ProfileV2({
     .some(k => show(k as SectionKey).notShared);
 
   return (
-    <div data-page-ready="fiche" style={{ background: T2.canvas, minHeight: "100svh", paddingBottom: "calc(92px + env(safe-area-inset-bottom))" }}>
-      {view === "pilote" ? (
+    <div
+      {...(embedded ? {} : { "data-page-ready": "fiche" })}
+      style={embedded ? undefined : { background: T2.canvas, minHeight: "100svh", paddingBottom: "calc(92px + env(safe-area-inset-bottom))" }}
+    >
+      {!embedded && (view === "pilote" ? (
         <HeaderV2
           firstName={data.firstName}
           avatarUrl={data.avatarUrl}
@@ -116,7 +123,7 @@ export default function ProfileV2({
         />
       ) : (
         <HeaderTiers firstName={data.firstName} avatarUrl={data.avatarUrl} view={view} />
-      )}
+      ))}
 
       {show("summary").shown && (
         <ResumeV2
