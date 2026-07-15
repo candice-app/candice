@@ -1,0 +1,77 @@
+/* Espace Proche V2 — coquille (Phase 2). Transcription FIDÈLE de la chrome de
+   Candice_Espace_Proche_COMPLET.html : header aplat, nav 3 onglets, bouton Accueil.
+   Scopé sous .wrap. Polices via var(--font-serif|sans) (next/font). Contenus des
+   onglets = placeholders (remplis aux phases 3-5). */
+
+.wrap{
+ --canvas:#FEFEFB;--surface:#FFFFFF;--mist:#EEF3F0;--ink:#16150E;--ink2:#5F5A51;--ink3:#ABA699;
+ --pine:#173E31;--pine2:#1B4D3E;--pine-lite:#2A7B5C;--glow:#3E7361;--sage:#8DA697;--sage-bg:#E9F0EC;
+ --champ:#CDB987;--gold:#C7A85A;--champ-soft:#FBF8F0;--coral:#B9583F;--coral-bg:#F7ECE7;
+ --terra:#C57B4E;--blue:#5F8190;
+ --aplat:linear-gradient(157deg,#1D5040,#0C2A20);
+ --line:rgba(23,62,49,.11);--line2:rgba(23,62,49,.06);--shadow:0 10px 30px rgba(23,62,49,.07);
+ font-family:var(--font-sans);color:var(--ink);background:var(--canvas);
+ max-width:480px;margin:0 auto;min-height:100svh;position:relative;
+}
+.wrap *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.wrap button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit;text-align:left}
+.icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+
+.view{display:none}
+.view.on{display:block}
+.screen{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+
+/* ── HEADER APLAT ── */
+.gh{background:var(--aplat);color:#fff;position:relative;overflow:hidden;border-radius:0 0 30px 30px;box-shadow:0 18px 40px rgba(23,62,49,.24)}
+.gh:before{content:"";position:absolute;left:-60px;bottom:-90px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(62,115,97,.35),transparent 70%);pointer-events:none}
+.gh:after{content:"";position:absolute;right:-30px;top:-56px;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.38),transparent 70%);pointer-events:none}
+.ghBrand{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top)) 22px 0}
+.ghBack{color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;min-height:38px}
+.ghBack .icon{width:16px;height:16px}
+.ghActs{display:flex;gap:8px}
+.ghActs button{width:38px;height:38px;border-radius:50%;border:1px solid rgba(255,255,255,.28);display:flex;align-items:center;justify-content:center;color:#fff}
+.ghActs .icon{width:17px;height:17px}
+.ghIn{position:relative;z-index:2;padding:26px 22px 26px}
+.ghTop{display:flex;align-items:center;gap:17px}
+.avWrap{position:relative;flex-shrink:0}
+.av{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:32px;color:var(--pine);background:radial-gradient(circle at 35% 30%,#fff,var(--champ-soft));border:1px solid rgba(205,185,135,.55);flex-shrink:0;box-shadow:0 8px 22px rgba(0,0,0,.18)}
+.avCam{position:absolute;left:-3px;bottom:0;width:24px;height:24px;border-radius:50%;background:var(--pine);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.25);border:1.5px solid rgba(255,255,255,.85)}
+.avCam .icon{width:12px;height:12px;color:#fff}
+.ghTop h1{font-family:var(--font-serif);font-weight:400;font-size:34px;letter-spacing:.2px}
+.knows{display:flex;align-items:center;gap:9px;margin-top:7px}
+.kring{width:19px;height:19px;border-radius:50%;background:conic-gradient(var(--champ) 0 316deg,rgba(255,255,255,.16) 316deg 360deg);position:relative;flex-shrink:0;box-shadow:0 0 10px rgba(205,185,135,.45)}
+.kring:before{content:"";position:absolute;inset:3.5px;border-radius:50%;background:#164534}
+.knows p{font-size:14.5px;color:rgba(255,255,255,.84)}
+.knows p b{color:#EBDDB6;font-weight:600}
+.knowMore{position:relative;z-index:2;display:inline-flex;align-items:center;gap:5px;margin:2px 0 0 28px;font-size:12.5px;font-weight:500;color:rgba(235,221,182,.72);min-height:34px}
+.knowMore .icon{width:13px;height:13px}
+.shareLine{padding:13px 22px 0;font-size:12px;font-style:italic;color:var(--ink3);line-height:1.45}
+
+/* ── Header « Nous » (duo, PAS de cœur) ── */
+.centerHead{text-align:center;padding:4px 22px 26px;position:relative;z-index:2}
+.centerHead h1{font-family:var(--font-serif);font-weight:400;font-size:27px;line-height:1.15}
+.centerHead .sub{font-size:13px;color:rgba(255,255,255,.82);margin-top:8px;line-height:1.5}
+.duo{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:16px}
+.duoP{display:flex;flex-direction:column;align-items:center;gap:7px;width:96px}
+.duoP .a{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:15px;font-weight:500;border:2px solid rgba(255,255,255,.28);text-align:center;line-height:1.05;padding:4px}
+.duoP.her .a{background:radial-gradient(circle at 35% 30%,#fff,var(--champ-soft));color:var(--pine)}
+.duoP.him .a{background:radial-gradient(circle at 35% 30%,#3E7361,#173E31);color:#F3E9CE}
+.duoP span{font-size:11px;color:rgba(255,255,255,.85);font-weight:600}
+.duoDot{width:34px;height:1px;background:rgba(255,255,255,.3);flex-shrink:0;margin:0 4px;align-self:center;position:relative}
+.duoDot:before{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:6px;height:6px;border-radius:50%;background:var(--champ);box-shadow:0 0 8px rgba(205,185,135,.8)}
+
+/* ── Placeholder d'onglet (Phase 2) ── */
+.ph{margin:24px 14px;padding:30px 20px;border:1px dashed var(--line);border-radius:18px;background:#fff;text-align:center;box-shadow:var(--shadow)}
+.ph h2{font-family:var(--font-serif);font-weight:450;font-size:19px;color:var(--ink);margin-bottom:8px}
+.ph p{font-size:13.5px;color:var(--ink3);line-height:1.5}
+.fpHead{padding:calc(16px + env(safe-area-inset-top)) 22px 24px}
+.fpHead h1{font-family:var(--font-serif);font-weight:400;font-size:30px;color:#fff;margin-top:18px}
+
+/* ── Bottom nav (3 onglets) ── */
+.pnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-top:1px solid var(--line);display:flex;padding:9px 10px calc(10px + env(safe-area-inset-bottom));z-index:50}
+.pnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px;font-size:11px;font-weight:600;color:var(--ink3);border-radius:12px}
+.pnav button .icon{width:21px;height:21px;stroke-width:1.6}
+.pnav button.on{color:var(--pine)}
+.pnav button.on .ib{background:var(--sage-bg)}
+.pnav button .ib{width:46px;height:30px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:background .2s}
+@media(prefers-reduced-motion:reduce){.wrap *{transition:none!important}}
