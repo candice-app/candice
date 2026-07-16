@@ -25,7 +25,8 @@ describe("VISIBILITY_MATRIX V2 — complétude", () => {
 
   it("le type lien_public n'existe pas (décision produit)", () => {
     expect(ALL_VIEWS).not.toContain("lien_public");
-    expect(Object.keys(VISIBILITY_MATRIX)).toHaveLength(4);
+    // 5 vues : pilote, invite_filtre, contact_consulte, aveugle, proche_espace (Espace Proche V2).
+    expect(Object.keys(VISIBILITY_MATRIX)).toHaveLength(5);
   });
 });
 
