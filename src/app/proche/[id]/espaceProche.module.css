@@ -124,3 +124,79 @@
 .shFoot{flex-shrink:0;padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line2);background:var(--canvas)}
 .saveBtn{width:100%;background:var(--pine);color:#fff;border-radius:7px;min-height:52px;font-size:15px;font-weight:600}
 .saveBtn:disabled{opacity:.5}
+
+/* ── Onglet Nous — comparative ── */
+.adviceTop{margin:18px 14px 4px;background:var(--aplat);color:#fff;border-radius:18px;padding:18px;position:relative;overflow:hidden;box-shadow:0 12px 30px rgba(23,62,49,.22)}
+.adviceTop:after{content:"";position:absolute;right:-30px;top:-40px;width:150px;height:150px;border-radius:50%;background:radial-gradient(circle,rgba(205,185,135,.18),transparent 70%)}
+.adviceTop .h{position:relative;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--champ);font-weight:700;margin-bottom:12px}
+.adviceTop li{position:relative;list-style:none;font-size:13.5px;line-height:1.5;padding:8px 0 8px 24px;color:rgba(255,255,255,.92);border-bottom:1px solid rgba(255,255,255,.1)}
+.adviceTop li:last-child{border:none}
+.adviceTop li:before{content:"";position:absolute;left:2px;top:14px;width:8px;height:8px;border-radius:50%;background:var(--champ)}
+.adviceTop li b{color:#fff;font-weight:650}
+.lead{padding:22px 22px 6px}
+.lead p{font-family:var(--font-serif);font-size:18px;line-height:1.5}
+.lead p em{font-style:italic;color:var(--pine)}
+.divtxt{display:flex;align-items:center;gap:10px;margin:26px 20px 13px;font-size:10px;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink3);font-weight:700}
+.divtxt:before,.divtxt:after{content:"";flex:1;height:1px;background:var(--line2)}
+.divtxt .pt{width:5px;height:5px;border-radius:50%;background:var(--glow);box-shadow:0 0 6px rgba(62,115,97,.75);flex-shrink:0}
+.legend{display:flex;justify-content:center;gap:20px;margin-bottom:14px}
+.legend span{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--ink2)}
+.legend .dot{width:11px;height:11px;border-radius:50%}
+.legend .her{background:var(--gold)}
+.legend .him{background:var(--pine)}
+.dualCard{margin:0 14px 14px;background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:17px 16px;box-shadow:var(--shadow)}
+.dual{margin-bottom:17px}
+.dual:last-child{margin-bottom:2px}
+.dual .dl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.dual .dl b{font-size:14px;font-weight:560}
+.dual .track{position:relative;height:24px;border-radius:8px;background:var(--line2)}
+.dual .track .barH{position:absolute;top:3px;height:8px;border-radius:5px;background:linear-gradient(90deg,#CDB987,#C7A85A);left:0}
+.dual .track .barT{position:absolute;bottom:3px;height:8px;border-radius:5px;background:linear-gradient(90deg,#173E31,#3E7361);left:0}
+.dual .lvls{display:flex;justify-content:space-between;margin-top:7px;font-size:9.5px;color:var(--ink3);letter-spacing:.4px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.mod{margin:0 14px 12px;padding:17px 16px}
+.mh{font-family:var(--font-serif);font-size:18px;font-weight:450;margin-bottom:4px}
+.md{font-size:13.5px;color:var(--ink2);line-height:1.52;margin-top:8px}
+.md b{color:var(--ink);font-weight:600}
+
+/* ── Onglet Faire plaisir ── */
+.fpHead p{font-size:13px;color:rgba(255,255,255,.82);line-height:1.5;margin-top:8px;position:relative;z-index:2}
+.srcSelect{display:flex;align-items:center;gap:11px;padding:16px 16px 0}
+.srcSelect label{font-size:12px;color:var(--ink2);font-weight:600;flex-shrink:0}
+.selWrap{position:relative;flex:1}
+.selWrap select{width:100%;appearance:none;-webkit-appearance:none;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 40px 12px 14px}
+.selWrap .icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:16px;color:var(--ink3);pointer-events:none}
+.dayBanner{margin:16px 14px 0;background:var(--sage-bg);border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:11px}
+.dayBanner .ic{width:34px;height:34px;border-radius:10px;background:#fff;color:var(--pine);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dayBanner .ic .icon{width:17px}
+.dayBanner p{font-size:12.5px;color:var(--pine2);line-height:1.4}
+.dayBanner p b{font-weight:700}
+.reco{margin:12px 14px 0;background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.reco.hidden{display:none}
+.reco .rTop{display:flex;width:100%;text-align:left}
+.reco .rPhoto{width:100px;flex-shrink:0;background:var(--mist);position:relative}
+.reco .rPhoto .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+.reco .rPhoto img{width:100%;height:100%;object-fit:cover;display:block}
+.reco .rBody{flex:1;padding:14px 15px;min-width:0}
+.srcTag{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.2px;font-weight:700;padding:6px 11px;border-radius:8px;margin-bottom:8px}
+.srcTag.candice{background:var(--sage-bg);color:var(--pine)}
+.srcTag.mine{background:rgba(205,185,135,.22);color:#7a4b1e}
+.srcTag .icon{width:13px;height:13px;stroke-width:2.2}
+.reco .brand{font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:var(--gold);font-weight:700}
+.reco .title{font-family:var(--font-serif);font-size:16px;font-weight:450;margin:2px 0 5px;line-height:1.25}
+.reco .why{font-size:12px;color:var(--ink2);line-height:1.4;font-style:italic}
+.reco .rMeta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center}
+.reco .m{font-size:10.5px;color:var(--ink2);background:rgba(23,62,49,.05);padding:3px 8px;border-radius:6px}
+.reco .m.price{background:rgba(205,185,135,.18);color:#7a4b1e;font-weight:600}
+.reco .cert{font-size:10.5px;font-weight:700;color:var(--pine);display:inline-flex;align-items:center;gap:4px}
+.reco .rAct{display:flex;border-top:1px solid var(--line2)}
+.reco .rAct button{flex:1;padding:13px;font-size:13px;font-weight:600;color:var(--pine);display:flex;align-items:center;justify-content:center;gap:6px}
+.reco .rAct button.prim{background:var(--pine);color:#fff}
+.reco .rAct button+button{border-left:1px solid var(--line2)}
+.reco .rAct .icon{width:14px}
+.refLink{margin:16px 14px 0;display:flex;align-items:center;gap:9px;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;font-size:13px;color:var(--ink2);width:calc(100% - 28px)}
+.refLink .icon{width:16px;color:var(--ink3)}
+.refLink .n{margin-left:auto;font-size:11px;font-weight:700;color:var(--ink3);background:var(--mist);padding:3px 9px;border-radius:20px}
+.emptyFp{margin:20px 14px 0;padding:30px 22px;text-align:center;border:1px dashed var(--line);border-radius:18px;background:#fff}
+.emptyFp h3{font-family:var(--font-serif);font-weight:450;font-size:18px;margin-bottom:8px}
+.emptyFp p{font-size:13px;color:var(--ink3);line-height:1.55}

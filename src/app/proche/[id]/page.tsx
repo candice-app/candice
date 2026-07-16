@@ -35,11 +35,19 @@ export default async function EspaceProchePage({
   if (!claims) redirect(`/login?next=/proche/${id}`);
   const userId = claims.sub as string;
 
-  const [{ data: contact }, { data: myProfile }] = await Promise.all([
+  const [{ data: contact }, { data: myProfile }, { data: myAnalysis }, { data: recoRows }, { data: carnetRows }, { count: refusedCount }] = await Promise.all([
     supabase.from("contacts")
       .select("id, name, gender, date_de_naissance, postal_address, proche_user_id")
       .eq("id", id).eq("user_id", userId).maybeSingle(),
     supabase.from("my_profile").select("practical_info").eq("user_id", userId).maybeSingle(),
+    supabase.from("profile_analysis").select("dimension_scores").eq("user_id", userId).is("contact_id", null).maybeSingle(),
+    supabase.from("contact_reco_items")
+      .select("id, reco_type, title, brand, price_indicative, source_trace, certainty_pct, why_json, need_tag")
+      .eq("pilot_id", userId).eq("contact_id", id).eq("status", "active").order("created_at", { ascending: false }),
+    supabase.from("carnet_envies_items")
+      .select("id, description, brand_name, heard_quote, price_indicative")
+      .eq("contact_id", id).eq("statut", "actif").order("created_at", { ascending: false }),
+    supabase.from("reco_refusals").select("id", { count: "exact", head: true }).eq("pilot_id", userId).eq("contact_id", id),
   ]);
   if (!contact) notFound();
 
@@ -80,6 +88,22 @@ export default async function EspaceProchePage({
   const procheData: ProfileV2Data = thirdPersonV2({ ...rawData, gender });
   const hasAnalysis = false; // décision B : aucune analyse générée pour un contact non-utilisateur
 
+  // Onglet Nous — jauges superposées (dimension_scores pilote vs proche).
+  // Décision B : le proche non-utilisateur n'a pas d'analyse → pas de comparatif.
+  const piloteDims = (myAnalysis?.dimension_scores as Record<string, number> | null) ?? null;
+  const procheDims = null; // contact non-utilisateur : aucune analyse (comparatif indisponible)
+
+  // Onglet Faire plaisir — recos + carnet + refus.
+  const recos = (recoRows ?? []) as Array<{
+    id: string; reco_type: string; title: string; brand: string | null;
+    price_indicative: string | null; source_trace: string; certainty_pct: number | null;
+    why_json: unknown; need_tag: string | null;
+  }>;
+  const carnet = (carnetRows ?? []) as Array<{
+    id: string; description: string; brand_name: string | null;
+    heard_quote: string | null; price_indicative: string | null;
+  }>;
+
   return (
     <EspaceProcheShell
       contactId={id}
@@ -91,6 +115,11 @@ export default async function EspaceProchePage({
       birthdayWeeks={bday?.weeks ?? null}
       procheData={procheData}
       hasAnalysis={hasAnalysis}
+      piloteDims={piloteDims}
+      procheDims={procheDims}
+      recos={recos}
+      carnet={carnet}
+      refusedCount={refusedCount ?? 0}
     />
   );
 }

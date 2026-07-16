@@ -34,12 +34,35 @@ const ETATS = [
 
 function Accueil() { return <Link href="/dashboard" className={s.ghBack}><HomeIcon />Accueil</Link>; }
 
+interface RecoItem {
+  id: string; reco_type: string; title: string; brand: string | null;
+  price_indicative: string | null; source_trace: string; certainty_pct: number | null;
+  why_json: unknown; need_tag: string | null;
+}
+interface CarnetItem {
+  id: string; description: string; brand_name: string | null;
+  heard_quote: string | null; price_indicative: string | null;
+}
+
+// Dimensions comparées (onglet Nous) — libellés EXACTS de la maquette / du pilote.
+const DUAL_DIMS: { key: string; label: string }[] = [
+  { key: "MOT", label: "Mots justes" },
+  { key: "CAD_C", label: "Cadeaux choisis" },
+  { key: "EXP", label: "Moments partagés" },
+  { key: "GES", label: "Esthétique · qualité" },
+  { key: "SER", label: "Actes de service" },
+  { key: "SUR", label: "Surprise" },
+];
+
 export default function EspaceProcheShell({
-  contactId, pilotId, procheFirstName, procheGender, mode, birthdayWeeks, procheData, hasAnalysis,
+  contactId, pilotId, procheFirstName, piloteFirstName, procheGender, mode, birthdayWeeks,
+  procheData, hasAnalysis, piloteDims, procheDims, recos, carnet, refusedCount,
 }: {
   contactId: string; pilotId: string; procheFirstName: string; piloteFirstName: string;
   procheGender: "feminine" | "masculine" | "neutral";
   mode: Mode; birthdayWeeks: number | null; procheData: ProfileV2Data; hasAnalysis: boolean;
+  piloteDims: Record<string, number> | null; procheDims: Record<string, number> | null;
+  recos: RecoItem[]; carnet: CarnetItem[]; refusedCount: number;
 }) {
   const supabase = createClient();
   const [tab, setTab] = useState<Tab>("thibaud");
@@ -47,6 +70,13 @@ export default function EspaceProcheShell({
   const [newsText, setNewsText] = useState("");
   const [newsState, setNewsState] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [srcFilter, setSrcFilter] = useState<"all" | "candice" | "mine">("all");
+
+  const hasComparative = !!(piloteDims && procheDims);
+  const recoSource = (r: RecoItem) => (r.source_trace === "spotted" ? "mine" : "candice");
+  const shownRecos = recos.filter(r => srcFilter === "all" || recoSource(r) === srcFilter);
+  const showCarnet = srcFilter === "all" || srcFilter === "mine";
+  const fpEmpty = recos.length === 0 && carnet.length === 0;
 
   const go = (t: Tab) => { setTab(t); if (typeof window !== "undefined") window.scrollTo(0, 0); };
 
@@ -130,25 +160,135 @@ export default function EspaceProcheShell({
         </div>
       </div>
 
-      {/* ── Onglet Nous (placeholder — Phase 4) ── */}
+      {/* ── Onglet Nous (Phase 4) ── */}
       <div className={`${s.view} ${tab === "nous" ? s.on : ""}`}>
         <div className={s.screen}>
           <div className={s.gh}>
             <div className={s.ghBrand}><Accueil /><div className={s.ghActs}><button aria-label="Réglages"><GearIcon /></button></div></div>
-            <div className={s.centerHead}><h1>Vous deux</h1><p className={s.sub}>Analyse comparative — à venir (Phase 4).</p></div>
+            <div className={s.centerHead}>
+              <div className={s.duo}>
+                <div className={`${s.duoP} ${s.her}`}><div className={s.a}>{piloteFirstName}</div><span>Toi</span></div>
+                <div className={s.duoDot} />
+                <div className={`${s.duoP} ${s.him}`}><div className={s.a}>{procheFirstName}</div><span>Lui</span></div>
+              </div>
+              <h1>Vous deux</h1>
+              <p className={s.sub}>Ce que Candice comprend de votre lien — pour t&apos;aider à prendre soin de lui comme il le ressent.</p>
+            </div>
           </div>
-          <div className={s.ph}><h2>Nous</h2><p>Jauges superposées, mode d&apos;emploi du duo, ce qui vous lie, angle mort.</p></div>
+
+          {hasComparative ? (
+            <>
+              <div className={s.divtxt}><span className={s.pt} />Vos langages, comparés</div>
+              <div className={s.legend}>
+                <span><span className={`${s.dot} ${s.her}`} />Toi</span>
+                <span><span className={`${s.dot} ${s.him}`} />{procheFirstName}</span>
+              </div>
+              <div className={s.dualCard}>
+                {DUAL_DIMS.map(d => (
+                  <div key={d.key} className={s.dual}>
+                    <div className={s.dl}><b>{d.label}</b></div>
+                    <div className={s.track}>
+                      <div className={s.barH} style={{ width: `${Math.min(100, piloteDims![d.key] ?? 0)}%` }} />
+                      <div className={s.barT} style={{ width: `${Math.min(100, procheDims![d.key] ?? 0)}%` }} />
+                    </div>
+                    <div className={s.lvls}><span>À doser</span><span>Présent</span><span>Dominant</span></div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <div className={s.enrich}>
+              <h3>Candice a besoin d&apos;en savoir plus sur {procheFirstName}</h3>
+              <p>Dès que {procheFirstName} aura son propre profil (ou que tu l&apos;auras enrichi), Candice comparera vos langages d&apos;attention côte à côte, sur les mêmes dimensions.</p>
+              <button className={s.cta}>Enrichir son profil <ChevIcon /></button>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* ── Onglet Faire plaisir (placeholder — Phase 5) ── */}
+      {/* ── Onglet Faire plaisir (Phase 5) ── */}
       <div className={`${s.view} ${tab === "faireplaisir" ? s.on : ""}`}>
         <div className={s.screen}>
           <div className={s.gh}>
             <div className={s.ghBrand}><Accueil /><div className={s.ghActs}><button aria-label="Réglages"><GearIcon /></button></div></div>
-            <div className={s.fpHead}><h1>Faire plaisir à {procheFirstName}</h1></div>
+            <div className={s.fpHead}>
+              <h1>Faire plaisir à {procheFirstName}</h1>
+              <p>Candice croise tout ce qu&apos;elle sait de lui pour te proposer juste — surtout au quotidien.</p>
+            </div>
           </div>
-          <div className={s.ph}><h2>Faire plaisir</h2><p>Recommandations à venir (Phase 5).</p></div>
+
+          <div className={s.srcSelect}>
+            <label>Afficher</label>
+            <div className={s.selWrap}>
+              <select value={srcFilter} onChange={e => setSrcFilter(e.target.value as typeof srcFilter)}>
+                <option value="all">Toutes les idées</option>
+                <option value="candice">Les idées de Candice</option>
+                <option value="mine">Ce que j&apos;ai repéré</option>
+              </select>
+              <svg className={s.icon} viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" /></svg>
+            </div>
+          </div>
+
+          {fpEmpty ? (
+            <div className={s.emptyFp}>
+              <h3>Candice prépare ses idées pour {procheFirstName}</h3>
+              <p>Dès que Candice en saura assez sur lui, elle te proposera ici des attentions justes — surtout de petits gestes du quotidien. Tu peux aussi noter une envie repérée dans son carnet.</p>
+            </div>
+          ) : (
+            <>
+              {shownRecos.map(r => (
+                <div key={r.id} className={s.reco}>
+                  <button className={s.rTop}>
+                    <div className={s.rPhoto}><div className={s.ph}><svg className={s.icon} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></div></div>
+                    <div className={s.rBody}>
+                      <span className={`${s.srcTag} ${recoSource(r) === "mine" ? s.mine : s.candice}`}>
+                        {recoSource(r) === "mine" ? "Repéré par toi" : "Idée de Candice"}
+                      </span>
+                      {r.brand && <div className={s.brand}>{r.brand}</div>}
+                      <div className={s.title}>{r.title}</div>
+                      <div className={s.rMeta}>
+                        {r.price_indicative && <span className={`${s.m} ${s.price}`}>{r.price_indicative}</span>}
+                        {r.certainty_pct != null && <span className={s.cert}>Sûr à {r.certainty_pct}%</span>}
+                      </div>
+                    </div>
+                  </button>
+                  <div className={s.rAct}>
+                    <button className={s.prim}>Je veux l&apos;offrir</button>
+                    <button>Pas ça</button>
+                  </div>
+                </div>
+              ))}
+
+              {showCarnet && carnet.map(it => (
+                <div key={it.id} className={s.reco}>
+                  <button className={s.rTop}>
+                    <div className={s.rPhoto}><div className={s.ph}><svg className={s.icon} viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" /></svg></div></div>
+                    <div className={s.rBody}>
+                      <span className={`${s.srcTag} ${s.mine}`}>Repéré par toi</span>
+                      {it.brand_name && <div className={s.brand}>{it.brand_name}</div>}
+                      <div className={s.title}>{it.description}</div>
+                      {it.heard_quote && <div className={s.why}>« {it.heard_quote} »</div>}
+                      <div className={s.rMeta}>
+                        {it.price_indicative && <span className={`${s.m} ${s.price}`}>{it.price_indicative}</span>}
+                        <span className={s.cert}>Sûr — tu l&apos;avais repéré</span>
+                      </div>
+                    </div>
+                  </button>
+                  <div className={s.rAct}>
+                    <button className={s.prim}>Je veux l&apos;offrir</button>
+                    <button>Pas ça</button>
+                  </div>
+                </div>
+              ))}
+            </>
+          )}
+
+          {refusedCount > 0 && (
+            <button className={s.refLink}>
+              <svg className={s.icon} viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /></svg>
+              Attentions écartées<span className={s.n}>{refusedCount}</span>
+            </button>
+          )}
         </div>
       </div>
 
