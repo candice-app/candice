@@ -200,3 +200,31 @@
 .emptyFp{margin:20px 14px 0;padding:30px 22px;text-align:center;border:1px dashed var(--line);border-radius:18px;background:#fff}
 .emptyFp h3{font-family:var(--font-serif);font-weight:450;font-size:18px;margin-bottom:8px}
 .emptyFp p{font-size:13px;color:var(--ink3);line-height:1.55}
+
+/* ── Sheet détail reco (Phase 6, §6) ── */
+.dHero{position:relative;height:200px;background:var(--aplat);margin:-4px -20px 0;border-radius:16px 16px 0 0;overflow:hidden}
+.dHero img{width:100%;height:100%;object-fit:cover;display:block}
+.dHero .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4)}
+.dHero .ph .icon{width:54px;height:54px;stroke-width:1}
+.needTag{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.92);color:var(--pine);font-size:11px;font-weight:700;padding:7px 12px;border-radius:8px}
+.needTag .icon{width:13px;height:13px}
+.dBrand{font-size:11px;letter-spacing:.8px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-top:18px}
+.dTitle{font-family:var(--font-serif);font-size:23px;font-weight:450;margin:4px 0 14px;line-height:1.15}
+.certif{display:flex;align-items:center;gap:11px;padding:14px;border-radius:14px;margin-bottom:16px;background:var(--sage-bg)}
+.certif .ring{width:46px;height:46px;flex-shrink:0;position:relative}
+.certif .ring svg{transform:rotate(-90deg)}
+.certif .ring .pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:12px;font-weight:600;color:var(--pine)}
+.certif .check{width:46px;height:46px;flex-shrink:0;border-radius:50%;background:var(--pine);color:#fff;display:flex;align-items:center;justify-content:center}
+.certif .check .icon{width:22px;height:22px;stroke-width:2.4}
+.certif .ct b{font-size:14px;font-weight:650;display:block;color:var(--pine)}
+.certif .ct p{font-size:12px;color:var(--ink2);line-height:1.4;margin-top:2px}
+.whyD{margin-bottom:16px}
+.whyD .h{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink3);font-weight:700;margin-bottom:8px}
+.whyD p{font-size:13.5px;line-height:1.6;color:var(--ink2)}
+.dMeta{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.dMeta:empty{margin-bottom:0}
+.dMeta .m{font-size:12px;padding:6px 11px;border-radius:8px;background:rgba(23,62,49,.05);color:var(--ink2)}
+.dMeta .m.price{background:rgba(205,185,135,.18);color:#7a4b1e;font-weight:700;font-size:13px}
+.dActions{display:flex;flex-direction:column;gap:9px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
+.dActions .prim{background:var(--pine);color:#fff;min-height:54px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;box-shadow:0 8px 20px rgba(23,62,49,.18)}
+.dActions .sec{min-height:48px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink2)}

@@ -38,11 +38,57 @@ function Accueil() { return <Link href="/dashboard" className={s.ghBack}><HomeIc
 interface RecoItem {
   id: string; reco_type: string; title: string; brand: string | null;
   price_indicative: string | null; source_trace: string; certainty_pct: number | null;
-  why_json: unknown; need_tag: string | null;
+  why_json: unknown; need_tag: string | null; photo_url: string | null;
 }
 interface CarnetItem {
   id: string; description: string; brand_name: string | null;
   heard_quote: string | null; price_indicative: string | null;
+}
+
+// Détail d'une reco/carnet — vue normalisée pour le sheet (§6).
+interface Detail {
+  brand: string | null; title: string; price: string | null; needTag: string | null;
+  source: string; pct: number | null; why: string | null; photo: string | null; recoType: string;
+}
+
+// Bloc certitude (§2) : ton selon la source (source_trace).
+function certif(
+  source: string, pct: number | null, firstName: string, feminine: boolean,
+): { ringPct: number | null; pctLabel: string | null; title: string; sub: string; check: boolean } {
+  switch (source) {
+    case "declared":
+      return { ringPct: 100, pctLabel: "100%", check: false,
+        title: "Sûr à 100% — fais-moi confiance",
+        sub: `Candice en est certaine : ça ${feminine ? "lui" : "lui"} plairait vraiment.` };
+    case "spotted":
+      return { ringPct: null, pctLabel: null, check: true,
+        title: "Sûr — tu l'avais repéré pour lui",
+        sub: "Tu l'avais noté dans son carnet d'envies." };
+    case "exploratory":
+      return { ringPct: pct, pctLabel: pct != null ? `${pct}%` : null, check: false,
+        title: "On tente, juste cette fois ?",
+        sub: `${firstName} aime ce genre de choses — Candice se dit qu'elle pourrait ${feminine ? "la" : "le"} surprendre.` };
+    case "deduced":
+    default:
+      return { ringPct: pct, pctLabel: pct != null ? `${pct}%` : null, check: false,
+        title: pct != null ? `Sûr à ~${pct}% que ça lui plaira` : "Ça devrait lui plaire",
+        sub: "Candice a croisé plusieurs choses qu'elle sait de lui." };
+  }
+}
+
+// Pourquoi (les critères) — why_json est un jsonb libre. Rendu défensif, jamais inventé.
+function whyText(why: unknown): string | null {
+  if (!why) return null;
+  if (typeof why === "string") return why.trim() || null;
+  if (typeof why === "object") {
+    const o = why as Record<string, unknown>;
+    if (typeof o.text === "string") return o.text.trim() || null;
+    if (Array.isArray(o.criteres)) {
+      const cs = o.criteres.filter((c): c is string => typeof c === "string" && c.trim() !== "");
+      if (cs.length) return cs.join(" · ");
+    }
+  }
+  return null;
 }
 
 // Dimensions comparées (onglet Nous) — dérivées de la SOURCE DE VÉRITÉ du pilote
@@ -68,6 +114,19 @@ export default function EspaceProcheShell({
   const [newsState, setNewsState] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [srcFilter, setSrcFilter] = useState<"all" | "candice" | "mine">("all");
+  const [detail, setDetail] = useState<Detail | null>(null);
+
+  const feminine = procheGender === "feminine";
+  const openReco = (r: RecoItem) => setDetail({
+    brand: r.brand, title: r.title, price: r.price_indicative, needTag: r.need_tag,
+    source: r.source_trace, pct: r.certainty_pct, why: whyText(r.why_json),
+    photo: r.photo_url, recoType: r.reco_type,
+  });
+  const openCarnet = (it: CarnetItem) => setDetail({
+    brand: it.brand_name, title: it.description, price: it.price_indicative, needTag: null,
+    source: "spotted", pct: null, why: it.heard_quote ? `« ${it.heard_quote} »` : null,
+    photo: null, recoType: "object",
+  });
 
   const hasComparative = !!(piloteDims && procheDims);
   const recoSource = (r: RecoItem) => (r.source_trace === "spotted" ? "mine" : "candice");
@@ -235,8 +294,12 @@ export default function EspaceProcheShell({
             <>
               {shownRecos.map(r => (
                 <div key={r.id} className={s.reco}>
-                  <button className={s.rTop}>
-                    <div className={s.rPhoto}><div className={s.ph}><svg className={s.icon} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></div></div>
+                  <button className={s.rTop} onClick={() => openReco(r)}>
+                    <div className={s.rPhoto}>
+                      {r.photo_url
+                        ? <img src={r.photo_url} alt="" />
+                        : <div className={s.ph}><svg className={s.icon} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></div>}
+                    </div>
                     <div className={s.rBody}>
                       <span className={`${s.srcTag} ${recoSource(r) === "mine" ? s.mine : s.candice}`}>
                         {recoSource(r) === "mine" ? "Repéré par toi" : "Idée de Candice"}
@@ -258,7 +321,7 @@ export default function EspaceProcheShell({
 
               {showCarnet && carnet.map(it => (
                 <div key={it.id} className={s.reco}>
-                  <button className={s.rTop}>
+                  <button className={s.rTop} onClick={() => openCarnet(it)}>
                     <div className={s.rPhoto}><div className={s.ph}><svg className={s.icon} viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" /></svg></div></div>
                     <div className={s.rBody}>
                       <span className={`${s.srcTag} ${s.mine}`}>Repéré par toi</span>
@@ -323,6 +386,65 @@ export default function EspaceProcheShell({
             {saving ? "…" : "Noter pour Candice"}
           </button>
         </div>
+      </div>
+
+      {/* ── Sheet détail reco (Phase 6, §6) ── */}
+      <div className={`${s.backdrop} ${detail ? s.on : ""}`} onClick={() => setDetail(null)} />
+      <div className={`${s.sheet} ${detail ? s.on : ""}`}>
+        <div className={s.grab} />
+        <div className={s.shHead}><h3>La reco en détail</h3><button onClick={() => setDetail(null)}>Fermer</button></div>
+        {detail && (() => {
+          const c = certif(detail.source, detail.pct, procheFirstName, feminine);
+          const isMsg = detail.recoType === "message";
+          const CIRC = 2 * Math.PI * 20;
+          return (
+            <div className={s.shBody}>
+              <div className={s.dHero}>
+                {detail.photo
+                  ? <img src={detail.photo} alt="" />
+                  : <div className={s.ph}><svg className={s.icon} viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></div>}
+                {detail.needTag && <span className={s.needTag}><HeartIcon />{detail.needTag}</span>}
+              </div>
+
+              {detail.brand && <div className={s.dBrand}>{detail.brand}</div>}
+              <div className={s.dTitle}>{detail.title}</div>
+
+              <div className={s.certif}>
+                {c.check ? (
+                  <span className={s.check}><svg className={s.icon} viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" /></svg></span>
+                ) : c.ringPct != null ? (
+                  <div className={s.ring}>
+                    <svg width="46" height="46">
+                      <circle cx="23" cy="23" r="20" fill="none" stroke="rgba(23,62,49,.12)" strokeWidth="4" />
+                      <circle cx="23" cy="23" r="20" fill="none" stroke="var(--pine)" strokeWidth="4" strokeLinecap="round"
+                        strokeDasharray={CIRC} strokeDashoffset={CIRC * (1 - c.ringPct / 100)} />
+                    </svg>
+                    <span className={s.pct}>{c.pctLabel}</span>
+                  </div>
+                ) : null}
+                <div className={s.ct}><b>{c.title}</b><p>{c.sub}</p></div>
+              </div>
+
+              {detail.why && (
+                <div className={s.whyD}>
+                  <div className={s.h}>Pourquoi Candice te la propose</div>
+                  <p>{detail.why}</p>
+                </div>
+              )}
+
+              <div className={s.dMeta}>
+                {detail.price
+                  ? <span className={`${s.m} ${s.price}`}>{detail.price}</span>
+                  : isMsg ? <span className={s.m}>Sans budget</span> : null}
+              </div>
+
+              <div className={s.dActions}>
+                <button className={s.prim}>{isMsg ? "L'écrire avec Candice" : "Je veux l'offrir"}</button>
+                <button className={s.sec}>Pas ça</button>
+              </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

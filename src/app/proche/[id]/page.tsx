@@ -42,7 +42,7 @@ export default async function EspaceProchePage({
     supabase.from("my_profile").select("practical_info").eq("user_id", userId).maybeSingle(),
     supabase.from("profile_analysis").select("dimension_scores").eq("user_id", userId).is("contact_id", null).maybeSingle(),
     supabase.from("contact_reco_items")
-      .select("id, reco_type, title, brand, price_indicative, source_trace, certainty_pct, why_json, need_tag")
+      .select("id, reco_type, title, brand, price_indicative, source_trace, certainty_pct, why_json, need_tag, photo_url")
       .eq("pilot_id", userId).eq("contact_id", id).eq("status", "active").order("created_at", { ascending: false }),
     supabase.from("carnet_envies_items")
       .select("id, description, brand_name, heard_quote, price_indicative")
@@ -97,7 +97,7 @@ export default async function EspaceProchePage({
   const recos = (recoRows ?? []) as Array<{
     id: string; reco_type: string; title: string; brand: string | null;
     price_indicative: string | null; source_trace: string; certainty_pct: number | null;
-    why_json: unknown; need_tag: string | null;
+    why_json: unknown; need_tag: string | null; photo_url: string | null;
   }>;
   const carnet = (carnetRows ?? []) as Array<{
     id: string; description: string; brand_name: string | null;
