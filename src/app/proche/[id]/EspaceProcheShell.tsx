@@ -8,6 +8,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
 import ProfileV2 from "@/components/profile/v2/ProfileV2";
 import type { ProfileV2Data } from "@/lib/profile/v2-data";
+import { PODIUM_LABELS } from "@/lib/profile/v2-metrics";
 import s from "./espaceProche.module.css";
 
 type Tab = "thibaud" | "nous" | "faireplaisir";
@@ -44,15 +45,11 @@ interface CarnetItem {
   heard_quote: string | null; price_indicative: string | null;
 }
 
-// Dimensions comparées (onglet Nous) — libellés EXACTS de la maquette / du pilote.
-const DUAL_DIMS: { key: string; label: string }[] = [
-  { key: "MOT", label: "Mots justes" },
-  { key: "CAD_C", label: "Cadeaux choisis" },
-  { key: "EXP", label: "Moments partagés" },
-  { key: "GES", label: "Esthétique · qualité" },
-  { key: "SER", label: "Actes de service" },
-  { key: "SUR", label: "Surprise" },
-];
+// Dimensions comparées (onglet Nous) — dérivées de la SOURCE DE VÉRITÉ du pilote
+// (PODIUM_LABELS, les 7 dimensions réelles dans l'ordre, dont CAD_S « Attentions
+// symboliques »). §12.10 : reprendre EXACTEMENT les dimensions du profil.
+const DUAL_DIMS: { key: string; label: string }[] =
+  Object.entries(PODIUM_LABELS).map(([key, label]) => ({ key, label }));
 
 export default function EspaceProcheShell({
   contactId, pilotId, procheFirstName, piloteFirstName, procheGender, mode, birthdayWeeks,
