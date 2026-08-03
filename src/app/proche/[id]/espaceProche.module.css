@@ -175,7 +175,7 @@
 .reco.hidden{display:none}
 .reco .rTop{display:flex;width:100%;text-align:left}
 .reco .rPhoto{width:100px;flex-shrink:0;background:var(--mist);position:relative}
-.reco .rPhoto .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+.reco .rPhoto .ph{position:absolute;inset:0;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
 .reco .rPhoto img{width:100%;height:100%;object-fit:cover;display:block}
 .reco .rBody{flex:1;padding:14px 15px;min-width:0}
 .srcTag{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.2px;font-weight:700;padding:6px 11px;border-radius:8px;margin-bottom:8px}
@@ -204,7 +204,7 @@
 /* ── Sheet détail reco (Phase 6, §6) ── */
 .dHero{position:relative;height:200px;background:var(--aplat);margin:-4px -20px 0;border-radius:16px 16px 0 0;overflow:hidden}
 .dHero img{width:100%;height:100%;object-fit:cover;display:block}
-.dHero .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4)}
+.dHero .ph{position:absolute;inset:0;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.4)}
 .dHero .ph .icon{width:54px;height:54px;stroke-width:1}
 .needTag{position:absolute;left:16px;bottom:16px;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.92);color:var(--pine);font-size:11px;font-weight:700;padding:7px 12px;border-radius:8px}
 .needTag .icon{width:13px;height:13px}
