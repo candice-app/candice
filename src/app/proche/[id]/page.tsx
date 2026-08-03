@@ -51,7 +51,7 @@ export default async function EspaceProchePage({
       .select("id, description, brand_name, heard_quote, price_indicative")
       .eq("contact_id", id).eq("statut", "actif").order("created_at", { ascending: false }),
     supabase.from("reco_refusals")
-      .select("id, reco_id, reason, sub_reason, reactivable, reappear_at, created_at")
+      .select("id, reco_id, reason, sub_reason, reactivable, reappear_at, reserved_for_occasion, created_at")
       .eq("pilot_id", userId).eq("contact_id", id).order("created_at", { ascending: false }),
   ]);
   if (!contact) notFound();
@@ -107,7 +107,7 @@ export default async function EspaceProchePage({
   };
   type RawRefusal = {
     id: string; reco_id: string; reason: string; sub_reason: string | null;
-    reactivable: boolean; reappear_at: string | null; created_at: string;
+    reactivable: boolean; reappear_at: string | null; reserved_for_occasion: boolean; created_at: string;
   };
   const allRecos = (recoRows ?? []) as RawReco[];
   const refusals = (refusalRows ?? []) as RawRefusal[];
@@ -134,11 +134,15 @@ export default async function EspaceProchePage({
   const REASON_LABEL: Record<string, string> = {
     gout: "Pas son goût", budget: "Trop cher", deja: "Déjà offert", moment: "Pas le bon moment",
   };
-  const refused = allRecos.filter(isEcartee).map(r => ({
-    id: r.id, title: r.title, brand: r.brand,
-    reason: lastRefusal.get(r.id)?.reason ?? "gout",
-    reasonLabel: REASON_LABEL[lastRefusal.get(r.id)?.reason ?? "gout"] ?? "Écartée",
-  }));
+  const refused = allRecos.filter(isEcartee).map(r => {
+    const rf = lastRefusal.get(r.id);
+    const reason = rf?.reason ?? "gout";
+    // Option 4 « occasion » : mise en réserve conditionnelle, libellé distinct du décalage temporel.
+    const reasonLabel = rf?.reserved_for_occasion
+      ? "Gardée pour une occasion"
+      : REASON_LABEL[reason] ?? "Écartée";
+    return { id: r.id, title: r.title, brand: r.brand, reason, reasonLabel };
+  });
   const refusedCount = refused.length;
 
   const carnet = (carnetRows ?? []) as Array<{

@@ -48,14 +48,14 @@ interface RefusedItem {
   id: string; title: string; brand: string | null; reason: string; reasonLabel: string;
 }
 
-// Horizon « pas le bon moment » (§3.4, version Phase 6) — libellés + décalage de réapparition.
-// PLACEHOLDER de copy (à valider) : la maquette gelée montre un menu de circonstances ;
-// le cadre Phase 6 demande un horizon temporel. Voir rapport d'hypothèses.
-const HORIZONS: { key: string; label: string; months: number | null }[] = [
-  { key: "bientot", label: "Bientôt — garde l'idée au chaud", months: 1 },
-  { key: "quelques_mois", label: "Dans quelques mois", months: 3 },
-  { key: "grande_occasion", label: "Pour une grande occasion", months: 6 },
-  { key: "plus_tard", label: "Plus tard, je ne sais pas encore", months: null },
+// Horizon « pas le bon moment » (§3.4) — libellés VALIDÉS. Trois horizons temporels
+// (reappear_at = date, réapparition paresseuse par le temps) + une mise en RÉSERVE
+// conditionnelle (occasion:true → pas de date, réveil événementiel, migration 75).
+const HORIZONS: { key: string; label: string; months: number | null; occasion?: boolean }[] = [
+  { key: "semaines", label: "Dans quelques semaines", months: 1 },
+  { key: "mois", label: "Dans quelques mois", months: 4 },
+  { key: "plus_tard", label: "Beaucoup plus tard", months: 12 },
+  { key: "occasion", label: "Je la garde pour une occasion", months: null, occasion: true },
 ];
 
 // Échelle de « love » — texte premium, jamais d'emoji (§3.3, migration 74).
@@ -229,14 +229,16 @@ export default function EspaceProcheShell({
     setBusy(false); markHandled(d.id); setPasca(null); setLove(null);
   };
 
-  // « Pas le bon moment » : horizon stocké, réapparition à l'échéance (paresseuse).
+  // « Pas le bon moment » : horizons 1-3 → reappear_at (date), réapparition paresseuse ;
+  // option 4 « occasion » → réserve SANS date (reserved_for_occasion, réveil événementiel).
   const refuseMoment = async (d: Detail, horizonKey: string) => {
     if (busy) return; setBusy(true);
     const h = HORIZONS.find(x => x.key === horizonKey);
+    const occasion = !!h?.occasion;
     const reappear = h?.months ? new Date(Date.now() + h.months * 30 * 86400000).toISOString() : null;
     await supabase.from("reco_refusals").insert({
       pilot_id: pilotId, contact_id: contactId, reco_id: d.id, reason: "moment",
-      sub_reason: horizonKey, reactivable: true, reappear_at: reappear,
+      sub_reason: horizonKey, reactivable: true, reappear_at: reappear, reserved_for_occasion: occasion,
     });
     await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
     setBusy(false); markHandled(d.id); setPasca(null);
@@ -716,7 +718,7 @@ export default function EspaceProcheShell({
                 {pasca.step === "moment" && (
                   <>
                     <div className={s.candSays}><span className={s.o} /><b>Candice</b></div>
-                    <p className={s.cMsg}>Quand penses-tu que ce serait plus juste ? Je garde l&apos;idée et je te la représente au bon moment.</p>
+                    <p className={s.cMsg}>Ce n&apos;est pas le bon moment. Tu la reverrais quand ?</p>
                     <div className={s.tsel}>
                       {HORIZONS.map(h => (
                         <button key={h.key} disabled={busy} onClick={() => refuseMoment(d, h.key)}>{h.label}</button>
