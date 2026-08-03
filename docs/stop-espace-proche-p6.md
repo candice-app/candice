@@ -43,10 +43,21 @@ Route `/proche/[id]`, onglet Faire plaisir. Phase 6 livrée, poussée, déployé
 
 Captures examinées : détail, offrir (2 voies), menu pas-ça, goût, accusé, budget, déjà, moment, écartées + après réactivation. Build ✓ · **165 tests** ✓ · QA remis à 0 partout.
 
+## 🔒 DÉCISION VERROUILLÉE (arbitrage Estelle) — « pas le bon moment » = horizon seul
+
+**On garde l'horizon. Le menu de circonstances est REPORTÉ en Phase 8.**
+
+**Raison :** deuil, séparation, période difficile ne sont PAS des raisons de refus d'une reco, mais des **ÉTATS du proche**. Ils appartiennent à `person_states` (bloc « Comment va [Prénom] »), pas à `reco_refusals`. Un état posé une fois doit filtrer **en amont** toutes les recos, plutôt que d'être redéclaré à chaque idée écartée.
+
+**Chaîne cible :**
+> état posé (Phase 8, `person_states`) → **filtrage amont des recos** → « pas le bon moment » ne sert plus qu'au **décalage temporel d'une idée précise** (l'horizon actuel).
+
+Conséquence : le `sh-moment` de la maquette gelée (menu deuil/séparation/… + textes tactful) ne sera **jamais** câblé dans `reco_refusals`. Sa logique migre vers le miroir d'état (Phase 8). L'horizon livré en Phase 6 reste tel quel.
+
 ## ⚠ RAPPORT D'HYPOTHÈSES
 
 **A. ZONES DE FLOU**
-1. **« Pas le bon moment » : horizon vs menu de circonstances.** Ton cadre Phase 6 dit « demander l'horizon et le stocker ». La maquette gelée (`sh-moment`) montre au contraire un **menu de circonstances** (deuil / séparation / maladie / … avec textes dynamiques + contradiction avec tact selon l'état déclaré). **J'ai implémenté ton instruction littérale (horizon temporel).** Le menu de circonstances + les textes tactful n'ont PAS été construits — ils touchent la sécurité émotionnelle et le miroir d'état (Phase 8). **À trancher : le menu de circonstances est-il reporté à une phase ultérieure, ou attendu ici ?**
+1. ~~« Pas le bon moment » : horizon vs menu de circonstances.~~ **TRANCHÉ** — voir « Décision verrouillée » ci-dessus : horizon conservé, menu de circonstances reporté en Phase 8 (relève de `person_states`, pas de `reco_refusals`).
 2. **Libellés d'horizon inventés** (Bientôt / Dans quelques mois / Pour une grande occasion / Plus tard) + décalages (+1 / +3 / +6 mois / aucun) : copy PLACEHOLDER, aucune valeur fournie. À valider.
 
 **B. DÉCISIONS PRISES SEUL**
@@ -64,10 +75,11 @@ Captures examinées : détail, offrir (2 voies), menu pas-ça, goût, accusé, b
 
 **D. À VÉRIFIER PAR ESTELLE**
 - Ouvre `/proche/<id>` → Faire plaisir : tape une reco (détail), « Je veux l'offrir » (2 voies), « Pas ça » (les 4 raisons), « Attentions écartées » (réactiver).
-- **La divergence « horizon » (A.1) est le point qui mérite ton arbitrage** avant la Phase 7.
+- ~~La divergence « horizon » est le point qui mérite ton arbitrage.~~ **TRANCHÉ** (décision verrouillée ci-dessus).
+- Reste à valider : les libellés d'horizon placeholder (A.2).
 
 **E. MIGRATIONS / BUILD**
 - **Aucune nouvelle migration** (69–74 déjà appliquées couvrent tout).
 - `npm run build` ✓ · **165 tests** ✓ · 5 commits poussés, Vercel vert · QA nettoyé.
 
-**STOP FINAL de la Phase 6.** Détail reco + les 3 flows fidèles et prouvés. Restent : Phase 7 (workflow croisé invisible + Réglages), Phase 8 (miroir d'état fiche pilote), Phase 9 (surface proche-facing), Phase 10 (harmonisation univers pilote) — à ton signal.
+**PHASE 6 CLOSE.** Détail reco + les 3 flows fidèles et prouvés end-to-end. Arbitrage « horizon » verrouillé. Restent : Phase 7 (workflow croisé invisible + Réglages), Phase 8 (miroir d'état fiche pilote **+ menu de circonstances reporté ici, avec filtrage amont des recos**), Phase 9 (surface proche-facing), Phase 10 (harmonisation univers pilote) — **je n'enchaîne pas, j'attends ton signal.**
