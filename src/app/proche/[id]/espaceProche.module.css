@@ -241,3 +241,45 @@
 .choice.self:active{background:var(--sage-bg)}
 .choice.deleg{opacity:.72;cursor:default}
 .choice:disabled.self{opacity:.5}
+.carnetNote{font-size:12.5px;color:var(--ink3);line-height:1.5;font-style:italic;margin-top:4px}
+
+/* ── Flow « Pas ça » (§3) ── */
+.pcSub{font-size:13px;color:var(--ink2);line-height:1.5;margin-bottom:16px}
+.reason{display:flex;align-items:center;gap:12px;padding:15px;border:1.5px solid var(--line);border-radius:13px;margin-bottom:9px;width:100%;text-align:left;background:#fff}
+.reason .ic{width:38px;height:38px;border-radius:11px;background:var(--mist);color:var(--pine);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.reason .ic .icon{width:19px;height:19px}
+.reason b{font-size:14px;font-weight:600;color:var(--ink)}
+.reason .chev{margin-left:auto;color:var(--ink3);display:flex}
+.reason .chev .icon{width:16px;height:16px}
+.candSays{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.candSays .o{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 40% 35%,#F3F8F4,#94C0AC);box-shadow:0 0 10px rgba(180,220,200,.6);flex-shrink:0}
+.candSays b{font-family:var(--font-serif);font-style:italic;font-size:15px;color:var(--pine)}
+.cMsg{font-size:14px;line-height:1.6;color:var(--ink);margin-bottom:14px}
+.cMsg b{font-weight:650}
+.pctBig{display:flex;align-items:center;gap:12px;background:var(--sage-bg);border-radius:12px;padding:12px;margin-bottom:14px}
+.pctBig .ring{width:44px;height:44px;flex-shrink:0;position:relative}
+.pctBig .ring svg{transform:rotate(-90deg)}
+.pctBig .ring .n{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:12px;font-weight:600;color:var(--pine)}
+.pctBig p{font-size:12.5px;color:var(--ink2);line-height:1.4}
+.goBtn{background:var(--pine);color:#fff;min-height:50px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:14.5px;font-weight:600;width:100%;margin-bottom:8px}
+.goBtn .icon{width:16px;height:16px}
+.goBtn:disabled{opacity:.5}
+.noBtn{min-height:46px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--ink2);width:100%}
+.noBtn:disabled{opacity:.5}
+.saving{background:#fff;border-radius:14px;padding:15px;margin-bottom:12px;border:1px dashed var(--champ)}
+.saving .h{font-size:12px;font-weight:700;color:#7a4b1e;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.saving .h .icon{width:15px;height:15px}
+.saving .plan{font-size:13.5px;line-height:1.5;color:var(--ink)}
+.saving .plan b{color:var(--pine);font-weight:700}
+.opts{display:flex;gap:8px;margin-top:12px}
+.opts button{flex:1;min-height:44px;border-radius:8px;font-size:12.5px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.opts .keep{background:var(--pine);color:#fff}
+.opts .del{border:1px solid var(--line);color:var(--ink2)}
+.opts .del:disabled{opacity:.5}
+.fineNote{font-size:11.5px;color:var(--ink3);margin-top:12px;line-height:1.5}
+.love{display:flex;gap:8px;margin:14px 0}
+.love button{flex:1;padding:15px 6px;border-radius:11px;border:1px solid var(--line);text-align:center;font-size:13px;font-weight:600;color:var(--ink2);font-family:var(--font-serif)}
+.love button.on{border-color:var(--pine);background:var(--sage-bg);color:var(--pine)}
+.tsel{display:flex;flex-direction:column;gap:7px;margin-bottom:8px}
+.tsel button{padding:13px 15px;border-radius:10px;border:1px solid var(--line);font-size:13.5px;font-weight:500;color:var(--ink);text-align:left;width:100%;background:#fff}
+.tsel button:disabled{opacity:.5}

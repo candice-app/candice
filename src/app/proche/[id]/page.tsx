@@ -35,20 +35,24 @@ export default async function EspaceProchePage({
   if (!claims) redirect(`/login?next=/proche/${id}`);
   const userId = claims.sub as string;
 
-  const [{ data: contact }, { data: myProfile }, { data: myAnalysis }, { data: recoRows }, { data: carnetRows }, { count: refusedCount }] = await Promise.all([
+  const [{ data: contact }, { data: myProfile }, { data: myAnalysis }, { data: recoRows }, { data: carnetRows }, { data: refusalRows }] = await Promise.all([
     supabase.from("contacts")
       .select("id, name, gender, date_de_naissance, postal_address, proche_user_id")
       .eq("id", id).eq("user_id", userId).maybeSingle(),
     supabase.from("my_profile").select("practical_info").eq("user_id", userId).maybeSingle(),
     supabase.from("profile_analysis").select("dimension_scores").eq("user_id", userId).is("contact_id", null).maybeSingle(),
+    // On récupère active + refused (hors purchased/déjà-offert) ; le tri propositions
+    // vs écartées se fait en JS avec la réapparition PARESSEUSE (aucune écriture au rendu).
     supabase.from("contact_reco_items")
-      .select("id, reco_type, title, brand, price_indicative, source_trace, certainty_pct, why_json, need_tag, photo_url")
-      .eq("pilot_id", userId).eq("contact_id", id).eq("status", "active").eq("reservation_status", "available")
+      .select("id, reco_type, title, brand, price_indicative, source_trace, certainty_pct, why_json, need_tag, photo_url, status, reservation_status")
+      .eq("pilot_id", userId).eq("contact_id", id).neq("reservation_status", "purchased")
       .order("created_at", { ascending: false }),
     supabase.from("carnet_envies_items")
       .select("id, description, brand_name, heard_quote, price_indicative")
       .eq("contact_id", id).eq("statut", "actif").order("created_at", { ascending: false }),
-    supabase.from("reco_refusals").select("id", { count: "exact", head: true }).eq("pilot_id", userId).eq("contact_id", id),
+    supabase.from("reco_refusals")
+      .select("id, reco_id, reason, sub_reason, reactivable, reappear_at, created_at")
+      .eq("pilot_id", userId).eq("contact_id", id).order("created_at", { ascending: false }),
   ]);
   if (!contact) notFound();
 
@@ -95,11 +99,48 @@ export default async function EspaceProchePage({
   const procheDims = null; // contact non-utilisateur : aucune analyse (comparatif indisponible)
 
   // Onglet Faire plaisir — recos + carnet + refus.
-  const recos = (recoRows ?? []) as Array<{
+  type RawReco = {
     id: string; reco_type: string; title: string; brand: string | null;
     price_indicative: string | null; source_trace: string; certainty_pct: number | null;
     why_json: unknown; need_tag: string | null; photo_url: string | null;
-  }>;
+    status: string; reservation_status: string;
+  };
+  type RawRefusal = {
+    id: string; reco_id: string; reason: string; sub_reason: string | null;
+    reactivable: boolean; reappear_at: string | null; created_at: string;
+  };
+  const allRecos = (recoRows ?? []) as RawReco[];
+  const refusals = (refusalRows ?? []) as RawRefusal[];
+
+  // Dernier refus par reco (refusals déjà triés created_at desc).
+  const lastRefusal = new Map<string, RawRefusal>();
+  for (const rf of refusals) if (!lastRefusal.has(rf.reco_id)) lastRefusal.set(rf.reco_id, rf);
+
+  const now = Date.now();
+  // Réapparition PARESSEUSE : un refus budget/moment dont reappear_at est passé
+  // rend le reco de nouveau proposable — sans réécrire le status (aucune écriture au rendu).
+  const reappeared = (r: RawReco) => {
+    const rf = lastRefusal.get(r.id);
+    return !!(rf?.reappear_at && new Date(rf.reappear_at).getTime() <= now);
+  };
+  const isProposable = (r: RawReco) =>
+    r.reservation_status === "available" && (r.status === "active" || reappeared(r));
+  const isEcartee = (r: RawReco) =>
+    r.status === "refused" && r.reservation_status === "available" && !reappeared(r)
+    && (lastRefusal.get(r.id)?.reactivable ?? true);
+
+  const recos = allRecos.filter(isProposable).map(({ status: _s, reservation_status: _rs, ...r }) => r);
+
+  const REASON_LABEL: Record<string, string> = {
+    gout: "Pas son goût", budget: "Trop cher", deja: "Déjà offert", moment: "Pas le bon moment",
+  };
+  const refused = allRecos.filter(isEcartee).map(r => ({
+    id: r.id, title: r.title, brand: r.brand,
+    reason: lastRefusal.get(r.id)?.reason ?? "gout",
+    reasonLabel: REASON_LABEL[lastRefusal.get(r.id)?.reason ?? "gout"] ?? "Écartée",
+  }));
+  const refusedCount = refused.length;
+
   const carnet = (carnetRows ?? []) as Array<{
     id: string; description: string; brand_name: string | null;
     heard_quote: string | null; price_indicative: string | null;
@@ -120,7 +161,8 @@ export default async function EspaceProchePage({
       procheDims={procheDims}
       recos={recos}
       carnet={carnet}
-      refusedCount={refusedCount ?? 0}
+      refused={refused}
+      refusedCount={refusedCount}
     />
   );
 }

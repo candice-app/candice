@@ -44,6 +44,35 @@ interface CarnetItem {
   id: string; description: string; brand_name: string | null;
   heard_quote: string | null; price_indicative: string | null;
 }
+interface RefusedItem {
+  id: string; title: string; brand: string | null; reason: string; reasonLabel: string;
+}
+
+// Horizon « pas le bon moment » (§3.4, version Phase 6) — libellés + décalage de réapparition.
+// PLACEHOLDER de copy (à valider) : la maquette gelée montre un menu de circonstances ;
+// le cadre Phase 6 demande un horizon temporel. Voir rapport d'hypothèses.
+const HORIZONS: { key: string; label: string; months: number | null }[] = [
+  { key: "bientot", label: "Bientôt — garde l'idée au chaud", months: 1 },
+  { key: "quelques_mois", label: "Dans quelques mois", months: 3 },
+  { key: "grande_occasion", label: "Pour une grande occasion", months: 6 },
+  { key: "plus_tard", label: "Plus tard, je ne sais pas encore", months: null },
+];
+
+// Échelle de « love » — texte premium, jamais d'emoji (§3.3, migration 74).
+const LOVE = [
+  { v: "un_peu", l: "Un peu" }, { v: "beaucoup", l: "Beaucoup" }, { v: "enormement", l: "Énormément" },
+];
+
+// Plan d'épargne perso (§3.2) — calcul à partir du prix, aucun flux d'argent chez nous.
+function parseEuros(p: string | null): number | null {
+  if (!p) return null;
+  const n = parseInt(p.replace(/[^\d]/g, ""), 10);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+function savingPlan(euros: number): { weekly: number; weeks: number } {
+  const weekly = Math.max(5, Math.round(euros / 12 / 5) * 5);
+  return { weekly, weeks: Math.ceil(euros / weekly) };
+}
 
 // Détail d'une reco/carnet — vue normalisée pour le sheet (§6).
 interface Detail {
@@ -111,13 +140,13 @@ const DUAL_DIMS: { key: string; label: string }[] =
 
 export default function EspaceProcheShell({
   contactId, pilotId, procheFirstName, piloteFirstName, procheGender, mode, birthdayWeeks,
-  procheData, hasAnalysis, piloteDims, procheDims, recos, carnet, refusedCount,
+  procheData, hasAnalysis, piloteDims, procheDims, recos, carnet, refused, refusedCount,
 }: {
   contactId: string; pilotId: string; procheFirstName: string; piloteFirstName: string;
   procheGender: "feminine" | "masculine" | "neutral";
   mode: Mode; birthdayWeeks: number | null; procheData: ProfileV2Data; hasAnalysis: boolean;
   piloteDims: Record<string, number> | null; procheDims: Record<string, number> | null;
-  recos: RecoItem[]; carnet: CarnetItem[]; refusedCount: number;
+  recos: RecoItem[]; carnet: CarnetItem[]; refused: RefusedItem[]; refusedCount: number;
 }) {
   const supabase = createClient();
   const [tab, setTab] = useState<Tab>("thibaud");
@@ -155,6 +184,62 @@ export default function EspaceProcheShell({
       setHandledIds(prev => new Set(prev).add(d.id));
     }
     setOffrir(null);
+  };
+
+  // ── Flow « Pas ça » (§3) ──
+  const [pasca, setPasca] = useState<{ reco: Detail; step: string } | null>(null);
+  const [love, setLove] = useState<string | null>(null);
+  const openPasca = (d: Detail) => { setDetail(null); setPasca({ reco: d, step: "menu" }); setLove(null); };
+  const step = (s: string) => setPasca(p => (p ? { ...p, step: s } : p));
+  const markHandled = (id: string) => setHandledIds(prev => new Set(prev).add(id));
+
+  // Refus « goût » : le reco est écarté (status refused), réactivable. Le compteur de refus
+  // goût est STOCKÉ (lignes reco_refusals) ; aucun déclenchement ici — le workflow croisé
+  // invisible est en Phase 7.
+  const refuseGout = async (d: Detail) => {
+    if (busy) return; setBusy(true);
+    await supabase.from("reco_refusals").insert({
+      pilot_id: pilotId, contact_id: contactId, reco_id: d.id, reason: "gout", reactivable: true,
+    });
+    await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    setBusy(false); markHandled(d.id); step("noted");
+  };
+
+  // Refus « trop cher » : masqué, réapparition +6 mois (filtre à la lecture, pas de cron).
+  const refuseBudget = async (d: Detail) => {
+    if (busy) return; setBusy(true);
+    const reappear = new Date(Date.now() + 182 * 86400000).toISOString();
+    await supabase.from("reco_refusals").insert({
+      pilot_id: pilotId, contact_id: contactId, reco_id: d.id, reason: "budget",
+      reactivable: true, reappear_at: reappear,
+    });
+    await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    setBusy(false); markHandled(d.id); setPasca(null);
+  };
+
+  // « Déjà offert » : écarté définitivement (marqué offert) + fait stocké (attention_log),
+  // avec le retour de satisfaction (§3.3).
+  const dejaOffert = async (d: Detail) => {
+    if (busy) return; setBusy(true);
+    await supabase.from("attention_log").insert({
+      user_id: pilotId, contact_id: contactId, attention_title: d.title,
+      attention_type: d.recoType, status: "done", love_level: love,
+    });
+    await supabase.from("contact_reco_items").update({ reservation_status: "purchased" }).eq("id", d.id);
+    setBusy(false); markHandled(d.id); setPasca(null); setLove(null);
+  };
+
+  // « Pas le bon moment » : horizon stocké, réapparition à l'échéance (paresseuse).
+  const refuseMoment = async (d: Detail, horizonKey: string) => {
+    if (busy) return; setBusy(true);
+    const h = HORIZONS.find(x => x.key === horizonKey);
+    const reappear = h?.months ? new Date(Date.now() + h.months * 30 * 86400000).toISOString() : null;
+    await supabase.from("reco_refusals").insert({
+      pilot_id: pilotId, contact_id: contactId, reco_id: d.id, reason: "moment",
+      sub_reason: horizonKey, reactivable: true, reappear_at: reappear,
+    });
+    await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    setBusy(false); markHandled(d.id); setPasca(null);
   };
 
   const hasComparative = !!(piloteDims && procheDims);
@@ -345,7 +430,7 @@ export default function EspaceProcheShell({
                     <button className={s.prim} onClick={() => openOffrir(recoToDetail(r))}>
                       {r.reco_type === "message" ? "L'écrire avec Candice" : "Je veux l'offrir"}
                     </button>
-                    <button>Pas ça</button>
+                    <button onClick={() => openPasca(recoToDetail(r))}>Pas ça</button>
                   </div>
                 </div>
               ))}
@@ -365,10 +450,6 @@ export default function EspaceProcheShell({
                       </div>
                     </div>
                   </button>
-                  <div className={s.rAct}>
-                    <button className={s.prim}>Je veux l&apos;offrir</button>
-                    <button>Pas ça</button>
-                  </div>
                 </div>
               ))}
             </>
@@ -469,10 +550,14 @@ export default function EspaceProcheShell({
                   : isMsg ? <span className={s.m}>Sans budget</span> : null}
               </div>
 
-              <div className={s.dActions}>
-                <button className={s.prim} onClick={() => openOffrir(detail)}>{isMsg ? "L'écrire avec Candice" : "Je veux l'offrir"}</button>
-                <button className={s.sec}>Pas ça</button>
-              </div>
+              {detail.kind === "reco" ? (
+                <div className={s.dActions}>
+                  <button className={s.prim} onClick={() => openOffrir(detail)}>{isMsg ? "L'écrire avec Candice" : "Je veux l'offrir"}</button>
+                  <button className={s.sec} onClick={() => openPasca(detail)}>Pas ça</button>
+                </div>
+              ) : (
+                <p className={s.carnetNote}>Envie repérée par toi — retrouve-la dans le carnet de {procheFirstName}.</p>
+              )}
             </div>
           );
         })()}
@@ -502,6 +587,135 @@ export default function EspaceProcheShell({
             </button>
           </div>
         )}
+      </div>
+
+      {/* ── Flow « Pas ça » — 4 raisons (Phase 6, §3) ── */}
+      <div className={`${s.backdrop} ${pasca ? s.on : ""}`} onClick={() => setPasca(null)} />
+      <div className={`${s.sheet} ${pasca ? s.on : ""}`}>
+        <div className={s.grab} />
+        {pasca && (() => {
+          const d = pasca.reco;
+          const euros = parseEuros(d.price);
+          const plan = euros ? savingPlan(euros) : null;
+          const CIRC = 2 * Math.PI * 19;
+          const heads: Record<string, string> = {
+            menu: "Qu'est-ce qui te fait hésiter ?", gout: "Es-tu sûr ?", noted: "C'est noté",
+            cher: "Le budget", deja: "Déjà offert", moment: "Le moment",
+          };
+          return (
+            <>
+              <div className={s.shHead}><h3>{heads[pasca.step]}</h3><button onClick={() => setPasca(null)}>Fermer</button></div>
+              <div className={s.shBody}>
+                {/* Menu des 4 raisons */}
+                {pasca.step === "menu" && (
+                  <>
+                    <p className={s.pcSub}>Dis-m&apos;en un peu plus — ça m&apos;aide à mieux viser pour {procheFirstName}.</p>
+                    {[
+                      { k: "gout", l: "Ce n'est pas son goût", p: "M12 21s-8-4.5-8-10a5 5 0 018-4 5 5 0 018 4c0 5.5-8 10-8 10z" },
+                      { k: "cher", l: "C'est trop cher pour moi", p: "M2 5h20v14H2zM2 10h20" },
+                      { k: "deja", l: "Je lui ai déjà offert", p: "M20 6L9 17l-5-5" },
+                      { k: "moment", l: "Ce n'est pas le bon moment", p: "M12 2a10 10 0 100 20 10 10 0 000-20zM12 6v6l4 2" },
+                    ].map(r => (
+                      <button key={r.k} className={s.reason} onClick={() => step(r.k)}>
+                        <span className={s.ic}><svg className={s.icon} viewBox="0 0 24 24"><path d={r.p} /></svg></span>
+                        <b>{r.l}</b>
+                        <span className={s.chev}><ChevIcon /></span>
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {/* Goût — « Es-tu sûr ? » : critère réel + certitude */}
+                {pasca.step === "gout" && (
+                  <>
+                    <div className={s.candSays}><span className={s.o} /><b>Candice</b></div>
+                    <p className={s.cMsg}>
+                      {d.source === "declared"
+                        ? <>Je te la propose parce que <b>{procheFirstName} l&apos;a lui-même laissé entendre</b> — c&apos;est exactement ce qui lui plairait.</>
+                        : d.why
+                          ? <>Je te la propose parce que : <b>{d.why}</b></>
+                          : <>Je te la propose parce qu&apos;elle colle à ce que Candice sait de {procheFirstName}.</>}
+                    </p>
+                    {d.pct != null && (
+                      <div className={s.pctBig}>
+                        <div className={s.ring}>
+                          <svg width="44" height="44">
+                            <circle cx="22" cy="22" r="19" fill="none" stroke="rgba(23,62,49,.12)" strokeWidth="4" />
+                            <circle cx="22" cy="22" r="19" fill="none" stroke="var(--pine)" strokeWidth="4" strokeLinecap="round"
+                              strokeDasharray={CIRC} strokeDashoffset={CIRC * (1 - d.pct / 100)} />
+                          </svg>
+                          <span className={s.n}>{d.pct}%</span>
+                        </div>
+                        <p>Sûre à {d.pct}% que ça lui plairait, d&apos;après ce qu&apos;il a laissé deviner.</p>
+                      </div>
+                    )}
+                    <button className={s.goBtn} onClick={() => setPasca(null)}>
+                      <svg className={s.icon} viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>Allez, je tente pour cette fois
+                    </button>
+                    <button className={s.noBtn} disabled={busy} onClick={() => refuseGout(d)}>Non, je ne veux vraiment pas</button>
+                  </>
+                )}
+
+                {/* Accusé doux (le workflow croisé invisible est en Phase 7) */}
+                {pasca.step === "noted" && (
+                  <>
+                    <div className={s.candSays}><span className={s.o} /><b>Candice</b></div>
+                    <p className={s.cMsg}>Très bien, je l&apos;écarte. Merci de me l&apos;avoir dit — <b>je continue d&apos;affiner</b> pour ne te proposer que le plus juste pour {procheFirstName}.</p>
+                    <button className={s.goBtn} onClick={() => setPasca(null)}>
+                      <svg className={s.icon} viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" /></svg>Parfait
+                    </button>
+                  </>
+                )}
+
+                {/* Trop cher — épargne perso, réapparition +6 mois si retiré */}
+                {pasca.step === "cher" && (
+                  <>
+                    <div className={s.candSays}><span className={s.o} /><b>Candice</b></div>
+                    <p className={s.cMsg}>Je comprends. On peut garder l&apos;idée de côté sans pression.</p>
+                    {plan && (
+                      <div className={s.saving}>
+                        <div className={s.h}><svg className={s.icon} viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" /></svg>Mettre un peu de côté</div>
+                        <p className={s.plan}>Si tu mets <b>{plan.weekly} € de côté chaque semaine</b>, tu pourras lui offrir <b>dans {plan.weeks} semaines</b>.</p>
+                      </div>
+                    )}
+                    <div className={s.opts}>
+                      <button className={s.keep} onClick={() => setPasca(null)}>On garde l&apos;idée</button>
+                      <button className={s.del} disabled={busy} onClick={() => refuseBudget(d)}>Retirer</button>
+                    </div>
+                    <p className={s.fineNote}>Si tu retires : Candice met l&apos;idée de côté et te la représente dans quelques mois, pour une grande occasion.</p>
+                  </>
+                )}
+
+                {/* Déjà offert — satisfaction (échelle de love, texte premium) */}
+                {pasca.step === "deja" && (
+                  <>
+                    <div className={s.candSays}><span className={s.o} /><b>Candice</b></div>
+                    <p className={s.cMsg}>Super ! Et dis-moi : <b>est-ce qu&apos;il a aimé ?</b> Ça m&apos;aide à mieux le connaître.</p>
+                    <div className={s.love}>
+                      {LOVE.map(x => (
+                        <button key={x.v} className={love === x.v ? s.on : ""} onClick={() => setLove(x.v)}>{x.l}</button>
+                      ))}
+                    </div>
+                    <button className={s.goBtn} disabled={busy} onClick={() => dejaOffert(d)}>Enregistrer</button>
+                  </>
+                )}
+
+                {/* Pas le bon moment — horizon (version Phase 6) */}
+                {pasca.step === "moment" && (
+                  <>
+                    <div className={s.candSays}><span className={s.o} /><b>Candice</b></div>
+                    <p className={s.cMsg}>Quand penses-tu que ce serait plus juste ? Je garde l&apos;idée et je te la représente au bon moment.</p>
+                    <div className={s.tsel}>
+                      {HORIZONS.map(h => (
+                        <button key={h.key} disabled={busy} onClick={() => refuseMoment(d, h.key)}>{h.label}</button>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </>
+          );
+        })()}
       </div>
     </div>
   );
