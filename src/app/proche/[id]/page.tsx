@@ -43,7 +43,8 @@ export default async function EspaceProchePage({
     supabase.from("profile_analysis").select("dimension_scores").eq("user_id", userId).is("contact_id", null).maybeSingle(),
     supabase.from("contact_reco_items")
       .select("id, reco_type, title, brand, price_indicative, source_trace, certainty_pct, why_json, need_tag, photo_url")
-      .eq("pilot_id", userId).eq("contact_id", id).eq("status", "active").order("created_at", { ascending: false }),
+      .eq("pilot_id", userId).eq("contact_id", id).eq("status", "active").eq("reservation_status", "available")
+      .order("created_at", { ascending: false }),
     supabase.from("carnet_envies_items")
       .select("id, description, brand_name, heard_quote, price_indicative")
       .eq("contact_id", id).eq("statut", "actif").order("created_at", { ascending: false }),

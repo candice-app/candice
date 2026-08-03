@@ -228,3 +228,16 @@
 .dActions{display:flex;flex-direction:column;gap:9px;padding-bottom:calc(8px + env(safe-area-inset-bottom))}
 .dActions .prim{background:var(--pine);color:#fff;min-height:54px;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px;font-weight:600;box-shadow:0 8px 20px rgba(23,62,49,.18)}
 .dActions .sec{min-height:48px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:600;color:var(--ink2)}
+
+/* ── Sheet offrir — 2 voies (§8) ── */
+.choice{border:1.5px solid var(--line);border-radius:14px;padding:16px;margin-bottom:11px;display:flex;gap:13px;align-items:flex-start;width:100%;text-align:left}
+.choice .ic{width:42px;height:42px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.choice.self .ic{background:var(--sage-bg);color:var(--pine)}
+.choice.deleg .ic{background:rgba(205,185,135,.2);color:#7a4b1e}
+.choice .ic .icon{width:21px;height:21px}
+.choice .t b{font-size:15px;font-weight:600;display:block;margin-bottom:3px;color:var(--ink)}
+.choice .t p{font-size:12.5px;color:var(--ink2);line-height:1.45}
+.choice .t .soon{color:var(--gold);font-size:11px;margin-top:4px;display:block;font-weight:600}
+.choice.self:active{background:var(--sage-bg)}
+.choice.deleg{opacity:.72;cursor:default}
+.choice:disabled.self{opacity:.5}

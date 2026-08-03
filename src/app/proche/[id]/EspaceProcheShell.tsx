@@ -47,8 +47,20 @@ interface CarnetItem {
 
 // Détail d'une reco/carnet — vue normalisée pour le sheet (§6).
 interface Detail {
+  id: string; kind: "reco" | "carnet"; recoType: string;
   brand: string | null; title: string; price: string | null; needTag: string | null;
-  source: string; pct: number | null; why: string | null; photo: string | null; recoType: string;
+  source: string; pct: number | null; why: string | null; photo: string | null;
+}
+
+// Sous-texte « Candice s'en charge » adapté au type d'attention (§8, voie 2).
+function delegSub(recoType: string): string {
+  switch (recoType) {
+    case "object": return "Candice le commande et te le fait livrer.";
+    case "experience": return "Candice réserve l'expérience pour toi.";
+    case "place": return "Candice réserve la table pour toi.";
+    case "message": return "Candice t'aide à l'écrire, au bon moment.";
+    default: return "Candice s'en occupe pour toi.";
+  }
 }
 
 // Bloc certitude (§2) : ton selon la source (source_trace).
@@ -115,22 +127,39 @@ export default function EspaceProcheShell({
   const [saving, setSaving] = useState(false);
   const [srcFilter, setSrcFilter] = useState<"all" | "candice" | "mine">("all");
   const [detail, setDetail] = useState<Detail | null>(null);
+  const [offrir, setOffrir] = useState<Detail | null>(null);
+  const [handledIds, setHandledIds] = useState<Set<string>>(new Set());
+  const [busy, setBusy] = useState(false);
 
   const feminine = procheGender === "feminine";
-  const openReco = (r: RecoItem) => setDetail({
+  const recoToDetail = (r: RecoItem): Detail => ({
+    id: r.id, kind: "reco", recoType: r.reco_type,
     brand: r.brand, title: r.title, price: r.price_indicative, needTag: r.need_tag,
-    source: r.source_trace, pct: r.certainty_pct, why: whyText(r.why_json),
-    photo: r.photo_url, recoType: r.reco_type,
+    source: r.source_trace, pct: r.certainty_pct, why: whyText(r.why_json), photo: r.photo_url,
   });
-  const openCarnet = (it: CarnetItem) => setDetail({
+  const carnetToDetail = (it: CarnetItem): Detail => ({
+    id: it.id, kind: "carnet", recoType: "object",
     brand: it.brand_name, title: it.description, price: it.price_indicative, needTag: null,
-    source: "spotted", pct: null, why: it.heard_quote ? `« ${it.heard_quote} »` : null,
-    photo: null, recoType: "object",
+    source: "spotted", pct: null, why: it.heard_quote ? `« ${it.heard_quote} »` : null, photo: null,
   });
+  const openReco = (r: RecoItem) => setDetail(recoToDetail(r));
+  const openCarnet = (it: CarnetItem) => setDetail(carnetToDetail(it));
+  const openOffrir = (d: Detail) => { setOffrir(d); setDetail(null); };
+
+  // Voie 1 — « Je m'en occupe personnellement » : réservation invisible (RPC atomique).
+  const reserveSelf = async (d: Detail) => {
+    if (busy) return; setBusy(true);
+    const { data } = await supabase.rpc("reserve_reco_item", { p_item: d.id });
+    setBusy(false);
+    if (data === "reserved" || data === "already_taken") {
+      setHandledIds(prev => new Set(prev).add(d.id));
+    }
+    setOffrir(null);
+  };
 
   const hasComparative = !!(piloteDims && procheDims);
   const recoSource = (r: RecoItem) => (r.source_trace === "spotted" ? "mine" : "candice");
-  const shownRecos = recos.filter(r => srcFilter === "all" || recoSource(r) === srcFilter);
+  const shownRecos = recos.filter(r => !handledIds.has(r.id) && (srcFilter === "all" || recoSource(r) === srcFilter));
   const showCarnet = srcFilter === "all" || srcFilter === "mine";
   const fpEmpty = recos.length === 0 && carnet.length === 0;
 
@@ -313,7 +342,9 @@ export default function EspaceProcheShell({
                     </div>
                   </button>
                   <div className={s.rAct}>
-                    <button className={s.prim}>Je veux l&apos;offrir</button>
+                    <button className={s.prim} onClick={() => openOffrir(recoToDetail(r))}>
+                      {r.reco_type === "message" ? "L'écrire avec Candice" : "Je veux l'offrir"}
+                    </button>
                     <button>Pas ça</button>
                   </div>
                 </div>
@@ -439,12 +470,38 @@ export default function EspaceProcheShell({
               </div>
 
               <div className={s.dActions}>
-                <button className={s.prim}>{isMsg ? "L'écrire avec Candice" : "Je veux l'offrir"}</button>
+                <button className={s.prim} onClick={() => openOffrir(detail)}>{isMsg ? "L'écrire avec Candice" : "Je veux l'offrir"}</button>
                 <button className={s.sec}>Pas ça</button>
               </div>
             </div>
           );
         })()}
+      </div>
+
+      {/* ── Sheet « Je veux l'offrir » — 2 voies (Phase 6, §8) ── */}
+      <div className={`${s.backdrop} ${offrir ? s.on : ""}`} onClick={() => setOffrir(null)} />
+      <div className={`${s.sheet} ${offrir ? s.on : ""}`}>
+        <div className={s.grab} />
+        <div className={s.shHead}><h3>Offrir à {procheFirstName}</h3><button onClick={() => setOffrir(null)}>Fermer</button></div>
+        {offrir && (
+          <div className={s.shBody}>
+            <button className={`${s.choice} ${s.self}`} disabled={busy} onClick={() => reserveSelf(offrir)}>
+              <div className={s.ic}><svg className={s.icon} viewBox="0 0 24 24"><path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" /></svg></div>
+              <div className={s.t}>
+                <b>Je m&apos;en occupe personnellement</b>
+                <p>Tu réalises l&apos;attention toi-même. Candice la réserve pour {procheFirstName} et n&apos;en reparle plus aux autres proches.</p>
+              </div>
+            </button>
+            <button className={`${s.choice} ${s.deleg}`} disabled aria-disabled="true">
+              <div className={s.ic}><svg className={s.icon} viewBox="0 0 24 24"><path d="M20 7h-9M14 17H5M17 3l4 4-4 4M7 21l-4-4 4-4" /></svg></div>
+              <div className={s.t}>
+                <b>Je veux que Candice s&apos;en charge</b>
+                <p>{delegSub(offrir.recoType)}</p>
+                <span className={s.soon}>Bientôt — à l&apos;ouverture de la conciergerie.</span>
+              </div>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
