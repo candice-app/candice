@@ -242,6 +242,18 @@ export default function EspaceProcheShell({
     setBusy(false); markHandled(d.id); setPasca(null);
   };
 
+  // ── Attentions écartées — réactivation en un clic (§4) ──
+  const [refOpen, setRefOpen] = useState(false);
+  const [reactivatedIds, setReactivatedIds] = useState<Set<string>>(new Set());
+  // Réactiver = status='active' seulement. On NE supprime PAS les lignes reco_refusals :
+  // le compteur de refus goût reste intact pour le workflow croisé (Phase 7).
+  const reactivate = async (id: string) => {
+    if (busy) return; setBusy(true);
+    await supabase.from("contact_reco_items").update({ status: "active" }).eq("id", id);
+    setBusy(false); setReactivatedIds(prev => new Set(prev).add(id));
+  };
+  const shownRefused = refused.filter(r => !reactivatedIds.has(r.id));
+
   const hasComparative = !!(piloteDims && procheDims);
   const recoSource = (r: RecoItem) => (r.source_trace === "spotted" ? "mine" : "candice");
   const shownRecos = recos.filter(r => !handledIds.has(r.id) && (srcFilter === "all" || recoSource(r) === srcFilter));
@@ -456,7 +468,7 @@ export default function EspaceProcheShell({
           )}
 
           {refusedCount > 0 && (
-            <button className={s.refLink}>
+            <button className={s.refLink} onClick={() => setRefOpen(true)}>
               <svg className={s.icon} viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /></svg>
               Attentions écartées<span className={s.n}>{refusedCount}</span>
             </button>
@@ -716,6 +728,32 @@ export default function EspaceProcheShell({
             </>
           );
         })()}
+      </div>
+
+      {/* ── Sheet « Attentions écartées » — réactivables (Phase 6, §4) ── */}
+      <div className={`${s.backdrop} ${refOpen ? s.on : ""}`} onClick={() => setRefOpen(false)} />
+      <div className={`${s.sheet} ${refOpen ? s.on : ""}`}>
+        <div className={s.grab} />
+        <div className={s.shHead}><h3>Attentions écartées</h3><button onClick={() => setRefOpen(false)}>Fermer</button></div>
+        <div className={s.shBody}>
+          {shownRefused.length === 0 ? (
+            <p className={s.pcSub}>Plus rien d&apos;écarté — tout est de retour dans tes idées.</p>
+          ) : (
+            <>
+              <p className={s.pcSub}>Tu peux les remettre dans tes idées à tout moment.</p>
+              {shownRefused.map(r => (
+                <div key={r.id} className={s.refItem}>
+                  <div className={s.rt}>
+                    {r.brand && <div className={s.brand}>{r.brand}</div>}
+                    <div className={s.title}>{r.title}</div>
+                    <span className={s.reasonTag}>{r.reasonLabel}</span>
+                  </div>
+                  <button className={s.reactBtn} disabled={busy} onClick={() => reactivate(r.id)}>Réactiver</button>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
