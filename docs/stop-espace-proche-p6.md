@@ -58,7 +58,7 @@ Conséquence : le `sh-moment` de la maquette gelée (menu deuil/séparation/… 
 
 **A. ZONES DE FLOU**
 1. ~~« Pas le bon moment » : horizon vs menu de circonstances.~~ **TRANCHÉ** — voir « Décision verrouillée » ci-dessus : horizon conservé, menu de circonstances reporté en Phase 8 (relève de `person_states`, pas de `reco_refusals`).
-2. **Libellés d'horizon inventés** (Bientôt / Dans quelques mois / Pour une grande occasion / Plus tard) + décalages (+1 / +3 / +6 mois / aucun) : copy PLACEHOLDER, aucune valeur fournie. À valider.
+2. ~~Libellés d'horizon placeholder.~~ **VALIDÉS** (Estelle). Question : « Ce n'est pas le bon moment. Tu la reverrais quand ? ». Dans quelques semaines (+1 mois) / Dans quelques mois (+4) / Beaucoup plus tard (+12) → `reappear_at` (décalage temporel). **4e option « Je la garde pour une occasion » = CONDITION, pas horizon** : réserve SANS date (`reserved_for_occasion`, migration 75), réveil événementiel (moteur reco, futur), libellé écartées distinct « Gardée pour une occasion ». Zéro « Bientôt » dans le wording (réservé aux badges de fonctionnalité à venir, ex. conciergerie). Prouvé end-to-end : temporel `reappear≈120j occasion=false` vs occasion `reappear=NULL occasion=true`.
 
 **B. DÉCISIONS PRISES SEUL**
 - **Échelle de « love » incluse** dans « déjà offert » (§3.3, migration 74) : ton cadre disait juste « écarté + fait stocké », mais la maquette + la migration 74 la prévoient → je l'ai câblée (un peu/beaucoup/énormément → `attention_log.love_level`). Dis-moi si tu la voulais hors Phase 6.
@@ -79,7 +79,7 @@ Conséquence : le `sh-moment` de la maquette gelée (menu deuil/séparation/… 
 - Reste à valider : les libellés d'horizon placeholder (A.2).
 
 **E. MIGRATIONS / BUILD**
-- **Aucune nouvelle migration** (69–74 déjà appliquées couvrent tout).
-- `npm run build` ✓ · **165 tests** ✓ · 5 commits poussés, Vercel vert · QA nettoyé.
+- **Migration 75** `supabase-migration-75-reco-refusal-occasion.sql` (`reco_refusals.reserved_for_occasion boolean`, additive) — **appliquée** (validation horizons). 69–74 déjà en place.
+- `npm run build` ✓ · **165 tests** ✓ · commits poussés, Vercel vert · QA nettoyé (0 partout).
 
 **PHASE 6 CLOSE.** Détail reco + les 3 flows fidèles et prouvés end-to-end. Arbitrage « horizon » verrouillé. Restent : Phase 7 (workflow croisé invisible + Réglages), Phase 8 (miroir d'état fiche pilote **+ menu de circonstances reporté ici, avec filtrage amont des recos**), Phase 9 (surface proche-facing), Phase 10 (harmonisation univers pilote) — **je n'enchaîne pas, j'attends ton signal.**
