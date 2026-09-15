@@ -76,7 +76,7 @@ Conséquence : le `sh-moment` de la maquette gelée (menu deuil/séparation/… 
 **D. À VÉRIFIER PAR ESTELLE**
 - Ouvre `/proche/<id>` → Faire plaisir : tape une reco (détail), « Je veux l'offrir » (2 voies), « Pas ça » (les 4 raisons), « Attentions écartées » (réactiver).
 - ~~La divergence « horizon » est le point qui mérite ton arbitrage.~~ **TRANCHÉ** (décision verrouillée ci-dessus).
-- Reste à valider : les libellés d'horizon placeholder (A.2).
+- ~~Reste à valider : les libellés d'horizon.~~ **VALIDÉS** (voir A.2). Plus aucun point ouvert sur la Phase 6.
 
 **E. MIGRATIONS / BUILD**
 - **Migration 75** `supabase-migration-75-reco-refusal-occasion.sql` (`reco_refusals.reserved_for_occasion boolean`, additive) — **appliquée** (validation horizons). 69–74 déjà en place.
