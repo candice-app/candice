@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "crypto";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { detectSignalsForUser } from "@/lib/signals/detector";
 import { generateSuggestionForSignal } from "@/lib/signals/generator";
@@ -6,6 +7,10 @@ import type { ContextualSignal } from "@/types";
 
 const JOB_NAME = "detect-and-generate";
 const MAX_SIGNALS_PER_RUN = 50;
+
+// Télémétrie sans PII : on ne stocke JAMAIS l'UUID utilisateur dans cron_runs.metadata
+// (lisible auparavant hors RLS). Hash court sha256 non réversible → corrélation debug OK.
+const shortId = (id: string) => createHash("sha256").update(id).digest("hex").slice(0, 8);
 
 export async function GET(request: NextRequest) {
   // Auth
@@ -81,7 +86,8 @@ export async function GET(request: NextRequest) {
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         console.error(`[CRON ${JOB_NAME}] Error for user ${userId}: ${msg}`);
-        errors.push(`user:${userId} — ${msg}`);
+        // metadata stocké = hash court, jamais l'UUID (cf. shortId).
+        errors.push(`user:${shortId(userId)} — ${msg}`);
       }
     }
 
