@@ -20,7 +20,7 @@ export async function GET(req: Request) {
     .not('contact_id', 'is', null);
 
   if (!suggestions?.length) {
-    await supabaseAdmin.from('cron_runs').insert({ job_name: 'cadence-feedback', metadata: { inserted: 0 } });
+    await supabaseAdmin.from('cron_runs').insert({ job_name: 'cadence-feedback', status: 'success', finished_at: new Date().toISOString(), metadata: { inserted: 0 } });
     return NextResponse.json({ inserted: 0 });
   }
 
@@ -68,10 +68,10 @@ export async function GET(req: Request) {
   const { error } = await supabaseAdmin.from('cadence_feedback').insert(rows);
   if (error) {
     console.error('[cadence-feedback] Insert error:', error.message);
-    await supabaseAdmin.from('cron_runs').insert({ job_name: 'cadence-feedback', metadata: { error: error.message } });
+    await supabaseAdmin.from('cron_runs').insert({ job_name: 'cadence-feedback', status: 'error', finished_at: new Date().toISOString(), error_message: error.message, metadata: { error: error.message } });
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  await supabaseAdmin.from('cron_runs').insert({ job_name: 'cadence-feedback', metadata: { inserted: rows.length } });
+  await supabaseAdmin.from('cron_runs').insert({ job_name: 'cadence-feedback', status: 'success', finished_at: new Date().toISOString(), metadata: { inserted: rows.length } });
   return NextResponse.json({ inserted: rows.length });
 }
