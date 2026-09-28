@@ -84,12 +84,15 @@ async function extractEntities(
   textFields: string[],
   correlationId: string,
 ): Promise<{
-  brands: string[]; places: string[]; hobbies: string[]; events: string[];
-  brands_categorized?: Array<{ name: string; category: string }>;
+  entities: {
+    brands: string[]; places: string[]; hobbies: string[]; events: string[];
+    brands_categorized?: Array<{ name: string; category: string }>;
+  };
+  status: "success" | "fallback";
 }> {
   const combined = textFields.filter(Boolean).join("\n");
   if (combined.trim().length < 10) {
-    return { brands: [], places: [], hobbies: [], events: [] };
+    return { entities: { brands: [], places: [], hobbies: [], events: [] }, status: "fallback" };
   }
 
   let cleaned = "";
@@ -111,7 +114,7 @@ Ne génère que le JSON, sans explication.`,
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "{}";
     cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    return JSON.parse(cleaned);
+    return { entities: JSON.parse(cleaned), status: "success" };
   } catch (err) {
     console.error("[analyse][entity_extraction] échec parsing/appel Haiku", {
       correlationId,
@@ -119,7 +122,7 @@ Ne génère que le JSON, sans explication.`,
       message: err instanceof Error ? err.message : String(err),
       snippet: cleaned.slice(0, 300),
     });
-    return { brands: [], places: [], hobbies: [], events: [] };
+    return { entities: { brands: [], places: [], hobbies: [], events: [] }, status: "fallback" };
   }
 }
 
@@ -539,7 +542,7 @@ export async function generateProfileAnalysis(
       ]
     : [];
 
-  const entities = await extractEntities(textFields, correlationId);
+  const { entities, status: entitiesStatus } = await extractEntities(textFields, correlationId);
   await logStep("entity_extraction", "success", Date.now() - t4, undefined, { count: Object.values(entities).flat().length });
 
   // ── 5. Fetch recent memories (signal context) ─────────────────────────────
@@ -711,6 +714,11 @@ export async function generateProfileAnalysis(
     source,
     generated_at:     new Date().toISOString(),
     engine_version:   "2.2",
+    generation_meta: {
+      entity_extraction: { status: entitiesStatus, model: "claude-haiku-4-5-20251001" },
+      narrative:         { status: aiStatus, model: "claude-sonnet-4-6" },
+      generated_at:      new Date().toISOString(),
+    },
     // ── Champs V2 (migration 54) — statuts territory assainis côté code ──
     summary_long:     result.summary_long?.trim() || null,
     podium_intro:     result.podium_intro?.trim() || null,
