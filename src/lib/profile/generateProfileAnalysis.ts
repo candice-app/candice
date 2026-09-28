@@ -457,7 +457,7 @@ export async function generateProfileAnalysis(
     metadata?: Record<string, unknown>,
   ) {
     try {
-      await supabase.from("processing_log").insert({
+      const { error } = await supabase.from("processing_log").insert({
         correlation_id: correlationId,
         pilot_id: userId,
         memory_id: null,
@@ -467,7 +467,11 @@ export async function generateProfileAnalysis(
         error_message: errorMessage ?? null,
         metadata: metadata ?? null,
       });
-    } catch { /* log failure must never break the engine */ }
+      // supabase-js ne lève pas d'exception sur erreur DB : elle est dans .error.
+      if (error) console.error("[processing_log] insert rejeté", correlationId, step, error.message);
+    } catch (e) {
+      console.error("[processing_log] exception", correlationId, step, e instanceof Error ? e.message : String(e));
+    }
   }
 
   // ── 1. Read profile data ──────────────────────────────────────────────────
