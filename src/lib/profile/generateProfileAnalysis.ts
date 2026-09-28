@@ -82,6 +82,7 @@ function genderInstruction(gender: Gender): string {
 
 async function extractEntities(
   textFields: string[],
+  correlationId: string,
 ): Promise<{
   brands: string[]; places: string[]; hobbies: string[]; events: string[];
   brands_categorized?: Array<{ name: string; category: string }>;
@@ -91,6 +92,7 @@ async function extractEntities(
     return { brands: [], places: [], hobbies: [], events: [] };
   }
 
+  let cleaned = "";
   try {
     const msg = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
@@ -108,9 +110,15 @@ Ne génère que le JSON, sans explication.`,
     });
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "{}";
-    const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     return JSON.parse(cleaned);
-  } catch {
+  } catch (err) {
+    console.error("[analyse][entity_extraction] échec parsing/appel Haiku", {
+      correlationId,
+      model: "claude-haiku-4-5-20251001",
+      message: err instanceof Error ? err.message : String(err),
+      snippet: cleaned.slice(0, 300),
+    });
     return { brands: [], places: [], hobbies: [], events: [] };
   }
 }
@@ -531,7 +539,7 @@ export async function generateProfileAnalysis(
       ]
     : [];
 
-  const entities = await extractEntities(textFields);
+  const entities = await extractEntities(textFields, correlationId);
   await logStep("entity_extraction", "success", Date.now() - t4, undefined, { count: Object.values(entities).flat().length });
 
   // ── 5. Fetch recent memories (signal context) ─────────────────────────────
@@ -574,6 +582,7 @@ export async function generateProfileAnalysis(
 
   let result: ProfileAnalysisResult;
   let aiStatus = "success";
+  let sonnetCleaned = "";
 
   try {
     const msg = await anthropic.messages.create({
@@ -584,9 +593,15 @@ export async function generateProfileAnalysis(
     });
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "{}";
-    const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    result = JSON.parse(cleaned) as ProfileAnalysisResult;
+    sonnetCleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    result = JSON.parse(sonnetCleaned) as ProfileAnalysisResult;
   } catch (err) {
+    console.error("[analyse][generate_narrative] échec parsing/appel Sonnet", {
+      correlationId,
+      model: "claude-sonnet-4-6",
+      message: err instanceof Error ? err.message : String(err),
+      snippet: sonnetCleaned.slice(0, 300),
+    });
     aiStatus = "fallback";
     // Deterministic fallback — build from facts only.
     // Aucune fuite brute : les champs sans analyse restent vides (l'UI gère via CTA).
