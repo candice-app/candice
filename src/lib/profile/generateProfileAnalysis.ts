@@ -94,7 +94,7 @@ async function extractEntities(
   try {
     const msg = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 500,
+      max_tokens: 2000,
       system: `Extrais les entités nommées du texte. Retourne uniquement du JSON valide :
 {"brands":["..."],"places":["..."],"hobbies":["..."],"events":["..."],"brands_categorized":[{"name":"...","category":"..."}]}
 - brands : marques, enseignes, créateurs
@@ -578,7 +578,7 @@ export async function generateProfileAnalysis(
   try {
     const msg = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 3000,
+      max_tokens: 8000,
       system: systemPrompt,
       messages: [{ role: "user", content: userMessage }],
     });
