@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Programme — Modèle d'analyse</title>
+<style>
+  :root{--pine:#1E3A32;--champ:#C9A961;--canvas:#FBF9F4;--ink:#1A1A18;--muted:#5C5C56;--line:#DEDACE;--red:#8C2F1F;--green:#2C6446;--terra:#B5452E}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--canvas);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Georgia,serif;-webkit-font-smoothing:antialiased}
+  .page{max-width:920px;margin:0 auto;padding:44px 32px 90px}
+  header.doc{border-bottom:3px solid var(--pine);padding-bottom:18px}
+  .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--champ);font-weight:700}
+  h1{font-size:30px;line-height:1.2;margin:9px 0 6px;color:var(--pine);font-weight:700}
+  .sub{color:var(--muted);font-size:14px;margin:0}
+  h2{font-size:22px;color:var(--pine);margin:40px 0 8px;padding-top:18px;border-top:2px solid var(--pine)}
+  h3{font-size:17px;margin:24px 0 6px;color:var(--pine)}
+  p{margin:8px 0} ul,ol{margin:8px 0;padding-left:22px} li{margin:5px 0}
+  code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12.5px;background:#F1EEE4;padding:1px 5px;border-radius:3px}
+  table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+  th{background:var(--pine);color:#fff;text-align:left;padding:8px 10px;font-weight:600;font-size:11.5px;letter-spacing:.04em}
+  td{padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  tr:nth-child(even) td{background:#F6F3EA}
+  .box{border-left:4px solid var(--champ);background:#F6F3EA;padding:14px 18px;margin:18px 0}
+  .box.alert{border-left-color:var(--red);background:#FBF0EE}
+  .box.ok{border-left-color:var(--green);background:#EFF5F1}
+  .box h4{margin:0 0 6px;color:var(--pine);font-size:14.5px}
+  .chantier{border:1px solid var(--line);border-radius:5px;margin:20px 0;overflow:hidden;background:#fff}
+  .ch-head{background:var(--pine);color:#fff;padding:10px 16px;font-size:14px;font-weight:700;letter-spacing:.02em}
+  .ch-head .n{display:inline-block;background:var(--champ);color:#2A2205;width:24px;height:24px;line-height:24px;text-align:center;border-radius:4px;margin-right:9px;font-size:13px}
+  .ch-body{padding:14px 18px}
+  .ch-body h5{margin:12px 0 4px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--terra)}
+  .ch-body h5:first-child{margin-top:0}
+  .ch-body ul{margin:4px 0 4px 0;font-size:14px}
+  .out{color:var(--muted);font-size:13.5px}
+  .test{background:#EFF5F1;border-left:3px solid var(--green);padding:10px 14px;font-size:13.5px;margin:8px 0}
+  .lead{font-size:17px;color:var(--pine);font-weight:600;margin:14px 0}
+  .rule{background:#fff;border:2px solid var(--pine);border-radius:5px;padding:16px 20px;margin:18px 0}
+  .rule ol{margin:8px 0;padding-left:20px}
+  .rule li{margin:8px 0;font-size:14.5px}
+  footer.doc{margin-top:50px;padding-top:15px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+  @media print{
+    body{background:#fff;font-size:10.8pt}.page{max-width:none;padding:0}
+    h2,h3,.ch-head{page-break-after:avoid;break-after:avoid}
+    .chantier,.box,.rule,table,.test{page-break-inside:avoid;break-inside:avoid}tr{page-break-inside:avoid}
+    th,.ch-head{background:#1E3A32!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .ch-head .n{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    tr:nth-child(even) td{background:#F6F3EA!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  @page{margin:15mm 13mm}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="doc">
+  <div class="eyebrow">Candice · Programme d'exécution</div>
+  <h1>Le modèle d'analyse — du diagnostic au code</h1>
+  <p class="sub">Neuf chantiers, dans l'ordre, sans dérive · gelé le 28 septembre 2026</p>
+</header>
+
+<div class="box alert">
+<h4>Ce document est un contrat, pas une proposition</h4>
+<p>Le périmètre de chaque chantier est fermé. On n'y ajoute rien en cours de route. Tout ce qui est découvert et qui n'y figure pas est <strong>noté, jamais traité</strong> — voir le protocole ci-dessous.</p>
+<p>Le programme se termine quand le chantier 7 est validé. À ce moment, et pas avant, Candice sait lire un profil entier et en tirer des faits exploitables.</p>
+</div>
+
+<!-- ================================ -->
+<h2>Le protocole anti-dérive</h2>
+
+<p>À donner à Claude Code <strong>au début de chaque chantier</strong>, sans exception.</p>
+
+<div class="rule">
+<ol>
+<li><strong>Le périmètre est ce qui est écrit dans le chantier. Rien d'autre.</strong> Pas d'amélioration adjacente, pas de refactorisation opportuniste, pas de « tant qu'on y est ».</li>
+<li><strong>Tout constat hors périmètre va dans <code>docs/carnet-de-constats.md</code></strong>, avec sa date et sa preuve. Jamais dans le code. Le carnet se lit à la fin du chantier, pas pendant.</li>
+<li><strong>Si une dépendance manquante bloque, il s'arrête et demande.</strong> Il n'improvise pas de contournement.</li>
+<li><strong>Un STOP final obligatoire</strong>, avec le contrôle d'acceptation du chantier passé et son résultat chiffré.</li>
+<li><strong>Aucun chantier ne commence avant que le précédent soit validé par Estelle.</strong></li>
+</ol>
+</div>
+
+<div class="box">
+<h4>Pourquoi le carnet de constats</h4>
+<p>La dérive ne vient pas de la négligence. Elle vient de ce qui s'est passé le 28 septembre : on cherche une chose, on en trouve trois, et on suit celle qui brille. C'était justifié en phase de diagnostic. Ça ne l'est plus.</p>
+<p>Le carnet ne perd rien — il diffère. Ce qui mérite un chantier en deviendra un, à sa place dans la file.</p>
+</div>
+
+<!-- ================================ -->
+<h2>La carte des dépendances</h2>
+
+<table>
+<tr><th>#</th><th>Chantier</th><th>Ne peut pas commencer avant</th><th>Arbitrage requis ?</th></tr>
+<tr><td><strong>0</strong></td><td>Réparations</td><td>—</td><td>Non</td></tr>
+<tr><td><strong>1</strong></td><td>Référentiels en base</td><td>—</td><td>Non</td></tr>
+<tr><td><strong>2</strong></td><td>Modèle de faits</td><td>—</td><td><strong>Oui</strong> — valider les 8 types</td></tr>
+<tr><td><strong>3</strong></td><td>Tags depuis les réponses fermées</td><td>1 et 2</td><td><strong>Oui</strong> — valider la table de correspondance</td></tr>
+<tr><td><strong>4</strong></td><td>Extracteur de texte libre</td><td>1, 2 et 3</td><td><strong>Oui</strong> — valider les règles d'extraction</td></tr>
+<tr><td><strong>5</strong></td><td>Rédacteur revu</td><td>4</td><td>Non</td></tr>
+<tr><td><strong>6</strong></td><td>Micro-questions de levée d'ambiguïté</td><td>4</td><td><strong>Oui</strong> — valider les gabarits</td></tr>
+<tr><td><strong>7</strong></td><td>Écran de confirmation</td><td>4 et 6</td><td>Non</td></tr>
+<tr><td><strong>8</strong></td><td>Console d'administration</td><td>2 et 6</td><td>Non</td></tr>
+</table>
+
+<p><strong>Les chantiers 0 et 1 peuvent tourner en parallèle</strong> — ils ne se touchent pas. Tout le reste est strictement séquentiel.</p>
+
+<!-- ================================ -->
+<h2>Les neuf chantiers</h2>
+
+<!-- 0 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">0</span>RÉPARATIONS — en cours</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li><code>max_tokens</code> : Haiku 500 → <strong>2 000</strong> · Sonnet 3 000 → <strong>8 000</strong></li>
+<li>Colonne <code>generation_meta</code> (jsonb) sur <code>profile_analysis</code> : état des deux appels IA, modèle utilisé, horodatage</li>
+<li>Les deux <code>catch</code> de <code>generateProfileAnalysis</code> journalisent au lieu d'avaler</li>
+<li>Migration : étendre <code>processing_log_step_check</code> à toutes les valeurs réellement écrites, après relevé exhaustif</li>
+<li><code>logStep</code> lit le <code>.error</code> renvoyé par supabase-js</li>
+<li>Audit ligne à ligne des 154 mutations Supabase → correction de celles dont l'erreur n'est jamais lue</li>
+<li><code>/api/emails/welcome</code> : session requise + envoi à <code>user.email</code>, jamais à l'adresse du corps</li>
+<li><code>/api/emails/reminder</code> : session + <code>contactId</code> + vérification de propriété + tout reconstruit côté serveur</li>
+<li><code>/api/cron</code> ajouté aux préfixes exemptés de la porte bêta dans <code>src/proxy.ts</code></li>
+<li>Tutoiement imposé dans la consigne de <code>generator.ts</code></li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">La limitation de débit · le mot de passe bêta · toute modification du modèle de données · toute amélioration de prompt autre que le tutoiement.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Régénérer l'analyse de <code>0b74bb6d…</code> et prouver que : <code>entities</code> contient les 14 marques · <code>territory</code>, <code>universe</code> et <code>summary_long</code> ne sont plus nuls · <code>generation_meta</code> indique <code>success</code> sur les deux appels · <code>processing_log</code> contient au moins 3 lignes pour ce passage.
+</div>
+</div>
+</div>
+
+<!-- 1 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">1</span>RÉFÉRENTIELS EN BASE</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li><code>ref_interests</code> — 44 lignes depuis <code>INTEREST_DIMENSIONS</code></li>
+<li><code>ref_attention_dna</code> — 28 lignes depuis <code>ATTENTION_DNA</code></li>
+<li><code>ref_life_states</code> — 28 lignes depuis <code>LIFE_STATES</code></li>
+<li><code>ref_suppliers</code> — 574 lignes depuis <code>SUPPLIERS</code>, <strong>avec <code>logo_url</code>, <code>supplier_type</code>, <code>category</code>, <code>city</code></strong></li>
+<li><code>ref_vocabulary</code> — les 8 axes et leurs valeurs autorisées</li>
+<li>Un script d'import rejouable, sans doublon</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">L'onglet <code>ATTENTIONS_MASTER</code> (2 276 attentions) — c'est le catalogue, il viendra avec le moteur de recommandation. <code>CONTEXT_RULES</code>, <code>SCORING_RULES</code> — même raison. Aucune correction des 11 erreurs bloquantes du catalogue.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Compte de lignes par table conforme (44 / 28 / 28 / 574 / 8). Et <code>ref_suppliers</code> contient <code>SUP-0004</code> Gemmyo, <code>SUP-0291</code> Ritz Paris, <code>SUP-0419</code> librairie Mollat, avec leur catégorie exacte.
+</div>
+</div>
+</div>
+
+<!-- 2 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">2</span>LE MODÈLE DE FAITS</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li><code>profile_facts</code> — une ligne par fait : <code>type</code> (les 8), <code>enonce</code>, <code>tag</code> (nullable), <code>severite</code>, <code>role</code>, <code>ref_catalogue</code>, <code>champ_source</code>, <code>extrait_source</code>, <code>statut</code>, <code>confiance</code></li>
+<li><strong>Le fourre-tout n'est pas une table :</strong> c'est une ligne de <code>profile_facts</code> avec <code>tag = null</code> et <code>statut = 'non_mappe'</code>. Elle garde son type</li>
+<li><code>profile_extraction_runs</code> — la couverture : une ligne par champ traité, avec son statut et le nombre de faits produits</li>
+<li><code>question_templates</code> — les gabarits de type B</li>
+<li><code>question_validation_queue</code> — les questions improvisées en attente de validation</li>
+<li>RLS propriétaire sur toutes</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">Aucun remplissage. Aucune extraction. Aucune interface. Ce chantier ne crée que des contenants.</p>
+<h5>Arbitrage requis avant démarrage</h5>
+<p style="font-size:14px">Valider les 8 types de faits · les 2 niveaux de sévérité · les 4 rôles d'entité.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Les tables existent, la RLS isole bien deux utilisateurs différents (prouvé par une requête croisée), et une ligne de test peut être insérée puis lue pour chacun des 8 types.
+</div>
+</div>
+</div>
+
+<!-- 3 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">3</span>TAGS DEPUIS LES RÉPONSES FERMÉES</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li>Une table de correspondance : chaque option de chaque question fermée → les tags qu'elle pose</li>
+<li>Le calcul, <strong>100 % déterministe, sans aucun appel IA</strong></li>
+<li>L'écriture dans <code>profile_facts</code></li>
+<li>Rejouable : recalculer ne duplique pas</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">Tout le texte libre. Les axes numériques existants, qui restent inchangés et continuent d'alimenter le rédacteur.</p>
+<h5>Arbitrage requis avant démarrage</h5>
+<p style="font-size:14px">Valider la table de correspondance option → tags, question par question.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Sur le profil <code>0b74bb6d…</code> : « La gastronomie est une passion » pose <code>INT-001</code> et <code>INT-042</code> en intensité forte · « Le luxe et le service » pose <code>DNA-011</code> · « Une surprise mal organisée » pose une contrainte. <strong>Et : aucune question fermée répondue ne produit zéro tag.</strong>
+</div>
+</div>
+</div>
+
+<!-- 4 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">4</span>L'EXTRACTEUR DE TEXTE LIBRE</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li>Un appel IA par champ libre, avec schéma de sortie imposé — jamais de prose</li>
+<li>Le rôle par défaut déduit du champ d'origine (<code>marques_lieux</code> → repère · <code>envies_reves</code> → envie)</li>
+<li>Le rapprochement contre <code>ref_interests</code>, <code>ref_attention_dna</code>, <code>ref_suppliers</code></li>
+<li>La sévérité posée <strong>par règle</strong> : santé, sécurité, allergie, mobilité, formulation absolue → bloquant. Tout le reste → retenu. <strong>L'IA ne l'attribue jamais</strong></li>
+<li>Les termes non mappés écrits avec leur type et <code>statut = 'non_mappe'</code></li>
+<li>L'écriture de la couverture dans <code>profile_extraction_runs</code></li>
+<li>Déclenchement après chaque réponse soumise, sans bloquer l'affichage</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">La rédaction de l'analyse (chantier 5). Les questions (chantier 6). L'écran de confirmation (chantier 7). Le moteur de recommandation, qui n'est pas dans ce programme.</p>
+<h5>Arbitrage requis avant démarrage</h5>
+<p style="font-size:14px">Valider les règles d'extraction, champ par champ, sur les 16 champs libres.</p>
+<h5>Contrôle d'acceptation — le profil d'Estelle</h5>
+<div class="test">
+Sur <code>0b74bb6d…</code>, l'extraction doit produire <strong>au minimum</strong> :<br>
+— la contrainte literie, sévérité bloquante, domaine hébergement<br>
+— la contrainte port de charge, sévérité bloquante<br>
+— l'exclusion des bijoux fins et de l'argent<br>
+— l'exclusion des coupes mi-mollet et bottines hautes<br>
+— les 14 maisons, dont au moins 12 rattachées à leur <code>SUP-xxxx</code><br>
+— les 9 lieux, typés<br>
+— les 14 envies, avec priorité, dont « écrire un livre » en nature <code>a_soutenir</code><br>
+— les 2 règles d'exécution : annoncer sans dévoiler, accompagner le choix<br>
+— <strong>couverture : 16 champs remplis, 16 traités, 0 échec</strong><br><br>
+<strong>Si un seul point manque, le chantier n'est pas validé.</strong>
+</div>
+</div>
+</div>
+
+<!-- 5 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">5</span>LE RÉDACTEUR REVU</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li>Le rédacteur reçoit les faits <strong>en plus</strong> du texte brut</li>
+<li>Consigne : ne jamais contredire un fait · ne jamais omettre un fait bloquant · ne jamais afficher un identifiant technique</li>
+<li>Les faits en <code>non_mappe</code> lui sont fournis <strong>en dernier</strong>, avec obligation de les lire pour affiner</li>
+<li>Les logos des marques reconnues s'affichent depuis <code>ref_suppliers.logo_url</code></li>
+<li>Le tutoiement, déjà corrigé au chantier 0, est vérifié ici de bout en bout</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">Toute refonte visuelle de la fiche. Le contenu change, la maquette ne bouge pas.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Sur le profil d'Estelle, la section « À éviter » de l'analyse régénérée <strong>mentionne la literie</strong>. Et aucun identifiant <code>SUP-xxxx</code>, <code>INT-xxx</code> ou <code>DNA-xxx</code> n'apparaît dans un texte visible.
+</div>
+</div>
+</div>
+
+<!-- 6 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">6</span>MICRO-QUESTIONS DE LEVÉE D'AMBIGUÏTÉ</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li>Les gabarits de base, rédigés par Estelle, chargés dans <code>question_templates</code></li>
+<li>L'instanciation : un fait ambigu → une question, remplie depuis le gabarit</li>
+<li><strong>L'improvisation autorisée</strong> quand aucun gabarit ne convient — mais la question part en <code>question_validation_queue</code> et <strong>n'est jamais servie</strong> avant validation</li>
+<li>La priorité : ces questions passent <strong>avant</strong> les micro-questions de banque</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">La migration des 2 198 questions d'Estelle — c'est un chantier à part, hors de ce programme. La console de validation (chantier 8). On code en supposant qu'elle existera.</p>
+<h5>Arbitrage requis avant démarrage</h5>
+<p style="font-size:14px">Valider les gabarits de base, dans le ton Candice, en français compréhensible par n'importe qui.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Sur le profil d'Estelle, le système génère la question sur le rôle du Ritz — cité à la fois en repère et en envie. Et une question improvisée ne peut pas être servie : prouvé par un test qui tente de la servir et échoue.
+</div>
+</div>
+</div>
+
+<!-- 7 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">7</span>L'ÉCRAN DE CONFIRMATION</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li>L'écran de fin de questionnaire : « voilà ce que j'ai compris de toi »</li>
+<li>La résolution des lieux via l'autocomplétion de Google Maps</li>
+<li>La levée des ambiguïtés restantes, via les questions du chantier 6</li>
+<li>Un fait confirmé passe en <code>statut = 'confirme'</code> et sa confiance monte</li>
+<li>Skippable, mais toujours proposé</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">La correction des faits un par un — Estelle a tranché : on corrige en modifiant sa réponse ouverte, ce qui relance l'analyse.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Sur le profil d'Estelle, l'écran propose les 9 lieux à résoudre, en trouve au moins 6 avec une adresse réelle, et signale ceux qui sont ambigus ou introuvables.
+</div>
+</div>
+</div>
+
+<!-- 8 -->
+<div class="chantier">
+<div class="ch-head"><span class="n">8</span>CONSOLE D'ADMINISTRATION</div>
+<div class="ch-body">
+<h5>Dans le périmètre</h5>
+<ul>
+<li>Route <code>/admin</code>, accès réservé</li>
+<li>File des questions improvisées : valider, corriger, refuser</li>
+<li>File des termes non mappés : créer un tag, rattacher à un existant, ignorer</li>
+<li>File des entités candidates au catalogue (Livy, Club Med, La Corniche…)</li>
+<li>Vue de couverture : combien de champs traités, combien en échec, sur quels profils</li>
+</ul>
+<h5 class="out">Hors périmètre</h5>
+<p class="out">Toute autre fonction d'administration. Ce n'est pas le lot « console admin » du registre — c'est uniquement ce que ce programme exige.</p>
+<h5>Contrôle d'acceptation</h5>
+<div class="test">
+Une question improvisée peut être validée depuis la console et devient servable. Un terme non mappé peut être promu en tag et les profils concernés sont reclassés.
+</div>
+</div>
+</div>
+
+<!-- ================================ -->
+<h2>Ce qui n'est pas dans ce programme</h2>
+
+<p>Écrit noir sur blanc pour qu'on n'y revienne pas en cours de route.</p>
+
+<table>
+<tr><th>Sujet</th><th>Pourquoi pas maintenant</th></tr>
+<tr><td>Le moteur de recommandation</td><td>Il consomme ce que ce programme produit. Il ne peut pas venir avant</td></tr>
+<tr><td>L'import du catalogue (2 276 attentions)</td><td>Appartient au moteur de reco</td></tr>
+<tr><td>La migration des 2 198 micro-questions</td><td>Chantier à part entière, une fois le modèle de faits stable</td></tr>
+<tr><td>Les 11 erreurs bloquantes du catalogue</td><td>Appartient au chantier catalogue</td></tr>
+<tr><td>La limitation de débit, le mot de passe bêta</td><td>Avant la bêta publique, pas avant</td></tr>
+<tr><td>L'onglet « Nous », les 5 boutons morts de l'Espace Proche</td><td>Chantier Espace Proche, distinct</td></tr>
+<tr><td>Le mot de passe oublié</td><td>Bloquant bêta, pas bloquant pour ce programme</td></tr>
+<tr><td>Les tests sur les 87 routes API</td><td>Avant la bêta publique</td></tr>
+</table>
+
+<div class="box ok">
+<h4>Le seul critère de fin</h4>
+<p>Le programme est terminé quand, pour le profil d'Estelle, on peut afficher côte à côte :</p>
+<p><strong>à gauche</strong>, l'analyse écrite, belle, qui mentionne sa literie — <strong>à droite</strong>, la liste des faits structurés, avec 16 champs sur 16 traités et zéro échec.</p>
+<p>Tant que ces deux colonnes ne tiennent pas ensemble, le programme continue. Quand elles tiennent, il s'arrête et le moteur de recommandation peut commencer.</p>
+</div>
+
+<footer class="doc">
+Candice · Programme d'exécution du modèle d'analyse · gelé le 28 septembre 2026.<br>
+Fondé sur les vérifications menées ce jour (base de production, plafonds de tokens mesurés, catalogue lu) et sur les arbitrages rendus par Estelle le même jour.<br>
+Toute modification de ce programme fait l'objet d'une décision explicite et datée. Le carnet de constats ne modifie pas le programme : il alimente le suivant.
+</footer>
+
+</div>
+</body>
+</html>
