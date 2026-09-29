@@ -17,20 +17,25 @@ export async function POST() {
     return NextResponse.json({ error: 'Aucune suppression programmée' }, { status: 400 });
   }
 
-  await supabase.from('my_profile').update({
+  const { error: updateError } = await supabase.from('my_profile').update({
     subscription_status: 'active',
     cancelled_at: null,
     deletion_scheduled_at: null,
   }).eq('user_id', user.id);
+  if (updateError) {
+    console.error('[cancel-deletion] my_profile update', updateError.message);
+    return NextResponse.json({ error: "L'annulation de la suppression a échoué." }, { status: 500 });
+  }
 
   const admin = createAdminClient();
-  await admin.from('account_lifecycle_events').insert({
+  const { error: eventError } = await admin.from('account_lifecycle_events').insert({
     user_id: user.id,
     event_type: 'deletion_cancelled',
     previous_status: 'cancelled',
     new_status: 'active',
     triggered_by: 'user',
   });
+  if (eventError) console.error('[cancel-deletion] account_lifecycle_events insert', eventError.message);
 
   return NextResponse.json({ success: true });
 }

@@ -11,11 +11,12 @@ export async function POST(request: NextRequest) {
   if (!endpoint) return NextResponse.json({ error: "endpoint required" }, { status: 400 });
 
   const supabaseAdmin = createAdminClient();
-  await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from("push_subscriptions")
     .delete()
     .eq("user_id", user.id)
     .eq("endpoint", endpoint);
+  if (error) console.error("[push/unsubscribe] push_subscriptions delete", error.message);
 
   return NextResponse.json({ success: true });
 }

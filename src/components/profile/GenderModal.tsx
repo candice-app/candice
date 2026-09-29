@@ -38,11 +38,12 @@ export default function GenderModal({ userId }: Props) {
   async function handleSave() {
     if (!grammatical || saving) return;
     setSaving(true);
-    await supabase.from("my_profile").update({
+    const { error } = await supabase.from("my_profile").update({
       grammatical_gender: grammatical,
       style_gender_orientation: style.length > 0 ? style : null,
       updated_at: new Date().toISOString(),
     }).eq("user_id", userId);
+    if (error) console.error("[GenderModal.handleSave] my_profile update", error.message);
     fetch("/api/profile/generate", { method: "POST" }).catch(() => {});
     setSaving(false);
     setVisible(false);

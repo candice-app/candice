@@ -239,9 +239,10 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
         breathText = buildFallbackText(facts);
       }
 
-      await supabase.from("my_profile")
+      const { error: updateError } = await supabase.from("my_profile")
         .update({ attention_breath_text: breathText, updated_at: new Date().toISOString() })
         .eq("user_id", userId);
+      if (updateError) console.error("[AttentionStep] my_profile update attention_breath_text", updateError.message);
 
       onDone(result, breathText);
     } catch {

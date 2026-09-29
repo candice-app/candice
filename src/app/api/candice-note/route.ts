@@ -51,11 +51,12 @@ Identifie si un proche est mentionné (par prénom, surnom, lien). Réponds UNIQ
     } catch { /* fallback to default response */ }
   }
 
-  await supabase.from("profile_notes").insert({
+  const { error: noteError } = await supabase.from("profile_notes").insert({
     user_id: user.id,
     contact_id: contactId,
     note: note.trim(),
   });
+  if (noteError) console.error("[candice-note] profile_notes insert", noteError.message);
 
   return NextResponse.json({ response: responseText, contact_id: contactId, contact_name: contactName });
 }

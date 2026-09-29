@@ -25,11 +25,12 @@ export async function GET(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
   let cronRunId: string | null = null;
 
-  const { data: cronRun } = await supabaseAdmin
+  const { data: cronRun, error: cronRunError } = await supabaseAdmin
     .from("cron_runs")
     .insert({ job_name: JOB_NAME, status: "running" })
     .select("id")
     .single();
+  if (cronRunError) console.error(`[CRON ${JOB_NAME}] cron_runs insert`, cronRunError.message);
   cronRunId = cronRun?.id ?? null;
 
   let totalSignals = 0;
@@ -92,7 +93,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (cronRunId) {
-      await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin
         .from("cron_runs")
         .update({
           status: "success",
@@ -102,6 +103,7 @@ export async function GET(request: NextRequest) {
           metadata: { errors },
         })
         .eq("id", cronRunId);
+      if (updateError) console.error(`[CRON ${JOB_NAME}] cron_runs update`, updateError.message);
     }
 
     console.log(`[CRON ${JOB_NAME}] Done — signals=${totalSignals} suggestions=${totalSuggestions} errors=${errors.length}`);
@@ -117,7 +119,7 @@ export async function GET(request: NextRequest) {
     console.error(`[CRON ${JOB_NAME}] Fatal: ${msg}`);
 
     if (cronRunId) {
-      await supabaseAdmin
+      const { error: updateError } = await supabaseAdmin
         .from("cron_runs")
         .update({
           status: "error",
@@ -125,6 +127,7 @@ export async function GET(request: NextRequest) {
           error_message: msg,
         })
         .eq("id", cronRunId);
+      if (updateError) console.error(`[CRON ${JOB_NAME}] cron_runs update`, updateError.message);
     }
 
     return NextResponse.json({ error: msg }, { status: 500 });

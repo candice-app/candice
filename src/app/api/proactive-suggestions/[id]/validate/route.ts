@@ -31,12 +31,14 @@ export async function POST(
     supabase
       .from("proactive_suggestions")
       .update({ status: "validated", responded_at: now })
-      .eq("id", id),
+      .eq("id", id)
+      .then(({ error }) => { if (error) console.error("[proactive-suggestions/validate] proactive_suggestions update", error.message); }),
     supabase
       .from("contacts")
       .update({ last_suggestion_at: now })
       .eq("id", suggestion.contact_id)
-      .eq("user_id", user.id),
+      .eq("user_id", user.id)
+      .then(({ error }) => { if (error) console.error("[proactive-suggestions/validate] contacts update last_suggestion_at", error.message); }),
   ]);
 
   // Track activity

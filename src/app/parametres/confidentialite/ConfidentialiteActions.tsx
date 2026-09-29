@@ -74,7 +74,8 @@ export default function ConfidentialiteActions() {
     const { data } = await supabase.auth.getUser();
     if (!data.user) { setFindableLoading(false); return; }
     const newVal = !isFindable;
-    await supabase.from("my_profile").update({ is_findable: newVal }).eq("user_id", data.user.id);
+    const { error } = await supabase.from("my_profile").update({ is_findable: newVal }).eq("user_id", data.user.id);
+    if (error) console.error("[ConfidentialiteActions] my_profile update is_findable", error.message);
     setIsFindable(newVal);
     setFindableLoading(false);
   };

@@ -40,10 +40,11 @@ export async function GET(req: Request) {
   const admin = createAdminClient();
   const now = new Date();
 
-  const { data: cronRun } = await admin
+  const { data: cronRun, error: cronRunError } = await admin
     .from('cron_runs')
     .insert({ job_name: JOB_NAME, status: 'running' })
     .select('id').single();
+  if (cronRunError) console.error(`[CRON ${JOB_NAME}] cron_runs insert`, cronRunError.message);
   const cronRunId = cronRun?.id ?? null;
 
   const transitions: string[] = [];
@@ -89,14 +90,16 @@ export async function GET(req: Request) {
 
         // Trial expired → paused (Stripe Phase 7: check for payment method)
         if (ENABLE_TRIAL_LOCKOUT && days >= 30) {
-          await admin
+          const { error: pausedUpdateError } = await admin
             .from('my_profile')
             .update({ subscription_status: 'paused', subscription_paused_at: now.toISOString() })
             .eq('user_id', userId);
-          await admin.from('account_lifecycle_events').insert({
+          if (pausedUpdateError) console.error(`[CRON ${JOB_NAME}] my_profile update (trial_expired)`, pausedUpdateError.message);
+          const { error: pausedEventError } = await admin.from('account_lifecycle_events').insert({
             user_id: userId, event_type: 'trial_expired',
             previous_status: 'trial', new_status: 'paused', triggered_by: 'system',
           });
+          if (pausedEventError) console.error(`[CRON ${JOB_NAME}] account_lifecycle_events insert (trial_expired)`, pausedEventError.message);
           if (email) {
             await sendSimpleEmail(email,
               'Candice est en pause',
@@ -111,14 +114,16 @@ export async function GET(req: Request) {
       if (status === 'active' && p.last_active_at) {
         const inactiveDays = (now.getTime() - new Date(p.last_active_at).getTime()) / (1000 * 60 * 60 * 24);
         if (inactiveDays >= 90) {
-          await admin
+          const { error: silentUpdateError } = await admin
             .from('my_profile')
             .update({ subscription_status: 'silent', silent_since: now.toISOString() })
             .eq('user_id', userId);
-          await admin.from('account_lifecycle_events').insert({
+          if (silentUpdateError) console.error(`[CRON ${JOB_NAME}] my_profile update (went_silent)`, silentUpdateError.message);
+          const { error: silentEventError } = await admin.from('account_lifecycle_events').insert({
             user_id: userId, event_type: 'went_silent',
             previous_status: 'active', new_status: 'silent', triggered_by: 'system',
           });
+          if (silentEventError) console.error(`[CRON ${JOB_NAME}] account_lifecycle_events insert (went_silent)`, silentEventError.message);
           if (email) {
             await sendSimpleEmail(email,
               'On t\'attend — Candice',
@@ -151,19 +156,21 @@ export async function GET(req: Request) {
     }
 
     if (cronRunId) {
-      await admin.from('cron_runs').update({
+      const { error: runUpdateError } = await admin.from('cron_runs').update({
         status: 'success', finished_at: now.toISOString(),
         metadata: { transitions },
       }).eq('id', cronRunId);
+      if (runUpdateError) console.error(`[CRON ${JOB_NAME}] cron_runs update`, runUpdateError.message);
     }
 
     return NextResponse.json({ transitions });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (cronRunId) {
-      await admin.from('cron_runs').update({
+      const { error: runUpdateError } = await admin.from('cron_runs').update({
         status: 'error', finished_at: now.toISOString(), error_message: msg,
       }).eq('id', cronRunId);
+      if (runUpdateError) console.error(`[CRON ${JOB_NAME}] cron_runs update`, runUpdateError.message);
     }
     return NextResponse.json({ error: msg }, { status: 500 });
   }

@@ -36,12 +36,13 @@ export async function POST(request: NextRequest) {
     .upload(path, bytes, { contentType: file.type, upsert: true });
   if (uploadError) return NextResponse.json({ error: uploadError.message }, { status: 500 });
 
-  await supabase
+  const { error: upsertError } = await supabase
     .from("my_profile")
     .upsert(
       { user_id: user.id, avatar_path: path, updated_at: new Date().toISOString() },
       { onConflict: "user_id" },
     );
+  if (upsertError) console.error("[profile/avatar] my_profile upsert avatar_path", upsertError.message);
 
   invalidateAvatarUrl(path); // nouvelle photo → nouvelle URL signée au prochain rendu
 

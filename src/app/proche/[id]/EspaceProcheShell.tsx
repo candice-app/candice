@@ -198,10 +198,12 @@ export default function EspaceProcheShell({
   // invisible est en Phase 7.
   const refuseGout = async (d: Detail) => {
     if (busy) return; setBusy(true);
-    await supabase.from("reco_refusals").insert({
+    const { error: refusalError } = await supabase.from("reco_refusals").insert({
       pilot_id: pilotId, contact_id: contactId, reco_id: d.id, reason: "gout", reactivable: true,
     });
-    await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    if (refusalError) console.error("[EspaceProcheShell.refuseGout] reco_refusals insert", refusalError.message);
+    const { error: itemError } = await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    if (itemError) console.error("[EspaceProcheShell.refuseGout] contact_reco_items update", itemError.message);
     setBusy(false); markHandled(d.id); step("noted");
   };
 
@@ -209,11 +211,13 @@ export default function EspaceProcheShell({
   const refuseBudget = async (d: Detail) => {
     if (busy) return; setBusy(true);
     const reappear = new Date(Date.now() + 182 * 86400000).toISOString();
-    await supabase.from("reco_refusals").insert({
+    const { error: refusalError } = await supabase.from("reco_refusals").insert({
       pilot_id: pilotId, contact_id: contactId, reco_id: d.id, reason: "budget",
       reactivable: true, reappear_at: reappear,
     });
-    await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    if (refusalError) console.error("[EspaceProcheShell.refuseBudget] reco_refusals insert", refusalError.message);
+    const { error: itemError } = await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    if (itemError) console.error("[EspaceProcheShell.refuseBudget] contact_reco_items update", itemError.message);
     setBusy(false); markHandled(d.id); setPasca(null);
   };
 
@@ -221,11 +225,13 @@ export default function EspaceProcheShell({
   // avec le retour de satisfaction (§3.3).
   const dejaOffert = async (d: Detail) => {
     if (busy) return; setBusy(true);
-    await supabase.from("attention_log").insert({
+    const { error: logError } = await supabase.from("attention_log").insert({
       user_id: pilotId, contact_id: contactId, attention_title: d.title,
       attention_type: d.recoType, status: "done", love_level: love,
     });
-    await supabase.from("contact_reco_items").update({ reservation_status: "purchased" }).eq("id", d.id);
+    if (logError) console.error("[EspaceProcheShell.dejaOffert] attention_log insert", logError.message);
+    const { error: itemError } = await supabase.from("contact_reco_items").update({ reservation_status: "purchased" }).eq("id", d.id);
+    if (itemError) console.error("[EspaceProcheShell.dejaOffert] contact_reco_items update", itemError.message);
     setBusy(false); markHandled(d.id); setPasca(null); setLove(null);
   };
 
@@ -236,11 +242,13 @@ export default function EspaceProcheShell({
     const h = HORIZONS.find(x => x.key === horizonKey);
     const occasion = !!h?.occasion;
     const reappear = h?.months ? new Date(Date.now() + h.months * 30 * 86400000).toISOString() : null;
-    await supabase.from("reco_refusals").insert({
+    const { error: refusalError } = await supabase.from("reco_refusals").insert({
       pilot_id: pilotId, contact_id: contactId, reco_id: d.id, reason: "moment",
       sub_reason: horizonKey, reactivable: true, reappear_at: reappear, reserved_for_occasion: occasion,
     });
-    await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    if (refusalError) console.error("[EspaceProcheShell.refuseMoment] reco_refusals insert", refusalError.message);
+    const { error: itemError } = await supabase.from("contact_reco_items").update({ status: "refused" }).eq("id", d.id);
+    if (itemError) console.error("[EspaceProcheShell.refuseMoment] contact_reco_items update", itemError.message);
     setBusy(false); markHandled(d.id); setPasca(null);
   };
 
@@ -251,7 +259,8 @@ export default function EspaceProcheShell({
   // le compteur de refus goût reste intact pour le workflow croisé (Phase 7).
   const reactivate = async (id: string) => {
     if (busy) return; setBusy(true);
-    await supabase.from("contact_reco_items").update({ status: "active" }).eq("id", id);
+    const { error } = await supabase.from("contact_reco_items").update({ status: "active" }).eq("id", id);
+    if (error) console.error("[EspaceProcheShell.reactivate] contact_reco_items update", error.message);
     setBusy(false); setReactivatedIds(prev => new Set(prev).add(id));
   };
   const shownRefused = refused.filter(r => !reactivatedIds.has(r.id));
@@ -267,10 +276,11 @@ export default function EspaceProcheShell({
   const saveNews = async () => {
     if ((!newsState && !newsText.trim()) || saving) return;
     setSaving(true);
-    await supabase.from("person_states").insert({
+    const { error } = await supabase.from("person_states").insert({
       subject_kind: "contact", contact_id: contactId, declared_by: pilotId,
       state: newsState ?? "evenement", note_free: newsText.trim() || null,
     });
+    if (error) console.error("[EspaceProcheShell.saveNews] person_states insert", error.message);
     setSaving(false);
     setNewsOpen(false); setNewsText(""); setNewsState(null);
   };

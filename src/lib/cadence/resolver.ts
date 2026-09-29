@@ -160,13 +160,14 @@ export async function resolveCadenceForContact(
   const reason = reasons.join(', ');
 
   // Journal de la décision
-  await supabaseAdmin.from('cadence_log').insert({
+  const { error: logErr } = await supabaseAdmin.from('cadence_log').insert({
     user_id: userId,
     contact_id: contactId,
     computed_cadence: computed,
     reason,
     factors,
   });
+  if (logErr) console.error('[cadence/resolver] cadence_log insert', logErr.message);
 
   return {
     cadence: computed,

@@ -215,7 +215,7 @@ function RegisterForm() {
         supabase.from("my_profile").upsert(
           { user_id: currentUser.id, phone: phone.trim(), updated_at: new Date().toISOString() },
           { onConflict: "user_id" }
-        ).then(() => {});
+        ).then(({ error }) => { if (error) console.error("[register] my_profile upsert phone", error.message); });
       }
     }
 

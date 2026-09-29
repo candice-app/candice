@@ -50,10 +50,11 @@ export async function POST() {
   }
 
   if (newIdx !== currentIdx) {
-    await supabase
+    const { error } = await supabase
       .from('my_profile')
       .update({ cadence_preference: CADENCE_STEPS[newIdx] })
       .eq('user_id', user.id);
+    if (error) console.error('[cadence/auto-adjust] my_profile update', error.message);
   }
 
   return NextResponse.json({ cadence: CADENCE_STEPS[newIdx], message });

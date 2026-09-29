@@ -40,10 +40,11 @@ export async function POST(request: NextRequest) {
   }
 
   // Store the path (not a URL) so we can generate fresh signed URLs later
-  await supabase
+  const { error: photoUpdateError } = await supabase
     .from("contacts")
     .update({ photo_url: path })
     .eq("id", contactId);
+  if (photoUpdateError) console.error("[contacts/upload-photo] contacts update", photoUpdateError.message);
 
   const { data: signed, error: signError } = await admin.storage
     .from("contact-photos")

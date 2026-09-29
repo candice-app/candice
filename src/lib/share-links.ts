@@ -42,7 +42,8 @@ export async function claimShareLink(token: string, userId: string): Promise<Cla
       ?? await ensureConsent(admin, link.owner_id, userId, link.scope ?? []);
     if (!consentId) return INVALID;
     if (!link.consent_id) {
-      await admin.from("profile_share_links").update({ consent_id: consentId }).eq("id", link.id);
+      const { error: linkErr } = await admin.from("profile_share_links").update({ consent_id: consentId }).eq("id", link.id);
+      if (linkErr) console.error("[share-links] profile_share_links update (backfill)", linkErr.message);
     }
     return { ok: true, consentId, alreadyClaimed: true };
   }
@@ -50,7 +51,7 @@ export async function claimShareLink(token: string, userId: string): Promise<Cla
   if (new Date(link.expires_at as string) <= new Date()) return INVALID;
 
   // UPDATE ATOMIQUE : usage unique garanti contre les réclamations simultanées
-  const { data: won } = await admin
+  const { data: won, error: wonErr } = await admin
     .from("profile_share_links")
     .update({ claimed_by: userId, claimed_at: new Date().toISOString() })
     .eq("id", link.id)
@@ -59,13 +60,15 @@ export async function claimShareLink(token: string, userId: string): Promise<Cla
     .gt("expires_at", new Date().toISOString())
     .select("id")
     .maybeSingle();
+  if (wonErr) console.error("[share-links] profile_share_links update (claim)", wonErr.message);
 
   if (!won) return INVALID; // quelqu'un d'autre a gagné la course (ou révocation/expiration entre-temps)
 
   const consentId = await ensureConsent(admin, link.owner_id, userId, link.scope ?? []);
   if (!consentId) return INVALID;
 
-  await admin.from("profile_share_links").update({ consent_id: consentId }).eq("id", link.id);
+  const { error: finalErr } = await admin.from("profile_share_links").update({ consent_id: consentId }).eq("id", link.id);
+  if (finalErr) console.error("[share-links] profile_share_links update (link consent)", finalErr.message);
   return { ok: true, consentId, alreadyClaimed: false };
 }
 

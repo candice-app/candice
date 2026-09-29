@@ -38,10 +38,11 @@ export default function RegisterEditor({ contactId, initialRegister }: Props) {
   async function saveRegister(value: RelationshipRegister) {
     setSaving(true);
     const supabase = createClient();
-    await supabase
+    const { error: registerError } = await supabase
       .from("contacts")
       .update({ relationship_register: value })
       .eq("id", contactId);
+    if (registerError) console.error("[RegisterEditor.saveRegister] contacts update", registerError.message);
     setRegister(value);
     setSaving(false);
 
@@ -66,21 +67,23 @@ export default function RegisterEditor({ contactId, initialRegister }: Props) {
     const supabase = createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      await supabase
+      const { error: deleteError } = await supabase
         .from("context_journal")
         .delete()
         .eq("contact_id", contactId)
         .eq("user_id", user.id)
         .eq("type", "register_complicated_context");
+      if (deleteError) console.error("[RegisterEditor.saveContext] context_journal delete", deleteError.message);
 
       if (contextText.trim()) {
-        await supabase.from("context_journal").insert({
+        const { error: insertError } = await supabase.from("context_journal").insert({
           user_id: user.id,
           contact_id: contactId,
           type: "register_complicated_context",
           question: "Comment tu aimes entretenir le lien, malgré ce qui est compliqué",
           answer: contextText.trim(),
         });
+        if (insertError) console.error("[RegisterEditor.saveContext] context_journal insert", insertError.message);
       }
     }
     setContextSaving(false);

@@ -45,10 +45,11 @@ export async function POST(
     update.expires_at = snoozeUntil.toISOString();
   }
 
-  await supabase
+  const { error } = await supabase
     .from("proactive_suggestions")
     .update(update)
     .eq("id", id);
+  if (error) console.error("[proactive-suggestions/refuse] proactive_suggestions update", error.message);
 
   return NextResponse.json({ success: true });
 }

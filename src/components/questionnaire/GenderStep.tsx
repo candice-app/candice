@@ -38,7 +38,7 @@ export default function GenderStep({ userId, supabase, onDone }: Props) {
   async function handleSave() {
     if (!grammatical || saving) return;
     setSaving(true);
-    await supabase.from("my_profile").upsert(
+    const { error } = await supabase.from("my_profile").upsert(
       {
         user_id: userId,
         grammatical_gender: grammatical,
@@ -47,6 +47,7 @@ export default function GenderStep({ userId, supabase, onDone }: Props) {
       },
       { onConflict: "user_id" }
     );
+    if (error) console.error("[GenderStep.handleSave] my_profile upsert", error.message);
     setSaving(false);
     onDone();
   }

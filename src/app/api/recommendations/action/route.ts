@@ -17,13 +17,14 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
   }
 
-  await supabase
+  const { error } = await supabase
     .from('attention_log')
     .update({ status, actioned_at: new Date().toISOString() })
     .eq('user_id', user.id)
     .eq('contact_id', contactId)
     .eq('attention_title', attentionTitle)
     .eq('status', 'proposed');
+  if (error) console.error('[recommendations/action] attention_log update', error.message);
 
   return NextResponse.json({ success: true });
 }

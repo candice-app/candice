@@ -351,11 +351,12 @@ export default async function ContactPage({
 
       const recentlyAsked = (recentQs ?? []).map((r) => r.question);
       const question = generateProactiveQuestion(contactFirstName, recentlyAsked);
-      const { data: inserted } = await supabase
+      const { data: inserted, error: insertError } = await supabase
         .from("context_journal")
         .insert({ user_id: user.id, contact_id: id, question })
         .select("id")
         .single();
+      if (insertError) console.error("[contacts/[id]/page] context_journal insert", insertError.message);
       if (inserted) pendingQuestion = { id: inserted.id, question };
     }
   }

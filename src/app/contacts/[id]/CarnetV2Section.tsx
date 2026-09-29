@@ -153,7 +153,8 @@ export default function CarnetV2Section({
   const markOffered = async (it: CarnetItemV2) => {
     if (busy) return;
     setBusy(true);
-    await supabase.from("carnet_envies_items").update({ statut: "offert" }).eq("id", it.id);
+    const { error } = await supabase.from("carnet_envies_items").update({ statut: "offert" }).eq("id", it.id);
+    if (error) console.error("[CarnetV2Section.markOffered] carnet_envies_items update", error.message);
     setItems(prev => prev.filter(x => x.id !== it.id));
     setBusy(false);
   };

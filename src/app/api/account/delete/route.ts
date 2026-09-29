@@ -22,14 +22,18 @@ export async function POST(req: Request) {
   const now = new Date();
   const deletionScheduledAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
 
-  await supabase.from('my_profile').update({
+  const { error: updateError } = await supabase.from('my_profile').update({
     subscription_status: 'cancelled',
     cancelled_at: now.toISOString(),
     deletion_scheduled_at: deletionScheduledAt,
   }).eq('user_id', user.id);
+  if (updateError) {
+    console.error('[account/delete] my_profile update', updateError.message);
+    return NextResponse.json({ error: 'La programmation de la suppression a échoué.' }, { status: 500 });
+  }
 
   const admin = createAdminClient();
-  await admin.from('account_lifecycle_events').insert({
+  const { error: eventError } = await admin.from('account_lifecycle_events').insert({
     user_id: user.id,
     event_type: 'deletion_requested',
     previous_status: null,
@@ -37,6 +41,7 @@ export async function POST(req: Request) {
     triggered_by: 'user',
     metadata: { deletion_scheduled_at: deletionScheduledAt },
   });
+  if (eventError) console.error('[account/delete] account_lifecycle_events insert', eventError.message);
 
   // Confirmation email
   if (user.email) {

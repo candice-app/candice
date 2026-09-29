@@ -73,7 +73,10 @@ export async function writeSyncedStatuses(
       .upsert(
         { user_id: userId, question_key: key, status: "answered", answered_at: now },
         { onConflict: "user_id,question_key" },
-      ),
+      )
+      .then(({ error }: { error: { message: string } | null }) => {
+        if (error) console.error("[discovery/status] profile_completion upsert", error.message);
+      }),
   ));
 }
 

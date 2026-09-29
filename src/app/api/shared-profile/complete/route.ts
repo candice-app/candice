@@ -20,11 +20,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, points: 0, reason: "already_awarded" });
   }
 
-  await supabase.from("user_points").insert({
+  const { error: pointsError } = await supabase.from("user_points").insert({
     user_id: user.id,
     action_type: "shared_profile_complete",
     points: 500,
   });
+  if (pointsError) console.error("[shared-profile/complete] user_points insert", pointsError.message);
 
   // Notify the sender that the profile is complete
   let token: string | null = null;

@@ -26,5 +26,6 @@ const POINT_VALUES: Record<PointActionType, number> = {
 export async function awardPoints(userId: string, actionType: PointActionType): Promise<void> {
   const points = POINT_VALUES[actionType];
   const supabase = createClient();
-  await supabase.from("user_points").insert({ user_id: userId, action_type: actionType, points });
+  const { error } = await supabase.from("user_points").insert({ user_id: userId, action_type: actionType, points });
+  if (error) console.error("[awardPoints] user_points insert", error.message);
 }

@@ -266,10 +266,11 @@ Ton strict : sobre, adulte, bienveillant sans excès.`;
     }, supabaseAdmin).catch(err => console.error('[generator] Push error (pilote):', err));
   }
 
-  await supabaseAdmin
+  const { error: consumeErr } = await supabaseAdmin
     .from('contextual_signals')
     .update({ status: 'consumed', consumed_at: new Date().toISOString() })
     .eq('id', signal.id);
+  if (consumeErr) console.error('[generator] contextual_signals update (pilote consumed)', consumeErr.message);
 
   return true;
 }
@@ -309,10 +310,11 @@ export async function generateSuggestionForSignal(
     if (lastAt) {
       const daysSince = Math.round((Date.now() - lastAt.getTime()) / (1000 * 60 * 60 * 24));
       if (daysSince < frequencyDays) {
-        await supabaseAdmin
+        const { error: cadenceErr } = await supabaseAdmin
           .from('contextual_signals')
           .update({ status: 'consumed', consumed_at: new Date().toISOString() })
           .eq('id', signal.id);
+        if (cadenceErr) console.error('[generator] contextual_signals update (cadence gate)', cadenceErr.message);
         return false;
       }
     }
@@ -419,10 +421,11 @@ TUTOIEMENT OBLIGATOIRE : adresse-toi au pilote en le tutoyant systématiquement 
     }, supabaseAdmin).catch(err => console.error('[generator] Push error:', err));
   }
 
-  await supabaseAdmin
+  const { error: consumeErr } = await supabaseAdmin
     .from('contextual_signals')
     .update({ status: 'consumed', consumed_at: new Date().toISOString() })
     .eq('id', signal.id);
+  if (consumeErr) console.error('[generator] contextual_signals update (contact consumed)', consumeErr.message);
 
   return true;
 }

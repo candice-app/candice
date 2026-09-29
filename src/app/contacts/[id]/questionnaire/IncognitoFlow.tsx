@@ -378,7 +378,7 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
   const saveStage1 = async () => {
     setSaving(true);
     const reception = computeReceptionFromQ1(q1);
-    await supabase.from("questionnaire_responses").upsert({
+    const { error } = await supabase.from("questionnaire_responses").upsert({
       contact_id: contactId,
       user_id: (await supabase.auth.getUser()).data.user?.id,
       love_language: join(q1),
@@ -386,6 +386,7 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
       emotional_expression: join(q2),
       attention_reception: reception,
     }, { onConflict: "contact_id,user_id" });
+    if (error) console.error("[IncognitoFlow.saveStage1] questionnaire_responses upsert", error.message);
     setSaving(false);
   };
 
@@ -393,13 +394,14 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
 
   const saveStage2 = async () => {
     setSaving(true);
-    await supabase.from("questionnaire_responses").upsert({
+    const { error } = await supabase.from("questionnaire_responses").upsert({
       contact_id: contactId,
       user_id: (await supabase.auth.getUser()).data.user?.id,
       hobbies: q3 || null,
       gift_preference: join(q4),
       standing: q5 || null,
     }, { onConflict: "contact_id,user_id" });
+    if (error) console.error("[IncognitoFlow.saveStage2] questionnaire_responses upsert", error.message);
     setSaving(false);
   };
 
@@ -413,7 +415,7 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
       open_topics: openTopics,
       practical_dates: practicalDates,
     };
-    await supabase.from("questionnaire_responses").upsert({
+    const { error } = await supabase.from("questionnaire_responses").upsert({
       contact_id: contactId,
       user_id: (await supabase.auth.getUser()).data.user?.id,
       stress_response: q6 || null,
@@ -425,6 +427,7 @@ export default function IncognitoFlow({ contactId, contactName, contactGender, e
       interests: interests.items.length > 0 ? interests : null,
       incognito_signals,
     }, { onConflict: "contact_id,user_id" });
+    if (error) console.error("[IncognitoFlow.saveStage3] questionnaire_responses upsert", error.message);
     setSaving(false);
   };
 

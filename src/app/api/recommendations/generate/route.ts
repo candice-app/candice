@@ -168,7 +168,7 @@ export async function POST(req: NextRequest) {
   const recommendations = await generateRecommendations(input);
 
   // Persist recommendations
-  await admin.from('contact_recommendations').upsert(
+  const { error: recoUpsertError } = await admin.from('contact_recommendations').upsert(
     {
       user_id: user.id,
       contact_id: contactId,
@@ -179,10 +179,11 @@ export async function POST(req: NextRequest) {
     },
     { onConflict: 'user_id,contact_id' }
   );
+  if (recoUpsertError) console.error('[recommendations/generate] contact_recommendations upsert', recoUpsertError.message);
 
   // Log proposed attentions (for future deduplication)
   if (recommendations.ideas.length > 0) {
-    await admin.from('attention_log').insert(
+    const { error: logInsertError } = await admin.from('attention_log').insert(
       recommendations.ideas.map((idea) => ({
         user_id: user.id,
         contact_id: contactId,
@@ -191,6 +192,7 @@ export async function POST(req: NextRequest) {
         status: 'proposed',
       }))
     );
+    if (logInsertError) console.error('[recommendations/generate] attention_log insert', logInsertError.message);
   }
 
   // Seed a proactive question if none pending in last 7 days
@@ -215,9 +217,10 @@ export async function POST(req: NextRequest) {
 
     const recentlyAsked = (recentQs ?? []).map((r) => r.question);
     const question = generateProactiveQuestion(contactFirstName, recentlyAsked);
-    await admin
+    const { error: cjInsertError } = await admin
       .from('context_journal')
       .insert({ user_id: user.id, contact_id: contactId, question });
+    if (cjInsertError) console.error('[recommendations/generate] context_journal insert', cjInsertError.message);
   }
 
   return NextResponse.json({ recommendations });

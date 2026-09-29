@@ -67,12 +67,13 @@ export async function POST(req: Request) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   const admin = createAdminClient();
-  await admin.from('notification_log').insert({
+  const { error: logError } = await admin.from('notification_log').insert({
     user_id: userId,
     channel: 'email',
     notification_type: `trial_reminder_${daysLeft}`,
     status: 'sent',
   });
+  if (logError) console.error('[emails/trial-reminder] notification_log insert', logError.message);
 
   return NextResponse.json({ ok: true });
 }

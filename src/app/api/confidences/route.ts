@@ -139,7 +139,7 @@ Règles :
 
     const oldValue = existingResp ? ((existingResp as unknown) as Record<string, string | null>)[update.field_name] ?? null : null;
 
-    await supabaseAdmin.from("profile_updates_from_confidences").insert({
+    const { error: updateInsertError } = await supabaseAdmin.from("profile_updates_from_confidences").insert({
       user_id: user.id,
       confidence_id: confidence.id,
       contact_id: update.contact_id,
@@ -148,6 +148,7 @@ Règles :
       new_value: update.new_value,
       status: "pending",
     });
+    if (updateInsertError) console.error("[confidences] profile_updates_from_confidences insert", updateInsertError.message);
   }
 
   // Handle pilote-level updates (applied directly, no review needed)
@@ -157,15 +158,17 @@ Règles :
       const until = new Date();
       until.setDate(until.getDate() + 30);
       const untilStr = until.toISOString().split("T")[0];
-      await supabaseAdmin
+      const { error: piloteError } = await supabaseAdmin
         .from("my_profile")
         .update({ pilote_difficult_period_until: untilStr })
         .eq("user_id", user.id);
+      if (piloteError) console.error("[confidences] my_profile update (difficult_period)", piloteError.message);
     } else if (type === "achievement") {
-      await supabaseAdmin
+      const { error: piloteError } = await supabaseAdmin
         .from("my_profile")
         .update({ pilote_last_achievement_at: today })
         .eq("user_id", user.id);
+      if (piloteError) console.error("[confidences] my_profile update (achievement)", piloteError.message);
     }
   }
 

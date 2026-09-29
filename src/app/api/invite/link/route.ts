@@ -25,18 +25,20 @@ export async function POST(req: NextRequest) {
   }
 
   // Idempotent: mark used only if not already set
-  await admin
+  const { error: usedError } = await admin
     .from("invite_links")
     .update({ used_at: new Date().toISOString() })
     .eq("id", invite.id)
     .is("used_at", null);
+  if (usedError) console.error("[invite/link] invite_links update used_at", usedError.message);
 
   // Link proche_user_id to contact
   if (invite.contact_id) {
-    await admin
+    const { error: linkError } = await admin
       .from("contacts")
       .update({ proche_user_id: user.id })
       .eq("id", invite.contact_id);
+    if (linkError) console.error("[invite/link] contacts update proche_user_id", linkError.message);
   }
 
   // Non-blocking: notify Pilote

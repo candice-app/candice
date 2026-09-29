@@ -167,7 +167,8 @@ export default function WishlistV2Client({
       }).catch(() => {});
     }
     // L'objet reçu quitte la wishlist.
-    await supabase.from("my_wishlist_items").delete().eq("id", offeredItem.id);
+    const { error } = await supabase.from("my_wishlist_items").delete().eq("id", offeredItem.id);
+    if (error) console.error("[WishlistV2Client] my_wishlist_items delete", error.message);
     setItems(prev => prev.filter(it => it.id !== offeredItem.id));
     setBusy(false);
     close();

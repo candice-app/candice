@@ -25,7 +25,7 @@ async function log(
   metadata?: Record<string, unknown>,
 ): Promise<void> {
   try {
-    await supabase.from('processing_log').insert({
+    const { error } = await supabase.from('processing_log').insert({
       correlation_id: correlationId,
       pilot_id: pilotId,
       memory_id: memoryId,
@@ -35,6 +35,7 @@ async function log(
       error_message: errorMessage ?? null,
       metadata: metadata ?? null,
     });
+    if (error) console.error('[orchestrator] processing_log insert', error.message);
   } catch { /* log failure must never break the orchestrator */ }
 }
 
@@ -65,15 +66,16 @@ async function detectAndLinkConflicts(
 
     // Reduce new signal's confidence
     const newConf = Math.max(0, sig.confidence - 10);
-    await supabase
+    const { error: newSigErr } = await supabase
       .from('signals')
       .update({ confidence: newConf, status: 'à_clarifier' })
       .eq('id', newId);
+    if (newSigErr) console.error('[orchestrator] signals update (new)', newSigErr.message);
 
     for (const existing of conflicting) {
       const existingConflicts: string[] = existing.conflicting_signals ?? [];
       const updatedConflicts = [...new Set([...existingConflicts, newId])];
-      await supabase
+      const { error: existSigErr } = await supabase
         .from('signals')
         .update({
           confidence: Math.max(0, (existing.confidence ?? 60) - 10),
@@ -81,6 +83,7 @@ async function detectAndLinkConflicts(
           conflicting_signals: updatedConflicts,
         })
         .eq('id', existing.id);
+      if (existSigErr) console.error('[orchestrator] signals update (existing)', existSigErr.message);
 
       // Create a clarifying question in console (context_journal)
       try {
@@ -91,13 +94,14 @@ async function detectAndLinkConflicts(
           .eq('id', contactId)
           .maybeSingle();
         const firstName = (contactRow?.name ?? 'ce proche').split(' ')[0];
-        await supabase.from('context_journal').insert({
+        const { error: cjErr } = await supabase.from('context_journal').insert({
           user_id: pilotId,
           contact_id: contactId,
           type: 'signal_conflict',
           question: `Conflit détecté sur « ${sig.signal_type} » pour ${firstName} — signal positif et négatif coexistent. À clarifier.`,
           answer: null,
         });
+        if (cjErr) console.error('[orchestrator] context_journal insert', cjErr.message);
       } catch { /* non-critical */ }
     }
   }
@@ -219,10 +223,11 @@ export async function processMemory(
       source_memory_id: memoryId,
     }));
 
-    const { data: insertedSignals } = await supabase
+    const { data: insertedSignals, error: insertSigErr } = await supabase
       .from('signals')
       .insert(rows)
       .select('id');
+    if (insertSigErr) console.error('[orchestrator] signals insert', insertSigErr.message);
 
     if (insertedSignals) {
       insertedSignalIds.push(...insertedSignals.map((r: { id: string }) => r.id));

@@ -70,7 +70,8 @@ export async function POST(req: Request) {
           updated.allergies = existing.includes("autre") ? existing : [...existing.filter(x => x !== "aucune"), "autre"];
           updated.allergies_detail = a.allergy_detail;
         }
-        await supabase.from("my_profile").update({ practical_info: updated }).eq("user_id", user.id);
+        const { error } = await supabase.from("my_profile").update({ practical_info: updated }).eq("user_id", user.id);
+        if (error) console.error("[discovery/answer] my_profile update practical.dietary", error.message);
       }
 
       if (questionKey === "practical.mobility") {
@@ -84,13 +85,14 @@ export async function POST(req: Request) {
             ...(a.types ?? []).map(t => TYPE_FR[t] ?? t).filter(Boolean),
             a.detail?.trim() || null,
           ].filter(Boolean);
-          await supabase.from("my_profile").update({
+          const { error } = await supabase.from("my_profile").update({
             practical_info: {
               ...pi,
               mobilite_sante: parts.join(" · "),
               mobilite_intensite: a.intensity ?? null, // 'legere' | 'systematique'
             },
           }).eq("user_id", user.id);
+          if (error) console.error("[discovery/answer] my_profile update practical.mobility", error.message);
         }
       }
     } catch { /* non bloquant — la réponse discovery reste enregistrée */ }
@@ -106,10 +108,11 @@ export async function POST(req: Request) {
         .eq("user_id", user.id)
         .maybeSingle();
       const score = ((p as ProfileFatigue | null)?.discovery_fatigue_score ?? 0) + 1;
-      await supabase
+      const { error } = await supabase
         .from("my_profile")
         .update({ discovery_fatigue_score: score })
         .eq("user_id", user.id);
+      if (error) console.error("[discovery/answer] my_profile update discovery_fatigue_score", error.message);
     } catch { /* non bloquant */ }
   }
 

@@ -189,12 +189,13 @@ Toutes les valeurs en français. Suggestions concrètes, actionnables, profondé
 
   const suggestions = JSON.parse(jsonMatch[0]);
 
-  await supabase.from("suggestions").upsert({
+  const { error: suggUpsertError } = await supabase.from("suggestions").upsert({
     contact_id: contactId,
     user_id: user.id,
     content: suggestions,
     generated_at: new Date().toISOString(),
   }, { onConflict: "contact_id" });
+  if (suggUpsertError) console.error("[suggestions] suggestions upsert", suggUpsertError.message);
 
   return NextResponse.json({ suggestions });
 }

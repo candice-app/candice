@@ -202,7 +202,7 @@ export async function recordAnswer(
   const now = new Date().toISOString();
 
   // Update profile_completion — status = source unique de la re-proposition
-  await supabase
+  const { error: pcErr } = await supabase
     .from('profile_completion')
     .upsert({
       user_id: userId,
@@ -214,6 +214,7 @@ export async function recordAnswer(
       skipped_count: skip ? 1 : 0,
       status: skip ? 'skipped' : 'answered',
     }, { onConflict: 'user_id,question_key' });
+  if (pcErr) console.error('[discovery/engine] profile_completion upsert', pcErr.message);
 
   // If answered (not skipped): save into my_profile.discovery_answers
   if (!skip && answer !== null) {
@@ -224,13 +225,14 @@ export async function recordAnswer(
       .maybeSingle();
 
     const existing = (profile?.discovery_answers as Record<string, unknown>) ?? {};
-    await supabase
+    const { error: mpErr } = await supabase
       .from('my_profile')
       .update({
         discovery_answers: { ...existing, [questionKey]: answer },
         updated_at: now,
       })
       .eq('user_id', userId);
+    if (mpErr) console.error('[discovery/engine] my_profile update', mpErr.message);
   }
 
   // Advance session
@@ -247,10 +249,11 @@ export async function recordAnswer(
 
   if (nextIndex >= pendingKeys.length) {
     // Session complete
-    await supabase
+    const { error: doneErr } = await supabase
       .from('discovery_sessions')
       .update({ status: 'completed', current_index: nextIndex, last_activity_at: now })
       .eq('id', sessionId);
+    if (doneErr) console.error('[discovery/engine] discovery_sessions update (completed)', doneErr.message);
     return { next: null, done: true };
   }
 
@@ -261,6 +264,7 @@ export async function recordAnswer(
     .eq('id', sessionId)
     .select('*')
     .single();
+  if (updated.error) console.error('[discovery/engine] discovery_sessions update (advance)', updated.error.message);
 
   const next = updated.data ? await getSessionQuestion(updated.data, supabase) : null;
   // D1 : les clés APRÈS la question servie — à pré-calculer en tâche de fond
@@ -269,10 +273,11 @@ export async function recordAnswer(
 }
 
 export async function pauseSession(sessionId: string, supabase: SupaDB): Promise<void> {
-  await supabase
+  const { error } = await supabase
     .from('discovery_sessions')
     .update({ status: 'paused', last_activity_at: new Date().toISOString() })
     .eq('id', sessionId);
+  if (error) console.error('[discovery/engine] discovery_sessions update (pause)', error.message);
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -472,7 +477,7 @@ export async function createDiscoverySession(
   pendingKeys: string[],
   currentIndex: number,
 ): Promise<string | null> {
-  const { data: session } = await supabase
+  const { data: session, error: sessErr } = await supabase
     .from('discovery_sessions')
     .insert({
       user_id: userId,
@@ -483,15 +488,17 @@ export async function createDiscoverySession(
     })
     .select('id')
     .single();
+  if (sessErr) console.error('[discovery/engine] discovery_sessions insert', sessErr.message);
   if (!session) return null;
   const currentKey = pendingKeys[currentIndex];
   if (currentKey) {
-    await supabase
+    const { error: askErr } = await supabase
       .from('profile_completion')
       .upsert(
         { user_id: userId, question_key: currentKey, last_asked_at: new Date().toISOString() },
         { onConflict: 'user_id,question_key' },
       );
+    if (askErr) console.error('[discovery/engine] profile_completion upsert (last_asked_at)', askErr.message);
   }
   return session.id as string;
 }
@@ -534,12 +541,13 @@ export async function precomputePersonalizationsForKeys(
     );
     await Promise.all(targets.map(async q => {
       const text = await personalizeQuestion(q, '');
-      await supabase
+      const { error } = await supabase
         .from('profile_completion')
         .upsert(
           { user_id: userId, question_key: q.question_key, personalized_text: text },
           { onConflict: 'user_id,question_key' },
         );
+      if (error) console.error('[discovery/engine] profile_completion upsert (personalized)', error.message);
     }));
   } catch { /* tâche de fond — jamais bloquante, le rendu retombe sur la banque */ }
 }

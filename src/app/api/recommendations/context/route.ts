@@ -10,11 +10,12 @@ export async function POST(req: NextRequest) {
   const { questionId, answer } = await req.json() as { questionId: string; answer: string };
   if (!questionId || !answer?.trim()) return NextResponse.json({ error: 'Missing fields' }, { status: 400 });
 
-  await supabase
+  const { error } = await supabase
     .from('context_journal')
     .update({ answer: answer.trim(), answered_at: new Date().toISOString() })
     .eq('id', questionId)
     .eq('user_id', user.id);
+  if (error) console.error('[recommendations/context] context_journal update', error.message);
 
   return NextResponse.json({ success: true });
 }

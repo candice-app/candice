@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid feedback value' }, { status: 400 });
   }
 
-  await supabase
+  const { error } = await supabase
     .from('attention_log')
     .update({
       feedback,
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
     .eq('user_id', user.id)
     .eq('contact_id', contactId)
     .eq('attention_title', attentionTitle);
+  if (error) console.error('[recommendations/feedback] attention_log update', error.message);
 
   return NextResponse.json({ success: true });
 }

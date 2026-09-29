@@ -23,19 +23,24 @@ export async function POST() {
     : false;
   const newStatus = trialStillValid ? 'trial' : 'active';
 
-  await supabase
+  const { error: resumeError } = await supabase
     .from('my_profile')
     .update({ subscription_status: newStatus, subscription_paused_at: null })
     .eq('user_id', user.id);
+  if (resumeError) {
+    console.error('[subscription/resume] my_profile update', resumeError.message);
+    return NextResponse.json({ error: 'La reprise a échoué.' }, { status: 500 });
+  }
 
   const admin = createAdminClient();
-  await admin.from('account_lifecycle_events').insert({
+  const { error: eventError } = await admin.from('account_lifecycle_events').insert({
     user_id: user.id,
     event_type: 'subscription_resumed',
     previous_status: 'paused',
     new_status: newStatus,
     triggered_by: 'user',
   });
+  if (eventError) console.error('[subscription/resume] account_lifecycle_events insert', eventError.message);
 
   return NextResponse.json({ success: true });
 }

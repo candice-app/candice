@@ -19,19 +19,24 @@ export async function POST() {
   }
 
   const now = new Date().toISOString();
-  await supabase
+  const { error: pauseError } = await supabase
     .from('my_profile')
     .update({ subscription_status: 'paused', subscription_paused_at: now })
     .eq('user_id', user.id);
+  if (pauseError) {
+    console.error('[subscription/pause] my_profile update', pauseError.message);
+    return NextResponse.json({ error: 'La mise en pause a échoué.' }, { status: 500 });
+  }
 
   const admin = createAdminClient();
-  await admin.from('account_lifecycle_events').insert({
+  const { error: eventError } = await admin.from('account_lifecycle_events').insert({
     user_id: user.id,
     event_type: 'subscription_paused',
     previous_status: status,
     new_status: 'paused',
     triggered_by: 'user',
   });
+  if (eventError) console.error('[subscription/pause] account_lifecycle_events insert', eventError.message);
 
   return NextResponse.json({ success: true });
 }

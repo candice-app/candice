@@ -18,6 +18,12 @@
 
 ## Constats
 
+### [2026-09-29] `questionnaire_responses` : upsert impossible — contrainte unique manquante (modèle de données)
+- **Constat** : les upserts de `IncognitoFlow.tsx` (l. 381, 396, 416) ciblent `onConflict: "contact_id,user_id"`, mais la table n'a **aucune contrainte/index unique sur `(contact_id, user_id)`** (seule la PK sur `id`). Toute écriture échoue donc au niveau Postgres avec l'erreur **`42P10` — "there is no unique or exclusion constraint matching the ON CONFLICT specification"** (prouvé en transaction annulée le 29/09). Comme `.error` n'était pas lu, l'échec était invisible → la table reste à 0 ligne. Le chantier 0 rend l'échec **visible** (lecture de `.error`), mais la persistance nécessiterait d'**ajouter une contrainte unique `(contact_id, user_id)`** — ce qui est une **modification du modèle de données, explicitement hors périmètre du chantier 0**.
+- **Preuve** : `src/app/contacts/[id]/questionnaire/IncognitoFlow.tsx:381,396,416` ; `(base: questionnaire_responses)` — PK sur `id` seule, `data_source` NOT NULL a un défaut `'pilot_input'` (donc pas la cause) ; test `INSERT … ON CONFLICT (contact_id,user_id)` → `42P10`.
+- **Périmètre** : hors chantier 0 (modèle de données). Correctif de persistance à cadrer dans un chantier ultérieur.
+- **Statut** : ouvert.
+
 ### [2026-09-28] `orchestrator.ts` : la fonction `log()` avale le `.error` de supabase-js
 - **Constat** : le helper `log()` du cerveau écrit dans `processing_log` via `supabase.from('processing_log').insert(...)` sans jamais lire le `.error` retourné, et enveloppe l'appel dans un `catch { /* log failure must never break the orchestrator */ }` qui n'attrape rien (supabase-js ne lève pas d'exception sur erreur DB). Même motif que le `logStep` corrigé dans le Lot A, mais dans un autre module. Une écriture de log rejetée y resterait silencieuse.
 - **Preuve** : `src/lib/brain/orchestrator.ts:16` (déf. `async function log(`) et `:28` (l'`insert`), `catch` sans lecture d'erreur.

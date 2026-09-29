@@ -106,7 +106,7 @@ export async function sendReminderEmail(
     html,
   });
 
-  await supabaseAdmin.from("notification_log").insert({
+  const { error: logErr } = await supabaseAdmin.from("notification_log").insert({
     user_id: userId,
     channel: "email",
     notification_type: "proactive_reminder",
@@ -115,6 +115,7 @@ export async function sendReminderEmail(
     status: error ? "failed" : "sent",
     error_message: error ? error.message : null,
   });
+  if (logErr) console.error("[email-reminder] notification_log insert", logErr.message);
 
   if (error) console.error("[email-reminder]", error.message);
   return !error;

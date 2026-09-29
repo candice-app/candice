@@ -91,11 +91,12 @@ export async function sendPushToUser(
       errorMessage = webErr.message ?? "Unknown error";
       // Subscription expired — clean up
       if (webErr.statusCode === 410) {
-        await supabaseAdmin.from("push_subscriptions").delete().eq("id", sub.id);
+        const { error: delErr } = await supabaseAdmin.from("push_subscriptions").delete().eq("id", sub.id);
+        if (delErr) console.error("[push-sender] push_subscriptions delete", delErr.message);
       }
     }
 
-    await supabaseAdmin.from("notification_log").insert({
+    const { error: logErr } = await supabaseAdmin.from("notification_log").insert({
       user_id: userId,
       channel: "push",
       notification_type: payload.tag ?? "proactive",
@@ -104,6 +105,7 @@ export async function sendPushToUser(
       status,
       error_message: errorMessage,
     });
+    if (logErr) console.error("[push-sender] notification_log insert", logErr.message);
   }
 
   return { sent, failed };

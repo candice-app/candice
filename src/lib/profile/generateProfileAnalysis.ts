@@ -760,17 +760,19 @@ export async function generateProfileAnalysis(
     .maybeSingle();
 
   if (existing?.id) {
-    await supabase
+    const { error: updErr } = await supabase
       .from("profile_analysis")
       .update({ ...payload, updated_at: new Date().toISOString() })
       .eq("id", existing.id);
+    if (updErr) console.error("[generateProfileAnalysis] profile_analysis update", updErr.message);
     analysisId = existing.id;
   } else {
-    const { data: inserted } = await supabase
+    const { data: inserted, error: insErr } = await supabase
       .from("profile_analysis")
       .insert(payload)
       .select("id")
       .single();
+    if (insErr) console.error("[generateProfileAnalysis] profile_analysis insert", insErr.message);
     analysisId = inserted?.id;
   }
 

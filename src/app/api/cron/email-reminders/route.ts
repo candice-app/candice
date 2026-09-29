@@ -11,11 +11,12 @@ export async function GET(request: NextRequest) {
   const supabaseAdmin = createAdminClient();
   const runStart = new Date().toISOString();
 
-  const { data: runRow } = await supabaseAdmin
+  const { data: runRow, error: runInsertError } = await supabaseAdmin
     .from("cron_runs")
     .insert({ job_name: "email-reminders", started_at: runStart, status: "running" })
     .select("id")
     .single();
+  if (runInsertError) console.error("[cron/email-reminders] cron_runs insert", runInsertError.message);
 
   let emails_sent = 0;
   let emails_failed = 0;
@@ -55,7 +56,7 @@ export async function GET(request: NextRequest) {
   }
 
   if (runRow?.id) {
-    await supabaseAdmin
+    const { error: runUpdateError } = await supabaseAdmin
       .from("cron_runs")
       .update({
         status: errorMessage ? "error" : "success",
@@ -64,6 +65,7 @@ export async function GET(request: NextRequest) {
         metadata: { emails_sent, emails_failed },
       })
       .eq("id", runRow.id);
+    if (runUpdateError) console.error("[cron/email-reminders] cron_runs update", runUpdateError.message);
   }
 
   return NextResponse.json({ emails_sent, emails_failed });

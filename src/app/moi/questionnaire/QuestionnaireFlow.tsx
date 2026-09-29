@@ -326,7 +326,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           supabase.from("my_profile").upsert(
             { user_id: userId, temperament_answers: merged, temperament_axes: result.axes, temperament_modes: result.modes, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => { triggerSynthesis(); });
+          ).then(({ error }) => { if (error) console.error("[QuestionnaireFlow] my_profile upsert (temperament step2)", error.message); triggerSynthesis(); });
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -375,10 +375,13 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           setLatestTemperamentAxes(result.axes as unknown as Record<string, { score: number; intensity: number }>);
           setLatestTemperamentModes(result.modes as unknown as Record<string, { label: string; intensity: number } | null>);
 
-          await supabase.from("my_profile").upsert(
-            { user_id: userId, temperament_answers: merged, temperament_axes: result.axes, temperament_modes: result.modes, temperament_computed_at: new Date().toISOString(), updated_at: new Date().toISOString() },
-            { onConflict: "user_id" }
-          );
+          {
+            const { error } = await supabase.from("my_profile").upsert(
+              { user_id: userId, temperament_answers: merged, temperament_axes: result.axes, temperament_modes: result.modes, temperament_computed_at: new Date().toISOString(), updated_at: new Date().toISOString() },
+              { onConflict: "user_id" }
+            );
+            if (error) console.error("[QuestionnaireFlow] my_profile upsert (temperament step3)", error.message);
+          }
           triggerSynthesis();
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
@@ -440,7 +443,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           supabase.from("my_profile").upsert(
             { user_id: userId, lifestyle_answers: merged, lifestyle_axes: result.axes, ...(mergedAxes ? { temperament_axes: mergedAxes } : {}), ...(updatedModes ? { temperament_modes: updatedModes } : {}), updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => { triggerSynthesis(); });
+          ).then(({ error }) => { if (error) console.error("[QuestionnaireFlow] my_profile upsert (lifestyle step4)", error.message); triggerSynthesis(); });
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -508,10 +511,13 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             : null;
           if (mergedAxes) setLatestTemperamentAxes(mergedAxes);
 
-          await supabase.from("my_profile").upsert(
-            { user_id: userId, lifestyle_answers: merged, lifestyle_axes: result.axes, relational_filters: result.relationalFilters, lifestyle_computed_at: new Date().toISOString(), ...(mergedAxes ? { temperament_axes: mergedAxes } : {}), updated_at: new Date().toISOString() },
-            { onConflict: "user_id" }
-          );
+          {
+            const { error } = await supabase.from("my_profile").upsert(
+              { user_id: userId, lifestyle_answers: merged, lifestyle_axes: result.axes, relational_filters: result.relationalFilters, lifestyle_computed_at: new Date().toISOString(), ...(mergedAxes ? { temperament_axes: mergedAxes } : {}), updated_at: new Date().toISOString() },
+              { onConflict: "user_id" }
+            );
+            if (error) console.error("[QuestionnaireFlow] my_profile upsert (lifestyle step5)", error.message);
+          }
           triggerSynthesis();
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
@@ -556,14 +562,14 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           supabase.from("my_profile").upsert(
             { user_id: userId, singularity_answers: answers, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => {});
+          ).then(({ error }) => { if (error) console.error("[QuestionnaireFlow] my_profile upsert (singularity onExit)", error.message); });
           exitQuestionnaire();
         }}
         onDone={async (answers: SingularityAnswers) => {
           supabase.from("my_profile").upsert(
             { user_id: userId, singularity_answers: answers, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => { triggerSynthesis(); });
+          ).then(({ error }) => { if (error) console.error("[QuestionnaireFlow] my_profile upsert (singularity onDone)", error.message); triggerSynthesis(); });
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
@@ -596,14 +602,15 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           supabase.from("my_profile").upsert(
             { user_id: userId, practical_info: info, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
-          ).then(() => {});
+          ).then(({ error }) => { if (error) console.error("[QuestionnaireFlow] my_profile upsert (practical onExit)", error.message); });
           exitQuestionnaire();
         }}
         onDone={async (info: PracticalInfo) => {
-          await supabase.from("my_profile").upsert(
+          const { error } = await supabase.from("my_profile").upsert(
             { user_id: userId, practical_info: info, practical_computed_at: new Date().toISOString(), updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
           );
+          if (error) console.error("[QuestionnaireFlow] my_profile upsert (practical onDone)", error.message);
           triggerSynthesis();
           afterSave();
           if (editMode !== "single") navigate("practical7Closing");

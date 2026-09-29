@@ -55,18 +55,20 @@ export async function PATCH(
   if (action === "apply" && update.contact_id) {
     const ALLOWED_FIELDS = ["hobbies", "favorite_foods", "conversation_topics", "things_to_avoid", "additional_notes", "gift_preference"];
     if (ALLOWED_FIELDS.includes(update.field_name)) {
-      await supabase
+      const { error: qrError } = await supabase
         .from("questionnaire_responses")
         .update({ [update.field_name]: update.new_value })
         .eq("contact_id", update.contact_id)
         .eq("user_id", user.id);
+      if (qrError) console.error("[profile-updates] questionnaire_responses update", qrError.message);
     }
   }
 
-  await supabase
+  const { error: statusError } = await supabase
     .from("profile_updates_from_confidences")
     .update({ status: action === "apply" ? "applied" : "rejected", reviewed_at: now })
     .eq("id", id);
+  if (statusError) console.error("[profile-updates] profile_updates_from_confidences update", statusError.message);
 
   return NextResponse.json({ success: true });
 }

@@ -236,13 +236,14 @@ export default function QuestionnaireForm() {
 
   const saveComplicatedContext = async (contactId: string, userId: string) => {
     if (register !== "compliquée_fragile" || !complicatedContext.trim()) return;
-    await supabase.from("context_journal").insert({
+    const { error } = await supabase.from("context_journal").insert({
       user_id: userId,
       contact_id: contactId,
       type: "register_complicated_context",
       question: "Comment tu aimes entretenir le lien, malgré ce qui est compliqué",
       answer: complicatedContext.trim(),
     });
+    if (error) console.error("[QuestionnaireForm.saveComplicatedContext] context_journal insert", error.message);
   };
 
   // Shared contact creation with idempotency: inserts on first call, returns existing on retry

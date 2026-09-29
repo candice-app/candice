@@ -24,15 +24,17 @@ export async function POST(req: Request) {
 
   if (action === "revalidate") {
     const newRevalidate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-    await supabase.from("memories").update({
+    const { error } = await supabase.from("memories").update({
       revalidate_at: newRevalidate,
       updated_at: new Date().toISOString(),
     }).eq("id", id);
+    if (error) console.error("[memories/situation/action] memories update revalidate", error.message);
   } else {
-    await supabase.from("memories").update({
+    const { error } = await supabase.from("memories").update({
       status: "resolved",
       updated_at: new Date().toISOString(),
     }).eq("id", id);
+    if (error) console.error("[memories/situation/action] memories update resolve", error.message);
   }
 
   return NextResponse.json({ success: true });

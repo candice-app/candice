@@ -58,9 +58,10 @@ export default function OnboardingFlow({ userId, onComplete }: Props) {
   const [loading, setLoading] = useState(false);
 
   const markComplete = async () => {
-    await supabase
+    const { error } = await supabase
       .from("my_profile")
       .upsert({ user_id: userId, onboarding_completed: true }, { onConflict: "user_id" });
+    if (error) console.error("[OnboardingFlow.markComplete] my_profile upsert", error.message);
     try { localStorage.setItem(LS_KEY, "true"); } catch { /* storage unavailable */ }
   };
 

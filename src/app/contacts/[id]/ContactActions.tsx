@@ -70,7 +70,7 @@ export default function ContactActions({
           .from("contacts")
           .update({ last_reminder_sent_at: now })
           .eq("id", contactId)
-          .then(() => {});
+          .then(({ error }) => { if (error) console.error("[ContactActions] contacts update last_reminder_sent_at", error.message); });
       }
     } catch { /* ignore */ } finally {
       setReminderLoading(false);

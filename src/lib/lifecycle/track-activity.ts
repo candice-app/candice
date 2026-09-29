@@ -17,22 +17,25 @@ export async function trackActivity(userId: string, supabaseAdmin: SupabaseClien
       : false;
     const newStatus = trialStillValid ? 'trial' : 'active';
 
-    await supabaseAdmin
+    const { error: mpErr } = await supabaseAdmin
       .from('my_profile')
       .update({ subscription_status: newStatus, last_active_at: now, silent_since: null })
       .eq('user_id', userId);
+    if (mpErr) console.error('[lifecycle/track-activity] my_profile update (reactivate)', mpErr.message);
 
-    await supabaseAdmin.from('account_lifecycle_events').insert({
+    const { error: evtErr } = await supabaseAdmin.from('account_lifecycle_events').insert({
       user_id: userId,
       event_type: 'reactivated_from_silent',
       previous_status: 'silent',
       new_status: newStatus,
       triggered_by: 'user',
     });
+    if (evtErr) console.error('[lifecycle/track-activity] account_lifecycle_events insert', evtErr.message);
   } else {
-    await supabaseAdmin
+    const { error: activeErr } = await supabaseAdmin
       .from('my_profile')
       .update({ last_active_at: now })
       .eq('user_id', userId);
+    if (activeErr) console.error('[lifecycle/track-activity] my_profile update (last_active_at)', activeErr.message);
   }
 }

@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     if (!contact.email) {
       return NextResponse.json({ method: "none", reason: "no_email" });
     }
-    const { data: newLink } = await admin
+    const { data: newLink, error: newLinkError } = await admin
       .from("invite_links")
       .insert({
         pilote_id: user.id,
@@ -39,6 +39,7 @@ export async function POST(req: NextRequest) {
       })
       .select("token")
       .single();
+    if (newLinkError) console.error("[invite/nudge] invite_links insert", newLinkError.message);
     if (!newLink) return NextResponse.json({ method: "none" });
     const inviteUrl = `${APP_URL}/invite/${newLink.token}`;
     const procheFirstName = contact.name.split(" ")[0];
