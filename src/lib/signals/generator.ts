@@ -353,7 +353,8 @@ Réponds UNIQUEMENT avec ce JSON, sans texte avant ni après :
   "partner_hint": "Nom du lieu ou prestataire recommandé si pertinent, sinon null"
 }
 
-Ton strict : premium, sobre, adulte. Pas de 'petit', 'doux', 'tendre' en excès. Pas de leçon. Inspiré conciergerie.`;
+Ton strict : premium, sobre, adulte. Pas de 'petit', 'doux', 'tendre' en excès. Pas de leçon. Inspiré conciergerie.
+TUTOIEMENT OBLIGATOIRE : adresse-toi au pilote en le tutoyant systématiquement (« tu », « ton », « tes », « toi ») — jamais de vouvoiement (« vous », « votre », « vos »).`;
 
   let parsed: {
     title: string;
