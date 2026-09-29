@@ -283,7 +283,6 @@ export default async function ContactPage({
   const contactNotes = (notesData ?? []) as ProfileNote[];
   const recentConfidences = (confidencesData ?? []) as { id: string; raw_text: string; emotional_tone: string; created_at: string }[];
   const pct = getCompletion(profile);
-  const senderFirstName = user.user_metadata?.full_name?.split(" ")[0] ?? "";
   const contactFirstName = typedContact.name.split(" ")[0];
   const importantDates = parseImportantDates(profile?.important_dates ?? null).sort((a, b) => daysUntil(a.date) - daysUntil(b.date));
   // Carnet d'envies V2 — backing carnet_envies_items (fusion faite, migration 67).
@@ -446,7 +445,6 @@ export default async function ContactPage({
                 contactFirstName={contactFirstName}
                 completionPct={pct}
                 lastReminderSentAt={typedContact.last_reminder_sent_at ?? null}
-                senderFirstName={senderFirstName}
                 hasProche={!!procheUserId}
               />
             </div>

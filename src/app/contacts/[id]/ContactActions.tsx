@@ -13,7 +13,6 @@ interface Props {
   contactFirstName: string;
   completionPct: number;
   lastReminderSentAt: string | null;
-  senderFirstName: string;
   hasProche: boolean;
 }
 
@@ -29,7 +28,6 @@ export default function ContactActions({
   contactFirstName,
   completionPct,
   lastReminderSentAt,
-  senderFirstName,
   hasProche,
 }: Props) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -60,12 +58,7 @@ export default function ContactActions({
       const res = await fetch("/api/emails/reminder", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contactEmail,
-          contactFirstName,
-          senderFirstName,
-          profileUrl: `${window.location.origin}/profil/${contactId}`,
-        }),
+        body: JSON.stringify({ contactId }), // tout le reste reconstruit côté serveur
       });
       if (res.ok) {
         const now = new Date().toISOString();

@@ -1,9 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
 
 export async function POST(request: NextRequest) {
-  const { contactEmail, contactFirstName, senderFirstName, profileUrl } = await request.json();
-  if (!contactEmail) return NextResponse.json({ error: "contactEmail required" }, { status: 400 });
+  // Session requise + le contact doit appartenir à l'utilisateur.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { contactId } = await request.json().catch(() => ({} as { contactId?: string }));
+  if (!contactId) return NextResponse.json({ error: "contactId required" }, { status: 400 });
+
+  // Le contact doit appartenir à l'appelant.
+  const { data: contact } = await supabase
+    .from("contacts")
+    .select("name, email")
+    .eq("id", contactId)
+    .eq("user_id", user.id)
+    .maybeSingle();
+  if (!contact) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!contact.email) return NextResponse.json({ error: "contact sans email" }, { status: 422 });
+
+  // Tout reconstruit côté serveur — rien du corps hormis contactId.
+  const contactEmail = contact.email as string;
+  const contactFirstName = (contact.name as string | null)?.split(" ")[0] ?? "";
+  const senderFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] || undefined;
+  const profileUrl = `${APP_URL}/profil/${contactId}`;
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
