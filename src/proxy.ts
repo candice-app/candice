@@ -24,7 +24,7 @@ const DESKTOP_GATED_PREFIXES = [
 
 // Routes that bypass the beta gate entirely
 const BETA_EXEMPT_EXACT = new Set(["/beta-access"]);
-const BETA_EXEMPT_PREFIXES = ["/api/beta-access", "/api/auth/callback", "/beta-access"];
+const BETA_EXEMPT_PREFIXES = ["/api/beta-access", "/api/auth/callback", "/beta-access", "/api/cron"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
