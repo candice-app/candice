@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
 
 export async function POST(request: NextRequest) {
-  const { firstName, email } = await request.json();
-  if (!email) return NextResponse.json({ error: "email required" }, { status: 400 });
+  // Session requise : le welcome ne part que vers l'adresse du compte connecté.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { firstName } = await request.json().catch(() => ({} as { firstName?: string }));
+  const email = user.email; // destinataire = session, JAMAIS une adresse du corps
 
   const { error } = await resend.emails.send({
     from: FROM_EMAIL,
