@@ -81,9 +81,13 @@ describe('Test 12 — pas de faux effet de volume (§19.1)', () => {
     const one = [many[0]];
     const sMany = consolidateProfileConstruct('PROFILE_RELATIONALITY', many);
     const sOne = consolidateProfileConstruct('PROFILE_RELATIONALITY', one);
+    // Le volume d'une source unique ne gonfle pas le SCORE…
     expect(sMany.score).toBe(sOne.score);
-    expect(sMany.confidence).toBe(sOne.confidence);
-    expect(sMany.score).not.toBe('high'); // le volume n'a rien gonflé
+    expect(sMany.score).not.toBe('high');
+    // …et n'atteint JAMAIS confidence high : high exige ≥2 sources indépendantes
+    // (§3/§4), or 10 formulations = 1 seule source indépendante.
+    expect(sMany.confidence).not.toBe('high');
+    expect(sOne.confidence).not.toBe('high');
   });
 });
 
@@ -100,7 +104,33 @@ describe('Test 13 — GLOBAL_DIRECT vs GLOBAL_CONSOLIDATED (R15)', () => {
     ]);
     expect(s.globalStatus).toBe('GLOBAL_DIRECT');
   });
-  it('convergence de 2 sources indépendantes dans 2 contextes → GLOBAL_CONSOLIDATED', () => {
+  it('convergence de 3 evidences indépendantes dans 3 contextes → GLOBAL_CONSOLIDATED (§5)', () => {
+    const s = consolidateProfileConstruct('PROFILE_STRUCTURE', [
+      profileEv({
+        evidence_id: 'e1',
+        source_id: 's1',
+        target_construct: 'PROFILE_STRUCTURE',
+        value: 1,
+        context: 'travel',
+      }),
+      profileEv({
+        evidence_id: 'e2',
+        source_id: 's2',
+        target_construct: 'PROFILE_STRUCTURE',
+        value: 1,
+        context: 'home',
+      }),
+      profileEv({
+        evidence_id: 'e3',
+        source_id: 's3',
+        target_construct: 'PROFILE_STRUCTURE',
+        value: 1,
+        context: 'work',
+      }),
+    ]);
+    expect(s.globalStatus).toBe('GLOBAL_CONSOLIDATED');
+  });
+  it('2 evidences / 2 contextes seulement → reste LOCAL_ONLY (seuil §5 = 3)', () => {
     const s = consolidateProfileConstruct('PROFILE_STRUCTURE', [
       profileEv({
         evidence_id: 'e1',
@@ -117,7 +147,7 @@ describe('Test 13 — GLOBAL_DIRECT vs GLOBAL_CONSOLIDATED (R15)', () => {
         context: 'home',
       }),
     ]);
-    expect(s.globalStatus).toBe('GLOBAL_CONSOLIDATED');
+    expect(s.globalStatus).toBe('LOCAL_ONLY');
   });
   it('une seule evidence locale → LOCAL_ONLY (pas de global mécanique, R14)', () => {
     const s = consolidateProfileConstruct('PROFILE_STRUCTURE', [

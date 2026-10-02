@@ -21,6 +21,7 @@ import type {
   AffectionModality,
   BehaviorContext,
   BehaviorPattern,
+  ContinuumValue,
   DriverCode,
   EvidenceValue,
   GuardrailCode,
@@ -42,12 +43,12 @@ export type OnboardingStatus =
 /**
  * Valeur d'une evidence PROFILE telle qu'inscrite dans le mapping V15.
  * - Constructs directionnels : ±1 / ±2 (EvidenceValue, 0 interdit).
- * - SOCIAL_ENERGY (continuum Q5) : échelle ordinale 0..4 DU DOCUMENT, conservée
- *   verbatim (0 = solitude … 4 = stimulation). Non recentrée sur ContinuumValue
- *   (−2..2) : la conversion éventuelle relève de la production d'Evidence, hors
- *   périmètre de ce lot. Voir rapport d'hypothèses.
+ * - SOCIAL_ENERGY (continuum Q5) : échelle ordinale 0..4 DÉFINITIVE (ContinuumValue),
+ *   0 = recharge solitaire (extrémité), 4 = recharge sociale (extrémité). 0 n'est
+ *   pas le milieu ; aucun recentrage vers −2..+2, ni ici ni plus tard. C'est la
+ *   seule exception à « 0 n'est jamais une evidence ».
  */
-export type OnboardingProfileValue = EvidenceValue | 0 | 3 | 4;
+export type OnboardingProfileValue = EvidenceValue | ContinuumValue;
 
 /** Une evidence PROFILE produite par une option (construct + value + rôle + contexte). */
 export interface OnboardingProfileEvidence {
@@ -67,6 +68,23 @@ export interface OnboardingAffection {
   readonly code: AffectionLanguageCode;
   readonly evidence_role: EvidenceRole;
 }
+
+/**
+ * Coefficients de scoring affectif du socle (onboarding-v15-clos §Langages affectifs,
+ * ligne « Scoring »). Transcrits mot pour mot, non inventés. Données de référence
+ * pour le lot qui produira les evidences — aucune pondération n'est appliquée ici.
+ *   - RECEIVE : Q1 à 100 %, Q4 à 50 % (plus la cadence), Q2 à 0 %.
+ *   - GIVE : QE en vecteur entièrement séparé (jamais déduit de RECEIVE — R5).
+ *   - Pondération par le rang : {0: 5, 1: 3, 2: 1}.
+ * `affection_cadence` reste conservée séparément de la modalité (jamais transformée
+ * en PROFILE_STRUCTURE).
+ */
+export const AFFECTION_SCORING = {
+  source: 'docs/ontologie/onboarding-v15-clos.md §Langages affectifs',
+  questionWeight: { Q1: 1.0, Q4: 0.5, Q2: 0.0 },
+  giveVectorSeparate: true, // QE : vecteur GIVE séparé
+  rankWeight: { 0: 5, 1: 3, 2: 1 },
+} as const;
 
 /** Une production BEHAVIOR (contexte comportemental + pattern). */
 export interface OnboardingBehavior {

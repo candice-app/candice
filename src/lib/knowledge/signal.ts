@@ -10,6 +10,7 @@
 //     + affectionCadence + regularityImportance conservés à part (R5).
 
 import type { AffectionCadence, AffectionModality } from './vocabulary';
+import { VERSION_STAMP, type VersionStamp } from './version';
 
 export type SignalScore = 'high' | 'medium' | 'low' | 'unknown';
 export type SignalConfidence = 'high' | 'medium' | 'low' | 'none';
@@ -34,6 +35,8 @@ export interface Signal {
   readonly direction?: 'positive' | 'negative' | 'mixed';
   /** Evidences contradictoires conservées comme candidates à clarification (§20.3). */
   readonly contradiction?: boolean;
+  /** Versions sous lesquelles ce signal consolidé a été produit (ontology/hsg/consolidation). */
+  readonly version: VersionStamp;
 }
 
 /** État par défaut d'un construct jamais renseigné : UNKNOWN, pas LOW. */
@@ -46,6 +49,7 @@ export const DEFAULT_SIGNAL: Omit<Signal, 'construct'> = {
   globalStatus: 'LOCAL_ONLY',
   stability: 'unknown',
   lastUpdated: null,
+  version: VERSION_STAMP,
 };
 
 /** Fabrique un signal par défaut pour un construct donné. */
@@ -69,4 +73,6 @@ export interface AffectionSignalSet {
   readonly affectionCadence: AffectionCadence;
   /** Importance de la régularité (0–4), à part. */
   readonly regularityImportance: number | null;
+  /** Versions sous lesquelles cet ensemble affectif consolidé a été produit. */
+  readonly version: VersionStamp;
 }

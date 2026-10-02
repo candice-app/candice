@@ -6,7 +6,7 @@
 //
 // Invariants TYPÉS :
 //   - value ∈ {-2,-1,1,2} : le type interdit 0 (0 n'est jamais une evidence),
-//     SAUF SOCIAL_ENERGY où 0 est réel (ContinuumValue).
+//     SAUF SOCIAL_ENERGY (ContinuumValue 0..4 définitif, 0 = extrémité réelle).
 //   - value pour les constructs DIRECTIONNELS (PROFILE + continuum),
 //     strength pour les familles SANS direction — jamais les deux (décision 3).
 //   - une evidence ne porte JAMAIS globalStatus (ça appartient au signal — décision 6).
@@ -81,11 +81,11 @@ export interface ProfileEvidence extends EvidenceBase {
   readonly value: EvidenceValue; // le type interdit 0
 }
 
-/* ── SOCIAL_ENERGY : continuum, 0 autorisé ── */
+/* ── SOCIAL_ENERGY : continuum ordinal 0..4 (0 = recharge solitaire, extrémité) ── */
 export interface SocialEnergyEvidence extends EvidenceBase {
   readonly target_family: 'PROFILE';
   readonly target_construct: 'SOCIAL_ENERGY';
-  readonly value: ContinuumValue; // 0 est une position réelle
+  readonly value: ContinuumValue; // 0..4 définitif : 0 est une extrémité réelle, pas le milieu
 }
 
 /* ── AFFECTION_LANGUAGE : strength + direction + modality (pas de value) ── */

@@ -33,7 +33,33 @@ import type {
   SignalStability,
 } from './signal';
 import { defaultSignal } from './signal';
+import { deriveAssertionStatus } from './sources';
+import { CONSOLIDATION_VERSION, VERSION_STAMP } from './version';
 import { AFFECTION_MODALITIES, type AffectionCadence, type EvidenceStrength } from './vocabulary';
+
+/* ────────────────────────────────────────────────────────────────────────
+ * SEUILS DE CONSOLIDATION — objet typé UNIQUE, lu depuis le document arbitré
+ * docs/ontologie/consolidation-rules.md (consolidation_version 1.0.0).
+ * Aucun seuil ne vit en valeur par défaut enfouie dans une fonction : le code
+ * n'est jamais une autorité sémantique (HSG §40). Toute modification d'un seuil
+ * passe par le document + un incrément de CONSOLIDATION_VERSION.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+export const CONSOLIDATION_RULES = {
+  source: 'docs/ontologie/consolidation-rules.md',
+  version: CONSOLIDATION_VERSION,
+  // §2 — SCORE. high : ≥1 evidence primaire +2, OU ≥N primaires indépendantes,
+  // sans contraire comparable. low : UNIQUEMENT sur evidence contraire nette (R1),
+  // jamais par faiblesse du nombre.
+  score: { independentPrimaryMinForHigh: 2 },
+  // §3 — CONFIANCE.
+  confidence: {
+    high: { minEvidences: 3, minIndependentSources: 2, minDistinctContexts: 2 },
+    medium: { minEvidences: 2 },
+  },
+  // §5 — GLOBAL_CONSOLIDATED (jamais produit par un mapping — R15).
+  globalConsolidated: { minLocalEvidences: 3, minDistinctContexts: 3, minIndependentSources: 2 },
+} as const;
 
 /* ────────────────────────────────────────────────────────────────────────
  * Helpers d'indépendance et de temporalité.
@@ -81,17 +107,29 @@ function strengthMagnitude(s: EvidenceStrength): 1 | 2 {
  * ──────────────────────────────────────────────────────────────────────── */
 
 /**
- * globalStatus (R15 / HSG §8.3).
+ * globalStatus (R15 / HSG §8.3, seuils consolidation-rules §5).
  *   - GLOBAL_DIRECT : au moins une evidence explicitement transversale (context GLOBAL).
- *   - GLOBAL_CONSOLIDATED : convergence d'au moins 2 evidences INDÉPENDANTES
- *     contextualisées dans ≥2 contextes distincts. JAMAIS produit par un mapping.
+ *   - GLOBAL_CONSOLIDATED : ≥3 evidences locales, dans ≥3 contextes distincts, de
+ *     sources indépendantes et de direction cohérente. JAMAIS produit par un mapping.
  *   - LOCAL_ONLY sinon.
  * `allowGlobal=false` force LOCAL_ONLY (BEHAVIOR jamais globalisé — §12.5).
+ * `coherent=false` (direction mixte) interdit la consolidation globale.
  */
-function computeGlobalStatus(evidences: readonly Evidence[], allowGlobal = true): GlobalStatus {
+function computeGlobalStatus(
+  evidences: readonly Evidence[],
+  allowGlobal = true,
+  coherent = true,
+): GlobalStatus {
   if (!allowGlobal) return 'LOCAL_ONLY';
   if (evidences.some((e) => e.context === 'GLOBAL')) return 'GLOBAL_DIRECT';
-  if (independentCount(evidences) >= 2 && distinctLocalContexts(evidences).length >= 2) {
+  const g = CONSOLIDATION_RULES.globalConsolidated;
+  const localCount = evidences.filter((e) => e.context !== 'GLOBAL').length;
+  if (
+    coherent &&
+    localCount >= g.minLocalEvidences &&
+    distinctLocalContexts(evidences).length >= g.minDistinctContexts &&
+    independentCount(evidences) >= g.minIndependentSources
+  ) {
     return 'GLOBAL_CONSOLIDATED';
   }
   return 'LOCAL_ONLY';
@@ -120,35 +158,65 @@ function evidenceIds(evidences: readonly Evidence[]): string[] {
  * ──────────────────────────────────────────────────────────────────────── */
 
 interface ScoreInputs {
+  /** Nombre brut d'evidences (jamais confondu avec l'indépendance — §4). */
+  evidenceCount: number;
+  /** Sources indépendantes (clé source_id + source_type — §4). */
   indep: number;
-  hasPrimary: boolean;
-  maxMagnitude: 1 | 2;
+  /** Sources indépendantes portant une evidence PRIMAIRE. */
+  indepPrimary: number;
+  /** Au moins une evidence primaire de magnitude 2. */
+  strongPrimary: boolean;
+  /** Au moins une evidence primaire +2 de source déclarée (§3 medium). */
+  declaredStrongPrimary: boolean;
+  /** Aucune evidence primaire (uniquement des secondaires). */
+  onlySecondary: boolean;
+  /** Evidence contraire nette : des contraires dominent, aucun positif (§2 low / R1). */
+  netContrary: boolean;
+  /** Contextes distincts (local + GLOBAL éventuel). */
   distinctContexts: number;
-  anyGlobalDirect: boolean;
+  /** Contradiction non résolue sur ce construct (§20.3). */
   contradiction: boolean;
 }
 
+/**
+ * SCORE (§2). « À quel point ce construct semble marqué chez cette personne ? »
+ * - low UNIQUEMENT sur evidence contraire nette (R1) — jamais par faiblesse du nombre.
+ * - high : ≥1 primaire +2, OU ≥N primaires indépendantes, sans contraire comparable.
+ */
 function computeScore(i: ScoreInputs): SignalScore {
-  if (i.indep === 0) return 'unknown';
-  // Une evidence secondaire ne peut jamais, seule, porter un construct à high
-  // (décision 4) : sans primaire, le score est plafonné à 'medium'.
-  if (!i.hasPrimary) return i.indep >= 2 ? 'medium' : 'low';
-  const strongPrimary = i.maxMagnitude === 2;
-  if ((strongPrimary && i.indep >= 2) || (strongPrimary && i.anyGlobalDirect) || i.indep >= 3) {
-    return 'high';
-  }
-  if (strongPrimary || i.indep >= 2) return 'medium';
-  return 'low';
+  if (i.evidenceCount === 0) return 'unknown'; // aucune evidence (R1 : UNKNOWN ≠ LOW)
+  if (i.netContrary) return 'low'; // démontré faible, pas « peu d'infos »
+  const high =
+    !i.contradiction &&
+    (i.strongPrimary || i.indepPrimary >= CONSOLIDATION_RULES.score.independentPrimaryMinForHigh);
+  if (high) return 'high';
+  // Evidence présente, pas contraire, pas assez forte pour high (dont secondaire seul,
+  // qui ne porte jamais à high — décision 4) : medium. Jamais low sans contraire.
+  return 'medium';
 }
 
+/**
+ * CONFIANCE (§3). « À quel point Candice peut-elle se fier à cette lecture ? »
+ * Distincte du score (§1). L'indépendance se compte sur les sources, jamais sur le
+ * nombre d'evidences — conséquence voulue : à la sortie de l'onboarding seul (une
+ * seule source), presque aucun construct n'atteint high (§4).
+ */
 function computeConfidence(i: ScoreInputs): SignalConfidence {
-  if (i.indep === 0) return 'none';
-  if (i.contradiction) return 'low'; // contradiction → confiance ajustée à la baisse (§20.3)
-  // Secondaire seul : confiance plafonnée à 'low' (décision 4).
-  if (!i.hasPrimary) return 'low';
-  if (i.indep >= 3 && (i.distinctContexts >= 2 || i.anyGlobalDirect)) return 'high';
-  if (i.indep >= 2 || i.maxMagnitude === 2) return 'medium';
-  return 'low';
+  if (i.evidenceCount === 0) return 'none';
+  if (i.contradiction) return 'low'; // contradiction non résolue → low (§3)
+  if (i.onlySecondary) return 'low'; // uniquement des secondaires → low (§3)
+  const h = CONSOLIDATION_RULES.confidence.high;
+  if (
+    i.evidenceCount >= h.minEvidences &&
+    i.indep >= h.minIndependentSources &&
+    i.distinctContexts >= h.minDistinctContexts
+  ) {
+    return 'high';
+  }
+  if (i.evidenceCount >= CONSOLIDATION_RULES.confidence.medium.minEvidences || i.declaredStrongPrimary) {
+    return 'medium';
+  }
+  return 'low'; // une seule evidence (§3)
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -176,23 +244,28 @@ export function consolidateProfileConstruct(
 
   const positives = forConstruct.filter((e) => e.value > 0);
   const negatives = forConstruct.filter((e) => e.value < 0);
+  const primaries = forConstruct.filter((e) => e.evidence_role === 'primary');
   const indep = independentCount(forConstruct);
   const hasPrimary = hasRole(forConstruct, 'primary');
-  const maxMagnitude = (Math.max(...forConstruct.map((e) => Math.abs(e.value))) >= 2 ? 2 : 1) as
-    | 1
-    | 2;
   const local = distinctLocalContexts(forConstruct);
   const anyGlobalDirect = forConstruct.some((e) => e.context === 'GLOBAL');
 
   // Contradiction (§20.3) : un même contexte porte des directions opposées.
   const contradiction = hasDirectionalContradiction(forConstruct);
+  const coherent = !(positives.length > 0 && negatives.length > 0);
 
   const inputs: ScoreInputs = {
+    evidenceCount: forConstruct.length,
     indep,
-    hasPrimary,
-    maxMagnitude,
+    indepPrimary: independentCount(primaries),
+    strongPrimary: primaries.some((e) => Math.abs(e.value) >= 2),
+    declaredStrongPrimary: primaries.some(
+      (e) => Math.abs(e.value) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
+    ),
+    onlySecondary: !hasPrimary,
+    // Contraire net (§2 low / R1) : des contraires existent et aucun positif ne les équilibre.
+    netContrary: negatives.length > 0 && positives.length === 0,
     distinctContexts: local.length + (anyGlobalDirect ? 1 : 0),
-    anyGlobalDirect,
     contradiction,
   };
 
@@ -210,11 +283,12 @@ export function consolidateProfileConstruct(
     evidenceCount: forConstruct.length,
     evidenceIds: evidenceIds(forConstruct),
     contexts: contexts(forConstruct),
-    globalStatus: computeGlobalStatus(forConstruct),
+    globalStatus: computeGlobalStatus(forConstruct, true, coherent),
     stability: computeStability(forConstruct),
     lastUpdated: latestTimestamp(forConstruct),
     direction,
     contradiction: contradiction || undefined,
+    version: VERSION_STAMP,
   };
 }
 
@@ -259,20 +333,24 @@ function consolidateStrengthConstruct(
   const forConstruct = evidences.filter((e) => e.target_construct === construct);
   if (forConstruct.length === 0) return defaultSignal(construct);
 
+  const primaries = forConstruct.filter((e) => e.evidence_role === 'primary');
   const indep = independentCount(forConstruct);
   const hasPrimary = hasRole(forConstruct, 'primary');
-  const maxMagnitude = (Math.max(...forConstruct.map((e) => strengthMagnitude(e.strength))) >= 2
-    ? 2
-    : 1) as 1 | 2;
   const local = distinctLocalContexts(forConstruct);
   const anyGlobalDirect = forConstruct.some((e) => e.context === 'GLOBAL');
 
   const inputs: ScoreInputs = {
+    evidenceCount: forConstruct.length,
     indep,
-    hasPrimary,
-    maxMagnitude,
+    indepPrimary: independentCount(primaries),
+    strongPrimary: primaries.some((e) => strengthMagnitude(e.strength) >= 2),
+    declaredStrongPrimary: primaries.some(
+      (e) => strengthMagnitude(e.strength) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
+    ),
+    onlySecondary: !hasPrimary,
+    // Familles sans direction : pas de contraire possible → jamais 'low' par le score (§2 / R1).
+    netContrary: false,
     distinctContexts: local.length + (anyGlobalDirect ? 1 : 0),
-    anyGlobalDirect,
     contradiction: false,
   };
 
@@ -286,6 +364,7 @@ function consolidateStrengthConstruct(
     globalStatus: computeGlobalStatus(forConstruct, opts.allowGlobal ?? true),
     stability: computeStability(forConstruct),
     lastUpdated: latestTimestamp(forConstruct),
+    version: VERSION_STAMP,
   };
 }
 
@@ -353,6 +432,7 @@ export function consolidateAffection(
     give: buildAffectionVector(evidences, 'give'),
     affectionCadence: extra.affectionCadence ?? 'unknown',
     regularityImportance: extra.regularityImportance ?? null,
+    version: VERSION_STAMP,
   };
 }
 

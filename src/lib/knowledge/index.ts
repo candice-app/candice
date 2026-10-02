@@ -4,7 +4,13 @@
 // docs/ontologie/*.md restent la source de vérité conceptuelle ; ce module en
 // est l'implémentation exécutable versionnée (ontology_version / hsg_version).
 
-export { ONTOLOGY_VERSION, HSG_VERSION } from './version';
+export {
+  ONTOLOGY_VERSION,
+  HSG_VERSION,
+  CONSOLIDATION_VERSION,
+  VERSION_STAMP,
+  type VersionStamp,
+} from './version';
 
 export * from './vocabulary';
 export * from './sources';

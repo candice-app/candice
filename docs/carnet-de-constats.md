@@ -35,3 +35,8 @@
 - **Preuve** : `src/lib/discovery/engine.ts` (banque `discovery_questions`, colonne `dimension`).
 - **Périmètre** : hors lot A (le lot A crée le module canonique sans toucher l'existant).
 - **Statut** : ouvert.
+
+### [2026-10-02] DEPRECATED_AXES sans table d'équivalence vers les constructs canoniques
+- **Constat** : `vocabulary.ts` conserve 15 axes bipolaires legacy (`DEPRECATED_AXES`) mais sans correspondance 1-1 vers les familles/constructs canoniques. Ce n'est pas un oubli : les types de migration ne figuraient dans aucun des documents d'entrée reçus au lot A. La table reste donc en l'état.
+- **Périmètre** : hors lot A. La correspondance arrivera avec le lot de migration (celui qui branchera l'existant sur le module).
+- **Statut** : ouvert, attendu.

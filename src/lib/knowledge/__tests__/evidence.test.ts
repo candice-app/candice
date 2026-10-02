@@ -33,11 +33,17 @@ describe('Test 5 — value 0 interdite pour un construct directionnel', () => {
   });
 });
 
-describe('Test 6 — SOCIAL_ENERGY : 0 est une valeur réelle', () => {
-  it('accepte value 0 sur le continuum', () => {
+describe('Test 6 — SOCIAL_ENERGY : échelle 0..4 définitive, 0 est une extrémité réelle', () => {
+  it('accepte value 0 sur le continuum (recharge solitaire, pas le milieu)', () => {
     const e = createSocialEnergyEvidence({ ...base, value: 0 });
     expect(e.value).toBe(0);
     expect(e.target_construct).toBe('SOCIAL_ENERGY');
+  });
+  it('accepte toute la plage ordinale 0..4 (0 = solitaire, 4 = social)', () => {
+    for (const v of [0, 1, 2, 3, 4] as const) {
+      const e = createSocialEnergyEvidence({ ...base, value: v });
+      expect(e.value).toBe(v);
+    }
   });
 });
 

@@ -49,15 +49,24 @@ export const CANONICAL_FAMILY_LABELS: Record<CanonicalFamily, string> = {
  * Échelles d'evidence (force / direction). HSG §5.1.
  *   value  : réservé aux constructs DIRECTIONNELS (PROFILE + continuum).
  *            Le TYPE interdit 0 (0 n'est jamais une evidence — HSG §5.1).
- *   ContinuumValue : SOCIAL_ENERGY seulement, où 0 est une position réelle.
+ *   ContinuumValue : SOCIAL_ENERGY seulement, échelle ordinale 0..4 DÉFINITIVE.
  *   strength : réservé aux familles SANS direction (décision 3).
  * ──────────────────────────────────────────────────────────────────────── */
 
 /** Force + direction d'une evidence directionnelle. 0 est volontairement absent. */
 export type EvidenceValue = -2 | -1 | 1 | 2;
 
-/** Continuum SOCIAL_ENERGY uniquement : 0 est une valeur sémantique réelle. */
-export type ContinuumValue = -2 | -1 | 0 | 1 | 2;
+/**
+ * Continuum SOCIAL_ENERGY uniquement. Échelle ordinale 0..4 DÉFINITIVE :
+ * 0 = recharge solitaire, 4 = recharge sociale. 0 n'est PAS le milieu de
+ * l'échelle — c'est une extrémité (le besoin de moments seul(e)). Aucun
+ * recentrage vers −2..+2 n'est fait, ni maintenant ni plus tard : il ferait du
+ * zéro le centre et inverserait le sens (la personne « j'ai besoin d'être seule »
+ * se retrouverait au milieu au lieu d'être à une extrémité). C'est précisément
+ * pourquoi SOCIAL_ENERGY est la SEULE exception à « 0 n'est jamais une evidence »
+ * (EvidenceValue) : ici 0 est une position réelle, pas une absence d'information.
+ */
+export type ContinuumValue = 0 | 1 | 2 | 3 | 4;
 
 /** Degré de soutien d'une evidence non directionnelle (décision 3). */
 export type EvidenceStrength = 'weak' | 'moderate' | 'strong';
