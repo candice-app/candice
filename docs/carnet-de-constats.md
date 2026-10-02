@@ -29,3 +29,9 @@
 - **Preuve** : `src/lib/brain/orchestrator.ts:16` (déf. `async function log(`) et `:28` (l'`insert`), `catch` sans lecture d'erreur.
 - **Périmètre** : hors chantier 0 / Lot A (Lot A ne corrige que `logStep` du moteur d'analyse).
 - **Statut** : ouvert.
+
+### [2026-10-02] `discovery/engine.ts` : 12 dimensions parallèles, sans rapport avec le vocabulaire canonique
+- **Constat** : le moteur Discovery définit ses propres 12 dimensions — `attention`, `gifts`, `style`, `brands`, `food`, `fragrance`, `travel`, `hobbies`, `dreams`, `surprises`, `conflicts`, `practical` — qui ne correspondent ni aux 15 axes bipolaires des anciens `questions.ts`, ni aux 10 familles / constructs du modèle canonique (lot A). Non réconcilié dans le lot A (purement additif) ; à brancher/migrer dans un lot ultérieur.
+- **Preuve** : `src/lib/discovery/engine.ts` (banque `discovery_questions`, colonne `dimension`).
+- **Périmètre** : hors lot A (le lot A crée le module canonique sans toucher l'existant).
+- **Statut** : ouvert.

@@ -14,10 +14,10 @@ Référence de clôture. Le fichier de détail est `Candice_Questionnaire_Onboar
 | Options actives dans le socle | **106** |
 | Retirées | 12 — Q3 (7) et Q12 (5), statut `REMOVED_FROM_ONBOARDING_CORE` |
 | Déplacées vers le Discovery | 10 — Q15 Food (5), Q16 Voyage (5) |
-| Avec evidence PROFILE | 55 |
-| Sans PROFILE mais avec information utile | 51 |
+| Avec evidence PROFILE | 50 (corrigé — voir écarts §9 ; le 55 d'origine était antérieur aux retraits V13/V14) |
+| Sans PROFILE mais avec information utile | 55 (corrigé — voir écarts §9) |
 | **Evidences PROFILE** | **59** — 11 `GLOBAL_DIRECT`, 48 `LOCAL/CONTEXTUAL`, 0 `GLOBAL_CONSOLIDATED` |
-| dont secondaires | 20 |
+| dont secondaires | 17 (corrigé — voir écarts §9 ; le 20 d'origine était antérieur aux retraits V13/V14) |
 | Evidences PROFILE négatives | 2 — ligne 86 `APPETENCE_OBJECT −1`, ligne 98 `PROFILE_STRUCTURE −1` |
 | Evidences AFFECTION_RECEIVE | 14 (2 par modalité : Q1 à 100 %, Q4 à 50 %) |
 | Evidences AFFECTION_GIVE | 7 (QE seule, vecteur séparé) |
