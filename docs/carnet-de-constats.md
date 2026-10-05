@@ -86,3 +86,10 @@
 
 ### [2026-10-05] Lot B — profile_analysis : 2 lignes de données de dev, conservées
 - `profile_analysis` = 2 lignes (données de dev/test : 3 contacts, 3 my_profile, 0 réponse). Conservées telles quelles, jamais converties (R15 interdit la conversion de score, pas la conservation ; leur `engine_version` les marque). Aucun chemin du nouveau modèle ne doit les lire.
+
+### [2026-10-05] Lot B — écrans de transition : lignes SANS MATIÈRE arbitrées
+- Correction de comptage : j'avais annoncé 4 lignes SANS MATIÈRE, ma liste en contenait 3 ; depuis, 2 restaient (foodie, interdits) — toutes deux tranchées ci-dessous. Zéro ligne SANS MATIÈRE non résolue.
+- **« La table est un terrain d'attention » (foodie) — PHRASE RETIRÉE.** Q15 est partie au Discovery Food (décision explicite) ; à cette frontière, Candice ne sait légitimement rien de la nourriture. La phrase est supprimée de l'écran lifestyle. **En attente de rebranchement par la branche Discovery Food** (c'est là qu'elle reviendra, mieux qu'avant).
+- **« Être vraiment écouté » — RÉSOLU** par le mapping `soutien` (A ter) : 5 NEED distincts en contexte `distress` (écoute/rassurer/aider/présence/espace). L'écran 5 a la forme riche, lue dans les NEED, contexte distress jamais effacé.
+- **« Ce que tu n'aimerais pas / interdits » — ACCEPTÉE** : cœur DÉPLACÉ vers GUARDRAIL (Q18, DISPONIBLE) ; seule la nuance des champs libres tombe, reviendra avec l'extracteur. Brut conservé en source `onboarding_open`.
+- **Séquencement des 6 frontières** : conservé à l'identique depuis STEP_ORDER (la forme ne change pas). Vérifié : aucune frontière ne se vide après retrait de Q3/Q12/Q15/Q16 (voir STOP).
