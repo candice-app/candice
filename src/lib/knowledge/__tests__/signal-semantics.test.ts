@@ -14,7 +14,9 @@ import {
   consolidateInterests,
   consolidatePreferences,
   consolidateProfileConstruct,
+  hasActiveAvoidance,
 } from '../consolidate';
+import { createFact } from '../fact';
 import { asContactId, asEntityId, asSubjectId, asUserId, type KnowledgeScope } from '../identity';
 import { signalKey, type Signal } from '../signal';
 import { JOURNAL_VERSION_STAMP } from '../version';
@@ -97,19 +99,67 @@ describe('9 — switch exhaustif imposé par le compilateur', () => {
 });
 
 describe('10 — EntitySignal distingue LOVE de AVOID sans ouvrir une evidence', () => {
-  it('relation courante = evidence la plus récente ; relationHistory conserve tout (point d’arrêt 3)', () => {
+  it('relation courante = valence affective dominante ; relationHistory conserve tout', () => {
     const [love] = consolidateEntities(scope, [entityEv('e1', 'coriandre', 'LOVE', '2026-01-01T00:00:00Z')]);
-    const [avoid] = consolidateEntities(scope, [entityEv('e2', 'coriandre', 'AVOID', '2026-01-01T00:00:00Z')]);
+    const [avoid] = consolidateEntities(scope, [entityEv('e2', 'durian', 'AVOID', '2026-01-01T00:00:00Z')]);
     expect(love.relation).toBe('LOVE');
-    expect(avoid.relation).toBe('AVOID');
-    // deux relations sur la même entité : la plus récente est courante, l'historique garde les deux
-    const [evo] = consolidateEntities(scope, [
-      entityEv('e3', 'coriandre', 'LOVE', '2026-01-01T00:00:00Z'),
-      entityEv('e4', 'coriandre', 'AVOID', '2028-01-01T00:00:00Z'),
+    expect(avoid.relation).toBe('AVOID'); // pas d'affectif présent → AVOID est la relation courante
+  });
+});
+
+describe('3.1 — NEUTRAL n’est JAMAIS une contradiction, il est supplanté', () => {
+  it('LOVE + NEUTRAL → relation LOVE, aucune contradiction', () => {
+    const [s] = consolidateEntities(scope, [
+      entityEv('e1', 'café', 'NEUTRAL', '2026-01-01T00:00:00Z'),
+      entityEv('e2', 'café', 'LOVE', '2026-06-01T00:00:00Z'),
     ]);
-    expect(evo.relation).toBe('AVOID'); // la plus récente
-    expect(evo.relationHistory).toHaveLength(2);
-    expect(evo.contradiction).toBeUndefined(); // aucune contradiction calculée sur ENTITY (point d'arrêt 3)
+    expect(s.relation).toBe('LOVE');
+    expect(s.contradiction).toBeUndefined();
+    expect(s.confidence).not.toBe('low'); // NEUTRAL ne force pas la confiance à low
+  });
+});
+
+describe('3.2 — LOVE+DISLIKE = contradiction ; LOVE+AVOID = tension (jamais contradiction)', () => {
+  it('{LOVE} + DISLIKE → contradiction réelle, confidence low', () => {
+    const [s] = consolidateEntities(scope, [
+      entityEv('e1', 'coriandre', 'LOVE', '2026-01-01T00:00:00Z'),
+      entityEv('e2', 'coriandre', 'DISLIKE', '2026-02-01T00:00:00Z'),
+    ]);
+    expect(s.contradiction).toBe(true);
+    expect(s.confidence).toBe('low');
+  });
+  it('{LOVE} + AVOID → PAS de contradiction ; relation=LOVE ; évitement actif préservé', () => {
+    const [s] = consolidateEntities(scope, [
+      entityEv('e1', 'chocolat', 'LOVE', '2026-01-01T00:00:00Z'),
+      entityEv('e2', 'chocolat', 'AVOID', '2028-01-01T00:00:00Z'),
+    ]);
+    expect(s.contradiction).toBeUndefined(); // tension structurante, pas contradiction
+    expect(s.relation).toBe('LOVE'); // valence affective dominante
+    expect(hasActiveAvoidance(s)).toBe(true); // « j'adore mais j'évite » — ne se perd pas
+    expect(s.relationHistory).toHaveLength(2);
+  });
+});
+
+describe('correction 4 — GUARDRAIL scope consolidé = le plus restrictif (selection > execution > context)', () => {
+  it('selection l’emporte, jamais remplacé par le plus récent', () => {
+    const [g] = consolidateGuardrails(scope, [
+      guardrailEv('a', 'GRD_NOISE', 'HARD', 'selection'),
+      guardrailEv('b', 'GRD_NOISE', 'HARD', 'execution'), // plus « récent » dans la liste
+      guardrailEv('c', 'GRD_NOISE', 'HARD', 'context'),
+    ]);
+    expect(g.guardrailScope).toBe('selection');
+  });
+});
+
+describe('correction 5 — un signal hérite du niveau le plus restrictif de ses FACT soutiens', () => {
+  it('un GuardrailSignal soutenu par un FACT internal_only ne reste pas exposable', () => {
+    const sensitiveFact = createFact({ ...scope, fact_id: 'fh', fact_type: 'health', value: 'allergie', source: 's', timestamp: base.timestamp, confidence: 'high', sensitivity: { isSensitive: true, category: 'santé' } });
+    const gev = { ...guardrailEv('g', 'GRD_NOISE', 'HARD', 'selection'), fact_id: 'fh' };
+    const [g] = consolidateGuardrails(scope, [gev], { supportingFacts: [sensitiveFact] });
+    expect(g.visibility.derived).toBe('internal_only'); // pas de fuite vers le portrait
+    // sans FACT soutien : défaut exposable
+    const [g2] = consolidateGuardrails(scope, [guardrailEv('g2', 'GRD_NOISE', 'SOFT', 'context')]);
+    expect(g2.visibility.derived).toBe('exposable');
   });
 });
 

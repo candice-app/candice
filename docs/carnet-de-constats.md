@@ -52,3 +52,13 @@
 - **Décision (lot A bis)** : le module de connaissance écrit `ownerId: UserId`, aligné sur `user_id` (dominant). NON corrigé dans ce lot (périmètre fermé à `src/lib/knowledge/`).
 - **Dette** : au lot B, `ownerId` devra être mappé sur `pilot_id` aux frontières de ces 10 tables. À traiter quand le module sera branché.
 - **Statut** : ouvert, dette connue.
+
+### [2026-10-05] Plafond de sensibilité : qui peut le lever (point d'arrêt 2 tranché, nuance future)
+- **Tranché (lot A bis)** : le plafond tient — `userOverride` ne peut jamais élever un contenu `internal_only` (FACT sensible du proche). Raison : la connaissance porte sur un tiers qui n'a pas consenti à l'exposition. L'utilisateur contrôle SES données, pas les données sensibles de son proche. Le plafond bloque l'EXPOSITION, jamais l'USAGE (Candice écarte toujours une reco sur la base du FACT sensible, §35).
+- **Nuance à implémenter plus tard** : si le proche est lui-même utilisateur Candice (`proche_user_id`), c'est LUI qui pourrait légitimement lever le plafond sur SES propres données — pas son proche. Cohérent avec declared / reported_by_relative. Lot ultérieur.
+- **Statut** : plafond implémenté (SENSITIVITY_CEILING) ; levée par le proche-utilisateur = non implémentée, à faire.
+
+### [2026-10-05] INTEREST relationship consolidé = le plus récent (provisoire, à revoir avec du volume)
+- **Constat** : `casual | curious | enthusiast | passion | expert` est une échelle d'INTENSITÉ. Le consolidé prend actuellement le relationship de l'evidence la plus récente. Conséquence : une mention `casual` isolée postérieure ferait redescendre un `expert` établi.
+- **Décision (lot A bis)** : gardé « le plus récent » pour l'instant — on n'a pas les données réelles pour trancher entre « le plus récent supplante » et « l'intensité la plus haute observée domine ».
+- **Statut** : ouvert, à revoir quand il y aura du volume réel. (ENTITY relation, elle, est arbitrée au point d'arrêt 3 ; PREFERENCE value et SOCIAL_ENERGY position au plus récent sont validés.)

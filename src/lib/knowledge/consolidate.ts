@@ -50,15 +50,26 @@ import type {
   SocialEnergySignal,
 } from './signal';
 import { constructIdentity, emptyBase } from './signal';
+import type { Fact } from './fact';
 import { deriveAssertionStatus } from './sources';
 import { CONSOLIDATION_VERSION, VERSION_STAMP } from './version';
-import { DEFAULT_EXPOSABLE, type VisibilityPolicy } from './visibility';
+import { DEFAULT_EXPOSABLE, effectiveExposure, mostRestrictive, type VisibilityPolicy } from './visibility';
+
+/**
+ * Options communes de consolidation. `supportingFacts` permet la propagation de
+ * visibilité (correction 5) : un signal hérite du niveau le plus restrictif parmi les
+ * FACT qui le soutiennent (liés par evidence.fact_id).
+ */
+export interface ConsolidateOpts {
+  readonly supportingFacts?: readonly Fact[];
+}
 import {
   AFFECTION_MODALITIES,
   type AffectionCadence,
   type ContextCode,
   type ContinuumValue,
   type DriverCode,
+  type EntityRelation,
   type EvidenceStrength,
   type GuardrailCode,
   type GuardrailScope,
@@ -233,11 +244,28 @@ function groupBy<T>(items: readonly T[], key: (t: T) => string): Map<string, T[]
   return m;
 }
 
+/**
+ * Visibilité héritée (correction 5) : le niveau le plus restrictif parmi `exposable`
+ * (défaut) et la visibilité effective des FACT soutenant ces evidences (liés par
+ * evidence.fact_id). Aucune source plus restrictive → reste `exposable`.
+ */
+function deriveVisibility(
+  forConstruct: readonly Evidence[],
+  supportingFacts?: readonly Fact[],
+): VisibilityPolicy {
+  if (!supportingFacts || supportingFacts.length === 0) return DEFAULT_EXPOSABLE;
+  const factIds = new Set(forConstruct.map((e) => e.fact_id).filter((id): id is string => !!id));
+  const levels = supportingFacts
+    .filter((f) => factIds.has(f.fact_id))
+    .map((f) => effectiveExposure(f.visibility));
+  return { derived: mostRestrictive(['exposable', ...levels]) };
+}
+
 function baseFrom(
   scope: KnowledgeScope,
   forConstruct: readonly Evidence[],
   inputs: ScoreInputs,
-  opts: { allowGlobal?: boolean; coherent?: boolean; visibility?: VisibilityPolicy } = {},
+  opts: { allowGlobal?: boolean; coherent?: boolean; visibility?: VisibilityPolicy; supportingFacts?: readonly Fact[] } = {},
 ): SignalBase {
   return {
     contactId: scope.contactId,
@@ -252,7 +280,7 @@ function baseFrom(
     lastUpdated: latestTimestamp(forConstruct),
     contradiction: inputs.contradiction || undefined,
     version: VERSION_STAMP,
-    visibility: opts.visibility ?? DEFAULT_EXPOSABLE,
+    visibility: opts.visibility ?? deriveVisibility(forConstruct, opts.supportingFacts),
   };
 }
 
@@ -327,6 +355,7 @@ export function consolidateProfileConstruct(
   scope: KnowledgeScope,
   construct: string,
   evidences: readonly DirectionalEvidence[],
+  opts: ConsolidateOpts = {},
 ): ProfileSignal | SocialEnergySignal {
   const isSocialEnergy = construct === 'SOCIAL_ENERGY';
   const forConstruct = evidences.filter((e) => e.target_construct === construct);
@@ -336,7 +365,7 @@ export function consolidateProfileConstruct(
       : { ...emptyBase(scope), family: 'PROFILE', construct: construct as ProfileDirectionalCode, direction: 'positive' };
   }
   const { inputs, direction, coherent } = directionalInputs(forConstruct);
-  const base = baseFrom(scope, forConstruct, inputs, { coherent });
+  const base = baseFrom(scope, forConstruct, inputs, { coherent, supportingFacts: opts.supportingFacts });
   if (isSocialEnergy) {
     // position = valeur la plus récente sur 0..4 (jamais recentrée).
     const latest = mostRecent(forConstruct);
@@ -356,9 +385,10 @@ export function consolidateProfileConstruct(
 export function consolidateProfile(
   scope: KnowledgeScope,
   evidences: readonly DirectionalEvidence[],
+  opts: ConsolidateOpts = {},
 ): (ProfileSignal | SocialEnergySignal)[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) =>
-    consolidateProfileConstruct(scope, c, evs),
+    consolidateProfileConstruct(scope, c, evs, opts),
   );
 }
 
@@ -378,53 +408,76 @@ function hasDirectionalContradiction(evidences: readonly DirectionalEvidence[]):
  * ──────────────────────────────────────────────────────────────────────── */
 
 /** NEED. */
-export function consolidateNeeds(scope: KnowledgeScope, evidences: readonly NeedEvidence[]): NeedSignal[] {
+export function consolidateNeeds(scope: KnowledgeScope, evidences: readonly NeedEvidence[], opts: ConsolidateOpts = {}): NeedSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) => ({
-    ...baseFrom(scope, evs, strengthInputs(evs)),
+    ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
     family: 'NEED',
     construct: c as NeedCode,
   }));
 }
 
 /** DRIVER. */
-export function consolidateDrivers(scope: KnowledgeScope, evidences: readonly DriverEvidence[]): DriverSignal[] {
+export function consolidateDrivers(scope: KnowledgeScope, evidences: readonly DriverEvidence[], opts: ConsolidateOpts = {}): DriverSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) => ({
-    ...baseFrom(scope, evs, strengthInputs(evs)),
+    ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
     family: 'DRIVER',
     construct: c as DriverCode,
   }));
 }
 
 /** CONTEXT. */
-export function consolidateContexts(scope: KnowledgeScope, evidences: readonly ContextEvidence[]): ContextSignal[] {
+export function consolidateContexts(scope: KnowledgeScope, evidences: readonly ContextEvidence[], opts: ConsolidateOpts = {}): ContextSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) => ({
-    ...baseFrom(scope, evs, strengthInputs(evs)),
+    ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
     family: 'CONTEXT',
     construct: c as ContextCode,
   }));
 }
 
-/** GUARDRAIL — sévérité consolidée = la plus contraignante (un HARD parmi des SOFT → HARD, R19). */
-export function consolidateGuardrails(scope: KnowledgeScope, evidences: readonly GuardrailEvidence[]): GuardrailSignal[] {
+/**
+ * Restrictivité du scope d'un guardrail (correction 4) : selection > execution > context.
+ * Ce n'est PAS une échelle temporelle — selection élimine une catégorie (R19), execution
+ * ne pénalise qu'une exécution incertaine (R21). Le scope consolidé est le PLUS restrictif.
+ */
+const GUARDRAIL_SCOPE_RESTRICTIVENESS: Record<GuardrailScope, number> = {
+  selection: 0,
+  execution: 1,
+  context: 2,
+};
+
+/**
+ * GUARDRAIL — sévérité consolidée = la plus contraignante (HARD parmi SOFT → HARD, R19) ;
+ * scope consolidé = le PLUS restrictif (selection > execution > context, correction 4),
+ * jamais le plus récent — sinon un guardrail de selection pourrait être silencieusement
+ * remplacé par un guardrail d'execution et laisser passer une reco à éliminer.
+ */
+export function consolidateGuardrails(scope: KnowledgeScope, evidences: readonly GuardrailEvidence[], opts: ConsolidateOpts = {}): GuardrailSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([code, evs]) => {
     const severity: GuardrailSeverity = evs.some((e) => e.severity === 'HARD') ? 'HARD' : 'SOFT';
-    const latest = mostRecent(evs);
+    const guardrailScope = evs
+      .map((e) => e.guardrailScope)
+      .reduce((lo, s) => (GUARDRAIL_SCOPE_RESTRICTIVENESS[s] < GUARDRAIL_SCOPE_RESTRICTIVENESS[lo] ? s : lo));
     return {
-      ...baseFrom(scope, evs, strengthInputs(evs)),
+      ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
       family: 'GUARDRAIL',
       code: code as GuardrailCode | GuardrailVerticalPath,
       severity,
-      guardrailScope: latest.guardrailScope as GuardrailScope,
+      guardrailScope,
     };
   });
 }
 
-/** INTEREST — conserve le `relationship` (sémantique perdue par le lot A). */
-export function consolidateInterests(scope: KnowledgeScope, evidences: readonly InterestEvidence[]): InterestSignal[] {
+/**
+ * INTEREST — conserve le `relationship`. Relationship courant = evidence la plus récente.
+ * NOTE (carnet) : casual|curious|enthusiast|passion|expert est une échelle d'intensité ;
+ * une mention casual isolée ne devrait pas faire redescendre un expert. À revoir avec du
+ * volume réel — pas de données pour trancher maintenant.
+ */
+export function consolidateInterests(scope: KnowledgeScope, evidences: readonly InterestEvidence[], opts: ConsolidateOpts = {}): InterestSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct as string).entries()].map(([subject, evs]) => {
     const latest = mostRecent(evs);
     return {
-      ...baseFrom(scope, evs, strengthInputs(evs)),
+      ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
       family: 'INTEREST',
       subject: subject as SubjectId,
       subjectLabel: latest.subjectLabel,
@@ -434,36 +487,61 @@ export function consolidateInterests(scope: KnowledgeScope, evidences: readonly 
   });
 }
 
-/**
- * ENTITY — relation courante = relation de l'evidence la plus récente ; relationHistory
- * conserve tout. AUCUNE contradiction n'est calculée sur ENTITY (POINT D'ARRÊT 3, non
- * tranché : la table d'incompatibilité des 9 relations n'existe dans aucun document).
- * Comportement provisoire explicite, pas un défaut.
+/* ── Polarité ENTITY (POINT D'ARRÊT 3, arbitré) ──
+ * AFFECTIVE = valence (LOVE, LIKE, DISLIKE). AVOID est COMPORTEMENTAL (pas affectif).
+ * NEUTRAL = valence la plus faible, jamais une position contraire : elle est SUPPLANTÉE,
+ * jamais contredite (3.1). Contradiction réelle = positive {LOVE,LIKE} + DISLIKE (3.2).
+ * LOVE/LIKE + AVOID = tension structurante (§20.4/R18), JAMAIS contradiction — surfacée
+ * par hasActiveAvoidance (3.2/3.3). WANT_TO_* + DISLIKE : pas de contradiction automatique.
  */
-export function consolidateEntities(scope: KnowledgeScope, evidences: readonly EntityEvidence[]): EntitySignal[] {
+const ENTITY_AFFECTIVE: readonly EntityRelation[] = ['LOVE', 'LIKE', 'DISLIKE'];
+
+function entityContradiction(evs: readonly EntityEvidence[]): boolean {
+  const hasPositive = evs.some((e) => e.relation === 'LOVE' || e.relation === 'LIKE');
+  const hasDislike = evs.some((e) => e.relation === 'DISLIKE');
+  return hasPositive && hasDislike;
+}
+
+/**
+ * ENTITY — relation courante = valence affective dominante (la plus récente parmi
+ * LOVE/LIKE/DISLIKE) si présente ; sinon la plus récente hors NEUTRAL ; sinon NEUTRAL.
+ * relationHistory conserve tout. Contradiction calculée UNIQUEMENT pour positive+DISLIKE.
+ * L'évitement (AVOID) coexiste sans contredire : lisible via hasActiveAvoidance.
+ */
+export function consolidateEntities(scope: KnowledgeScope, evidences: readonly EntityEvidence[], opts: ConsolidateOpts = {}): EntitySignal[] {
   return [...groupBy(evidences, (e) => e.target_construct as string).entries()].map(([entity, evs]) => {
     const sorted = [...evs].sort((a, b) => (a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0));
-    const latest = sorted[sorted.length - 1];
+    const affective = sorted.filter((e) => ENTITY_AFFECTIVE.includes(e.relation));
+    const nonNeutral = sorted.filter((e) => e.relation !== 'NEUTRAL');
+    const pool = affective.length ? affective : nonNeutral.length ? nonNeutral : sorted;
+    const current = pool[pool.length - 1];
+    const contradiction = entityContradiction(evs);
+    const inputs: ScoreInputs = { ...strengthInputs(evs), contradiction };
     return {
-      ...baseFrom(scope, evs, strengthInputs(evs)),
+      ...baseFrom(scope, evs, inputs, { supportingFacts: opts.supportingFacts }),
       family: 'ENTITY',
       entity: entity as EntityId,
-      entityLabel: latest.entityLabel,
-      entityType: latest.entityType,
-      relation: latest.relation,
-      relationHistory: sorted.map((e) => ({
-        relation: e.relation,
-        timestamp: e.timestamp,
-        evidenceId: e.evidence_id,
-      })),
+      entityLabel: current.entityLabel,
+      entityType: current.entityType,
+      relation: current.relation,
+      relationHistory: sorted.map((e) => ({ relation: e.relation, timestamp: e.timestamp, evidenceId: e.evidence_id })),
     };
   });
 }
 
-/** PREFERENCE — conserve la valeur. */
-export function consolidatePreferences(scope: KnowledgeScope, evidences: readonly PreferenceEvidence[]): PreferenceSignal[] {
+/**
+ * Évitement actif (point d'arrêt 3, 3.3) : dérivé pur de relationHistory, aucun champ
+ * stocké. LOVE + AVOID = tension structurante où relation=LOVE ; l'évitement ne doit
+ * JAMAIS se perdre (perdre un AVOID = recommander ce que la personne fuit).
+ */
+export function hasActiveAvoidance(signal: EntitySignal): boolean {
+  return signal.relationHistory.some((r) => r.relation === 'AVOID');
+}
+
+/** PREFERENCE — conserve la valeur (la plus récente supplante). */
+export function consolidatePreferences(scope: KnowledgeScope, evidences: readonly PreferenceEvidence[], opts: ConsolidateOpts = {}): PreferenceSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([path, evs]) => ({
-    ...baseFrom(scope, evs, strengthInputs(evs)),
+    ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
     family: 'PREFERENCE',
     path: path as PreferencePath,
     value: mostRecent(evs).preferenceValue,
@@ -474,11 +552,11 @@ export function consolidatePreferences(scope: KnowledgeScope, evidences: readonl
  * BEHAVIOR — jamais globalisé mécaniquement (§12.5). Deux contextes ≠ contradiction (§20.6).
  * ──────────────────────────────────────────────────────────────────────── */
 
-export function consolidateBehavior(scope: KnowledgeScope, evidences: readonly BehaviorEvidence[]): BehaviorSignal[] {
+export function consolidateBehavior(scope: KnowledgeScope, evidences: readonly BehaviorEvidence[], opts: ConsolidateOpts = {}): BehaviorSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([, evs]) => {
     const latest = mostRecent(evs);
     return {
-      ...baseFrom(scope, evs, strengthInputs(evs), { allowGlobal: false }),
+      ...baseFrom(scope, evs, strengthInputs(evs), { allowGlobal: false, supportingFacts: opts.supportingFacts }),
       family: 'BEHAVIOR',
       behaviorContext: latest.behaviorContext,
       pattern: latest.pattern,
@@ -495,6 +573,7 @@ function buildAffectionVector(
   scope: KnowledgeScope,
   evidences: readonly AffectionEvidence[],
   direction: 'receive' | 'give',
+  supportingFacts?: readonly Fact[],
 ): AffectionVector {
   const dirEv = evidences.filter((e) => e.direction === direction);
   const vector = {} as AffectionVector;
@@ -504,7 +583,7 @@ function buildAffectionVector(
     vector[modality] =
       evs.length === 0
         ? { ...emptyBase(scope), family: 'AFFECTION_LANGUAGE', direction, modality }
-        : { ...baseFrom(scope, evs, strengthInputs(evs)), family: 'AFFECTION_LANGUAGE', direction, modality };
+        : { ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts }), family: 'AFFECTION_LANGUAGE', direction, modality };
   }
   return vector;
 }
@@ -512,13 +591,13 @@ function buildAffectionVector(
 export function consolidateAffection(
   scope: KnowledgeScope,
   evidences: readonly AffectionEvidence[],
-  extra: { affectionCadence?: AffectionCadence; regularityImportance?: number | null } = {},
+  extra: { affectionCadence?: AffectionCadence; regularityImportance?: number | null; supportingFacts?: readonly Fact[] } = {},
 ): AffectionSignalSet {
   return {
     contactId: scope.contactId,
     ownerId: scope.ownerId,
-    receive: buildAffectionVector(scope, evidences, 'receive'),
-    give: buildAffectionVector(scope, evidences, 'give'),
+    receive: buildAffectionVector(scope, evidences, 'receive', extra.supportingFacts),
+    give: buildAffectionVector(scope, evidences, 'give', extra.supportingFacts),
     affectionCadence: extra.affectionCadence ?? 'unknown',
     regularityImportance: extra.regularityImportance ?? null,
     version: VERSION_STAMP,

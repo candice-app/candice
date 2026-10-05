@@ -22,6 +22,20 @@ export function exposureRank(level: ExposureLevel): number {
   return EXPOSURE_LEVELS.indexOf(level);
 }
 
+/**
+ * Le niveau LE PLUS RESTRICTIF d'un ensemble (rang le plus bas). Sert à la propagation
+ * de visibilité d'un signal (correction 5) : un signal hérite du niveau le plus
+ * restrictif parmi les FACT/evidences qui le soutiennent — un GuardrailSignal sur
+ * food.allergy.* ne peut pas remonter à `exposable` si le FACT de santé est internal_only.
+ * Ensemble vide → `exposable` (défaut d'un signal consolidé).
+ */
+export function mostRestrictive(levels: readonly ExposureLevel[]): ExposureLevel {
+  return levels.reduce<ExposureLevel>(
+    (lo, l) => (exposureRank(l) < exposureRank(lo) ? l : lo),
+    'exposable',
+  );
+}
+
 export interface VisibilityPolicy {
   /** Niveau dérivé du contenu (sensibilité, nature de l'information). */
   readonly derived: ExposureLevel;
