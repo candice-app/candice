@@ -7,6 +7,9 @@
 // Principe de non-perte (HSG §4) : le verbatim (questionText, answerText /
 // rawText) est conservé TEL QUEL — jamais tronqué, résumé ni normalisé.
 
+import type { Evidence } from './evidence';
+import type { KnowledgeScope } from './identity';
+
 /* ────────────────────────────────────────────────────────────────────────
  * Types de source (10 valeurs, fermé).
  * ──────────────────────────────────────────────────────────────────────── */
@@ -77,7 +80,7 @@ export function deriveAssertionStatus(sourceType: SourceType): AssertionStatus {
  * référence sa source (evidence.source_id). HSG §47.
  * ──────────────────────────────────────────────────────────────────────── */
 
-export interface SourceRecord {
+export interface SourceRecord extends KnowledgeScope {
   readonly id: string;
   readonly sourceType: SourceType;
   /** Statut dérivé (décision 5), conservé pour traçabilité. */
@@ -96,12 +99,13 @@ export interface SourceRecord {
   readonly timestamp: string;
   /** Qui rapporte, uniquement pour reported_by_relative. */
   readonly rapporteur?: string;
-  /** Traçabilité source → evidences / FACT produits. */
+  /** Traçabilité source → evidences / FACT / connaissance ouverte produits (HSG §47). */
   readonly producedEvidenceIds?: string[];
   readonly producedFactIds?: string[];
+  readonly producedOpenKnowledgeIds?: string[];
 }
 
-export interface CreateSourceInput {
+export interface CreateSourceInput extends KnowledgeScope {
   id: string;
   sourceType: SourceType;
   questionText: string;
@@ -120,6 +124,8 @@ export interface CreateSourceInput {
  */
 export function createSourceRecord(input: CreateSourceInput): SourceRecord {
   return {
+    contactId: input.contactId,
+    ownerId: input.ownerId,
     id: input.id,
     sourceType: input.sourceType,
     assertionStatus: deriveAssertionStatus(input.sourceType),
@@ -133,5 +139,36 @@ export function createSourceRecord(input: CreateSourceInput): SourceRecord {
     rapporteur: input.rapporteur,
     producedEvidenceIds: [],
     producedFactIds: [],
+    producedOpenKnowledgeIds: [],
+  };
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Câblage du LIEN INVERSE (lot A bis, section 6.3 / HSG §47).
+ * Le sens aller existe depuis le lot A (evidence.source_id obligatoire) ; le sens
+ * retour (source → ce qu'elle a produit) était déclaré mais jamais alimenté. Ces
+ * fonctions sont immuables : elles renvoient une copie, ne mutent rien.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+function addUnique(list: readonly string[] | undefined, id: string): string[] {
+  const base = list ?? [];
+  return base.includes(id) ? [...base] : [...base, id];
+}
+
+/** Enregistre qu'une evidence a été produite par cette source (sens retour). */
+export function attachEvidenceToSource(source: SourceRecord, evidence: Evidence): SourceRecord {
+  return { ...source, producedEvidenceIds: addUnique(source.producedEvidenceIds, evidence.evidence_id) };
+}
+
+/** Enregistre qu'un FACT a été produit par cette source. */
+export function attachFactToSource(source: SourceRecord, factId: string): SourceRecord {
+  return { ...source, producedFactIds: addUnique(source.producedFactIds, factId) };
+}
+
+/** Enregistre qu'une connaissance ouverte a été produite par cette source. */
+export function attachOpenKnowledgeToSource(source: SourceRecord, openKnowledgeId: string): SourceRecord {
+  return {
+    ...source,
+    producedOpenKnowledgeIds: addUnique(source.producedOpenKnowledgeIds, openKnowledgeId),
   };
 }

@@ -14,6 +14,7 @@
 //     ne crée du négatif par absence ou symétrie (R3/R4).
 
 import type { AssertionStatus, SourceType } from './sources';
+import type { EntityId, KnowledgeScope, SubjectId } from './identity';
 import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 import type {
   AffectionDirection,
@@ -55,8 +56,9 @@ export type EvidenceConfidence = 'high' | 'medium' | 'low';
  */
 export type EvidenceContext = 'GLOBAL' | (string & {});
 
-/** Champs communs à toutes les evidences. */
-interface EvidenceBase {
+/** Champs communs à toutes les evidences. Porte les deux colonnes d'identité
+ *  (contactId + ownerId), comme questionnaire_responses(contact_id, user_id). */
+interface EvidenceBase extends KnowledgeScope {
   readonly evidence_id: string;
   readonly source_id: string;
   readonly source_type: SourceType;
@@ -139,23 +141,29 @@ export interface GuardrailEvidence extends EvidenceBase {
   readonly trigger?: string;
 }
 
-/* ── INTEREST : strength + subject + relationship (alignement nommage) ── */
+/* ── INTEREST : strength + subject (identité résolue) + relationship ── */
 export interface InterestEvidence extends EvidenceBase {
   readonly target_family: 'INTEREST';
-  readonly subject: string;
+  /** Identité conceptuelle résolue (namespace subject). */
+  readonly subject: SubjectId;
+  /** Formulation verbatim de CETTE evidence, jamais écrasée par la résolution. */
+  readonly subjectLabel: string;
   readonly parent_domain?: InterestParentDomain;
   readonly relationship: InterestRelationship;
-  readonly target_construct: string; // subject
+  readonly target_construct: SubjectId; // = subject
   readonly strength: EvidenceStrength;
 }
 
-/* ── ENTITY : strength + entity_id + relation (alignement nommage) ── */
+/* ── ENTITY : strength + entity_id (identité résolue) + relation ── */
 export interface EntityEvidence extends EvidenceBase {
   readonly target_family: 'ENTITY';
-  readonly entity_id: string;
+  /** Identité d'entité résolue (namespace entity). */
+  readonly entity_id: EntityId;
+  /** Formulation verbatim de CETTE evidence, jamais écrasée par la résolution. */
+  readonly entityLabel: string;
   readonly entityType: EntityType;
   readonly relation: EntityRelation;
-  readonly target_construct: string; // entity_id
+  readonly target_construct: EntityId; // = entity_id
   readonly strength: EvidenceStrength;
 }
 

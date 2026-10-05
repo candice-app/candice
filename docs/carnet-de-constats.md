@@ -40,3 +40,15 @@
 - **Constat** : `vocabulary.ts` conserve 15 axes bipolaires legacy (`DEPRECATED_AXES`) mais sans correspondance 1-1 vers les familles/constructs canoniques. Ce n'est pas un oubli : les types de migration ne figuraient dans aucun des documents d'entrée reçus au lot A. La table reste donc en l'état.
 - **Périmètre** : hors lot A. La correspondance arrivera avec le lot de migration (celui qui branchera l'existant sur le module).
 - **Statut** : ouvert, attendu.
+
+### [2026-10-05] proche_user_id — même humain, deux identités, à NE PAS fusionner
+- **Constat** : `contacts.proche_user_id` (`src/types/index.ts`) est renseigné quand un proche est lui-même utilisateur Candice. Le même humain existe donc sous deux identités : `contacts.id` (vu par le pilote, connaissance `reported_by_relative`) et `auth.users.id` (en propre, connaissance `declared`).
+- **Règle (lot A bis)** : AUCUNE fusion automatique, aucun chemin de code qui rapprocherait les deux. Confondre les deux `assertionStatus` détruirait la distinction explicite/inféré qui fonde le modèle. Le lien existe, il est informatif, il n'est pas une identité.
+- **Conséquence analytics (lot futur)** : une analyse de population devra décider si ces deux identités comptent pour une personne ou deux. Arbitrage du lot Analytics, hors lot A bis.
+- **Statut** : ouvert, volontairement non résolu.
+
+### [2026-10-05] pilot_id vs user_id — dette de nommage aux frontières
+- **Constat** : le rôle « pilote/utilisateur » (FK `auth.users(id)`) est nommé `user_id` dans 106 colonnes (dominant) et `pilot_id` dans 10 tables récentes (`memories`, `wishlist`, `signals`, `processing-log`, `gender-situations`, `carnet-v2`, `fuse-gift-wishlist`, `reco-refusals`, `contact-reco-items`, `cross-validations`).
+- **Décision (lot A bis)** : le module de connaissance écrit `ownerId: UserId`, aligné sur `user_id` (dominant). NON corrigé dans ce lot (périmètre fermé à `src/lib/knowledge/`).
+- **Dette** : au lot B, `ownerId` devra être mappé sur `pilot_id` aux frontières de ces 10 tables. À traiter quand le module sera branché.
+- **Statut** : ouvert, dette connue.

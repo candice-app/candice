@@ -11,26 +11,27 @@
 //   §11.1 — un FACT produit 0..n signaux (0 est normal).
 
 import type { AssertionStatus } from './sources';
+import type { KnowledgeScope } from './identity';
+import { DEFAULT_EXPOSABLE, INTERNAL_ONLY_POLICY, type VisibilityPolicy } from './visibility';
 import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 
 /** Confiance portée par un FACT. */
 export type FactConfidence = 'high' | 'medium' | 'low';
 
 /**
- * Sensibilité d'un FACT. `usableInVisibleRationale: false` signale explicitement
- * qu'un fait sensible ne doit pas apparaître dans une justification visible
- * (HSG §35/§48). Le drapeau est optionnel mais, lorsqu'il est à false, il est
- * contraignant pour toute surface de restitution.
+ * Sensibilité d'un FACT. Le pilotage de la restitution n'est plus porté ici :
+ * `usableInVisibleRationale` est REMPLACÉ par la VisibilityPolicy du FACT (lot A bis).
+ * Un FACT sensible a `visibility.derived === 'internal_only'` — le comportement du
+ * HSG §35 est conservé (une contrainte de santé écarte une recommandation sans jamais
+ * apparaître dans la justification visible).
  */
 export interface FactSensitivity {
   readonly isSensitive: boolean;
   /** Catégorie libre (santé, handicap, neurodivergence, religion, deuil…). */
   readonly category?: string;
-  /** Drapeau explicite : utilisable dans une justification visible ? */
-  readonly usableInVisibleRationale?: false | boolean;
 }
 
-export interface Fact {
+export interface Fact extends KnowledgeScope {
   readonly fact_id: string;
   readonly fact_type: string;
   readonly value: string;
@@ -40,6 +41,8 @@ export interface Fact {
   readonly context?: string;
   readonly confidence: FactConfidence;
   readonly sensitivity?: FactSensitivity;
+  /** Politique de visibilité (remplace usableInVisibleRationale). Sensible → internal_only. */
+  readonly visibility: VisibilityPolicy;
   /** L'utilisateur a-t-il validé explicitement cette information ? */
   readonly user_confirmed: boolean;
   /** Traçabilité FACT → evidences dérivées (peut être vide — §11.1). */
@@ -57,7 +60,7 @@ export interface Fact {
   readonly version: JournalVersionStamp;
 }
 
-export interface CreateFactInput {
+export interface CreateFactInput extends KnowledgeScope {
   fact_id: string;
   fact_type: string;
   value: string;
@@ -66,6 +69,8 @@ export interface CreateFactInput {
   confidence: FactConfidence;
   context?: string;
   sensitivity?: FactSensitivity;
+  /** Politique explicite ; sinon dérivée de la sensibilité. */
+  visibility?: VisibilityPolicy;
   user_confirmed?: boolean;
   assertionStatus?: AssertionStatus;
   subject?: string;
@@ -74,7 +79,12 @@ export interface CreateFactInput {
 }
 
 export function createFact(input: CreateFactInput): Fact {
+  // Un FACT sensible est internal_only (plafond) ; sinon candidat au portrait.
+  const visibility: VisibilityPolicy =
+    input.visibility ?? (input.sensitivity?.isSensitive ? INTERNAL_ONLY_POLICY : DEFAULT_EXPOSABLE);
   return {
+    contactId: input.contactId,
+    ownerId: input.ownerId,
     fact_id: input.fact_id,
     fact_type: input.fact_type,
     value: input.value,
@@ -83,6 +93,7 @@ export function createFact(input: CreateFactInput): Fact {
     confidence: input.confidence,
     context: input.context,
     sensitivity: input.sensitivity,
+    visibility,
     user_confirmed: input.user_confirmed ?? false,
     evidence_ids: [],
     assertionStatus: input.assertionStatus,
@@ -96,6 +107,15 @@ export function createFact(input: CreateFactInput): Fact {
 /** Un FACT est-il une condition sensible ? (Utilisé pour verrouiller R12.) */
 export function isSensitiveFact(fact: Fact): boolean {
   return fact.sensitivity?.isSensitive === true;
+}
+
+/**
+ * Câblage du lien inverse FACT → evidence (lot A bis, section 6.3). Immuable :
+ * renvoie une copie, ne mute rien, et ne touche AUCUN verbatim (R16).
+ */
+export function attachEvidenceToFact(fact: Fact, evidence: { evidence_id: string }): Fact {
+  if (fact.evidence_ids.includes(evidence.evidence_id)) return { ...fact };
+  return { ...fact, evidence_ids: [...fact.evidence_ids, evidence.evidence_id] };
 }
 
 /**

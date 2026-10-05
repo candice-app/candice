@@ -9,7 +9,7 @@
 export const REPRESENTATION_PATHS = [
   'canonical_family', // une des 10 familles existantes
   'fact', // conservable comme FACT
-  'structured_open_knowledge', // connaissance descriptive structurée
+  'structured_open_knowledge', // connaissance descriptive structurée (OpenKnowledge, open-knowledge.ts)
   'entity', // ENTITY
   'context', // CONTEXT
   'behavior_pattern', // pattern BEHAVIOR extensible

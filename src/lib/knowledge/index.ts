@@ -14,12 +14,19 @@ export {
   type JournalVersionStamp,
 } from './version';
 
+export * from './identity';
+export * from './normalize';
+export * from './resolver';
+export * from './visibility';
 export * from './vocabulary';
 export * from './sources';
 export * from './fact';
 export * from './evidence';
 export * from './signal';
 export * from './consolidate';
+export * from './open-knowledge';
+export * from './extraction';
+export * from './snapshot';
 export * from './gaps';
 export * from './prompt';
 export * from './onboarding';

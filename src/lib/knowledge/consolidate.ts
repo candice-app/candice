@@ -1,10 +1,14 @@
 // CONSOLIDATION — transforme un journal d'evidences en état consolidé par construct.
 //
 // HSG §19 (consolidation ≠ addition de points), §19.1 (convergence, pas de faux
-// effet de volume), §20 (divergences : variation contextuelle / évolution /
-// contradiction / tension structurante), §20.5 (asymétrie RECEIVE/GIVE),
+// effet de volume), §20 (divergences), §20.5 (asymétrie RECEIVE/GIVE),
 // §20.6 (deux contextes BEHAVIOR ≠ contradiction), §21 + R22 (corrections),
 // §12.5 (BEHAVIOR jamais globalisé mécaniquement).
+//
+// Lot A bis : chaque famille produit son signal TYPÉ (union discriminée), portant la
+// sémantique que le lot A perdait (relation, relationship, severity, value…). La
+// consolidation est toujours celle d'UNE personne : elle prend un `scope`
+// (contactId + ownerId) que porte chaque signal produit.
 //
 // Les evidences sont un journal en AJOUT SEUL ; l'état consolidé en est dérivé,
 // donc entièrement recalculable. Aucune fonction ici ne mute une evidence.
@@ -23,41 +27,61 @@ import type {
   NeedEvidence,
   PreferenceEvidence,
 } from './evidence';
+import type { EntityId, KnowledgeScope, SubjectId } from './identity';
 import type {
+  AffectionSignal,
   AffectionSignalSet,
   AffectionVector,
+  BehaviorSignal,
+  ContextSignal,
+  DriverSignal,
+  EntitySignal,
   GlobalStatus,
+  GuardrailSignal,
+  InterestSignal,
+  NeedSignal,
+  PreferenceSignal,
+  ProfileSignal,
   Signal,
+  SignalBase,
   SignalConfidence,
   SignalScore,
   SignalStability,
+  SocialEnergySignal,
 } from './signal';
-import { defaultSignal } from './signal';
+import { constructIdentity, emptyBase } from './signal';
 import { deriveAssertionStatus } from './sources';
 import { CONSOLIDATION_VERSION, VERSION_STAMP } from './version';
-import { AFFECTION_MODALITIES, type AffectionCadence, type EvidenceStrength } from './vocabulary';
+import { DEFAULT_EXPOSABLE, type VisibilityPolicy } from './visibility';
+import {
+  AFFECTION_MODALITIES,
+  type AffectionCadence,
+  type ContextCode,
+  type ContinuumValue,
+  type DriverCode,
+  type EvidenceStrength,
+  type GuardrailCode,
+  type GuardrailScope,
+  type GuardrailSeverity,
+  type GuardrailVerticalPath,
+  type NeedCode,
+  type PreferencePath,
+  type ProfileDirectionalCode,
+} from './vocabulary';
 
 /* ────────────────────────────────────────────────────────────────────────
  * SEUILS DE CONSOLIDATION — objet typé UNIQUE, lu depuis le document arbitré
  * docs/ontologie/consolidation-rules.md (consolidation_version 1.0.0).
- * Aucun seuil ne vit en valeur par défaut enfouie dans une fonction : le code
- * n'est jamais une autorité sémantique (HSG §40). Toute modification d'un seuil
- * passe par le document + un incrément de CONSOLIDATION_VERSION.
  * ──────────────────────────────────────────────────────────────────────── */
 
 export const CONSOLIDATION_RULES = {
   source: 'docs/ontologie/consolidation-rules.md',
   version: CONSOLIDATION_VERSION,
-  // §2 — SCORE. high : ≥1 evidence primaire +2, OU ≥N primaires indépendantes,
-  // sans contraire comparable. low : UNIQUEMENT sur evidence contraire nette (R1),
-  // jamais par faiblesse du nombre.
   score: { independentPrimaryMinForHigh: 2 },
-  // §3 — CONFIANCE.
   confidence: {
     high: { minEvidences: 3, minIndependentSources: 2, minDistinctContexts: 2 },
     medium: { minEvidences: 2 },
   },
-  // §5 — GLOBAL_CONSOLIDATED (jamais produit par un mapping — R15).
   globalConsolidated: { minLocalEvidences: 3, minDistinctContexts: 3, minIndependentSources: 2 },
 } as const;
 
@@ -68,10 +92,9 @@ export const CONSOLIDATION_RULES = {
 /**
  * Indépendance (HSG §19.1 / consolidation-rules §4) : l'indépendance se compte sur
  * le `source_type`, JAMAIS sur le `source_id` ni sur le nombre d'evidences. Deux
- * evidences issues du même sourceType ne sont jamais indépendantes, quel que soit
- * le nombre de réponses derrière — sinon dix réponses d'onboarding se liraient comme
- * dix sources, et confidence: high deviendrait atteignable depuis le seul onboarding
- * (interdit par §19.1). L'onboarding est un seul sourceType → une seule source.
+ * evidences issues du même sourceType ne sont jamais indépendantes, quel que soit le
+ * nombre de réponses derrière — sinon dix réponses d'onboarding se liraient comme dix
+ * sources, et confidence: high deviendrait atteignable depuis le seul onboarding.
  */
 function independentKey(e: Evidence): string {
   return e.source_type;
@@ -98,6 +121,11 @@ function latestTimestamp(evidences: readonly Evidence[]): string | null {
   return latest;
 }
 
+/** Evidence la plus récente d'un ensemble non vide. */
+function mostRecent<T extends { timestamp: string }>(evs: readonly T[]): T {
+  return evs.reduce((a, b) => (b.timestamp > a.timestamp ? b : a));
+}
+
 function strengthMagnitude(s: EvidenceStrength): 1 | 2 {
   return s === 'strong' ? 2 : 1;
 }
@@ -108,10 +136,6 @@ function strengthMagnitude(s: EvidenceStrength): 1 | 2 {
 
 /**
  * globalStatus (R15 / HSG §8.3, seuils consolidation-rules §5).
- *   - GLOBAL_DIRECT : au moins une evidence explicitement transversale (context GLOBAL).
- *   - GLOBAL_CONSOLIDATED : ≥3 evidences locales, dans ≥3 contextes distincts, de
- *     sources indépendantes et de direction cohérente. JAMAIS produit par un mapping.
- *   - LOCAL_ONLY sinon.
  * `allowGlobal=false` force LOCAL_ONLY (BEHAVIOR jamais globalisé — §12.5).
  * `coherent=false` (direction mixte) interdit la consolidation globale.
  */
@@ -142,7 +166,6 @@ function computeStability(evidences: readonly Evidence[]): SignalStability {
   if (set.has('temporary')) return 'temporary';
   if (set.size === 1 && set.has('stable') && independentCount(evidences) >= 2) return 'stable';
   if (set.has('contextual')) return 'contextual';
-  // Info trop peu convergente pour être déclarée stable (HSG §5.2).
   return independentCount(evidences) >= 2 && set.has('stable') ? 'stable' : 'contextual';
 }
 
@@ -158,69 +181,45 @@ function evidenceIds(evidences: readonly Evidence[]): string[] {
  * ──────────────────────────────────────────────────────────────────────── */
 
 interface ScoreInputs {
-  /** Nombre brut d'evidences (jamais confondu avec l'indépendance — §4). */
   evidenceCount: number;
-  /** Sources indépendantes (clé source_id + source_type — §4). */
   indep: number;
-  /** Sources indépendantes portant une evidence PRIMAIRE. */
   indepPrimary: number;
-  /** Au moins une evidence primaire de magnitude 2. */
   strongPrimary: boolean;
-  /** Au moins une evidence primaire +2 de source déclarée (§3 medium). */
   declaredStrongPrimary: boolean;
-  /** Aucune evidence primaire (uniquement des secondaires). */
   onlySecondary: boolean;
-  /** Evidence contraire nette : des contraires dominent, aucun positif (§2 low / R1). */
   netContrary: boolean;
-  /** Contextes distincts (local + GLOBAL éventuel). */
   distinctContexts: number;
-  /** Contradiction non résolue sur ce construct (§20.3). */
   contradiction: boolean;
 }
 
-/**
- * SCORE (§2). « À quel point ce construct semble marqué chez cette personne ? »
- * - low UNIQUEMENT sur evidence contraire nette (R1) — jamais par faiblesse du nombre.
- * - high : ≥1 primaire +2, OU ≥N primaires indépendantes, sans contraire comparable.
- */
+/** SCORE (§2). low UNIQUEMENT sur contraire net (R1). high : ≥1 primaire +2 OU ≥N primaires indép. */
 function computeScore(i: ScoreInputs): SignalScore {
-  if (i.evidenceCount === 0) return 'unknown'; // aucune evidence (R1 : UNKNOWN ≠ LOW)
-  if (i.netContrary) return 'low'; // démontré faible, pas « peu d'infos »
+  if (i.evidenceCount === 0) return 'unknown';
+  if (i.netContrary) return 'low';
   const high =
     !i.contradiction &&
     (i.strongPrimary || i.indepPrimary >= CONSOLIDATION_RULES.score.independentPrimaryMinForHigh);
   if (high) return 'high';
-  // Evidence présente, pas contraire, pas assez forte pour high (dont secondaire seul,
-  // qui ne porte jamais à high — décision 4) : medium. Jamais low sans contraire.
   return 'medium';
 }
 
-/**
- * CONFIANCE (§3). « À quel point Candice peut-elle se fier à cette lecture ? »
- * Distincte du score (§1). L'indépendance se compte sur les sources, jamais sur le
- * nombre d'evidences — conséquence voulue : à la sortie de l'onboarding seul (une
- * seule source), presque aucun construct n'atteint high (§4).
- */
+/** CONFIANCE (§3). high exige ≥2 sources indépendantes → l'onboarding seul ne l'atteint pas (§4). */
 function computeConfidence(i: ScoreInputs): SignalConfidence {
   if (i.evidenceCount === 0) return 'none';
-  if (i.contradiction) return 'low'; // contradiction non résolue → low (§3)
-  if (i.onlySecondary) return 'low'; // uniquement des secondaires → low (§3)
+  if (i.contradiction) return 'low';
+  if (i.onlySecondary) return 'low';
   const h = CONSOLIDATION_RULES.confidence.high;
-  if (
-    i.evidenceCount >= h.minEvidences &&
-    i.indep >= h.minIndependentSources &&
-    i.distinctContexts >= h.minDistinctContexts
-  ) {
+  if (i.evidenceCount >= h.minEvidences && i.indep >= h.minIndependentSources && i.distinctContexts >= h.minDistinctContexts) {
     return 'high';
   }
   if (i.evidenceCount >= CONSOLIDATION_RULES.confidence.medium.minEvidences || i.declaredStrongPrimary) {
     return 'medium';
   }
-  return 'low'; // une seule evidence (§3)
+  return 'low';
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * PROFILE (directionnel) — value ±1/±2, SOCIAL_ENERGY avec 0 possible.
+ * Base commune d'un signal consolidé (hors discriminateur et champs sémantiques).
  * ──────────────────────────────────────────────────────────────────────── */
 
 function groupBy<T>(items: readonly T[], key: (t: T) => string): Map<string, T[]> {
@@ -234,68 +233,133 @@ function groupBy<T>(items: readonly T[], key: (t: T) => string): Map<string, T[]
   return m;
 }
 
-/** Consolide un seul construct PROFILE directionnel. */
-export function consolidateProfileConstruct(
-  construct: string,
-  evidences: readonly DirectionalEvidence[],
-): Signal {
-  const forConstruct = evidences.filter((e) => e.target_construct === construct);
-  if (forConstruct.length === 0) return defaultSignal(construct);
-
-  const positives = forConstruct.filter((e) => e.value > 0);
-  const negatives = forConstruct.filter((e) => e.value < 0);
-  const primaries = forConstruct.filter((e) => e.evidence_role === 'primary');
-  const indep = independentCount(forConstruct);
-  const hasPrimary = hasRole(forConstruct, 'primary');
-  const local = distinctLocalContexts(forConstruct);
-  const anyGlobalDirect = forConstruct.some((e) => e.context === 'GLOBAL');
-
-  // Contradiction (§20.3) : un même contexte porte des directions opposées.
-  const contradiction = hasDirectionalContradiction(forConstruct);
-  const coherent = !(positives.length > 0 && negatives.length > 0);
-
-  const inputs: ScoreInputs = {
-    evidenceCount: forConstruct.length,
-    indep,
-    indepPrimary: independentCount(primaries),
-    strongPrimary: primaries.some((e) => Math.abs(e.value) >= 2),
-    declaredStrongPrimary: primaries.some(
-      (e) => Math.abs(e.value) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
-    ),
-    onlySecondary: !hasPrimary,
-    // Contraire net (§2 low / R1) : des contraires existent et aucun positif ne les équilibre.
-    netContrary: negatives.length > 0 && positives.length === 0,
-    distinctContexts: local.length + (anyGlobalDirect ? 1 : 0),
-    contradiction,
-  };
-
-  const direction: Signal['direction'] =
-    positives.length > 0 && negatives.length > 0
-      ? 'mixed'
-      : negatives.length > 0
-        ? 'negative'
-        : 'positive';
-
+function baseFrom(
+  scope: KnowledgeScope,
+  forConstruct: readonly Evidence[],
+  inputs: ScoreInputs,
+  opts: { allowGlobal?: boolean; coherent?: boolean; visibility?: VisibilityPolicy } = {},
+): SignalBase {
   return {
-    construct,
+    contactId: scope.contactId,
+    ownerId: scope.ownerId,
     score: computeScore(inputs),
     confidence: computeConfidence(inputs),
     evidenceCount: forConstruct.length,
     evidenceIds: evidenceIds(forConstruct),
     contexts: contexts(forConstruct),
-    globalStatus: computeGlobalStatus(forConstruct, true, coherent),
+    globalStatus: computeGlobalStatus(forConstruct, opts.allowGlobal ?? true, opts.coherent ?? true),
     stability: computeStability(forConstruct),
     lastUpdated: latestTimestamp(forConstruct),
-    direction,
-    contradiction: contradiction || undefined,
+    contradiction: inputs.contradiction || undefined,
     version: VERSION_STAMP,
+    visibility: opts.visibility ?? DEFAULT_EXPOSABLE,
+  };
+}
+
+type StrengthEvidence =
+  | NeedEvidence
+  | DriverEvidence
+  | GuardrailEvidence
+  | InterestEvidence
+  | EntityEvidence
+  | ContextEvidence
+  | PreferenceEvidence
+  | AffectionEvidence
+  | BehaviorEvidence;
+
+function strengthInputs(forConstruct: readonly StrengthEvidence[]): ScoreInputs {
+  const primaries = forConstruct.filter((e) => e.evidence_role === 'primary');
+  const local = distinctLocalContexts(forConstruct);
+  const anyGlobalDirect = forConstruct.some((e) => e.context === 'GLOBAL');
+  return {
+    evidenceCount: forConstruct.length,
+    indep: independentCount(forConstruct),
+    indepPrimary: independentCount(primaries),
+    strongPrimary: primaries.some((e) => strengthMagnitude(e.strength) >= 2),
+    declaredStrongPrimary: primaries.some(
+      (e) => strengthMagnitude(e.strength) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
+    ),
+    onlySecondary: !forConstruct.some((e) => e.evidence_role === 'primary'),
+    // Familles sans direction : aucune evidence contraire possible → jamais 'low' par le
+    // score. Pour ENTITY en particulier (point d'arrêt 3) : la DIRECTION d'une relation
+    // (DISLIKE, AVOID) n'est PAS une evidence contraire — netContrary reste donc false.
+    netContrary: false,
+    distinctContexts: local.length + (anyGlobalDirect ? 1 : 0),
+    contradiction: false,
+  };
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * PROFILE (directionnel) + SOCIAL_ENERGY (continuum 0..4).
+ * ──────────────────────────────────────────────────────────────────────── */
+
+function directionalInputs(forConstruct: readonly DirectionalEvidence[]): {
+  inputs: ScoreInputs;
+  direction: 'positive' | 'negative' | 'mixed';
+  coherent: boolean;
+} {
+  const positives = forConstruct.filter((e) => e.value > 0);
+  const negatives = forConstruct.filter((e) => e.value < 0);
+  const primaries = forConstruct.filter((e) => e.evidence_role === 'primary');
+  const local = distinctLocalContexts(forConstruct);
+  const anyGlobalDirect = forConstruct.some((e) => e.context === 'GLOBAL');
+  const contradiction = hasDirectionalContradiction(forConstruct);
+  const coherent = !(positives.length > 0 && negatives.length > 0);
+  const inputs: ScoreInputs = {
+    evidenceCount: forConstruct.length,
+    indep: independentCount(forConstruct),
+    indepPrimary: independentCount(primaries),
+    strongPrimary: primaries.some((e) => Math.abs(e.value) >= 2),
+    declaredStrongPrimary: primaries.some(
+      (e) => Math.abs(e.value) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
+    ),
+    onlySecondary: !hasRole(forConstruct, 'primary'),
+    netContrary: negatives.length > 0 && positives.length === 0,
+    distinctContexts: local.length + (anyGlobalDirect ? 1 : 0),
+    contradiction,
+  };
+  const direction = positives.length > 0 && negatives.length > 0 ? 'mixed' : negatives.length > 0 ? 'negative' : 'positive';
+  return { inputs, direction, coherent };
+}
+
+/** Consolide un seul construct PROFILE directionnel (ou SOCIAL_ENERGY). */
+export function consolidateProfileConstruct(
+  scope: KnowledgeScope,
+  construct: string,
+  evidences: readonly DirectionalEvidence[],
+): ProfileSignal | SocialEnergySignal {
+  const isSocialEnergy = construct === 'SOCIAL_ENERGY';
+  const forConstruct = evidences.filter((e) => e.target_construct === construct);
+  if (forConstruct.length === 0) {
+    return isSocialEnergy
+      ? { ...emptyBase(scope), family: 'PROFILE', construct: 'SOCIAL_ENERGY', position: null }
+      : { ...emptyBase(scope), family: 'PROFILE', construct: construct as ProfileDirectionalCode, direction: 'positive' };
+  }
+  const { inputs, direction, coherent } = directionalInputs(forConstruct);
+  const base = baseFrom(scope, forConstruct, inputs, { coherent });
+  if (isSocialEnergy) {
+    // position = valeur la plus récente sur 0..4 (jamais recentrée).
+    const latest = mostRecent(forConstruct);
+    return { ...base, family: 'PROFILE', construct: 'SOCIAL_ENERGY', position: latest.value as ContinuumValue };
+  }
+  const facet = forConstruct.map((e) => ('facet' in e ? e.facet : undefined)).find((f) => f !== undefined);
+  return {
+    ...base,
+    family: 'PROFILE',
+    construct: construct as ProfileDirectionalCode,
+    direction,
+    ...(facet ? { facet } : {}),
   };
 }
 
 /** Consolide tous les constructs PROFILE présents dans le journal. */
-export function consolidateProfile(evidences: readonly DirectionalEvidence[]): Signal[] {
-  const groups = groupBy(evidences, (e) => e.target_construct);
-  return [...groups.entries()].map(([construct, evs]) => consolidateProfileConstruct(construct, evs));
+export function consolidateProfile(
+  scope: KnowledgeScope,
+  evidences: readonly DirectionalEvidence[],
+): (ProfileSignal | SocialEnergySignal)[] {
+  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) =>
+    consolidateProfileConstruct(scope, c, evs),
+  );
 }
 
 /** Deux evidences directionnelles de même contexte et de signes opposés = contradiction. */
@@ -310,99 +374,117 @@ function hasDirectionalContradiction(evidences: readonly DirectionalEvidence[]):
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * Familles à `strength` (NEED, DRIVER, GUARDRAIL, INTEREST, ENTITY, CONTEXT,
- * PREFERENCE, et chaque modalité AFFECTION). Pas de direction.
+ * Familles à `strength` — chacune produit son signal typé.
  * ──────────────────────────────────────────────────────────────────────── */
 
-type StrengthEvidence =
-  | NeedEvidence
-  | DriverEvidence
-  | GuardrailEvidence
-  | InterestEvidence
-  | EntityEvidence
-  | ContextEvidence
-  | PreferenceEvidence
-  | AffectionEvidence
-  | BehaviorEvidence;
-
-function consolidateStrengthConstruct(
-  construct: string,
-  evidences: readonly StrengthEvidence[],
-  opts: { allowGlobal?: boolean } = {},
-): Signal {
-  const forConstruct = evidences.filter((e) => e.target_construct === construct);
-  if (forConstruct.length === 0) return defaultSignal(construct);
-
-  const primaries = forConstruct.filter((e) => e.evidence_role === 'primary');
-  const indep = independentCount(forConstruct);
-  const hasPrimary = hasRole(forConstruct, 'primary');
-  const local = distinctLocalContexts(forConstruct);
-  const anyGlobalDirect = forConstruct.some((e) => e.context === 'GLOBAL');
-
-  const inputs: ScoreInputs = {
-    evidenceCount: forConstruct.length,
-    indep,
-    indepPrimary: independentCount(primaries),
-    strongPrimary: primaries.some((e) => strengthMagnitude(e.strength) >= 2),
-    declaredStrongPrimary: primaries.some(
-      (e) => strengthMagnitude(e.strength) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
-    ),
-    onlySecondary: !hasPrimary,
-    // Familles sans direction : pas de contraire possible → jamais 'low' par le score (§2 / R1).
-    netContrary: false,
-    distinctContexts: local.length + (anyGlobalDirect ? 1 : 0),
-    contradiction: false,
-  };
-
-  return {
-    construct,
-    score: computeScore(inputs),
-    confidence: computeConfidence(inputs),
-    evidenceCount: forConstruct.length,
-    evidenceIds: evidenceIds(forConstruct),
-    contexts: contexts(forConstruct),
-    globalStatus: computeGlobalStatus(forConstruct, opts.allowGlobal ?? true),
-    stability: computeStability(forConstruct),
-    lastUpdated: latestTimestamp(forConstruct),
-    version: VERSION_STAMP,
-  };
-}
-
 /** NEED. */
-export function consolidateNeeds(evidences: readonly NeedEvidence[]): Signal[] {
-  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) =>
-    consolidateStrengthConstruct(c, evs),
-  );
+export function consolidateNeeds(scope: KnowledgeScope, evidences: readonly NeedEvidence[]): NeedSignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) => ({
+    ...baseFrom(scope, evs, strengthInputs(evs)),
+    family: 'NEED',
+    construct: c as NeedCode,
+  }));
 }
 
-/** GUARDRAIL. */
-export function consolidateGuardrails(evidences: readonly GuardrailEvidence[]): Signal[] {
-  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) =>
-    consolidateStrengthConstruct(c, evs),
-  );
+/** DRIVER. */
+export function consolidateDrivers(scope: KnowledgeScope, evidences: readonly DriverEvidence[]): DriverSignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) => ({
+    ...baseFrom(scope, evs, strengthInputs(evs)),
+    family: 'DRIVER',
+    construct: c as DriverCode,
+  }));
+}
+
+/** CONTEXT. */
+export function consolidateContexts(scope: KnowledgeScope, evidences: readonly ContextEvidence[]): ContextSignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) => ({
+    ...baseFrom(scope, evs, strengthInputs(evs)),
+    family: 'CONTEXT',
+    construct: c as ContextCode,
+  }));
+}
+
+/** GUARDRAIL — sévérité consolidée = la plus contraignante (un HARD parmi des SOFT → HARD, R19). */
+export function consolidateGuardrails(scope: KnowledgeScope, evidences: readonly GuardrailEvidence[]): GuardrailSignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([code, evs]) => {
+    const severity: GuardrailSeverity = evs.some((e) => e.severity === 'HARD') ? 'HARD' : 'SOFT';
+    const latest = mostRecent(evs);
+    return {
+      ...baseFrom(scope, evs, strengthInputs(evs)),
+      family: 'GUARDRAIL',
+      code: code as GuardrailCode | GuardrailVerticalPath,
+      severity,
+      guardrailScope: latest.guardrailScope as GuardrailScope,
+    };
+  });
+}
+
+/** INTEREST — conserve le `relationship` (sémantique perdue par le lot A). */
+export function consolidateInterests(scope: KnowledgeScope, evidences: readonly InterestEvidence[]): InterestSignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct as string).entries()].map(([subject, evs]) => {
+    const latest = mostRecent(evs);
+    return {
+      ...baseFrom(scope, evs, strengthInputs(evs)),
+      family: 'INTEREST',
+      subject: subject as SubjectId,
+      subjectLabel: latest.subjectLabel,
+      relationship: latest.relationship,
+      ...(latest.parent_domain ? { parent_domain: latest.parent_domain } : {}),
+    };
+  });
 }
 
 /**
- * Familles descriptives OUVERTES (INTEREST, ENTITY, CONTEXT, PREFERENCE, DRIVER).
- * Même mécanique de consolidation par strength.
+ * ENTITY — relation courante = relation de l'evidence la plus récente ; relationHistory
+ * conserve tout. AUCUNE contradiction n'est calculée sur ENTITY (POINT D'ARRÊT 3, non
+ * tranché : la table d'incompatibilité des 9 relations n'existe dans aucun document).
+ * Comportement provisoire explicite, pas un défaut.
  */
-export function consolidateOpenFamily(
-  evidences: readonly (DriverEvidence | InterestEvidence | EntityEvidence | ContextEvidence | PreferenceEvidence)[],
-): Signal[] {
-  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) =>
-    consolidateStrengthConstruct(c, evs),
-  );
+export function consolidateEntities(scope: KnowledgeScope, evidences: readonly EntityEvidence[]): EntitySignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct as string).entries()].map(([entity, evs]) => {
+    const sorted = [...evs].sort((a, b) => (a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0));
+    const latest = sorted[sorted.length - 1];
+    return {
+      ...baseFrom(scope, evs, strengthInputs(evs)),
+      family: 'ENTITY',
+      entity: entity as EntityId,
+      entityLabel: latest.entityLabel,
+      entityType: latest.entityType,
+      relation: latest.relation,
+      relationHistory: sorted.map((e) => ({
+        relation: e.relation,
+        timestamp: e.timestamp,
+        evidenceId: e.evidence_id,
+      })),
+    };
+  });
+}
+
+/** PREFERENCE — conserve la valeur. */
+export function consolidatePreferences(scope: KnowledgeScope, evidences: readonly PreferenceEvidence[]): PreferenceSignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([path, evs]) => ({
+    ...baseFrom(scope, evs, strengthInputs(evs)),
+    family: 'PREFERENCE',
+    path: path as PreferencePath,
+    value: mostRecent(evs).preferenceValue,
+  }));
 }
 
 /* ────────────────────────────────────────────────────────────────────────
- * BEHAVIOR — jamais globalisé mécaniquement (§12.5). Chaque (contexte:pattern)
- * est un construct distinct ; deux contextes différents ≠ contradiction (§20.6).
+ * BEHAVIOR — jamais globalisé mécaniquement (§12.5). Deux contextes ≠ contradiction (§20.6).
  * ──────────────────────────────────────────────────────────────────────── */
 
-export function consolidateBehavior(evidences: readonly BehaviorEvidence[]): Signal[] {
-  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([c, evs]) =>
-    consolidateStrengthConstruct(c, evs, { allowGlobal: false }),
-  );
+export function consolidateBehavior(scope: KnowledgeScope, evidences: readonly BehaviorEvidence[]): BehaviorSignal[] {
+  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([, evs]) => {
+    const latest = mostRecent(evs);
+    return {
+      ...baseFrom(scope, evs, strengthInputs(evs), { allowGlobal: false }),
+      family: 'BEHAVIOR',
+      behaviorContext: latest.behaviorContext,
+      pattern: latest.pattern,
+      globalStatus: 'LOCAL_ONLY' as const,
+    };
+  });
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -410,6 +492,7 @@ export function consolidateBehavior(evidences: readonly BehaviorEvidence[]): Sig
  * ──────────────────────────────────────────────────────────────────────── */
 
 function buildAffectionVector(
+  scope: KnowledgeScope,
   evidences: readonly AffectionEvidence[],
   direction: 'receive' | 'give',
 ): AffectionVector {
@@ -418,18 +501,24 @@ function buildAffectionVector(
   for (const modality of AFFECTION_MODALITIES) {
     const code = `AFFECTION_${direction.toUpperCase()}_${modality}`;
     const evs = dirEv.filter((e) => e.target_construct === code);
-    vector[modality] = evs.length === 0 ? defaultSignal(code) : consolidateStrengthConstruct(code, evs);
+    vector[modality] =
+      evs.length === 0
+        ? { ...emptyBase(scope), family: 'AFFECTION_LANGUAGE', direction, modality }
+        : { ...baseFrom(scope, evs, strengthInputs(evs)), family: 'AFFECTION_LANGUAGE', direction, modality };
   }
   return vector;
 }
 
 export function consolidateAffection(
+  scope: KnowledgeScope,
   evidences: readonly AffectionEvidence[],
   extra: { affectionCadence?: AffectionCadence; regularityImportance?: number | null } = {},
 ): AffectionSignalSet {
   return {
-    receive: buildAffectionVector(evidences, 'receive'),
-    give: buildAffectionVector(evidences, 'give'),
+    contactId: scope.contactId,
+    ownerId: scope.ownerId,
+    receive: buildAffectionVector(scope, evidences, 'receive'),
+    give: buildAffectionVector(scope, evidences, 'give'),
     affectionCadence: extra.affectionCadence ?? 'unknown',
     regularityImportance: extra.regularityImportance ?? null,
     version: VERSION_STAMP,
@@ -441,10 +530,10 @@ export function consolidateAffection(
  * ──────────────────────────────────────────────────────────────────────── */
 
 export type DivergenceKind =
-  | 'contextual_variation' // §20.1 : contextes différents, aucune contradiction
-  | 'evolution' // §20.2 : la personne a changé dans le temps
-  | 'contradiction' // §20.3 : incompatibilité réelle, mêmes conditions
-  | 'structural_tension'; // §20.4 : deux forces coexistent, informatives
+  | 'contextual_variation'
+  | 'evolution'
+  | 'contradiction'
+  | 'structural_tension';
 
 export interface Divergence {
   readonly kind: DivergenceKind;
@@ -452,10 +541,6 @@ export interface Divergence {
   readonly note: string;
 }
 
-/**
- * Qualifie les divergences internes d'un construct directionnel.
- * Deux evidences de contextes différents = variation contextuelle, pas contradiction.
- */
 export function detectDivergences(evidences: readonly DirectionalEvidence[]): Divergence[] {
   const out: Divergence[] = [];
   if (evidences.some((e) => e.stability === 'evolving')) {
@@ -485,10 +570,7 @@ export function detectDivergences(evidences: readonly DirectionalEvidence[]): Di
   return out;
 }
 
-/**
- * Tension structurante (§20.4 / R18) : deux signaux forts coexistent.
- * Renvoyée COMME tension — jamais moyennée.
- */
+/** Tension structurante (§20.4 / R18) : deux signaux forts coexistent. Jamais moyennée. */
 export interface StructuralTension {
   readonly constructs: [string, string];
   readonly signals: [Signal, Signal];
@@ -496,13 +578,10 @@ export interface StructuralTension {
 }
 
 export function asStructuralTension(a: Signal, b: Signal, note: string): StructuralTension {
-  return { constructs: [a.construct, b.construct], signals: [a, b], note };
+  return { constructs: [constructIdentity(a), constructIdentity(b)], signals: [a, b], note };
 }
 
-/**
- * Asymétrie RECEIVE/GIVE (§20.5) : ce n'est ni contradiction ni tension à résoudre.
- * Renvoie une description de l'asymétrie lorsqu'elle existe, sinon null.
- */
+/** Asymétrie RECEIVE/GIVE (§20.5) : information relationnelle, ni contradiction ni tension. */
 export function describeAffectionAsymmetry(
   set: AffectionSignalSet,
 ): { receiveStrong: string[]; giveStrong: string[]; note: string } | null {
@@ -511,8 +590,7 @@ export function describeAffectionAsymmetry(
   const receiveStrong = strong(set.receive);
   const giveStrong = strong(set.give);
   const asymmetric =
-    receiveStrong.some((m) => !giveStrong.includes(m)) ||
-    giveStrong.some((m) => !receiveStrong.includes(m));
+    receiveStrong.some((m) => !giveStrong.includes(m)) || giveStrong.some((m) => !receiveStrong.includes(m));
   if (!asymmetric) return null;
   return {
     receiveStrong,
@@ -525,19 +603,11 @@ export function describeAffectionAsymmetry(
  * CORRECTIONS UTILISATEUR (§21 / R22) — priorité sur une inférence incompatible.
  * ──────────────────────────────────────────────────────────────────────── */
 
-/**
- * Révise un signal antérieur à la lumière d'une correction explicite de l'utilisateur.
- * La correction (source_type 'user_correction') prime : si elle est incompatible
- * avec la direction/inférence antérieure, le signal est affaibli/invalidé et marqué,
- * et la correction est jointe au journal d'evidences du construct. Jamais de
- * conservation de l'ancienne conclusion comme vraie.
- */
 export function reviseWithCorrection(prior: Signal, correction: Evidence): Signal {
   if (correction.source_type !== 'user_correction') return prior;
   const isDirectional = correction.target_family === 'PROFILE';
   const contrary = isDirectional && 'value' in correction && (correction.value as number) < 0;
   const evidenceIdsNext = [...prior.evidenceIds, correction.evidence_id];
-  // Une correction contraire invalide l'inférence trop large ; sinon elle nuance.
   return {
     ...prior,
     score: contrary ? 'low' : prior.score === 'high' ? 'medium' : prior.score,
@@ -547,5 +617,5 @@ export function reviseWithCorrection(prior: Signal, correction: Evidence): Signa
     evidenceCount: evidenceIdsNext.length,
     lastUpdated: correction.timestamp,
     contexts: [...new Set([...prior.contexts, correction.context])],
-  };
+  } as Signal;
 }

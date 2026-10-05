@@ -36,7 +36,10 @@ import {
 import type { EvidenceValue, ProfileDirectionalCode } from '../vocabulary';
 import type { ProfileEvidence } from '../evidence';
 import { consolidateProfileConstruct } from '../consolidate';
+import { asContactId, asUserId, type KnowledgeScope } from '../identity';
 import { JOURNAL_VERSION_STAMP } from '../version';
+
+const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
 
 /* ── Helpers de recomptage, uniquement depuis le code. ── */
 const active = activeOptions();
@@ -295,6 +298,8 @@ describe('Test 34 — SPONTANEITY / PREMIUM : `unknown` via consolidate', () => 
     m.profileEvidences
       .filter((p) => p.construct !== 'SOCIAL_ENERGY')
       .map((p, i) => ({
+        contactId: asContactId('c1'),
+        ownerId: asUserId('u1'),
         evidence_id: `${m.optionRef}:${i}`,
         source_id: m.optionRef,
         source_type: 'onboarding_closed' as const,
@@ -313,13 +318,13 @@ describe('Test 34 — SPONTANEITY / PREMIUM : `unknown` via consolidate', () => 
   );
 
   it('APPETENCE_SPONTANEITY → score unknown / confidence none', () => {
-    const s = consolidateProfileConstruct('APPETENCE_SPONTANEITY', journal);
+    const s = consolidateProfileConstruct(scope, 'APPETENCE_SPONTANEITY', journal);
     expect(s.score).toBe('unknown');
     expect(s.confidence).toBe('none');
     expect(s.evidenceCount).toBe(0);
   });
   it('APPETENCE_PREMIUM → score unknown / confidence none', () => {
-    const s = consolidateProfileConstruct('APPETENCE_PREMIUM', journal);
+    const s = consolidateProfileConstruct(scope, 'APPETENCE_PREMIUM', journal);
     expect(s.score).toBe('unknown');
     expect(s.confidence).toBe('none');
     expect(s.evidenceCount).toBe(0);

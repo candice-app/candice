@@ -12,6 +12,8 @@
 //   - fermé  → `type X = (typeof X_CODES)[number]`  (union de littéraux)
 //   - ouvert → `type X = string` + `OpenVocabulary<...>`  (alias string + registre)
 
+import { normalizeLabel } from './normalize';
+
 /* ────────────────────────────────────────────────────────────────────────
  * 0. LES 10 FAMILLES CANONIQUES (fermé)
  *    Dictionnaire §0 / HSG §3. FACT et ONTOLOGY_GAP n'en font PAS partie.
@@ -637,44 +639,51 @@ export function isPreferencePath(path: string): path is PreferencePath {
  * ──────────────────────────────────────────────────────────────────────── */
 
 export interface OpenVocabulary {
-  /** Valeurs initiales (graine) issues des documents. */
+  /** Valeurs initiales (graine) issues des documents — chiffre de contrôle, forme BRUTE. */
   readonly seed: readonly string[];
-  /** La valeur est-elle déjà connue du registre ? */
+  /** La valeur est-elle déjà connue du registre (à normalisation près) ? */
   has(code: string): boolean;
-  /** Toutes les valeurs connues (graine + ajouts). */
+  /** Toutes les valeurs canoniques connues (graine + ajouts), forme brute conservée. */
   values(): string[];
-  /** Enregistre une nouvelle valeur (normalisée au préalable si pertinent). */
+  /** Enregistre une nouvelle valeur ; une variante normalisée déjà connue n'est pas dupliquée. */
   register(code: string): void;
 }
 
-export function createOpenVocabulary(seed: readonly string[]): OpenVocabulary {
-  const set = new Set<string>(seed);
+/**
+ * Registre ouvert extensible. La NORMALISATION À L'ENREGISTREMENT (Dictionnaire §15)
+ * évite de multiplier les synonymes : deux formulations qui normalisent vers la même
+ * clé pointent sur une seule valeur canonique (la première enregistrée, verbatim).
+ * `normalize` est passée explicitement par registre (identité par défaut).
+ */
+export function createOpenVocabulary(
+  seed: readonly string[],
+  normalize: (code: string) => string = (c) => c,
+): OpenVocabulary {
+  // clé normalisée → valeur canonique brute (première enregistrée).
+  const byKey = new Map<string, string>();
+  for (const s of seed) {
+    const k = normalize(s);
+    if (!byKey.has(k)) byKey.set(k, s);
+  }
   return {
     seed,
-    has: (code) => set.has(code),
-    values: () => [...set],
+    has: (code) => byKey.has(normalize(code)),
+    values: () => [...byKey.values()],
     register: (code) => {
-      set.add(code);
+      const k = normalize(code);
+      if (!byKey.has(k)) byKey.set(k, code);
     },
   };
 }
 
-// Registres ouverts exposés (seed = chiffre de contrôle).
-export const INTEREST_PARENT_DOMAINS = createOpenVocabulary(INTEREST_PARENT_DOMAIN_SEED);
-export const ENTITY_TYPES = createOpenVocabulary(ENTITY_TYPE_SEED);
-export const CONTEXT_CODES = createOpenVocabulary(CONTEXT_CODE_SEED);
-export const BEHAVIOR_CONTEXTS = createOpenVocabulary(BEHAVIOR_CONTEXT_SEED);
-
-/** Registre normalisé des patterns BEHAVIOR : register passe par la normalisation. */
-export const BEHAVIOR_PATTERNS: OpenVocabulary = (() => {
-  const base = createOpenVocabulary(BEHAVIOR_PATTERN_SEED);
-  return {
-    seed: base.seed,
-    has: (code) => base.has(normalizeBehaviorPattern(code)),
-    values: () => base.values(),
-    register: (code) => base.register(normalizeBehaviorPattern(code)),
-  };
-})();
+// Registres ouverts exposés (seed = chiffre de contrôle). 5 registres sur 5 normalisés
+// à l'enregistrement : les quatre registres de TYPES via normalizeLabel (lexical), et
+// BEHAVIOR_PATTERNS via normalizeBehaviorPattern (alias HSG).
+export const INTEREST_PARENT_DOMAINS = createOpenVocabulary(INTEREST_PARENT_DOMAIN_SEED, normalizeLabel);
+export const ENTITY_TYPES = createOpenVocabulary(ENTITY_TYPE_SEED, normalizeLabel);
+export const CONTEXT_CODES = createOpenVocabulary(CONTEXT_CODE_SEED, normalizeLabel);
+export const BEHAVIOR_CONTEXTS = createOpenVocabulary(BEHAVIOR_CONTEXT_SEED, normalizeLabel);
+export const BEHAVIOR_PATTERNS = createOpenVocabulary(BEHAVIOR_PATTERN_SEED, normalizeBehaviorPattern);
 
 /* ────────────────────────────────────────────────────────────────────────
  * DEPRECATED_AXES — les 15 anciens axes bipolaires du code actuel
