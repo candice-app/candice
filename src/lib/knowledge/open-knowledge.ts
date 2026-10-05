@@ -13,13 +13,20 @@
 import type { AssertionStatus } from './sources';
 import type { EvidenceConfidence, EvidenceContext } from './evidence';
 import type { KnowledgeScope, SubjectId } from './identity';
-import type { CanonicalFamily, EvidenceStrength } from './vocabulary';
+import type { EvidenceStrength, OpenKnowledgeType } from './vocabulary';
 import { DEFAULT_EXPOSABLE, INTERNAL_ONLY_POLICY, type VisibilityPolicy } from './visibility';
 import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 
+// FRONTIÈRE (lot A ter) : un OpenKnowledge ne produit JAMAIS de signal. Seules les
+// evidences alimentent la consolidation. `type: 'PROFILE'` ne crée pas un ProfileSignal —
+// ce serait une seconde représentation parallèle des signaux HSG. On le prouve par
+// l'ABSENCE de chemin : ce fichier n'importe aucune fonction de consolidation, et aucune
+// fonction de consolidation n'accepte un OpenKnowledge (elles prennent des Evidence).
+// Une connaissance descriptive et une evidence sur le même sujet coexistent et disent
+// deux choses différentes : l'une conserve la description, l'autre porte le signal mesurable.
 export interface OpenKnowledge extends KnowledgeScope {
   readonly open_knowledge_id: string;
-  readonly type: CanonicalFamily; // la famille de rattachement
+  readonly type: OpenKnowledgeType; // famille de rattachement OU type ouvert (ex. life_priority)
   readonly subject: SubjectId; // identité résolue
   readonly subjectLabel: string; // formulation verbatim, jamais écrasée
   readonly relation: string; // « passion », « collectionne », « fasciné par »
@@ -36,7 +43,7 @@ export interface OpenKnowledge extends KnowledgeScope {
 
 export interface CreateOpenKnowledgeInput extends KnowledgeScope {
   open_knowledge_id: string;
-  type: CanonicalFamily;
+  type: OpenKnowledgeType;
   subject: SubjectId;
   subjectLabel: string;
   relation: string;

@@ -476,12 +476,16 @@ export function consolidateGuardrails(scope: KnowledgeScope, evidences: readonly
 export function consolidateInterests(scope: KnowledgeScope, evidences: readonly InterestEvidence[], opts: ConsolidateOpts = {}): InterestSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct as string).entries()].map(([subject, evs]) => {
     const latest = mostRecent(evs);
+    // relationship FACULTATIF (lot A ter) : on prend le plus récent qui en porte un ;
+    // si aucune evidence n'en déclare, le signal n'en invente aucun (absent = non précisé).
+    const withRel = evs.filter((e) => e.relationship !== undefined);
+    const relationship = withRel.length > 0 ? mostRecent(withRel).relationship : undefined;
     return {
       ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
       family: 'INTEREST',
       subject: subject as SubjectId,
       subjectLabel: latest.subjectLabel,
-      relationship: latest.relationship,
+      ...(relationship ? { relationship } : {}),
       ...(latest.parent_domain ? { parent_domain: latest.parent_domain } : {}),
     };
   });

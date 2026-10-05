@@ -104,6 +104,13 @@ export interface AffectionEvidence extends EvidenceBase {
   readonly modality: AffectionModality;
   readonly target_construct: string; // code dérivé AFFECTION_<DIR>_<MOD>
   readonly strength: EvidenceStrength;
+  /**
+   * Rang DÉCLARÉ par l'utilisateur (lot A ter) — uniquement pour les questions où
+   * l'écran demande explicitement un classement (Q1 : « la première compte le plus »).
+   * Donnée déclarée, conservée telle quelle. La force se dérive du rang
+   * (rankToAffectionStrength), mais le rang n'ordonne JAMAIS l'AffectionSignalSet.
+   */
+  readonly rank?: 1 | 2 | 3;
 }
 
 /* ── NEED : strength ── */
@@ -149,7 +156,12 @@ export interface InterestEvidence extends EvidenceBase {
   /** Formulation verbatim de CETTE evidence, jamais écrasée par la résolution. */
   readonly subjectLabel: string;
   readonly parent_domain?: InterestParentDomain;
-  readonly relationship: InterestRelationship;
+  /**
+   * Intensité du rapport au sujet (lot A ter). FACULTATIF : absent = NON PRÉCISÉ,
+   * jamais « faible ». Le radar d'intérêts produit une sélection sans niveau ;
+   * aucun chemin ne remplit ce champ par défaut (surtout pas `casual`) — R1/R2.
+   */
+  readonly relationship?: InterestRelationship;
   readonly target_construct: SubjectId; // = subject
   readonly strength: EvidenceStrength;
 }

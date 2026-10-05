@@ -23,6 +23,7 @@ import type {
   BehaviorPattern,
   ContinuumValue,
   DriverCode,
+  EvidenceStrength,
   EvidenceValue,
   GuardrailCode,
   GuardrailScope,
@@ -70,21 +71,49 @@ export interface OnboardingAffection {
 }
 
 /**
- * Coefficients de scoring affectif du socle (onboarding-v15-clos §Langages affectifs,
- * ligne « Scoring »). Transcrits mot pour mot, non inventés. Données de référence
- * pour le lot qui produira les evidences — aucune pondération n'est appliquée ici.
- *   - RECEIVE : Q1 à 100 %, Q4 à 50 % (plus la cadence), Q2 à 0 %.
- *   - GIVE : QE en vecteur entièrement séparé (jamais déduit de RECEIVE — R5).
- *   - Pondération par le rang : {0: 5, 1: 3, 2: 1}.
- * `affection_cadence` reste conservée séparément de la modalité (jamais transformée
- * en PROFILE_STRUCTURE).
+ * Coefficients de scoring affectif du socle (onboarding-v15-clos §Langages affectifs).
+ * Les POURCENTAGES par question expriment la QUALITÉ de l'evidence selon le stem, pas
+ * l'ordre des clics — ils restent inchangés (Q1 100 %, Q4 50 %, Q2 0 %, QE vecteur séparé).
+ * La pondération par rang {0:5,1:3,2:1} est RETIRÉE (lot A ter) : elle transformait une
+ * information ordinale déclarée en écart cardinal que l'utilisateur n'a jamais donné.
+ * La force se dérive désormais du rang par crans (rankToAffectionStrength), sans aucun
+ * coefficient numérique. `affection_cadence` reste séparée de la modalité.
  */
 export const AFFECTION_SCORING = {
   source: 'docs/ontologie/onboarding-v15-clos.md §Langages affectifs',
   questionWeight: { Q1: 1.0, Q4: 0.5, Q2: 0.0 },
   giveVectorSeparate: true, // QE : vecteur GIVE séparé
-  rankWeight: { 0: 5, 1: 3, 2: 1 },
 } as const;
+
+/* ────────────────────────────────────────────────────────────────────────
+ * ORDRE DE SÉLECTION (lot A ter, mapping-soutien-moteurs §Ordre de sélection).
+ * Défaut : l'ordre de sélection N'A AUCUNE valeur sémantique — un geste d'interface
+ * n'est pas une information sur la personne. SEULE EXCEPTION : une question dont
+ * l'écran demande explicitement un classement. Q1 affiche un rang et dit « la première
+ * compte le plus » → l'ordre y est une donnée DÉCLARÉE, conservée.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/** Invariant : par défaut, l'ordre de sélection n'est jamais sémantique. */
+export const SELECTION_ORDER_IS_SEMANTIC = false;
+
+/** Les seules questions où l'écran demande explicitement un classement (exception déclarée). */
+export const QUESTIONS_WITH_EXPLICIT_RANKING = ['q1'] as const;
+
+/** L'ordre de sélection porte-t-il une information pour cette question ? */
+export function selectionOrderMatters(questionCode: string): boolean {
+  return (QUESTIONS_WITH_EXPLICIT_RANKING as readonly string[]).includes(questionCode);
+}
+
+/**
+ * Force d'une evidence affective d'après son RANG déclaré (Q1 uniquement).
+ * Remplace le rankWeight 5/3/1 : PAS de pondération numérique, le rang choisit
+ * directement un cran de EvidenceStrength, et rien d'autre.
+ *   rang 1 → strong · rang 2 → strong · rang 3 → moderate
+ * R6 : plusieurs modalités affectives peuvent être fortes simultanément.
+ */
+export function rankToAffectionStrength(rank: 1 | 2 | 3): EvidenceStrength {
+  return rank === 3 ? 'moderate' : 'strong';
+}
 
 /** Une production BEHAVIOR (contexte comportemental + pattern). */
 export interface OnboardingBehavior {
@@ -2457,3 +2486,65 @@ export function activeOptions(): readonly OnboardingMapping[] {
 export function mappingByRef(optionRef: string): OnboardingMapping | undefined {
   return ONBOARDING_MAPPINGS.find((m) => m.optionRef === optionRef);
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * LES DEUX QUESTIONS AJOUTÉES (lot A ter, mapping-soutien-moteurs.md v1.0.0).
+ * Hors ONBOARDING_MAPPINGS (qui reste le socle verbatim 128/106) : ce sont deux
+ * questions nouvelles, mappées ici, consommées par le lot B. Verbatim du document.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+/** Une option de `soutien` → un NEED distinct, aucune collision. */
+export interface SoutienOption {
+  readonly optionText: string;
+  readonly need: NeedCode;
+}
+
+/**
+ * `soutien` — « Quand ça ne va pas, qu'est-ce qui t'aide vraiment ? » (5 options, 2 max).
+ * Chaque option → un NEED distinct, en contexte `distress` (LOCAL_CONTEXTUAL, jamais
+ * globalisé par cette seule question). Poids ÉGAUX entre options choisies (l'ordre n'est
+ * pas sémantique ici). `assertionStatus` dérivé du sourceType à la création (jamais saisi).
+ */
+export const SOUTIEN = {
+  questionCode: 'soutien',
+  questionText: 'Quand ça ne va pas, qu’est-ce qui t’aide vraiment ?',
+  maxChoices: 2,
+  /** Propriétés communes de chaque evidence NEED produite. */
+  evidence: { evidence_role: 'primary', strength: 'strong', context: 'distress' } as const,
+  options: [
+    { optionText: 'Qu’on m’écoute', need: 'NEED_SEEN_UNDERSTOOD' },
+    { optionText: 'Qu’on me rassure', need: 'NEED_REASSURANCE' },
+    { optionText: 'Qu’on m’aide concrètement', need: 'NEED_RELIEF' },
+    { optionText: 'Qu’on reste simplement près de moi', need: 'NEED_SUPPORT' },
+    { optionText: 'Qu’on me laisse un peu tranquille', need: 'NEED_RHYTHM_RESPECT' },
+  ] satisfies readonly SoutienOption[],
+} as const;
+
+/** Une option de `moteurs` → une connaissance ouverte `life_priority`. AUCUN code canonique. */
+export interface MoteurOption {
+  readonly optionText: string;
+  readonly subject: string;
+}
+
+/**
+ * `moteurs` — « Qu'est-ce qui compte particulièrement pour toi dans ta vie ? » (6 options, 3 max).
+ * Produit SIX OpenKnowledge `life_priority`, ZÉRO evidence canonique (ni NEED, ni PROFILE,
+ * ni DRIVER, ni AFFECTION) : une priorité de vie n'est pas un besoin psychologique. Le
+ * `subject` passe par le résolveur pour obtenir un SubjectId ; le libellé reste en subjectLabel.
+ * Double sélection (soin + transmission) = UNE source (indépendance sur sourceType).
+ */
+export const MOTEURS = {
+  questionCode: 'moteurs',
+  questionText: 'Qu’est-ce qui compte particulièrement pour toi dans ta vie ?',
+  maxChoices: 3,
+  /** Propriétés communes de chaque OpenKnowledge produite. */
+  openKnowledge: { type: 'life_priority', relation: 'matters_to', intensity: 'strong', context: 'GLOBAL', confidence: 'high' } as const,
+  options: [
+    { optionText: 'La liberté', subject: 'freedom' },
+    { optionText: 'Apprendre et découvrir', subject: 'learning_discovery' },
+    { optionText: 'La famille', subject: 'family' },
+    { optionText: 'Construire et accomplir', subject: 'building_accomplishment' },
+    { optionText: 'Prendre soin des autres', subject: 'caring_for_others' },
+    { optionText: 'Contribuer ou transmettre', subject: 'contribution_transmission' },
+  ] satisfies readonly MoteurOption[],
+} as const;

@@ -559,6 +559,12 @@ const CONTEXT_CODE_SEED = [
   'CONTEXT_CURRENT_PROJECT',
   'CONTEXT_TRANSITION',
   'CONTEXT_CONSTRAINT',
+  // 'distress' (lot A ter, mapping-soutien-moteurs §Le contexte distress) : situation
+  // où la personne traverse un moment difficile / un mal-être, SANS présumer de la cause.
+  // ⚠ 'distress' ne se traduit JAMAIS en donnée clinique : c'est un contexte RELATIONNEL,
+  // pas un état de santé. Aucun chemin de code ne le convertit en FACT sensible ni en
+  // quoi que ce soit relevant du §35 du HSG.
+  'distress',
 ] as const;
 
 /** OUVERT validé : alias string + registre extensible avec validation. */
@@ -684,6 +690,21 @@ export const ENTITY_TYPES = createOpenVocabulary(ENTITY_TYPE_SEED, normalizeLabe
 export const CONTEXT_CODES = createOpenVocabulary(CONTEXT_CODE_SEED, normalizeLabel);
 export const BEHAVIOR_CONTEXTS = createOpenVocabulary(BEHAVIOR_CONTEXT_SEED, normalizeLabel);
 export const BEHAVIOR_PATTERNS = createOpenVocabulary(BEHAVIOR_PATTERN_SEED, normalizeBehaviorPattern);
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Types de CONNAISSANCE OUVERTE (lot A ter, Dictionnaire §12). OUVERT validé :
+ * la connaissance descriptive est sémantiquement ouverte. La graine contient les
+ * 10 familles canoniques (une connaissance ouverte peut se rattacher à INTEREST,
+ * cf. l'exemple photographie argentique) PLUS 'life_priority' (arbitré le 5 oct).
+ * Un `type` dit à quelle famille la connaissance se RATTACHE ; il n'en fait jamais
+ * une evidence de cette famille (voir la frontière dans open-knowledge.ts).
+ * 6ᵉ registre normalisé sur 6.
+ * ──────────────────────────────────────────────────────────────────────── */
+const OPEN_KNOWLEDGE_TYPE_SEED = [...CANONICAL_FAMILIES, 'life_priority'] as const;
+
+/** OUVERT : alias string, validé contre un registre extensible et normalisé. */
+export type OpenKnowledgeType = string;
+export const OPEN_KNOWLEDGE_TYPES = createOpenVocabulary(OPEN_KNOWLEDGE_TYPE_SEED, normalizeLabel);
 
 /* ────────────────────────────────────────────────────────────────────────
  * DEPRECATED_AXES — les 15 anciens axes bipolaires du code actuel

@@ -83,8 +83,11 @@ export interface InterestSignal extends SignalBase {
   readonly subject: SubjectId;
   readonly subjectLabel: string;
   readonly parent_domain?: InterestParentDomain;
-  /** Rapport consolidé au sujet — la sémantique que le lot A perdait. */
-  readonly relationship: InterestRelationship;
+  /**
+   * Rapport consolidé au sujet. FACULTATIF (lot A ter) : absent = non précisé,
+   * jamais inventé. Une sélection d'intérêt sans niveau n'en fabrique aucun.
+   */
+  readonly relationship?: InterestRelationship;
 }
 
 export interface EntitySignal extends SignalBase {

@@ -59,10 +59,11 @@ describe('Test 1 — chiffres de contrôle du vocabulaire', () => {
     expect(ENTITY_TYPES.seed).toHaveLength(21);
     expect(ENTITY_RELATIONS).toHaveLength(9);
   });
-  it('CONTEXT : 10 (ouvert) ; INTEREST : 29 domaines (ouvert), 5 relationships (fermé)', () => {
-    expect(CONTEXT_CODES.seed).toHaveLength(10);
+  it('CONTEXT : 11 (ouvert, + distress au lot A ter) ; INTEREST : 29 domaines, 5 relationships (fermé)', () => {
+    expect(CONTEXT_CODES.seed).toHaveLength(11); // 10 + 'distress' (mapping-soutien-moteurs)
+    expect(CONTEXT_CODES.has('distress')).toBe(true);
     expect(INTEREST_PARENT_DOMAINS.seed).toHaveLength(29);
-    expect(INTEREST_RELATIONSHIPS).toHaveLength(5);
+    expect(INTEREST_RELATIONSHIPS).toHaveLength(5); // inchangé, pas de 'unspecified'
   });
   it('DEPRECATED : 15 anciens axes', () => {
     expect(DEPRECATED_AXES).toHaveLength(15);
