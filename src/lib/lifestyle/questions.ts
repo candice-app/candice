@@ -1,3 +1,7 @@
+// ⚠ DÉPRÉCIÉ (lot B, 2026-10-05) — ancien modèle à axes bipolaires. Remplacé par
+// src/lib/knowledge/. GELÉ : aucun NOUVEL import. Les extrapolations préférence→trait
+// ne sont PAS reportées (R10/R12). Retrait au lot de suppression
+// (inventaire dans docs/carnet-de-constats.md).
 import type { TemperamentAxisKey } from '@/lib/temperament/questions';
 
 export type { TemperamentAxisKey };

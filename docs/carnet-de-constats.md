@@ -62,3 +62,27 @@
 - **Constat** : `casual | curious | enthusiast | passion | expert` est une échelle d'INTENSITÉ. Le consolidé prend actuellement le relationship de l'evidence la plus récente. Conséquence : une mention `casual` isolée postérieure ferait redescendre un `expert` établi.
 - **Décision (lot A bis)** : gardé « le plus récent » pour l'instant — on n'a pas les données réelles pour trancher entre « le plus récent supplante » et « l'intensité la plus haute observée domine ».
 - **Statut** : ouvert, à revoir quand il y aura du volume réel. (ENTITY relation, elle, est arbitrée au point d'arrêt 3 ; PREFERENCE value et SOCIAL_ENERGY position au plus récent sont validés.)
+
+### [2026-10-05] Lot B — inventaire d'entrée du lot de SUPPRESSION des anciens modules
+- **Décision (arbitrage lot B, Q3 option i)** : le questionnaire est branché sur le module, mais les 3 anciens modules (`attention`, `temperament`, `lifestyle`) NE sont PAS supprimés ce lot-ci — la reco, la génération de profil et les 3 routes breath en dépendent, et leur rebranchement est une refonte (Signal discriminé, guardrails severity/scope, DRIVER) qui exige le catalogue d'attentions inexistant. La section 9 du prompt lot B est **annulée** par cet arbitrage.
+- **Gel** : en-tête de dépréciation ajouté à `attention/{questions,scoring}.ts`, `temperament/{questions,scoring}.ts`, `lifestyle/{questions,scoring}.ts` (aucun nouvel import).
+- **Les 15 fichiers dépendants (inventaire du futur lot de suppression)** :
+  - Parcours : `src/app/moi/questionnaire/QuestionnaireFlow.tsx`, `src/components/questionnaire/{AttentionStep,AvoidStep,LifestyleStep,TemperamentStep}.tsx`
+  - Consommateurs hors parcours : `src/app/api/recommendations/generate/route.ts`, `src/lib/recommendations/{engine,types}.ts`, `src/lib/profile/{generateProfileAnalysis,synthesis}.ts`, `src/lib/profile/synthesis.test.ts`, `src/app/api/{attention,temperament,lifestyle}/breath/route.ts`
+  - Interne legacy : `src/lib/lifestyle/questions.ts` importe `temperament/questions`.
+
+### [2026-10-05] Lot B — les 32 extrapolations NON closes par ce lot (reportées)
+- Le prompt lot B §9 affirmait que supprimer les anciens modules clôt les 32 extrapolations (préférence→trait, R10/R12). **Faux sous l'arbitrage Q3** : les modules restent en place, donc les 32 extrapolations restent VIVANTES dans la reco et `generateProfileAnalysis`. État transitoire assumé et documenté : le questionnaire tourne sur le modèle canonique, la reco sur les anciens axes, jusqu'au lot de rebranchement+suppression. La ligne de STOP « closes par suppression » devient « reportées au lot de suppression — carnet ».
+
+### [2026-10-05] Lot B — table `signals` existante (à ne pas confondre avec knowledge_signals)
+- Il existe déjà une table `public.signals` (2 lignes), parmi les 10 tables en `pilot_id` (migration 27). Le nommage `knowledge_signals` du lot B évite la collision. À clarifier au lot d'harmonisation : ce que porte `signals` (signaux contextuels legacy ?) et si elle doit disparaître ou fusionner.
+
+### [2026-10-05] Lot B — « Les deux questions à ajouter » en décrit SIX
+- Le titre de section de `onboarding-v15-structure.md` dit « deux » ; la section décrit six ajouts : `soutien`, `moteurs` (fermées de connaissance, non mappées), `anniversaire_ideal` (texte libre), `adresses_preferees` + `adresse_livraison_travail` (Google Places), `accepte_livraison_travail` (filtre). Imprécision de titre, pas d'exclusion : les six sont dans le lot.
+
+### [2026-10-05] Lot B — questionnaire_responses dépréciée ; ce que lisent reco/profil
+- `questionnaire_responses` (0 ligne) marquée DÉPRÉCIÉE (COMMENT ON TABLE, migration 82). La vérité brute vit dans `knowledge_sources`. Pas de miroir, pas de double écriture.
+- Constat Q1 : `api/recommendations/generate` lit `contacts → questionnaire_responses(*)` (imbriqué, donc **vide** aujourd'hui) + `my_profile` ; `generateProfileAnalysis` lit `my_profile` + `memories` (PAS questionnaire_responses) ; les 3 routes `breath` ne lisent AUCUNE table (elles reçoivent les scores calculés côté client). Donc le branchement n'introduit aucune régression côté lecture : rien ne lisait de réponses réelles (table vide).
+
+### [2026-10-05] Lot B — profile_analysis : 2 lignes de données de dev, conservées
+- `profile_analysis` = 2 lignes (données de dev/test : 3 contacts, 3 my_profile, 0 réponse). Conservées telles quelles, jamais converties (R15 interdit la conversion de score, pas la conservation ; leur `engine_version` les marque). Aucun chemin du nouveau modèle ne doit les lire.

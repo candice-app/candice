@@ -1,3 +1,6 @@
+// ⚠ DÉPRÉCIÉ (lot B, 2026-10-05) — ancien modèle à axes bipolaires. Remplacé par
+// src/lib/knowledge/. GELÉ : aucun NOUVEL import. Retrait au lot de suppression
+// (inventaire dans docs/carnet-de-constats.md).
 import type { AttentionDim } from './scoring';
 
 export interface AttentionOption {

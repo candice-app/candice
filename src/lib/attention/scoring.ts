@@ -1,3 +1,8 @@
+// ⚠ DÉPRÉCIÉ (lot B, 2026-10-05) — ancien modèle à axes bipolaires.
+// Remplacé par le module de connaissance canonique : src/lib/knowledge/.
+// GELÉ : aucun NOUVEL import. Retrait au lot de suppression des anciens modules
+// (inventaire des 15 fichiers dépendants dans docs/carnet-de-constats.md). Les
+// extrapolations préférence→trait ne sont PAS reportées dans le module (R10/R12).
 export type AttentionDim = 'MOT' | 'SER' | 'CAD_C' | 'CAD_S' | 'EXP' | 'GES' | 'SUR';
 
 // Ordered slot within a question: index 0 = rank 1, index 1 = rank 2, etc.

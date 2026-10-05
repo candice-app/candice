@@ -1,3 +1,8 @@
+// ⚠ DÉPRÉCIÉ (lot B, 2026-10-05) — ancien modèle à axes bipolaires.
+// Remplacé par le module de connaissance canonique : src/lib/knowledge/.
+// GELÉ : aucun NOUVEL import. Retrait au lot de suppression des anciens modules
+// (inventaire des 15 fichiers dépendants dans docs/carnet-de-constats.md). Les
+// extrapolations préférence→trait ne sont PAS reportées dans le module (R10/R12).
 import { ALL_LIFESTYLE_QUESTIONS } from './questions';
 import type { LifestyleAxisKey, FilterKey, TemperamentAxisKey } from './questions';
 
