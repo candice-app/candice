@@ -66,12 +66,15 @@ export const CONSOLIDATION_RULES = {
  * ──────────────────────────────────────────────────────────────────────── */
 
 /**
- * Indépendance (HSG §19.1) : deux evidences issues de la même source ne comptent
- * pas comme deux observations indépendantes. Clé = source_id + source_type.
- * C'est ce qui évite le faux effet de volume (10 formulations ≠ 10 observations).
+ * Indépendance (HSG §19.1 / consolidation-rules §4) : l'indépendance se compte sur
+ * le `source_type`, JAMAIS sur le `source_id` ni sur le nombre d'evidences. Deux
+ * evidences issues du même sourceType ne sont jamais indépendantes, quel que soit
+ * le nombre de réponses derrière — sinon dix réponses d'onboarding se liraient comme
+ * dix sources, et confidence: high deviendrait atteignable depuis le seul onboarding
+ * (interdit par §19.1). L'onboarding est un seul sourceType → une seule source.
  */
 function independentKey(e: Evidence): string {
-  return `${e.source_id}::${e.source_type}`;
+  return e.source_type;
 }
 
 function independentCount(evidences: readonly Evidence[]): number {
@@ -82,12 +85,9 @@ function hasRole(evidences: readonly Evidence[], role: EvidenceRole): boolean {
   return evidences.some((e) => e.evidence_role === role);
 }
 
+/** Contextes locaux distincts (valeurs de contexte hors GLOBAL), indépendamment des sources. */
 function distinctLocalContexts(evidences: readonly Evidence[]): string[] {
-  const keyed = new Map<string, string>();
-  for (const e of evidences) {
-    if (e.context !== 'GLOBAL') keyed.set(independentKey(e), e.context);
-  }
-  return [...new Set(keyed.values())];
+  return [...new Set(evidences.filter((e) => e.context !== 'GLOBAL').map((e) => e.context))];
 }
 
 function latestTimestamp(evidences: readonly Evidence[]): string | null {

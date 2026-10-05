@@ -10,6 +10,7 @@ import {
   isGuardrailVerticalPath,
 } from '../vocabulary';
 import type { GuardrailEvidence } from '../evidence';
+import { JOURNAL_VERSION_STAMP } from '../version';
 
 describe('Test 27 — codes canoniques groupés par 7 catégories', () => {
   it('7 catégories, concat = GUARDRAIL_CODES, pas de doublon', () => {
@@ -39,6 +40,7 @@ describe('Test 28 — severity & scope appartiennent à l’evidence, pas au cod
       severity: 'SOFT',
       guardrailScope: 'selection',
       strength: 'moderate',
+      version: JOURNAL_VERSION_STAMP,
     };
     const hard: GuardrailEvidence = { ...soft, evidence_id: 'g2', severity: 'HARD', guardrailScope: 'execution' };
     expect(soft.severity).toBe('SOFT');

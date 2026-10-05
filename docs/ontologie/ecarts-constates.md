@@ -47,3 +47,9 @@
 - **Lot** : chiffres de contrôle = 55 / 20, calculés AVANT application des retraits V13/V14 (même cause que l'écart §8 guardrail : un chiffre de contrôle pré-arbitrage).
 - **Code** : le module transcrit la réalité V15 — **50 options avec PROFILE, 17 secondaires**. Les 59 evidences PROFILE, 11 GLOBAL_DIRECT, 48 LOCAL, 2 négatives restent inchangés.
 - **Arbitrage Estelle (2026-10-02)** : les mappings détaillés font foi. Résumé `clos` corrigé à **50 avec PROFILE · 55 sans PROFILE mais avec information utile · 17 secondaires**. Réconciliation du total : 50 + 55 + 1 (ligne 79, aucune production, volontaire) = 106 options actives. Les tests du module asserten 50/17.
+
+## 10 · GUARDRAIL : 4 options Q18 → 5 evidences (chiffre de contrôle ambigu, pas une erreur de code)
+- **Document** : le clos §Guardrails énumère **5 codes** sur **4 options** Q18 : `GRD_PUBLIC_EXPOSURE` (117), `GRD_SCHEDULE_DISRUPTION` (118), `GRD_TOO_INTIMATE` **+** `GRD_SENTIMENTAL_OVERLOAD` (119, deux codes sur une seule ligne), `GRD_POOR_EXECUTION` (120). Tous en `HARD`.
+- **Lot** : le chiffre attendu annonçait « 4, tous HARD ».
+- **Explication** : les deux chiffres sont justes mais comptent deux choses différentes — **4 options** de Q18 portent un guardrail, et elles produisent **5 evidences** parce que la ligne 119 porte deux codes. Le « 4 » du prompt comptait les options, le module compte les evidences.
+- **Code** : **rien à corriger, l'implémentation est juste** (5 evidences guardrail, toutes HARD). C'est la valeur attendue dans le prompt qui était ambiguë. **Arbitrage Estelle (2026-10-05).**

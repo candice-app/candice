@@ -11,6 +11,7 @@
 //   §11.1 — un FACT produit 0..n signaux (0 est normal).
 
 import type { AssertionStatus } from './sources';
+import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 
 /** Confiance portée par un FACT. */
 export type FactConfidence = 'high' | 'medium' | 'low';
@@ -49,6 +50,11 @@ export interface Fact {
   readonly subject?: string;
   readonly relation?: string;
   readonly effect?: string;
+  /**
+   * Versions sous lesquelles ce FACT a été enregistré (ontology + hsg). Comme
+   * l'evidence, un FACT préexiste à la consolidation : pas de consolidation_version.
+   */
+  readonly version: JournalVersionStamp;
 }
 
 export interface CreateFactInput {
@@ -83,6 +89,7 @@ export function createFact(input: CreateFactInput): Fact {
     subject: input.subject,
     relation: input.relation,
     effect: input.effect,
+    version: JOURNAL_VERSION_STAMP,
   };
 }
 

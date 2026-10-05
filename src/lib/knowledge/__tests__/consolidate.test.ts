@@ -18,6 +18,7 @@ import {
   reviseWithCorrection,
 } from '../consolidate';
 import { defaultSignal } from '../signal';
+import { JOURNAL_VERSION_STAMP } from '../version';
 import { affectionCode } from '../vocabulary';
 
 const base = {
@@ -27,6 +28,7 @@ const base = {
   stability: 'contextual' as const,
   evidence_role: 'primary' as const,
   source_type: 'onboarding_closed' as const,
+  version: JOURNAL_VERSION_STAMP,
 };
 
 function profileEv(
@@ -104,11 +106,12 @@ describe('Test 13 — GLOBAL_DIRECT vs GLOBAL_CONSOLIDATED (R15)', () => {
     ]);
     expect(s.globalStatus).toBe('GLOBAL_DIRECT');
   });
-  it('convergence de 3 evidences indépendantes dans 3 contextes → GLOBAL_CONSOLIDATED (§5)', () => {
+  it('convergence de 3 evidences, 3 contextes, sources indépendantes (3 sourceType) → GLOBAL_CONSOLIDATED (§5)', () => {
     const s = consolidateProfileConstruct('PROFILE_STRUCTURE', [
       profileEv({
         evidence_id: 'e1',
         source_id: 's1',
+        source_type: 'conversation',
         target_construct: 'PROFILE_STRUCTURE',
         value: 1,
         context: 'travel',
@@ -116,6 +119,7 @@ describe('Test 13 — GLOBAL_DIRECT vs GLOBAL_CONSOLIDATED (R15)', () => {
       profileEv({
         evidence_id: 'e2',
         source_id: 's2',
+        source_type: 'observed_behavior',
         target_construct: 'PROFILE_STRUCTURE',
         value: 1,
         context: 'home',
@@ -123,6 +127,7 @@ describe('Test 13 — GLOBAL_DIRECT vs GLOBAL_CONSOLIDATED (R15)', () => {
       profileEv({
         evidence_id: 'e3',
         source_id: 's3',
+        source_type: 'reported_by_relative',
         target_construct: 'PROFILE_STRUCTURE',
         value: 1,
         context: 'work',

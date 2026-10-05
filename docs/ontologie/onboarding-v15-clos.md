@@ -14,16 +14,18 @@ Référence de clôture. Le fichier de détail est `Candice_Questionnaire_Onboar
 | Options actives dans le socle | **106** |
 | Retirées | 12 — Q3 (7) et Q12 (5), statut `REMOVED_FROM_ONBOARDING_CORE` |
 | Déplacées vers le Discovery | 10 — Q15 Food (5), Q16 Voyage (5) |
-| Avec evidence PROFILE | 50 (corrigé — voir écarts §9 ; le 55 d'origine était antérieur aux retraits V13/V14) |
-| Sans PROFILE mais avec information utile | 55 (corrigé — voir écarts §9) |
+| Avec evidence PROFILE | **50** |
+| Sans PROFILE mais avec information utile | **55** · plus la ligne 79 qui ne produit rien : 50 + 55 + 1 = 106 |
 | **Evidences PROFILE** | **59** — 11 `GLOBAL_DIRECT`, 48 `LOCAL/CONTEXTUAL`, 0 `GLOBAL_CONSOLIDATED` |
-| dont secondaires | 17 (corrigé — voir écarts §9 ; le 20 d'origine était antérieur aux retraits V13/V14) |
+| dont secondaires | **17** |
 | Evidences PROFILE négatives | 2 — ligne 86 `APPETENCE_OBJECT −1`, ligne 98 `PROFILE_STRUCTURE −1` |
 | Evidences AFFECTION_RECEIVE | 14 (2 par modalité : Q1 à 100 %, Q4 à 50 %) |
 | Evidences AFFECTION_GIVE | 7 (QE seule, vecteur séparé) |
 | Evidences BEHAVIOR | 20 — 4 contextes |
 | GUARDRAIL actifs | 4, tous `severity = HARD` |
 | Constructs sortant `unknown` de l'onboarding | `APPETENCE_SPONTANEITY`, `APPETENCE_PREMIUM`, `PROFILE_INTENSITY`, `PROFILE_SENSITIVITY.sensory`, `PROFILE_SENSITIVITY.emotional` |
+
+Chiffres corrigés le 2 octobre après le lot A : 50 et non 55 avec evidence PROFILE, 17 et non 20 secondaires. Les trois chiffres d'origine avaient été calculés avant application des retraits V13 et V14 — cinq options perdent leur seule evidence PROFILE (7, 13, 105, 108, 109) et trois des six evidences APPETENCE_SPONTANEITY retirées étaient secondaires. Voir `ecarts-constates.md` §9.
 
 Ces chiffres doivent être recalculés depuis le code et comparés. Un écart, même de 1, signifie qu'une ligne n'a pas été transcrite comme elle est arbitrée.
 

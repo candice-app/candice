@@ -10,6 +10,7 @@ import {
   consolidateProfileConstruct,
 } from '../consolidate';
 import { defaultSignal } from '../signal';
+import type { SourceType } from '../sources';
 import { CONSOLIDATION_VERSION, HSG_VERSION, ONTOLOGY_VERSION } from '../version';
 
 const base = {
@@ -78,35 +79,37 @@ describe('low ne se produit QUE sur evidence contraire nette, jamais par faibles
   });
 });
 
-describe('L’indépendance se compte sur source_id + source_type, jamais sur le nombre d’evidences (§4)', () => {
-  function three(sourceIds: [string, string, string]) {
+describe('L’indépendance se compte sur le source_type, jamais sur le source_id ni le nombre (§4)', () => {
+  function three(types: [SourceType, SourceType, SourceType]) {
     return consolidateProfileConstruct('PROFILE_STRUCTURE', [
-      ev({ evidence_id: 'e1', source_id: sourceIds[0], target_construct: 'PROFILE_STRUCTURE', value: 1, context: 'travel' }),
-      ev({ evidence_id: 'e2', source_id: sourceIds[1], target_construct: 'PROFILE_STRUCTURE', value: 1, context: 'home' }),
-      ev({ evidence_id: 'e3', source_id: sourceIds[2], target_construct: 'PROFILE_STRUCTURE', value: 1, context: 'work' }),
+      ev({ evidence_id: 'e1', source_id: 's1', source_type: types[0], target_construct: 'PROFILE_STRUCTURE', value: 1, context: 'travel' }),
+      ev({ evidence_id: 'e2', source_id: 's2', source_type: types[1], target_construct: 'PROFILE_STRUCTURE', value: 1, context: 'home' }),
+      ev({ evidence_id: 'e3', source_id: 's3', source_type: types[2], target_construct: 'PROFILE_STRUCTURE', value: 1, context: 'work' }),
     ]);
   }
-  it('3 evidences / 3 contextes mais UNE source → pas de GLOBAL_CONSOLIDATED (volume ≠ indépendance)', () => {
-    const s = three(['same', 'same', 'same']);
+  it('3 evidences, 3 contextes, 3 source_id DIFFÉRENTS mais UN SEUL source_type → pas GLOBAL_CONSOLIDATED', () => {
+    // Le source_id varie, le sourceType non : une seule source indépendante (pas de faux volume).
+    const s = three(['onboarding_closed', 'onboarding_closed', 'onboarding_closed']);
     expect(s.globalStatus).toBe('LOCAL_ONLY');
   });
-  it('3 evidences / 3 contextes / 3 sources indépendantes → GLOBAL_CONSOLIDATED', () => {
-    const s = three(['s1', 's2', 's3']);
+  it('3 evidences, 3 contextes, 3 source_type DISTINCTS → GLOBAL_CONSOLIDATED', () => {
+    const s = three(['conversation', 'observed_behavior', 'reported_by_relative']);
     expect(s.globalStatus).toBe('GLOBAL_CONSOLIDATED');
   });
 });
 
-describe('Conséquence voulue (§4) : l’onboarding seul (une source) n’atteint presque jamais confidence high', () => {
-  it('5 evidences, contextes variés, mais une seule source onboarding → confiance jamais high', () => {
+describe('Conséquence voulue (§4) : l’onboarding seul n’atteint JAMAIS confidence high', () => {
+  it('5 réponses d’onboarding (source_id différents, même source_type) → confiance jamais high', () => {
+    // Prouve §19.1 : dix (ici cinq) réponses d’un même questionnaire ≠ sources indépendantes.
     const evidences: DirectionalEvidence[] = [
-      ev({ evidence_id: 'a', source_id: 'onb', target_construct: 'PROFILE_RELATIONALITY', value: 2, context: 'GLOBAL' }),
-      ev({ evidence_id: 'b', source_id: 'onb', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'gift' }),
-      ev({ evidence_id: 'c', source_id: 'onb', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'travel' }),
-      ev({ evidence_id: 'd', source_id: 'onb', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'home' }),
-      ev({ evidence_id: 'e', source_id: 'onb', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'work' }),
+      ev({ evidence_id: 'a', source_id: 'q5', target_construct: 'PROFILE_RELATIONALITY', value: 2, context: 'GLOBAL' }),
+      ev({ evidence_id: 'b', source_id: 'q7', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'gift' }),
+      ev({ evidence_id: 'c', source_id: 'q9', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'travel' }),
+      ev({ evidence_id: 'd', source_id: 'q11', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'home' }),
+      ev({ evidence_id: 'e', source_id: 'q13', target_construct: 'PROFILE_RELATIONALITY', value: 1, context: 'work' }),
     ];
     const s = consolidateProfileConstruct('PROFILE_RELATIONALITY', evidences);
-    expect(s.confidence).not.toBe('high');
+    expect(s.confidence).not.toBe('high'); // une seule source indépendante (onboarding_closed)
   });
 });
 
@@ -128,5 +131,10 @@ describe('Toute structure consolidée persistée porte les trois versions', () =
   it('l’ensemble affectif consolidé porte la version', () => {
     const set = consolidateAffection([]);
     expect(set.version).toEqual(stamp);
+  });
+  it('le journal brut (evidence) porte ontology + hsg, mais PAS consolidation_version', () => {
+    const e = ev({ evidence_id: 'e', source_id: 's', target_construct: 'PROFILE_AUTONOMY', value: 1, context: 'decision' });
+    expect(e.version).toEqual({ ontology_version: ONTOLOGY_VERSION, hsg_version: HSG_VERSION });
+    expect('consolidation_version' in e.version).toBe(false);
   });
 });

@@ -36,6 +36,7 @@ import {
 import type { EvidenceValue, ProfileDirectionalCode } from '../vocabulary';
 import type { ProfileEvidence } from '../evidence';
 import { consolidateProfileConstruct } from '../consolidate';
+import { JOURNAL_VERSION_STAMP } from '../version';
 
 /* ── Helpers de recomptage, uniquement depuis le code. ── */
 const active = activeOptions();
@@ -307,6 +308,7 @@ describe('Test 34 — SPONTANEITY / PREMIUM : `unknown` via consolidate', () => 
         target_construct: p.construct as ProfileDirectionalCode,
         facet: p.facet,
         value: p.value as EvidenceValue,
+        version: JOURNAL_VERSION_STAMP,
       })),
   );
 

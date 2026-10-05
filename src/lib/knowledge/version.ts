@@ -34,3 +34,19 @@ export const VERSION_STAMP: VersionStamp = {
   hsg_version: HSG_VERSION,
   consolidation_version: CONSOLIDATION_VERSION,
 };
+
+/**
+ * Estampille du JOURNAL BRUT (Evidence, Fact). Une evidence préexiste aux règles
+ * de consolidation : elle ne dépend pas d'elles, donc elle ne porte PAS
+ * consolidation_version — uniquement les versions de vocabulaire et de modèle
+ * sous lesquelles elle a été enregistrée.
+ */
+export interface JournalVersionStamp {
+  readonly ontology_version: string;
+  readonly hsg_version: string;
+}
+
+export const JOURNAL_VERSION_STAMP: JournalVersionStamp = {
+  ontology_version: ONTOLOGY_VERSION,
+  hsg_version: HSG_VERSION,
+};

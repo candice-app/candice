@@ -14,6 +14,7 @@
 //     ne crée du négatif par absence ou symétrie (R3/R4).
 
 import type { AssertionStatus, SourceType } from './sources';
+import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 import type {
   AffectionDirection,
   AffectionModality,
@@ -70,6 +71,12 @@ interface EvidenceBase {
   readonly notes?: string;
   /** Lien vers le FACT source éventuel (le FACT ne disparaît jamais — R16). */
   readonly fact_id?: string;
+  /**
+   * Versions sous lesquelles cette evidence a été enregistrée (ontology + hsg).
+   * PAS de consolidation_version : une evidence préexiste aux règles de
+   * consolidation et n'en dépend pas.
+   */
+  readonly version: JournalVersionStamp;
 }
 
 /* ── PROFILE directionnel (dimensions + orientations) : value ±1/±2, pas 0 ── */
@@ -192,7 +199,7 @@ export function isDirectionalEvidence(e: Evidence): e is DirectionalEvidence {
  * Factories avec garde-fous d'invariants (testables).
  * ──────────────────────────────────────────────────────────────────────── */
 
-export interface ProfileEvidenceInput extends Omit<ProfileEvidence, 'target_family'> {
+export interface ProfileEvidenceInput extends Omit<ProfileEvidence, 'target_family' | 'version'> {
   /**
    * Doit être `true` lorsque `value < 0` : une evidence négative n'existe que
    * sur une formulation réellement contraire (R3). Sans ce drapeau explicite,
@@ -219,12 +226,17 @@ export function createProfileEvidence(input: ProfileEvidenceInput): ProfileEvide
   }
   const { contraryMapping: _ignored, ...rest } = input;
   void _ignored;
-  return { ...rest, target_family: 'PROFILE' };
+  return { ...rest, target_family: 'PROFILE', version: JOURNAL_VERSION_STAMP };
 }
 
-/** Crée une evidence SOCIAL_ENERGY (continuum : 0 autorisé). */
+/** Crée une evidence SOCIAL_ENERGY (continuum 0..4). */
 export function createSocialEnergyEvidence(
-  input: Omit<SocialEnergyEvidence, 'target_family' | 'target_construct'>,
+  input: Omit<SocialEnergyEvidence, 'target_family' | 'target_construct' | 'version'>,
 ): SocialEnergyEvidence {
-  return { ...input, target_family: 'PROFILE', target_construct: 'SOCIAL_ENERGY' };
+  return {
+    ...input,
+    target_family: 'PROFILE',
+    target_construct: 'SOCIAL_ENERGY',
+    version: JOURNAL_VERSION_STAMP,
+  };
 }

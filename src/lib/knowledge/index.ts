@@ -9,7 +9,9 @@ export {
   HSG_VERSION,
   CONSOLIDATION_VERSION,
   VERSION_STAMP,
+  JOURNAL_VERSION_STAMP,
   type VersionStamp,
+  type JournalVersionStamp,
 } from './version';
 
 export * from './vocabulary';
