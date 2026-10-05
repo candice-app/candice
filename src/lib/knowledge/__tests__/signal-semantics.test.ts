@@ -120,13 +120,16 @@ describe('3.1 — NEUTRAL n’est JAMAIS une contradiction, il est supplanté', 
 });
 
 describe('3.2 — LOVE+DISLIKE = contradiction ; LOVE+AVOID = tension (jamais contradiction)', () => {
-  it('{LOVE} + DISLIKE → contradiction réelle, confidence low', () => {
+  it('{LOVE} + DISLIKE → contradiction ; par PRUDENCE la valence négative gagne (même si LOVE plus récent)', () => {
     const [s] = consolidateEntities(scope, [
-      entityEv('e1', 'coriandre', 'LOVE', '2026-01-01T00:00:00Z'),
-      entityEv('e2', 'coriandre', 'DISLIKE', '2026-02-01T00:00:00Z'),
+      entityEv('e1', 'coriandre', 'DISLIKE', '2026-01-01T00:00:00Z'),
+      entityEv('e2', 'coriandre', 'LOVE', '2026-02-01T00:00:00Z'), // plus récent, mais ne gagne pas
     ]);
     expect(s.contradiction).toBe(true);
     expect(s.confidence).toBe('low');
+    expect(s.relation).toBe('DISLIKE'); // prudence : ne pas recommander ce qui pourrait déplaire
+    // rien n'est perdu : le LOVE reste dans l'historique, candidate à clarification
+    expect(s.relationHistory.some((r) => r.relation === 'LOVE')).toBe(true);
   });
   it('{LOVE} + AVOID → PAS de contradiction ; relation=LOVE ; évitement actif préservé', () => {
     const [s] = consolidateEntities(scope, [

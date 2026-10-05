@@ -503,19 +503,34 @@ function entityContradiction(evs: readonly EntityEvidence[]): boolean {
 }
 
 /**
- * ENTITY — relation courante = valence affective dominante (la plus récente parmi
- * LOVE/LIKE/DISLIKE) si présente ; sinon la plus récente hors NEUTRAL ; sinon NEUTRAL.
- * relationHistory conserve tout. Contradiction calculée UNIQUEMENT pour positive+DISLIKE.
- * L'évitement (AVOID) coexiste sans contredire : lisible via hasActiveAvoidance.
+ * ENTITY — relation courante :
+ *   - contradiction affective NON RÉSOLUE ({LOVE,LIKE}+DISLIKE) → la valence NÉGATIVE
+ *     (DISLIKE) gagne, par PRUDENCE : recommander ce que la personne n'aime pas (cadeau
+ *     raté) est plus coûteux que manquer une bonne idée. Cohérent avec severity/scope/
+ *     visibilité, où le doute se tranche toujours vers le plus contraignant. Le LOVE
+ *     reste dans relationHistory ; contradiction: true en fait une candidate à
+ *     clarification ; dès qu'une evidence résout (correction, evidence plus forte), la
+ *     consolidation normale reprend.
+ *   - sinon → valence affective dominante (la plus récente parmi LOVE/LIKE/DISLIKE) ;
+ *     sinon la plus récente hors NEUTRAL ; sinon NEUTRAL.
+ * AVOID n'entre PAS ici : {LOVE,LIKE}+AVOID est une tension (pas une contradiction),
+ * relation garde la valence affective, l'évitement est lisible via hasActiveAvoidance.
  */
 export function consolidateEntities(scope: KnowledgeScope, evidences: readonly EntityEvidence[], opts: ConsolidateOpts = {}): EntitySignal[] {
   return [...groupBy(evidences, (e) => e.target_construct as string).entries()].map(([entity, evs]) => {
     const sorted = [...evs].sort((a, b) => (a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0));
-    const affective = sorted.filter((e) => ENTITY_AFFECTIVE.includes(e.relation));
-    const nonNeutral = sorted.filter((e) => e.relation !== 'NEUTRAL');
-    const pool = affective.length ? affective : nonNeutral.length ? nonNeutral : sorted;
-    const current = pool[pool.length - 1];
     const contradiction = entityContradiction(evs);
+    let current: EntityEvidence;
+    if (contradiction) {
+      // Contradiction affective : la valence négative (DISLIKE) transporte le champ unique.
+      const dislikes = sorted.filter((e) => e.relation === 'DISLIKE');
+      current = dislikes[dislikes.length - 1];
+    } else {
+      const affective = sorted.filter((e) => ENTITY_AFFECTIVE.includes(e.relation));
+      const nonNeutral = sorted.filter((e) => e.relation !== 'NEUTRAL');
+      const pool = affective.length ? affective : nonNeutral.length ? nonNeutral : sorted;
+      current = pool[pool.length - 1];
+    }
     const inputs: ScoreInputs = { ...strengthInputs(evs), contradiction };
     return {
       ...baseFrom(scope, evs, inputs, { supportingFacts: opts.supportingFacts }),
