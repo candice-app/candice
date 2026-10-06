@@ -11,6 +11,8 @@ import {
   CANONICAL_FAMILIES,
   CANONICAL_FAMILY_LABELS,
   CONTEXT_CODES,
+  EVIDENCE_CONTEXTS,
+  isValidEvidenceContext,
   DEPRECATED_AXES,
   DRIVER_CODES,
   DRIVER_LABELS,
@@ -59,11 +61,21 @@ describe('Test 1 — chiffres de contrôle du vocabulaire', () => {
     expect(ENTITY_TYPES.seed).toHaveLength(21);
     expect(ENTITY_RELATIONS).toHaveLength(9);
   });
-  it('CONTEXT : 11 (ouvert, + distress au lot A ter) ; INTEREST : 29 domaines, 5 relationships (fermé)', () => {
-    expect(CONTEXT_CODES.seed).toHaveLength(11); // 10 + 'distress' (mapping-soutien-moteurs)
-    expect(CONTEXT_CODES.has('distress')).toBe(true);
+  it('CONTEXT : 10 (famille CONTEXT, distress N’Y est PAS) ; INTEREST : 29 domaines, 5 relationships (fermé)', () => {
+    expect(CONTEXT_CODES.seed).toHaveLength(10); // distress vit dans EVIDENCE_CONTEXTS, pas ici
+    expect(CONTEXT_CODES.has('distress')).toBe(false);
     expect(INTEREST_PARENT_DOMAINS.seed).toHaveLength(29);
     expect(INTEREST_RELATIONSHIPS).toHaveLength(5); // inchangé, pas de 'unspecified'
+  });
+  it('EVIDENCE_CONTEXTS : 13 contextes locaux (distinct de la famille CONTEXT), distress inclus', () => {
+    expect(EVIDENCE_CONTEXTS.seed).toHaveLength(13);
+    expect(EVIDENCE_CONTEXTS.has('distress')).toBe(true);
+    expect(EVIDENCE_CONTEXTS.has('conflict')).toBe(true);
+    expect(EVIDENCE_CONTEXTS.has('emotional_expression')).toBe(true);
+    expect(EVIDENCE_CONTEXTS.has('GLOBAL')).toBe(false); // GLOBAL n'est pas un contexte local
+    expect(isValidEvidenceContext('GLOBAL')).toBe(true);
+    expect(isValidEvidenceContext('stress')).toBe(true);
+    expect(isValidEvidenceContext('faute_de_frappe')).toBe(false);
   });
   it('DEPRECATED : 15 anciens axes', () => {
     expect(DEPRECATED_AXES).toHaveLength(15);

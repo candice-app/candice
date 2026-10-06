@@ -559,12 +559,6 @@ const CONTEXT_CODE_SEED = [
   'CONTEXT_CURRENT_PROJECT',
   'CONTEXT_TRANSITION',
   'CONTEXT_CONSTRAINT',
-  // 'distress' (lot A ter, mapping-soutien-moteurs §Le contexte distress) : situation
-  // où la personne traverse un moment difficile / un mal-être, SANS présumer de la cause.
-  // ⚠ 'distress' ne se traduit JAMAIS en donnée clinique : c'est un contexte RELATIONNEL,
-  // pas un état de santé. Aucun chemin de code ne le convertit en FACT sensible ni en
-  // quoi que ce soit relevant du §35 du HSG.
-  'distress',
 ] as const;
 
 /** OUVERT validé : alias string + registre extensible avec validation. */
@@ -705,6 +699,38 @@ const OPEN_KNOWLEDGE_TYPE_SEED = [...CANONICAL_FAMILIES, 'life_priority'] as con
 /** OUVERT : alias string, validé contre un registre extensible et normalisé. */
 export type OpenKnowledgeType = string;
 export const OPEN_KNOWLEDGE_TYPES = createOpenVocabulary(OPEN_KNOWLEDGE_TYPE_SEED, normalizeLabel);
+
+/* ────────────────────────────────────────────────────────────────────────
+ * CONTEXTES LOCAUX D'EVIDENCE (lot B) — DISTINCT de CONTEXT_CODES (famille CONTEXT).
+ * C'est le vocabulaire des SITUATIONS dans lesquelles une evidence est observée
+ * (le champ `evidence.context`), pas la famille CONTEXT. Registre NORMALISÉ : il empêche
+ * qu'une faute de frappe crée un contexte distinct de plus et déclenche une globalisation
+ * à tort (le grain guardrail/consolidation dépend de l'égalité exacte des contextes).
+ * 13 valeurs = 10 contextes locaux du socle + distress (soutien) + conflict (q7) +
+ * emotional_expression (q11). GLOBAL n'y figure pas : c'est l'opposé d'un contexte local.
+ * ⚠ 'distress' ne se traduit JAMAIS en donnée clinique (contexte relationnel, pas santé).
+ * ──────────────────────────────────────────────────────────────────────── */
+const EVIDENCE_CONTEXT_SEED = [
+  'attention_received',
+  'gift',
+  'gift.material',
+  'decision',
+  'relationship',
+  'surprise',
+  'stress',
+  'communication',
+  'organised_for_me',
+  'affection_given',
+  'distress',
+  'conflict',
+  'emotional_expression',
+] as const;
+export const EVIDENCE_CONTEXTS = createOpenVocabulary(EVIDENCE_CONTEXT_SEED, normalizeLabel);
+
+/** Un contexte d'evidence valide : GLOBAL (transversal) ou un contexte local connu du registre. */
+export function isValidEvidenceContext(context: string): boolean {
+  return context === 'GLOBAL' || EVIDENCE_CONTEXTS.has(context);
+}
 
 /* ────────────────────────────────────────────────────────────────────────
  * DEPRECATED_AXES — les 15 anciens axes bipolaires du code actuel
