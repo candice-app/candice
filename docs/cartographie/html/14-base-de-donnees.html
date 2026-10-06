@@ -1,0 +1,4172 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>14 — Base de données</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>14 — Base de données (schéma <code>public</code>)</h1>
+<blockquote>
+<p><strong>Ce document décrit ce qui EXISTE aujourd&#39;hui dans la base de données Candice, table par table, sans jugement ni recommandation.</strong></p>
+<ul>
+<li><strong>Source des données</strong> : lecture directe de la base de production (schéma <code>public</code>), le 2026-09-22, via <code>pg_tables</code>, <code>information_schema.columns</code>, <code>pg_policies</code>, <code>pg_class</code>, et <code>select count(*)</code> sur chaque table. Aucune écriture n&#39;a été faite.</li>
+<li><strong>42 tables</strong> au total dans le schéma <code>public</code>.</li>
+<li><strong>Statuts</strong> : ✅ utilisée (contient des données) · 🟡 vide aujourd&#39;hui (0 ligne) mais branchée au code · ⚫ morte / dépréciée / non branchée.</li>
+<li><strong>« RLS »</strong> = Row Level Security, le verrou d&#39;accès de Supabase. <strong>Les 42 tables ont ce verrou ACTIVÉ.</strong> Pour chacune, la règle est traduite en français simple. Le « service technique » (<code>service_role</code>, utilisé par les traitements serveur et les crons) contourne toujours ces verrous.</li>
+<li><strong>« Volume »</strong> = nombre de lignes réelles au moment du relevé. La base est très peu remplie (environnement de test / pré-lancement), donc beaucoup de tables sont à 0 ligne sans être mortes pour autant.</li>
+<li>Aucune table ne porte de commentaire SQL (<code>COMMENT ON</code>) : les rôles ci-dessous sont déduits du nom, des colonnes et du code applicatif (<code>src/</code>), ou marqués « usage non vérifié ».</li>
+</ul>
+</blockquote>
+<hr>
+<h2>Domaine 1 — Profil du pilote (« moi »)</h2>
+<h3><code>my_profile</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : la fiche de l&#39;utilisateur principal (le « pilote ») sur lui-même. Table centrale du profil : préférences relationnelles, style d&#39;attention, tempérament, mode de vie, infos pratiques (tailles, adresse, allergies…), réglages de notifications, ET l&#39;état de l&#39;abonnement (essai, statut, dates de pause/annulation/suppression). Très large (98 colonnes).</li>
+<li><strong>Volume</strong> : 2 lignes</li>
+<li><strong>Accès (RLS)</strong> : chaque utilisateur ne voit et ne modifie que sa propre fiche (<code>user_id</code> = utilisateur connecté).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>love_language</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>communication_style</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>stress_response</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>energy_type</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>conflict_style</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>appreciation_style</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>surprise_preference</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>food_preferences</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>wishlist</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>standing</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gastronomy</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>accommodation</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gift_style</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>additional_notes</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>disliked_activities</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>disliked_foods</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>tactility</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>health_comfort</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>family_life</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>character_emotions</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>cannot_stand</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>few_know</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>food_allergies</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>diet</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>religion</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>disability</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>postal_address</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>cadence_preference</td>
+<td>text</td>
+<td>nullable (déf. <code>normal</code>)</td>
+</tr>
+<tr>
+<td>has_children</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>pilote_difficult_period_until</td>
+<td>date</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>pilote_last_achievement_at</td>
+<td>date</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>notif_push_enabled</td>
+<td>boolean</td>
+<td>nullable (déf. true)</td>
+</tr>
+<tr>
+<td>notif_email_enabled</td>
+<td>boolean</td>
+<td>nullable (déf. true)</td>
+</tr>
+<tr>
+<td>notif_quiet_hours_start</td>
+<td>integer</td>
+<td>nullable (déf. 21)</td>
+</tr>
+<tr>
+<td>notif_quiet_hours_end</td>
+<td>integer</td>
+<td>nullable (déf. 8)</td>
+</tr>
+<tr>
+<td>notif_max_per_day</td>
+<td>integer</td>
+<td>nullable (déf. 2)</td>
+</tr>
+<tr>
+<td>trial_started_at</td>
+<td>timestamptz</td>
+<td>nullable (déf. now)</td>
+</tr>
+<tr>
+<td>subscription_status</td>
+<td>text</td>
+<td>nullable (déf. <code>trial</code>)</td>
+</tr>
+<tr>
+<td>subscription_paused_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>silent_since</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>last_active_at</td>
+<td>timestamptz</td>
+<td>nullable (déf. now)</td>
+</tr>
+<tr>
+<td>cancelled_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>deletion_scheduled_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>physical_contact_with</td>
+<td>text[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>questionnaire_input_mode</td>
+<td>text</td>
+<td>nullable (déf. <code>written</code>)</td>
+</tr>
+<tr>
+<td>social_energy</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>conflict_resolution</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>decision_making</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>emotional_expression</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>core_values</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>recognition_preference</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>boundaries</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>growth_mindset</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>favorite_foods</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gift_preference</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>conversation_topics</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>things_to_avoid</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>best_contact_method</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>important_dates</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>clothing_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>shoe_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>ring_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>pants_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>pets</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>hobbies</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>attention_answers</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>attention_reception</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>attention_expression</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>attention_computed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>attention_breath_text</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>temperament_answers</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>temperament_axes</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>temperament_modes</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>temperament_computed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>lifestyle_answers</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>lifestyle_axes</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>relational_filters</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>lifestyle_computed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>singularity_answers</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>practical_info</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>practical_computed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>profile_synthesis</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>synthesis_computed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>discovery_answers</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>discovery_fatigue_score</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>grammatical_gender</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>style_gender_orientation</td>
+<td>text[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>lifetime_trial</td>
+<td>boolean</td>
+<td>NOT NULL (déf. false)</td>
+</tr>
+<tr>
+<td>date_de_naissance</td>
+<td>date</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>is_findable</td>
+<td>boolean</td>
+<td>NOT NULL (déf. true)</td>
+</tr>
+<tr>
+<td>handle</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>avatar_path</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>onboarding_completed</td>
+<td>boolean</td>
+<td>NOT NULL (déf. false)</td>
+</tr>
+</tbody></table>
+<h3><code>profile_analysis</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : le résultat de l&#39;analyse produite par Candice — pour le pilote lui-même (<code>contact_id</code> vide) ou pour un proche (<code>contact_id</code> renseigné). Contient le texte de synthèse, les cartes/chips, les sections, les « must-have », les « deal-breakers », l&#39;ADN d&#39;attention, le radar de style, etc. C&#39;est la fiche affichée à l&#39;écran.</li>
+<li><strong>Volume</strong> : 2 lignes</li>
+<li><strong>Accès (RLS)</strong> : le pilote voit/modifie ses propres analyses. <strong>En plus</strong>, un proche ayant un consentement actif peut lire : (a) l&#39;analyse d&#39;un contact le concernant (consentement <code>contact_analysis</code> actif), ou (b) l&#39;analyse « profil de soi » du pilote si un partage <code>profile_view</code> actif existe et que la portée n&#39;est pas « blind ».</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>summary</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>summary_chips</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>sections</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>dimension_scores</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>must_haves</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>deal_breakers</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>attention_dna</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>constraints</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>entities</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gender</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>confidence</td>
+<td>double precision</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>source</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>generated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>engine_version</td>
+<td>text</td>
+<td>nullable (déf. <code>2.0</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>summary_third_person</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>insights</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>modes</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>style_radar</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>summary_long</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>podium_intro</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>understood_cards</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>works_phrases</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>territory</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>universe</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>profile_completion</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : suivi du remplissage du profil, question par question (est-ce rempli, quand demandé, quand répondu, combien de fois sauté). Sert à savoir quoi proposer ensuite au pilote. Vide aujourd&#39;hui.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres lignes de complétion (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>question_key</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>is_filled</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>answer_data</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>last_asked_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>answered_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>skipped_count</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>not_started</code>)</td>
+</tr>
+<tr>
+<td>personalized_text</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>profile_notes</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : notes libres, soit sur un contact (<code>contact_id</code> renseigné), soit personnelles. Champ texte simple.</li>
+<li><strong>Volume</strong> : 1 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun gère ses propres notes (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>note</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>user_points</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : historique des points gagnés par l&#39;utilisateur (gamification), une ligne par action et son nombre de points.</li>
+<li><strong>Volume</strong> : 1 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres points (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>action_type</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>points</td>
+<td>integer</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 2 — Questionnaire, Discovery &amp; confidences</h2>
+<h3><code>discovery_questions</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : la <strong>banque de questions</strong> du parcours « Discovery » (questions posées au fil de l&#39;eau pour enrichir le profil). Chaque ligne = une question : son texte, sa dimension, son type, ses options, ses conditions de déclenchement, sa priorité, ce qu&#39;elle met à jour dans le profil, et si son texte est verrouillé (<code>locked_text</code>). C&#39;est du contenu de référence, pas des données utilisateur.</li>
+<li><strong>Volume</strong> : 70 lignes</li>
+<li><strong>Accès (RLS)</strong> : <strong>lecture publique</strong> (tout utilisateur connecté peut lire les questions) ; l&#39;écriture est réservée au service technique.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>question_key</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>dimension</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>subdimension</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>question_text</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>question_type</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>options</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>trigger_key</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>target</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>self</code>)</td>
+</tr>
+<tr>
+<td>min_days_between</td>
+<td>integer</td>
+<td>nullable (déf. 30)</td>
+</tr>
+<tr>
+<td>sort_order</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>statut</td>
+<td>text</td>
+<td>nullable (déf. <code>active</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>trigger_from_main_question</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>trigger_condition</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>priority</td>
+<td>integer</td>
+<td>nullable (déf. 50)</td>
+</tr>
+<tr>
+<td>free_text_enabled</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>updates_dimensions</td>
+<td>text[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>updates_must_have</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>updates_deal_breakers</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>updates_supplier_rules</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>updates_recommendation_logic</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>do_not_show_if</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>profile_output_impact</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>catalogue_matching_impact</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>benefit_label</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>duration_label</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>locked_text</td>
+<td>boolean</td>
+<td>NOT NULL (déf. false)</td>
+</tr>
+</tbody></table>
+<h3><code>discovery_sessions</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : une session Discovery en cours ou terminée pour un utilisateur (mode, questions en attente <code>pending_keys</code>, index courant, statut, dates). Créée à la première réponse.</li>
+<li><strong>Volume</strong> : 57 lignes</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres sessions (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>mode</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pending_keys</td>
+<td>text[]</td>
+<td>nullable (déf. vide)</td>
+</tr>
+<tr>
+<td>current_index</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>nullable (déf. <code>active</code>)</td>
+</tr>
+<tr>
+<td>started_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>last_activity_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>questionnaire_responses</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : réponses au questionnaire pour un contact (love language, style de communication, tailles, régime, centres d&#39;intérêt…). Ancien format de questionnaire proche ; <code>data_source</code> indique l&#39;origine (saisie pilote, etc.). Vide aujourd&#39;hui mais largement référencée dans le code.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres réponses (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>love_language</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>communication_style</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>stress_response</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>social_energy</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>appreciation_style</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>conflict_resolution</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>decision_making</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>emotional_expression</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>core_values</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>recognition_preference</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>boundaries</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>growth_mindset</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>hobbies</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>favorite_foods</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gift_preference</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>conversation_topics</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>things_to_avoid</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>best_contact_method</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>important_dates</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>additional_notes</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>standing</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gastronomy</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>accommodation</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gift_style</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>clothing_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>shoe_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>ring_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>pants_size</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>food_allergies</td>
+<td>text[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>diet</td>
+<td>text[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>pets</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>physical_contact_with</td>
+<td>text[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>input_mode</td>
+<td>text</td>
+<td>nullable (déf. <code>written</code>)</td>
+</tr>
+<tr>
+<td>attention_reception</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>incognito_signals</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>interests</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>data_source</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>pilot_input</code>)</td>
+</tr>
+</tbody></table>
+<h3><code>confidences</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : les « confidences » que le pilote confie à Candice (texte brut ou vocal). Candice détecte le sujet, le ton émotionnel, et peut répondre. Alimente ensuite d&#39;éventuelles mises à jour de profil.</li>
+<li><strong>Volume</strong> : 2 lignes</li>
+<li><strong>Accès (RLS)</strong> : chacun gère ses propres confidences (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>raw_text</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>input_mode</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>text</code>)</td>
+</tr>
+<tr>
+<td>detected_subject</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>emotional_tone</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>candice_response</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<h3><code>profile_updates_from_confidences</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : propositions de mise à jour du profil déduites d&#39;une confidence (quel champ, ancienne/nouvelle valeur, statut en attente/validé). File de relecture avant d&#39;écrire dans le profil.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres propositions (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>confidence_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>field_name</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>old_value</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>new_value</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>pending</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reviewed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>shared_profile_responses</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : réponses saisies via un lien de partage (<code>token</code>) — un proche remplit des infos qui remontent au pilote. Stockage brut en JSON (<code>response_data</code>).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres lignes (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>token</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>response_data</td>
+<td>jsonb</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>share_links</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : liens de partage émis par un utilisateur (<code>sender_id</code>, <code>token</code>, expiration) pour collecter des réponses. Vide aujourd&#39;hui.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne gère que les liens qu&#39;il a émis (<code>sender_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>token</td>
+<td>text</td>
+<td>NOT NULL (déf. uuid)</td>
+</tr>
+<tr>
+<td>sender_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>sender_name</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 3 — Contacts, proches &amp; partage</h2>
+<h3><code>contacts</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : la fiche de chaque proche géré par le pilote (nom, relation, coordonnées, photo, adresse, date de naissance, niveau de proximité, cadence, mode « mémoire », lien vers un compte proche <code>proche_user_id</code>…). Table pivot de toute l&#39;app.</li>
+<li><strong>Volume</strong> : 3 lignes</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit et ne gère que ses propres contacts (<code>user_id</code>).</li>
+<li><strong>Note</strong> : la colonne <code>gift_wishlist</code> (jsonb) est <strong>DÉPRÉCIÉE</strong> (fusionnée dans <code>carnet_envies_items</code> à la migration 67, conservée mais plus alimentée).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>name</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>relationship</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>email</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>phone</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>archived_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>photo_url</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gift_wishlist</td>
+<td>jsonb</td>
+<td>nullable (déf. <code>[]</code>) — <strong>DÉPRÉCIÉE</strong></td>
+</tr>
+<tr>
+<td>last_reminder_sent_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>proximity_level</td>
+<td>text</td>
+<td>nullable (déf. <code>close</code>)</td>
+</tr>
+<tr>
+<td>cadence_override</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>last_suggestion_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>archive_reason</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>is_memory_mode</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>memory_anniversary_opt_out</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>proche_user_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>relationship_register</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>gender</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>idempotency_key</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>date_de_naissance</td>
+<td>date</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>postal_address</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>contact_consents</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : les consentements entre un pilote et un proche. Deux natures (<code>kind</code>) : <code>contact_analysis</code> (le proche accepte d&#39;être analysé) et <code>profile_view</code> (un tiers demande à voir le profil « de soi » du pilote). Gère le statut (en attente / actif / rejeté), la portée (<code>scope</code>) et les dates.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> — plusieurs règles combinées :<ul>
+<li>le <strong>pilote</strong> gère tous les consentements où il est le pilote (<code>pilote_id</code>) ;</li>
+<li>le <strong>proche</strong> peut lire les consentements qui le concernent (<code>proche_user_id</code>) ;</li>
+<li>le <strong>proche</strong> peut répondre (accepter/rejeter) à une demande d&#39;analyse le concernant ;</li>
+<li>un <strong>demandeur</strong> peut créer une demande de vue-profil (<code>profile_view</code>, en attente, sur lui-même) et annuler sa propre demande en attente.</li>
+</ul>
+</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilote_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>proche_user_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>pending</code>)</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>text[]</td>
+<td>NOT NULL (déf. <code>{analysis}</code>)</td>
+</tr>
+<tr>
+<td>requested_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>responded_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>consented_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>kind</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>contact_analysis</code>)</td>
+</tr>
+<tr>
+<td>requested_by</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>profile_share_links</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : liens de partage du profil « de soi » du pilote (jeton haché <code>token_hash</code>, portée <code>scope</code>, expiration 30 j, qui a réclamé le lien, consentement associé, date de révocation). Mécanisme actuel de partage de fiche.</li>
+<li><strong>Volume</strong> : 1 ligne</li>
+<li><strong>Accès (RLS)</strong> : le propriétaire (<code>owner_id</code>) gère ses propres liens.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>owner_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>token_hash</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>scope</td>
+<td>text[]</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>timestamptz</td>
+<td>NOT NULL (déf. now + 30 j)</td>
+</tr>
+<tr>
+<td>claimed_by</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>claimed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>consent_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>revoked_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>invite_links</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : liens d&#39;invitation émis par un pilote pour inviter un proche (jeton, nom du pilote, contact lié, expiration 30 j, date d&#39;utilisation).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : le pilote (<code>pilote_id</code>) gère ses propres liens d&#39;invitation.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>token</td>
+<td>text</td>
+<td>NOT NULL (déf. uuid)</td>
+</tr>
+<tr>
+<td>pilote_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>pilote_name</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>timestamptz</td>
+<td>nullable (déf. now + 30 j)</td>
+</tr>
+<tr>
+<td>used_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>person_states</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : l&#39;état déclaré d&#39;une personne à un instant (« pas le bon moment », etc.) — sujet soit le pilote lui-même (<code>subject_kind</code>), soit un contact. Sert au filtrage amont des recommandations (Espace Proche, moteur de reco).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : le déclarant (<code>declared_by</code>) gère ses propres états ; <strong>en plus</strong>, un proche peut lire l&#39;état « de soi » d&#39;un pilote s&#39;il a un partage <code>profile_view</code> actif avec ce pilote.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>subject_kind</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>subject_user_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>declared_by</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>state</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>note_free</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>event_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<h3><code>cross_validations</code> ⚫</h3>
+<ul>
+<li><strong>Rôle</strong> : questions de « validation croisée » posées à un proche pour trancher un doute sur une reco (déclenchées ex. par un double refus). Rattachées à l&#39;Espace Proche V2 (phases 7-10, non lancées).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Statut</strong> : ⚫ — 0 ligne <strong>et</strong> aucune référence dans le code applicatif (<code>src/</code>) au moment du relevé ; la table existe en base mais n&#39;est pas branchée à l&#39;app (feature non lancée).</li>
+<li><strong>Accès (RLS)</strong> : verrou activé <strong>sans aucune policy</strong> → aucun utilisateur connecté ne peut lire/écrire ; seul le service technique (<code>service_role</code>) y accède.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilot_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reco_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>trigger</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>double_gout_refus</code>)</td>
+</tr>
+<tr>
+<td>question_text</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>proche_user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>proche_answer</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>open</code>)</td>
+</tr>
+<tr>
+<td>notified_pilot</td>
+<td>boolean</td>
+<td>NOT NULL (déf. false)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>answered_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>_deprecated_profile_share_requests</code> ⚫</h3>
+<ul>
+<li><strong>Rôle</strong> : ancienne mécanique de demandes de partage de profil, <strong>remplacée</strong> par <code>contact_consents</code> (<code>kind = &#39;profile_view&#39;</code>) + <code>profile_share_links</code>.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Statut</strong> : ⚫ <strong>MORTE</strong> — préfixe <code>_deprecated_</code>, 0 ligne, aucune référence dans le code. Conservée en base par prudence (non droppée).</li>
+<li><strong>Accès (RLS)</strong> : le propriétaire du profil et le demandeur gèrent leurs lignes respectives (règles héritées, sans effet réel puisque la table n&#39;est plus alimentée).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>requester_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>profile_owner_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>nullable (déf. <code>pending</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>responded_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>confirmed_with_reauth</td>
+<td>boolean</td>
+<td>nullable (déf. false)</td>
+</tr>
+<tr>
+<td>reauth_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 4 — Recommandations, idées &amp; attentions</h2>
+<h3><code>contact_recommendations</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : bloc de recommandations généré pour un contact — les idées (<code>ideas</code> en JSON), l&#39;angle mort (<code>blind_spot</code>), la cadence suggérée (<code>kadence</code>), la date de génération. Une ligne = un jeu de recos pour un proche.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres recommandations (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>ideas</td>
+<td>jsonb</td>
+<td>NOT NULL (déf. <code>[]</code>)</td>
+</tr>
+<tr>
+<td>blind_spot</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>kadence</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>generated_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<h3><code>contact_reco_items</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : recommandations à la pièce (une idée = une ligne) pour un contact : type, titre, marque, prix indicatif, photo, traçabilité de la source (<code>source_trace</code>), certitude, justification (<code>why_json</code>), et <strong>réservation invisible</strong> (statut, qui a réservé, expiration). Version détaillée / moteur de reco.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : le pilote (<code>pilot_id</code>) gère ses propres items.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilot_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reco_type</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>title</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>brand</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>price_indicative</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>photo_url</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>source_trace</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>certainty_pct</td>
+<td>integer</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>why_json</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>need_tag</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>origin_ref</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>active</code>)</td>
+</tr>
+<tr>
+<td>reservation_status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>available</code>)</td>
+</tr>
+<tr>
+<td>reserved_by</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>reserved_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>reservation_expires_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<h3><code>reco_refusals</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : trace des refus de recommandations par le pilote (raison, sous-raison, note libre, si réactivable et quand <code>reappear_at</code>, si mis de côté pour une occasion). Sert au moteur à ne pas re-proposer.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : le pilote (<code>pilot_id</code>) gère ses propres refus.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilot_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reco_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reason</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>sub_reason</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>note_free</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>reactivable</td>
+<td>boolean</td>
+<td>NOT NULL (déf. true)</td>
+</tr>
+<tr>
+<td>reappear_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reserved_for_occasion</td>
+<td>boolean</td>
+<td>NOT NULL (déf. false)</td>
+</tr>
+</tbody></table>
+<h3><code>attention_log</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : journal des « attentions » proposées à un contact (titre, type, statut proposé/agi, feedback, niveau d&#39;amour <code>love_level</code>). Historise ce que Candice a suggéré et comment le pilote a réagi.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres lignes (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>attention_title</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>attention_type</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>proposed</code>)</td>
+</tr>
+<tr>
+<td>proposed_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>actioned_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>feedback</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>feedback_note</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>feedback_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>love_level</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>proactive_suggestions</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : suggestions proactives générées par Candice pour un contact (titre, description, catégorie, raisonnement, prix estimé, indice partenaire, priorité, statut, expiration). Alimentées par les signaux contextuels.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres suggestions (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>signal_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>title</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>category</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reasoning</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>estimated_price</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>partner_hint</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>pending</code>)</td>
+</tr>
+<tr>
+<td>refusal_reason</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>priority</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>normal</code>)</td>
+</tr>
+<tr>
+<td>generated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>responded_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>suggestions</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : suggestions pour un contact, contenu libre en JSON (<code>content</code>). Format ancien/générique (le contenu n&#39;est pas structuré en colonnes). Vide aujourd&#39;hui mais référencée dans le code.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres suggestions (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>content</td>
+<td>jsonb</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>generated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>budget_feedback</code> ⚫</h3>
+<ul>
+<li><strong>Rôle</strong> : réaction du pilote au budget d&#39;une suggestion (trop cher / OK…). Feedback d&#39;ajustement du budget.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Statut</strong> : ⚫ — 0 ligne <strong>et</strong> aucune référence dans le code applicatif (<code>src/</code>) ; table présente en base mais non branchée à l&#39;app au moment du relevé.</li>
+<li><strong>Accès (RLS)</strong> : chacun ne gère que ses propres lignes (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>suggestion_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>reaction</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<h3><code>signals</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : signaux déduits sur un contact (type, valeur, polarité positif/négatif, confiance, fraîcheur, mémoire source, compteur d&#39;utilisation en reco, signaux en conflit). Brique du moteur de reco (traçabilité <code>deduced</code>).</li>
+<li><strong>Volume</strong> : 2 lignes</li>
+<li><strong>Accès (RLS)</strong> : le pilote (<code>pilot_id</code>) gère ses propres signaux.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilot_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>signal_type</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>signal_value</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>polarity</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>confidence</td>
+<td>integer</td>
+<td>nullable (déf. 60)</td>
+</tr>
+<tr>
+<td>source_memory_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>freshness</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>used_in_recommendations_count</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>last_used_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>last_confirmed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>conflicting_signals</td>
+<td>uuid[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>nullable (déf. <code>actif</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>memories</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : les « mémoires » qu&#39;un pilote enregistre sur un proche (entrée brute, résumé assaini, sentiment, catégorie, intensité, fiabilité de la source, score de confiance, dates de revalidation, niveau de visibilité, impact sur les recos, liens vers événements/wishlist/attentions). Base de connaissance riche par contact.</li>
+<li><strong>Volume</strong> : 1 ligne</li>
+<li><strong>Accès (RLS)</strong> : le pilote (<code>pilot_id</code>) gère ses propres mémoires.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilot_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>raw_input</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>sanitized_summary</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>sentiment</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>category</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>emotional_intensity</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>sensitivity_level</td>
+<td>integer</td>
+<td>nullable (déf. 1)</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>nullable (déf. <code>actif</code>)</td>
+</tr>
+<tr>
+<td>source</td>
+<td>text</td>
+<td>nullable (déf. <code>w1</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>memory_type</td>
+<td>text</td>
+<td>nullable (déf. <code>événement_de_vie</code>)</td>
+</tr>
+<tr>
+<td>subcategory</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>source_reliability</td>
+<td>text</td>
+<td>nullable (déf. <code>moyenne</code>)</td>
+</tr>
+<tr>
+<td>confidence_score</td>
+<td>integer</td>
+<td>nullable (déf. 60)</td>
+</tr>
+<tr>
+<td>valid_until</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>revalidation_date</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>visibility_level</td>
+<td>text</td>
+<td>nullable (déf. <code>privé</code>)</td>
+</tr>
+<tr>
+<td>recommendation_impact</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>related_events</td>
+<td>uuid[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>related_wishlist_items</td>
+<td>uuid[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>related_attention_history</td>
+<td>uuid[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>admin_notes</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>updated_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>raw_text</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>reformulated_text</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>type</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>tonality</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>probable_needs</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>confidence</td>
+<td>numeric</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>revalidate_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>context_journal</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : journal de questions/réponses de contexte sur un contact (Candice pose une question, le pilote répond). Historise le dialogue de contextualisation.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres lignes (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>question</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>answer</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>answered_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>type</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>contextual_signals</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : signaux contextuels datés (type, données JSON, date de déclenchement, priorité, statut, consommation, expiration). Alimente les suggestions proactives (ex. anniversaire, saison…). Détectés par les crons.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres signaux (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>signal_type</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>signal_data</td>
+<td>jsonb</td>
+<td>NOT NULL (déf. <code>{}</code>)</td>
+</tr>
+<tr>
+<td>trigger_date</td>
+<td>date</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>priority</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>normal</code>)</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>active</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>consumed_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>expires_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 5 — Cadence (rythme des attentions)</h2>
+<h3><code>cadence_log</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : journal des cadences calculées par contact (cadence retenue, raison, facteurs pris en compte). Historise les décisions de rythme.</li>
+<li><strong>Volume</strong> : 31 lignes</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres lignes (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>decision_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>computed_cadence</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>reason</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>factors</td>
+<td>jsonb</td>
+<td>nullable (déf. <code>{}</code>)</td>
+</tr>
+</tbody></table>
+<h3><code>cadence_feedback</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : bilan de cadence sur une fenêtre de temps (nb de suggestions, validées, refusées, reportées, ignorées, taux de validation, ajustement recommandé). Sert à ajuster automatiquement le rythme.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres lignes (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>window_start</td>
+<td>date</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>window_end</td>
+<td>date</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>suggestions_count</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>validated_count</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>refused_count</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>snoozed_count</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>ignored_count</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>validation_rate</td>
+<td>numeric</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>recommended_adjustment</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 6 — Wishlist perso &amp; Carnet d&#39;envies</h2>
+<h3><code>my_wishlist_items</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : la <strong>wishlist personnelle</strong> du pilote (ce qu&#39;il aimerait recevoir) — STRICTEMENT PRIVÉE. Photo, marque, lien, taille, prix indicatif (texte), occasion, niveau d&#39;envie (<code>envy_level</code>), destinataires ciblés (<code>target_recipients</code>), traçabilité <code>declared</code>, et <strong>réservation invisible</strong> (statut, qui a réservé, expiration).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit et ne modifie que sa propre wishlist (<code>user_id</code>) — jamais de vue tierce.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>title</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>url</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>note</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>photo_url</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>brand</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>web_link</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>size_ref</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>price_indicative</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>occasion</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>note_text</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>envy_level</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>target_recipients</td>
+<td>uuid[]</td>
+<td>NOT NULL (déf. vide)</td>
+</tr>
+<tr>
+<td>source_trace</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>declared</code>)</td>
+</tr>
+<tr>
+<td>reservation_status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>available</code>)</td>
+</tr>
+<tr>
+<td>reserved_by</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>reserved_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>reservation_expires_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>carnet_envies_items</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : le <strong>carnet d&#39;envies</strong> repérées pour un proche (vit sur la fiche du proche) — description, photo, lien, marque, indice de lieu, occasion(s), phrase entendue (<code>heard_quote</code>), source (<code>heard</code>/<code>seen</code>/<code>link</code>), traçabilité <code>spotted</code>, niveau de confiance, statut, et modalités de paiement si sourcing marchand.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : le pilote (<code>pilot_id</code>) gère son propre carnet.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilot_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>description</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>photo_url</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>source_link</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>brand_name</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>brand_option</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>confidence_level</td>
+<td>text</td>
+<td>nullable (déf. <code>moyenne</code>)</td>
+</tr>
+<tr>
+<td>location_hint</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>occasion_links</td>
+<td>text[]</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>statut</td>
+<td>text</td>
+<td>nullable (déf. <code>actif</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>requires_payment_sourcing</td>
+<td>boolean</td>
+<td>NOT NULL (déf. false)</td>
+</tr>
+<tr>
+<td>payment_modalities</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>size_ref</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>price_indicative</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>occasion</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>note_text</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>source</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>heard_quote</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>source_trace</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>spotted</code>)</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 7 — Épargne &amp; financement</h2>
+<blockquote>
+<p><strong>Note transversale</strong> : les trois tables ci-dessous ont un verrou RLS propriétaire cohérent (feature « épargne cadeau » prévue) mais <strong>ne sont référencées par aucun code applicatif</strong> (<code>src/</code>) au moment du relevé — uniquement dans des scripts de travail à la racine. Elles sont donc marquées ⚫ (présentes mais non branchées à l&#39;app aujourd&#39;hui). À confirmer par Estelle : feature en attente ou abandonnée.</p>
+</blockquote>
+<h3><code>savings_goal</code> ⚫</h3>
+<ul>
+<li><strong>Rôle</strong> : objectif d&#39;épargne pour un cadeau (libellé, montant cible, montant mensuel, date cible, statut, source manuel/auto).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne gère que ses propres objectifs (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>contact_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>item_label</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>target_amount</td>
+<td>numeric</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>monthly_amount</td>
+<td>numeric</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>target_date</td>
+<td>date</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>started_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>active</code>)</td>
+</tr>
+<tr>
+<td>source</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>manual</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<h3><code>savings_contribution</code> ⚫</h3>
+<ul>
+<li><strong>Rôle</strong> : versement rattaché à un objectif d&#39;épargne (<code>goal_id</code>, montant, date).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : on ne gère un versement que si l&#39;objectif parent appartient à l&#39;utilisateur connecté (contrôle via <code>savings_goal</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>goal_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>amount</td>
+<td>numeric</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>logged_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<h3><code>finance_plans</code> ⚫</h3>
+<ul>
+<li><strong>Rôle</strong> : plans de financement/paiement en plusieurs fois par référence catalogue (<code>catalog_ref</code>, nombre d&#39;échéances). Table de configuration.</li>
+<li><strong>Volume</strong> : 1 ligne</li>
+<li><strong>Statut</strong> : ⚫ — non référencée dans le code applicatif (<code>src/</code>) au moment du relevé (uniquement scripts de travail). Contient 1 ligne de configuration.</li>
+<li><strong>Accès (RLS)</strong> : <strong>lecture publique</strong> (tout utilisateur connecté peut lire) ; écriture réservée au service technique.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>catalog_ref</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>n_installments</td>
+<td>integer</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>configured_by</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>NOT NULL</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 8 — Notifications &amp; push</h2>
+<h3><code>notification_log</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : journal des notifications envoyées (canal push/email, type, suggestion/signal lié, titre, corps, statut, dates d&#39;envoi/ouverture/clic, erreur éventuelle).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que ses propres notifications (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>channel</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>notification_type</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>related_suggestion_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>related_signal_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>title</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>body</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL (déf. <code>sent</code>)</td>
+</tr>
+<tr>
+<td>sent_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>opened_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>clicked_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<h3><code>push_subscriptions</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : abonnements aux notifications push du navigateur (endpoint, clés de chiffrement <code>p256dh_key</code>/<code>auth_key</code>, user-agent, dernière utilisation).</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : chacun ne gère que ses propres abonnements push (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>endpoint</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>p256dh_key</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>auth_key</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_agent</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>last_used_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 9 — Crons &amp; technique</h2>
+<h3><code>cron_runs</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : journal des exécutions de tâches planifiées (nom du job, début/fin, statut, nb de signaux détectés, nb de suggestions générées, erreur, métadonnées). Suivi technique des crons.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : verrou activé <strong>sans policy</strong> → aucun utilisateur connecté n&#39;y accède ; seul le service technique (<code>service_role</code>, qui fait tourner les crons) écrit/lit.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>job_name</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>started_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>finished_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>nullable (déf. <code>running</code>)</td>
+</tr>
+<tr>
+<td>signals_detected</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>suggestions_generated</td>
+<td>integer</td>
+<td>nullable (déf. 0)</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>metadata</td>
+<td>jsonb</td>
+<td>nullable (déf. <code>{}</code>)</td>
+</tr>
+</tbody></table>
+<h3><code>processing_log</code> 🟡</h3>
+<ul>
+<li><strong>Rôle</strong> : journal technique du traitement des mémoires (identifiant de corrélation, pilote, mémoire, étape, statut, durée en ms, erreur, métadonnées). Traçabilité de la chaîne de traitement.</li>
+<li><strong>Volume</strong> : 0 ligne</li>
+<li><strong>Accès (RLS)</strong> : verrou activé <strong>sans policy</strong> → aucun utilisateur connecté n&#39;y accède ; seul le service technique (<code>service_role</code>) écrit/lit.</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>correlation_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>pilot_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>memory_id</td>
+<td>uuid</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>step</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>status</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>duration_ms</td>
+<td>integer</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>error_message</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>metadata</td>
+<td>jsonb</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Domaine 10 — Abonnement &amp; cycle de vie du compte</h2>
+<h3><code>account_lifecycle_events</code> ✅</h3>
+<ul>
+<li><strong>Rôle</strong> : journal des événements du cycle de vie du compte (essai démarré, abonnement activé/pausé/annulé, suppression planifiée…). Chaque ligne = un changement d&#39;état (statut précédent → nouveau, déclencheur, métadonnées). L&#39;état courant de l&#39;abonnement vit, lui, dans <code>my_profile</code>.</li>
+<li><strong>Volume</strong> : 4 lignes</li>
+<li><strong>Accès (RLS)</strong> : chacun ne voit que les événements de son propre compte (<code>user_id</code>).</li>
+<li><strong>Colonnes</strong> :</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Type</th>
+<th>Null</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>user_id</td>
+<td>uuid</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>event_type</td>
+<td>text</td>
+<td>NOT NULL</td>
+</tr>
+<tr>
+<td>previous_status</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>new_status</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>triggered_by</td>
+<td>text</td>
+<td>nullable</td>
+</tr>
+<tr>
+<td>metadata</td>
+<td>jsonb</td>
+<td>nullable (déf. <code>{}</code>)</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>timestamptz</td>
+<td>nullable</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>Tableau récapitulatif</h2>
+<table>
+<thead>
+<tr>
+<th>Table</th>
+<th>Domaine</th>
+<th>Volume</th>
+<th>RLS activée</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>my_profile</td>
+<td>Profil pilote</td>
+<td>2</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>profile_analysis</td>
+<td>Profil pilote</td>
+<td>2</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>profile_completion</td>
+<td>Profil pilote</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>profile_notes</td>
+<td>Profil pilote</td>
+<td>1</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>user_points</td>
+<td>Profil pilote</td>
+<td>1</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>discovery_questions</td>
+<td>Questionnaire/Discovery</td>
+<td>70</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>discovery_sessions</td>
+<td>Questionnaire/Discovery</td>
+<td>57</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>questionnaire_responses</td>
+<td>Questionnaire/Discovery</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>confidences</td>
+<td>Questionnaire/Discovery</td>
+<td>2</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>profile_updates_from_confidences</td>
+<td>Questionnaire/Discovery</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>shared_profile_responses</td>
+<td>Questionnaire/Discovery</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>share_links</td>
+<td>Questionnaire/Discovery</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>contacts</td>
+<td>Contacts/Partage</td>
+<td>3</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>contact_consents</td>
+<td>Contacts/Partage</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>profile_share_links</td>
+<td>Contacts/Partage</td>
+<td>1</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>invite_links</td>
+<td>Contacts/Partage</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>person_states</td>
+<td>Contacts/Partage</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>cross_validations</td>
+<td>Contacts/Partage</td>
+<td>0</td>
+<td>oui (sans policy)</td>
+<td>⚫</td>
+</tr>
+<tr>
+<td>_deprecated_profile_share_requests</td>
+<td>Contacts/Partage</td>
+<td>0</td>
+<td>oui</td>
+<td>⚫</td>
+</tr>
+<tr>
+<td>contact_recommendations</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>contact_reco_items</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>reco_refusals</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>attention_log</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>proactive_suggestions</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>suggestions</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>budget_feedback</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>⚫</td>
+</tr>
+<tr>
+<td>signals</td>
+<td>Recommandations</td>
+<td>2</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>memories</td>
+<td>Recommandations</td>
+<td>1</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>context_journal</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>contextual_signals</td>
+<td>Recommandations</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>cadence_log</td>
+<td>Cadence</td>
+<td>31</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>cadence_feedback</td>
+<td>Cadence</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>my_wishlist_items</td>
+<td>Wishlist/Carnet</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>carnet_envies_items</td>
+<td>Wishlist/Carnet</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>savings_goal</td>
+<td>Épargne</td>
+<td>0</td>
+<td>oui</td>
+<td>⚫</td>
+</tr>
+<tr>
+<td>savings_contribution</td>
+<td>Épargne</td>
+<td>0</td>
+<td>oui</td>
+<td>⚫</td>
+</tr>
+<tr>
+<td>finance_plans</td>
+<td>Épargne</td>
+<td>1</td>
+<td>oui</td>
+<td>⚫</td>
+</tr>
+<tr>
+<td>notification_log</td>
+<td>Notifications</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>push_subscriptions</td>
+<td>Notifications</td>
+<td>0</td>
+<td>oui</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>cron_runs</td>
+<td>Crons/Technique</td>
+<td>0</td>
+<td>oui (sans policy)</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>processing_log</td>
+<td>Crons/Technique</td>
+<td>0</td>
+<td>oui (sans policy)</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>account_lifecycle_events</td>
+<td>Abonnement</td>
+<td>4</td>
+<td>oui</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p><strong>Bilan</strong> :</p>
+<ul>
+<li><strong>42 tables</strong>, RLS activée sur les 42.</li>
+<li><strong>3 tables « sans aucune policy »</strong> = accès service technique (<code>service_role</code>) uniquement : <code>cron_runs</code>, <code>processing_log</code>, <code>cross_validations</code>. (Les 39 autres ont des policies « propriétaire » et/ou de partage.)</li>
+<li><strong>13 tables ✅</strong> avec données réelles : <code>my_profile</code>, <code>profile_analysis</code>, <code>profile_notes</code>, <code>user_points</code>, <code>discovery_questions</code>, <code>discovery_sessions</code>, <code>confidences</code>, <code>contacts</code>, <code>profile_share_links</code>, <code>signals</code>, <code>memories</code>, <code>cadence_log</code>, <code>account_lifecycle_events</code>.</li>
+<li><strong>6 tables ⚫</strong> mortes ou non branchées à l&#39;app : <code>_deprecated_profile_share_requests</code>, <code>cross_validations</code>, <code>budget_feedback</code>, <code>savings_goal</code>, <code>savings_contribution</code>, <code>finance_plans</code>.</li>
+<li><strong>Le reste = 🟡</strong> : vides aujourd&#39;hui (0 ligne) mais branchées au code.</li>
+</ul>
+<hr>
+<h2>⚠ RAPPORT D&#39;HYPOTHÈSES</h2>
+<p><strong>A. ZONES DE FLOU</strong></p>
+<ul>
+<li><strong>Distinction 🟡 vs ⚫ pour les tables à 0 ligne</strong> : l&#39;instruction dit « morte = 0 ligne ET non référencée dans le code ». J&#39;ai mesuré les références dans <code>src/</code> avec <code>ripgrep</code>. Hypothèse prise : une table à 0 ligne mais référencée dans <code>src/</code> = 🟡 (vide mais branchée) ; à 0 ligne ET 0 référence applicative = ⚫. Alternative possible : certaines ⚫ (épargne, budget_feedback) sont peut-être des features en attente volontaire, pas des tables mortes.</li>
+<li><strong><code>finance_plans</code></strong> : 1 ligne (pas 0) mais aucune référence dans <code>src/</code>. Je l&#39;ai classée ⚫ (non branchée) par cohérence avec les tables épargne, malgré son unique ligne de config. Alternative : la laisser 🟡.</li>
+<li><strong>Comptage de références</strong> : le nombre de fichiers citant un nom de table inclut de possibles faux positifs pour les mots génériques (<code>suggestions</code>, <code>signals</code>, <code>contacts</code>). Je ne m&#39;en suis servie que pour trancher 🟡/⚫, pas pour décrire l&#39;usage.</li>
+</ul>
+<p><strong>B. DÉCISIONS PRISES SEUL</strong></p>
+<ul>
+<li>Regroupement des tables par domaine (10 domaines) : inventé pour la lisibilité, non dicté par la base.</li>
+<li>Rôles fonctionnels de chaque table : déduits du nom + colonnes + contexte CLAUDE.md/MEMORY ; aucune table ne porte de commentaire SQL.</li>
+<li>Traduction des règles RLS complexes (<code>contact_consents</code>, <code>profile_analysis</code>, <code>person_states</code>) résumée en langage simple — la formulation exacte des conditions SQL reste dans la base.</li>
+</ul>
+<p><strong>C. LAISSÉ EN SUSPENS</strong></p>
+<ul>
+<li>Je n&#39;ai pas inspecté les fonctions RPC / SECURITY DEFINER (ex. <code>reserve_wishlist_item</code>) ni les triggers : hors périmètre de la demande (tables uniquement).</li>
+<li>Je n&#39;ai pas listé les clés étrangères / index : non demandés.</li>
+<li>Les scripts scratch à la racine (<code>s5.cjs</code>, <code>scratch_pg3.cjs</code>, <code>scratch_pg4.cjs</code>) référençant les tables épargne/finance sont pré-existants, non touchés.</li>
+</ul>
+<p><strong>D. À VÉRIFIER PAR ESTELLE</strong></p>
+<ul>
+<li>Les 6 tables marquées ⚫ : confirmer lesquelles sont vraiment mortes (<code>_deprecated_profile_share_requests</code> l&#39;est sans ambiguïté) vs. features en attente (<code>savings_*</code>, <code>finance_plans</code>, <code>budget_feedback</code>, <code>cross_validations</code> = Espace Proche P7-10).</li>
+<li><code>cross_validations</code>, <code>cron_runs</code>, <code>processing_log</code> ont RLS activée <strong>sans aucune policy</strong> : voulu (accès service technique seul) — à confirmer.</li>
+<li>Colonne <code>contacts.gift_wishlist</code> marquée dépréciée : conforme à CLAUDE.md (migration 67).</li>
+</ul>
+<p><strong>E. MIGRATIONS / BUILD</strong></p>
+<ul>
+<li>Aucune migration créée, aucune modification de base (lecture seule : uniquement <code>SELECT</code> / <code>information_schema</code> / <code>pg_catalog</code>).</li>
+<li><code>npm run build</code> : non lancé (tâche documentaire, aucun code applicatif modifié).</li>
+<li>Fichier écrit : <code>docs/cartographie/14-base-de-donnees.md</code>.</li>
+</ul>
+</body></html>

@@ -1,0 +1,327 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>11 — Wishlist & carnet</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>Cartographie 11 — Wishlist &amp; Carnet d&#39;envies</h1>
+<blockquote>
+<p>Ce document décrit <strong>ce qui EST</strong> dans le code aujourd&#39;hui, sans jugement ni recommandation.
+Sources : <code>(fichier: …)</code> ou <code>(base: …)</code>. Textes visibles cités <strong>mot pour mot</strong>.</p>
+<p><strong>Rappel du lexique verrouillé (CLAUDE.md) :</strong></p>
+<ul>
+<li><strong>WISHLIST</strong> = la liste personnelle de l&#39;utilisateur, sur SON profil (ce qu&#39;IL aimerait recevoir). Strictement privée.</li>
+<li><strong>CARNET D&#39;ENVIES</strong> = les envies REPÉRÉES pour un proche, sur la fiche du proche. On ne dit JAMAIS « wishlist » côté proche.</li>
+</ul>
+<p><strong>Légende des statuts :</strong> ✅ visible/actif · 🟡 partiel/conditionnel · ⚫ code mort · ❌ absent.</p>
+</blockquote>
+<hr>
+<h2>(a) Wishlist perso — l&#39;écran <code>/moi/wishlist</code></h2>
+<p>Sources : <code>(fichier: src/app/moi/wishlist/page.tsx)</code> (serveur) et <code>(fichier: src/app/moi/wishlist/WishlistV2Client.tsx)</code> (interface). Reproduction de la maquette gelée <code>Candice_Maquette_Wishlist_V2.html</code>.</p>
+<h3>La table <code>my_wishlist_items</code> <code>(base: my_wishlist_items)</code></h3>
+<p>Colonnes réelles (schéma live) :</p>
+<ul>
+<li><code>id</code> uuid (PK)</li>
+<li><code>user_id</code> uuid NOT NULL — le propriétaire (RLS <code>auth.uid() = user_id</code>)</li>
+<li><code>title</code> text NOT NULL — « Ce que c&#39;est »</li>
+<li><code>url</code> text NULL <em>(legacy)</em></li>
+<li><code>note</code> text NULL <em>(legacy)</em></li>
+<li><code>created_at</code> timestamptz NOT NULL</li>
+<li><code>photo_url</code> text NULL — chemin bucket (<code>contact-photos</code>, URL signée 1 h) ou URL OpenGraph</li>
+<li><code>brand</code> text NULL</li>
+<li><code>web_link</code> text NULL</li>
+<li><code>size_ref</code> text NULL</li>
+<li><code>price_indicative</code> text NULL — texte libre (ex. « 1 900 € »)</li>
+<li><code>occasion</code> text NULL</li>
+<li><code>note_text</code> text NULL</li>
+<li><code>envy_level</code> text NULL — <code>dream</code> / <code>pleasure</code></li>
+<li><code>target_recipients</code> uuid[] NOT NULL défaut <code>{}</code> — destinataires ciblés (vide = n&#39;importe qui)</li>
+<li><code>source_trace</code> text NOT NULL défaut <code>&#39;declared&#39;</code></li>
+<li><code>reservation_status</code> text NOT NULL défaut <code>&#39;available&#39;</code> (voir (c))</li>
+<li><code>reserved_by</code> uuid NULL</li>
+<li><code>reserved_at</code> timestamptz NULL</li>
+<li><code>reservation_expires_at</code> timestamptz NULL</li>
+</ul>
+<p><strong>Volume : 0 ligne</strong> au relevé <code>(base: my_wishlist_items)</code>.</p>
+<h3>Règles d&#39;accès — en français simple</h3>
+<ul>
+<li><strong>Strictement privée</strong> : la RLS n&#39;autorise que le propriétaire (<code>auth.uid() = user_id</code>). Personne d&#39;autre ne peut lire cette table. À l&#39;insertion, <code>user_id</code> est OBLIGATOIRE, sinon l&#39;écriture est rejetée <code>(fichier: WishlistV2Client.tsx, commentaire R1)</code>.</li>
+<li><strong>Jamais montrée telle quelle</strong> : Candice s&#39;en inspire pour recommander sans jamais dévoiler que la personne l&#39;a demandée (matrice de visibilité : wishlist = <code>never</code> pour tous les tiers — voir doc 10).</li>
+<li>Les colonnes de <strong>réservation</strong> (<code>reservation_status</code>, etc.) sont <strong>invisibles du pilote</strong> : l&#39;écran <code>/moi/wishlist</code> ne les lit pas (le <code>WL_SELECT</code> de la page ne les inclut pas) <code>(fichier: src/app/moi/wishlist/page.tsx)</code>.</li>
+</ul>
+<h3>L&#39;interface ✅</h3>
+<p>En-tête :</p>
+<ul>
+<li>Marque « Candice », lien « Profil » (retour <code>/moi</code>)</li>
+<li>Titre « Ma wishlist »</li>
+<li>Texte : « Ce que <strong>toi</strong> tu aimerais recevoir. Candice s&#39;en inspire pour guider tes proches — sans jamais leur dire que tu l&#39;as demandé. »</li>
+<li>Badge : « Privé — traduit en suggestions, jamais montré tel quel »</li>
+</ul>
+<p>Bouton « Ajouter une envie ».</p>
+<p><strong>Filtres</strong> (chips) : « Toutes » puis les occasions <code>WISHLIST_FILTER_OCCASIONS</code> : « Sans occasion », « Anniversaire », « Noël », « Anniv. de mariage », « Saint-Valentin », « Fête des mères ».</p>
+<p><strong>État vide</strong> : « Ta wishlist est vide » + « Dépose ici tes envies — tes proches pourront viser juste, sans jamais te demander. »</p>
+<p><strong>Carte d&#39;un item</strong> : photo (avec tag niveau d&#39;envie « J&#39;en rêve » / « Petit plaisir »), marque, titre, taille, prix, « Pour : {destinataires ou &quot;n&#39;importe qui&quot;} », boutons « Modifier » et « On me l&#39;a offert ».</p>
+<p><strong>Panneau formulaire</strong> (« Nouvelle envie » / « Modifier l&#39;envie ») :</p>
+<ul>
+<li>Rappel de pudeur : « <strong>Rassure-toi :</strong> personne ne verra cette liste. Candice s&#39;en sert seulement pour souffler la bonne idée au bon proche, au bon moment. »</li>
+<li>« Photo — optionnel » (avec « Sinon, Candice utilisera l&#39;image du lien web ci-dessous. ») — upload via <code>/api/wishlist/photo</code></li>
+<li>« Ce que c&#39;est » (placeholder « ex. Bague Love or rose »)</li>
+<li>« Marque — optionnel » (« ex. Cartier »)</li>
+<li>« Lien web — optionnel, pour retrouver l&#39;objet exact » — si pas de photo, tentative d&#39;image OpenGraph via <code>/api/wishlist/og</code></li>
+<li>« Taille ou référence — optionnel » (« ex. taille 52, ou l&#39;ISBN d&#39;un livre »)</li>
+<li>« Prix indicatif — optionnel » (« ex. 1 900 € »)</li>
+<li>« Niveau d&#39;envie » : pastilles « J&#39;en rêve » (<code>dream</code>) / « Petit plaisir » (<code>pleasure</code>)</li>
+<li>« Pour quelle occasion ? » : pastilles <code>WISHLIST_FORM_OCCASIONS</code> (« Sans occasion », « Anniversaire », « Noël », « Anniv. de mariage », « Saint-Valentin », « Fête des mères », « Fête des pères », « Naissance », « Crémaillère », « Diplôme »)</li>
+<li>« De qui aimerais-tu la recevoir ? » : une pastille par contact + « N&#39;importe qui » — note : « Cette envie n&#39;apparaîtra que chez les proches choisis. Une bague ne sera jamais suggérée à ta grand-mère si tu la réserves à ton mari. »</li>
+<li>Bouton « Ajouter à ma wishlist » / « Enregistrer »</li>
+</ul>
+<p><strong>Panneau « On te l&#39;a offert ? »</strong> :</p>
+<ul>
+<li>« Génial. <strong>Qui te l&#39;a offert ?</strong> Candice pourra retenir cette belle attention. »</li>
+<li>Liste des contacts + « Autre »</li>
+<li>Si un contact est choisi : « En le notant, Candice retiendra que <strong>{nom}</strong> a visé juste — et pourra te demander si ça t&#39;a plu, pour l&#39;aider à mieux te connaître encore. »</li>
+<li>Bouton « C&#39;est {nom} → » ou « Noter comme offert → »</li>
+<li>Effet : POST <code>/api/wishlist/offered</code> (trace d&#39;attention dans <code>attention_log</code> si un contact est identifié) PUIS suppression de la ligne de la wishlist (<code>.delete()</code>).</li>
+</ul>
+<p>Statut : ✅ (écran complet, aligné maquette).</p>
+<hr>
+<h2>(b) Carnet d&#39;envies — le code carnet</h2>
+<p>Le Carnet vit <strong>sur la fiche du proche</strong> (intégré à <code>/contacts/[id]</code>, section « À retenir »), pas sur un écran dédié.</p>
+<p>Sources :</p>
+<ul>
+<li>Composant : <code>(fichier: src/app/contacts/[id]/CarnetV2Section.tsx)</code></li>
+<li>Chargement des données : <code>(fichier: src/app/contacts/[id]/page.tsx, lignes ~462-490)</code></li>
+<li>API d&#39;identification photo : <code>(fichier: src/app/api/carnet/identify/route.ts)</code></li>
+</ul>
+<h3>La table <code>carnet_envies_items</code> <code>(base: carnet_envies_items)</code></h3>
+<p>Colonnes réelles (schéma live) :</p>
+<ul>
+<li><code>id</code> uuid (PK)</li>
+<li><code>contact_id</code> uuid NOT NULL — le proche concerné</li>
+<li><code>pilot_id</code> uuid NOT NULL — le propriétaire (RLS <code>pilot_id = auth.uid()</code>)</li>
+<li><code>description</code> text NOT NULL — « Ce que c&#39;est »</li>
+<li><code>photo_url</code> text NULL</li>
+<li><code>source_link</code> text NULL — « Où / le lien »</li>
+<li><code>brand_name</code> text NULL</li>
+<li><code>brand_option</code> text NULL <em>(non utilisé par l&#39;UI V2)</em></li>
+<li><code>confidence_level</code> text NULL défaut <code>&#39;moyenne&#39;</code> <em>(legacy)</em></li>
+<li><code>location_hint</code> text NULL <em>(legacy)</em></li>
+<li><code>occasion_links</code> text[] NULL <em>(legacy)</em></li>
+<li><code>statut</code> text NULL défaut <code>&#39;actif&#39;</code> — <code>actif</code> / <code>offert</code></li>
+<li><code>created_at</code> timestamptz NULL</li>
+<li><code>requires_payment_sourcing</code> boolean NOT NULL défaut false <em>(sourcing paiement — non câblé UI V2)</em></li>
+<li><code>payment_modalities</code> jsonb NULL <em>(idem)</em></li>
+<li><code>size_ref</code> text NULL</li>
+<li><code>price_indicative</code> text NULL</li>
+<li><code>occasion</code> text NULL</li>
+<li><code>note_text</code> text NULL</li>
+<li><code>source</code> text NULL — <code>heard</code> / <code>seen</code> / <code>link</code> (badge « Entendu » / « Vu »)</li>
+<li><code>heard_quote</code> text NULL — phrase entendue</li>
+<li><code>source_trace</code> text NOT NULL défaut <code>&#39;spotted&#39;</code></li>
+</ul>
+<p><strong>Volume : 0 ligne</strong> au relevé <code>(base: carnet_envies_items)</code>.
+Note : c&#39;est la table renommée en migration 57, fusionnée avec le legacy <code>contacts.gift_wishlist</code> en migration 67 (le legacy est <strong>déprécié</strong>, jamais droppé).</p>
+<h3>L&#39;interface <code>CarnetV2Section</code> ✅</h3>
+<ul>
+<li>Intro : titre « Carnet d&#39;envies de {Prénom} » + « Photo, lien, phrase entendue, boutique : note ici tout ce que tu repères pour {Prénom}. Candice le garde pour le bon moment. »</li>
+<li>Bouton « Ajouter une envie ».</li>
+<li>État vide : « Rien noté pour l&#39;instant » + « Tu n&#39;as encore rien noté pour {Prénom}. Ajoute une envie repérée, même floue : Candice pourra la retrouver, la sourcer ou s&#39;en inspirer plus tard. »</li>
+<li>Carte d&#39;un item : badge source (« Vu » avec icône caméra / « Entendu » avec icône micro / rien si <code>source</code> null), marque, description, citation « … », prix, occasion, boutons « Modifier » et « Offert ».</li>
+<li>« Offert » → passe <code>statut</code> à <code>offert</code> et retire l&#39;item de la liste.</li>
+</ul>
+<p><strong>Deux modes d&#39;ajout</strong> (panneau « Repérer une envie ») :</p>
+<ol>
+<li><strong>« Prendre en photo »</strong> — « Tu es devant l&#39;objet, en vitrine ou en boutique. Candice tente de retrouver la marque et le produit. » + astuce « Idéal sur le vif — un cadeau vu au passage. »<ul>
+<li>Upload via <code>/api/wishlist/photo</code> (scope <code>carnet</code>), puis identification IA via <code>/api/carnet/identify</code>.</li>
+<li>Résultat affiché avec prudence (jamais affirmatif) : « Candice regarde… », puis « Peut-être : {marque} {produit} ? » ou « Pas sûre de reconnaître » + « Simple supposition, souvent imprécise — vérifie et corrige à l&#39;étape suivante, ou ressaisis tout à la main. »</li>
+<li>Boutons « Continuer et corriger → » / « Ressaisir moi-même ».</li>
+</ul>
+</li>
+<li><strong>« Renseigner moi-même »</strong> — « Une phrase entendue, un lien, une boutique, une idée — tu notes ce que tu sais. »</li>
+</ol>
+<p><strong>Panneau formulaire</strong> (« Envie pour {Prénom} » / « Modifier l&#39;envie ») :</p>
+<ul>
+<li>« Photo — optionnel »</li>
+<li>« Ce que c&#39;est » (« ex. Montre BR 03 »)</li>
+<li>« Marque — optionnel » (« ex. Bell &amp; Ross »)</li>
+<li>« Où / le lien — optionnel » (« Boutique, ou https://... »)</li>
+<li>« Ce que tu as repéré — une phrase, un contexte » (« Il s&#39;est arrêté devant la vitrine… »)</li>
+<li>« Prix indicatif — optionnel » (« ex. 3 900 € »)</li>
+<li>« Pour quelle occasion ? » : pastilles <code>CARNET_FORM_OCCASIONS</code> (« Sans occasion », « Anniversaire », « Noël », « Anniv. de mariage », « Fête des pères », « Juste pour lui faire plaisir »)</li>
+<li>Bouton « Ajouter au carnet de {Prénom} » / « Enregistrer »</li>
+</ul>
+<p>La <code>source</code> est <strong>déduite automatiquement</strong> : photo → <code>seen</code> ; sinon phrase entendue → <code>heard</code> ; sinon lien → <code>link</code> <code>(fichier: CarnetV2Section.tsx, computedSource)</code>.</p>
+<h3>L&#39;API <code>/api/carnet/identify</code> <code>(fichier: src/app/api/carnet/identify/route.ts)</code> ✅</h3>
+<ul>
+<li>POST avec le <code>path</code> d&#39;une photo (doit commencer par <code>{user.id}/</code>, sinon 400).</li>
+<li>Télécharge l&#39;image (bucket <code>contact-photos</code>), l&#39;envoie au modèle <code>claude-haiku-4-5-20251001</code> (Anthropic) qui répond UNIQUEMENT en JSON <code>{brand, product}</code>. En cas de doute → <code>null</code>. Aucune phrase, juste le JSON.</li>
+<li>Toujours faillible → l&#39;UI affiche « vérifie avant d&#39;enregistrer ».</li>
+<li>Note : le seul fichier sous <code>src/app/api/carnet/</code> est <code>identify/route.ts</code> ; les écritures du carnet (insert/update/delete) se font <strong>directement</strong> en base depuis le composant client via le client Supabase (RLS <code>pilot_id = auth.uid()</code>), pas via une route API dédiée.</li>
+</ul>
+<p>Statut : ✅ (carnet complet, aligné maquette).</p>
+<hr>
+<h2>(c) Réservation invisible — les RPC</h2>
+<p>Mécanisme identique sur deux surfaces : la wishlist du proche (migration 68) et les recos de l&#39;Espace Proche (migration 69). Principe : <strong>intention molle → confirmation d&#39;achat</strong>, avec <strong>péremption</strong>.</p>
+<h3>En français simple</h3>
+<ul>
+<li>Un proche qui décide d&#39;offrir « pose une intention » sur l&#39;item (état <code>intended</code>). L&#39;item <strong>disparaît</strong> alors pour les autres proches — mais on ne leur dit JAMAIS qu&#39;il est « déjà pris », il disparaît simplement, sans mention.</li>
+<li>Cette intention a une <strong>date de péremption</strong> (30 jours par défaut). Si personne ne confirme l&#39;achat avant, l&#39;item <strong>redevient disponible</strong> automatiquement.</li>
+<li>Quand le proche confirme avoir acheté, l&#39;item passe à <code>purchased</code> (définitif).</li>
+<li>Tout est <strong>invisible du pilote</strong> (le propriétaire de la wishlist ne voit jamais ces états).</li>
+<li>Les transitions sont <strong>atomiques</strong> (<code>SELECT … FOR UPDATE</code> dans des fonctions <code>SECURITY DEFINER</code>), pour éviter que deux proches réservent en même temps.</li>
+</ul>
+<h3>Wishlist — migration 68 <code>(fichier: supabase-migration-68-wishlist-reservation.sql)</code></h3>
+<p>Trois états : <code>available</code>, <code>intended</code>, <code>purchased</code> (colonne <code>my_wishlist_items.reservation_status</code>).</p>
+<ul>
+<li><strong><code>reserve_wishlist_item(p_item, p_days=30)</code></strong> → renvoie <code>reserved</code> / <code>already_taken</code> / <code>not_found</code>.<ul>
+<li><code>already_taken</code> si déjà <code>purchased</code>, ou si <code>intended</code> non expiré par un AUTRE proche.</li>
+<li>Sinon pose <code>intended</code>, <code>reserved_by = auth.uid()</code>, expiration <code>now() + p_days</code>.</li>
+</ul>
+</li>
+<li><strong><code>confirm_wishlist_purchase(p_item, p_outcome, p_days=30)</code></strong> — <code>p_outcome</code> : <code>purchased</code> / <code>not_yet</code> / <code>declined</code>.<ul>
+<li><code>not_yours</code> si le caller n&#39;est pas le réservataire.</li>
+<li><code>purchased</code> → état final ; <code>not_yet</code> → prolonge la péremption (<code>extended</code>) ; <code>declined</code> → relâche l&#39;item (<code>released</code>, redevient disponible).</li>
+</ul>
+</li>
+<li>Droits : <code>EXECUTE</code> accordé aux <code>authenticated</code> seulement.</li>
+</ul>
+<h3>Recos Espace Proche — migration 69 <code>(fichier: supabase-migration-69-contact-reco-items.sql)</code></h3>
+<p>Même pattern sur <code>contact_reco_items.reservation_status</code> (<code>available</code>/<code>intended</code>/<code>purchased</code>).
+Deux dimensions <strong>orthogonales</strong> : <code>status</code> (<code>active</code>/<code>refused</code> — le refus) vs <code>reservation_status</code> (le cadeau). « Offered » = dérivé de <code>purchased</code>, jamais stocké.</p>
+<ul>
+<li><strong><code>reserve_reco_item(p_item, p_days=30)</code></strong> → <code>reserved</code> / <code>already_taken</code> / <code>not_found</code> (même logique).</li>
+<li><strong><code>confirm_reco_purchase(p_item, p_outcome, p_days=30)</code></strong> → <code>purchased</code> / <code>extended</code> / <code>released</code> / <code>not_yours</code> / <code>not_found</code>.</li>
+<li>Droits : <code>EXECUTE</code> accordé aux <code>authenticated</code>.</li>
+</ul>
+<p><strong>Utilisation réelle dans l&#39;UI :</strong> dans l&#39;Espace Proche, la voie 1 « Je m&#39;en occupe personnellement » appelle <code>reserve_reco_item</code> <code>(fichier: EspaceProcheShell.tsx, reserveSelf)</code>. La confirmation d&#39;achat (<code>confirm_*</code>) et la surface proche-facing (réclamation) relèvent du <strong>moteur de reco / conciergerie à venir</strong> — pas encore atteignables. 🟡 pour <code>confirm_*</code> (RPC présentes, pas d&#39;appel UI trouvé).</p>
+<p>Volume <code>contact_reco_items</code> : <strong>0 ligne</strong> au relevé <code>(base: contact_reco_items)</code>.</p>
+<hr>
+<h2>(d) Refus &amp; attentions écartées</h2>
+<h3>La table <code>reco_refusals</code> <code>(base: reco_refusals)</code></h3>
+<p>Migrations 70 <code>(fichier: supabase-migration-70-reco-refusals.sql)</code> et 75 <code>(fichier: supabase-migration-75-reco-refusal-occasion.sql)</code>.
+Colonnes réelles (schéma live) :</p>
+<ul>
+<li><code>id</code> uuid (PK)</li>
+<li><code>pilot_id</code> uuid NOT NULL (RLS owner-only)</li>
+<li><code>contact_id</code> uuid NOT NULL</li>
+<li><code>reco_id</code> uuid NOT NULL — référence <code>contact_reco_items(id)</code></li>
+<li><code>reason</code> text NOT NULL — <code>gout</code> / <code>budget</code> / <code>deja</code> / <code>moment</code></li>
+<li><code>sub_reason</code> text NULL — pour <code>moment</code> : l&#39;horizon choisi</li>
+<li><code>note_free</code> text NULL — champ « Autre » libre</li>
+<li><code>reactivable</code> boolean NOT NULL défaut true</li>
+<li><code>reappear_at</code> timestamptz NULL — date de réapparition (financier : +6 mois ; moment : +1/+4/+12 mois)</li>
+<li><code>created_at</code> timestamptz NOT NULL</li>
+<li><code>reserved_for_occasion</code> boolean NOT NULL défaut false — « gardée pour une occasion » : mise en réserve SANS date (réveil événementiel)</li>
+</ul>
+<p><strong>Volume : 0 ligne</strong> au relevé <code>(base: reco_refusals)</code>.</p>
+<p><strong>Réapparition PARESSEUSE</strong> : il n&#39;y a AUCUN job/cron. Un refus « budget » ou « moment » dont la <code>reappear_at</code> est passée rend le reco de nouveau proposable <strong>à la lecture</strong>, sans réécrire le statut <code>(fichier: src/app/proche/[id]/page.tsx, fonction reappeared)</code>.</p>
+<h3>Le flow « Pas ça » — <code>EspaceProcheShell.tsx</code> ✅</h3>
+<p>Déclenché par le bouton « Pas ça » sur une reco. Panneau à étapes.</p>
+<p><strong>Menu — 4 raisons</strong> (titre « Qu&#39;est-ce qui te fait hésiter ? ») :</p>
+<ul>
+<li>Sous-texte : « Dis-m&#39;en un peu plus — ça m&#39;aide à mieux viser pour {Prénom}. »</li>
+<li>Les 4 options (verbatim) :<ol>
+<li>« Ce n&#39;est pas son goût » (<code>gout</code>)</li>
+<li>« C&#39;est trop cher pour moi » (<code>cher</code> → raison <code>budget</code>)</li>
+<li>« Je lui ai déjà offert » (<code>deja</code>)</li>
+<li>« Ce n&#39;est pas le bon moment » (<code>moment</code>)</li>
+</ol>
+</li>
+</ul>
+<p><strong>Raison « Ce n&#39;est pas son goût »</strong> (titre « Es-tu sûr ? ») :</p>
+<ul>
+<li>Candice ré-argumente selon la source : si <code>declared</code> → « Je te la propose parce que <strong>{Prénom} l&#39;a lui-même laissé entendre</strong> — c&#39;est exactement ce qui lui plairait. » ; sinon si <code>why</code> → « Je te la propose parce que : <strong>{why}</strong> » ; sinon « Je te la propose parce qu&#39;elle colle à ce que Candice sait de {Prénom}. »</li>
+<li>Si <code>certainty_pct</code> : anneau + « Sûre à {n}% que ça lui plairait, d&#39;après ce qu&#39;il a laissé deviner. »</li>
+<li>Boutons : « Allez, je tente pour cette fois » (referme sans écarter) / « Non, je ne veux vraiment pas » → écrit <code>reco_refusals</code> (reason <code>gout</code>, reactivable) + passe la reco à <code>status=&#39;refused&#39;</code>.</li>
+<li>Écran de confirmation (titre « C&#39;est noté ») : « Très bien, je l&#39;écarte. Merci de me l&#39;avoir dit — <strong>je continue d&#39;affiner</strong> pour ne te proposer que le plus juste pour {Prénom}. » + bouton « Parfait ».</li>
+</ul>
+<p><strong>Raison « C&#39;est trop cher pour moi »</strong> (titre « Le budget ») :</p>
+<ul>
+<li>« Je comprends. On peut garder l&#39;idée de côté sans pression. »</li>
+<li>Si un prix est lisible : plan d&#39;épargne — « Mettre un peu de côté » + « Si tu mets <strong>{X} € de côté chaque semaine</strong>, tu pourras lui offrir <strong>dans {n} semaines</strong>. »</li>
+<li>Boutons « On garde l&#39;idée » / « Retirer » (→ <code>reco_refusals</code> reason <code>budget</code>, <code>reappear_at = now()+6 mois</code>, reco <code>refused</code>).</li>
+<li>Note : « Si tu retires : Candice met l&#39;idée de côté et te la représente dans quelques mois, pour une grande occasion. »</li>
+</ul>
+<p><strong>Raison « Je lui ai déjà offert »</strong> (titre « Déjà offert ») :</p>
+<ul>
+<li>« Super ! Et dis-moi : <strong>est-ce qu&#39;il a aimé ?</strong> Ça m&#39;aide à mieux le connaître. »</li>
+<li>Échelle de « love » (<code>LOVE</code>) : « Un peu » / « Beaucoup » / « Énormément »</li>
+<li>Bouton « Enregistrer » → insère dans <code>(base: attention_log)</code> (<code>status=&#39;done&#39;</code>, <code>love_level</code>) + passe la reco à <code>reservation_status=&#39;purchased&#39;</code>.</li>
+</ul>
+<p><strong>Raison « Ce n&#39;est pas le bon moment »</strong> (titre « Le moment ») :</p>
+<ul>
+<li>« Ce n&#39;est pas le bon moment. Tu la reverrais quand ? »</li>
+<li>Les horizons (<code>HORIZONS</code>, verbatim) :<ul>
+<li>« Dans quelques semaines » (<code>semaines</code>, +1 mois)</li>
+<li>« Dans quelques mois » (<code>mois</code>, +4 mois)</li>
+<li>« Beaucoup plus tard » (<code>plus_tard</code>, +12 mois)</li>
+<li>« Je la garde pour une occasion » (<code>occasion</code>, <strong>sans date</strong> → <code>reserved_for_occasion=true</code>, réveil événementiel)</li>
+</ul>
+</li>
+<li>Effet : <code>reco_refusals</code> (reason <code>moment</code>, <code>sub_reason=horizon</code>, <code>reappear_at</code> = date sauf option « occasion », <code>reserved_for_occasion</code>) + reco <code>refused</code>.</li>
+</ul>
+<h3>Panneau « Attentions écartées » ✅</h3>
+<p>Ouvert depuis le lien « Attentions écartées » (+ compteur) de l&#39;onglet « Faire plaisir ».</p>
+<ul>
+<li>Vide : « Plus rien d&#39;écarté — tout est de retour dans tes idées. »</li>
+<li>Sinon : « Tu peux les remettre dans tes idées à tout moment. » + liste avec tag de raison :<ul>
+<li>Tags (<code>REASON_LABEL</code> / cas occasion) : « Pas son goût », « Trop cher », « Déjà offert », « Pas le bon moment », ou « Gardée pour une occasion »</li>
+<li>Bouton « Réactiver » par item → passe la reco à <code>status=&#39;active&#39;</code>. Les lignes <code>reco_refusals</code> ne sont <strong>pas</strong> supprimées (le compteur de refus « goût » reste intact pour un « workflow croisé » prévu en Phase 7, non câblé).</li>
+</ul>
+</li>
+</ul>
+<p>Note produit <code>(fichier: page.tsx + EspaceProcheShell.tsx)</code> : le comptage du 2e refus « goût » et le workflow croisé invisible sont <strong>stockés mais pas déclenchés</strong> aujourd&#39;hui (Phase 7 à venir). 🟡</p>
+<p>Statut d&#39;ensemble (d) : ✅ pour le flow « Pas ça » et les attentions écartées (interface complète) ; 🟡 pour le workflow croisé (stocké, non déclenché).</p>
+<hr>
+<h2>⚠ RAPPORT D&#39;HYPOTHÈSES</h2>
+<p><strong>A. ZONES DE FLOU</strong></p>
+<ul>
+<li>« le code carnet (src/app/api/carnet, composants) » : sous <code>src/app/api/carnet/</code> il n&#39;existe QUE <code>identify/route.ts</code>. Hypothèse : les écritures du carnet passent par le client Supabase directement (visible dans <code>CarnetV2Section.tsx</code>), il n&#39;y a pas d&#39;autre route API carnet. Je l&#39;ai indiqué explicitement.</li>
+<li>Les migrations demandées « 68 et 69 » : la demande dit « reserve_wishlist_item/confirm_wishlist_purchase et reserve_reco_item/confirm_reco_purchase (migrations 68 et 69) ». C&#39;est cohérent avec les fichiers réels (<code>68</code> = wishlist, <code>69</code> = reco). Aucune ambiguïté.</li>
+</ul>
+<p><strong>B. DÉCISIONS PRISES SEUL</strong></p>
+<ul>
+<li>J&#39;ai marqué <code>confirm_wishlist_purchase</code> / <code>confirm_reco_purchase</code> en 🟡 (RPC présentes en base, mais aucun appel trouvé dans l&#39;UI — seul <code>reserve_reco_item</code> est appelé). Ce constat repose sur une recherche de code, pas sur un test exhaustif de toutes les surfaces.</li>
+<li>J&#39;ai listé les colonnes legacy (<code>url</code>, <code>note</code>, <code>brand_option</code>, <code>confidence_level</code>, <code>location_hint</code>, <code>occasion_links</code>, <code>requires_payment_sourcing</code>, <code>payment_modalities</code>) en les signalant <em>(legacy)</em> / <em>(non utilisé UI V2)</em> d&#39;après leur absence dans les composants V2. Jugement de lecture, pas certitude absolue.</li>
+</ul>
+<p><strong>C. LAISSÉ EN SUSPENS</strong></p>
+<ul>
+<li>Les routes <code>/api/wishlist/photo</code>, <code>/api/wishlist/og</code>, <code>/api/wishlist/offered</code> : mentionnées (utilisées par l&#39;UI) mais non ouvertes en détail (hors périmètre — la demande cible wishlist + carnet + RPC + refus).</li>
+<li>Le contenu de <code>attention_log</code> (colonnes) : non relevé (non demandé ; seul son usage dans le flow « Déjà offert » / « On me l&#39;a offert » est décrit).</li>
+</ul>
+<p><strong>D. À VÉRIFIER PAR ESTELLE</strong></p>
+<ul>
+<li>Confirmer que la confirmation d&#39;achat (<code>confirm_*</code>) est bien volontairement non branchée à l&#39;UI aujourd&#39;hui (attendue avec la conciergerie / moteur de reco).</li>
+<li>Confirmer que les colonnes legacy de <code>carnet_envies_items</code> et <code>my_wishlist_items</code> doivent rester (jamais droppées, conformément à la règle « migrations additives »).</li>
+</ul>
+<p><strong>E. MIGRATIONS / BUILD</strong></p>
+<ul>
+<li>Aucune migration ni build : tâche en LECTURE SEULE. Toutes les requêtes en base étaient des SELECT (schéma + <code>count(*)</code>), aucune écriture.</li>
+<li>Toutes les tables relevées sont vides (0 ligne), sauf <code>profile_share_links</code> (1 ligne, cf. doc 10) — cohérent avec un environnement sans données réelles.</li>
+</ul>
+</body></html>

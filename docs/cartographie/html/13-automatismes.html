@@ -1,0 +1,266 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>13 — Automatismes (crons)</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>Cartographie — 13. Automatismes (crons)</h1>
+<blockquote>
+<p>Ce document décrit <strong>ce qui existe réellement</strong> dans le code des tâches planifiées (crons), sans jugement ni conseil.
+Source : <code>(fichier: …)</code> / <code>(base: …)</code>. « non vérifié » sinon.
+Statuts : ✅ branché · 🟡 partiel · ⚫ code présent jamais appelé · ❌ absent.</p>
+<p><strong>Volume réel <code>cron_runs</code> au moment de la cartographie : 0 ligne.</strong> La base interrogée (<code>SUPABASE_DB_URL</code> de <code>.env.local</code>) est la base réelle du projet en état pré-lancement : certaines tables sont peuplées (discovery_questions 70, discovery_sessions 57, cadence_log 31, profile_analysis 2…), d&#39;autres — dont cron_runs — sont encore vides. L&#39;absence de lignes ici signifie qu&#39;aucun cron n&#39;a encore tourné avec effet en base, pas qu&#39;il s&#39;agirait d&#39;un environnement de test distinct.</p>
+</blockquote>
+<hr>
+<h2>Planification globale (fichier: vercel.json)</h2>
+<p>Les 4 crons sont déclarés dans <code>vercel.json</code>. Traduction des expressions cron (heure serveur, UTC — l&#39;appli calcule ensuite en Europe/Paris dans le code) :</p>
+<table>
+<thead>
+<tr>
+<th>Cron</th>
+<th>Expression</th>
+<th>Fréquence en clair</th>
+<th>Appelle un LLM ?</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>detect-and-generate</code></td>
+<td><code>0 6,14 * * *</code></td>
+<td><strong>2 fois par jour, à 6h et 14h</strong></td>
+<td>✅ Oui (<code>claude-sonnet-4-6</code>)</td>
+</tr>
+<tr>
+<td><code>email-reminders</code></td>
+<td><code>0 10 * * *</code></td>
+<td><strong>1 fois par jour, à 10h</strong></td>
+<td>❌ Non</td>
+</tr>
+<tr>
+<td><code>cadence-feedback</code></td>
+<td><code>0 4 * * 1</code></td>
+<td><strong>1 fois par semaine, le lundi à 4h</strong></td>
+<td>❌ Non</td>
+</tr>
+<tr>
+<td><code>lifecycle-check</code></td>
+<td><code>0 3 * * *</code></td>
+<td><strong>1 fois par jour, à 3h</strong></td>
+<td>❌ Non</td>
+</tr>
+</tbody></table>
+<p><strong>Garde-fou commun d&#39;authentification</strong> : les 4 exigent l&#39;en-tête <code>Authorization: Bearer {CRON_SECRET}</code>. Sans le bon secret → réponse <code>401 Unauthorized</code>, rien ne s&#39;exécute.</p>
+<hr>
+<h2>1. <code>detect-and-generate</code> — le cœur des suggestions proactives ✅</h2>
+<p>Fichier: <code>src/app/api/cron/detect-and-generate/route.ts</code> · <strong>2×/jour (6h et 14h)</strong></p>
+<h3>Étape par étape</h3>
+<ol>
+<li><strong>Auth</strong> : vérifie <code>Bearer CRON_SECRET</code>, sinon 401 (lignes 17-21).</li>
+<li><strong>Ouvre une ligne <code>cron_runs</code></strong> avec <code>status=&#39;running&#39;</code> (lignes 28-33).</li>
+<li><strong>Liste les utilisateurs</strong> ayant au moins un contact non archivé (dédoublonnage des <code>user_id</code>).</li>
+<li><strong>Pour chaque utilisateur</strong> (dans l&#39;ordre) :<ul>
+<li><strong>Skip abonnement</strong> : charge <code>my_profile.subscription_status</code> ; si <code>paused</code> ou <code>cancelled</code> → passe au suivant (lignes 59-65).</li>
+<li><strong>Détecte les signaux</strong> : appelle <code>detectSignalsForUser</code> (règles de dates déterministes, voir cartographie 09-b). Cumule dans <code>totalSignals</code>.</li>
+<li><strong>Récupère jusqu&#39;à 10 signaux</strong> <code>active</code> dont la <code>trigger_date</code> est arrivée (<code>&lt;= aujourd&#39;hui</code>), triés (lignes 73-79).</li>
+<li><strong>Génère une suggestion par signal</strong> : appelle <code>generateSuggestionForSignal</code> (appel LLM <code>claude-sonnet-4-6</code>, voir cartographie 09-b). Cumule dans <code>totalSuggestions</code>.</li>
+</ul>
+</li>
+<li><strong>Clôture <code>cron_runs</code></strong> en <code>success</code> avec <code>signals_detected</code>, <code>suggestions_generated</code>, <code>metadata.errors</code> (lignes 94-105).</li>
+<li>En cas d&#39;exception globale : <code>cron_runs</code> passé en <code>error</code> avec <code>error_message</code>, réponse 500.</li>
+</ol>
+<h3>Appel LLM + coût approximatif par exécution</h3>
+<ul>
+<li><strong>Modèle : <code>claude-sonnet-4-6</code></strong>. Deux appels possibles par signal : chemin proche (<strong>max_tokens 600</strong>) ou chemin pilote (<strong>max_tokens 400</strong>). Voir prompts verbatim en cartographie 09-b.</li>
+<li><strong>Nombre d&#39;appels par run</strong> : au plus 10 signaux « ready » traités <strong>par utilisateur</strong>, chacun = 1 appel LLM — <strong>mais</strong> le garde-fou cadence (voir plus bas) coupe une partie des appels sans consommer de tokens.</li>
+<li><strong>Estimation de coût — À CONSIDÉRER COMME UNE ESTIMATION, tarif non officiel pour cet ID de modèle (non vérifié).</strong> En prenant une hypothèse de tarif « classe Sonnet » (~3 $/M tokens en entrée, ~15 $/M en sortie) et un prompt d&#39;entrée de l&#39;ordre de 1 000-2 000 tokens + ~400-600 tokens de sortie : <strong>≈ 0,01 à 0,02 $ par suggestion générée</strong> (ordre de grandeur, ~1 à 2 centimes). Un run qui génère 20 suggestions coûterait donc de l&#39;ordre de <strong>0,2 à 0,4 $</strong>. Ces chiffres sont indicatifs et dépendent du tarif réel du modèle, non confirmé ici.</li>
+</ul>
+<h3>Garde-fous</h3>
+<ul>
+<li><strong>Auth <code>CRON_SECRET</code></strong> (obligatoire).</li>
+<li><strong>Plafond <code>MAX_SIGNALS_PER_RUN = 50</code></strong> (fichier ligne 9) : dès que <code>totalSignals &gt;= 50</code>, la boucle utilisateurs s&#39;arrête → borne la charge et le coût par run.</li>
+<li><strong>Limite 10 signaux/utilisateur</strong> générés par passage.</li>
+<li><strong>Skip abonnés <code>paused</code>/<code>cancelled</code></strong>.</li>
+<li><strong>Garde-fou cadence</strong> (dans <code>generator.ts</code>) : un signal non-urgent trop rapproché de la dernière suggestion est marqué <code>consumed</code> <strong>sans appel LLM</strong>.</li>
+<li><strong>Anti-doublon signaux</strong> (dans <code>detector.ts</code>).</li>
+<li><strong>Télémétrie sans PII</strong> : les erreurs stockées dans <code>cron_runs.metadata</code> n&#39;utilisent JAMAIS l&#39;UUID utilisateur, mais un hash court sha256 (<code>shortId</code>, lignes 11-13). Commentaire verbatim : <em>« Télémétrie sans PII : on ne stocke JAMAIS l&#39;UUID utilisateur dans cron_runs.metadata … Hash court sha256 non réversible → corrélation debug OK. »</em></li>
+</ul>
+<h3>Écrit en base</h3>
+<ul>
+<li><strong><code>cron_runs</code></strong> : 1 ligne par exécution (<code>job_name=&#39;detect-and-generate&#39;</code>, status running→success/error, <code>signals_detected</code>, <code>suggestions_generated</code>, <code>metadata.errors</code>).</li>
+<li><strong><code>contextual_signals</code></strong> : nouvelles lignes de signaux (via detector).</li>
+<li><strong><code>proactive_suggestions</code></strong> : nouvelles suggestions (via generator) + passage des signaux consommés en <code>consumed</code>.</li>
+<li>Éventuellement <strong>push notifications</strong> (priorité urgent/high) via <code>sendPushToUser</code>.</li>
+</ul>
+<h3>Logs notables</h3>
+<p><code>[CRON detect-and-generate] Starting</code> · <code>Processing {n} users</code> · <code>user={id} signals_created={n}</code> · <code>Max signals reached (50), stopping</code> · <code>Done — signals={n} suggestions={n} errors={n}</code> · <code>Fatal: {msg}</code>.</p>
+<hr>
+<h2>2. <code>email-reminders</code> — relance e-mail des suggestions en attente ✅</h2>
+<p>Fichier: <code>src/app/api/cron/email-reminders/route.ts</code> · <strong>1×/jour (10h)</strong> · pas de LLM</p>
+<h3>Étape par étape</h3>
+<ol>
+<li><strong>Auth</strong> <code>Bearer CRON_SECRET</code>, sinon 401.</li>
+<li>Ouvre une ligne <code>cron_runs</code> (<code>job_name=&#39;email-reminders&#39;</code>, <code>status=&#39;running&#39;</code>).</li>
+<li><strong>Sélectionne les suggestions <code>pending</code> générées il y a plus de 48 h</strong> (<code>generated_at &lt; maintenant - 48h</code>), max 50 (lignes 26-32).</li>
+<li><strong>Exclut celles déjà e-mailées</strong> : croise avec <code>notification_log</code> (canal <code>email</code>, <code>related_suggestion_id</code>) pour ne pas relancer deux fois (lignes 38-45).</li>
+<li><strong>Envoie l&#39;e-mail de rappel</strong> pour chacune via <code>sendReminderEmail</code> ; compte <code>emails_sent</code> / <code>emails_failed</code>.</li>
+<li>Clôture <code>cron_runs</code> en <code>success</code> (ou <code>error</code> si exception) avec <code>metadata: { emails_sent, emails_failed }</code>.</li>
+</ol>
+<h3>Garde-fous</h3>
+<ul>
+<li>Auth <code>CRON_SECRET</code>.</li>
+<li><strong>Seuil 48 h</strong> avant relance.</li>
+<li><strong>Plafond 50 suggestions</strong> par run.</li>
+<li><strong>Anti-double-envoi</strong> via <code>notification_log</code>.</li>
+<li>Les erreurs sont capturées (try/catch) et n&#39;interrompent pas la clôture.</li>
+</ul>
+<h3>Écrit en base</h3>
+<ul>
+<li><strong><code>cron_runs</code></strong> (1 ligne/run, <code>metadata.emails_sent/emails_failed</code>).</li>
+<li>Envoi d&#39;e-mails (via <code>sendReminderEmail</code>, qui journalise dans <code>notification_log</code> — non détaillé ici).</li>
+</ul>
+<h3>Logs notables</h3>
+<p><code>[cron/email-reminders] {errorMessage}</code> en cas d&#39;erreur.</p>
+<hr>
+<h2>3. <code>cadence-feedback</code> — agrégat hebdo de la performance des suggestions ✅</h2>
+<p>Fichier: <code>src/app/api/cron/cadence-feedback/route.ts</code> · <strong>1×/semaine (lundi 4h)</strong> · pas de LLM</p>
+<h3>Étape par étape</h3>
+<ol>
+<li><strong>Auth</strong> <code>Bearer CRON_SECRET</code>, sinon 401.</li>
+<li>Définit une <strong>fenêtre de 28 jours</strong> glissante (windowStart → windowEnd).</li>
+<li>Charge les <code>proactive_suggestions</code> créées dans la fenêtre, avec un <code>contact_id</code> non nul.</li>
+<li>Si aucune → écrit un <code>cron_runs</code> <code>success</code> avec <code>metadata.inserted=0</code> et sort.</li>
+<li><strong>Agrège par couple (user_id, contact_id)</strong> : compte <code>validated</code>, <code>refused</code>, <code>snoozed</code>, <code>ignored</code>, <code>total</code> (lignes 27-44).</li>
+<li><strong>Calcule un taux de validation</strong> (<code>validated/total × 100</code>) et un <strong>ajustement recommandé</strong> : <code>&gt; 80 %</code> → <code>increase_cadence</code> ; <code>&lt; 30 %</code> → <code>reduce_cadence</code> ; sinon <code>null</code> (lignes 46-66).</li>
+<li><strong>Insère les lignes agrégées dans <code>cadence_feedback</code></strong>.</li>
+<li>Clôture <code>cron_runs</code> (<code>success</code> avec <code>metadata.inserted={n}</code>, ou <code>error</code> si l&#39;insertion échoue → 500).</li>
+</ol>
+<h3>Garde-fous</h3>
+<ul>
+<li>Auth <code>CRON_SECRET</code>.</li>
+<li>Ne traite que les suggestions <strong>avec contact</strong> (les suggestions pilote sont exclues).</li>
+<li>Sortie propre si aucune donnée (inserted=0).</li>
+<li>Erreur d&#39;insertion → <code>cron_runs</code> en <code>error</code> + réponse 500.</li>
+</ul>
+<h3>Ce qui est calculé mais PAS (encore) appliqué</h3>
+<p>Le champ <code>recommended_adjustment</code> (<code>increase_cadence</code> / <code>reduce_cadence</code>) est <strong>calculé et stocké</strong>, mais ce document ne relève <strong>aucun consommateur automatique</strong> de ce champ dans la chaîne cron (la cadence effective est résolue ailleurs par <code>resolveCadenceForContact</code>). 🟡 — table de mesure produite ; utilisation en aval non vérifiée ici.</p>
+<h3>Écrit en base</h3>
+<ul>
+<li><strong><code>cadence_feedback</code></strong> : 1 ligne par (user, contact) actif sur la fenêtre (compteurs + <code>validation_rate</code> + <code>recommended_adjustment</code>).</li>
+<li><strong><code>cron_runs</code></strong> : 1 ligne/run avec <code>metadata.inserted</code>.</li>
+</ul>
+<h3>Logs notables</h3>
+<p><code>[cadence-feedback] Insert error: {message}</code>.</p>
+<hr>
+<h2>4. <code>lifecycle-check</code> — cycle de vie des comptes / abonnements ✅ (partiellement gelé)</h2>
+<p>Fichier: <code>src/app/api/cron/lifecycle-check/route.ts</code> · <strong>1×/jour (3h)</strong> · pas de LLM</p>
+<h3>Étape par étape</h3>
+<ol>
+<li><strong>Auth</strong> <code>Bearer CRON_SECRET</code>, sinon 401.</li>
+<li>Ouvre une ligne <code>cron_runs</code> (<code>job_name=&#39;lifecycle-check&#39;</code>, <code>status=&#39;running&#39;</code>).</li>
+<li>Charge tous les <code>my_profile</code> (statut d&#39;abonnement + dates).</li>
+<li><strong>Pour chaque profil</strong>, selon le statut :<ul>
+<li><strong>Essai (<code>trial</code>)</strong> : calcule l&#39;âge de l&#39;essai. Envoie des <strong>rappels J-7 / J-3 / J-1</strong> (jours 23/27/29) par appel HTTP interne à <code>/api/emails/trial-reminder</code>, en évitant les doublons du jour via <code>notification_log</code> (lignes 62-89).</li>
+<li><strong>Fin d&#39;essai → pause (jour ≥ 30)</strong> : <strong>GELÉ</strong>. Encadré par le flag <code>ENABLE_TRIAL_LOCKOUT = false</code> (ligne 9, commentaire verbatim : <em>« Phase de test — réactiver quand Stripe est branché (Phase 7) »</em>). Tant que le flag est faux, le passage <code>trial → paused</code> <strong>ne s&#39;exécute pas</strong> (lignes 91-107).</li>
+<li><strong>Actif → silencieux (90 j d&#39;inactivité)</strong> : passe <code>active → silent</code>, journalise <code>account_lifecycle_events</code> (<code>went_silent</code>), envoie un e-mail « On t&#39;attend » (lignes 111-130).</li>
+<li><strong>Pause → relance (60 j)</strong> : entre 60 et 61 j de pause, envoie un e-mail « Reprendre Candice ? » (lignes 133-142).</li>
+<li><strong>Suppression programmée</strong> : si <code>cancelled</code> et <code>deletion_scheduled_at &lt;= maintenant</code> → <strong><code>hardDeleteUser</code></strong> (suppression définitive) (lignes 145-150).</li>
+</ul>
+</li>
+<li>Clôture <code>cron_runs</code> en <code>success</code> avec <code>metadata.transitions</code> (liste des transitions effectuées), ou <code>error</code> + 500 si exception.</li>
+</ol>
+<h3>Appel LLM</h3>
+<p>Aucun. Utilise Resend pour les e-mails (<code>sendSimpleEmail</code>, gabarit HTML inline verbatim dans le fichier lignes 18-32) et un appel HTTP interne pour les rappels d&#39;essai.</p>
+<h3>Garde-fous</h3>
+<ul>
+<li>Auth <code>CRON_SECRET</code>.</li>
+<li><strong>Flag <code>ENABLE_TRIAL_LOCKOUT = false</code></strong> : verrou de fin d&#39;essai désactivé jusqu&#39;au branchement Stripe (aucune mise en pause automatique aujourd&#39;hui).</li>
+<li><strong>Anti-doublon</strong> rappels d&#39;essai via <code>notification_log</code> (<code>trial_reminder_{n}</code> déjà envoyé le jour même).</li>
+<li>Fenêtre stricte pour la relance pause (<code>&gt;= 60 &amp;&amp; &lt; 61</code> jours).</li>
+<li>E-mails en <code>.catch(() =&gt; {})</code> : un échec d&#39;envoi n&#39;interrompt pas la boucle.</li>
+<li>La suppression dure (<code>hardDeleteUser</code>) n&#39;est déclenchée que si <code>deletion_scheduled_at</code> est <strong>atteinte</strong>.</li>
+</ul>
+<h3>Écrit en base</h3>
+<ul>
+<li><strong><code>cron_runs</code></strong> : 1 ligne/run avec <code>metadata.transitions</code>.</li>
+<li><strong><code>my_profile</code></strong> : changements de <code>subscription_status</code> (<code>active→silent</code> ; <code>trial→paused</code> seulement si le flag était activé).</li>
+<li><strong><code>account_lifecycle_events</code></strong> : événements <code>went_silent</code>, <code>trial_expired</code>.</li>
+<li><strong><code>notification_log</code></strong> : indirectement via les envois d&#39;e-mails.</li>
+<li>Suppression définitive de l&#39;utilisateur via <code>hardDeleteUser</code> (cascade — hors périmètre de ce doc).</li>
+</ul>
+<h3>Logs notables</h3>
+<p>Pas de <code>console.log</code> de résumé ; les transitions sont uniquement stockées dans <code>cron_runs.metadata.transitions</code> (ex. <code>trial_reminder_7:{userId}</code>, <code>went_silent:{userId}</code>, <code>paused_relance:{userId}</code>, <code>hard_deleted:{userId}</code>).</p>
+<hr>
+<h2>Récapitulatif</h2>
+<table>
+<thead>
+<tr>
+<th>Cron</th>
+<th>Fréquence</th>
+<th>LLM</th>
+<th>Écrit dans</th>
+<th>Garde-fous clés</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>detect-and-generate</code></td>
+<td>2×/j (6h,14h)</td>
+<td>✅ <code>claude-sonnet-4-6</code> (600/400 tk)</td>
+<td>cron_runs, contextual_signals, proactive_suggestions</td>
+<td>CRON_SECRET, plafond 50, skip paused/cancelled, cadence gate, hash PII</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>email-reminders</code></td>
+<td>1×/j (10h)</td>
+<td>❌</td>
+<td>cron_runs, e-mails</td>
+<td>CRON_SECRET, seuil 48h, plafond 50, anti-double-envoi</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>cadence-feedback</code></td>
+<td>1×/sem (lun 4h)</td>
+<td>❌</td>
+<td>cron_runs, cadence_feedback</td>
+<td>CRON_SECRET, fenêtre 28j, contacts only</td>
+<td>✅ (aval du champ ajustement non vérifié)</td>
+</tr>
+<tr>
+<td><code>lifecycle-check</code></td>
+<td>1×/j (3h)</td>
+<td>❌</td>
+<td>cron_runs, my_profile, account_lifecycle_events, e-mails</td>
+<td>CRON_SECRET, flag lockout OFF, anti-doublon rappels</td>
+<td>✅ (fin d&#39;essai gelée)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Volume réel <code>cron_runs</code> = 0 ligne</strong> (base réelle du projet, en pré-lancement) — aucun historique d&#39;exécution en base à ce jour. La fréquence et le comportement décrits sont ceux <strong>du code</strong>.</li>
+<li><strong>Estimations de coût LLM</strong> : uniquement pour <code>detect-and-generate</code> ; chiffres indicatifs sur hypothèse de tarif « classe Sonnet » non confirmée pour l&#39;ID <code>claude-sonnet-4-6</code>.</content></li>
+</ul>
+</body></html>

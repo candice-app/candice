@@ -1,0 +1,142 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>17 — Dette & incohérences</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>17 — Dette technique &amp; incohérences (constats factuels)</h1>
+<blockquote>
+<p>Constats vérifiés uniquement, <strong>sans aucune recommandation</strong> (consigne).
+Marquage : ⚫ = point lourd / mort ou franchement contradictoire · 🟡 = point mineur ou à surveiller.
+Chaque constat renvoie à sa source (fichier ou table).</p>
+</blockquote>
+<hr>
+<h2>(a) Code mort / fichiers potentiellement inutilisés</h2>
+<p><strong>A1 — 🟡 <code>QuestionnaireForm.tsx</code> n&#39;est PAS mort (contrairement à l&#39;étiquette « legacy »)</strong></p>
+<ul>
+<li><strong>Source</strong> : <code>src/components/questionnaire/QuestionnaireForm.tsx</code> (définit <code>export default function QuestionnaireForm()</code> ligne 169).</li>
+<li>Il est <strong>importé et rendu</strong> par <code>src/components/contacts/NewContactFlow.tsx</code> (import ligne 5, usage <code>&lt;QuestionnaireForm /&gt;</code> ligne 402), lui-même utilisé par <code>src/app/contacts/new/page.tsx</code> (import ligne 4, usage ligne 20).</li>
+<li>Constat : le composant présenté comme « legacy » est toujours dans le chemin d&#39;ajout d&#39;un nouveau contact. Il est actif, pas mort.</li>
+</ul>
+<p><strong>A2 — 🟡 Table <code>_deprecated_profile_share_requests</code> : présente en base, non référencée par le code</strong></p>
+<ul>
+<li><strong>Source</strong> (base) : la table existe, a RLS activé et <strong>5 policies</strong> actives (<code>owner_manage_incoming_requests</code>, <code>requester_manage_own_requests</code>, <code>users_manage_own_share_requests</code>, <code>users_respond_to_requests_for_their_profile</code>, <code>users_see_requests_for_their_profile</code>).</li>
+<li><strong>Source</strong> (code) : <code>grep -rln &quot;_deprecated_profile_share_requests&quot; src</code> → <strong>aucune référence</strong>.</li>
+<li>Constat : table marquée « deprecated » qui subsiste en base avec ses règles d&#39;accès, mais que plus aucun code n&#39;interroge.</li>
+</ul>
+<p><strong>A3 — 🟡 Champ legacy <code>gift_wishlist</code> encore présent dans les types</strong></p>
+<ul>
+<li><strong>Source</strong> : <code>src/types/index.ts:30</code> → <code>gift_wishlist: WishlistItem[] | null;</code></li>
+<li>Constat : champ déclaré déprécié dans les consignes projet (fusionné, migration 67, jamais droppé) mais toujours présent dans le typage TypeScript. Seule occurrence de <code>gift_wishlist</code> dans <code>src</code>.</li>
+</ul>
+<h2>(b) TODO / FIXME (verbatim)</h2>
+<p><strong>B1 — 🟡</strong> <code>src/app/api/proactive-suggestions/[id]/validate/route.ts:46</code></p>
+<ul>
+<li>Verbatim : <code>// TODO Phase 7: trigger facilitation flow (booking, purchase, etc.)</code></li>
+</ul>
+<p><strong>B2 — 🟡</strong> <code>src/components/dashboard/ProactiveSuggestionDetail.tsx:165</code></p>
+<ul>
+<li><p>Verbatim : <code>{/* TODO Phase 7: facilitation flow (booking, etc.) */}</code></p>
+</li>
+<li><p>Constat : ce sont les <strong>deux seuls</strong> <code>TODO</code>/<code>FIXME</code> du dossier <code>src</code> (<code>grep -rn &quot;TODO\|FIXME&quot; src</code>). Les deux pointent la même fonctionnalité « Phase 7 » non branchée (voir aussi section e).</p>
+</li>
+</ul>
+<h2>(c) Doublons (deux systèmes qui coexistent)</h2>
+<p><strong>C1 — ⚫ Deux systèmes de recommandations en parallèle</strong></p>
+<ul>
+<li><code>contact_recommendations</code> — surface <strong>pilote</strong>. Écrite par <code>src/app/api/recommendations/generate/route.ts:171</code> (<code>upsert</code>), lue par <code>src/app/contacts/page.tsx:113</code>, <code>src/app/contacts/[id]/page.tsx:164</code>, <code>src/app/dashboard/page.tsx:117</code>.</li>
+<li><code>contact_reco_items</code> — surface <strong>Espace Proche</strong> (<code>/proche/[id]</code>). Lue/écrite par <code>src/app/proche/[id]/EspaceProcheShell.tsx</code> (lignes 204, 216, 228, 243, 254) et <code>src/app/proche/[id]/page.tsx:46</code>.</li>
+<li>Constat : deux tables distinctes servent deux surfaces de reco différentes, chacune avec sa propre policy RLS (<code>owner_recommendations</code> sur <code>contact_recommendations</code> via <code>user_id</code> ; <code>owner_contact_reco_items</code> sur <code>contact_reco_items</code> via <code>pilot_id</code>). Les deux sont <strong>vides en base</strong> (0 ligne, voir section d).</li>
+</ul>
+<p><strong>C2 — ⚫ Deux tables de liens de partage en parallèle</strong></p>
+<ul>
+<li><code>share_links</code> — utilisée par le flux de partage-questionnaire : <code>src/app/profil-partage/[token]/page.tsx:16</code>, <code>src/app/api/shared-profile/complete/route.ts:41</code>, <code>src/app/api/questionnaire/proche-register/route.ts:15</code>.</li>
+<li><code>profile_share_links</code> — utilisée par le flux de partage-profil : <code>src/app/moi/partage/page.tsx:74</code>, <code>src/app/api/share-link/create/route.ts:45</code>, <code>src/app/api/share-link/[linkId]/revoke/route.ts:18</code>, <code>src/app/rejoindre/[token]/page.tsx:51</code>, <code>src/lib/share-links.ts</code> (lignes 29, 45, 54, 68).</li>
+<li>Constat : deux tables aux noms très proches coexistent et sont toutes deux référencées par du code vivant. Les deux sont <strong>vides en base</strong> (0 ligne).</li>
+</ul>
+<h2>(d) Colonnes jamais remplies (tables clés)</h2>
+<p><strong>D1 — 🟡 <code>profile_analysis</code> : colonnes <code>territory</code>, <code>universe</code>, <code>modes</code> à 0 % remplies</strong></p>
+<ul>
+<li><strong>Source</strong> (base) : sur les <strong>2 lignes</strong> existantes de <code>profile_analysis</code> :<ul>
+<li><code>territory</code> → 0/2 remplies</li>
+<li><code>universe</code> → 0/2 remplies</li>
+<li><code>modes</code> → 0/2 remplies</li>
+<li>(à titre de comparaison, sur ces mêmes 2 lignes : <code>insights</code> 1/2, <code>style_radar</code> 1/2, <code>podium_intro</code> 1/2, <code>understood_cards</code> 1/2, <code>works_phrases</code> 1/2, <code>summary_long</code> 1/2, <code>dimension_scores</code> 1/2 sont partiellement remplies)</li>
+</ul>
+</li>
+<li>Constat : <code>territory</code>, <code>universe</code> et <code>modes</code> ne sont remplies dans aucune des lignes présentes. <strong>Réserve : échantillon de seulement 2 lignes</strong> (environnement de vérification), donc ce constat porte sur un très petit volume.</li>
+</ul>
+<h2>(e) Fonctionnalités à moitié branchées</h2>
+<p><strong>E1 — ⚫ Personnalisation IA des questions désactivée par un drapeau</strong></p>
+<ul>
+<li><strong>Source</strong> : <code>src/lib/discovery/engine.ts:88</code> → <code>const PERSONALIZATION_ACTIVE = false;</code></li>
+<li>Conséquences dans le même fichier : ligne 95 (<code>if (q.locked_text || !PERSONALIZATION_ACTIVE …)</code>), ligne 170, et les fonctions <code>precomputePersonalizationsForKeys</code> (ligne 507, court-circuitée ligne 513 <code>if (!PERSONALIZATION_ACTIVE …) return;</code>) et <code>precomputeUpcomingPersonalizations</code> (ligne 553, court-circuitée ligne 558).</li>
+<li>Constat : le pré-calcul de personnalisation est appelé depuis <code>src/app/api/discovery/answer/route.ts:123</code> (<code>after(() =&gt; precomputePersonalizationsForKeys(...))</code>) et depuis <code>src/lib/profile/generateProfileAnalysis.ts:760</code>, mais ces appels <strong>retournent immédiatement sans rien faire</strong> car le drapeau est à <code>false</code>. Code présent, chemin inactif.</li>
+</ul>
+<p><strong>E2 — ⚫ <code>discovery_fatigue_score</code> : incrémenté mais jamais lu pour décider quoi que ce soit</strong></p>
+<ul>
+<li><strong>Source</strong> : <code>src/app/api/discovery/answer/route.ts</code> lignes 102–111 : le score est lu (<code>.select(&quot;discovery_fatigue_score&quot;)</code>), incrémenté de 1 (<code>score = (… ?? 0) + 1</code>), puis réécrit (<code>.update({ discovery_fatigue_score: score })</code>).</li>
+<li><strong>Source</strong> : <code>grep -rn &quot;discovery_fatigue_score&quot; src</code> → aucune autre occurrence.</li>
+<li>Constat : la valeur n&#39;est utilisée nulle part ailleurs (aucune logique de décision, d&#39;affichage ou de plafonnement ne la consomme). Elle n&#39;est lue que pour être ré-incrémentée.</li>
+</ul>
+<p><strong>E3 — ⚫ Flux « Phase 7 » (facilitation : réservation / achat) non implémenté</strong></p>
+<ul>
+<li><strong>Source</strong> : les deux <code>TODO</code> de la section B (validate/route.ts et ProactiveSuggestionDetail.tsx).</li>
+<li>Constat : le déclenchement de réservation/achat depuis une suggestion proactive est annoncé mais non codé.</li>
+</ul>
+<p><strong>E4 — 🟡 Nombreuses tables clés vides en base (fonctionnalités non exercées)</strong></p>
+<ul>
+<li><strong>Source</strong> (base), comptages : <code>contact_recommendations</code> 0, <code>contact_reco_items</code> 0, <code>share_links</code> 0, <code>profile_share_links</code> 0, <code>suggestions</code> 0, <code>signals</code> 0, <code>savings_goal</code> 0, <code>savings_contribution</code> 0, <code>processing_log</code> 0, <code>cron_runs</code> 0. <code>finance_plans</code> 1, <code>profile_analysis</code> 2.</li>
+<li>Constat : plusieurs fonctionnalités disposent de leurs tables (reco, partage, signaux, suggestions, épargne, journaux) mais celles-ci ne contiennent aucune donnée dans l&#39;environnement interrogé. <strong>Réserve : il peut s&#39;agir simplement d&#39;un environnement de vérification peu alimenté</strong> ; le constat est « aucune donnée présente », pas « fonctionnalité morte ».</li>
+</ul>
+<h2>(f) Incohérences</h2>
+<p><strong>F1 — ⚫ <code>OnboardingProgressCard</code> lit des colonnes legacy à plat, alors que le reste de l&#39;app utilise <code>practical_info</code></strong></p>
+<ul>
+<li><strong>Source</strong> : <code>src/components/dashboard/OnboardingProgressCard.tsx:37</code> → <code>.select(&quot;diet, food_allergies, clothing_size, shoe_size&quot;)</code> ; ligne 57 la logique teste <code>profile.diet || profile.food_allergies || profile.clothing_size || profile.shoe_size</code>.</li>
+<li><strong>Source</strong> (base) : <code>my_profile</code> contient <strong>à la fois</strong> les colonnes à plat (<code>diet</code>, <code>food_allergies</code>, <code>clothing_size</code>, <code>shoe_size</code>) <strong>et</strong> la colonne <code>practical_info</code>.</li>
+<li><strong>Source</strong> : le reste de l&#39;app lit <code>practical_info</code> (ex. <code>src/app/moi/page.tsx</code>, <code>src/app/contacts/[id]/page.tsx</code>, <code>src/app/fiche/[consentId]/page.tsx</code>, <code>src/app/proche/[id]/page.tsx</code>, <code>src/app/api/discovery/answer/route.ts</code>, <code>src/app/api/recommendations/generate/route.ts</code>, <code>src/app/moi/partage/apercu/page.tsx</code>, <code>src/app/moi/questionnaire/QuestionnaireFlow.tsx</code>, <code>src/app/api/emails/*</code>).</li>
+<li>Constat : deux sources de vérité pour les infos pratiques (colonnes à plat vs <code>practical_info</code>). Un composant (la carte de progression d&#39;onboarding) se base sur les anciennes colonnes ; le reste du produit sur la nouvelle. Une info saisie via <code>practical_info</code> peut donc ne pas être « vue » par la carte d&#39;onboarding, et inversement.</li>
+</ul>
+<p><strong>F2 — ⚫ Doublon de <code>sort_order = 425</code> dans <code>discovery_questions</code></strong></p>
+<ul>
+<li><strong>Source</strong> (base) : <code>select sort_order, count(*) from discovery_questions group by sort_order having count(*)&gt;1</code> → <strong><code>sort_order = 425</code> apparaît 2 fois</strong>.</li>
+<li><strong>Source</strong> (code) : la valeur <code>425</code> apparaît aussi dans le test <code>src/lib/discovery/guard-paths.test.ts:68</code> (<code>sort_order: 425</code>).</li>
+<li>Constat : deux questions partagent le même rang d&#39;affichage <code>425</code>, ce qui rend leur ordre relatif non déterministe.</li>
+</ul>
+<p><strong>F3 — 🟡 <code>cadence_feedback</code> : policy en lecture seule mais droits d&#39;écriture larges accordés</strong></p>
+<ul>
+<li><strong>Source</strong> (base) : <code>cadence_feedback</code> a une seule policy RLS <code>users_own_cadence_feedback</code> de type <code>SELECT</code> (<code>qual = auth.uid() = user_id</code>). Il n&#39;existe <strong>pas</strong> de policy INSERT/UPDATE/DELETE. Or les rôles <code>anon</code> et <code>authenticated</code> disposent des grants <code>INSERT, UPDATE, DELETE</code> sur la table.</li>
+<li><strong>Source</strong> (code) : la cadence est écrite côté serveur, notamment via <code>src/app/api/cron/cadence-feedback/route.ts</code> et <code>src/app/api/cadence/auto-adjust/route.ts</code> (client admin, qui contourne RLS).</li>
+<li>Constat : incohérence entre les droits accordés (écriture) et les règles RLS (lecture seule côté utilisateur). En pratique l&#39;écriture passe par le client admin ; les grants d&#39;écriture directe aux rôles utilisateurs sont donc sans policy correspondante (RLS bloque par défaut), mais l&#39;écart droits/policy existe.</li>
+</ul>
+<p><strong>F4 — 🟡 Absence de bibliothèque de validation d&#39;entrées</strong></p>
+<ul>
+<li><strong>Source</strong> : <code>grep &quot;zod|joi|yup|valibot|superstruct&quot;</code> dans <code>package.json</code> → <strong>aucune</strong>. Dans le code, la validation est ad hoc (ex. <code>src/app/api/recommendations/generate/route.ts:27</code> : <code>if (!contactId) return … 400</code> ; corps de requête typé à la main via <code>as { contactId: string }</code>).</li>
+<li>Constat : les 87 routes API valident (ou non) leurs entrées à la main, sans schéma centralisé. Constat de dette de cohérence, listé aussi pour mémoire au chapitre 16.</li>
+</ul>
+</body></html>

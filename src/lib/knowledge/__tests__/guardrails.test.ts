@@ -10,7 +10,7 @@ import {
   isGuardrailVerticalPath,
 } from '../vocabulary';
 import type { GuardrailEvidence } from '../evidence';
-import { asContactId, asUserId } from '../identity';
+import { asContactId, contactAbout, asUserId } from '../identity';
 import { JOURNAL_VERSION_STAMP } from '../version';
 
 describe('Test 27 — codes canoniques groupés par 7 catégories', () => {
@@ -27,7 +27,7 @@ describe('Test 28 — severity & scope appartiennent à l’evidence, pas au cod
     expect(GUARDRAIL_SEVERITIES).toEqual(['SOFT', 'HARD']);
     expect(GUARDRAIL_SCOPES).toEqual(['selection', 'execution', 'context']);
     const soft: GuardrailEvidence = {
-      contactId: asContactId('c1'),
+      about: contactAbout(asContactId('c1')),
       ownerId: asUserId('u1'),
       evidence_id: 'g1',
       source_id: 's',

@@ -1,6 +1,6 @@
 // Tests 10–18 — consolidation : convergence sans addition de points, divergences,
 // tension, BEHAVIOR non globalisé, corrections, vecteurs affectifs séparés.
-// Lot A bis : la consolidation prend un `scope` (contactId + ownerId).
+// Lot A bis : la consolidation prend un `scope` (about + ownerId).
 
 import { describe, expect, it } from 'vitest';
 import { createProfileEvidence } from '../evidence';
@@ -13,11 +13,11 @@ import {
   describeAffectionAsymmetry,
   reviseWithCorrection,
 } from '../consolidate';
-import { asContactId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asUserId, type KnowledgeScope } from '../identity';
 import { JOURNAL_VERSION_STAMP } from '../version';
 import { affectionCode } from '../vocabulary';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 
 const base = {
   ...scope,
@@ -49,7 +49,7 @@ describe('Test 10 — construct sans evidence : UNKNOWN, jamais LOW (R1)', () =>
     expect(s.confidence).toBe('none');
     expect(s.evidenceCount).toBe(0);
     expect(s.family).toBe('PROFILE');
-    expect(s.contactId).toBe(scope.contactId);
+    expect(s.about).toBe(scope.about);
     expect(s.ownerId).toBe(scope.ownerId);
   });
 });

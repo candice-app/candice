@@ -1,0 +1,776 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>15 — API</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>15 — API (routes serveur)</h1>
+<blockquote>
+<p>Cartographie de TOUTES les routes API de l&#39;application (dossier <code>src/app/api</code>, fichiers <code>route.ts</code>).
+<strong>Total : 87 routes</strong> (<code>find src/app/api -name route.ts | wc -l</code> → 87).
+Pour chaque route : méthode + chemin · qui peut l&#39;appeler · ce qu&#39;elle fait en clair · le CLIENT Supabase utilisé · validation des entrées.</p>
+</blockquote>
+<h2>Lexique « client Supabase » (point de sécurité central)</h2>
+<ul>
+<li><strong>Client UTILISATEUR</strong> (<code>createClient</code>) : agit au nom de la personne connectée. Il est <strong>soumis aux règles d&#39;accès de la base (RLS)</strong> — la base refuse d&#39;elle-même de lire/écrire ce qui n&#39;appartient pas à l&#39;utilisateur. C&#39;est la protection la plus sûre.</li>
+<li><strong>Client ADMIN</strong> (<code>createAdminClient</code>) : clé de service qui <strong>CONTOURNE toutes les règles d&#39;accès (RLS)</strong>. Tout ce qu&#39;il touche n&#39;est protégé QUE par le code écrit à la main (filtres <code>user_id</code>, vérifications de propriété). Si le code oublie un filtre, il n&#39;y a plus de garde-fou. À surveiller.</li>
+</ul>
+<p>Beaucoup de routes sont <strong>MIXTES</strong> : client UTILISATEUR pour vérifier l&#39;identité (login), puis client ADMIN pour l&#39;opération réelle. Le détail est précisé route par route.</p>
+<h2>Qui peut appeler ?</h2>
+<ul>
+<li><strong>Publique</strong> : aucune authentification requise.</li>
+<li><strong>Connecté</strong> : exige une session utilisateur valide (sinon 401).</li>
+<li><strong>Cron (secret)</strong> : exige l&#39;en-tête <code>Authorization: Bearer ${CRON_SECRET}</code> (sinon 401). Appelée par une tâche planifiée, pas par un humain.</li>
+</ul>
+<hr>
+<h2>Récapitulatif par domaine</h2>
+<table>
+<thead>
+<tr>
+<th>Domaine</th>
+<th>Nombre de routes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Auth &amp; accès bêta</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Compte &amp; abonnement</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Identifiant (@handle)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Profil pilote</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Questionnaire &amp; découverte</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Confidences &amp; mémoires</td>
+<td>7</td>
+</tr>
+<tr>
+<td>Contacts</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Cadence &amp; préférences</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Notes IA &amp; carnet (identification)</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Recommandations &amp; suggestions</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Lectures « respiration » (IA publiques)</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Consentement &amp; partage de profil</td>
+<td>9</td>
+</tr>
+<tr>
+<td>Invitations</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Wishlist &amp; carnet d&#39;envies</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Notifications push</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Emails</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Cron (tâches planifiées)</td>
+<td>5</td>
+</tr>
+<tr>
+<td><strong>TOTAL</strong></td>
+<td><strong>87</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>1 — Auth &amp; accès bêta (2)</h2>
+<h3>GET <code>/api/auth/callback</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Publique (c&#39;est l&#39;étape qui établit la session).</li>
+<li><strong>Rôle</strong> : callback OAuth / lien magique Supabase. Lit <code>code</code> et <code>next</code> (défaut <code>/dashboard</code>), échange le code contre une session (<code>exchangeCodeForSession</code>). Redirige vers <code>next</code> si succès, sinon <code>/login?error=auth_callback_failed</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul.</li>
+<li><strong>Validation</strong> : vérifie présence du <code>code</code> et résultat de l&#39;échange. Le paramètre <code>next</code> est réinjecté dans la redirection sans liste blanche (préfixé par l&#39;<code>origin</code> du site).</li>
+</ul>
+<h3>POST <code>/api/beta-access</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Publique.</li>
+<li><strong>Rôle</strong> : portail mot de passe bêta. Compare <code>password</code> à la variable d&#39;env <code>BETA_PASSWORD</code> ; si correct, pose un cookie <code>beta_access=1</code> (30 jours).</li>
+<li><strong>Client</strong> : AUCUN (ne touche pas Supabase).</li>
+<li><strong>Validation</strong> : parsing JSON + égalité du mot de passe. <strong>Point d&#39;attention</strong> : un mot de passe de repli est codé en dur dans le fichier si la variable d&#39;env est absente.</li>
+</ul>
+<hr>
+<h2>2 — Compte &amp; abonnement (6)</h2>
+<h3>POST <code>/api/account/cancel-deletion</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : annule une suppression de compte programmée. Repasse <code>my_profile</code> en <code>active</code> (efface <code>cancelled_at</code>, <code>deletion_scheduled_at</code>) si le compte est <code>cancelled</code> avec une date programmée. Journalise <code>deletion_cancelled</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR (lecture/écriture <code>my_profile</code>, RLS) ; ADMIN uniquement pour l&#39;insert dans <code>account_lifecycle_events</code>.</li>
+<li><strong>Validation</strong> : auth (401) ; état métier vérifié (doit être <code>cancelled</code> + date). Pas de body.</li>
+</ul>
+<h3>POST <code>/api/account/delete</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : programme la suppression du compte à J+30. Passe le statut à <code>cancelled</code>, journalise <code>deletion_requested</code>, envoie un email de confirmation (voir doc 12, email n°12).</li>
+<li><strong>Client</strong> : UTILISATEUR (update <code>my_profile</code> + <code>signInWithPassword</code>) ; ADMIN pour l&#39;insert <code>account_lifecycle_events</code>.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>password</code> présent (400) ; <strong>re-vérification du mot de passe</strong> via <code>signInWithPassword</code> (403 si faux). Validation forte.</li>
+</ul>
+<h3>POST <code>/api/account/export</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : export RGPD envoyé par email. Rassemble 8 tables filtrées sur <code>user_id</code> (<code>my_profile</code>, <code>contacts</code>+questionnaires, <code>suggestions</code>, <code>proactive_suggestions</code>, <code>confidences</code>, <code>profile_notes</code>, <code>notification_log</code>, <code>account_lifecycle_events</code>), JSON en pièce jointe.</li>
+<li><strong>Client</strong> : UTILISATEUR seulement pour l&#39;identité ; <strong>toutes les lectures via ADMIN</strong> (isolation reposant sur les filtres <code>.eq(&#39;user_id&#39;, uid)</code>, pas sur RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; présence de l&#39;email (400).</li>
+</ul>
+<h3>GET <code>/api/account/export-download</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : identique à l&#39;export mais renvoie le JSON en téléchargement direct (pas d&#39;email).</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>toutes les lectures via ADMIN</strong> (isolation par filtre applicatif).</li>
+<li><strong>Validation</strong> : auth (401). Pas d&#39;input.</li>
+</ul>
+<h3>POST <code>/api/subscription/pause</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : met l&#39;abonnement en pause (statut <code>paused</code>, <code>subscription_paused_at</code>) si le statut est <code>trial</code> ou <code>active</code>. Journalise <code>subscription_paused</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR (<code>my_profile</code>, RLS) ; ADMIN pour <code>account_lifecycle_events</code>.</li>
+<li><strong>Validation</strong> : auth (401) ; état métier (trial/active) requis (400).</li>
+</ul>
+<h3>POST <code>/api/subscription/resume</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : réactive un abonnement en pause. Recalcule si l&#39;essai est encore valide (&lt; 30 j → <code>trial</code>, sinon <code>active</code>). Journalise <code>subscription_resumed</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR (<code>my_profile</code>, RLS) ; ADMIN pour <code>account_lifecycle_events</code>.</li>
+<li><strong>Validation</strong> : auth (401) ; statut doit être <code>paused</code> (400).</li>
+</ul>
+<hr>
+<h2>3 — Identifiant (@handle) (2)</h2>
+<h3>POST <code>/api/handle</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre/modifie le @identifiant de l&#39;utilisateur. Normalise, valide le format, upsert dans <code>my_profile.handle</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour l&#39;upsert <code>my_profile</code></strong> (le <code>user_id</code> est fixé en dur à l&#39;appelant).</li>
+<li><strong>Validation</strong> : auth (401) ; format du handle (400) ; unicité garantie par contrainte DB → 409 « déjà pris ».</li>
+</ul>
+<h3>POST <code>/api/handle/check</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Publique (utilisée AVANT inscription).</li>
+<li><strong>Rôle</strong> : vérifie la disponibilité d&#39;un @identifiant. Renvoie <code>{ available: bool }</code> sans révéler l&#39;identité du détenteur.</li>
+<li><strong>Client</strong> : <strong>ADMIN</strong> pour lire <code>my_profile</code> (nécessaire car aucune session).</li>
+<li><strong>Validation</strong> : PAS d&#39;auth (intentionnel) ; format du handle uniquement.</li>
+</ul>
+<hr>
+<h2>4 — Profil pilote (10)</h2>
+<h3>POST <code>/api/profil/submit</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre les réponses du questionnaire que le pilote saisit À PROPOS d&#39;un contact. Force <code>data_source = &quot;pilot_input&quot;</code> (le client ne peut pas le modifier). Insert/update dans <code>questionnaire_responses</code> par <code>contact_id</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> présent (400). Propriété du contact déléguée au RLS (pas de re-vérification applicative).</li>
+</ul>
+<h3>POST <code>/api/profile-notes</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : insère une note libre dans <code>profile_notes</code> (avec <code>contact_id</code> optionnel).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>note</code> non vide (400). <code>contact_id</code> non vérifié en propriété.</li>
+</ul>
+<h3>GET / PATCH <code>/api/profile-updates/[id]</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : GET = lit une proposition de mise à jour (<code>profile_updates_from_confidences</code>). PATCH = applique (<code>apply</code>) ou rejette (<code>reject</code>) ; si <code>apply</code>, écrit le champ (whitelist stricte : <code>hobbies</code>, <code>favorite_foods</code>, <code>conversation_topics</code>, <code>things_to_avoid</code>, <code>additional_notes</code>, <code>gift_preference</code>) dans <code>questionnaire_responses</code>, puis marque le statut.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>action</code> ∈ {apply, reject} (400) ; propriété explicite <code>.eq(&#39;user_id&#39;)</code> ; whitelist de champ ; statut <code>pending</code> requis (409).</li>
+</ul>
+<h3>GET <code>/api/profile-updates/pending</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : liste les 20 propositions de mise à jour en attente (join <code>contacts</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; propriété explicite.</li>
+</ul>
+<h3>POST <code>/api/profile/art9</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre les données sensibles « Article 9 » du pilote (<code>religion</code>, <code>disability</code>, <code>health_comfort</code>) dans <code>my_profile</code> (upsert). Valeur vide = effacement, tronqué à 600 caractères.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; whitelist stricte des 3 champs ; 400 si aucun champ valide.</li>
+</ul>
+<h3>POST <code>/api/profile/avatar</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : upload de la photo de profil du pilote dans le bucket privé <code>avatars</code> (chemin dérivé du <code>user.id</code>), stocke <code>avatar_path</code>, renvoie une URL signée 1h.</li>
+<li><strong>Client</strong> : MIXTE — <strong>ADMIN</strong> pour l&#39;upload storage + URL signée ; UTILISATEUR pour l&#39;upsert <code>avatar_path</code>.</li>
+<li><strong>Validation</strong> : auth (401) ; fichier présent (400) ; type JPEG/PNG/WebP (415) ; taille ≤ 5 Mo (413). Chemin non contrôlable par le client.</li>
+</ul>
+<h3>POST <code>/api/profile/generate</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : endpoint unique (source de vérité) de l&#39;analyse de profil, appelé après chaque partie du questionnaire. Délègue à <code>generateProfileAnalysis</code> (analyse IA).</li>
+<li><strong>Client</strong> : UTILISATEUR (transmis à la lib, RLS).</li>
+<li><strong>Validation</strong> : auth (401). Pas de body.</li>
+</ul>
+<h3>POST <code>/api/profile/practical</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : édition des faits pratiques du pilote (merge partiel dans <code>my_profile.practical_info</code> : adresse, tailles, régime, alcool, allergies, dates importantes…).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; validation stricte par champ (enums, troncatures, format de date, tailles de tableau) ; 400 si aucun champ valide.</li>
+</ul>
+<h3>POST <code>/api/profile/synthesis</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : <strong>Publique</strong> (point d&#39;attention : AUCUNE auth).</li>
+<li><strong>Rôle</strong> : génère un récit de synthèse de profil via IA (<code>runSynthesisAI</code>) à partir de <code>facts</code> envoyés dans le corps. Ne touche pas la base.</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : <strong>aucune auth</strong>, seul le parsing JSON est protégé. Les <code>facts</code> viennent entièrement du client et sont envoyés à l&#39;IA.</li>
+</ul>
+<h3>POST <code>/api/profile/synthesis/generate</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : endpoint <strong>déprécié</strong> (remplacé par <code>/api/profile/generate</code>), gardé pour éviter les 404 en vol. Délègue à <code>generateProfileAnalysis</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR (RLS).</li>
+<li><strong>Validation</strong> : auth (401). Pas de body.</li>
+</ul>
+<hr>
+<h2>5 — Questionnaire &amp; découverte (5)</h2>
+<h3>POST <code>/api/discovery/answer</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre une réponse du parcours « discovery ». Crée la session au besoin, enregistre la réponse, répercute certaines réponses dans <code>my_profile.practical_info</code> (régime, mobilité), incrémente <code>discovery_fatigue_score</code>, pré-calcule les questions suivantes en tâche de fond, régénère l&#39;analyse si session terminée.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>questionKey</code> requis (400) ; <code>pendingKeys</code> requis si pas de session (400).</li>
+</ul>
+<h3>GET <code>/api/discovery/next</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : n/a.</li>
+<li><strong>Rôle</strong> : route <strong>neutralisée</strong> (legacy). Renvoie toujours <strong>410 Gone</strong> (« Ce point d&#39;entrée n&#39;existe plus. »).</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : aucune (toujours 410).</li>
+</ul>
+<h3>POST <code>/api/questionnaire-insight</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : <strong>Publique</strong> (point d&#39;attention : AUCUNE auth).</li>
+<li><strong>Rôle</strong> : génère un court « insight » (1-2 phrases) à partir de réponses partielles, via IA (Anthropic <code>claude-sonnet-4-6</code>). Ne touche pas la base.</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : <strong>aucune auth</strong> ; si aucune réponse remplie → insight vide. Risque d&#39;abus/coût (appel IA sans garde).</li>
+</ul>
+<h3>POST <code>/api/questionnaire/proche-register</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : <strong>Publique</strong> (par design, sécurité par token).</li>
+<li><strong>Rôle</strong> : permet à un proche non connecté d&#39;enregistrer ses réponses à un questionnaire partagé. Vérifie le <code>token</code> dans <code>share_links</code> + expiration, upsert dans <code>shared_profile_responses</code> (<code>user_id: null</code>).</li>
+<li><strong>Client</strong> : <strong>ADMIN seul</strong> (nécessaire car appelant non authentifié).</li>
+<li><strong>Validation</strong> : <code>token</code> + <code>response_data</code> présents (400) ; token valide (404) ; non expiré (410). Sécurité = connaissance du token.</li>
+</ul>
+<h3>POST <code>/api/questionnaire/voice-conversation</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : aide au remplissage vocal — mappe une dictée (<code>spoken_text</code>) aux options d&#39;une question via IA (<code>claude-sonnet-4-6</code>). Filtre les valeurs contre la liste blanche des options.</li>
+<li><strong>Client</strong> : UTILISATEUR (auth seulement, pas de DB).</li>
+<li><strong>Validation</strong> : auth (401) ; si texte/options manquants → <code>{matched:[]}</code>.</li>
+</ul>
+<hr>
+<h2>6 — Confidences &amp; mémoires (7)</h2>
+<h3>POST / GET <code>/api/confidences</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : POST = pipeline NLP « confidence ». Charge les contacts, appelle IA (<code>claude-sonnet-4-6</code>) pour extraire sujet/contact/ton/mises à jour de profil, valide que le <code>contact_id</code> extrait appartient au user, insère dans <code>confidences</code>, crée des propositions <code>pending</code> dans <code>profile_updates_from_confidences</code>, met éventuellement à jour <code>my_profile</code> (période difficile / accomplissement du pilote). GET = liste paginée des confidences (join <code>contacts</code>).</li>
+<li><strong>Client</strong> : POST MIXTE — UTILISATEUR pour lire <code>contacts</code> ; <strong>ADMIN pour les écritures</strong> (<code>confidences</code>, <code>profile_updates_from_confidences</code>, <code>my_profile</code>) et la lecture <code>questionnaire_responses</code>. GET = UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>text</code> non vide (400) ; sortie IA re-validée (<code>contact_id</code> doit appartenir au user). <strong>Point d&#39;attention</strong> : <code>field_name</code> issu de l&#39;IA injecté dans un <code>.select()</code> (contraint par le prompt, pas par une whitelist code stricte).</li>
+</ul>
+<h3>PATCH <code>/api/memories/[id]</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : met à jour le <code>status</code> d&#39;une mémoire. Vérifie la propriété (<code>pilot_id === user.id</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>status</code> valide (400) ; propriété explicite (404 sinon).</li>
+</ul>
+<h3>POST <code>/api/memories/situation</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : crée une mémoire « situation » sur un proche avec enrichissement IA (extraction via <code>claude-haiku-4-5-20251001</code>, reformulation via <code>claude-sonnet-4-6</code>). Insert dans <code>memories</code> (<code>revalidate_at</code> +30 j). Si le proche a un compte (<code>contactUserId</code>), régénère son <code>profile_analysis</code>.</li>
+<li><strong>Client</strong> : MIXTE — UTILISATEUR pour l&#39;insert <code>memories</code> ; <strong>ADMIN pour régénérer l&#39;analyse d&#39;un AUTRE utilisateur</strong> (<code>generateProfileAnalysis(contactUserId, …)</code>).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> + <code>rawText</code> requis (400). <strong>Point d&#39;attention</strong> : pas de vérification que <code>contactId</code>/<code>contactUserId</code> appartient à l&#39;utilisateur (repose sur RLS pour l&#39;insert ; l&#39;ADMIN régénère l&#39;analyse d&#39;un <code>contactUserId</code> non validé).</li>
+</ul>
+<h3>POST <code>/api/memories/situation/action</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : applique <code>revalidate</code> (repousse <code>revalidate_at</code> +30 j) ou <code>resolve</code> (statut <code>resolved</code>) sur une mémoire. Vérifie la propriété.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>action</code> ∈ {revalidate, resolve} (400) ; propriété explicite (404 sinon).</li>
+</ul>
+<h3>POST <code>/api/memories/w1</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : traite une mémoire (workflow « w1 ») via l&#39;orchestrateur « brain » (<code>processMemory</code>), renvoie les champs enrichis (résumé, sentiment, catégorie, sensibilité…).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (transmis à la lib, RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> + <code>text</code> requis (400) ; <strong>propriété du contact vérifiée explicitement</strong> (404 sinon).</li>
+</ul>
+<h3>POST <code>/api/memories/w2</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : crée un item de carnet d&#39;envies (<code>carnet_envies_items</code>) pour un contact (description, lien, marque, indice de lieu, niveau de confiance).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> + <code>description</code> requis (400) ; <code>confidenceLevel</code> validé (400) ; <strong>propriété du contact vérifiée</strong> (404 sinon).</li>
+</ul>
+<h3>POST <code>/api/memories/w2-analyse</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : génère une description d&#39;article (carnet) à partir d&#39;une photo (IA vision <code>claude-sonnet-4-6</code>), d&#39;un lien (déduction de marque par domaine) ou d&#39;un texte (reformulation IA). N&#39;ÉCRIT rien en base.</li>
+<li><strong>Client</strong> : UTILISATEUR (auth seulement, pas de DB).</li>
+<li><strong>Validation</strong> : auth (401) ; au moins une entrée requise (400) ; type MIME contrôlé ; repli déterministe.</li>
+</ul>
+<hr>
+<h2>7 — Contacts (6)</h2>
+<h3>POST <code>/api/contacts/archive</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : archive un contact (<code>archived_at</code>, <code>archive_reason</code>, mode souvenir).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> requis (400) ; <code>reason</code> ∈ liste (deceased, lost_contact, end_of_relationship, other). Propriété via filtre <code>user_id</code>.</li>
+</ul>
+<h3>POST <code>/api/contacts/unarchive</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : désarchive un contact (<code>archived_at = null</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> requis (400). Propriété via filtre <code>user_id</code>.</li>
+</ul>
+<h3>POST <code>/api/contacts/delete</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : supprime définitivement un contact. Vérifie la propriété (SELECT) puis DELETE.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> requis (400) ; propriété vérifiée explicitement (404 sinon) + double filtre <code>user_id</code>.</li>
+</ul>
+<h3>POST <code>/api/contacts/create-incognito</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : crée un contact avec idempotence (<code>idempotency_key</code>) et anti-doublon (même nom &lt; 30 s). Insert dans <code>contacts</code> ; si registre « compliqué/fragile » avec contexte, insert dans <code>context_journal</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>name</code>, <code>relationship</code> (∈ liste), <code>phone</code> requis (400) ; register/gender/key normalisés.</li>
+</ul>
+<h3>POST <code>/api/contacts/lookup</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : recherche RGPD-safe pour savoir si un email/téléphone correspond à un utilisateur Candice. Renvoie <code>{ found, userId? }</code> sans PII. Exclut soi-même. Respecte <code>is_findable</code>.</li>
+<li><strong>Client</strong> : MIXTE — UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour les RPC</strong> <code>lookup_candice_user_by_email</code> / <code>..._by_phone</code> (SECURITY DEFINER).</li>
+<li><strong>Validation</strong> : auth (401) ; email normalisé ; résultats filtrés pour exclure <code>user.id</code>.</li>
+</ul>
+<h3>POST <code>/api/contacts/upload-photo</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : upload d&#39;une photo de contact dans le bucket <code>contact-photos</code> (chemin <code>{user.id}/{contactId}/…</code>), stocke le chemin dans <code>contacts.photo_url</code>, renvoie une URL signée 1h.</li>
+<li><strong>Client</strong> : MIXTE — UTILISATEUR pour vérifier la propriété + update <code>photo_url</code> ; <strong>ADMIN pour l&#39;upload storage + URL signée</strong>.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>file</code> + <code>contactId</code> requis (400) ; <strong>propriété du contact vérifiée</strong> (404 sinon).</li>
+</ul>
+<hr>
+<h2>8 — Cadence &amp; préférences (4)</h2>
+<h3>PATCH <code>/api/contacts/[id]/cadence</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : définit/efface l&#39;override de cadence d&#39;un contact (<code>null</code> = suivre la cadence globale).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; valeur <code>null</code> ou ∈ {discreet, normal, sustained, intense} (400). Propriété via filtre <code>user_id</code>.</li>
+</ul>
+<h3>POST <code>/api/cadence/auto-adjust</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : ajuste automatiquement la cadence globale d&#39;après le feedback récent (<code>cadence_feedback</code>) : ≥3 recommandations d&#39;augmentation → +1 cran, ≥3 de réduction → −1 cran. Met à jour <code>my_profile.cadence_preference</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401). Pas d&#39;input ; message si données insuffisantes.</li>
+</ul>
+<h3>PATCH <code>/api/parametres/cadence</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : définit la préférence de cadence globale (<code>my_profile.cadence_preference</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; valeur ∈ {discreet, normal, sustained, intense} (400).</li>
+</ul>
+<h3>PATCH <code>/api/parametres/notifications</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : met à jour les préférences de notifications (whitelist : <code>notif_push_enabled</code>, <code>notif_email_enabled</code>, <code>notif_quiet_hours_start/end</code>, <code>notif_max_per_day</code>). Upsert <code>my_profile</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; filtrage strict par allowlist (400 si aucun champ). Pas de validation runtime des valeurs elles-mêmes.</li>
+</ul>
+<hr>
+<h2>9 — Notes IA &amp; carnet (identification) (2)</h2>
+<h3>POST <code>/api/candice-note</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre une note libre. Charge les contacts non archivés, appelle IA (<code>claude-sonnet-4-6</code>) pour identifier si un proche est mentionné, insert dans <code>profile_notes</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS). Externe : Anthropic.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>note</code> non vide (400). <strong>Point d&#39;attention</strong> : le <code>contact_id</code> renvoyé par l&#39;IA n&#39;est PAS revalidé contre les contacts réels avant insertion.</li>
+</ul>
+<h3>POST <code>/api/carnet/identify</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : identification IA d&#39;un produit à partir d&#39;une photo déjà stockée (bucket <code>contact-photos</code>), via IA vision (<code>claude-haiku-4-5-20251001</code>). Renvoie marque/produit. N&#39;écrit rien.</li>
+<li><strong>Client</strong> : MIXTE — UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour le download storage</strong>. Externe : Anthropic.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>path</code> requis ET <strong>doit commencer par <code>{user.id}/</code></strong> (empêche de lire la photo d&#39;un autre) (400 sinon).</li>
+</ul>
+<hr>
+<h2>10 — Recommandations &amp; suggestions (9)</h2>
+<h3>POST <code>/api/recommendations/action</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : marque une attention comme faite/ignorée (<code>attention_log</code>, si statut <code>proposed</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code>, <code>attentionTitle</code>, <code>status</code> requis (400). La valeur de <code>status</code> n&#39;est pas validée contre une liste.</li>
+</ul>
+<h3>POST <code>/api/recommendations/context</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre la réponse à une question de contexte (<code>context_journal</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>questionId</code> + <code>answer</code> non vide (400). Propriété via filtre <code>user_id</code>.</li>
+</ul>
+<h3>POST <code>/api/recommendations/feedback</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre un feedback sur une attention (<code>attention_log</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>feedback</code> ∈ {juste, a_cote, pas_le_moment} (400).</li>
+</ul>
+<h3>POST <code>/api/recommendations/generate</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : génère un jeu de recommandations pour un contact. Lit contact + profils (pilote et éventuellement proche lié), historique d&#39;attentions, feedbacks, contexte ; appelle le moteur <code>generateRecommendations</code> ; upsert <code>contact_recommendations</code> ; insert des idées <code>proposed</code> dans <code>attention_log</code> ; génère éventuellement une question proactive.</li>
+<li><strong>Client</strong> : UTILISATEUR seulement pour l&#39;identité ; <strong>TOUTES les lectures/écritures via ADMIN</strong> — la sécurité repose entièrement sur les filtres <code>user_id</code> manuels, pas sur RLS. Lit aussi le <code>my_profile</code> du proche lié via ADMIN.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> requis (400) ; contact filtré sur <code>user_id</code> (404 sinon).</li>
+</ul>
+<h3>POST <code>/api/proactive-suggestions/[id]/refuse</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : refuse ou reporte (« pas maintenant » → <code>snoozed</code> +21 j, sinon <code>refused</code>) une suggestion proactive.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>refusal_reason</code> requis (400) ; propriété explicite (403 si autre user) ; état <code>pending</code>/<code>snoozed</code> requis (409).</li>
+</ul>
+<h3>POST <code>/api/proactive-suggestions/[id]/validate</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : valide une suggestion proactive (statut <code>validated</code>, met à jour <code>contacts.last_suggestion_at</code>, <code>trackActivity</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR pour les écritures métier (RLS) ; <strong>ADMIN passé uniquement à <code>trackActivity</code></strong> (suivi de cycle de vie).</li>
+<li><strong>Validation</strong> : auth (401) ; propriété explicite (403) ; état <code>pending</code>/<code>snoozed</code> requis (409).</li>
+</ul>
+<h3>POST <code>/api/suggestions</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : génère 6 suggestions d&#39;attention pour un contact via IA (<code>claude-sonnet-4-6</code>), upsert dans <code>suggestions</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS). Externe : Anthropic.</li>
+<li><strong>Validation</strong> : auth (401) ; contact introuvable → 404 ; profil manquant → 400. Sortie IA parsée sans schéma strict.</li>
+</ul>
+<h3>POST <code>/api/idea-suggestions</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : génère 3 idées adaptées à une occasion + budget via IA (<code>claude-sonnet-4-6</code>). N&#39;écrit rien.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS). Externe : Anthropic.</li>
+<li><strong>Validation</strong> : auth (401) ; contact introuvable → 404 ; <code>occasion</code>/<code>budget</code> non validés (fallback).</li>
+</ul>
+<h3>POST <code>/api/analyse</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : analyse de compatibilité relationnelle entre l&#39;utilisateur et un contact via IA (<code>claude-sonnet-4-6</code>). N&#39;écrit rien.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS). Externe : Anthropic.</li>
+<li><strong>Validation</strong> : auth (401) ; contact introuvable → 404 ; profil pilote manquant → 400 ; profil contact manquant → 400.</li>
+</ul>
+<hr>
+<h2>11 — Lectures « respiration » (IA publiques) (4)</h2>
+<blockquote>
+<p>Ces 4 routes n&#39;ont <strong>AUCUNE authentification</strong> et <strong>aucun accès base de données</strong> : elles reçoivent des <code>facts</code>/<code>text</code> arbitraires et appellent l&#39;IA Anthropic. <strong>Point d&#39;attention commun</strong> : pas de rate-limit ni d&#39;auth → risque d&#39;abus/coût.</p>
+</blockquote>
+<h3>POST <code>/api/attention/breath</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : <strong>Publique</strong>.</li>
+<li><strong>Rôle</strong> : génère une courte réflexion (2-3 phrases) sur la façon dont une personne reçoit/donne l&#39;attention (IA <code>claude-sonnet-4-6</code>, repli local si échec).</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : aucune (facts déstructurés directement).</li>
+</ul>
+<h3>POST <code>/api/lifestyle/breath</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : <strong>Publique</strong>.</li>
+<li><strong>Rôle</strong> : courte « lecture » sur les goûts/mode de vie (étape 4) ou interdits/sensibilités (étape 5), selon <code>facts.step</code> (IA <code>claude-sonnet-4-6</code>, repli local).</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : aucune.</li>
+</ul>
+<h3>POST <code>/api/lifestyle/extract-filters</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : <strong>Publique</strong>.</li>
+<li><strong>Rôle</strong> : extrait 3-6 interdits relationnels d&#39;un texte libre (IA <code>claude-haiku-4-5-20251001</code>). Renvoie <code>[]</code> si texte &lt; 5 caractères.</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : aucune auth ; longueur minimale du texte ; sortie filtrée/tronquée à 6.</li>
+</ul>
+<h3>POST <code>/api/temperament/breath</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : <strong>Publique</strong>.</li>
+<li><strong>Rôle</strong> : courte lecture sur le fonctionnement relationnel/tempérament (IA <code>claude-sonnet-4-6</code>, repli local).</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : aucune.</li>
+</ul>
+<hr>
+<h2>12 — Consentement &amp; partage de profil (9)</h2>
+<h3>PATCH <code>/api/consent/[consentId]/respond</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (A ou B de la paire).</li>
+<li><strong>Rôle</strong> : répond à un consentement de mise en relation. A peut <code>revoke</code> ; B peut <code>accept</code>/<code>reject</code>. Met à jour <code>contact_consents</code> (active/rejected/revoked).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS ; seul A ou B peut lire la ligne).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>action</code> ∈ {accept, reject, revoke} (400) ; existence (404) ; rôle (403) ; état (409).</li>
+</ul>
+<h3>POST <code>/api/profile-view/[consentId]/cancel</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (le demandeur X).</li>
+<li><strong>Rôle</strong> : X annule sa propre demande de consultation encore en attente. DELETE <code>contact_consents</code> filtré <code>requested_by = user.id</code>, <code>status=&#39;pending&#39;</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS, policy <code>viewer_cancel_own_pending_request</code>).</li>
+<li><strong>Validation</strong> : auth (401) ; propriété par filtres SQL ; 404 si rien supprimé.</li>
+</ul>
+<h3>POST <code>/api/profile-view/[consentId]/respond</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (la cible Y).</li>
+<li><strong>Rôle</strong> : Y répond à « X veut voir ton profil » : <code>all</code>, <code>sections</code>, <code>blind</code> ou <code>reject</code>. Le <code>scope</code> est assaini côté serveur (<code>scopeForSelection</code>, jamais d&#39;élargissement ; zéro case → <code>[&#39;socle&#39;]</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS, policy <code>pilote_manage_consents</code>).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>action</code> ∈ liste (400) ; propriété <code>pilote_id = user.id</code> (404) ; état <code>pending</code> (409) ; scope assaini.</li>
+</ul>
+<h3>POST <code>/api/profile-view/[consentId]/revoke</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (la cible Y).</li>
+<li><strong>Rôle</strong> : Y retire un partage déjà accordé (<code>status=&#39;revoked&#39;</code> si <code>active</code>). L&#39;analyse se referme.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; propriété par filtres ; 404 si rien mis à jour.</li>
+</ul>
+<h3>POST <code>/api/profile-view/lookup</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : recherche exacte d&#39;une personne (par @handle ou email) pour lui demander sa fiche. Exige un questionnaire complet. Résout l&#39;UUID via RPC, écarte soi-même, renvoie l&#39;état de relation existant, sans PII.</li>
+<li><strong>Client</strong> : MIXTE — UTILISATEUR pour <code>my_profile</code> + <code>contact_consents</code> (RLS) ; <strong>ADMIN pour les RPC</strong> de lookup.</li>
+<li><strong>Validation</strong> : auth (401) ; <strong>questionnaire 5/5 requis</strong> (403) ; handle validé ; auto-recherche écartée.</li>
+</ul>
+<h3>POST <code>/api/profile-view/request</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : X demande à voir la fiche de Y. Crée une ligne <code>contact_consents</code> (<code>kind: profile_view</code>, <code>pending</code>) via client UTILISATEUR (la policy RLS <code>viewer_create_profile_view_request</code> est la garde réelle). Notifie Y par email (voir doc 12, email n°11).</li>
+<li><strong>Client</strong> : MIXTE — UTILISATEUR pour l&#39;insert (RLS) ; <strong>ADMIN pour vérifier la cible (<code>is_findable</code>) et récupérer son email</strong>.</li>
+<li><strong>Validation</strong> : auth (401) ; <strong>questionnaire 5/5 requis</strong> (403) ; <code>targetUserId</code> requis (400) ; pas soi-même (400) ; cible trouvable (404) ; anti-doublon (409).</li>
+</ul>
+<h3>POST <code>/api/share-link/create</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : Y génère un lien de partage sortant de sa fiche. Mode (<code>all</code>/<code>sections</code>/<code>blind</code>) figé via <code>scopeForSelection</code>. Génère un token aléatoire, stocke seulement son <strong>hash SHA-256</strong> dans <code>profile_share_links</code>. Renvoie l&#39;URL <code>/rejoindre/{token}</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS, policy <code>owner_manage_share_links</code>).</li>
+<li><strong>Validation</strong> : auth (401) ; <strong>questionnaire complet requis</strong> (403) ; <code>mode</code> ∈ liste (400) ; scope assaini.</li>
+</ul>
+<h3>POST <code>/api/share-link/claim</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : le destinataire connecté réclame un lien de partage (flux d&#39;inscription <code>register?share_token=…</code>). Délègue à <code>claimShareLink(token, user.id)</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;auth ; le traitement du claim est encapsulé dans la lib <code>@/lib/share-links</code> (client non déterminable depuis la route).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>token</code> validé dans la lib (400 <code>self</code> / 404).</li>
+</ul>
+<h3>POST <code>/api/share-link/[linkId]/revoke</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (le propriétaire Y).</li>
+<li><strong>Rôle</strong> : Y annule un lien de partage pas encore réclamé (<code>revoked_at = now</code>, si <code>claimed_at IS NULL</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; propriété par filtres <code>owner_id</code> ; 404 si rien mis à jour.</li>
+</ul>
+<hr>
+<h2>13 — Invitations (3)</h2>
+<h3>POST <code>/api/invite/create</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : le pilote crée un lien d&#39;invitation. Insert dans <code>invite_links</code> (<code>pilote_id</code>, <code>contact_id</code> optionnel, <code>pilote_name</code>), renvoie le <code>token</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour l&#39;insert <code>invite_links</code></strong> (<code>pilote_id</code> fixé à <code>user.id</code>).</li>
+<li><strong>Validation</strong> : auth (401). <strong>Point d&#39;attention</strong> : <code>contactId</code> optionnel n&#39;est PAS vérifié en propriété.</li>
+</ul>
+<h3>POST <code>/api/invite/link</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (le proche qui ouvre le lien).</li>
+<li><strong>Rôle</strong> : valide un lien d&#39;invitation (<code>token</code>). Marque le lien utilisé (idempotent), rattache <code>proche_user_id</code> au contact, notifie le pilote par email (voir doc 12, email n°9).</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour lire/mettre à jour <code>invite_links</code>, <code>contacts</code> et récupérer l&#39;email du pilote</strong>.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>token</code> requis (400) ; token existant (404) ; non expiré (410).</li>
+</ul>
+<h3>POST <code>/api/invite/nudge</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (le pilote).</li>
+<li><strong>Rôle</strong> : relance un proche. 3 cas : (a) proche non inscrit → nouveau lien + email de réinvitation ; (b) proche inscrit fiche incomplète → notification PUSH ; (c) push non parti → email de nudge. (Voir doc 12, email n°10 + section push.)</li>
+<li><strong>Client</strong> : UTILISATEUR pour vérifier la propriété du contact ; <strong>ADMIN pour lire/écrire <code>invite_links</code>, <code>contacts</code>, <code>my_profile</code> et récupérer les emails</strong>.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> requis (400) ; contact filtré sur <code>user_id</code> (404 sinon).</li>
+</ul>
+<hr>
+<h2>14 — Wishlist &amp; carnet d&#39;envies (3)</h2>
+<h3>POST <code>/api/wishlist/offered</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : marque un cadeau comme « on me l&#39;a offert » — insert dans <code>attention_log</code> (<code>attention_type=&#39;cadeau_recu&#39;</code>, <code>status=&#39;done&#39;</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR seul (RLS).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactId</code> + <code>title</code> requis (400) ; <strong>propriété du contact vérifiée</strong> (404 sinon).</li>
+</ul>
+<h3>POST <code>/api/wishlist/og</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : récupère l&#39;image OpenGraph d&#39;une page web (aperçu de lien) via <code>fetch</code> externe (timeout 5s), extrait <code>og:image</code>/<code>twitter:image</code>. N&#39;écrit rien.</li>
+<li><strong>Client</strong> : UTILISATEUR (auth seulement, pas de DB).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>url</code> doit matcher <code>^https?://</code>. <strong>Point d&#39;attention</strong> : fetch d&#39;une URL arbitraire fournie par l&#39;utilisateur → risque SSRF (pas de filtrage IP interne/localhost).</li>
+</ul>
+<h3>POST <code>/api/wishlist/photo</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : upload d&#39;une photo (wishlist ou carnet) dans le bucket <code>contact-photos</code> (chemin préfixé par <code>user.id</code>), renvoie chemin + URL signée 1h.</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour l&#39;upload storage + URL signée</strong>.</li>
+<li><strong>Validation</strong> : auth (401) ; <code>file</code> requis (400). Chemin préfixé par <code>user.id</code>. <strong>Point d&#39;attention</strong> : pour le scope carnet, <code>contactId</code> n&#39;est pas vérifié en propriété.</li>
+</ul>
+<hr>
+<h2>15 — Notifications push (2)</h2>
+<h3>POST <code>/api/push/subscribe</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : enregistre un abonnement push (upsert <code>push_subscriptions</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour l&#39;upsert</strong> (<code>user_id</code> fixé à <code>user.id</code>).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>endpoint</code>, <code>p256dh_key</code>, <code>auth_key</code> requis (400).</li>
+</ul>
+<h3>POST <code>/api/push/unsubscribe</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté.</li>
+<li><strong>Rôle</strong> : supprime un abonnement push (DELETE <code>push_subscriptions</code> filtré <code>user_id</code> + <code>endpoint</code>).</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour le DELETE</strong> (filtré sur <code>user.id</code>).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>endpoint</code> requis (400).</li>
+</ul>
+<hr>
+<h2>16 — Emails (6)</h2>
+<blockquote>
+<p>Contenu verbatim et traçabilité détaillés dans <strong>doc 12 — Emails &amp; notifications</strong>. Ici on note seulement le profil API.</p>
+</blockquote>
+<h3>POST <code>/api/emails/welcome</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Publique (exige un <code>email</code> dans le corps). Appelée depuis la page d&#39;inscription.</li>
+<li><strong>Client</strong> : AUCUN (envoi Resend uniquement).</li>
+<li><strong>Validation</strong> : <code>email</code> requis (400).</li>
+</ul>
+<h3>POST <code>/api/emails/reminder</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Publique (exige <code>contactEmail</code>). Appelée depuis la fiche contact.</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : <code>contactEmail</code> requis (400).</li>
+</ul>
+<h3>POST <code>/api/emails/profile-complete</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Publique (exige <code>ownerEmail</code>). <strong>ORPHELINE</strong> : aucun appelant dans le code.</li>
+<li><strong>Client</strong> : AUCUN.</li>
+<li><strong>Validation</strong> : <code>ownerEmail</code> requis (400).</li>
+</ul>
+<h3>POST <code>/api/emails/questionnaire-invite</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté. Appelée depuis le questionnaire.</li>
+<li><strong>Client</strong> : UTILISATEUR (lit prénom + sexe du pilote pour personnaliser).</li>
+<li><strong>Validation</strong> : auth (401) ; <code>contactEmail</code> requis (400).</li>
+</ul>
+<h3>POST <code>/api/emails/reminder-suggestion</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Cron (secret <code>CRON_SECRET</code>).</li>
+<li><strong>Client</strong> : <strong>ADMIN</strong> (via la lib <code>sendReminderEmail</code>, qui écrit dans <code>notification_log</code>).</li>
+<li><strong>Validation</strong> : secret cron (401) ; <code>user_id</code>, <code>suggestion_id</code>, <code>title</code>, <code>description</code>, <code>priority</code> requis (400).</li>
+</ul>
+<h3>POST <code>/api/emails/trial-reminder</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Cron (secret <code>CRON_SECRET</code>). Appelée par <code>lifecycle-check</code>.</li>
+<li><strong>Client</strong> : <strong>ADMIN</strong> (écrit dans <code>notification_log</code> : <code>trial_reminder_{daysLeft}</code>).</li>
+<li><strong>Validation</strong> : secret cron (401) ; <code>userId</code>, <code>email</code>, <code>daysLeft</code> requis (400).</li>
+</ul>
+<hr>
+<h2>17 — Cron (tâches planifiées) (5)</h2>
+<blockquote>
+<p>Toutes protégées par <code>Authorization: Bearer ${CRON_SECRET}</code> (sauf la variante « manual »). Toutes utilisent le client <strong>ADMIN</strong> (bypass RLS) — normal pour un traitement système.</p>
+</blockquote>
+<h3>GET <code>/api/cron/cadence-feedback</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Cron (secret).</li>
+<li><strong>Rôle</strong> : agrège sur 28 jours les taux de validation/refus des suggestions par (user, contact), écrit des lignes dans <code>cadence_feedback</code>, journalise dans <code>cron_runs</code>.</li>
+<li><strong>Client</strong> : <strong>ADMIN seul</strong>.</li>
+<li><strong>Validation</strong> : secret cron (401).</li>
+</ul>
+<h3>GET <code>/api/cron/detect-and-generate</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Cron (secret).</li>
+<li><strong>Rôle</strong> : job principal — détecte les signaux contextuels par utilisateur (skip si <code>paused</code>/<code>cancelled</code>), génère des suggestions (<code>generateSuggestionForSignal</code>, IA indirecte), jusqu&#39;à 50 utilisateurs. Journalise <code>cron_runs</code>.</li>
+<li><strong>Client</strong> : <strong>ADMIN seul</strong>.</li>
+<li><strong>Validation</strong> : secret cron (401, refuse aussi si secret absent).</li>
+</ul>
+<h3>POST <code>/api/cron/detect-and-generate/manual</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Connecté (déclenchement manuel, limité à SON propre compte).</li>
+<li><strong>Rôle</strong> : version manuelle du job précédent, scoppée à <code>user.id</code>.</li>
+<li><strong>Client</strong> : UTILISATEUR pour l&#39;identité ; <strong>ADMIN pour la détection/génération</strong> (filtré <code>user_id</code>).</li>
+<li><strong>Validation</strong> : auth (401). Pas de secret cron (déclenché par l&#39;utilisateur).</li>
+</ul>
+<h3>GET <code>/api/cron/email-reminders</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Cron (secret).</li>
+<li><strong>Rôle</strong> : envoie les emails de rappel des suggestions <code>pending</code> de plus de 48h (exclut celles déjà notifiées via <code>notification_log</code>), via <code>sendReminderEmail</code>. Journalise <code>cron_runs</code>.</li>
+<li><strong>Client</strong> : <strong>ADMIN seul</strong> (+ envoi Resend).</li>
+<li><strong>Validation</strong> : secret cron (401).</li>
+</ul>
+<h3>GET <code>/api/cron/lifecycle-check</code></h3>
+<ul>
+<li><strong>Appelable par</strong> : Cron (secret).</li>
+<li><strong>Rôle</strong> : parcourt tous les profils et gère le cycle de vie : rappels d&#39;essai J-7/J-3/J-1 (appelle <code>/api/emails/trial-reminder</code>), passage en <code>silent</code> (90 j d&#39;inactivité), relance après pause (60 j), suppression définitive à échéance (<code>hardDeleteUser</code>). La bascule essai→pause est <strong>désactivée</strong> (<code>ENABLE_TRIAL_LOCKOUT = false</code>). Journalise <code>cron_runs</code>. (Emails détaillés en doc 12, n°14.)</li>
+<li><strong>Client</strong> : <strong>ADMIN seul</strong> (+ envois Resend).</li>
+<li><strong>Validation</strong> : secret cron (401).</li>
+</ul>
+<hr>
+<h2>Points d&#39;attention transverses (factuels, sans jugement)</h2>
+<ul>
+<li><strong>Routes publiques appelant l&#39;IA sans authentification</strong> (risque de coût/abus non contrôlé) : <code>/api/profile/synthesis</code>, <code>/api/questionnaire-insight</code>, <code>/api/attention/breath</code>, <code>/api/lifestyle/breath</code>, <code>/api/lifestyle/extract-filters</code>, <code>/api/temperament/breath</code>.</li>
+<li><strong>Routes où le client ADMIN (contourne RLS) porte toute la sécurité via des filtres <code>user_id</code> manuels</strong> : <code>/api/account/export</code>, <code>/api/account/export-download</code>, <code>/api/recommendations/generate</code>, <code>/api/confidences</code> (POST), plus les crons.</li>
+<li><strong><code>contactId</code> / <code>contactUserId</code> non vérifiés en propriété</strong> : <code>/api/invite/create</code>, <code>/api/wishlist/photo</code> (scope carnet), <code>/api/memories/situation</code>, <code>/api/candice-note</code> (contact_id issu de l&#39;IA), <code>/api/profile-notes</code>.</li>
+<li><strong>SSRF potentiel</strong> : <code>/api/wishlist/og</code> (fetch d&#39;URL arbitraire).</li>
+<li><strong>Mot de passe codé en dur</strong> en repli : <code>/api/beta-access</code>.</li>
+<li><strong>Route orpheline</strong> (définie, jamais appelée) : <code>/api/emails/profile-complete</code>.</li>
+<li><strong>Route neutralisée</strong> (410) : <code>/api/discovery/next</code>.</li>
+<li><strong>Route dépréciée</strong> (conservée) : <code>/api/profile/synthesis/generate</code>.</content></li>
+</ul>
+</body></html>

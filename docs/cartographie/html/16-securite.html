@@ -1,0 +1,120 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>16 — Sécurité</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>16 — Sécurité (constats factuels)</h1>
+<blockquote>
+<p>Ce chapitre liste UNIQUEMENT des constats vérifiés, chacun avec sa gravité et « ce que ça expose ».
+<strong>Aucune recommandation</strong> n&#39;est formulée ici (consigne explicite). Tri par gravité décroissante.
+Aucun secret n&#39;est écrit en clair : on ne cite que des noms de variables d&#39;environnement.</p>
+</blockquote>
+<p>Échelle de gravité : <strong>critique</strong> / <strong>haute</strong> / <strong>moyenne</strong> / <strong>basse</strong>.</p>
+<hr>
+<h2>Constat 1 — Mot de passe « bêta » écrit en dur dans le code — gravité HAUTE</h2>
+<ul>
+<li><strong>Source</strong> : <code>src/app/api/beta-access/route.ts</code>, lignes 3 et 13.</li>
+<li><strong>Verbatim</strong> :<ul>
+<li>ligne 3 : <code>const BETA_PASSWORD = process.env.BETA_PASSWORD ?? &quot;Candice2026!&quot;;</code></li>
+<li>ligne 13 : <code>if (password !== BETA_PASSWORD) {</code></li>
+</ul>
+</li>
+<li><strong>Ce que ça expose</strong> : si la variable d&#39;environnement <code>BETA_PASSWORD</code> n&#39;est pas définie, la porte d&#39;entrée bêta accepte le mot de passe <code>Candice2026!</code> inscrit en clair dans le code source. Toute personne ayant accès au code (ou devinant cette valeur) peut franchir le filtre d&#39;accès bêta.</li>
+</ul>
+<h2>Constat 2 — 50 fichiers utilisent le client « admin » qui contourne toutes les règles d&#39;accès (RLS) — gravité HAUTE</h2>
+<ul>
+<li><strong>Source</strong> : définition dans <code>src/utils/supabase/admin.ts</code> :
+<code>// Server-side only — uses service role key to bypass RLS for public profile submissions.</code>
+Le client est construit avec <code>process.env.SUPABASE_SERVICE_ROLE_KEY</code>.</li>
+<li><strong>Décompte</strong> : <code>grep -rn &quot;createAdminClient&quot; src</code> → <strong>50 fichiers consommateurs</strong> (hors le fichier de définition).</li>
+<li><strong>Ce que ça expose</strong> : ce client agit avec les pleins pouvoirs sur la base et <strong>ignore totalement les garde-fous RLS</strong> (les règles qui, normalement, empêchent un utilisateur de voir les données d&#39;un autre). La séparation des données entre utilisateurs ne repose alors plus sur la base, mais sur des filtres écrits à la main dans chaque route (par ex. <code>.eq(&#39;user_id&#39;, user.id)</code>). Si un seul de ces filtres est oublié ou mal écrit, les données d&#39;autres utilisateurs deviennent accessibles.</li>
+<li><strong>Routes/pages touchant des données sensibles parmi les 50</strong> (liste non exhaustive) :<ul>
+<li>Données du compte / RGPD : <code>src/app/api/account/delete/route.ts</code>, <code>src/app/api/account/export/route.ts</code>, <code>src/app/api/account/export-download/route.ts</code>, <code>src/app/api/account/cancel-deletion/route.ts</code></li>
+<li>Fiches des proches et analyses : <code>src/app/contacts/[id]/page.tsx</code>, <code>src/app/profil/[id]/page.tsx</code>, <code>src/app/fiche/[consentId]/page.tsx</code>, <code>src/app/recherche/page.tsx</code>, <code>src/app/dashboard/page.tsx</code></li>
+<li>Confidences et souvenirs (contenu intime) : <code>src/app/api/confidences/route.ts</code>, <code>src/app/api/memories/situation/route.ts</code></li>
+<li>Wishlist privée et carnet : <code>src/app/moi/wishlist/page.tsx</code>, <code>src/app/api/wishlist/photo/route.ts</code>, <code>src/app/api/carnet/identify/route.ts</code></li>
+<li>Partage et consentements : <code>src/app/api/contacts/[id]/consent/route.ts</code>, <code>src/app/api/profile-view/request/route.ts</code>, <code>src/app/api/profile-view/lookup/route.ts</code>, <code>src/app/moi/partage/page.tsx</code>, <code>src/app/moi/partage/demandes/[consentId]/page.tsx</code></li>
+<li>Abonnement : <code>src/app/api/subscription/pause/route.ts</code>, <code>src/app/api/subscription/resume/route.ts</code></li>
+<li>Invitations / liens : <code>src/app/api/invite/create/route.ts</code>, <code>src/app/api/invite/link/route.ts</code>, <code>src/app/api/invite/nudge/route.ts</code>, <code>src/app/invite/[token]/page.tsx</code>, <code>src/app/profil-partage/[token]/page.tsx</code>, <code>src/app/rejoindre/[token]/page.tsx</code></li>
+<li>Emails / cron : <code>src/app/api/cron/*</code> (5 routes), <code>src/app/api/emails/*</code>, <code>src/lib/notifications/email-reminder.ts</code></li>
+<li>Autres : <code>src/app/api/handle/route.ts</code>, <code>src/app/api/handle/check/route.ts</code>, <code>src/app/api/contacts/upload-photo/route.ts</code>, <code>src/app/api/contacts/lookup/route.ts</code>, <code>src/app/api/profile/avatar/route.ts</code>, <code>src/app/api/push/subscribe/route.ts</code>, <code>src/app/api/push/unsubscribe/route.ts</code>, <code>src/app/api/proactive-suggestions/[id]/validate/route.ts</code>, <code>src/app/api/recommendations/generate/route.ts</code>, <code>src/app/api/questionnaire/proche-register/route.ts</code>, <code>src/app/api/shared-profile/complete/route.ts</code>, <code>src/app/historique/page.tsx</code>, <code>src/app/moi/questionnaire/page.tsx</code>, <code>src/lib/share-links.ts</code>, <code>src/lib/profile/avatar-url.ts</code></li>
+</ul>
+</li>
+</ul>
+<h2>Constat 3 — Aucune limitation de débit applicative (rate-limiting) — gravité HAUTE</h2>
+<ul>
+<li><strong>Source</strong> : recherche <code>grep -rni &quot;rate.?limit|ratelimit|throttle|upstash|429&quot; src</code> → <strong>aucun mécanisme applicatif trouvé</strong>. Aucun fichier <code>middleware.ts</code> n&#39;existe à la racine ni dans <code>src/</code> (recherche <code>find … -name &quot;middleware.ts&quot;</code> → vide).</li>
+<li>Seule occurrence : <code>src/app/register/page.tsx:39</code> qui <strong>lit</strong> un message d&#39;erreur de rate limit renvoyé par Supabase (<code>if (m.includes(&quot;rate limit&quot;) …)</code>), ce qui indique que seule la brique d&#39;authentification Supabase applique sa propre limite ; le reste des 87 routes API n&#39;a aucune protection.</li>
+<li><strong>Décompte</strong> : <code>find src/app/api -name &quot;route.ts&quot;</code> → <strong>87 routes API</strong> sans limitation de débit propre.</li>
+<li><strong>Ce que ça expose</strong> : les points d&#39;entrée (envoi d&#39;emails, génération de recommandations qui appelle un modèle IA payant, identification photo IA, recherche, lookup de contacts…) peuvent être appelés en boucle sans plafond côté application (abus, coûts, déni de service).</li>
+</ul>
+<h2>Constat 4 — La table <code>finance_plans</code> est lisible par n&#39;importe qui (public) — gravité MOYENNE</h2>
+<ul>
+<li><strong>Source</strong> (base) : <code>pg_policies</code> → table <code>finance_plans</code>, policy <code>read_finance_plans</code>, <code>cmd = SELECT</code>, <code>qual = &#39;true&#39;</code>, <code>roles = {public}</code>. Grant <code>anon</code> = <code>SELECT</code> présent sur la table.</li>
+<li><strong>Colonnes</strong> (base) : <code>id, catalog_ref, n_installments, configured_by, created_at</code>. <strong>1 ligne</strong> actuellement.</li>
+<li><strong>Ce que ça expose</strong> : toute personne non connectée (<code>anon</code>) peut lire l&#39;intégralité de <code>finance_plans</code>, y compris <code>configured_by</code> (identifiant UUID de qui a configuré le plan). La règle « <code>true</code> » signifie « aucune condition, tout le monde voit tout » sur cette table.</li>
+</ul>
+<h2>Constat 5 — La banque de questions <code>discovery_questions</code> est en lecture publique — gravité BASSE</h2>
+<ul>
+<li><strong>Source</strong> (base) : <code>pg_policies</code> → <code>discovery_questions</code>, policy <code>read_discovery_questions</code>, <code>cmd = SELECT</code>, <code>qual = &#39;true&#39;</code>, <code>roles = {public}</code>.</li>
+<li><strong>Ce que ça expose</strong> : le contenu du questionnaire (libellés des questions) est lisible par tout visiteur non connecté. Il s&#39;agit du référentiel de questions, sans donnée personnelle. Constat factuel de policy permissive (<code>qual=&#39;true&#39;</code>).</li>
+</ul>
+<h2>Constat 6 — Données de santé / vie privée (Art. 9 RGPD) accessibles via le client admin — gravité MOYENNE</h2>
+<ul>
+<li><strong>Source</strong> (base) : la table <code>my_profile</code> contient les colonnes <code>diet</code>, <code>food_allergies</code>, <code>clothing_size</code>, <code>shoe_size</code> <strong>et</strong> <code>practical_info</code> (vérifié via <code>information_schema.columns</code>). Les champs santé/régime/allergies vivent aussi dans les réponses de questionnaire (<code>questionnaire_responses</code>) et sur les fiches contacts.</li>
+<li><strong>Source</strong> (code) : ces champs sont manipulés dans <code>src/lib/profile/generateProfileAnalysis.ts</code>, <code>src/lib/profile/synthesis.ts</code>, <code>src/components/profile/v2/Facts.tsx</code>, <code>src/app/api/profile/practical/route.ts</code>, <code>src/app/fiche/[consentId]/page.tsx</code>, etc.</li>
+<li><strong>Ce que ça expose</strong> : ces données à caractère sensible (régime alimentaire, allergies, mobilité/santé) sont, comme le reste, protégées par RLS <strong>en théorie</strong> — mais tous les accès passant par le client admin (voir Constat 2) contournent cette protection ; la confidentialité repose alors sur les filtres manuels de chaque route.</li>
+</ul>
+<h2>Constat 7 — Journal technique <code>processing_log</code> stocke des identifiants personnels (UUID) — gravité BASSE</h2>
+<ul>
+<li><strong>Source</strong> (base) : colonnes de <code>processing_log</code> = <code>id, correlation_id (uuid), pilot_id (uuid), memory_id (uuid), step, status, duration_ms, error_message (text), metadata (jsonb), created_at</code>. <strong>0 ligne</strong> actuellement.</li>
+<li><strong>Source</strong> (base) : colonnes de <code>cron_runs</code> = <code>id, job_name, started_at, finished_at, status, signals_detected, suggestions_generated, error_message (text), metadata (jsonb)</code>. <strong>0 ligne</strong> actuellement. Pas de colonne d&#39;identifiant utilisateur dédiée, mais <code>metadata (jsonb)</code> et <code>error_message</code> sont des champs libres.</li>
+<li><strong>Ce que ça expose</strong> : <code>processing_log</code> associe un <code>pilot_id</code> (UUID de l&#39;utilisateur) à des étapes de traitement ; <code>error_message</code> et <code>metadata</code> sont des champs texte/JSON libres pouvant contenir des détails. Les deux tables sont vides aujourd&#39;hui (environnement de vérification), donc aucune fuite constatée à ce jour.</li>
+</ul>
+<h2>Constat 8 — Dépendances avec vulnérabilités connues — gravité MOYENNE</h2>
+<ul>
+<li><strong>Source</strong> : <code>npm audit</code> (lecture seule) → <strong>6 vulnérabilités : 4 modérées, 2 hautes</strong>. (Rappel : <code>npm audit fix</code> n&#39;a PAS été lancé.)</li>
+<li><strong>Détail</strong> :<ul>
+<li><code>vite</code> (8.0.0–8.0.15) — <strong>haute</strong> : divulgation de hash NTLMv2 via <code>launch-editor</code> (Windows) ; contournement de <code>server.fs.deny</code>.</li>
+<li><code>ws</code> (8.0.0–8.20.1) — <strong>haute</strong> : divulgation de mémoire non initialisée ; épuisement mémoire (DoS).</li>
+<li><code>@vitest/mocker</code> (2.1.0–4.1.10) — <strong>modérée</strong> : traversée de chemin / lecture de fichier arbitraire.</li>
+<li><code>baseline-browser-mapping</code> (&lt; 2.11.0) — <strong>modérée</strong> : arrêt du process sur entrée invalide (DoS).</li>
+</ul>
+</li>
+<li><strong>Ce que ça expose</strong> : les paquets concernés (<code>vite</code>, <code>vitest</code>, <code>ws</code>, <code>baseline-browser-mapping</code>) sont des dépendances d&#39;outillage/développement et de build. Les failles portent principalement sur l&#39;environnement de développement et le serveur de dev.</li>
+</ul>
+<hr>
+<h2>Points vérifiés SANS constat négatif (rappel factuel)</h2>
+<ul>
+<li><strong>Toutes les tables du schéma <code>public</code> ont RLS activé</strong> : <code>pg_class</code> → aucune table avec <code>relrowsecurity = false</code>. Le seul point d&#39;attention RLS restant est constitué des deux policies permissives <code>qual=&#39;true&#39;</code> (Constats 4 et 5).</li>
+<li><strong>Le token/URL du dépôt Git ne contient pas de secret en clair</strong> : <code>git remote -v</code> → <code>https://github.com/candice-app/candice.git</code> (aucun jeton d&#39;accès dans l&#39;URL).</li>
+<li><strong><code>.env.local</code> est bien ignoré par Git</strong> : <code>git check-ignore .env.local</code> → renvoie <code>.env.local</code> (donc ignoré, non versionné).</li>
+<li><strong>La clé de service (<code>SUPABASE_SERVICE_ROLE_KEY</code>) et la clé IA (<code>ANTHROPIC_API_KEY</code>) ne sont pas en dur</strong> : elles proviennent des variables d&#39;environnement (<code>src/utils/supabase/admin.ts</code> et usages <code>process.env.*</code>). Variables d&#39;env référencées dans le code : <code>ANTHROPIC_API_KEY</code>, <code>BETA_PASSWORD</code>, <code>CRON_SECRET</code>, <code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code>, <code>NEXT_PUBLIC_SUPABASE_URL</code>, <code>NEXT_PUBLIC_VAPID_PUBLIC_KEY</code>, <code>RESEND_API_KEY</code>, <code>RESEND_FROM_EMAIL</code>, <code>SUPABASE_SERVICE_ROLE_KEY</code>, <code>VAPID_PRIVATE_KEY</code>, <code>VAPID_PUBLIC_KEY</code> (le seul avec une valeur de repli en clair est <code>BETA_PASSWORD</code> — voir Constat 1).</li>
+</ul>
+</body></html>

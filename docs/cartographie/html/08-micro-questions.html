@@ -1,0 +1,505 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>08 — Micro-questions</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>08 — Micro-questions Discovery (banque <code>discovery_questions</code>)</h1>
+<blockquote>
+<p>Les « micro-questions » que Candice pose APRÈS le questionnaire initial, pour affiner. Banque en base + mécanisme de sélection.
+Sources : table (base : <code>discovery_questions</code>), <code>src/lib/discovery/engine.ts</code> (sélecteur <code>getNextMicroQuestion</code>), <code>src/lib/discovery/status.ts</code> (statuts), <code>src/lib/profile/v2-metrics.ts</code> + <code>src/lib/profile/sheet-data.ts</code> (jauge de connaissance), <code>src/app/moi/discovery/*</code> (écran), <code>src/components/profile/v2/Header.tsx</code> + <code>Viser.tsx</code> (incitations).</p>
+</blockquote>
+<hr>
+<h2>Comptages réels (base)</h2>
+<ul>
+<li><code>discovery_questions</code> : <strong>70 lignes</strong> — 68 <code>statut = active</code>, 2 <code>statut = archived</code> (<code>fragrance.family</code>, <code>fragrance.beauty_gift</code>). Toutes <code>target = self</code>.</li>
+<li>Répartition par dimension : attention <strong>7</strong>, brands <strong>3</strong>, conflicts <strong>3</strong>, dreams <strong>4</strong>, food <strong>6</strong>, fragrance <strong>6</strong>, gifts <strong>6</strong>, hobbies <strong>11</strong>, practical <strong>6</strong>, style <strong>9</strong>, surprises <strong>4</strong>, travel <strong>5</strong>.</li>
+<li><code>discovery_sessions</code> : <strong>57 lignes</strong> (sessions de réponse, créées à la 1re réponse).</li>
+<li><code>profile_completion</code> : <strong>0 ligne</strong> (aucun statut de complétion persisté à ce jour — voir note « pré-calcul inactif »).</li>
+</ul>
+<p>Colonnes de <code>discovery_questions</code> : <code>question_key</code>, <code>dimension</code>, <code>subdimension</code>, <code>question_text</code>, <code>question_type</code> (<code>chips_single</code> / <code>chips_multi</code> / <code>text</code>), <code>options</code> (jsonb <code>[{label,value}]</code>), <code>statut</code>, <code>sort_order</code>, <code>priority</code> (toutes à <strong>50</strong>), <code>trigger_condition</code>, <code>updates_dimensions</code>, <code>free_text_enabled</code> (<strong>false partout</strong>), <code>locked_text</code>, <code>target</code>, <code>benefit_label</code>, <code>duration_label</code>.</p>
+<hr>
+<h2>Le flag <code>PERSONALIZATION_ACTIVE</code></h2>
+<p>Dans <code>src/lib/discovery/engine.ts</code> (l.88) : <strong><code>const PERSONALIZATION_ACTIVE = false;</code></strong></p>
+<p>Décision Estelle (revue de banque) : la reformulation IA est <strong>COUPÉE</strong>. Toutes les questions sont servies avec leur <strong>texte de banque MOT POUR MOT</strong>. Le pré-calcul D1 (fonctions <code>precomputePersonalizationsForKeys</code>, <code>precomputeUpcomingPersonalizations</code>) reste en place techniquement mais <strong>inactif</strong> — il ne resservira que si le flag repasse à <code>true</code>. C&#39;est pourquoi <code>profile_completion.personalized_text</code> n&#39;est jamais rempli et que la table est vide. <code>locked_text = true</code> : question jamais reformulée même si le flag était réactivé.</p>
+<hr>
+<h2>Mécanisme de sélection — <code>getNextMicroQuestion</code> (<code>engine.ts</code>, l.406-461)</h2>
+<p><strong>Lecture seule</strong> (aucune écriture ; le GET <code>/moi/discovery</code> est sans effet de bord → page cacheable). La session naît à la 1re réponse via <code>createDiscoverySession</code> (route <code>answer</code>).</p>
+<p>Étapes :</p>
+<ol>
+<li><strong>3 lectures parallèles</strong> : toutes les questions actives <code>target=&#39;self&#39;</code> triées par <code>sort_order</code> (<code>getAllQuestionsWithTrigger</code>) ; snapshot <code>my_profile</code> (<code>practical_info</code>, <code>singularity_answers</code>, <code>relational_filters</code>, <code>discovery_answers</code>) ; statuts de complétion (<code>profile_completion</code>).</li>
+<li><strong>Rétro-alimentation en mémoire</strong> (<code>applyDataSync</code>) : une donnée déjà présente en fiche vaut réponse → statut <code>answered</code> (pur, sans écriture au rendu).</li>
+<li><strong>Filtrage des candidates</strong> — une question est candidate si :<ul>
+<li>son statut n&#39;est PAS bloquant (<code>blockedKeys</code> = statuts <code>answered</code> ou <code>archived</code>), ET</li>
+<li>la donnée n&#39;est PAS déjà présente en fiche (<code>questionDataPresent</code>), ET</li>
+<li>son <code>trigger_condition</code> passe (<code>evaluateTrigger</code>).</li>
+</ul>
+</li>
+<li><strong>Filtre par section</strong> (optionnel) : si <code>sectionKey</code> fourni (deep-link nudge), on restreint aux dimensions mappées (<code>SECTION_KEY_TO_DIMENSIONS</code>).</li>
+<li><strong>Score &amp; tri</strong> : <code>score = computeGapScore(q) * 100 + (priority ?? 50)</code>, tie-break par <code>sort_order</code> croissant.<ul>
+<li><code>computeGapScore</code> (l.384-395) : 2 si la section d&#39;analyse correspondante est vide/absente, 1 si son texte &lt; 60 caractères, 0 sinon. → <strong>on privilégie les sections les moins renseignées</strong>.</li>
+</ul>
+</li>
+<li><strong>Lot</strong> : <code>quick</code> → 1 question ; <code>full</code> → jusqu&#39;à <strong><code>FULL_SESSION_MAX = 3</code></strong> questions.</li>
+<li>Retourne la 1re question (texte de banque, reformulation coupée), <code>sessionId: null</code>, <code>pendingKeys</code>, <code>currentIndex: 0</code>, <code>mode</code>, <code>sectionLabel</code>, <code>progress</code>.</li>
+</ol>
+<p><strong><code>evaluateTrigger</code> (l.357-382) :</strong> si <code>trigger_condition</code> vide → passe toujours. Sinon, une heuristique (<code>inferSectionKeyFromTrigger</code>) devine la section d&#39;analyse concernée ; un motif d&#39;absence (« non renseigné », « non détaillé », « vide », « incomplet », « non précis ») → passe si la section est <strong>mince</strong> ; sinon → passe si la section a du <strong>contenu</strong>.</p>
+<p><strong>Mapping dimension → section d&#39;analyse</strong> (<code>DIMENSION_TO_ANALYSIS_SECTION</code>) : attention→attention, gifts→gifts, style→style, brands→brands, food→restaurants, fragrance→parfums, travel→travel, hobbies→hobbies, dreams→hobbies, surprises→avoid, conflicts→avoid.</p>
+<p><strong>Enregistrement d&#39;une réponse (<code>recordAnswer</code>, l.194-269) :</strong> upsert <code>profile_completion</code> (status <code>answered</code>/<code>skipped</code>), écrit la réponse dans <code>my_profile.discovery_answers[questionKey]</code> (si non skip), avance la session ; à la fin <code>status=&#39;completed&#39;</code>.</p>
+<p><strong>Libellés de section affichés (<code>DIMENSION_LABELS</code>) :</strong> attention « Langage d&#39;attention », gifts « Cadeaux », style « Style », brands « Marques », food « Restaurants », fragrance « Parfums », travel « Voyages », hobbies « Loisirs », dreams « Rêves », surprises « Surprises », conflicts « Conflits », practical « Pratique ».</p>
+<hr>
+<h2>Statuts par question — <code>status.ts</code></h2>
+<p>Type <code>QuestionStatus</code> : <code>not_started</code> | <code>answered</code> | <code>skipped</code> | <code>outdated</code> | <code>needs_precision</code> | <code>archived</code>.</p>
+<ul>
+<li><strong>Statuts BLOQUANTS</strong> (<code>BLOCKING_STATUSES</code>) : <code>answered</code>, <code>archived</code> → la question ne réapparaît sur AUCUN chemin (elle devient « Modifier ma réponse » côté UI).</li>
+<li>Proposables : <code>skipped</code>, <code>outdated</code>, <code>needs_precision</code>, <code>not_started</code>.</li>
+<li><strong>Rétro-alimentation</strong> : une donnée saisie au questionnaire (présente en fiche) vaut réponse → <code>answered</code> sans repasser par Discovery (<code>applyDataSync</code> pur + <code>writeSyncedStatuses</code> idempotent, sorti du rendu).</li>
+</ul>
+<hr>
+<h2>Jauge de connaissance — formule exacte</h2>
+<p><strong>Ratio de base (<code>computeCompletion</code>, <code>sheet-data.ts</code>, l.111-127) :</strong> 5 grandes parties du questionnaire, chacune vaut 1/5 :
+<code>attention_reception</code> présent · <code>temperament_axes</code> présent · <code>lifestyle_axes</code> présent · <code>singularity_answers</code> non vide · <code>practical_info</code> présent.
+<code>ratio = (nombre de parties remplies) / 5</code>.</p>
+<p><strong>État + anneau (<code>computeKnowledge</code>, <code>v2-metrics.ts</code>, l.91-104) :</strong> source UNIQUE de l&#39;anneau, de la phrase et du CTA.</p>
+<pre><code>KNOW_RING_CAP = 0.85
+ratio = clamp(questionnaireRatio, 0, 1)
+si (aucune question disponible ET ratio &gt;= 1) → { state: 4, ring: 1 }   // anneau fermé
+sinon :
+  state = ratio &lt; 0.4 ? 1 : ratio &lt; 0.8 ? 2 : 3
+  ring  = hasAvailableQuestions ? min(ratio, 0.85) : ratio
+  ring  = max(0.04, ring)
+</code></pre>
+<p>Tant qu&#39;il reste une micro-question disponible, l&#39;anneau est <strong>plafonné à ~85 %</strong> et l&#39;état ne peut pas dépasser 3. L&#39;état 4 (« anticipe pour toi ») exige questionnaire complet ET zéro question restante. <strong>Jamais de chiffre / % affiché</strong> (anneau conique sans nombre).</p>
+<p><strong>Phrases à 4 états (<code>KNOW_PHRASES</code>, <code>v2-data.ts</code>, l.62-67), VERBATIM :</strong></p>
+<ul>
+<li>État 1 : « Candice <strong>commence</strong> à te connaître »</li>
+<li>État 2 : « Candice te connaît <strong>bien</strong> »</li>
+<li>État 3 : « Candice te connaît <strong>très bien</strong> »</li>
+<li>État 4 : « Candice <strong>anticipe</strong> pour toi »</li>
+</ul>
+<hr>
+<h2>Points d&#39;entrée &amp; incitations (VERBATIM)</h2>
+<h3>Header de la fiche (<code>Header.tsx</code>)</h3>
+<ul>
+<li>CTA texte champagne sous la phrase (états 1-3 seulement) : <strong>« Améliorer encore sa connaissance → »</strong> → <code>/moi/discovery?mode=full</code>.</li>
+</ul>
+<h3>Module « Pour mieux viser » (<code>Viser.tsx</code>)</h3>
+<ul>
+<li>Phrase d&#39;intro VERBATIM : <strong>« Quelques précisions suffisent pour que Candice évite les attentions à côté. »</strong></li>
+<li>Chaque nudge → <code>/moi/discovery?mode=full&amp;section={sectionKey}</code>. Bouton : <strong>« Affiner → »</strong> (disponible) ou <strong>« Modifier ma réponse »</strong> (déjà répondu). Sous-titre nudge = <code>benefit_label · N question(s) · duration_label</code> (construit par <code>buildNudges</code>, <code>engine.ts</code>).</li>
+</ul>
+<h3>Écran Discovery (<code>DiscoveryFlow.tsx</code>)</h3>
+<ul>
+<li>Écran d&#39;intro (mode <code>full</code>, sauf deep-link) — titre VERBATIM : <strong>« Tu veux que Candice vise encore plus juste ? »</strong><ul>
+<li>Corps VERBATIM : « Réponds à quelques questions très courtes pour que tes proches comprennent mieux ce qui te touche vraiment : le bon cadeau, le bon restaurant, le bon week-end, le bon mot, le bon geste — sans avoir à deviner. »</li>
+<li>Boutons : <strong>« Affiner mon profil »</strong> / <strong>« Une seule question rapide »</strong></li>
+</ul>
+</li>
+<li>Question : bouton <strong>« Passer »</strong> + <strong>« Valider »</strong>. Texte libre : indice « ⌘↵ pour valider », placeholder « Écris librement… ».</li>
+<li>Fin de lot — titre : « C&#39;est tout pour maintenant. » (full) / « Merci. » (quick) ; sous-texte : « Candice met à jour ce qu&#39;elle sait de toi. » / « Candice a bien noté ça. » ; CTA « Voir mon profil → ».</li>
+<li>Deux questions ont un rendu spécial (follow-ups obligatoires) : <code>practical.dietary</code> (précision allergie obligatoire) et <code>practical.mobility</code> (type + intensité obligatoires).</li>
+</ul>
+<hr>
+<h2>BANQUE VERBATIM — les 70 questions par dimension</h2>
+<p>Format : <code>question_key</code> · type · sort_order · priority · locked_text · trigger_condition · updates_dimensions. Options : « Label » → <code>value</code>.</p>
+<h3>Dimension <code>attention</code> (7) — libellé « Langage d&#39;attention »</h3>
+<p><strong><code>attention.reception</code></strong> · chips_multi · sort 10 · prio 50 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des attentions qui te ressemblent vraiment » · durée « 1 min »
+« Comment tu te sens vraiment aimé·e ? »</p>
+<ul>
+<li>« Par les mots » → <code>MOT</code></li>
+<li>« Par les actes » → <code>SER</code></li>
+<li>« Par des cadeaux » → <code>CAD_C</code></li>
+<li>« Par le temps partagé » → <code>EXP</code></li>
+<li>« Par les petites attentions » → <code>GES</code></li>
+<li>« Par les surprises » → <code>SUR</code></li>
+</ul>
+<p><strong><code>attention.detail_quality</code></strong> · chips_multi · sort 150 · locked=false · trigger: <code>petites_attentions selected or detected</code> · updates: detail_memory_importance, anticipation_importance, regularity_preference, personalization_requirement, daily_life_attention, charge_mental_relief
+« Quand tu dis aimer les petites attentions, qu&#39;est-ce qui te touche le plus concrètement ? »</p>
+<ul>
+<li>« Que l&#39;autre se souvienne d&#39;un détail que j&#39;ai dit » → <code>remembers_details</code></li>
+<li>« Qu&#39;il/elle anticipe un besoin avant que je demande » → <code>anticipates_needs</code></li>
+<li>« Qu&#39;il/elle fasse quelque chose de simple mais régulier » → <code>regular_simple</code></li>
+<li>« Qu&#39;il/elle choisisse quelque chose uniquement pour moi » → <code>chosen_only_for_me</code></li>
+<li>« Qu&#39;il/elle pense à moi dans un moment ordinaire » → <code>thinks_in_ordinary</code></li>
+<li>« Qu&#39;il/elle m&#39;enlève une petite charge du quotidien » → <code>relieves_daily_charge</code></li>
+</ul>
+<p><strong><code>attention.words_quality</code></strong> · chips_multi · sort 160 · locked=false · trigger: <code>mots selected or detected</code> · updates: message_style, written_words_preference, recognition_need, effort_recognition_need, emotional_support_words
+« Les mots qui te touchent vraiment sont plutôt… »</p>
+<ul>
+<li>« Très précis sur ce que l&#39;autre aime chez moi » → <code>precise_about_me</code></li>
+<li>« Courts mais sincères » → <code>short_sincere</code></li>
+<li>« Longs et détaillés » → <code>long_detailed</code></li>
+<li>« Écrits pour que je puisse les relire » → <code>written_to_reread</code></li>
+<li>« Dits spontanément » → <code>spontaneous</code></li>
+<li>« Liés à un effort qu&#39;on a remarqué » → <code>effort_recognition</code></li>
+<li>« Liés à une période difficile » → <code>support_in_hard_times</code></li>
+</ul>
+<p><strong><code>attention.words_avoid</code></strong> · chips_multi · sort 170 · locked=false · trigger: <code>mots selected</code> · updates: avoid_generic_messages, words_need_actions, avoid_overdramatic_tone, avoid_delayed_words
+« Les mots peuvent tomber à plat quand… »</p>
+<ul>
+<li>« Ils sont trop génériques » → <code>too_generic</code></li>
+<li>« Ils arrivent trop tard » → <code>too_late</code></li>
+<li>« Ils ne sont pas suivis d&#39;actes » → <code>need_actions</code></li>
+<li>« Ils sont trop grandiloquents » → <code>too_dramatic</code></li>
+<li>« Ils évitent le vrai sujet » → <code>avoid_real_topic</code></li>
+<li>« Ils ressemblent à une formule toute faite » → <code>formulaic</code></li>
+</ul>
+<p><strong><code>attention.service_quality</code></strong> · chips_multi · sort 180 · locked=false · trigger: <code>actes / aide concrète / service selected</code> · updates: proactive_help, end_to_end_help, time_relief, day_smoothing, discreet_service
+« Quand quelqu&#39;un t&#39;aide, ce qui te touche vraiment c&#39;est qu&#39;il/elle… »</p>
+<ul>
+<li>« Voie ce qu&#39;il y a à faire sans que je demande » → <code>proactive</code></li>
+<li>« Prenne en charge quelque chose jusqu&#39;au bout » → <code>end_to_end</code></li>
+<li>« Me libère du temps » → <code>time_relief</code></li>
+<li>« Me facilite une journée compliquée » → <code>day_smoothing</code></li>
+<li>« Fasse quelque chose d&#39;utile mais avec délicatesse » → <code>discreet_service</code></li>
+<li>« N&#39;attende pas de reconnaissance immédiate » → <code>no_recognition_needed</code></li>
+</ul>
+<p><strong><code>attention.gift_precision</code></strong> · chips_multi · sort 190 · locked=false · trigger: <code>cadeau choisi / cadeau symbolique selected</code> · updates: taste_accuracy_requirement, remembered_signal_importance, search_effort_importance, symbolic_object_preference, non_generic_requirement, quality_requirement
+« Un cadeau pensé pour toi doit surtout montrer que… »</p>
+<ul>
+<li>« L&#39;autre connaît mes goûts » → <code>knows_taste</code></li>
+<li>« L&#39;autre a retenu quelque chose que j&#39;ai dit » → <code>remembered_signal</code></li>
+<li>« L&#39;autre a cherché quelque chose de précis » → <code>search_effort</code></li>
+<li>« L&#39;objet a une histoire ou un sens » → <code>symbolic_object</code></li>
+<li>« Le cadeau n&#39;aurait pas pu être offert à n&#39;importe qui » → <code>non_generic</code></li>
+<li>« La qualité est au rendez-vous » → <code>quality</code></li>
+</ul>
+<p><strong><code>attention.experience_quality</code></strong> · chips_multi · sort 200 · locked=false · trigger: <code>experience selected</code> · updates: experience_escape, beautiful_place_importance, logistics_smoothness, emotional_intensity_experience, discovery_preference, quality_time_preference, no_logistics_need
+« Une expérience réussie pour toi, c&#39;est surtout… »</p>
+<ul>
+<li>« Un moment qui sort du quotidien » → <code>escape</code></li>
+<li>« Un lieu vraiment beau » → <code>beautiful_place</code></li>
+<li>« Une organisation fluide » → <code>logistics_smooth</code></li>
+<li>« Une émotion forte » → <code>strong_emotion</code></li>
+<li>« Une découverte » → <code>discovery</code></li>
+<li>« Un moment de qualité à deux » → <code>quality_time</code></li>
+<li>« Une parenthèse où je n&#39;ai rien à gérer » → <code>no_logistics</code></li>
+</ul>
+<h3>Dimension <code>brands</code> (3) — libellé « Marques »</h3>
+<p><strong><code>brands.favorites</code></strong> · text · sort 60 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Tes maisons préférées en tête des idées » · durée « 20 sec »
+« Des marques, enseignes ou créateurs que tu adores ? »</p>
+<p><strong><code>brands.reference_free</code></strong> · text · sort 410 · locked=false · trigger: <code>marques aimées non détaillées</code> · updates: brands, gamme, style, aesthetic
+« Cite 3 marques ou créateurs que tu aimes vraiment — même très différents. »</p>
+<p><strong><code>brands.beauty_reference</code></strong> · text · sort 450 · locked=false · trigger: <code>marques beauté non renseignées</code> · updates: brand, category, gamme
+« Une marque beauté, parfum ou soin que tu aimes vraiment ? »</p>
+<h3>Dimension <code>conflicts</code> (3) — libellé « Conflits »</h3>
+<p><strong><code>conflicts.style</code></strong> · chips_single · sort 130 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des attentions justes, même les jours sensibles » · durée « 20 sec »
+« Face à une tension, comment tu réagis ? »</p>
+<ul>
+<li>« J&#39;en parle directement » → <code>direct</code></li>
+<li>« J&#39;ai besoin de recul » → <code>space</code></li>
+<li>« Je préfère éviter » → <code>avoids</code></li>
+<li>« Je dédramatise » → <code>humor</code></li>
+</ul>
+<p><strong><code>conflicts.repair_strategy</code></strong> · chips_multi · sort 510 · locked=false · trigger: <code>conflit / réparation non précisé</code> · updates: conflict_repair_strategy, apology_style, repair_attention_allowed
+« Après une tension, ce qui aide vraiment à réparer pour toi, c&#39;est… »</p>
+<ul>
+<li>« Des excuses précises » → <code>precise_apology</code></li>
+<li>« Un message écrit » → <code>written_message</code></li>
+<li>« Une discussion calme » → <code>calm_discussion</code></li>
+<li>« Une preuve que l&#39;autre a compris » → <code>proof_understood</code></li>
+<li>« Un geste concret » → <code>concrete_gesture</code></li>
+<li>« Un moment ensemble » → <code>time_together</code></li>
+<li>« Un peu de temps » → <code>time_alone</code></li>
+<li>« Pas de cadeau, surtout une vraie parole » → <code>words_not_gift</code></li>
+</ul>
+<p><strong><code>conflicts.repair_avoid</code></strong> · chips_multi · sort 520 · locked=false · trigger: <code>conflit / réparation non précisé</code> · updates: conflict_avoidance_rules, post_conflict_forbidden_actions
+« Après une dispute, ce qui serait maladroit… »</p>
+<ul>
+<li>« Faire comme si rien ne s&#39;était passé » → <code>ignore_conflict</code></li>
+<li>« Offrir un cadeau sans parler » → <code>gift_without_words</code></li>
+<li>« Mettre de l&#39;humour trop vite » → <code>humor_too_soon</code></li>
+<li>« Insister alors que j&#39;ai besoin d&#39;espace » → <code>insist_when_need_space</code></li>
+<li>« Dramatiser » → <code>dramatize</code></li>
+<li>« Se justifier » → <code>justify</code></li>
+<li>« Attendre trop longtemps » → <code>wait_too_long</code></li>
+</ul>
+<h3>Dimension <code>dreams</code> (4) — libellé « Rêves »</h3>
+<p><strong><code>dreams.current</code></strong> · text · sort 110 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Ce dont tu rêves, gardé pour le bon moment » · durée « 20 sec »
+« Tu as des envies ou des rêves en ce moment ? »</p>
+<p><strong><code>dreams.destination</code></strong> · text · sort 340 · locked=false · trigger: <code>destination rêve non renseignée</code> · updates: destination, hotel, experience_type, wishlist_high_priority
+« Une destination, un hôtel ou une expérience dont tu rêves en ce moment ? »</p>
+<p><strong><code>dreams.wish_priority</code></strong> · text · sort 630 · locked=false · trigger: <code>envies / rêves du moment renseignés</code> · updates: dream_priority, wishlist_priority, high_emotional_impact_candidate
+« Parmi tes envies du moment, laquelle te ferait le plus plaisir si quelqu&#39;un t&#39;aidait à la réaliser ? »</p>
+<p><strong><code>dreams.wishlist_first</code></strong> · text · sort 640 · locked=false · trigger: <code>wishlist vide</code> · updates: object, experience, venue, brand, timing, emotional_priority
+« Une chose que tu aimerais recevoir, vivre ou faire dans les prochains mois ? »</p>
+<h3>Dimension <code>food</code> (6) — libellé « Restaurants »</h3>
+<p><strong><code>food.restaurants</code></strong> · chips_multi · sort 70 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des tables choisies comme tu les aimes » · durée « 30 sec »
+« Tu préfères quel type de table ? »</p>
+<ul>
+<li>« Bistrot convivial » → <code>bistro</code> · « Gastronomique » → <code>gastronomic</code> · « Bonne adresse décontractée » → <code>casual_good</code> · « Cuisine du monde » → <code>world</code> · « Végétarien / healthy » → <code>veggie</code> · « Tout si c&#39;est bon » → <code>anything_good</code></li>
+</ul>
+<p><strong><code>food.deal_breakers</code></strong> · chips_multi · sort 250 · locked=false · trigger: <code>gastronomie / restaurant / belles tables selected</code> · updates: restaurant_deal_breakers, restaurant_selection_rules, ambience_avoidance, min_quality_threshold
+« Pour un restaurant surprise, qu&#39;est-ce qui peut vraiment gâcher l&#39;expérience ? »</p>
+<ul>
+<li>« Trop bruyant » → <code>too_loud</code> · « Tables trop serrées » → <code>too_crowded</code> · « Service froid » → <code>cold_service</code> · « Cuisine moyenne » → <code>average_food</code> · « Lieu sans charme » → <code>no_charm</code> · « Mauvaise lumière » → <code>bad_light</code> · « Trop prétentieux » → <code>too_pretentious</code> · « Trop simple / cheap » → <code>too_cheap</code> · « Trop loin » → <code>too_far</code> · « Menu trop limité » → <code>limited_menu</code> · « Mauvais rapport qualité-prix » → <code>bad_value</code></li>
+</ul>
+<p><strong><code>food.success_driver</code></strong> · chips_single · sort 260 · locked=false · trigger: <code>restaurant selected</code> · updates: restaurant_success_driver, restaurant_search_priority
+« Un restaurant réussi pour toi, c&#39;est d&#39;abord… »</p>
+<ul>
+<li>« La cuisine » → <code>cuisine</code> · « L&#39;ambiance » → <code>ambiance</code> · « Le service » → <code>service</code> · « Le lieu » → <code>venue</code> · « La vue » → <code>view</code> · « Le confort » → <code>comfort</code> · « La rareté de l&#39;adresse » → <code>rarity</code> · « Le fait que ce soit vivant » → <code>lively</code> · « Le fait que ce soit intime » → <code>intimate</code></li>
+</ul>
+<p><strong><code>food.cuisine_preferences</code></strong> · chips_multi · sort 270 · locked=false · trigger: <code>cuisine du monde / gastronomie / restaurant selected</code> · updates: cuisine_preferences, restaurant_dynamic_search_filters
+« Côté cuisine, ce qui te ferait vraiment plaisir en ce moment serait plutôt… »</p>
+<ul>
+<li>« Français » → <code>french</code> · « Italien » → <code>italian</code> · « Japonais » → <code>japanese</code> · « Libanais » → <code>lebanese</code> · « Méditerranéen » → <code>mediterranean</code> · « Thaï » → <code>thai</code> · « Indien » → <code>indian</code> · « Mexicain » → <code>mexican</code> · « Tapas » → <code>tapas</code> · « Fruits de mer » → <code>seafood</code> · « Pâtisserie / tea time » → <code>pastry</code> · « Cuisine végétale » → <code>plant_based</code> · « Je préfère être surpris·e si c&#39;est très bon » → <code>surprise_me</code></li>
+</ul>
+<p><strong><code>food.reference_address</code></strong> · text · sort 280 · locked=false · trigger: <code>restaurants aimés non renseignés</code> · updates: favorite_restaurants, restaurant_style_reference
+« Donne une adresse que tu adores, même simple. Candice s&#39;en servira comme référence de goût. »</p>
+<p><strong><code>food.reco_strategy</code></strong> · chips_single · sort 290 · locked=false · trigger: <code>restaurants score fort</code> · updates: restaurant_reco_strategy
+« Pour une recommandation restaurant, Candice doit plutôt viser… »</p>
+<ul>
+<li>« Très bien noté, même simple » → <code>well_rated</code> · « Beau lieu avant tout » → <code>beautiful_venue</code> · « Cuisine excellente avant tout » → <code>excellent_cuisine</code> · « Ambiance vivante » → <code>lively</code> · « Adresse chic » → <code>chic</code> · « Adresse cachée » → <code>hidden</code> · « Valeur sûre » → <code>safe_bet</code> · « Surprise originale » → <code>original_surprise</code></li>
+</ul>
+<h3>Dimension <code>fragrance</code> (6) — libellé « Parfums »</h3>
+<p><strong><code>fragrance.family</code></strong> · chips_multi · sort 80 · <strong>statut ARCHIVED</strong> · locked=false · trigger: <code>null</code> · updates: <code>null</code>
+« Tu portes plutôt quel type de parfum ? »</p>
+<ul>
+<li>« Fleuri » → <code>floral</code> · « Frais / citrus » → <code>fresh</code> · « Boisé » → <code>woody</code> · « Oriental / Ambré » → <code>oriental</code> · « Poudré » → <code>powder</code> · « Gourmand » → <code>gourmand</code> · « Discret » → <code>light</code> · « Sans parfum » → <code>none</code></li>
+</ul>
+<p><strong><code>fragrance.perfume_risk</code></strong> · chips_single · sort 420 · <strong>locked=true</strong> · trigger: <code>parfum / beauté detected</code> · updates: perfume_gift_risk, perfume_preference, home_fragrance_preference · benefit « Éviter les cadeaux beauté à côté »
+« Recevoir un parfum, pour toi, c&#39;est… »</p>
+<ul>
+<li>« Je préfère choisir moi-même » → <code>choose_myself</code> · « Possible si la personne connaît très bien mes goûts » → <code>if_knows_taste</code> · « Seulement une marque que j&#39;aime déjà » → <code>known_brand_only</code> · « Plutôt une bougie ou un parfum d&#39;intérieur » → <code>home_fragrance</code> · « Je n&#39;aime pas recevoir de parfum » → <code>avoid</code></li>
+</ul>
+<p><strong><code>fragrance.families</code></strong> · chips_multi · sort 425 · <strong>locked=true</strong> · trigger: <code>null</code> · updates: fragrance_families · benefit « Des cadeaux parfum qui te ressemblent »
+« Les familles olfactives qui te plaisent le plus »</p>
+<ul>
+<li>« Poudré » → <code>powdery</code> · « Musqué propre » → <code>clean_musk</code> · « Floral blanc » → <code>white_floral</code> · « Floral frais » → <code>fresh_floral</code> · « Ambré doux » → <code>soft_amber</code> · « Vanillé léger » → <code>light_vanilla</code> · « Boisé » → <code>woody</code> · « Hespéridé » → <code>citrus</code> · « Thé-aromatique » → <code>tea_aromatic</code> · « Peau propre » → <code>clean_skin</code> · « Je ne sais pas » → <code>unknown</code></li>
+</ul>
+<p><strong><code>fragrance.gender_orientation</code></strong> · chips_single · sort 425 · locked=false · trigger: <code>null</code> · updates: fragrance_gender_orientation
+« Pour les parfums, tu te guides plutôt vers… »</p>
+<ul>
+<li>« Les parfums rayon femme » → <code>femme</code> · « Les parfums rayon homme » → <code>homme</code> · « Les parfums mixtes / unisexes » → <code>mixte</code> · « Peu importe le rayon si j&#39;aime le parfum » → <code>indifferent</code> · « Je préfère ne pas préciser » → <code>unspecified</code></li>
+</ul>
+<p><strong><code>fragrance.beauty_gift</code></strong> · chips_multi · sort 430 · <strong>statut ARCHIVED</strong> · locked=false · trigger: <code>beauté / soin detected</code> · updates: beauty_gift_strategy, skincare_risk, spa_preference, known_product_preference
+« Un cadeau beauté réussi, c&#39;est plutôt… »</p>
+<ul>
+<li>« Une marque experte » → <code>expert_brand</code> · « Une marque sensorielle » → <code>sensory_brand</code> · « Un soin en institut » → <code>institute_care</code> · « Un massage » → <code>massage</code> · « Un produit que j&#39;utilise déjà » → <code>known_product</code> · « Un produit découverte » → <code>discovery_product</code> · « Un coffret premium » → <code>premium_set</code> · « Je préfère éviter » → <code>avoid</code></li>
+</ul>
+<p><strong><code>fragrance.scent_deal_breakers</code></strong> · chips_multi · sort 440 · <strong>locked=true</strong> · trigger: <code>odeurs / parfums detected</code> · updates: scent_deal_breakers · benefit « Écarter ce qui gâche un parfum »
+« À éviter absolument »</p>
+<ul>
+<li>« Trop sucré » → <code>too_sweet</code> · « Patchouli » → <code>patchouli</code> · « Très entêtant » → <code>too_heady</code> · « Trop fruité » → <code>too_fruity</code> · « Trop vanillé » → <code>too_vanilla</code> · « Trop masculin » → <code>too_masculine</code> · « Trop floral » → <code>too_floral</code> · « Parfum trop connu » → <code>too_common</code> · « Je ne sais pas » → <code>unknown</code></li>
+</ul>
+<h3>Dimension <code>gifts</code> (6) — libellé « Cadeaux »</h3>
+<p><strong><code>gifts.what_works</code></strong> · chips_multi · sort 20 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des idées cadeaux qui visent juste » · durée « 30 sec »
+« Quel type de cadeau te touche vraiment ? »</p>
+<ul>
+<li>« Expériences » → <code>experiences</code> · « Personnalisé » → <code>personalized</code> · « Utile et beau » → <code>practical</code> · « Beauté / bien-être » → <code>beauty</code> · « Livres / culture » → <code>culture</code> · « Fait main » → <code>handmade</code> · « Surprise totale » → <code>surprise</code></li>
+</ul>
+<p><strong><code>gifts.to_avoid</code></strong> · text · sort 30 · locked=false · trigger: <code>null</code> · updates: <code>null</code>
+« Des cadeaux ou attentions à éviter absolument ? »</p>
+<p><strong><code>gifts.object_quality</code></strong> · chips_multi · sort 210 · locked=false · trigger: <code>cadeau matériel selected</code> · updates: object_quality_driver, brand_importance, style_precision_required, rarity_preference, personalization_preference, utility_preference, story_value
+« Quand on t&#39;offre un objet, qu&#39;est-ce qui fait la différence entre &quot;sympa&quot; et &quot;vraiment réussi&quot; ? »</p>
+<ul>
+<li>« La qualité de la matière » → <code>material_quality</code> · « La marque ou le créateur » → <code>brand</code> · « Le fait que ce soit exactement mon style » → <code>my_style</code> · « Le fait que ce soit rare ou difficile à trouver » → <code>rare</code> · « Le fait que ce soit personnalisé » → <code>personalized</code> · « Le fait que ce soit utile au quotidien » → <code>useful</code> · « Le fait que ça ait une histoire » → <code>has_story</code></li>
+</ul>
+<p><strong><code>gifts.risky_categories</code></strong> · chips_multi · sort 220 · locked=false · trigger: <code>objet / mode / beauté / bijou / déco detected</code> · updates: risky_categories, admin_validation_required_by_category, prefer_choose_together
+« Quel type d&#39;objet est le plus risqué à t&#39;offrir sans te demander ? »</p>
+<ul>
+<li>« Vêtement » → <code>clothing</code> · « Bijou » → <code>jewelry</code> · « Parfum » → <code>perfume</code> · « Décoration » → <code>decoration</code> · « Livre » → <code>book</code> · « Beauté / skincare » → <code>beauty</code> · « Tech » → <code>tech</code> · « Accessoire » → <code>accessory</code> · « Tout objet trop personnel est risqué » → <code>all_personal</code> · « Rien, je suis assez facile » → <code>none</code></li>
+</ul>
+<p><strong><code>gifts.quality_non_negotiable</code></strong> · chips_multi · sort 230 · locked=false · trigger: <code>qualité / standing / raffinement detected</code> · updates: quality_must_have_by_category, premium_threshold_by_category, avoid_low_quality_by_category
+« Dans quelles catégories la qualité est non négociable pour toi ? »</p>
+<ul>
+<li>« Hôtel » → <code>hotel</code> · « Restaurant » → <code>restaurant</code> · « Bijou » → <code>jewelry</code> · « Vêtement » → <code>clothing</code> · « Sac / maroquinerie » → <code>bag</code> · « Parfum » → <code>perfume</code> · « Beauté / soin » → <code>beauty</code> · « Literie » → <code>bedding</code> · « Spa / massage » → <code>spa</code> · « Alimentaire » → <code>food</code> · « Je suis assez flexible » → <code>flexible</code></li>
+</ul>
+<p><strong><code>gifts.impersonal_definition</code></strong> · chips_multi · sort 240 · locked=false · trigger: <code>cadeau impersonnel mentioned in avoidances</code> · updates: impersonal_gift_definition, requires_contextualization, requires_personal_note, avoid_generic_supplier
+« Pour toi, un cadeau devient impersonnel quand… »</p>
+<ul>
+<li>« Il pourrait être offert à n&#39;importe qui » → <code>could_be_for_anyone</code> · « Il ne tient pas compte de mon style » → <code>ignores_style</code> · « Il est acheté à la dernière minute » → <code>last_minute</code> · « Il vient d&#39;une enseigne trop générique » → <code>generic_store</code> · « Il n&#39;a aucun mot ou contexte » → <code>no_note</code> · « Il ne correspond pas à ce que je vis en ce moment » → <code>not_current</code></li>
+</ul>
+<h3>Dimension <code>hobbies</code> (11) — libellé « Loisirs »</h3>
+<p><strong><code>hobbies.main</code></strong> · text · sort 100 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des moments qui te nourrissent vraiment » · durée « 30 sec »
+« Qu&#39;est-ce qui te ressource vraiment ? »</p>
+<p><strong><code>hobbies.book_conditions</code></strong> · chips_multi · sort 350 · locked=false · trigger: <code>lecture / livre / BD detected</code> · updates: book_gift_conditions, author_importance, beautiful_edition_preference, personal_note_required, book_risk_score, graphic_novel_relevance
+« Un livre en cadeau peut vraiment te plaire si… »</p>
+<ul>
+<li>« C&#39;est un auteur que j&#39;aime déjà » → <code>known_author</code> · « C&#39;est une très belle édition » → <code>beautiful_edition</code> · « C&#39;est recommandé avec un mot personnel » → <code>with_personal_note</code> · « C&#39;est un livre qui correspond à une période de ma vie » → <code>matches_life_period</code> · « C&#39;est une BD / un roman graphique choisi avec soin » → <code>graphic_novel</code> · « C&#39;est un livre rare ou signé » → <code>rare_signed</code> · « C&#39;est plutôt risqué, je préfère choisir moi-même » → <code>prefer_choose</code></li>
+</ul>
+<p><strong><code>hobbies.book_avoidance</code></strong> · chips_multi · sort 360 · locked=false · trigger: <code>lecture detected</code> · updates: book_avoidance, sensitive_topics, avoid_trendy_books, avoid_moralizing_gifts
+« Un livre risque de tomber à plat si… »</p>
+<ul>
+<li>« Il est trop &quot;développement personnel&quot; évident » → <code>too_self_help</code> · « Il est trop intellectuel » → <code>too_intellectual</code> · « Il est trop léger » → <code>too_light</code> · « Il ne correspond pas à mon style » → <code>wrong_style</code> · « Il est choisi parce qu&#39;il est à la mode » → <code>too_trendy</code> · « Il ressemble à une leçon déguisée » → <code>moralizing</code> · « Il parle d&#39;un sujet sensible » → <code>sensitive_topic</code></li>
+</ul>
+<p><strong><code>hobbies.book_reference</code></strong> · text · sort 370 · locked=false · trigger: <code>auteur / livre préféré non renseigné</code> · updates: author, title, genre, format, universe
+« Cite un auteur, une autrice, une BD ou un livre que tu aimes vraiment. »</p>
+<p><strong><code>hobbies.home_gift_safe</code></strong> · chips_single · sort 560 · locked=false · trigger: <code>déco / maison detected</code> · updates: home_gift_safe_categories, home_gift_risk
+« Pour la maison, ce qui est le moins risqué à t&#39;offrir… »</p>
+<ul>
+<li>« Bougie / parfum d&#39;intérieur » → <code>candle</code> · « Art de la table » → <code>tableware</code> · « Linge de maison » → <code>linen</code> · « Beau livre » → <code>coffee_table_book</code> · « Petit objet design » → <code>design_object</code> · « Plante » → <code>plant</code> · « Céramique » → <code>ceramic</code> · « Rien, je préfère choisir moi-même » → <code>prefer_choose</code></li>
+</ul>
+<p><strong><code>hobbies.home_deal_breakers</code></strong> · chips_multi · sort 570 · locked=false · trigger: <code>déco / maison detected</code> · updates: home_decor_deal_breakers
+« En déco, ce qui peut vite tomber à côté pour toi… »</p>
+<ul>
+<li>« Objet trop kitsch » → <code>too_kitsch</code> · « Mauvaise couleur » → <code>bad_color</code> · « Mauvaise matière » → <code>bad_material</code> · « Objet trop imposant » → <code>too_imposing</code> · « Style trop froid » → <code>too_cold</code> · « Style trop rustique » → <code>too_rustic</code> · « Objet sans utilité » → <code>useless</code> · « Cadeau qui encombre » → <code>clutters</code></li>
+</ul>
+<p><strong><code>hobbies.wellness_gift</code></strong> · chips_multi · sort 580 · locked=false · trigger: <code>sport / bien-être detected</code> · updates: wellness_gift_strategy, spa_preference, massage_preference, retreat_interest
+« Une attention bien-être réussie pour toi, c&#39;est plutôt… »</p>
+<ul>
+<li>« Massage » → <code>massage</code> · « Spa » → <code>spa</code> · « Cours privé » → <code>private_class</code> · « Retraite » → <code>retreat</code> · « Moment de calme » → <code>quiet_time</code> · « Accessoire de qualité » → <code>quality_accessory</code> · « Abonnement » → <code>subscription</code> · « Expérience douce » → <code>gentle_experience</code> · « Je préfère éviter les cadeaux bien-être » → <code>avoid</code></li>
+</ul>
+<p><strong><code>hobbies.sport_risk</code></strong> · chips_multi · sort 590 · locked=false · trigger: <code>sport detected</code> · updates: sport_gift_risks, avoid_body_related_gifts
+« Un cadeau sport est risqué si… »</p>
+<ul>
+<li>« Il n&#39;est pas adapté à ma pratique » → <code>wrong_practice</code> · « Il est trop technique » → <code>too_technical</code> · « Il est trop bas de gamme » → <code>low_quality</code> · « Il suppose que je veux performer » → <code>performance_assumption</code> · « Il touche au corps / au poids » → <code>body_related</code> · « Il est choisi sans connaître mes habitudes » → <code>unknown_habits</code> · « Je préfère choisir moi-même » → <code>prefer_choose</code></li>
+</ul>
+<p><strong><code>hobbies.culture_success</code></strong> · chips_multi · sort 600 · locked=false · trigger: <code>culture / art detected</code> · updates: culture_success_driver, cultural_event_recommendation_rules
+« Une sortie culturelle réussie pour toi, c&#39;est surtout… »</p>
+<ul>
+<li>« Une très belle œuvre » → <code>great_artwork</code> · « Un lieu magnifique » → <code>beautiful_venue</code> · « Une émotion forte » → <code>strong_emotion</code> · « Une découverte » → <code>discovery</code> · « Un moment élégant » → <code>elegant</code> · « Une sortie facile à organiser » → <code>easy_logistics</code> · « Une discussion après » → <code>discussion_after</code> · « Un événement rare » → <code>rare_event</code></li>
+</ul>
+<p><strong><code>hobbies.concert_criteria</code></strong> · chips_multi · sort 610 · locked=false · trigger: <code>musique / concert detected</code> · updates: concert_selection_rules, seat_quality_importance
+« Pour un concert ou spectacle, ce qui compte le plus… »</p>
+<ul>
+<li>« L&#39;artiste » → <code>artist</code> · « La qualité des places » → <code>seat_quality</code> · « L&#39;ambiance » → <code>ambiance</code> · « Le lieu » → <code>venue</code> · « Le confort » → <code>comfort</code> · « Y aller avec la bonne personne » → <code>right_company</code> · « Ne pas être trop loin / mal placé » → <code>good_position</code> · « Le côté événement rare » → <code>rare_event</code></li>
+</ul>
+<p><strong><code>hobbies.artist_reference</code></strong> · text · sort 620 · locked=false · trigger: <code>artiste non renseigné</code> · updates: artist, venue, event, style
+« Un artiste, spectacle ou lieu culturel que tu aimerais voir ? »</p>
+<h3>Dimension <code>practical</code> (6) — libellé « Pratique »</h3>
+<p><strong><code>practical.dietary</code></strong> · chips_multi · sort 140 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Zéro faux pas sur l&#39;essentiel » <em>(rendu spécial : précision allergie obligatoire)</em>
+« Côté repas, y a-t-il des règles que tes proches doivent absolument connaître ? »</p>
+<ul>
+<li>« Végétarien·ne » → <code>vegetarian</code> · « Vegan » → <code>vegan</code> · « Halal » → <code>halal</code> · « Casher » → <code>casher</code> · « Sans alcool » → <code>no_alcohol</code> · « Allergie alimentaire » → <code>food_allergy</code> · « Aucune » → <code>none</code></li>
+</ul>
+<p><strong><code>practical.mobility</code></strong> · chips_single · sort 141 · locked=false · trigger: <code>null</code> · updates: <code>null</code> <em>(rendu spécial : type + intensité obligatoires)</em>
+« Y a-t-il quelque chose que ton corps te demande de respecter ? (marche, escaliers, station debout…) »</p>
+<ul>
+<li>« Oui » → <code>yes</code> · « Non » → <code>no</code></li>
+</ul>
+<p><strong><code>practical.logistics_relief</code></strong> · chips_multi · sort 490 · locked=false · trigger: <code>charge mentale / fatigue / besoin d&#39;organisation detected</code> · updates: logistics_relief_targets, no_logistics_need, support_attention_candidates
+« Quand quelqu&#39;un veut te faire du bien, qu&#39;est-ce qui t&#39;enlève un vrai poids des épaules ? »</p>
+<ul>
+<li>« Qu&#39;on réserve à ma place » → <code>reservation</code> · « Qu&#39;on gère le trajet » → <code>transport</code> · « Qu&#39;on s&#39;occupe des enfants » → <code>children</code> · « Qu&#39;on pense au repas » → <code>meal</code> · « Qu&#39;on fasse les courses » → <code>groceries</code> · « Qu&#39;on gère le ménage » → <code>cleaning</code> · « Qu&#39;on cale le bon moment » → <code>timing</code> · « Qu&#39;on prenne la décision pour moi » → <code>decision</code> · « Qu&#39;on règle les détails » → <code>practical_details</code> · « Qu&#39;on assure le suivi après » → <code>follow_up</code></li>
+</ul>
+<p><strong><code>practical.control_delegation</code></strong> · chips_single · sort 500 · locked=false · trigger: <code>aime qu&#39;on organise / surprise / charge mentale detected</code> · updates: control_vs_delegation, decision_relief, validation_need
+« Quand quelqu&#39;un organise pour toi, tu préfères… »</p>
+<ul>
+<li>« Qu&#39;il décide vraiment » → <code>decide_all</code> · « Qu&#39;il me propose 2 options » → <code>two_options</code> · « Qu&#39;il me laisse valider les détails » → <code>validate_details</code> · « Qu&#39;il gère tout sauf la date » → <code>all_except_date</code> · « Qu&#39;il me surprenne mais me rassure » → <code>surprise_but_reassure</code> · « Qu&#39;il ne décide pas à ma place » → <code>no_decide_for_me</code></li>
+</ul>
+<p><strong><code>practical.important_dates</code></strong> · text · sort 650 · locked=false · trigger: <code>dates importantes incomplètes</code> · updates: important_dates, event_trigger_engine
+« Y a-t-il une date que tes proches ne devraient pas oublier ? »</p>
+<p><strong><code>practical.date_attention</code></strong> · chips_multi · sort 660 · locked=false · trigger: <code>date ajoutée sans préférence d&#39;attention</code> · updates: event_attention_preferences
+« Pour cette date, tu aimerais plutôt… »</p>
+<ul>
+<li>« Un message » → <code>message</code> · « Un moment ensemble » → <code>time_together</code> · « Un cadeau » → <code>gift</code> · « Une surprise » → <code>surprise</code> · « Une expérience » → <code>experience</code> · « Rien de grand, juste qu&#39;on y pense » → <code>just_remember</code> · « Quelque chose organisé à l&#39;avance » → <code>planned_ahead</code></li>
+</ul>
+<h3>Dimension <code>style</code> (9) — libellé « Style »</h3>
+<p><strong><code>style.clothing</code></strong> · chips_multi · sort 40 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des choix à ton goût, jamais à côté » · durée « 30 sec »
+« Tu te décrirais avec quel style ? »</p>
+<ul>
+<li>« Classique » → <code>classic</code> · « Bohème » → <code>boho</code> · « Minimaliste » → <code>minimal</code> · « Chic parisien » → <code>chic</code> · « Décontracté » → <code>casual</code> · « Sportswear » → <code>sport</code> · « Mode / tendance » → <code>trendy</code></li>
+</ul>
+<p><strong><code>style.colors</code></strong> · text · sort 50 · locked=false · trigger: <code>null</code> · updates: <code>null</code>
+« Tes couleurs et matières préférées pour te faire plaisir ? »</p>
+<p><strong><code>style.fashion_gift_risk</code></strong> · chips_single · sort 380 · locked=false · trigger: <code>mode / vêtements / marques detected</code> · updates: fashion_gift_risk, prefer_choose_together, safe_fashion_categories
+« Si quelqu&#39;un veut t&#39;offrir quelque chose lié à la mode, le moins risqué serait… »</p>
+<ul>
+<li>« M&#39;emmener choisir » → <code>choose_together</code> · « Carte cadeau d&#39;une marque que j&#39;aime » → <code>gift_card</code> · « Accessoire » → <code>accessory</code> · « Bijou » → <code>jewelry</code> · « Foulard / belle matière » → <code>scarf</code> · « Sac / petite maroquinerie » → <code>bag</code> · « Vêtement uniquement si taille et style sûrs » → <code>clothing_if_sure</code> · « Ne pas m&#39;offrir de mode » → <code>avoid_fashion</code></li>
+</ul>
+<p><strong><code>style.jewelry_style</code></strong> · chips_multi · sort 390 · locked=false · trigger: <code>bijoux detected</code> · updates: jewelry_style, jewelry_material, symbolic_jewelry_preference, jewelry_brand_importance
+« Un bijou réussi pour toi, c&#39;est plutôt… »</p>
+<ul>
+<li>« Fin et discret » → <code>delicate</code> · « Visible / affirmé » → <code>bold</code> · « Doré » → <code>gold</code> · « Argenté » → <code>silver</code> · « Avec pierre » → <code>with_stone</code> · « Personnalisé / gravé » → <code>personalized</code> · « Symbolique » → <code>symbolic</code> · « Très mode » → <code>trendy</code> · « Intemporel » → <code>timeless</code> · « D&#39;une marque précise » → <code>specific_brand</code></li>
+</ul>
+<p><strong><code>style.fashion_deal_breakers</code></strong> · chips_multi · sort 400 · locked=false · trigger: <code>mode / style detected</code> · updates: fashion_deal_breakers, avoid_bad_fit, avoid_bad_material, avoid_wrong_brand
+« Côté style, ce qu&#39;il faut éviter absolument… »</p>
+<ul>
+<li>« Trop classique » → <code>too_classic</code> · « Trop cheap » → <code>too_cheap</code> · « Trop voyant » → <code>too_flashy</code> · « Trop discret » → <code>too_discreet</code> · « Mauvaise matière » → <code>bad_material</code> · « Mauvaise coupe » → <code>bad_fit</code> · « Mauvaise taille » → <code>wrong_size</code> · « Trop &quot;cadeau par défaut&quot; » → <code>default_gift</code> · « Marque que je n&#39;aime pas » → <code>wrong_brand</code></li>
+</ul>
+<p><strong><code>style.material_preferences</code></strong> · chips_multi · sort 530 · locked=false · trigger: <code>mode / déco / beauté / matières detected</code> · updates: material_preferences, premium_material_signals
+« Les matières qui te donnent vraiment une impression de qualité… »</p>
+<ul>
+<li>« Cachemire » → <code>cashmere</code> · « Soie » → <code>silk</code> · « Cuir » → <code>leather</code> · « Daim » → <code>suede</code> · « Lin » → <code>linen</code> · « Coton épais » → <code>thick_cotton</code> · « Laine mérinos » → <code>merino</code> · « Céramique » → <code>ceramic</code> · « Bois » → <code>wood</code> · « Verre soufflé » → <code>blown_glass</code> · « Métal doré » → <code>gold_metal</code> · « Pierre naturelle » → <code>natural_stone</code></li>
+</ul>
+<p><strong><code>style.material_avoidance</code></strong> · chips_multi · sort 540 · locked=false · trigger: <code>mode / déco / matières detected</code> · updates: material_avoidance
+« Les matières qui peuvent te déplaire… »</p>
+<ul>
+<li>« Synthétique » → <code>synthetic</code> · « Laine qui gratte » → <code>scratchy_wool</code> · « Polyester » → <code>polyester</code> · « Matière trop rigide » → <code>too_rigid</code> · « Matière trop fragile » → <code>too_fragile</code> · « Faux cuir » → <code>faux_leather</code> · « Fourrure » → <code>fur</code> · « Plastique » → <code>plastic</code> · « Je ne sais pas » → <code>unknown</code></li>
+</ul>
+<p><strong><code>style.cross_gender</code></strong> · chips_multi · sort 545 · locked=false · trigger: <code>null</code> · updates: style_cross_gender, style_gender_orientation, fit_preference
+« Pour les vêtements et accessoires, tu te repères plutôt dans… »</p>
+<ul>
+<li>« Le rayon femme » → <code>femme</code> · « Le rayon homme » → <code>homme</code> · « Les deux — je mélange » → <code>mixte</code> · « Les pièces unisexes avant tout » → <code>unisexe</code> · « Ça dépend de la pièce » → <code>depends</code> · « Je préfère ne pas préciser » → <code>unspecified</code></li>
+</ul>
+<p><strong><code>style.color_safe</code></strong> · chips_multi · sort 550 · locked=false · trigger: <code>mode / déco / objet detected</code> · updates: color_safe_choices, color_avoidance_if_free_text
+« Si on t&#39;offre un objet, un vêtement ou un accessoire, les couleurs les plus sûres sont… »</p>
+<ul>
+<li>« Noir » → <code>black</code> · « Blanc » → <code>white</code> · « Beige » → <code>beige</code> · « Bleu ciel » → <code>light_blue</code> · « Marine » → <code>navy</code> · « Vert » → <code>green</code> · « Rouge » → <code>red</code> · « Rose pâle » → <code>pale_pink</code> · « Doré » → <code>gold</code> · « Argenté » → <code>silver</code> · « Tons neutres » → <code>neutral_tones</code> · « Couleurs fortes » → <code>bold_colors</code> · « Je préfère choisir » → <code>prefer_choose</code></li>
+</ul>
+<h3>Dimension <code>surprises</code> (4) — libellé « Surprises »</h3>
+<p><strong><code>surprises.preference</code></strong> · chips_single · sort 120 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des surprises bien dosées, jamais subies » · durée « 20 sec »
+« Tu es plutôt… »</p>
+<ul>
+<li>« J&#39;adore les surprises » → <code>loves</code> · « Ça dépend du contexte » → <code>depends</code> · « Je préfère être prévenu·e » → <code>notice</code> · « Les surprises me stressent » → <code>dislikes</code></li>
+</ul>
+<p><strong><code>surprises.conditions</code></strong> · chips_multi · sort 460 · locked=false · trigger: <code>surprise ouverte / partielle detected</code> · updates: surprise_conditions, surprise_logistics_requirements, surprise_social_boundary
+« Tu peux aimer une surprise si… »</p>
+<ul>
+<li>« Je connais au moins l&#39;horaire » → <code>know_schedule</code> · « Je sais comment m&#39;habiller » → <code>know_dress_code</code> · « Je sais combien de temps ça dure » → <code>know_duration</code> · « Je peux refuser sans gêne » → <code>can_decline</code> · « Ce n&#39;est pas devant trop de monde » → <code>not_too_public</code> · « C&#39;est organisé par quelqu&#39;un de très proche » → <code>very_close_person</code> · « C&#39;est très bien préparé » → <code>well_prepared</code></li>
+</ul>
+<p><strong><code>surprises.briefing_needed</code></strong> · chips_multi · sort 470 · locked=false · trigger: <code>surprise detected</code> · updates: surprise_briefing_needed
+« Avant une surprise, tu as besoin de savoir au minimum… »</p>
+<ul>
+<li>« L&#39;heure » → <code>time</code> · « La tenue » → <code>dress_code</code> · « La durée » → <code>duration</code> · « Le lieu approximatif » → <code>approx_location</code> · « Si je dois prévoir une garde d&#39;enfant » → <code>childcare</code> · « Si c&#39;est intime ou social » → <code>intimate_or_social</code> · « Rien, j&#39;aime la surprise totale » → <code>total_surprise</code></li>
+</ul>
+<p><strong><code>surprises.deal_breakers</code></strong> · chips_multi · sort 480 · locked=false · trigger: <code>surprise négative ou prudente detected</code> · updates: surprise_deal_breakers
+« La surprise à éviter absolument pour toi, ce serait… »</p>
+<ul>
+<li>« Une surprise en public » → <code>public</code> · « Une surprise avec trop de monde » → <code>too_many_people</code> · « Une surprise qui change mon planning » → <code>changes_plans</code> · « Une surprise où je ne sais pas comment m&#39;habiller » → <code>no_dress_code</code> · « Une surprise trop chère » → <code>too_expensive</code> · « Une surprise trop intime » → <code>too_intimate</code> · « Une surprise qui ne me ressemble pas » → <code>not_me</code></li>
+</ul>
+<h3>Dimension <code>travel</code> (5) — libellé « Voyages »</h3>
+<p><strong><code>travel.style</code></strong> · chips_multi · sort 90 · locked=false · trigger: <code>null</code> · updates: <code>null</code> · benefit « Des escapades taillées pour toi » · durée « 30 sec »
+« Quand tu voyages, tu cherches… »</p>
+<ul>
+<li>« L&#39;aventure » → <code>adventure</code> · « La culture » → <code>culture</code> · « Le repos total » → <code>relax</code> · « La nature » → <code>nature</code> · « Les villes animées » → <code>city</code> · « La gastronomie locale » → <code>gastro</code> · « Le luxe discret » → <code>luxury</code></li>
+</ul>
+<p><strong><code>travel.hotel_criteria</code></strong> · chips_multi · sort 300 · locked=false · trigger: <code>voyage / week-end / hôtel / luxe detected</code> · updates: hotel_success_drivers, hotel_must_have, hotel_style_preference, premium_threshold_hotel
+« Quand tu parles d&#39;un &quot;bel endroit&quot;, qu&#39;est-ce qui compte vraiment ? »</p>
+<ul>
+<li>« Literie parfaite » → <code>perfect_bedding</code> · « Décoration / architecture » → <code>decor</code> · « Service impeccable » → <code>service</code> · « Spa / piscine » → <code>spa</code> · « Vue » → <code>view</code> · « Calme » → <code>quiet</code> · « Chambre spacieuse » → <code>spacious</code> · « Très bon restaurant » → <code>great_restaurant</code> · « Emplacement idéal » → <code>location</code> · « Atmosphère intime » → <code>intimate</code> · « Palace / grand luxe » → <code>palace</code> · « Boutique-hôtel de charme » → <code>boutique</code></li>
+</ul>
+<p><strong><code>travel.deal_breakers</code></strong> · chips_multi · sort 310 · locked=false · trigger: <code>voyage / week-end detected</code> · updates: travel_deal_breakers, avoid_rustic, avoid_average_hotel, no_logistics_need, max_program_density
+« Ce qui peut vraiment gâcher un week-end pour toi… »</p>
+<ul>
+<li>« Mauvaise literie » → <code>bad_bedding</code> · « Hôtel moyen » → <code>average_hotel</code> · « Trop de route » → <code>too_much_driving</code> · « Trop de logistique » → <code>too_much_logistics</code> · « Lieu sans charme » → <code>no_charm</code> · « Programme trop chargé » → <code>overloaded_schedule</code> · « Mauvaise nourriture » → <code>bad_food</code> · « Trop rustique » → <code>too_rustic</code> · « Pas assez confortable » → <code>not_comfortable</code> · « Trop isolé » → <code>too_isolated</code> · « Trop touristique » → <code>too_touristy</code> · « Pas assez premium » → <code>not_premium</code></li>
+</ul>
+<p><strong><code>travel.hotel_standard</code></strong> · chips_single · sort 320 · locked=false · trigger: <code>hôtel / confort / luxe detected</code> · updates: hotel_minimum_standard, budget_expectation, premium_threshold_hotel
+« Pour un week-end surprise, ton niveau de confort minimum serait plutôt… »</p>
+<ul>
+<li>« Peu importe si l&#39;expérience est forte » → <code>experience_first</code> · « Hôtel confortable et propre » → <code>comfortable</code> · « Très bon 4 étoiles » → <code>four_stars</code> · « 5 étoiles si possible » → <code>five_stars</code> · « Boutique-hôtel très soigné » → <code>boutique</code> · « Palace / très luxe pour les grandes occasions » → <code>palace</code></li>
+</ul>
+<p><strong><code>travel.distance_tolerance</code></strong> · chips_single · sort 330 · locked=false · trigger: <code>week-end / voyage surprise detected</code> · updates: travel_distance_tolerance, logistics_constraints
+« Pour une surprise week-end, tu es prêt·e à faire combien de trajet ? »</p>
+<ul>
+<li>« Moins d&#39;1h » → <code>under_1h</code> · « 1 à 2h » → <code>1_2h</code> · « 2 à 3h » → <code>2_3h</code> · « 3 à 5h » → <code>3_5h</code> · « Train OK » → <code>train_ok</code> · « Avion OK » → <code>plane_ok</code> · « Ça dépend si le lieu vaut vraiment le coup » → <code>depends</code></li>
+</ul>
+<hr>
+<p><em>Note : <code>free_text_enabled = false</code> sur les 70 lignes ; les questions <code>type = text</code> recueillent quand même du texte libre (le champ <code>free_text_enabled</code> concerne un complément texte optionnel sur une question à chips, ici jamais activé). <code>priority = 50</code> sur les 70 lignes (le tri se joue donc surtout sur <code>computeGapScore</code> puis <code>sort_order</code>).</em></p>
+</body></html>

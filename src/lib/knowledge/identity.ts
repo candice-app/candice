@@ -53,15 +53,41 @@ export type KnowledgeRef =
   | { readonly kind: 'source'; readonly id: string };
 
 /**
- * Les deux colonnes d'identité portées par TOUTE structure persistée, comme
- * questionnaire_responses(contact_id, user_id). Redondance assumée : elle évite une
- * jointure sur chaque lecture RLS. La clé de signal, elle, est scopée sur contactId
- * SEUL (contacts.id est une PK qui détermine déjà son propriétaire ; une clé qui
- * contiendrait le propriétaire se casserait si la propriété changeait).
+ * La PERSONNE DÉCRITE par la connaissance (arbitrage lot B). Union discriminée : soit un
+ * proche (contacts.id), soit le titulaire de compte lui-même (auth.users.id dans un RÔLE de
+ * personne décrite — ce n'est pas un 3ᵉ vocabulaire d'identité, c'est un UserId en position
+ * « about »). Pas de ligne « soi » dans contacts ; pas de PersonId ressuscité.
+ *
+ * NB — « subject » est RÉSERVÉ au THÈME (Dictionnaire/HSG : subject = « photographie
+ * argentique », mental_load, Formula 1). La personne décrite s'appelle donc `about`, jamais
+ * `subject`, pour que le code reste en accord avec les documents d'autorité.
+ */
+export type AboutRef =
+  | { readonly kind: 'contact'; readonly id: ContactId }
+  | { readonly kind: 'account'; readonly id: UserId };
+
+export const contactAbout = (id: ContactId): AboutRef => ({ kind: 'contact', id });
+export const accountAbout = (id: UserId): AboutRef => ({ kind: 'account', id });
+
+/**
+ * Identité portée par TOUTE structure persistée : la PERSONNE DÉCRITE (kind + id) et le
+ * DÉTENTEUR (ownerId / user_id), séparément. Une clé de signal est scopée sur `about`
+ * (aboutKind:aboutId) ; le détenteur reste un contrôle d'accès distinct (RLS), jamais dans
+ * la clé (une clé est une identité, pas un contrôle d'accès).
  */
 export interface KnowledgeScope {
-  /** Le proche — contacts.id. */
-  readonly contactId: ContactId;
-  /** Le pilote/détenteur — user_id. */
+  readonly about: AboutRef;
+  /** Le détenteur — user_id. */
   readonly ownerId: UserId;
 }
+
+/** Fabrique de scope : personne décrite = un proche. */
+export const contactScope = (contactId: ContactId, ownerId: UserId): KnowledgeScope => ({
+  about: contactAbout(contactId),
+  ownerId,
+});
+/** Fabrique de scope : personne décrite = le titulaire lui-même. */
+export const accountScope = (accountId: UserId, ownerId: UserId): KnowledgeScope => ({
+  about: accountAbout(accountId),
+  ownerId,
+});

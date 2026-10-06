@@ -10,12 +10,12 @@
 //   - globalStatus distingue GLOBAL_DIRECT / GLOBAL_CONSOLIDATED / LOCAL_ONLY (R15).
 //   - AFFECTION_LANGUAGE : deux vecteurs ENTIÈREMENT séparés (R5).
 //
-// SignalBase porte les deux identités (contactId + ownerId), comme toute structure
+// SignalBase porte les deux identités (about + ownerId), comme toute structure
 // persistée (point d'arrêt 1 tranché). La clé de signal, elle, est scopée sur
-// contactId SEUL (signalKey).
+// `about` SEUL (signalKey).
 
 import type { EvidenceContext } from './evidence';
-import type { KnowledgeScope, EntityId, SubjectId } from './identity';
+import type { KnowledgeScope, EntityId, SubjectId, AboutRef } from './identity';
 import type {
   AffectionCadence,
   AffectionDirection,
@@ -197,12 +197,12 @@ export function constructIdentity(s: Signal): string {
 }
 
 /**
- * Clé stable d'un signal : contactId :: family :: identité du construct.
- * Scopée sur contactId SEUL (point d'arrêt 1 tranché). Déterministe et stable au
- * recalcul : deux consolidations du même journal produisent la même clé.
+ * Clé stable d'un signal : aboutKind:aboutId :: family :: identité du construct.
+ * Scopée sur `about` SEUL (le détenteur n'entre jamais dans la clé). Déterministe et
+ * stable au recalcul : deux consolidations du même journal produisent la même clé.
  */
-export function signalKey(contactId: KnowledgeScope['contactId'], s: Signal): string {
-  return `${contactId}::${s.family}::${constructIdentity(s)}`;
+export function signalKey(about: AboutRef, s: Signal): string {
+  return `${about.kind}:${about.id}::${s.family}::${constructIdentity(s)}`;
 }
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -212,7 +212,7 @@ export function signalKey(contactId: KnowledgeScope['contactId'], s: Signal): st
 /** Champs SignalBase d'un construct jamais renseigné. */
 export function emptyBase(scope: KnowledgeScope): SignalBase {
   return {
-    contactId: scope.contactId,
+    about: scope.about,
     ownerId: scope.ownerId,
     score: 'unknown',
     confidence: 'none',

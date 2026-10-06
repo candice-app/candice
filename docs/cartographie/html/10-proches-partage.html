@@ -1,0 +1,412 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>10 — Proches & partage</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>Cartographie 10 — Proches &amp; Partage</h1>
+<blockquote>
+<p>Ce document décrit <strong>ce qui EST</strong> dans le code aujourd&#39;hui, sans jugement ni recommandation.
+Toute affirmation renvoie à sa source : <code>(fichier: …)</code> ou <code>(base: …)</code>. « Non vérifié » sinon.
+Les textes visibles à l&#39;écran sont cités <strong>mot pour mot</strong> (verbatim), entre guillemets.</p>
+<p><strong>Légende des statuts :</strong></p>
+<ul>
+<li>✅ = visible et actif dans l&#39;interface aujourd&#39;hui</li>
+<li>🟡 = présent mais partiel / conditionnel / désactivé</li>
+<li>⚫ = code présent mais mort (non atteignable dans l&#39;UI actuelle)</li>
+<li>❌ = absent</li>
+</ul>
+</blockquote>
+<hr>
+<h2>(a) Ajouter un proche — l&#39;écran « Nouveau contact »</h2>
+<p>Source : <code>(fichier: src/app/contacts/new/page.tsx)</code> et le composant qu&#39;il affiche <code>(fichier: src/components/contacts/NewContactFlow.tsx)</code>.</p>
+<p>En-tête de la page <code>(fichier: src/app/contacts/new/page.tsx)</code> :</p>
+<ul>
+<li>Petit label : « Nouveau contact »</li>
+<li>Titre : « Ajouter quelqu&#39;un. »</li>
+<li>Sous-titre : « Choisis comment tu veux créer ce profil. »</li>
+</ul>
+<h3>Étape 0 — Choix du mode (deux cartes) ✅</h3>
+<p><code>(fichier: src/components/contacts/NewContactFlow.tsx)</code></p>
+<p>Deux cartes proposées :</p>
+<ol>
+<li><p><strong>« Mode standard »</strong> — mention « recommandé »
+Texte : « Tu invites le proche, il remplit lui-même son questionnaire. Il découvre Candice avec une analyse personnelle à la fin. »</p>
+</li>
+<li><p><strong>« Mode incognito »</strong>
+Texte : « Tu remplis tout toi-même, ton proche n&#39;est pas informé. Idéal quand tu veux gérer les attentions de A à Z. »</p>
+</li>
+</ol>
+<h3>Mode standard ✅</h3>
+<p>Quand on choisit « Mode standard », un lien « ← Changer de mode » apparaît, puis c&#39;est le composant <code>QuestionnaireForm</code> qui s&#39;affiche <code>(fichier: src/components/questionnaire/QuestionnaireForm.tsx, non détaillé ici)</code>. C&#39;est le parcours d&#39;invitation classique.</p>
+<h3>Mode incognito — formulaire en 3 étapes ✅</h3>
+<p>Bandeau d&#39;intro : « Mode incognito » puis « Renseigne les informations essentielles. Ton proche ne sera pas notifié. »</p>
+<p><strong>Étape 0 — Infos de base</strong></p>
+<ul>
+<li>Champ « Prénom * » (obligatoire) — placeholder « Ex : Sophie »</li>
+<li>Champ « Pronom » (pastilles à choisir) :<ul>
+<li>« Elle (féminin) » (valeur <code>femme</code>)</li>
+<li>« Il (masculin) » (valeur <code>homme</code>)</li>
+<li>« Iel (non-binaire) » (valeur <code>non_binaire</code>)</li>
+<li>« Je préfère ne pas préciser » (valeur <code>non_precise</code>)</li>
+</ul>
+</li>
+<li>Bouton « Suivant → » (désactivé tant que le prénom est vide)</li>
+</ul>
+<p><strong>Étape 1 — Registre de la relation</strong></p>
+<ul>
+<li>Question : « Et aujourd&#39;hui, votre relation avec {Prénom} ressemble plutôt à… »</li>
+<li>Précision : « Uniquement visible par vous. Candice adapte ses idées en conséquence. »</li>
+<li>Six options (valeur → libellé → sous-texte) :<ol>
+<li>« Très proche et fluide » — « Vous pouvez vous parler naturellement, sans trop réfléchir. »</li>
+<li>« Proche, mais prise dans le quotidien » — « Le lien est là, mais il manque parfois de temps ou d&#39;attention. »</li>
+<li>« Importante, mais un peu distante » — « Vous tenez l&#39;un à l&#39;autre, mais le lien n&#39;est pas toujours nourri. »</li>
+<li>« Compliquée ou fragile » — « Il faut éviter les attentions trop intimes ou trop émotionnelles. »</li>
+<li>« Plutôt formelle ou occasionnelle » — « Les attentions doivent rester simples, sobres et adaptées. »</li>
+<li>« Je ne sais pas trop » — « Candice commencera doucement, sans supposer trop d&#39;intimité. »</li>
+</ol>
+</li>
+<li>Si on choisit « Compliquée ou fragile », un bloc s&#39;ouvre :<ul>
+<li>« Tu veux nous en dire un peu plus ? (facultatif) »</li>
+<li>« Cela nous aidera à proposer juste, sans tomber à côté. »</li>
+<li>Label du champ : « Comment tu aimes entretenir le lien avec {Prénom}, malgré ce qui est compliqué »</li>
+<li>Placeholder : « Par ex. : pour sa fête, je veux quand même un cadeau, mais sobre — qui montre que je connais ses goûts, sans démonstration affective. Plutôt un mot court qu&#39;un long message. Pas d&#39;appels surprise. »</li>
+<li>Note : « Sur ce registre, Candice propose avec retenue. Tes retours après chaque attention nous aideront à viser juste. »</li>
+</ul>
+</li>
+<li>Boutons « ← Retour » et « Suivant → »</li>
+</ul>
+<p><strong>Étape 2 — Reste du formulaire</strong></p>
+<ul>
+<li>« Relation * » (menu déroulant) : « Partenaire » (<code>partner</code>), « Ami(e) » (<code>friend</code>), « Famille » (<code>family</code>), « Collègue » (<code>colleague</code>), « Autre » (<code>other</code>)</li>
+<li>« Téléphone * » (obligatoire) — placeholder « Ex : +33 6 12 34 56 78 »</li>
+<li>« Adresse postale (pour les livraisons) » — placeholder « Ex : 12 rue de la Paix, 75001 Paris »</li>
+<li>Encart juridique : « En saisissant ces informations, tu agis comme mandataire de ton proche pour les attentions à venir. Voir nos conditions. » (lien vers <code>/mentions-legales</code>)</li>
+<li>Bouton final : « Créer le profil incognito → »</li>
+</ul>
+<p>À la soumission, appel POST vers <code>/api/contacts/create-incognito</code> <code>(fichier: src/components/contacts/NewContactFlow.tsx)</code>, puis redirection vers <code>/contacts/{contactId}</code>. Une clé d&#39;idempotence (<code>idempotency_key</code>) empêche les doublons en cas de double-clic.</p>
+<hr>
+<h2>(b) La fiche d&#39;un proche — l&#39;écran <code>/contacts/[id]</code></h2>
+<p>Source : <code>(fichier: src/app/contacts/[id]/page.tsx)</code>.
+C&#39;est la fiche « pilote » d&#39;un proche vue par son propriétaire. Elle affiche des blocs conditionnels selon l&#39;état du proche (invité ou non, inscrit ou non, en mode souvenir…).</p>
+<h3>En-tête (bandeau vert « pine ») ✅</h3>
+<ul>
+<li>Lien retour « ← Mes proches »</li>
+<li>Composant <code>ContactHeader</code> (nom, relation, téléphone, email, photo, date de naissance)</li>
+<li>Actions <code>ContactActions</code> (masquées en « mode souvenir »)</li>
+<li><strong>Badge de statut</strong> (trois états possibles) :<ul>
+<li>« Profil confirmé » (le proche a un compte lié — <code>proche_user_id</code> posé)</li>
+<li>« Invitation envoyée » (un lien d&#39;invitation existe)</li>
+<li>« Pas encore invité(e) » (aucun des deux)</li>
+</ul>
+</li>
+<li><strong>État de connaissance de Candice</strong> (une phrase, jamais de %) — calculée par <code>candiceState()</code> sur un taux de complétion interne (jamais affiché) :<ul>
+<li>« Candice anticipe pour {Prénom} » (≥ 65 %)</li>
+<li>« Candice connaît bien {Prénom} » (≥ 30 %)</li>
+<li>« Candice commence à connaître {Prénom} » (sinon)</li>
+</ul>
+</li>
+<li>Si ≥ 3 retours enregistrés : « Candice apprend votre histoire »</li>
+</ul>
+<h3>Corps de la fiche (blocs, dans l&#39;ordre) ✅</h3>
+<ol>
+<li><strong>Situation actuelle</strong> (<code>SituationCard</code>) — si des « situations » existent <code>(base: memories, type=&#39;situation&#39;)</code>.</li>
+<li><strong>Notice mode souvenir</strong> — si <code>is_memory_mode</code> : « En souvenir — ce profil est conservé en lecture seule. »</li>
+<li><strong>Notes Candice</strong> (<code>ContactNotes</code>) + <strong>éditeur de registre</strong> (<code>RegisterEditor</code>) — sauf mode souvenir.</li>
+<li><strong>Analyse Proche</strong> — si le proche a rejoint Candice et a une analyse. Titre « {Prénom} selon Candice », avec :<ul>
+<li>résumé,</li>
+<li>« Ce qui la/le touche »,</li>
+<li>« Comment lui montrer qu&#39;on pense à elle/lui »,</li>
+<li>« À éviter ».
+Si le proche n&#39;a pas fini son profil : « Candice ne peut pas encore tout prendre en compte — {Prénom} n&#39;a pas terminé son profil. » + bouton <code>RelancerButton</code>.</li>
+</ul>
+</li>
+<li><strong>Partager avec ce proche</strong> — visible seulement si le proche a un compte (<code>proche_user_id</code>). Voir section (d). Deux directions :<ul>
+<li>« Ton analyse avec {Prénom} » (A→B) + bouton <code>ShareAnalysisButton</code></li>
+<li>« {Prénom} partage son analyse avec toi » (B→A, informatif) — statuts « {Prénom} partage son analyse avec toi » (actif) ou « {Prénom} t&#39;a proposé de partager son analyse » (en attente).</li>
+</ul>
+</li>
+<li><strong>Ce que Candice sait</strong> — traits du questionnaire (langage d&#39;amour, communication, énergie sociale, etc.), style relationnel dérivé, et <code>MatchingCard</code> (matching avec moi).</li>
+<li><strong>Dates importantes</strong> — décompte par date (« aujourd&#39;hui », « demain », « dans X jours »).</li>
+<li><strong>Attentions pour {Prénom}</strong> — question proactive (<code>ProactiveQuestion</code>) + <code>AttentionContextuelle</code> (recommandations).</li>
+<li><strong>Confidences</strong> — « Ce que tu m&#39;as dit de {Prénom} ».</li>
+<li><strong>À retenir</strong> — le <strong>Carnet d&#39;envies V2</strong> (<code>CarnetV2Section</code>, voir doc 11). Présent dans TOUS les cas de figure (proche inscrit, invité, jamais invité).</li>
+<li><strong>Fréquence d&#39;attention</strong> — <code>CadencePerContact</code>.</li>
+<li><strong>Ce que Candice retient</strong> — mémoires (<code>MemoriesSection</code>) si présentes.</li>
+</ol>
+<p>Les états « vides » (proche jamais invité / invité en attente / inscrit sans analyse) affichent des messages dédiés, ex. :</p>
+<ul>
+<li>« Candice attend de connaître {Prénom}. » + « Envoyez-lui un lien ou remplissez le profil vous-même… » + bouton « Compléter le profil → »</li>
+<li>« L&#39;invitation a été envoyée à {Prénom}. »</li>
+<li>« {Prénom} est sur Candice. » / « Son analyse sera disponible dès qu&#39;il ou elle aura répondu aux premières questions. »</li>
+</ul>
+<p>Statut d&#39;ensemble : ✅ (fiche pilote pleinement rendue).</p>
+<hr>
+<h2>(c) L&#39;Espace Proche V2 — l&#39;écran <code>/proche/[id]</code></h2>
+<p>Sources : <code>(fichier: src/app/proche/[id]/page.tsx)</code> (serveur) et <code>(fichier: src/app/proche/[id]/EspaceProcheShell.tsx)</code> (interface).</p>
+<p>C&#39;est une <strong>mini-application à 3 onglets</strong> (barre de navigation en bas). Note importante sur les données : la page serveur fixe aujourd&#39;hui <code>isSharedUser = false</code> — c&#39;est-à-dire qu&#39;un contact est traité comme <strong>non-utilisateur</strong> : aucune analyse générée par IA, faits connus seulement, comparatif indisponible <code>(fichier: src/app/proche/[id]/page.tsx, lignes 71 et 94)</code>. Le chemin « proche-utilisateur partagé » existe en intention mais n&#39;est pas branché (commentaire du code).</p>
+<h3>Les 3 onglets réellement visibles (barre du bas)</h3>
+<p>Verbatim des libellés de la barre de navigation <code>(fichier: EspaceProcheShell.tsx)</code> :</p>
+<ol>
+<li><strong>{Prénom}</strong> (le prénom du proche — code interne « thibaud »)</li>
+<li><strong>« Nous »</strong></li>
+<li><strong>« Faire plaisir »</strong></li>
+</ol>
+<hr>
+<h3>Onglet 1 — {Prénom} ✅ (avec parties vides)</h3>
+<p>Contenu :</p>
+<ul>
+<li>En-tête : bouton « Accueil » (retour <code>/dashboard</code>), boutons « Modifier » et « Réglages » (icônes ; le bouton Modifier/Réglages n&#39;a pas d&#39;action câblée — décoratif). Avatar (initiale) avec bouton « Changer la photo » (icône caméra, non câblé).</li>
+<li>Titre = {Prénom}</li>
+<li>État de connaissance : « Candice commence à {le/la} connaître »</li>
+<li>Bouton « Améliorer encore sa connaissance de {Prénom} » (pas d&#39;action câblée visible).</li>
+<li>Ligne (mode partagé seulement, donc <strong>non affichée aujourd&#39;hui</strong> car <code>isSharedUser=false</code>) : « Tu vois ici ce que {Prénom} a choisi de partager avec toi. » 🟡</li>
+<li><strong>Épingle dynamique</strong> (bouton) qui mène à l&#39;onglet « Faire plaisir » :<ul>
+<li>Si anniversaire dans 0–10 semaines : pastille « Son anniversaire · dans {n} semaine(s) »</li>
+<li>Titre « Faire plaisir à {Prénom} »</li>
+<li>Sous-texte : « C&#39;est le moment de préparer une belle attention. » (si anniversaire proche) ou « Une petite attention lui ferait du bien. »</li>
+</ul>
+</li>
+<li><strong>« Comment va {Prénom} ? »</strong> (bouton, ouvre un panneau) : sous-texte « Une nouvelle, une période, un événement… dis-le à Candice. »</li>
+<li><strong>Sections de profil</strong> (composant <code>ProfileV2</code> en vue <code>proche_espace</code>) — identiques à la fiche pilote mais à la 3e personne.</li>
+<li><strong>Encart d&#39;enrichissement</strong> (si pas d&#39;analyse — donc affiché aujourd&#39;hui) : « Candice commence à connaître {Prénom} » + « Souhaites-tu développer ce que Candice sait de {Prénom} ? Plus tu lui en dis, plus ses attentions viseront juste. » + bouton « Enrichir son profil » (pas d&#39;action câblée). 🟡</li>
+</ul>
+<p><strong>Panneau « Des nouvelles de {Prénom} »</strong> (ouvert depuis « Comment va {Prénom} ? ») ✅</p>
+<ul>
+<li>Champ texte : placeholder « Comment se sent-il en ce moment ? » (+ icône micro décorative)</li>
+<li>Pastilles d&#39;état (<code>ETATS</code>) : « Fatigué·e », « Période de stress », « Deuil », « Séparation », « Maladie », « Perte d&#39;emploi », « Déménagement », « Belle nouvelle », « Événement à venir », « Conflit récent »</li>
+<li>Bouton « Noter pour Candice » → insère une ligne dans <code>(base: person_states)</code>.</li>
+</ul>
+<hr>
+<h3>Onglet 2 — « Nous » 🟡</h3>
+<p>Contenu :</p>
+<ul>
+<li>En-tête « duo » : « Toi » vs « Lui » (avatars), titre « Vous deux », sous-titre « Ce que Candice comprend de votre lien — pour t&#39;aider à prendre soin de lui comme il le ressent. »</li>
+<li><strong>Si comparatif disponible</strong> (les deux jeux de dimensions existent) : « Vos langages, comparés » + légende « Toi » / « {Prénom} » + barres superposées sur les 7 dimensions (labels issus de <code>PODIUM_LABELS</code>), avec échelle « À doser » / « Présent » / « Dominant ».</li>
+<li><strong>Sinon (cas actuel, <code>procheDims = null</code>)</strong> : encart « Candice a besoin d&#39;en savoir plus sur {Prénom} » + « Dès que {Prénom} aura son propre profil (ou que tu l&#39;auras enrichi), Candice comparera vos langages d&#39;attention côte à côte, sur les mêmes dimensions. » + bouton « Enrichir son profil ».</li>
+</ul>
+<p>Statut : 🟡 — l&#39;onglet s&#39;affiche, mais le comparatif est indisponible pour un contact non-utilisateur (état par défaut aujourd&#39;hui).</p>
+<hr>
+<h3>Onglet 3 — « Faire plaisir » ✅</h3>
+<p>Contenu :</p>
+<ul>
+<li>En-tête : titre « Faire plaisir à {Prénom} » + « Candice croise tout ce qu&#39;elle sait de lui pour te proposer juste — surtout au quotidien. »</li>
+<li><strong>Filtre « Afficher »</strong> (menu déroulant) : « Toutes les idées » / « Les idées de Candice » / « Ce que j&#39;ai repéré ».</li>
+<li><strong>Liste des recos</strong> <code>(base: contact_reco_items)</code> — chaque carte affiche :<ul>
+<li>Badge source : « Repéré par toi » (source <code>spotted</code>) ou « Idée de Candice » (autres)</li>
+<li>Marque, titre, prix indicatif, « Sûr à {n}% » si <code>certainty_pct</code> présent</li>
+<li>Bouton principal : « Je veux l&#39;offrir » (ou « L&#39;écrire avec Candice » si type <code>message</code>)</li>
+<li>Bouton secondaire : « Pas ça »</li>
+</ul>
+</li>
+<li><strong>Items du carnet</strong> <code>(base: carnet_envies_items)</code> (si filtre « Toutes » ou « Ce que j&#39;ai repéré ») : badge « Repéré par toi », marque, description, citation « … », prix, mention « Sûr — tu l&#39;avais repéré ».</li>
+<li><strong>Si vide</strong> : « Candice prépare ses idées pour {Prénom} » + « Dès que Candice en saura assez sur lui, elle te proposera ici des attentions justes — surtout de petits gestes du quotidien. Tu peux aussi noter une envie repérée dans son carnet. »</li>
+<li><strong>Lien « Attentions écartées »</strong> (+ compteur) si des recos ont été écartées.</li>
+</ul>
+<p><strong>Panneau « La reco en détail »</strong> ✅ (ouvert au clic sur une carte)</p>
+<ul>
+<li>Photo / tag de besoin, marque, titre.</li>
+<li>Bloc certitude, ton adapté selon la source (<code>certif()</code>) :<ul>
+<li><code>declared</code> : « Sûr à 100% — fais-moi confiance » / « Candice en est certaine : ça lui plairait vraiment. »</li>
+<li><code>spotted</code> : « Sûr — tu l&#39;avais repéré pour lui » / « Tu l&#39;avais noté dans son carnet d&#39;envies. »</li>
+<li><code>exploratory</code> : « On tente, juste cette fois ? » / « {Prénom} aime ce genre de choses — Candice se dit qu&#39;elle pourrait {la/le} surprendre. »</li>
+<li><code>deduced</code> (défaut) : « Sûr à ~{n}% que ça lui plaira » (ou « Ça devrait lui plaire ») / « Candice a croisé plusieurs choses qu&#39;elle sait de lui. »</li>
+</ul>
+</li>
+<li>« Pourquoi Candice te la propose » (si <code>why_json</code>)</li>
+<li>Actions : « Je veux l&#39;offrir » / « Pas ça » (reco) ; pour un item de carnet : « Envie repérée par toi — retrouve-la dans le carnet de {Prénom}. »</li>
+</ul>
+<p><strong>Panneau « Offrir à {Prénom} » — 2 voies</strong> ✅ / 🟡</p>
+<ul>
+<li>Voie 1 (active) : « Je m&#39;en occupe personnellement » — « Tu réalises l&#39;attention toi-même. Candice la réserve pour {Prénom} et n&#39;en reparle plus aux autres proches. » → RPC <code>reserve_reco_item</code> (réservation invisible, voir doc 11).</li>
+<li>Voie 2 (<strong>désactivée</strong>) : « Je veux que Candice s&#39;en charge » + sous-texte selon le type (« Candice le commande et te le fait livrer. » / « Candice réserve l&#39;expérience pour toi. » / « Candice réserve la table pour toi. » / « Candice t&#39;aide à l&#39;écrire, au bon moment. ») + mention « Bientôt — à l&#39;ouverture de la conciergerie. » 🟡</li>
+</ul>
+<p><strong>Flow « Pas ça »</strong> — voir section (d) doc 11 (raisons et horizons verbatim). ✅</p>
+<p><strong>Panneau « Attentions écartées »</strong> ✅</p>
+<ul>
+<li>Si vide : « Plus rien d&#39;écarté — tout est de retour dans tes idées. »</li>
+<li>Sinon : « Tu peux les remettre dans tes idées à tout moment. » + liste (marque, titre, tag de raison) + bouton « Réactiver » par item.</li>
+</ul>
+<hr>
+<h2>(d) Partage &amp; consentements</h2>
+<h3>La table <code>contact_consents</code> <code>(base: contact_consents)</code></h3>
+<p>Colonnes réelles (schéma live) :</p>
+<ul>
+<li><code>id</code> uuid (PK)</li>
+<li><code>pilote_id</code> uuid NOT NULL — le propriétaire de la fiche (celui qui partage)</li>
+<li><code>contact_id</code> uuid NULL — le contact concerné (pour les consentements liés à un contact)</li>
+<li><code>proche_user_id</code> uuid NULL — l&#39;utilisateur destinataire du partage</li>
+<li><code>status</code> text NOT NULL, défaut <code>&#39;pending&#39;</code></li>
+<li><code>scope</code> text[] NOT NULL, défaut <code>ARRAY[&#39;analysis&#39;]</code></li>
+<li><code>requested_at</code> timestamptz NOT NULL défaut now()</li>
+<li><code>responded_at</code> timestamptz NULL</li>
+<li><code>consented_at</code> timestamptz NULL</li>
+<li><code>created_at</code> timestamptz NOT NULL défaut now()</li>
+<li><code>kind</code> text NOT NULL, défaut <code>&#39;contact_analysis&#39;</code></li>
+<li><code>requested_by</code> uuid NULL</li>
+</ul>
+<p><strong>Volume : 0 ligne</strong> au moment du relevé <code>(base: contact_consents)</code>. Aucune distribution de statut/kind à montrer (table vide).</p>
+<p>Statuts utilisés dans le code (<code>status</code>) : <code>pending</code>, <code>active</code>, <code>rejected</code>, <code>revoked</code>.
+Deux <code>kind</code> distincts dans le code :</p>
+<ul>
+<li><code>profile_view</code> — partage de MA fiche complète (routes <code>/api/profile-view/*</code>)</li>
+<li><code>contact_analysis</code> (valeur par défaut, legacy) — partage d&#39;analyse depuis la fiche contact <code>(fichier: src/app/api/consent/[consentId]/respond/route.ts)</code></li>
+</ul>
+<h3>Les routes</h3>
+<p><strong><code>/api/consent/[consentId]/respond</code></strong> (PATCH) <code>(fichier: src/app/api/consent/[consentId]/respond/route.ts)</code> ✅</p>
+<ul>
+<li>Deux usages : B (proche) répond <code>{ action: &#39;accept&#39; | &#39;reject&#39; }</code> ; A (pilote) révoque <code>{ action: &#39;revoke&#39; }</code>.</li>
+<li>Contrôle d&#39;identité : A ne peut que révoquer ; B ne peut qu&#39;accepter/refuser. Vérifie la cohérence d&#39;état (accept/reject → doit être <code>pending</code> ; revoke → doit être <code>active</code>).</li>
+</ul>
+<p><strong><code>/api/profile-view/lookup</code></strong> (POST) <code>(fichier: src/app/api/profile-view/lookup/route.ts)</code> ✅</p>
+<ul>
+<li>« Chercher quelqu&#39;un pour demander sa fiche. » Recherche EXACTE uniquement : <code>@identifiant</code> OU email (pas de nom, pas de flou).</li>
+<li>Garde : questionnaire du chercheur rempli (5/5) obligatoire — sinon <code>questionnaire_incomplete</code> (403).</li>
+<li>Retour = UUID + état de la relation existante, aucun PII du trouvé.</li>
+</ul>
+<p><strong><code>/api/profile-view/request</code></strong> (POST) <code>(fichier: src/app/api/profile-view/request/route.ts)</code> ✅</p>
+<ul>
+<li>« X demande à voir la fiche de Y. » Crée un <code>contact_consents</code> (kind <code>profile_view</code>, status <code>pending</code>, scope <code>[]</code>).</li>
+<li>Envoie un email à Y (Resend) : objet « {Prénom} veut voir ton profil », bouton « Choisir ce que je partage → » vers <code>/moi/partage/demandes/{consentId}</code>.</li>
+</ul>
+<p><strong><code>/api/profile-view/[consentId]/respond</code></strong> (POST) <code>(fichier: …/respond/route.ts)</code> ✅</p>
+<ul>
+<li>Y répond : actions <code>all</code> (toute la fiche) · <code>sections</code> (cases cochées) · <code>blind</code> (aveugle) · <code>reject</code>.</li>
+<li>Le scope stocké est TOUJOURS assaini (intersection avec la matrice ; jamais d&#39;élargissement) via <code>scopeForSelection()</code>.</li>
+</ul>
+<p><strong><code>/api/profile-view/[consentId]/cancel</code></strong> (POST) <code>(fichier: …/cancel/route.ts)</code> ✅</p>
+<ul>
+<li>X annule SA propre demande en attente (DELETE, uniquement <code>pending</code>, uniquement la sienne).</li>
+</ul>
+<p><strong><code>/api/profile-view/[consentId]/revoke</code></strong> (POST) <code>(fichier: …/revoke/route.ts)</code> ✅</p>
+<ul>
+<li>Y retire un partage accordé (status → <code>revoked</code>, uniquement si <code>active</code>).</li>
+</ul>
+<p><strong><code>/contacts/partage/[consentId]</code></strong> (page) <code>(fichier: src/app/contacts/partage/[consentId]/page.tsx)</code> ✅</p>
+<ul>
+<li>La vue restreinte : ce que B voit après avoir consenti (ou la demande si <code>pending</code>). Ne montre QUE <code>profile_analysis</code> (analyse) — jamais <code>questionnaire_responses</code> (données brutes).</li>
+<li>États : <code>pending</code> → prompt de consentement (« Quelqu&#39;un veut partager une analyse avec toi. » ; « Ce que tu verras : … / Ce que tu ne verras jamais : … ») ; <code>active</code> → l&#39;analyse à la 3e personne (« Ce que Candice retient de toi. ») ; <code>revoked</code>/<code>rejected</code> → « Ce partage n&#39;est plus actif. »</li>
+<li>Boutons de réponse (<code>ConsentActions</code>) : « Oui, j&#39;accepte de voir cette analyse » / « Non, je préfère ne pas voir ».</li>
+</ul>
+<p><strong><code>/moi/partage</code></strong> (page) <code>(fichier: src/app/moi/partage/page.tsx)</code> ✅</p>
+<ul>
+<li>« Partager ma fiche. » Choix AVANT envoi (<code>PartageClient</code>) : « Toute ma fiche » / « Seulement certaines sections » (avec <code>SectionPicker</code>, l&#39;essentiel reste inclus) / « Rien de visible, mais Candice peut aider » (aveugle).</li>
+<li>Gestion : « Demandes reçues » (répondre), « Partages en cours » (<code>RevokeShareButton</code> → « Retirer »), « Liens envoyés, pas encore utilisés » (<code>RevokeLinkButton</code> → « Annuler le lien »).</li>
+<li>Génère un lien via <code>/api/share-link/create</code> <code>(base: profile_share_links — 1 ligne au relevé)</code>, à usage unique, expiration 30 jours : « Il ne fonctionne qu&#39;une fois — la première personne connectée qui l&#39;ouvre y accède — et expire dans 30 jours. »</li>
+<li>Garde : si le questionnaire n&#39;est pas complet → « Ta fiche d&#39;abord. » + bouton « Reprendre mon questionnaire → ».</li>
+</ul>
+<p><strong><code>/moi/partage/demandes/[consentId]</code></strong> (page) <code>(fichier: src/app/moi/partage/demandes/[consentId]/page.tsx)</code> ✅</p>
+<ul>
+<li>Y répond à « X veut voir ton profil. Que partages-tu ? » (composant <code>DemandeClient</code>). Si déjà répondu : « Tu as déjà répondu. »</li>
+</ul>
+<h3>La matrice de visibilité <code>(fichier: src/lib/profile/visibility.ts)</code></h3>
+<p>C&#39;est la <strong>source unique de vérité</strong> : tout rendu de fiche passe par <code>resolveVisibility()</code>. Elle croise une <strong>vue</strong> (qui regarde) avec des <strong>sections</strong>, et renvoie une visibilité.</p>
+<p><strong>Cinq vues (<code>ProfileView</code>) :</strong></p>
+<ul>
+<li><code>pilote</code> — ma fiche à moi (tout visible)</li>
+<li><code>invite_filtre</code> — ce que voit un proche autorisé (sections cochées, en intersection)</li>
+<li><code>contact_consulte</code> — je consulte la fiche d&#39;un de mes proches (analyse seulement)</li>
+<li><code>aveugle</code> — le proche ne voit AUCUN contenu, message d&#39;explication seul</li>
+<li><code>proche_espace</code> — l&#39;Espace Proche V2 : le pilote voit tout ce qu&#39;il sait du proche (3e personne)</li>
+</ul>
+<p><strong>Sept valeurs de visibilité :</strong> <code>visible</code>, <code>third_person</code> (texte converti à la 3e personne), <code>socle</code> (toujours visible, non décochable), <code>filtered_on</code> (cochée par défaut au partage), <code>filtered_off</code> (décochée par défaut), <code>hidden</code> (non montrée, existence non révélée), <code>never</code> (jamais, non négociable).</p>
+<p><strong>Règle d&#39;intersection absolue :</strong> les cases cochées ne peuvent JAMAIS élargir la matrice. Une section <code>never</code>/<code>hidden</code> reste invisible même cochée ; une section <code>socle</code> reste visible même décochée.</p>
+<h4>« Ce qu&#39;un proche peut voir de moi » — en français simple</h4>
+<p>Quand quelqu&#39;un a l&#39;autorisation de voir ma fiche (vue <code>invite_filtre</code>) :</p>
+<p><strong>Toujours visible (le « socle », non désactivable) :</strong></p>
+<ul>
+<li>Mon résumé + mes tags</li>
+<li>Mon « podium » (langage d&#39;attention, les 7 dimensions)</li>
+<li>Mon prénom (en en-tête)</li>
+</ul>
+<p><strong>Visible par défaut, mais je peux le décocher (<code>filtered_on</code>) :</strong></p>
+<ul>
+<li>« Ce que Candice a compris »</li>
+<li>« Ce qui te touche »</li>
+<li>« Ce qui pourrait te faire plaisir »</li>
+<li>« Ce qui tombe à côté »</li>
+<li>« Ce qui marche avec toi »</li>
+<li>Mes mondes : Tables, Voyages, Passions, Goûts</li>
+<li>Territoire idéal, Univers &amp; marques</li>
+</ul>
+<p><strong>Masqué par défaut, mais je peux le cocher pour le montrer (<code>filtered_off</code>) :</strong></p>
+<ul>
+<li>« Ce qui te fait te sentir aimée » (la section la plus intime — décochée par défaut, choix produit)</li>
+<li>Tailles, Allergies/régime/alcool, Parfums, Animaux, Dates clés, Mobilité/santé</li>
+</ul>
+<p><strong>JAMAIS visible pour un proche (<code>never</code>), même si je le voulais :</strong></p>
+<ul>
+<li>Ma <strong>wishlist</strong> (elle ne ressort que fondue dans les idées de Candice)</li>
+<li>Mon <strong>adresse</strong> postale</li>
+<li>Les données <strong>article 9</strong> (santé, handicap, religion)</li>
+</ul>
+<p><strong>Jamais montré à un tiers (<code>hidden</code>) :</strong> l&#39;anneau champagne, les boutons d&#39;édition/réglages, les CTA de tête de fiche, la rangée de sécurité, les nudges « Pour mieux viser », la rangée de fin.</p>
+<p>En <strong>mode aveugle</strong> (<code>aveugle</code>) : le proche ne voit <strong>rien</strong> du contenu ; seul un message d&#39;explication s&#39;affiche (<code>blind_message</code>). Candice peut quand même s&#39;en servir pour aider.</p>
+<h4>« Ce que je vois d&#39;un proche » — en français simple</h4>
+<p>Deux cas :</p>
+<p><strong>1. Je consulte l&#39;analyse d&#39;un de mes proches (vue <code>contact_consulte</code>)</strong> — je vois, converti à la 3e personne :</p>
+<ul>
+<li>Son résumé, son podium (langage d&#39;attention)</li>
+<li>« Ce que Candice a compris », « Ce qui le·la touche », « Ce qui le·la fait se sentir aimé·e », « Ce qui pourrait lui faire plaisir », « Ce qui tombe à côté », « Ce qui marche »</li>
+<li>Ses mondes (tables, voyages, passions, goûts), territoire, univers</li>
+<li>La <strong>rangée de sécurité</strong> (<code>constraints_row</code>, visible ici seulement) : allergies + régime + mobilité</li>
+</ul>
+<p>Je ne vois <strong>jamais</strong> : sa wishlist, son adresse, ses données article 9, ni ses tailles/parfums/dates/animaux en clair (ils sont <code>hidden</code> dans cette vue).</p>
+<p><strong>2. L&#39;Espace Proche V2 (vue <code>proche_espace</code>)</strong> — le pilote voit tout ce qu&#39;il sait de son proche (contact non-utilisateur), à la 3e personne :</p>
+<ul>
+<li>Résumé, podium, toutes les sections d&#39;analyse (3e pers.)</li>
+<li>Ses <strong>faits pratiques VISIBLES ici</strong> : tailles, alimentaire, parfums, <strong>adresse</strong>, animaux, dates, mobilité, et <strong>art9</strong> (car c&#39;est SA propre connaissance du contact, pas un partage tiers)</li>
+<li><strong>Jamais</strong> : la wishlist (<code>never</code>)</li>
+</ul>
+<p>Statut d&#39;ensemble du partage : ✅ pour les routes et la matrice (code complet et branché) ; les volumes en base sont à <strong>0</strong> (aucun consentement enregistré au relevé).</p>
+<hr>
+<h2>⚠ RAPPORT D&#39;HYPOTHÈSES</h2>
+<p><strong>A. ZONES DE FLOU</strong></p>
+<ul>
+<li>La demande dit « les routes (api/consent, api/profile-view, contacts/partage/[consentId], moi/partage) ». J&#39;ai documenté toutes les routes trouvées sous ces chemins. Hypothèse : <code>/api/contacts/[id]/consent</code> (route de création côté fiche contact, existe aussi) était hors de la liste explicite ; je l&#39;ai mentionnée seulement en passant (ShareAnalysisButton), sans la détailler. Alternative : la détailler entièrement.</li>
+<li>« Espace Proche V2 : liste PRÉCISÉMENT les onglets réellement visibles ». Aujourd&#39;hui la page force <code>isSharedUser=false</code> → certains blocs (ligne « ce que {Prénom} a choisi de partager », comparatif « Nous ») ne s&#39;affichent pas ou sont vides. Je l&#39;ai marqué 🟡 en le disant explicitement.</li>
+</ul>
+<p><strong>B. DÉCISIONS PRISES SEUL</strong></p>
+<ul>
+<li>Attribution des statuts ✅/🟡/⚫ : j&#39;ai jugé 🟡 les onglets/blocs dont l&#39;affichage dépend d&#39;un état de données non atteint aujourd&#39;hui (comparatif « Nous », voie 2 « conciergerie », ligne mode partagé), et signalé « pas d&#39;action câblée » pour les boutons décoratifs (Modifier, Réglages, Enrichir, Améliorer la connaissance). Ce jugement « câblé ou non » repose sur la lecture du composant, pas sur un test navigateur.</li>
+</ul>
+<p><strong>C. LAISSÉ EN SUSPENS</strong></p>
+<ul>
+<li><code>QuestionnaireForm</code>, <code>SituationCard</code>, <code>MemoriesSection</code>, <code>ContactActions</code>, <code>ShareAnalysisButton</code>, <code>SectionPicker</code>, <code>DemandeClient</code> : non ouverts en détail (hors périmètre strict de la demande, qui cible les fichiers nommés).</li>
+<li>Le contenu exact de <code>/api/contacts/create-incognito</code> et <code>/api/share-link/create</code> : non lu (non demandé).</li>
+</ul>
+<p><strong>D. À VÉRIFIER PAR ESTELLE</strong></p>
+<ul>
+<li>Confirmer que l&#39;Espace Proche V2 doit bien rester en mode « contact non-utilisateur » (<code>isSharedUser=false</code>) en prod, ou si le chemin proche-utilisateur partagé devait être branché.</li>
+<li>Les boutons « Modifier », « Réglages », « Enrichir son profil », « Améliorer encore sa connaissance » de l&#39;Espace Proche n&#39;ont pas d&#39;action câblée visible dans <code>EspaceProcheShell.tsx</code> — à confirmer que c&#39;est voulu.</li>
+</ul>
+<p><strong>E. MIGRATIONS / BUILD</strong></p>
+<ul>
+<li>Aucune migration ni build : tâche en LECTURE SEULE (cartographie). Aucune écriture en base effectuée (requêtes SELECT uniquement).</li>
+</ul>
+</body></html>

@@ -1,0 +1,279 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>05 — Parcours utilisateurs</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>05 — Parcours utilisateurs</h1>
+<blockquote>
+<p>Cartographie brute, écran par écran, de chaque typologie d&#39;utilisateur. Ce document décrit le chemin RÉEL tel qu&#39;il est codé, avec les routes, les écrans, et les boutons cités VERBATIM. Aucune recommandation. Sources : <code>fichier : chemin</code>. Le filtre commun à tous les parcours (portes desktop + bêta + session) est décrit dans <code>04-acces-authentification.md</code> ; il n&#39;est pas répété à chaque étape.</p>
+</blockquote>
+<p>Rappel du filtre <code>src/proxy.ts</code> (traversé à chaque navigation) : desktop → <code>/continuer-sur-telephone</code> ; pas de cookie bêta → <code>/beta-access</code> ; pas de session sur <code>/dashboard</code> ou <code>/contacts</code> → <code>/login</code> ; session sur <code>/login</code> ou <code>/register</code> → <code>/dashboard</code>.</p>
+<hr>
+<h2>(a) Nouvel utilisateur spontané</h2>
+<p>Arrivée « à froid » depuis le site marketing.</p>
+<ol>
+<li><p><strong><code>/</code> — Page d&#39;accueil</strong> (<code>src/app/page.tsx</code>)</p>
+<ul>
+<li>Voit : « Votre copilote <strong>relationnel.</strong> » / « L&#39;attention juste, au bon moment. »</li>
+<li>Fait : clique <strong>« Commencer avec Candice »</strong> (ou <strong>« Commencer »</strong> en bas de page) → <code>/register</code>. (Alternative : « Explorer » → <code>/concept</code>.)</li>
+</ul>
+</li>
+<li><p><strong><code>/register</code> — Inscription</strong> (<code>src/app/register/page.tsx</code>)</p>
+<ul>
+<li>Voit : « Créer un compte. » / « Quelques secondes suffisent ».</li>
+<li>Fait : renseigne Prénom, Identifiant (<code>@</code>), E-mail, Téléphone (optionnel), Mot de passe ; coche les CGU ; clique <strong>« Créer un compte »</strong>.</li>
+<li>Résultat : <code>supabase.auth.signUp</code>, email de confirmation envoyé par Supabase, email de bienvenue « Candice est prête. » envoyé par Resend, puis redirection vers <code>/dashboard</code> (destination par défaut).</li>
+<li>Écran intermédiaire possible : « Ton compte est créé. » / « Va voir ta boîte mail pour confirmer ton adresse. » (si pas de session immédiate).</li>
+</ul>
+</li>
+<li><p><strong><code>/dashboard</code> — Tableau de bord</strong> (<code>src/app/dashboard/page.tsx</code>)</p>
+<ul>
+<li>Voit : date du jour + « Bonjour[, {prénom}] » / « Ce qu&#39;il ne faut pas laisser passer. » ; trois compteurs (« proches à soutenir », « dates à venir », « profils à affiner »).</li>
+<li>État vide (aucun proche) : gros bouton <strong>« Ajouter un proche → »</strong> vers <code>/contacts/new</code>.</li>
+<li>En bas : lien « Quelqu&#39;un est déjà sur Candice ? Demande à voir sa fiche → » vers <code>/recherche</code>.</li>
+<li>Note : le tour d&#39;accueil (<code>OnboardingFlow</code>) est <strong>neutralisé</strong> — commentaire dans le code (<code>src/app/dashboard/page.tsx</code> lignes 188-191) : violation de la DA (vouvoiement + émoji) et interception des taps. Le composant existe (<code>src/components/onboarding/OnboardingFlow.tsx</code>) mais n&#39;est monté nulle part.</li>
+</ul>
+</li>
+<li><p><strong><code>/moi/questionnaire</code> — Compléter sa propre fiche</strong> (<code>src/app/moi/questionnaire/page.tsx</code>)</p>
+<ul>
+<li>Accessible via l&#39;email de bienvenue (CTA « Compléter ma fiche → ») ou la navigation.</li>
+<li>Voit : le flux de questionnaire personnel (<code>QuestionnaireFlow</code>).</li>
+<li>Résultat : remplit sa <code>my_profile</code>. Une fois assez rempli, une analyse est générée (<code>GenerateAnalysisOnMount</code>).</li>
+</ul>
+</li>
+<li><p><strong><code>/moi</code> — Sa fiche / profil</strong> (<code>src/app/moi/page.tsx</code>)</p>
+<ul>
+<li>État vide : « Réponds à quelques questions — tes proches pourront consulter ta fiche pour mieux prendre soin de toi. » + <code>ResumePrompt</code>.</li>
+<li>État rempli : rendu <code>ProfileV2</code> (analyse + faits pratiques), jamais de réponses brutes.</li>
+<li>En bas : « Retour au site » et « Se déconnecter ».</li>
+</ul>
+</li>
+</ol>
+<p>Chemin résumé : <code>/</code> → <code>/register</code> → <code>/dashboard</code> → <code>/contacts/new</code> (ajout proche) et/ou <code>/moi/questionnaire</code> (sa fiche).</p>
+<hr>
+<h2>(b) Invité par un proche (lien d&#39;invitation)</h2>
+<p>L&#39;utilisateur reçoit un lien <code>/invite/[token]</code> (généralement par email « Une invitation Candice… » ou par message).</p>
+<ol>
+<li><p><strong><code>/invite/[token]</code> — Atterrissage invitation</strong> (<code>src/app/invite/[token]/page.tsx</code> + <code>LandingInvite.tsx</code>)</p>
+<ul>
+<li>Si token inexistant/expiré → <strong>404</strong>.</li>
+<li>Sinon voit (avec le prénom du pilote <code>{P}</code>) : « {P} veut apprendre à te faire vraiment plaisir. » + sous-titre + encart « Ce que tu y gagnes ».</li>
+<li><strong>Sur mobile</strong> : coche « J&#39;accepte les conditions et je démarre mon mois d&#39;essai gratuit — sans carte bancaire, sans engagement. » puis clique <strong>« Créer mon compte et commencer »</strong> → <code>/register?invite_token=&lt;token&gt;</code>.</li>
+<li><strong>Sur desktop</strong> : pas de bouton, un QR code (« Ouvre ce lien sur ton téléphone pour continuer. »).</li>
+</ul>
+</li>
+<li><p><strong><code>/register?invite_token=…</code> — Inscription</strong> (<code>src/app/register/page.tsx</code>)</p>
+<ul>
+<li>Même formulaire qu&#39;en (a), mais la destination post-inscription devient <code>/moi/questionnaire?invite_token=&lt;token&gt;</code> (lignes 167-171).</li>
+</ul>
+</li>
+<li><p><strong><code>/moi/questionnaire?invite_token=…</code> — Sa fiche</strong> (<code>src/app/moi/questionnaire/page.tsx</code>)</p>
+<ul>
+<li>La page lit le <code>invite_token</code>, charge le prénom du pilote (<code>invite_links.pilote_name</code>) pour personnaliser (<code>piloteFirstName</code>).</li>
+<li>L&#39;invité remplit <strong>sa propre fiche</strong> (il ne remplit pas la fiche du pilote).</li>
+<li>À la réclamation du lien (<code>POST /api/invite/link</code>), le proche est relié au contact du pilote (<code>contacts.proche_user_id = user.id</code>) et le pilote reçoit l&#39;email « {prénom} a complété sa fiche ✦ ».</li>
+</ul>
+</li>
+<li><p>Ensuite, l&#39;invité devient un utilisateur normal : <code>/dashboard</code>, <code>/moi</code>, etc. Il bénéficie de son propre mois d&#39;essai.</p>
+</li>
+</ol>
+<hr>
+<h2>(c) Proche qui remplit sa propre fiche</h2>
+<p>Deux points d&#39;entrée aboutissent au même acte (« remplir MA fiche ») :</p>
+<ul>
+<li><strong>Via invitation</strong> : parcours (b), étapes 3-4 — l&#39;invité remplit <code>/moi/questionnaire</code>.</li>
+<li><strong>Via lien de partage <code>/rejoindre/[token]</code></strong> : le pilote a partagé SA fiche, et invite le proche à créer la sienne « à son tour ».<ol>
+<li><strong><code>/rejoindre/[token]</code></strong> (<code>src/app/rejoindre/[token]/page.tsx</code>)<ul>
+<li>Sans compte, lien valide : « {prénom} partage sa fiche avec toi. » + « …remplis ta fiche à ton tour. »</li>
+<li>Fait : <strong>« Créer mon compte gratuit → »</strong> → <code>/register?share_token=&lt;token&gt;&amp;de=&lt;prénom&gt;</code> (ou « J&#39;ai déjà un compte » → <code>/login?next=/rejoindre/&lt;token&gt;</code>).</li>
+</ul>
+</li>
+<li><strong><code>/register?share_token=…</code></strong> : inscription, destination post-inscription = <code>/rejoindre/&lt;token&gt;</code>.</li>
+<li><strong>Retour <code>/rejoindre/[token]</code> (connecté)</strong> : réclamation automatique → redirection <code>/fiche/&lt;consentId&gt;</code> (il voit la fiche que le pilote a partagée). Puis il peut remplir sa propre fiche via <code>/moi/questionnaire</code>.</li>
+</ol>
+</li>
+</ul>
+<p>Le contenu du questionnaire personnel est servi par <code>QuestionnaireFlow</code> (<code>src/app/moi/questionnaire/QuestionnaireFlow.tsx</code>). La fiche reste privée : seul un résumé/analyse est partagé (voir la mécanique de scope dans <code>/fiche/[consentId]</code>).</p>
+<hr>
+<h2>(d) Pilote qui ajoute un proche</h2>
+<ol>
+<li><p><strong><code>/dashboard</code></strong> ou <strong><code>/contacts</code></strong> → bouton <strong>« + Ajouter »</strong> (barre <code>Navbar</code>, <code>src/components/layout/Navbar.tsx</code>) ou <strong>« Ajouter un proche → »</strong> (état vide dashboard) → <code>/contacts/new</code>.</p>
+</li>
+<li><p><strong><code>/contacts/new</code> — Nouveau contact</strong> (<code>src/app/contacts/new/page.tsx</code> + <code>NewContactFlow.tsx</code>)</p>
+<ul>
+<li>Voit : « Nouveau contact » / « Ajouter quelqu&#39;un. » / « Choisis comment tu veux créer ce profil. »</li>
+<li>Deux cartes de choix :<ul>
+<li><strong>« Mode standard »</strong> (recommandé) : « Tu invites le proche, il remplit lui-même son questionnaire. Il découvre Candice avec une analyse personnelle à la fin. »</li>
+<li><strong>« Mode incognito »</strong> : « Tu remplis tout toi-même, ton proche n&#39;est pas informé. Idéal quand tu veux gérer les attentions de A à Z. »</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<p>3a. <strong>Mode standard</strong> → composant <code>QuestionnaireForm</code> (<code>src/components/questionnaire/QuestionnaireForm.tsx</code>)</p>
+<ul>
+<li>Le pilote saisit les infos du contact puis génère un lien d&#39;invitation.</li>
+<li><code>handleGenerateLink</code> (lignes 345-391) : crée le contact (<code>upsertContact</code>), appelle <code>POST /api/invite/create</code> pour obtenir un <code>token</code>, affiche l&#39;écran « lien » avec l&#39;URL <code>&lt;origin&gt;/invite/&lt;token&gt;</code>.</li>
+<li>Si le contact a un email : envoi automatique de l&#39;email <strong>« Une invitation Candice de la part de {prénom} ✦ »</strong> (<code>POST /api/emails/questionnaire-invite</code>), CTA « Découvrir mon invitation → ».</li>
+<li>Le lien peut aussi être copié via le bouton <strong>« Inviter {prénom} sur Candice »</strong> (<code>src/app/contacts/[id]/InviteButton.tsx</code>) qui copie l&#39;URL <code>/invite/&lt;token&gt;</code> dans le presse-papier (état « Lien copié ! »).</li>
+<li>Le proche suit alors le parcours (b).</li>
+</ul>
+<p>3b. <strong>Mode incognito</strong> → composant <code>IncognitoForm</code> (dans <code>NewContactFlow.tsx</code>) — voir parcours (e).</p>
+<ol start="4">
+<li><strong><code>/contacts/[id]</code> — Fiche du proche</strong> : après création, le pilote arrive sur la fiche du contact.</li>
+</ol>
+<hr>
+<h2>(e) Pilote en mode incognito</h2>
+<p>Sous-parcours de (d), branche « Mode incognito ».</p>
+<ol>
+<li><p><strong><code>/contacts/new</code></strong> → carte « Mode incognito ».</p>
+<ul>
+<li>Rappel en-tête : « Renseigne les informations essentielles. Ton proche ne sera pas notifié. »</li>
+</ul>
+</li>
+<li><p><strong>Formulaire incognito</strong> (<code>NewContactFlow.tsx</code>, <code>IncognitoForm</code>)</p>
+<ul>
+<li><strong>Étape 0</strong> : « Prénom * » (« Ex : Sophie ») + « Pronom » (Elle / Il / Iel / Je préfère ne pas préciser) → <strong>« Suivant → »</strong>.</li>
+<li><strong>Étape 1</strong> : « Et aujourd&#39;hui, votre relation avec {name} ressemble plutôt à… » (6 registres, verbatim dans le fichier 04 §17). Si « Compliquée ou fragile » choisi → champ de contexte facultatif « Comment tu aimes entretenir le lien avec {name}, malgré ce qui est compliqué ». Boutons « ← Retour » / « Suivant → ».</li>
+<li><strong>Étape 2</strong> : « Relation * », « Téléphone * » (« Ex : +33 6 12 34 56 78 »), « Adresse postale (pour les livraisons) », encart mandataire « En saisissant ces informations, tu agis comme mandataire de ton proche pour les attentions à venir. Voir nos conditions. » → <strong>« Créer le profil incognito → »</strong>.</li>
+</ul>
+</li>
+<li><p><strong><code>POST /api/contacts/create-incognito</code></strong> (<code>src/app/api/contacts/create-incognito/route.ts</code>)</p>
+<ul>
+<li>Crée le contact sans email, sans notification au proche. Idempotence + garde anti-doublon 30 s.</li>
+<li>Renvoie <code>{ contactId }</code>.</li>
+</ul>
+</li>
+<li><p><strong><code>/contacts/[id]</code> — Fiche</strong> : redirection immédiate (<code>router.push(/contacts/&lt;contactId&gt;)</code>). Le pilote gère ensuite tout depuis cette fiche : le proche n&#39;est JAMAIS informé.</p>
+</li>
+</ol>
+<p>Le questionnaire incognito « à la place du proche » se poursuit sur <code>/contacts/[id]/questionnaire</code> (<code>src/app/contacts/[id]/questionnaire/page.tsx</code> + <code>IncognitoFlow.tsx</code>) : la page charge le contact, refuse l&#39;accès si le contact s&#39;est lié à son propre compte (<code>proche_user_id</code> défini → redirection vers <code>/contacts/[id]</code>), sinon rend le flux incognito pré-rempli par le pilote.</p>
+<hr>
+<h2>(f) Retour après inactivité</h2>
+<ol>
+<li><p><strong>Arrivée sur une page personnelle sans session valide</strong> → le proxy renvoie vers <code>/login</code> (routes <code>/dashboard</code>, <code>/contacts</code>) ou la page fait <code>redirect(&quot;/login&quot;)</code>.</p>
+<ul>
+<li>Pour une fiche partagée : <code>/login?next=/fiche/&lt;consentId&gt;</code> (retour au bon endroit après reconnexion). Source : <code>src/app/fiche/[consentId]/page.tsx</code> ligne 30.</li>
+</ul>
+</li>
+<li><p><strong><code>/login</code></strong> — se reconnecte (« Bon retour. »). Après succès → <code>next</code> (défaut <code>/dashboard</code>).</p>
+<ul>
+<li>Rappel : <strong>aucun</strong> parcours « mot de passe oublié » n&#39;existe (voir fichier 04 §6).</li>
+</ul>
+</li>
+<li><p><strong><code>/dashboard</code></strong> — <code>trackActivity(user.id)</code> est appelé à chaque visite du dashboard (<code>src/app/dashboard/page.tsx</code> ligne 125), ce qui met à jour <code>last_active_at</code> (utilisé par le cycle de vie, parcours g).</p>
+</li>
+<li><p><strong>Emails de relance</strong> (parcours passif, sans action de l&#39;utilisateur) : le cron <code>lifecycle-check</code> peut avoir envoyé, pendant l&#39;absence :</p>
+<ul>
+<li>« On t&#39;attend — Candice » (après 90 j d&#39;inactivité, passage <code>active</code> → <code>silent</code>) ;</li>
+<li>« Reprendre Candice ? » (après 60 j de pause).
+Source : <code>src/app/api/cron/lifecycle-check/route.ts</code>.</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2>(g) Compte en pause / cycle de vie</h2>
+<p>Le statut du compte vit dans <code>my_profile.subscription_status</code> : valeurs <code>trial</code>, <code>active</code>, <code>paused</code>, <code>silent</code>, <code>cancelled</code>. Le moteur est le cron <code>lifecycle-check</code>.</p>
+<h3>Écran d&#39;abonnement (<code>/parametres/abonnement</code>)</h3>
+<p>Source : <code>src/app/parametres/abonnement/page.tsx</code> + <code>AbonnementActions.tsx</code>.</p>
+<ul>
+<li>Bloc « Offre » : « Candice — 9 €/mois » / « 1 mois d&#39;essai offert. Sans engagement. »</li>
+<li>Bloc « Statut » : libellé (Essai gratuit / Actif / En pause / Silencieux / Annulé) + pastille colorée.</li>
+<li>Bloc « Période d&#39;essai » (si <code>trial</code>) : « X jour(s) restant(s) » / « Dernier jour » / « 30 jours offerts » / « Essai illimité » (si <code>lifetime_trial</code>).</li>
+<li>Bouton <strong>« Passer à l&#39;abonnement »</strong> : <strong>désactivé</strong>, note « Disponible prochainement. » (Stripe pas encore branché).</li>
+<li>Si <code>paused</code> : bouton <strong>« Reprendre Candice »</strong>.</li>
+<li>Si suppression programmée : encart « Suppression programmée le [date]. » + bouton « Annuler la suppression ».</li>
+<li>Lien « Supprimer mon compte » (voir fichier 04 §10).</li>
+</ul>
+<h3>Transitions automatiques (cron <code>lifecycle-check</code>)</h3>
+<p>Source : <code>src/app/api/cron/lifecycle-check/route.ts</code>.</p>
+<ul>
+<li><strong>Essai (30 j)</strong> : rappels J-7 / J-3 / J-1 (emails <code>trial-reminder</code>, objets verbatim au fichier 04 §14). Le passage automatique <code>trial</code> → <code>paused</code> en fin d&#39;essai est <strong>désactivé</strong> (<code>ENABLE_TRIAL_LOCKOUT = false</code>, ligne 9 — « réactiver quand Stripe est branché »).</li>
+<li><strong><code>active</code> → <code>silent</code></strong> : après 90 j sans activité (<code>last_active_at</code>). Email « On t&#39;attend — Candice ». Event <code>went_silent</code>.</li>
+<li><strong><code>paused</code> (relance 60 j)</strong> : email « Reprendre Candice ? ».</li>
+<li><strong><code>cancelled</code> + échéance atteinte</strong> : <code>hardDeleteUser</code> (suppression définitive).</li>
+</ul>
+<h3>Pause / reprise manuelles</h3>
+<ul>
+<li><strong>Pause</strong> : <code>POST /api/subscription/pause</code> — éligible si <code>trial</code>/<code>active</code>, sinon « Compte non éligible à la pause » ; passe à <code>paused</code>, event <code>subscription_paused</code>. Source : <code>src/app/api/subscription/pause/route.ts</code>.</li>
+<li><strong>Reprise</strong> : <code>POST /api/subscription/resume</code> — éligible si <code>paused</code>, sinon « Compte non en pause » ; repasse à <code>trial</code> (essai &lt; 30 j encore valide) ou <code>active</code>, event <code>subscription_resumed</code>. Source : <code>src/app/api/subscription/resume/route.ts</code>.</li>
+<li>Interface : bouton « Reprendre Candice » (pendant : « Reprise… »).</li>
+</ul>
+<h3>Bannière de pause sur le dashboard</h3>
+<p>Source : <code>src/app/dashboard/page.tsx</code> (ligne 192) — si <code>subscription_status === &quot;paused&quot;</code>, le composant <code>PauseBanner</code> (<code>src/components/dashboard/PauseBanner</code>) est affiché en tête du dashboard.</p>
+<h3>Journal du cycle de vie</h3>
+<p>Tous les changements de statut sont journalisés dans <code>account_lifecycle_events</code> (<code>event_type</code> : <code>deletion_requested</code>, <code>deletion_cancelled</code>, <code>subscription_paused</code>, <code>subscription_resumed</code>, <code>trial_expired</code>, <code>went_silent</code>). Sources : routes <code>api/account/*</code>, <code>api/subscription/*</code>, <code>api/cron/lifecycle-check</code>.</p>
+<hr>
+<h2>Annexe — Parcours secondaire : demander à voir la fiche de quelqu&#39;un (Sens 1)</h2>
+<p>Non demandé explicitement mais central pour comprendre l&#39;accès entre utilisateurs.</p>
+<ol>
+<li><p><strong><code>/recherche</code></strong> (<code>src/app/recherche/page.tsx</code>)</p>
+<ul>
+<li>Voit : « Trouver quelqu&#39;un » / « Saisis l&#39;identifiant exact ou l&#39;email exact que la personne t&#39;a donné. Rien n&#39;est visible sans son accord explicite. »</li>
+<li><strong>Garde</strong> : si le questionnaire personnel n&#39;est pas complet (5/5), l&#39;écran affiche « Ta fiche d&#39;abord. » et bloque avec « Reprendre mon questionnaire → » vers <code>/moi/questionnaire</code>.</li>
+<li>Sinon, <code>RechercheClient</code> permet de chercher par <code>@identifiant</code> ou email.</li>
+</ul>
+</li>
+<li><p><strong>Demande</strong> : <code>POST /api/profile-view/request</code> (<code>src/app/api/profile-view/request/route.ts</code>)</p>
+<ul>
+<li>Crée un <code>contact_consents</code> (kind <code>profile_view</code>, status <code>pending</code>), envoie un email à la cible.</li>
+<li><strong>Objet email : « {prénom} veut voir ton profil »</strong>, corps « C&#39;est toi qui décides ce que tu partages… », CTA « Choisir ce que je partage → » vers <code>/moi/partage/demandes/&lt;consentId&gt;</code>.</li>
+</ul>
+</li>
+<li><p><strong>Réponse de la cible</strong> : <code>/moi/partage/demandes/[consentId]</code> — la cible choisit le scope (tout / sections / rien de visible / refuser).</p>
+</li>
+<li><p><strong>Consultation</strong> : une fois accepté, le demandeur voit la fiche via <code>/fiche/[consentId]</code> (<code>src/app/fiche/[consentId]/page.tsx</code>), rendu <code>ProfileV2</code> filtré selon le scope, textes convertis à la 3ᵉ personne. Si retiré : « Ce partage a été retiré. »</p>
+</li>
+</ol>
+<hr>
+<h2>⚠ RAPPORT D&#39;HYPOTHÈSES</h2>
+<p><strong>A. ZONES DE FLOU</strong></p>
+<ul>
+<li>Parcours (c) « proche qui remplit sa propre fiche » : le code offre deux chemins (invitation <code>/invite</code> et partage <code>/rejoindre</code>). J&#39;ai décrit les deux ; l&#39;énoncé ne précisait pas lequel privilégier.</li>
+<li>Le mode standard (d.3a) affiche un écran « lien » avec QR/copie ; je n&#39;ai pas détaillé chaque sous-étape de <code>QuestionnaireForm</code> (composant volumineux) au-delà de la génération du lien et de l&#39;envoi d&#39;email.</li>
+</ul>
+<p><strong>B. DÉCISIONS PRISES SEUL</strong></p>
+<ul>
+<li>J&#39;ai ajouté une annexe « demander à voir une fiche » car elle éclaire l&#39;accès inter-utilisateurs, bien qu&#39;elle ne figure pas dans les 7 typologies demandées. À retirer si hors périmètre.</li>
+</ul>
+<p><strong>C. LAISSÉ EN SUSPENS</strong></p>
+<ul>
+<li>Le contenu détaillé question par question des questionnaires (<code>QuestionnaireFlow</code>, <code>DiscoveryFlow</code>, <code>IncognitoFlow</code>) n&#39;est pas déroulé : ce sont des flux longs relevant d&#39;une cartographie dédiée « questionnaire ».</li>
+<li>Le composant <code>OnboardingFlow</code> existe mais n&#39;est monté nulle part (tour d&#39;accueil neutralisé) ; je l&#39;ai signalé sans l&#39;inclure comme étape active du parcours (a).</li>
+</ul>
+<p><strong>D. À VÉRIFIER PAR ESTELLE</strong></p>
+<ul>
+<li>Confirmer que le parcours (a) « spontané » n&#39;affiche effectivement plus AUCUN onboarding (le composant est neutralisé mais toujours présent dans le code).</li>
+<li>Confirmer que le bouton « Passer à l&#39;abonnement » désactivé (Stripe non branché) correspond bien à l&#39;état voulu en bêta.</li>
+</ul>
+<p><strong>E. MIGRATIONS / BUILD</strong></p>
+<ul>
+<li>Lecture seule : aucune migration, aucun build lancé (tâche de cartographie).</li>
+</ul>
+</body></html>

@@ -64,7 +64,7 @@ export function createOpenKnowledge(input: CreateOpenKnowledgeInput): OpenKnowle
   const visibility: VisibilityPolicy =
     input.visibility ?? (input.sensitive ? INTERNAL_ONLY_POLICY : DEFAULT_EXPOSABLE);
   return {
-    contactId: input.contactId,
+    about: input.about,
     ownerId: input.ownerId,
     open_knowledge_id: input.open_knowledge_id,
     type: input.type,

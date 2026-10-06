@@ -17,12 +17,12 @@ import {
   hasActiveAvoidance,
 } from '../consolidate';
 import { createFact } from '../fact';
-import { asContactId, asEntityId, asSubjectId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asEntityId, asSubjectId, asUserId, type KnowledgeScope } from '../identity';
 import { signalKey, type Signal } from '../signal';
 import { JOURNAL_VERSION_STAMP } from '../version';
 import type { SourceType } from '../sources';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 // base pour les FABRIQUES (createProfileEvidence injecte version → ne pas le passer).
 const base = {
   ...scope,
@@ -165,8 +165,8 @@ describe('arbitrage guardrail — grain (code, context) : la consolidation n’�
     expect(byCtx['concert'].severity).toBe('SOFT'); // le HARD du restaurant n'a pas contaminé le concert
     // invariant : un GuardrailSignal porte exactement un contexte
     for (const s of signals) expect(s.contexts).toHaveLength(1);
-    expect(signalKey(scope.contactId, byCtx['restaurant'])).not.toBe(signalKey(scope.contactId, byCtx['concert']));
-    expect(signalKey(scope.contactId, byCtx['restaurant'])).toContain('GRD_NOISE@restaurant');
+    expect(signalKey(scope.about, byCtx['restaurant'])).not.toBe(signalKey(scope.about, byCtx['concert']));
+    expect(signalKey(scope.about, byCtx['restaurant'])).toContain('GRD_NOISE@restaurant');
   });
 });
 
@@ -206,11 +206,11 @@ describe('12 — PreferenceSignal porte sa valeur ; InterestSignal porte son rel
 describe('13 — signalKey déterministe et stable sur deux consolidations du même journal', () => {
   it('même journal → même clé', () => {
     const journal = [interestEv('i1', 'cuisine thaï', 'passion', 'conversation')];
-    const k1 = signalKey(scope.contactId, consolidateInterests(scope, journal)[0]);
-    const k2 = signalKey(scope.contactId, consolidateInterests(scope, journal)[0]);
+    const k1 = signalKey(scope.about, consolidateInterests(scope, journal)[0]);
+    const k2 = signalKey(scope.about, consolidateInterests(scope, journal)[0]);
     expect(k1).toBe(k2);
     expect(k1).toContain('INTEREST');
-    expect(k1.startsWith(`${scope.contactId}::`)).toBe(true);
+    expect(k1.startsWith(`${scope.about.kind}:${scope.about.id}::`)).toBe(true);
   });
 });
 

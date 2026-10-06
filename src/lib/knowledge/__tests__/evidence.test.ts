@@ -8,10 +8,10 @@ import {
   type ProfileEvidence,
 } from '../evidence';
 import type { EvidenceValue } from '../vocabulary';
-import { asContactId, asUserId } from '../identity';
+import { asContactId, contactAbout, asUserId } from '../identity';
 
 const base = {
-  contactId: asContactId('c1'),
+  about: contactAbout(asContactId('c1')),
   ownerId: asUserId('u1'),
   evidence_id: 'e1',
   source_id: 's1',

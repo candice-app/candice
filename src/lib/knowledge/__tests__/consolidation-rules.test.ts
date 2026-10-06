@@ -5,11 +5,11 @@ import { describe, expect, it } from 'vitest';
 import { createProfileEvidence } from '../evidence';
 import type { DirectionalEvidence } from '../evidence';
 import { CONSOLIDATION_RULES, consolidateAffection, consolidateProfileConstruct } from '../consolidate';
-import { asContactId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asUserId, type KnowledgeScope } from '../identity';
 import type { SourceType } from '../sources';
 import { CONSOLIDATION_VERSION, HSG_VERSION, JOURNAL_VERSION_STAMP, ONTOLOGY_VERSION } from '../version';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 
 const base = {
   ...scope,

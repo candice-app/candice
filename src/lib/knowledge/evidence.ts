@@ -57,7 +57,7 @@ export type EvidenceConfidence = 'high' | 'medium' | 'low';
 export type EvidenceContext = 'GLOBAL' | (string & {});
 
 /** Champs communs à toutes les evidences. Porte les deux colonnes d'identité
- *  (contactId + ownerId), comme questionnaire_responses(contact_id, user_id). */
+ *  (about + ownerId), comme questionnaire_responses(contact_id, user_id). */
 interface EvidenceBase extends KnowledgeScope {
   readonly evidence_id: string;
   readonly source_id: string;

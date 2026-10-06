@@ -1,0 +1,630 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>04 — Accès & authentification</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>04 — Accès &amp; authentification</h1>
+<blockquote>
+<p>Cartographie brute de TOUTES les modalités d&#39;accès à Candice. Ce document décrit ce qui EST dans le code, sans jugement ni recommandation. Chaque affirmation porte sa source (<code>fichier : chemin</code>). Les textes visibles à l&#39;écran et les emails sont cités VERBATIM.</p>
+</blockquote>
+<hr>
+<h2>0. Vue d&#39;ensemble des « portes »</h2>
+<p>Avant d&#39;atteindre une page personnelle, une requête traverse un filtre unique : <code>src/proxy.ts</code> (le middleware Next.js). Ce fichier applique, dans cet ordre :</p>
+<ol>
+<li><strong>Porte desktop</strong> — les pages personnelles sont bloquées sur ordinateur.</li>
+<li><strong>Porte bêta</strong> — un mot de passe global est exigé (cookie <code>beta_access</code>).</li>
+<li><strong>Rafraîchissement de session Supabase</strong> + vérification locale du jeton.</li>
+<li><strong>Routes protégées</strong> (<code>/dashboard</code>, <code>/contacts</code>) → renvoi vers <code>/login</code> si non connecté.</li>
+<li><strong>Routes d&#39;auth</strong> (<code>/login</code>, <code>/register</code>) → renvoi vers <code>/dashboard</code> si déjà connecté.</li>
+</ol>
+<p>Source : <code>src/proxy.ts</code> (lignes 29-68).</p>
+<p>Technologie d&#39;authentification : <strong>Supabase Auth</strong> (email + mot de passe). Trois clients Supabase existent :</p>
+<ul>
+<li>Client navigateur : <code>src/utils/supabase/client.ts</code></li>
+<li>Client serveur (lit les cookies) : <code>src/utils/supabase/server.ts</code></li>
+<li>Client « admin » (clé service, contourne la sécurité RLS pour les soumissions publiques) : <code>src/utils/supabase/admin.ts</code></li>
+<li>Vérification locale du jeton JWT (sans appel réseau) : <code>src/utils/supabase/claims.ts</code></li>
+</ul>
+<hr>
+<h2>1. Visiteur non connecté</h2>
+<h3>Écrans accessibles sans compte</h3>
+<p>Un visiteur qui n&#39;est pas connecté peut voir les pages « marketing » et légales, à condition d&#39;avoir déjà passé la porte bêta (voir §2). D&#39;après la liste des routes (<code>src/app/</code>) : page d&#39;accueil (<code>/</code>), <code>/concept</code>, <code>/fonctionnement</code>, <code>/offre</code>, <code>/aide</code>, <code>/contact</code>, <code>/conditions-generales</code>, <code>/confidentialite</code>, <code>/mentions-legales</code>, <code>/login</code>, <code>/register</code>, et les pages d&#39;atterrissage par lien (<code>/invite/[token]</code>, <code>/rejoindre/[token]</code>, <code>/profil-partage/[token]</code>).</p>
+<h3>Ce qui est bloqué</h3>
+<p>Les préfixes suivants sont « personnels » : toute tentative d&#39;y accéder sans session renvoie vers <code>/login</code>. Le code ne protège explicitement que <code>/dashboard</code> et <code>/contacts</code> au niveau du proxy :</p>
+<pre><code>const protectedRoutes = [&quot;/dashboard&quot;, &quot;/contacts&quot;];
+if (!user &amp;&amp; protectedRoutes.some((r) =&gt; pathname.startsWith(r))) {
+  return NextResponse.redirect(new URL(&quot;/login&quot;, request.url));
+}
+</code></pre>
+<p>Source : <code>src/proxy.ts</code> (lignes 56-61).</p>
+<p>Les autres pages personnelles (<code>/moi</code>, <code>/parametres</code>, <code>/idees</code>, etc.) se protègent elles-mêmes : chaque page serveur appelle <code>getUser()</code> et fait <code>redirect(&quot;/login&quot;)</code> si aucun utilisateur. Exemples : <code>src/app/moi/questionnaire/page.tsx</code> (ligne 16-17), <code>src/app/parametres/compte/page.tsx</code> (ligne 16-17), <code>src/app/contacts/new/page.tsx</code> (ligne 8-9).</p>
+<h3>Page d&#39;accueil (verbatim)</h3>
+<p>Source : <code>src/app/page.tsx</code>.</p>
+<ul>
+<li>Titre principal : « Votre copilote <strong>relationnel.</strong> »</li>
+<li>Sous-titre : « L&#39;attention juste, au bon moment. »</li>
+<li>Bouton principal → <code>/register</code> : « Commencer avec Candice »</li>
+<li>Bouton secondaire → <code>/concept</code> : « Explorer »</li>
+<li>Bloc final, bouton → <code>/register</code> : « Commencer » ; bouton → <code>/login</code> : « Se connecter ».</li>
+</ul>
+<hr>
+<h2>2. Porte bêta (mot de passe global)</h2>
+<h3>Comportement</h3>
+<p>Tant que le cookie <code>beta_access</code> n&#39;est pas présent, TOUTE page non exemptée renvoie vers <code>/beta-access?from=&lt;page demandée&gt;</code>.</p>
+<pre><code>if (!isBetaExempt &amp;&amp; !request.cookies.get(&quot;beta_access&quot;)) {
+  const url = new URL(&quot;/beta-access&quot;, request.url);
+  url.searchParams.set(&quot;from&quot;, pathname);
+  return NextResponse.redirect(url);
+}
+</code></pre>
+<p>Source : <code>src/proxy.ts</code> (lignes 42-50).</p>
+<p>Routes exemptées de la porte bêta (accessibles sans cookie) :</p>
+<ul>
+<li>Exactes : <code>/beta-access</code></li>
+<li>Préfixes : <code>/api/beta-access</code>, <code>/api/auth/callback</code>, <code>/beta-access</code></li>
+</ul>
+<p>Source : <code>src/proxy.ts</code> (lignes 26-27).</p>
+<h3>Écran <code>/beta-access</code> (verbatim)</h3>
+<p>Source : <code>src/app/beta-access/page.tsx</code>.</p>
+<ul>
+<li>Logo : « candice »</li>
+<li>Titre : « Accès bêta privé »</li>
+<li>Texte : « Candice est en accès bêta fermé. Entre le mot de passe pour continuer. »</li>
+<li>Champ mot de passe, placeholder : « Mot de passe »</li>
+<li>Bouton : « Accéder → » (pendant le chargement : « Vérification… »)</li>
+<li>Pied : « Candice · Accès bêta privé »</li>
+</ul>
+<h3>Étapes</h3>
+<ol>
+<li>L&#39;utilisateur saisit le mot de passe et valide.</li>
+<li>Le navigateur envoie <code>POST /api/beta-access</code> avec <code>{ password }</code>.</li>
+<li>Si correct → cookie posé, redirection vers la page d&#39;origine (<code>from</code>, défaut <code>/dashboard</code>).</li>
+<li>Si incorrect → message d&#39;erreur affiché.</li>
+</ol>
+<p>Source : <code>src/app/beta-access/page.tsx</code> (lignes 14-34).</p>
+<h3>Vérification serveur &amp; cookie</h3>
+<p>Source : <code>src/app/api/beta-access/route.ts</code>.</p>
+<ul>
+<li>Mot de passe attendu : variable d&#39;environnement <code>BETA_PASSWORD</code>, <strong>valeur par défaut codée en dur : <code>Candice2026!</code></strong> (ligne 3 : <code>const BETA_PASSWORD = process.env.BETA_PASSWORD ?? &quot;Candice2026!&quot;;</code>).</li>
+<li>Si mauvais mot de passe → réponse HTTP 401 <code>{ error: &quot;Mot de passe incorrect.&quot; }</code>.</li>
+<li>Si correct → cookie <code>beta_access = &quot;1&quot;</code>, <code>httpOnly</code>, <code>sameSite: lax</code>, durée <strong>30 jours</strong> (<code>maxAge: 60 * 60 * 24 * 30</code>), <code>path: &quot;/&quot;</code>.</li>
+<li>Requête mal formée (JSON invalide) → 400 <code>{ error: &quot;Requête invalide.&quot; }</code>.</li>
+</ul>
+<h3>Messages d&#39;erreur (verbatim, côté écran)</h3>
+<p>Source : <code>src/app/beta-access/page.tsx</code> (lignes 24-30).</p>
+<ul>
+<li>Mot de passe refusé : « Mot de passe incorrect. »</li>
+<li>Erreur réseau : « Une erreur est survenue. Réessaie. »</li>
+</ul>
+<hr>
+<h2>3. Porte desktop (« Continue sur ton téléphone »)</h2>
+<h3>Comportement</h3>
+<p>Sur un appareil qui n&#39;est ni mobile ni tablette (détection via <code>userAgent</code>), l&#39;accès aux préfixes personnels renvoie vers <code>/continuer-sur-telephone</code>.</p>
+<pre><code>const isDesktop = device.type !== &quot;mobile&quot; &amp;&amp; device.type !== &quot;tablet&quot;;
+if (isDesktop &amp;&amp; DESKTOP_GATED_PREFIXES.some(p =&gt; pathname.startsWith(p))) {
+  return NextResponse.redirect(new URL(&quot;/continuer-sur-telephone&quot;, request.url));
+}
+</code></pre>
+<p>Source : <code>src/proxy.ts</code> (lignes 34-39).</p>
+<p>Préfixes bloqués sur desktop (<code>DESKTOP_GATED_PREFIXES</code>, lignes 13-23) :
+<code>/moi</code>, <code>/contacts</code>, <code>/parametres</code>, <code>/dashboard</code>, <code>/historique</code>, <code>/idees</code>, <code>/parler-a-candice</code>, <code>/partage</code>, <code>/profil/</code> (le <code>/profil/[id]</code> uniquement — <code>/profil-partage/</code> reste public).</p>
+<p>Note (non vérifiée quant à l&#39;intention) : <code>/login</code> et <code>/register</code> NE sont PAS dans cette liste — ils restent donc ouverts sur desktop.</p>
+<h3>Écran <code>/continuer-sur-telephone</code> (verbatim)</h3>
+<p>Source : <code>src/app/continuer-sur-telephone/page.tsx</code>.</p>
+<ul>
+<li>Titre : « Continue sur ton téléphone »</li>
+<li>Texte : « Candice s&#39;ouvre sur mobile. Scanne ce code depuis ton téléphone pour accéder à ton espace. »</li>
+<li>Un QR code pointant vers l&#39;URL du site (<code>window.location.origin</code>).</li>
+<li>Texte sous le QR : « Ou tape <strong>[url]</strong> dans ton navigateur mobile. »</li>
+</ul>
+<hr>
+<h2>4. Inscription (<code>/register</code>)</h2>
+<p>Source : <code>src/app/register/page.tsx</code>.</p>
+<h3>Écran (verbatim)</h3>
+<ul>
+<li>Titre : « Créer un compte. »</li>
+<li>Sous-titre : « Quelques secondes suffisent »</li>
+<li>Champs (composant <code>FloatField</code>) :<ul>
+<li>« Prénom » (obligatoire)</li>
+<li>« Identifiant » (obligatoire, préfixe <code>@</code>) — indication : « Unique, comme sur Instagram — c&#39;est lui que tes proches saisiront pour te trouver. » ; quand disponible : « Disponible. »</li>
+<li>« E-mail » (obligatoire)</li>
+<li>« Téléphone (optionnel) »</li>
+<li>« Mot de passe » (obligatoire) — indication : « 8 caractères minimum. »</li>
+</ul>
+</li>
+<li>Case à cocher CGU : « J&#39;accepte les <strong>conditions générales</strong> et la <strong>politique de confidentialité</strong> » (liens vers <code>/conditions-generales</code> et <code>/confidentialite</code>).</li>
+<li>Bouton : « Créer un compte » (pendant l&#39;envoi : « Création en cours… »)</li>
+<li>Lien bas de page → <code>/login</code> : « Déjà un compte ? <strong>Se connecter</strong> »</li>
+</ul>
+<h3>Étapes techniques</h3>
+<ol>
+<li>Validations côté client (email, mot de passe ≥ 8, téléphone FR facultatif, identifiant unique vérifié en temps réel via <code>POST /api/handle/check</code>).</li>
+<li>Appel <code>supabase.auth.signUp({ email, password, options: { data: { full_name, phone, handle }, emailRedirectTo } })</code>.</li>
+<li><code>emailRedirectTo</code> pointe TOUJOURS vers la prod en production : <code>https://candice.app/api/auth/callback?next=&lt;destination&gt;</code>.<ul>
+<li>Destination selon le contexte d&#39;arrivée :<ul>
+<li>avec <code>invite_token</code> → <code>/moi/questionnaire?invite_token=...</code></li>
+<li>avec <code>share_token</code> → <code>/rejoindre/&lt;token&gt;</code></li>
+<li>sinon → <code>/dashboard</code>
+Source : <code>src/app/register/page.tsx</code> (lignes 162-180).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Enregistrement de l&#39;identifiant (<code>POST /api/handle</code>) et du téléphone (table <code>my_profile</code>).</li>
+<li>Envoi de l&#39;email de bienvenue (<code>POST /api/emails/welcome</code>, non bloquant).</li>
+<li>Redirection vers la destination.</li>
+</ol>
+<h3>Écrans post-soumission (verbatim)</h3>
+<p>Source : <code>src/app/register/page.tsx</code> (lignes 241-297).</p>
+<ul>
+<li><strong>Succès (compte créé)</strong> : Titre « Ton compte est créé. » ; texte « Va voir ta boîte mail pour confirmer ton adresse[ — puis tu découvriras ce que {prénom} a partagé avec toi]. » ; note « Rien reçu ? Regarde tes indésirables — l&#39;email vient de candice.app. »</li>
+<li><strong>Échec d&#39;envoi d&#39;email</strong> : Titre « L&#39;email n&#39;a pas pu partir. » ; texte « Réessaie dans un instant. » ; bouton « Renvoyer l&#39;email » (pendant : « Envoi… »).</li>
+</ul>
+<h3>Messages d&#39;erreur (verbatim)</h3>
+<p>Source : <code>src/app/register/page.tsx</code>.</p>
+<ul>
+<li>Prénom manquant : « Ton prénom est nécessaire. »</li>
+<li>Email invalide : « Adresse email invalide. »</li>
+<li>Mot de passe trop court : « 8 caractères minimum. »</li>
+<li>Téléphone invalide : « Numéro français invalide (ex. 06 12 34 56 78). »</li>
+<li>CGU non cochées : « Tu dois accepter les conditions générales pour continuer. »</li>
+<li>Identifiant déjà pris : « Cet identifiant est déjà pris. » (ou message renvoyé par l&#39;API)</li>
+<li>Compte déjà existant : « Un compte existe déjà avec cet e-mail. <strong>Se connecter</strong> »</li>
+<li>Erreurs Supabase traduites (fonction <code>frenchAuthError</code>, lignes 37-43) :<ul>
+<li>Rate limit : « Trop de tentatives. Réessaie dans un instant. »</li>
+<li>Email invalide : « Adresse email invalide. »</li>
+<li>Mot de passe : « Le mot de passe doit contenir au moins 8 caractères. »</li>
+<li>Autre : « Une erreur est survenue. Réessaie dans un instant. »</li>
+</ul>
+</li>
+</ul>
+<h3>Email de bienvenue (verbatim)</h3>
+<p>Source : <code>src/app/api/emails/welcome/route.ts</code>.</p>
+<ul>
+<li>Expéditeur : <code>FROM_EMAIL</code> (défini dans <code>src/lib/resend</code>), envoi via <strong>Resend</strong>.</li>
+<li><strong>Objet : « Candice est prête. »</strong></li>
+<li>Corps :<ul>
+<li>Titre « Bonjour[, {prénom}]. »</li>
+<li>« Candice est prête. »</li>
+<li>« Candice est prête à t&#39;aider à prendre soin de ceux que tu aimes. »</li>
+<li>« Commence par compléter ta fiche — c&#39;est la base de tout. Plus ton profil est précis, plus les attentions que Candice suggère seront justes. »</li>
+<li>CTA « Compléter ma fiche → » vers <code>/moi/questionnaire</code></li>
+<li>« ✦  Plus ta fiche est complète, plus les suggestions seront justes. »</li>
+<li>Pied : « Tu reçois cet e-mail car tu viens de créer un compte Candice. »</li>
+</ul>
+</li>
+</ul>
+<h3>Email de confirmation d&#39;adresse</h3>
+<p>Le lien de confirmation d&#39;email est géré par Supabase (envoi natif Supabase, gabarit configuré côté Supabase — non présent dans le repo). Il pointe vers <code>/api/auth/callback?code=...&amp;next=...</code>.
+Source : <code>src/app/api/auth/callback/route.ts</code> :</p>
+<ul>
+<li><code>GET</code> récupère <code>code</code>, appelle <code>supabase.auth.exchangeCodeForSession(code)</code>.</li>
+<li>Succès → redirection vers <code>next</code> (défaut <code>/dashboard</code>).</li>
+<li>Échec → redirection vers <code>/login?error=auth_callback_failed</code>.</li>
+</ul>
+<hr>
+<h2>5. Connexion (<code>/login</code>)</h2>
+<p>Source : <code>src/app/login/page.tsx</code>.</p>
+<h3>Écran (verbatim)</h3>
+<ul>
+<li>Titre : « Bon retour. »</li>
+<li>Sous-titre : « Connectez-vous à votre compte »</li>
+<li>Champs : « E-mail », « Mot de passe »</li>
+<li>Bouton : « Se connecter » (pendant : « Connexion en cours… »)</li>
+<li>Lien bas de page → <code>/register</code> : « Pas encore de compte ? <strong>S&#39;inscrire</strong> »</li>
+</ul>
+<h3>Étapes</h3>
+<ol>
+<li><code>supabase.auth.signInWithPassword({ email, password })</code>.</li>
+<li>Succès → redirection vers <code>next</code> (paramètre d&#39;URL, chemins internes uniquement, défaut <code>/dashboard</code>).</li>
+<li>Échec → message d&#39;erreur.</li>
+</ol>
+<p>Protection contre les redirections ouvertes : <code>next</code> n&#39;est accepté que s&#39;il commence par <code>/</code> sans être <code>//</code>. Source : <code>src/app/login/page.tsx</code> (lignes 30-32).</p>
+<h3>Message d&#39;erreur (verbatim)</h3>
+<ul>
+<li>« E-mail ou mot de passe incorrect. »
+Source : <code>src/app/login/page.tsx</code> (ligne 45).</li>
+</ul>
+<h3>⚠ Absence de lien « mot de passe oublié »</h3>
+<p>La page <code>/login</code> NE contient AUCUN lien « mot de passe oublié ». Il n&#39;y a que « S&#39;inscrire ». Voir §6.</p>
+<hr>
+<h2>6. Mot de passe oublié / réinitialisation</h2>
+<p><strong>❌ ABSENT.</strong> Recherche exhaustive dans <code>src/</code> des motifs <code>reset-password</code>, <code>resetPassword</code>, <code>forgot</code>, <code>resetPasswordForEmail</code>, <code>reset-password</code> : <strong>aucun résultat</strong>.</p>
+<p>Il n&#39;existe :</p>
+<ul>
+<li>aucune page <code>/reset-password</code> ni <code>/forgot-password</code> ;</li>
+<li>aucun appel à <code>supabase.auth.resetPasswordForEmail</code>.</li>
+</ul>
+<p>Le SEUL moyen de changer de mot de passe est d&#39;être <strong>déjà connecté</strong> et de passer par les paramètres (voir §11 « changer le mot de passe »). Un utilisateur qui a oublié son mot de passe n&#39;a, dans le code applicatif, aucun parcours de récupération. (Non vérifié : une éventuelle récupération manuelle via l&#39;interface Supabase, hors code.)</p>
+<hr>
+<h2>7. Lien magique / OTP</h2>
+<p><strong>❌ ABSENT.</strong> Recherche exhaustive des motifs <code>signInWithOtp</code>, <code>verifyOtp</code>, <code>magic link</code>, <code>magiclink</code>, <code>otp</code> dans <code>src/</code> : <strong>aucun résultat</strong>.</p>
+<p>L&#39;unique lien « à usage unique » présent est celui de <strong>confirmation d&#39;adresse email</strong> à l&#39;inscription (géré par Supabase, §4). Ce n&#39;est pas un mécanisme de connexion sans mot de passe.</p>
+<hr>
+<h2>8. Déconnexion</h2>
+<p>Trois emplacements déclenchent <code>supabase.auth.signOut()</code> :</p>
+<table>
+<thead>
+<tr>
+<th>Emplacement</th>
+<th>Libellé</th>
+<th>Après déconnexion</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>src/app/moi/LogoutButton.tsx</code> (lignes 10-14, 36)</td>
+<td>« Se déconnecter »</td>
+<td>redirection vers <code>/</code></td>
+</tr>
+<tr>
+<td><code>src/app/parametres/compte/CompteActions.tsx</code> (lignes 100-104, 271)</td>
+<td>« Se déconnecter »</td>
+<td>redirection vers <code>/</code></td>
+</tr>
+<tr>
+<td><code>src/components/layout/Navbar.tsx</code> (lignes 16-20, 47)</td>
+<td>« Déconnexion »</td>
+<td>redirection vers <code>/</code></td>
+</tr>
+</tbody></table>
+<p>Le bouton <code>LogoutButton</code> est aussi affiché sur <code>/parametres</code> (<code>src/app/parametres/page.tsx</code> ligne 88) et sur <code>/moi</code> (<code>src/app/moi/page.tsx</code> ligne 125, via <code>FooterLinks</code>).</p>
+<p>Il n&#39;y a pas de route API de déconnexion : tout se fait côté client via le SDK Supabase.</p>
+<hr>
+<h2>9. Session expirée / rafraîchissement</h2>
+<p>Source : <code>src/proxy.ts</code> + <code>src/utils/supabase/claims.ts</code>.</p>
+<ul>
+<li>À chaque requête, le proxy crée un client Supabase « middleware » (<code>src/utils/supabase/middleware.ts</code>) qui rafraîchit les cookies de session, puis vérifie le jeton EN LOCAL (<code>getAuthClaims</code>, sans appel réseau tant que le jeton est valide). Source : <code>src/proxy.ts</code> lignes 52-54.</li>
+<li>Si aucune session valide et que la page est protégée (<code>/dashboard</code>, <code>/contacts</code>) → redirection vers <code>/login</code>.</li>
+<li>Les pages personnelles auto-protégées (voir §1) font <code>redirect(&quot;/login&quot;)</code> en interne.</li>
+<li>Cas particulier : la page fiche partagée renvoie vers <code>/login?next=/fiche/&lt;consentId&gt;</code> pour revenir après reconnexion. Source : <code>src/app/fiche/[consentId]/page.tsx</code> (ligne 30).</li>
+<li>Si déjà connecté et l&#39;utilisateur visite <code>/login</code> ou <code>/register</code> → redirection automatique vers <code>/dashboard</code>. Source : <code>src/proxy.ts</code> lignes 63-65.</li>
+</ul>
+<p>Message interne « Session expirée. » : affiché dans <code>src/app/parametres/compte/CompteActions.tsx</code> (ligne 66) si <code>getUser()</code> échoue au moment d&#39;enregistrer les informations personnelles.</p>
+<hr>
+<h2>10. Suppression de compte</h2>
+<p>Deux composants d&#39;interface + une route API.</p>
+<h3>Interface (verbatim)</h3>
+<p>Source : <code>src/app/parametres/abonnement/AbonnementActions.tsx</code>.</p>
+<ul>
+<li>Lien déclencheur : « Supprimer mon compte »</li>
+<li>Bloc de confirmation :<ul>
+<li>Titre « Confirmer la suppression »</li>
+<li>Texte « Ton compte sera supprimé définitivement dans 30 jours. Entre ton mot de passe pour confirmer. »</li>
+<li>Champ mot de passe (placeholder « Mot de passe »)</li>
+<li>Boutons « Annuler » / « Confirmer la suppression » (pendant : « Confirmation… »)</li>
+</ul>
+</li>
+</ul>
+<p>La suppression est aussi mentionnée dans les paramètres de confidentialité (<code>src/app/parametres/confidentialite/ConfidentialiteActions.tsx</code>).</p>
+<h3>Route API</h3>
+<p>Source : <code>src/app/api/account/delete/route.ts</code>.</p>
+<ol>
+<li>Exige une session (<code>getUser</code>) — sinon 401.</li>
+<li>Exige <code>password</code> dans le corps — sinon 400 <code>{ error: &quot;Mot de passe requis&quot; }</code>.</li>
+<li>Vérifie le mot de passe en tentant <code>signInWithPassword</code> — échec → 403 <code>{ error: &quot;Mot de passe incorrect&quot; }</code>.</li>
+<li>Programme la suppression à <strong>J+30</strong> : met <code>my_profile.subscription_status = &#39;cancelled&#39;</code>, <code>cancelled_at</code>, <code>deletion_scheduled_at</code>.</li>
+<li>Journalise l&#39;événement dans <code>account_lifecycle_events</code> (<code>event_type: &#39;deletion_requested&#39;</code>).</li>
+<li>Envoie un email de confirmation.</li>
+</ol>
+<p>La suppression EFFECTIVE (hard delete) est réalisée plus tard par le cron <code>lifecycle-check</code> (voir §13) quand <code>deletion_scheduled_at</code> est atteint (<code>hardDeleteUser</code>). Source : <code>src/app/api/cron/lifecycle-check/route.ts</code> (lignes 145-150) + <code>src/lib/lifecycle/hard-delete</code>.</p>
+<h3>Annulation de la suppression</h3>
+<p>Source : <code>src/app/api/account/cancel-deletion/route.ts</code>.</p>
+<ul>
+<li>Exige que le statut soit <code>cancelled</code> avec <code>deletion_scheduled_at</code> — sinon 400 <code>{ error: &quot;Aucune suppression programmée&quot; }</code>.</li>
+<li>Remet <code>subscription_status = &#39;active&#39;</code>, efface <code>cancelled_at</code> et <code>deletion_scheduled_at</code>.</li>
+<li>Journalise <code>event_type: &#39;deletion_cancelled&#39;</code>.</li>
+<li>Bouton interface : « Annuler la suppression » (pendant : « Annulation… »). Source : <code>AbonnementActions.tsx</code> lignes 82-89.</li>
+</ul>
+<h3>Email de suppression programmée (verbatim)</h3>
+<p>Source : <code>src/app/api/account/delete/route.ts</code> (lignes 43-62).</p>
+<ul>
+<li><strong>Objet : « Suppression de compte programmée — Candice »</strong></li>
+<li>Corps :<ul>
+<li>« Ta demande de suppression a été enregistrée. Ton compte et toutes tes données seront supprimés le <strong>[date]</strong>. »</li>
+<li>« Tu peux annuler cette demande jusqu&#39;à cette date depuis tes paramètres. »</li>
+<li>CTA « Annuler la suppression → » vers <code>/parametres/abonnement</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>11. Changer le mot de passe (utilisateur connecté)</h2>
+<p>Source : <code>src/app/parametres/compte/CompteActions.tsx</code> (lignes 26-48, 196-258).</p>
+<ul>
+<li>Bouton « Changer le mot de passe » ouvre un formulaire :<ul>
+<li>« Nouveau mot de passe » (placeholder « 8 caractères minimum »)</li>
+<li>« Confirmer le mot de passe »</li>
+<li>Boutons « Annuler » / « Mettre à jour » (pendant : « Mise à jour… »)</li>
+</ul>
+</li>
+<li>Validation : ≥ 8 caractères, les deux champs identiques.</li>
+<li>Appel <code>supabase.auth.updateUser({ password })</code>.</li>
+<li>Messages :<ul>
+<li>Erreur longueur : « Au moins 8 caractères. »</li>
+<li>Non concordance : « Les mots de passe ne correspondent pas. »</li>
+<li>Succès : « Mot de passe mis à jour. »</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>12. Export de données (RGPD)</h2>
+<p>Deux voies : <strong>téléchargement direct</strong> et <strong>envoi par email</strong>.</p>
+<h3>Téléchargement direct</h3>
+<p>Source : <code>src/app/api/account/export-download/route.ts</code> (méthode <code>GET</code>).</p>
+<ul>
+<li>Exige une session — sinon 401.</li>
+<li>Rassemble via le client admin : <code>my_profile</code>, <code>contacts</code> (+ <code>questionnaire_responses</code>), <code>suggestions</code>, <code>proactive_suggestions</code>, <code>confidences</code>, <code>profile_notes</code>, <code>notification_log</code>, <code>account_lifecycle_events</code>.</li>
+<li>Renvoie un fichier JSON <code>candice-export-AAAA-MM-JJ.json</code> (<code>Content-Disposition: attachment</code>).</li>
+<li>Déclenché depuis <code>src/app/parametres/confidentialite/ConfidentialiteActions.tsx</code> (fonction <code>handleExport</code>, lignes 17-38) — crée un blob et force le téléchargement.</li>
+</ul>
+<h3>Envoi par email</h3>
+<p>Source : <code>src/app/api/account/export/route.ts</code> (méthode <code>POST</code>).</p>
+<ul>
+<li>Mêmes tables collectées, encodées en base64 et jointes à un email.</li>
+<li><strong>Objet : « Ton export de données Candice (RGPD) »</strong></li>
+<li>Corps (verbatim) :<ul>
+<li>« Conformément au RGPD, voici l&#39;ensemble des données que Candice détient sur toi. L&#39;export est joint à cet email au format JSON. »</li>
+<li>« Cet export inclut : ton profil, tes proches et leurs questionnaires, tes confidences, tes notes, les suggestions générées et l&#39;historique de notifications. »</li>
+</ul>
+</li>
+<li>Pièce jointe : <code>candice-export-AAAA-MM-JJ.json</code>.</li>
+<li>Réponse succès : <code>{ ok: true, message: &#39;Export envoyé par email.&#39; }</code>.</li>
+</ul>
+<hr>
+<h2>13. Cycle de vie du compte (pause, silence, suppression automatique)</h2>
+<p>Le cron <code>lifecycle-check</code> fait évoluer le statut d&#39;abonnement et envoie des emails de relance.
+Source : <code>src/app/api/cron/lifecycle-check/route.ts</code>.</p>
+<ul>
+<li>Authentification du cron : en-tête <code>Authorization: Bearer &lt;CRON_SECRET&gt;</code> — sinon 401.</li>
+<li>Un verrou d&#39;essai est <strong>désactivé</strong> en phase de test : <code>const ENABLE_TRIAL_LOCKOUT = false;</code> (ligne 9). Commentaire : « Phase de test — réactiver quand Stripe est branché (Phase 7) ».</li>
+</ul>
+<p>Transitions (parcourt tous les profils) :</p>
+<ul>
+<li><strong>Rappels d&#39;essai</strong> (statut <code>trial</code>, essai 30 j) : J-7 (jour 23), J-3 (jour 27), J-1 (jour 29) → appel <code>POST /api/emails/trial-reminder</code> (voir §14). Anti-doublon via <code>notification_log</code>.</li>
+<li><strong>Fin d&#39;essai → pause</strong> : SEULEMENT si <code>ENABLE_TRIAL_LOCKOUT</code> est vrai (donc inactif aujourd&#39;hui). Passerait <code>trial</code> → <code>paused</code> à J+30 + email « Candice est en pause ».</li>
+<li><strong>Actif → silencieux (90 j d&#39;inactivité)</strong> : <code>active</code> → <code>silent</code>, event <code>went_silent</code>, email « On t&#39;attend — Candice ».</li>
+<li><strong>Relance pause (60 j)</strong> : email « Reprendre Candice ? ».</li>
+<li><strong>Suppression programmée atteinte</strong> : <code>cancelled</code> + <code>deletion_scheduled_at ≤ maintenant</code> → <code>hardDeleteUser</code>.</li>
+</ul>
+<p>Emails simples du cron (verbatim, fonction <code>sendSimpleEmail</code>) :</p>
+<ul>
+<li>« Candice est en pause » — « Ton essai de 30 jours est terminé. Candice est en pause — reprends quand tu veux depuis tes paramètres. »</li>
+<li>« On t&#39;attend — Candice » — « Ça fait un moment qu&#39;on ne t&#39;a pas vu. Tes proches sont toujours là, et Candice aussi. Reviens quand tu veux. »</li>
+<li>« Reprendre Candice ? » — « Ça fait 2 mois que Candice est en pause. Tes proches ont peut-être un anniversaire qui approche, une attention qui serait parfaite. Reprends en un clic. »</li>
+</ul>
+<h3>Pause / reprise manuelles</h3>
+<ul>
+<li><code>POST /api/subscription/pause</code> : éligible si statut <code>trial</code> ou <code>active</code> — sinon 400 <code>{ error: &#39;Compte non éligible à la pause&#39; }</code>. Passe à <code>paused</code>, event <code>subscription_paused</code>. Source : <code>src/app/api/subscription/pause/route.ts</code>.</li>
+<li><code>POST /api/subscription/resume</code> : éligible si statut <code>paused</code> — sinon 400 <code>{ error: &#39;Compte non en pause&#39; }</code>. Repasse à <code>trial</code> (si essai encore valide &lt; 30 j) ou <code>active</code>. Source : <code>src/app/api/subscription/resume/route.ts</code>.</li>
+<li>Interface : bouton « Reprendre Candice » (pendant : « Reprise… »). Source : <code>AbonnementActions.tsx</code> lignes 69-78.</li>
+</ul>
+<hr>
+<h2>14. Emails d&#39;essai (rappels)</h2>
+<p>Source : <code>src/app/api/emails/trial-reminder/route.ts</code>. Route interne appelée UNIQUEMENT par le cron (Bearer <code>CRON_SECRET</code>).</p>
+<p>Objets et intros VERBATIM selon <code>daysLeft</code> :</p>
+<ul>
+<li><strong>7 jours</strong> — Objet : « Plus que 7 jours d&#39;essai — souhaites-tu poursuivre avec Candice ? » ; intro : « Ton essai gratuit se termine dans 7 jours. Candice a déjà appris à connaître tes proches — ne laisse pas ces attentions s&#39;arrêter. »</li>
+<li><strong>3 jours</strong> — Objet : « Candice tient à toi — encore 3 jours pour décider » ; intro : « Il te reste 3 jours. Candice a préparé des idées pour chacun de tes proches, et continue d&#39;en découvrir chaque jour. »</li>
+<li><strong>1 jour</strong> — Objet : « Dernier jour de ton essai Candice » ; intro : « C&#39;est le dernier jour de ton essai. Dans 24h, Candice se mettra en pause — mais elle sera toujours là quand tu voudras reprendre. »</li>
+<li>Défaut — Objet : « Ton essai Candice arrive bientôt à terme » ; intro : « Ton essai gratuit se termine bientôt. »</li>
+<li>CTA : « Continuer avec Candice → » vers <code>/parametres/abonnement</code>.</li>
+<li>Bas de page : « Ton compte reste accessible. Tu peux reprendre à tout moment depuis tes paramètres. » + lien « Se désabonner » vers <code>/parametres/notifications</code>.</li>
+</ul>
+<hr>
+<h2>15. Invité arrivant par un lien</h2>
+<p>Il existe TROIS systèmes de liens distincts (à ne pas confondre) :</p>
+<h3>15.a — Lien d&#39;invitation d&#39;un proche : <code>/invite/[token]</code> (table <code>invite_links</code>)</h3>
+<p>C&#39;est le lien qu&#39;un pilote génère pour inviter un proche à remplir SA fiche.
+Source : <code>src/app/invite/[token]/page.tsx</code> + <code>src/app/invite/[token]/LandingInvite.tsx</code>.</p>
+<ul>
+<li>La page serveur charge l&#39;invitation (<code>invite_links</code>, champ <code>pilote_name</code>, <code>expires_at</code>).</li>
+<li>Si le token n&#39;existe pas ou est expiré → <strong>page 404</strong> (<code>notFound()</code>).</li>
+<li>Sinon, on affiche l&#39;écran d&#39;atterrissage <code>LandingInvite</code> avec le prénom du pilote.</li>
+</ul>
+<p>Écran <code>LandingInvite</code> (verbatim, <code>{P}</code> = prénom du pilote) :</p>
+<ul>
+<li>Titre : « {P} veut apprendre à te faire vraiment plaisir. »</li>
+<li>Sous-titre : « Pas un cadeau au hasard, une fois par an. Les bonnes attentions, au bon moment — celles qui te ressemblent. »</li>
+<li>Corps : « {P} utilise Candice pour mieux prendre soin des gens qui comptent. Là, c&#39;est à toi que {P} pense. » puis « Ce questionnaire, c&#39;est ta façon de lui dire — sans avoir à le dire — ce qui te touche, ce qui te fait plaisir, et ce qu&#39;il vaut mieux éviter. {P} n&#39;en verra qu&#39;une version résumée : les détails restent entre Candice et toi. »</li>
+<li>Encart « Ce que tu y gagnes » : « ta propre fiche Candice, rien que pour toi ; » / « ce que tu découvres sur votre façon de fonctionner, {P} et toi ; » / « un mois pour essayer Candice et mieux penser, toi aussi, à ceux que tu aimes. »</li>
+<li>Note pratique : « Compte une vingtaine de minutes, au calme. Tu ne le rempliras qu&#39;une fois dans ta vie — autant le faire bien. Candice t&#39;accompagne, une question à la fois. »</li>
+<li><strong>Sur mobile</strong> : bouton « Créer mon compte et commencer » (actif seulement après avoir coché) + case « J&#39;accepte les conditions et je démarre mon mois d&#39;essai gratuit — sans carte bancaire, sans engagement. ». Le bouton mène vers <code>/register?invite_token=&lt;token&gt;</code>.</li>
+<li><strong>Sur desktop</strong> : pas de bouton, mais « Ouvre ce lien sur ton téléphone pour continuer. » + QR code + « Ou copie ce lien et ouvre-le dans ton navigateur mobile. »</li>
+</ul>
+<p>Création du lien : <code>POST /api/invite/create</code> (crée une ligne <code>invite_links</code> avec <code>pilote_id</code>, <code>contact_id</code>, <code>pilote_name</code>, renvoie <code>token</code>). Source : <code>src/app/api/invite/create/route.ts</code>.
+Réclamation à l&#39;inscription : <code>POST /api/invite/link</code> — marque <code>used_at</code>, relie le proche au contact (<code>contacts.proche_user_id = user.id</code>), et notifie le pilote par email. Source : <code>src/app/api/invite/link/route.ts</code>.</p>
+<p>Email au pilote quand le proche a fini (verbatim) :</p>
+<ul>
+<li>Objet : « {prénom} a complété sa fiche ✦ » (ou « Ton proche a complété sa fiche ✦ »)</li>
+<li>Titre : « Bonne nouvelle, {prénom}. »</li>
+<li>« {prénom du proche} a complété son profil sur Candice. »</li>
+<li>« Candice a maintenant tout ce qu&#39;il faut pour t&#39;aider à prendre soin de {prénom}. Découvre les premières attentions personnalisées. »</li>
+<li>CTA « Voir ses attentions → » vers <code>/contacts</code>.</li>
+</ul>
+<h3>15.b — Lien de partage de MA fiche : <code>/rejoindre/[token]</code> (table <code>profile_share_links</code>)</h3>
+<p>C&#39;est le lien qu&#39;un utilisateur génère pour partager SA propre fiche.
+Source : <code>src/app/rejoindre/[token]/page.tsx</code>.</p>
+<ul>
+<li><strong>Si déjà connecté</strong> : réclamation automatique (<code>claimShareLink</code>) → redirection vers <code>/fiche/&lt;consentId&gt;</code>.<ul>
+<li>Si c&#39;est son propre lien : titre « C&#39;est ton propre lien. » ; texte « Envoie-le à la personne de ton choix — il s&#39;activera chez elle. » ; lien « Gérer mes partages → » vers <code>/moi/partage</code>.</li>
+<li>Si lien invalide/utilisé : titre « Ce lien n&#39;est plus valide. » ; texte « Il a déjà été utilisé ou annulé. Demande à la personne de t&#39;en générer un nouveau depuis son application Candice. » ; lien « Retour à l&#39;accueil → ».</li>
+</ul>
+</li>
+<li><strong>Si sans compte</strong> (lien valide) :<ul>
+<li>Sur-titre : « Fiche partagée »</li>
+<li>Titre : « {prénom} partage sa fiche avec toi. »</li>
+<li>Texte : « Sur Candice, chacun décrit ce qui lui fait vraiment plaisir — et choisit ce qu&#39;il partage. Crée ton compte pour découvrir ce que {prénom} a choisi de te confier, et remplis ta fiche à ton tour. »</li>
+<li>Bouton « Créer mon compte gratuit → » vers <code>/register?share_token=&lt;token&gt;&amp;de=&lt;prénom&gt;</code></li>
+<li>Lien « J&#39;ai déjà un compte » vers <code>/login?next=/rejoindre/&lt;token&gt;</code></li>
+</ul>
+</li>
+<li><strong>Si lien invalide/expiré (sans compte)</strong> : titre « Ce lien n&#39;est plus valide. » + « Il a déjà été utilisé ou annulé. Demande à la personne de t&#39;en générer un nouveau depuis son application Candice. »</li>
+</ul>
+<p>Sécurité : le token n&#39;est jamais stocké en clair (empreinte SHA-256, <code>hashShareToken</code>). Source : <code>src/app/rejoindre/[token]/page.tsx</code> (lignes 49-54).</p>
+<h3>15.c — Lien legacy : <code>/profil-partage/[token]</code> (table <code>share_links</code>)</h3>
+<p>Source : <code>src/app/profil-partage/[token]/page.tsx</code>.</p>
+<ul>
+<li>Cette page affiche <strong>TOUJOURS</strong> un message d&#39;expiration (elle ne lit que le nom de l&#39;expéditeur pour personnaliser le message ; elle ne rend jamais de questionnaire actif) :<ul>
+<li>Titre : « Ce lien n&#39;est plus valide. »</li>
+<li>Texte : « Demande à {prénom} de te renvoyer un nouveau lien d&#39;invitation depuis son application Candice. » (ou variante générique sans prénom)</li>
+</ul>
+</li>
+<li>C&#39;est un vestige de l&#39;ancien système <code>share_links</code> (voir §16). Non vérifié : aucun code observé ne génère de nouveaux liens <code>/profil-partage/</code>.</li>
+</ul>
+<hr>
+<h2>16. Proche sans compte (soumission publique)</h2>
+<h3>Système legacy <code>share_links</code> / <code>shared_profile_responses</code></h3>
+<p>Source : <code>src/app/api/shared-profile/complete/route.ts</code> et <code>src/app/api/shared-profile/complete</code> (autre route).</p>
+<ul>
+<li><code>POST /api/shared-profile/complete</code> (dans <code>route.ts</code> sans auth requise) prend <code>{ token, response_data }</code>, vérifie le token dans <code>share_links</code>, et enregistre les réponses dans <code>shared_profile_responses</code> <strong>avec <code>user_id: null</code></strong> (donc sans compte). Utilise le client admin (contourne la RLS). Source : <code>src/app/api/shared-profile/complete/route.ts</code> (le fichier lu enregistre les réponses).</li>
+<li>Une autre variante <code>src/app/api/shared-profile/complete/route.ts</code> (celle lue avec <code>getUser</code>) attribue 500 points à un utilisateur connecté qui a complété une fiche partagée et notifie l&#39;expéditeur. <strong>Objet de l&#39;email : « La fiche de ton proche est complète ✦ »</strong>, CTA « Voir les suggestions → », mention « +500 points ».</li>
+</ul>
+<p>Note : deux comportements coexistent sous le même chemin <code>shared-profile/complete</code> selon la version du fichier ; le lexique du projet indique que ce système est <strong>déprécié</strong> au profit du parcours <code>/invite</code> + compte.</p>
+<h3>Mode incognito (pilote qui remplit pour le proche, sans le prévenir)</h3>
+<p>Voir §17. Dans ce mode, le proche n&#39;a jamais de compte ni de notification.</p>
+<hr>
+<h2>17. Mode incognito (pilote)</h2>
+<p>Accès : <code>/contacts/new</code> → choix « Mode incognito ».
+Source : <code>src/components/contacts/NewContactFlow.tsx</code> + <code>src/app/api/contacts/create-incognito/route.ts</code>.</p>
+<h3>Écran de choix de mode (verbatim)</h3>
+<p>Source : <code>NewContactFlow.tsx</code> (lignes 366-427).</p>
+<ul>
+<li>Carte « <strong>Mode standard</strong> » (sous-titre « recommandé ») : « Tu invites le proche, il remplit lui-même son questionnaire. Il découvre Candice avec une analyse personnelle à la fin. »</li>
+<li>Carte « <strong>Mode incognito</strong> » : « Tu remplis tout toi-même, ton proche n&#39;est pas informé. Idéal quand tu veux gérer les attentions de A à Z. »</li>
+</ul>
+<h3>Formulaire incognito (verbatim)</h3>
+<p>En-tête après sélection : « Mode incognito » / « Renseigne les informations essentielles. Ton proche ne sera pas notifié. »</p>
+<ul>
+<li><strong>Étape 0</strong> : « Prénom * » (placeholder « Ex : Sophie ») ; « Pronom » (Elle (féminin) / Il (masculin) / Iel (non-binaire) / Je préfère ne pas préciser) ; bouton « Suivant → ».</li>
+<li><strong>Étape 1</strong> : « Et aujourd&#39;hui, votre relation avec {name} ressemble plutôt à… » / « Uniquement visible par vous. Candice adapte ses idées en conséquence. » avec 6 registres (verbatim, lignes 56-63) :<ul>
+<li>« Très proche et fluide » — « Vous pouvez vous parler naturellement, sans trop réfléchir. »</li>
+<li>« Proche, mais prise dans le quotidien » — « Le lien est là, mais il manque parfois de temps ou d&#39;attention. »</li>
+<li>« Importante, mais un peu distante » — « Vous tenez l&#39;un à l&#39;autre, mais le lien n&#39;est pas toujours nourri. »</li>
+<li>« Compliquée ou fragile » — « Il faut éviter les attentions trop intimes ou trop émotionnelles. » (ouvre un champ de contexte facultatif)</li>
+<li>« Plutôt formelle ou occasionnelle » — « Les attentions doivent rester simples, sobres et adaptées. »</li>
+<li>« Je ne sais pas trop » — « Candice commencera doucement, sans supposer trop d&#39;intimité. »</li>
+</ul>
+</li>
+<li><strong>Étape 2</strong> : « Relation * » (menu), « Téléphone * » (placeholder « Ex : +33 6 12 34 56 78 »), « Adresse postale (pour les livraisons) » ; encart juridique : « En saisissant ces informations, tu agis comme mandataire de ton proche pour les attentions à venir. <strong>Voir nos conditions.</strong> » ; bouton « Créer le profil incognito → » (pendant : « Création… »).</li>
+</ul>
+<h3>Route de création</h3>
+<p>Source : <code>src/app/api/contacts/create-incognito/route.ts</code>.</p>
+<ul>
+<li>Exige une session — sinon 401.</li>
+<li>Champs obligatoires : <code>name</code>, <code>relationship</code> (valide), <code>phone</code> — sinon 400 (« Nom requis » / « Relation invalide » / « Téléphone requis »).</li>
+<li>Anti-doublon : clé d&#39;idempotence + garde « même nom créé dans les 30 dernières secondes ».</li>
+<li>Insère dans <code>contacts</code> (sans email). Si registre « compliquée_fragile » + contexte fourni → note dans <code>context_journal</code>.</li>
+<li>Renvoie <code>{ contactId }</code> → l&#39;utilisateur est redirigé vers <code>/contacts/&lt;contactId&gt;</code>.</li>
+</ul>
+<hr>
+<h2>18. Récapitulatif des tables &amp; mécanismes d&#39;accès</h2>
+<table>
+<thead>
+<tr>
+<th>Mécanisme</th>
+<th>Table(s)</th>
+<th>Compte requis ?</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Porte bêta</td>
+<td>(cookie <code>beta_access</code>)</td>
+<td>non</td>
+<td><code>api/beta-access/route.ts</code></td>
+</tr>
+<tr>
+<td>Inscription / connexion</td>
+<td>Supabase Auth + <code>my_profile</code></td>
+<td>—</td>
+<td><code>register/</code>, <code>login/</code></td>
+</tr>
+<tr>
+<td>Invitation proche</td>
+<td><code>invite_links</code>, <code>contacts.proche_user_id</code></td>
+<td>oui (à la fin)</td>
+<td><code>api/invite/*</code></td>
+</tr>
+<tr>
+<td>Partage de sa fiche</td>
+<td><code>profile_share_links</code>, <code>contact_consents</code></td>
+<td>oui</td>
+<td><code>rejoindre/</code>, <code>api/share-link/*</code></td>
+</tr>
+<tr>
+<td>Demande de voir une fiche</td>
+<td><code>contact_consents</code> (kind <code>profile_view</code>)</td>
+<td>oui (+ questionnaire 5/5)</td>
+<td><code>api/profile-view/*</code></td>
+</tr>
+<tr>
+<td>Partage legacy</td>
+<td><code>share_links</code>, <code>shared_profile_responses</code></td>
+<td>non (déprécié)</td>
+<td><code>api/shared-profile/*</code></td>
+</tr>
+<tr>
+<td>Incognito</td>
+<td><code>contacts</code>, <code>context_journal</code></td>
+<td>oui (pilote)</td>
+<td><code>api/contacts/create-incognito</code></td>
+</tr>
+<tr>
+<td>Suppression / pause</td>
+<td><code>my_profile</code>, <code>account_lifecycle_events</code></td>
+<td>oui</td>
+<td><code>api/account/*</code>, <code>api/subscription/*</code>, <code>api/cron/lifecycle-check</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>⚠ RAPPORT D&#39;HYPOTHÈSES</h2>
+<p><strong>A. ZONES DE FLOU</strong></p>
+<ul>
+<li>Le chemin <code>src/app/api/shared-profile/complete/route.ts</code> présente deux logiques (une sans auth qui écrit <code>shared_profile_responses</code>, une avec auth qui attribue 500 points). J&#39;ai décrit les deux telles que lues ; je n&#39;ai pas tranché laquelle est active en prod (dépend de la version déployée). Alternative possible : une seule est réellement câblée.</li>
+<li>La page <code>/profil-partage/[token]</code> affiche toujours « lien invalide » dans le code lu ; je l&#39;interprète comme un vestige. Non vérifié : un flux qui rendrait un questionnaire actif via ce chemin.</li>
+</ul>
+<p><strong>B. DÉCISIONS PRISES SEUL</strong></p>
+<ul>
+<li>J&#39;ai classé <code>/invite</code>, <code>/rejoindre</code>, <code>/profil-partage</code> en trois « systèmes de liens » distincts pour clarifier ; cette catégorisation est ma structuration, pas un libellé du code.</li>
+</ul>
+<p><strong>C. LAISSÉ EN SUSPENS</strong></p>
+<ul>
+<li>Le composant <code>OnboardingFlow</code> (<code>src/components/onboarding/OnboardingFlow.tsx</code>) n&#39;est importé nulle part (grep sans résultat hors dossier onboarding) — décrit dans le fichier 05 comme composant existant mais non monté ; le tour d&#39;accueil est explicitement « neutralisé » dans le dashboard.</li>
+<li>Gabarit de l&#39;email de confirmation d&#39;adresse : géré par Supabase (hors repo), non citable verbatim.</li>
+<li>Je n&#39;ai pas ouvert <code>src/app/api/emails/reminder/route.ts</code> et <code>reminder-suggestion/route.ts</code> en entier (seuls les objets sont relevés : « Votre fiche est incomplète. » et objet dynamique de <code>profile-complete</code> « Tout est prêt pour {prénom}. »).</li>
+</ul>
+<p><strong>D. À VÉRIFIER PAR ESTELLE</strong></p>
+<ul>
+<li>Le mot de passe bêta par défaut est codé en dur (<code>Candice2026!</code>) si la variable d&#39;environnement <code>BETA_PASSWORD</code> n&#39;est pas définie — à confirmer que la variable est bien définie en prod.</li>
+<li>L&#39;absence TOTALE de parcours « mot de passe oublié » est-elle voulue en l&#39;état ?</li>
+</ul>
+<p><strong>E. MIGRATIONS / BUILD</strong></p>
+<ul>
+<li>Lecture seule : aucune migration, aucun build lancé (tâche de cartographie).</li>
+</ul>
+</body></html>

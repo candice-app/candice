@@ -1,0 +1,127 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>00 — Index & chiffres bruts</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>Cartographie complète de Candice — Index</h1>
+<blockquote>
+<p>Document de référence, purement descriptif. Il traduit en langage humain ce qui existe réellement dans le code et dans la base, tel quel, sans recommandation (sauf les chapitres 16 et 17 qui listent des constats factuels, toujours sans recommandation).
+Généré le 2026-09-22. Lecture seule : aucun code ni aucune donnée modifiés.</p>
+</blockquote>
+<h2>Note sur la base de données interrogée</h2>
+<p>Tous les volumes cités dans ces chapitres proviennent de la <strong>base réelle du projet</strong>, atteinte via la variable d&#39;environnement <code>SUPABASE_DB_URL</code> (le même accès a renvoyé, par exemple, <code>discovery_questions</code> = 70 lignes, <code>discovery_sessions</code> = 57, <code>cadence_log</code> = 31, <code>profile_analysis</code> = 2, <code>contacts</code> = 3). Ce n&#39;est <strong>pas</strong> un environnement de test distinct. La base est en <strong>état pré-lancement</strong> : certaines tables sont peuplées, beaucoup d&#39;autres sont encore vides (0 ligne). Quand un chapitre indique « 0 ligne », cela signifie que la fonctionnalité n&#39;a pas encore produit de données, pas que la base serait fausse ou vide dans son ensemble.</p>
+<h2>Chiffres bruts</h2>
+<table>
+<thead>
+<tr>
+<th>Élément</th>
+<th>Nombre</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sauvegardes Git (commits)</td>
+<td><strong>309</strong></td>
+<td><code>git log</code></td>
+</tr>
+<tr>
+<td>Pages de l&#39;application</td>
+<td><strong>48</strong></td>
+<td><code>find src/app -name page.tsx</code></td>
+</tr>
+<tr>
+<td>Routes API</td>
+<td><strong>87</strong></td>
+<td><code>find src/app/api -name route.ts</code></td>
+</tr>
+<tr>
+<td>Composants React</td>
+<td><strong>100</strong></td>
+<td><code>find src/components -name *.tsx</code></td>
+</tr>
+<tr>
+<td>Tables en base (schéma public)</td>
+<td><strong>42</strong></td>
+<td>(base : pg_tables)</td>
+</tr>
+<tr>
+<td>Fichiers de migration</td>
+<td><strong>78</strong></td>
+<td><code>supabase-migration-*.sql</code></td>
+</tr>
+<tr>
+<td>Questions du questionnaire initial</td>
+<td><strong>26 items à réponse contrainte obligatoires</strong> + ~31 champs optionnels (singularité + pratique)</td>
+<td>(fichier : src/lib + composants questionnaire)</td>
+</tr>
+<tr>
+<td>Micro-questions Discovery en banque</td>
+<td><strong>70</strong> (68 actives, 2 archivées)</td>
+<td>(base : discovery_questions)</td>
+</tr>
+<tr>
+<td>Emails transactionnels</td>
+<td><strong>14</strong> envois distincts</td>
+<td><code>grep resend.emails.send</code></td>
+</tr>
+<tr>
+<td>Tâches automatiques (crons)</td>
+<td><strong>4</strong></td>
+<td>(fichier : vercel.json)</td>
+</tr>
+<tr>
+<td>Tests automatisés</td>
+<td><strong>165</strong> tests dans <strong>10</strong> fichiers</td>
+<td><code>vitest run</code></td>
+</tr>
+</tbody></table>
+<h2>Sommaire des chapitres</h2>
+<ul>
+<li><strong>00-index.md</strong> — ce fichier : sommaire + chiffres bruts.</li>
+<li><strong>01-historique.md</strong> — chronologie depuis le premier commit : les 17 lots successifs, dates, apports, commits.</li>
+<li><strong>02-stack-comptes-outils.md</strong> — chaque service externe (Vercel, Supabase, Anthropic, Resend, Web Push…), les variables d&#39;environnement (noms seulement), les dépendances et leur rôle.</li>
+<li><strong>03-pages.md</strong> — les 48 pages, une par une : rôle, accès, liens, textes verbatim.</li>
+<li><strong>04-acces-authentification.md</strong> — toutes les modalités d&#39;accès et d&#39;authentification, écrans, emails, erreurs.</li>
+<li><strong>05-parcours.md</strong> — chaque typologie d&#39;utilisateur, étape par étape.</li>
+<li><strong>06-questionnaire-initial.md</strong> — toutes les questions verbatim, dans l&#39;ordre, options, stockage.</li>
+<li><strong>07-analyse-profil.md</strong> — le pipeline d&#39;analyse, déterministe vs LLM, prompts verbatim, sorties.</li>
+<li><strong>08-micro-questions.md</strong> — la banque des 70 micro-questions verbatim, sélection, statuts, jauge, incitations.</li>
+<li><strong>09-recommandations.md</strong> — moteur reco, signaux, suggestions proactives, prompts verbatim, ce qui est branché ou non.</li>
+<li><strong>10-proches-partage.md</strong> — ajout d&#39;un proche, fiches, espace proche et ses onglets, partage, consentements, visibilité.</li>
+<li><strong>11-wishlist-carnet.md</strong> — wishlist, carnet d&#39;envies, réservation invisible, refus, attentions écartées.</li>
+<li><strong>12-emails-notifications.md</strong> — chaque email : déclencheur, destinataire, objet et corps verbatim, traçabilité.</li>
+<li><strong>13-automatismes.md</strong> — chaque cron : fréquence, rôle, coût, garde-fous.</li>
+<li><strong>14-base-de-donnees.md</strong> — chaque table : rôle, colonnes, volume, règles d&#39;accès en clair, tables mortes.</li>
+<li><strong>15-api.md</strong> — les 87 routes par domaine : accès, rôle, client utilisateur ou admin, validation.</li>
+<li><strong>16-securite.md</strong> — constats de sécurité factuels, avec gravité. Sans recommandation.</li>
+<li><strong>17-dette-et-incoherences.md</strong> — code mort, TODO, doublons, incohérences, colonnes vides. Sans recommandation.</li>
+<li><strong>18-tests.md</strong> — ce qui est testé, ce qui ne l&#39;est pas.</li>
+<li><strong>CARTOGRAPHIE_COMPLETE.md</strong> — les 19 chapitres assemblés en un seul fichier, pour impression.</li>
+</ul>
+</body></html>

@@ -3,6 +3,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   asContactId,
+  contactAbout,
   asSubjectId,
   asUserId,
   createProfileEvidence,
@@ -17,7 +18,7 @@ import { evidenceToRow, sourceToRow } from '../rows';
 import { consolidateJournal } from '../consolidate-journal';
 import { persistKnowledge, PersistError, type WriteClient } from '../persist';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 const base = {
   ...scope,
   source_id: 'src1',
@@ -43,7 +44,8 @@ describe('sourceToRow — verbatim, identité, assertion dérivée', () => {
     });
     const row = sourceToRow(src);
     expect(row.id).toBe('src1');
-    expect(row.contact_id).toBe('c1');
+    expect(row.about_kind).toBe('contact');
+    expect(row.about_id).toBe('c1');
     expect(row.user_id).toBe('u1');
     expect(row.raw_text).toBe('A'.repeat(300) + ' réponse non tronquée'); // verbatim
     expect(row.question_text).toBe('Question exacte ?');
@@ -63,7 +65,7 @@ describe('evidenceToRow — chaque famille ne remplit QUE ses colonnes (miroir d
     expect(r.subject_id).toBeNull();
     expect(r.relation).toBeNull();
     // 10 dimensions d'agrégation présentes
-    expect([r.contact_id, r.user_id, r.target_family, r.target_construct, r.context, r.source_id, r.assertion_status, r.ontology_version].every(Boolean)).toBe(true);
+    expect([r.about_kind, r.about_id, r.user_id, r.target_family, r.target_construct, r.context, r.source_id, r.assertion_status, r.ontology_version].every(Boolean)).toBe(true);
   });
   it('value XOR strength : NEED a strength, pas value', () => {
     const e: NeedEvidence = { ...base, evidence_id: 'n', target_family: 'NEED', target_construct: 'NEED_SUPPORT', strength: 'strong', context: 'distress' };

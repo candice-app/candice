@@ -1,0 +1,1043 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>03 — Pages de l'application</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>Cartographie Candice — 03. Les pages de l&#39;application</h1>
+<p>Ce document recense <strong>chaque page</strong> de l&#39;application (chaque fichier <code>page.tsx</code> dans <code>src/app</code>). Pour chacune : l&#39;URL, à quoi elle sert, qui peut y accéder, d&#39;où on y arrive, où elle mène, et les textes visibles copiés mot pour mot.</p>
+<p>Statuts employés : ✅ page complète et active · 🟡 placeholder / « bientôt » / partiellement neutralisé · ⚫ neutralisé (volontairement désactivé) · ❌ cassé/absent.</p>
+<hr>
+<h2>Règles d&#39;accès générales (source : <code>src/proxy.ts</code>)</h2>
+<p>Trois filtres s&#39;appliquent à toutes les pages, dans cet ordre (fichier : <code>src/proxy.ts</code>) :</p>
+<ol>
+<li><strong>Blocage desktop</strong> — sur un appareil non mobile/tablette, toute URL commençant par l&#39;un de ces préfixes est redirigée vers <code>/continuer-sur-telephone</code> (fichier : <code>src/proxy.ts</code>, <code>DESKTOP_GATED_PREFIXES</code>) :
+<code>/moi</code>, <code>/contacts</code>, <code>/parametres</code>, <code>/dashboard</code>, <code>/historique</code>, <code>/idees</code>, <code>/parler-a-candice</code>, <code>/partage</code>, <code>/profil/</code>.
+(Commentaire du code : <code>/profil/</code> vise <code>/profil/[id]</code> uniquement — <code>/profil-partage/</code> reste public.)</li>
+<li><strong>Barrière bêta</strong> — toute page exige un cookie <code>beta_access</code>, sinon redirection vers <code>/beta-access?from=...</code>. Seules exemptions : <code>/beta-access</code> et les routes API <code>/api/beta-access</code>, <code>/api/auth/callback</code> (fichier : <code>src/proxy.ts</code>, <code>BETA_EXEMPT_*</code>).</li>
+<li><strong>Auth middleware</strong> — les préfixes <code>/dashboard</code> et <code>/contacts</code> exigent une session, sinon redirection vers <code>/login</code> ; inversement <code>/login</code> et <code>/register</code>, si l&#39;on est déjà connecté, redirigent vers <code>/dashboard</code> (fichier : <code>src/proxy.ts</code>, <code>protectedRoutes</code> / <code>authRoutes</code>).</li>
+</ol>
+<p>En plus du middleware, <strong>presque toutes les pages de l&#39;espace connecté re-vérifient l&#39;authentification dans leur propre code</strong> (<code>supabase.auth.getUser()</code> ou <code>getAuthClaims()</code>), et redirigent vers <code>/login</code> si absente. C&#39;est signalé page par page ci-dessous.</p>
+<p>Note : il n&#39;existe <strong>aucun</strong> fichier <code>not-found.tsx</code> ni <code>error.tsx</code> dans <code>src/app</code> (vérifié). Les pages « lien invalide » sont des pages normales (<code>/partage/[id]</code>, <code>/profil-partage/[token]</code>) et les 404 réelles passent par <code>notFound()</code> de Next (page 404 par défaut).</p>
+<hr>
+<h1>GROUPE 1 — Marketing / public</h1>
+<p>Ces pages utilisent l&#39;en-tête <code>MarketingNav</code> (fichier : <code>src/components/layout/MarketingNav.tsx</code>) et le pied de page <code>MarketingFooter</code> (fichier : <code>src/components/layout/MarketingFooter.tsx</code>).</p>
+<p><strong>MarketingNav</strong> — liens de navigation (verbatim) : <code>Le concept</code> (/concept), <code>Fonctionnement</code> (/fonctionnement), <code>Tarifs</code> (/offre). Boutons à droite : <code>Se connecter</code> (/login), <code>Commencer</code> (/register). Menu mobile ajoute le bouton <code>Commencer gratuitement →</code>.</p>
+<p><strong>MarketingFooter</strong> — colonnes (verbatim) :</p>
+<ul>
+<li>Baseline : <code>Relational Operating System — Le premier copilote relationnel.</code></li>
+<li>Colonne <code>Produit</code> : <code>Fonctionnement</code>, <code>Tarifs</code>, <code>Le concept</code>, <code>Se connecter</code>.</li>
+<li>Colonne <code>Légal</code> : <code>Mentions légales</code>, <code>Conditions générales</code>, <code>Confidentialité</code>, <code>Politique cookies</code> (→ /confidentialite#cookies).</li>
+<li>Colonne <code>Support</code> : <code>Aide</code>, <code>Contact</code>, <code>candiceapp.hello@gmail.com</code>.</li>
+<li>Colonne <code>Marque</code> : <code>Suivez Candice — bientôt sur Instagram, LinkedIn et TikTok.</code></li>
+<li>Bas de page : <code>© 2026 Candice · Tous droits réservés</code></li>
+</ul>
+<hr>
+<h2>1.1 — Accueil <code>/</code> ✅</h2>
+<p>(fichier : <code>src/app/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : page d&#39;accueil marketing. Présente Candice comme « copilote relationnel », avec témoignages, aperçu de l&#39;app, timeline, exemples concrets, blocs « intelligence » et « profils », et appels à l&#39;action.</li>
+<li><strong>Accès</strong> : public (barrière bêta appliquée).</li>
+<li><strong>On y arrive depuis</strong> : le logo Wordmark (partout), les liens <code>/</code> du footer, les pages légales (« Retour à l&#39;accueil »).</li>
+<li><strong>Elle mène vers</strong> : <code>/register</code> (boutons « Commencer avec Candice », « Commencer »), <code>/concept</code> (« Explorer »), <code>/login</code> (« Se connecter »), <code>/confidentialite</code> (« Notre engagement → »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Titre héros : <code>Votre copilote relationnel.</code> (« relationnel. » en italique) ; sous-titre : <code>L&#39;attention juste, au bon moment.</code></li>
+<li>Boutons héros : <code>Commencer avec Candice</code>, <code>Explorer</code></li>
+<li>Intro 2 colonnes : <code>Vivez pleinement les moments qui comptent.</code> / <code>Candice s&#39;occupe du reste.</code> — <code>Candice apprend, anticipe et agit — pour que vos relations s&#39;approfondissent et que votre charge mentale disparaisse.</code></li>
+<li>Section témoignages, sur-titre : <code>Ça arrive à tout le monde.</code> ; cartes : <code>J&#39;ai pensé à son anniversaire toute la semaine. Puis j&#39;ai oublié.</code> (Julie, 38 ans — OUBLI) · <code>Je savais exactement quoi faire. Je ne l&#39;ai jamais fait.</code> (Thomas, 41 ans — MANQUE DE TEMPS) · <code>Je voulais faire plaisir. Je me suis trompé.</code> (Sophie, 29 ans — MAUVAISE IDÉE) · <code>Je voulais reprendre des nouvelles. Puis le temps est passé.</code> (Lucas, 38 ans — PROCRASTINATION)</li>
+<li>Aperçu app, titre : <code>Tout ce qui compte pour eux, réuni en un seul endroit.</code> ; sous-titre : <code>Pour ne plus jamais rien oublier. Pour ne plus jamais manquer un moment.</code></li>
+<li>Cartes d&#39;aperçu (en-têtes) : <code>MES PROCHES</code>, <code>SUGGESTIONS</code>, <code>SOUVENIRS</code>, <code>SOPHIE MARTIN</code> ; boutons factices : <code>+ Ajouter</code>, <code>Commander</code>, <code>Envoyer</code>, <code>Confirmer</code> ; libellés de bas de carte : <code>Liste de proches</code>, <code>Recommandations</code>, <code>Historique &amp; souvenirs</code>, <code>Fiche · KPIs · Matching</code> ; carte fiche : <code>Profil de réception</code>, KPI <code>GESTES / SATISFACTION / ANNIVERSAIRE / INFOS</code>.</li>
+<li>Timeline : <code>Candice grandit avec vous.</code> — <code>Dès la première information, Candice est utile. Plus vous l&#39;enrichissez, plus elle anticipe.</code> (jalons <code>1er proche</code> Léa / <code>2e proche</code> Maman / <code>3e proche</code> Paul avec descriptions).</li>
+<li>Exemples concrets, sur-titre <code>Des exemples concrets</code>, titre <code>Un réflexe qui devient une mémoire.</code> ; 3 cartes (<code>Votre grand-mère</code>, <code>Votre frère</code>, <code>Votre femme</code>) ; conclusion <code>C&#39;est ça, un copilote relationnel.</code></li>
+<li>Bloc intelligence, sur-titre <code>Intelligence</code>, titre <code>L&#39;intelligence derrière chaque attention.</code> ; sous-titre <code>Chaque détail enrichit sa compréhension. Chaque interaction l&#39;affine. Candice apprend vos relations — pas seulement vos contacts.</code> ; 4 colonnes : <code>Mémoire contextuelle</code>, <code>Suggestions IA</code>, <code>Confidentialité totale</code>, <code>Apprentissage continu</code>.</li>
+<li>Bloc profils, sur-titre <code>Pourquoi les profils changent tout</code>, titre <code>Un geste juste, c&#39;est un geste qui correspond à qui ils sont vraiment.</code> ; 3 cartes : <code>Chaque personne reçoit différemment</code>, <code>Les profils s&#39;affinent dans le temps</code>, <code>Ce que vous partagez reste entre vous</code> ; note bas + lien <code>Notre engagement →</code>.</li>
+<li>CTA final : <code>Prêt à faire mieux, sans porter plus ?</code> — <code>Commencez simplement. Candice s&#39;occupe du reste.</code> ; boutons <code>Commencer</code>, <code>Se connecter</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>1.2 — Le concept <code>/concept</code> ✅</h2>
+<p>(fichier : <code>src/app/concept/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : page marketing expliquant le concept en profondeur (le problème, ce qu&#39;est Candice, l&#39;exécution, l&#39;authenticité, la confidentialité).</li>
+<li><strong>Accès</strong> : public (bêta).</li>
+<li><strong>On y arrive depuis</strong> : MarketingNav (<code>Le concept</code>), footer (<code>Le concept</code>), bouton « Explorer » de l&#39;accueil.</li>
+<li><strong>Elle mène vers</strong> : <code>/register</code> (« Commencer avec Candice »), <code>/fonctionnement</code> (« Fonctionnement → »), <code>/confidentialite</code> (« Notre engagement confidentialité → »), <code>/login</code> (« Se connecter »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Sur-titre <code>Le concept</code> ; héros vertical : <code>Le travail.</code> / <code>La famille.</code> / <code>Les amis.</code> / <code>Le quotidien.</code></li>
+<li><code>Candice vous aide à ne plus laisser les attentions importantes se perdre au milieu du reste.</code></li>
+<li><code>Profils intelligents, mémoire relationnelle, recommandations personnalisées et exécution assistée : un copilote pour les personnes qui comptent vraiment.</code></li>
+<li>Boutons : <code>Commencer avec Candice</code>, <code>Fonctionnement →</code></li>
+<li>Section : <code>Les intentions existent déjà.</code> (+ 3 paragraphes) ; citation : <code>Candice garde ces intentions vivantes et vous aide à les transformer en actions — au bon moment, pour les bonnes personnes.</code></li>
+<li>Section fond sombre : <code>Un copilote relationnel intelligent.</code> + 4 blocs (<code>Une photo</code>, <code>Une conversation</code>, <code>Un moment important</code>, <code>Une mémoire partagée</code>).</li>
+<li>Section : <code>Candice commence à aider immédiatement.</code> ; citation <code>Comme un deuxième cerveau relationnel : Candice retient ce que vous n&#39;avez plus besoin de garder en tête.</code></li>
+<li>Section exécution : <code>Candice ne se contente pas de suggérer.</code> ; liste <code>Message.</code> / <code>Idée cadeau.</code> / <code>Réservation.</code> / <code>Livraison.</code> / <code>Rappel au bon moment.</code> ; <code>Candice prépare l&#39;action. Vous validez.</code> ; puis <code>Moins de charge mentale.</code> / <code>Moins d&#39;oublis.</code> / <code>Moins d&#39;hésitations.</code> / <code>Plus d&#39;attentions qui tombent juste.</code></li>
+<li>Mockup conversation : bulle <code>Pour l&#39;anniversaire de Sophie samedi, je propose un brunch chez Holybelly. Réservation prête pour deux à 11h30.</code> ; boutons <code>Valider</code> / <code>Modifier</code> ; <code>Candice prépare la suite…</code></li>
+<li>Section : <code>L&#39;attention reste la vôtre.</code> (+ paragraphes) ; <code>C&#39;est vous qui construisez les profils.</code> / <code>C&#39;est vous qui donnez les informations.</code> / <code>C&#39;est vous qui voulez faire plaisir.</code></li>
+<li>Section : <code>Certaines fiches se construisent à deux.</code> (+ texte).</li>
+<li>Section confidentialité : <code>Vous pouvez être honnête. Candice garde les détails.</code> ; <code>Vos données ne sont jamais vendues ni partagées avec des tiers.</code> ; lien <code>Notre engagement confidentialité →</code>.</li>
+<li>CTA final : <code>Les bonnes intentions existent déjà. Candice aide à les transformer en actions.</code> ; boutons <code>Commencer avec Candice</code>, <code>Se connecter</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>1.3 — Fonctionnement <code>/fonctionnement</code> ✅</h2>
+<p>(fichier : <code>src/app/fonctionnement/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : explique le fonctionnement en 3 étapes + situations de la vie réelle.</li>
+<li><strong>Accès</strong> : public (bêta).</li>
+<li><strong>On y arrive depuis</strong> : MarketingNav (<code>Fonctionnement</code>), footer (<code>Fonctionnement</code>), lien <code>Fonctionnement →</code> de /concept.</li>
+<li><strong>Elle mène vers</strong> : <code>/register</code> (« Essayer Candice gratuitement → »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Sur-titre <code>Fonctionnement</code> ; titre <code>Chaque détail compte. Candice s&#39;en souvient.</code> ; sous-titre <code>En trois étapes simples, Candice devient le copilote de vos relations les plus importantes.</code></li>
+<li>Étape <code>01</code> : <code>Tes proches racontent. Toi tu complètes.</code> (+ corps).</li>
+<li>Étape <code>02</code> : <code>Candice apprend et anticipe.</code> (+ corps).</li>
+<li>Étape <code>03</code> : <code>Tu valides en un clic.</code> (+ corps).</li>
+<li>Section : <code>Certaines fiches se construisent à deux.</code> (+ texte).</li>
+<li>Section <code>Dans la vraie vie</code> / <code>Candice agit dans toutes les situations.</code> ; 6 cartes : <code>Après un dîner</code>, <code>En balade</code>, <code>Une grande nouvelle</code>, <code>Un départ en voyage</code>, <code>Un proche seul</code>, <code>Une victoire à célébrer</code> (chacune avec émoji et texte).</li>
+<li>CTA : <code>Prêt à essayer ?</code> ; bouton <code>Essayer Candice gratuitement →</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>1.4 — Tarifs <code>/offre</code> ✅</h2>
+<p>(fichier : <code>src/app/offre/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : grille tarifaire à deux formules.</li>
+<li><strong>Accès</strong> : public (bêta).</li>
+<li><strong>On y arrive depuis</strong> : MarketingNav (<code>Tarifs</code>), footer (<code>Tarifs</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>/register</code> (deux boutons).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Sur-titre <code>Tarifs</code> ; titre <code>Simple. Transparent.</code></li>
+<li>Formule 1 : <code>Candice Essentiel</code> — <code>0€</code> — <code>Pour toujours</code> ; features : <code>2 proches</code>, <code>Suggestions personnalisées IA</code>, <code>Fiches partagées par lien</code>, <code>Accès à l&#39;application complète</code> ; bouton <code>Commencer gratuitement →</code>.</li>
+<li>Formule 2 : <code>Candice</code> — badge <code>14 jours offerts</code> — <code>9€</code> — <code>par mois · résiliable à tout moment</code> ; features : <code>Proches illimités</code>, <code>Suggestions avancées &amp; personnalisées</code>, <code>Exécution automatique des attentions</code>, <code>Accès prioritaire aux partenaires</code>, <code>Tout ce qui est inclus dans Essentiel</code> ; bouton <code>Essayer gratuitement — 14 jours →</code>.</li>
+</ul>
+</li>
+<li><strong>Note de cohérence</strong> : cette page annonce « 14 jours offerts / résiliable à tout moment » ; les autres surfaces annoncent « 1 mois offert » (voir /parametres/abonnement qui dit <code>1 mois d&#39;essai offert</code>, et les CGU qui parlent de <code>14 jours d&#39;essai gratuit</code>). Écart non résolu, signalé (non vérifié quelle version fait foi).</li>
+</ul>
+<h2>1.5 — Contact <code>/contact</code> ✅</h2>
+<p>(fichier : <code>src/app/contact/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : page de contact (e-mail).</li>
+<li><strong>Accès</strong> : public (bêta).</li>
+<li><strong>On y arrive depuis</strong> : footer (<code>Contact</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>mailto:candiceapp.hello@gmail.com</code>, <code>/</code> (« ← Retour à l&#39;accueil »).</li>
+<li><strong>Textes visibles (verbatim)</strong> : sur-titre <code>Contact</code> ; titre <code>Une question, une remarque ?</code> ; <code>Nous lisons chaque message. Réponse sous 48 h ouvrées.</code> ; lien e-mail <code>candiceapp.hello@gmail.com</code> ; <code>← Retour à l&#39;accueil</code>.</li>
+</ul>
+<hr>
+<h1>GROUPE 2 — Pages légales</h1>
+<p>Toutes utilisent MarketingNav + MarketingFooter, palette « terracotta » (ancienne DA, distincte du vert des pages marketing récentes).</p>
+<h2>2.1 — Mentions légales <code>/mentions-legales</code> ✅</h2>
+<p>(fichier : <code>src/app/mentions-legales/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : mentions légales (éditeur, hébergeur, propriété intellectuelle, marque, contact).</li>
+<li><strong>Accès</strong> : public (bêta).</li>
+<li><strong>On y arrive depuis</strong> : footer (<code>Mentions légales</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>mailto:candiceapp.hello@gmail.com</code>, <code>https://vercel.com</code>, <code>/</code> (« ← Retour à l&#39;accueil »).</li>
+<li><strong>Textes visibles (verbatim, extraits clés)</strong> :<ul>
+<li>Bandeau : <code>Document en cours de validation juridique. Version finale après revue avocat.</code></li>
+<li>Titre <code>Informations légales</code> ; <code>Conformément aux dispositions de la loi n° 2004-575 du 21 juin 2004 pour la confiance en l&#39;économie numérique.</code></li>
+<li>Sections : <code>Éditeur du site</code> (<code>Estelle Papillon</code> · <code>Adresse : à compléter après immatriculation de la société</code> · e-mail), <code>Directeur de la publication</code> (<code>Estelle Papillon</code>), <code>Hébergeur</code> (<code>Vercel Inc.</code>, 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis), <code>Propriété intellectuelle</code>, <code>Marque</code> (dépôt INPI), <code>Contact</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>2.2 — Conditions générales <code>/conditions-generales</code> ✅</h2>
+<p>(fichier : <code>src/app/conditions-generales/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : CGU en 14 sections.</li>
+<li><strong>Accès</strong> : public (bêta).</li>
+<li><strong>On y arrive depuis</strong> : footer (<code>Conditions générales</code>), formulaire d&#39;inscription (<code>conditions générales</code>), landing invite.</li>
+<li><strong>Elle mène vers</strong> : <code>/confidentialite</code> (« Politique de confidentialité »), <code>mailto:candiceapp.hello@gmail.com</code>.</li>
+<li><strong>Textes visibles (verbatim, extraits clés)</strong> :<ul>
+<li>Sur-titre <code>Conditions générales</code> ; titre <code>Conditions générales d&#39;utilisation</code> ; <code>Dernière mise à jour : 9 mai 2026 · Société Candice SAS</code>.</li>
+<li>Sections numérotées : <code>1. Objet</code>, <code>2. Description du service</code>, <code>3. Accès et inscription</code>, <code>4. Abonnement Premium et facturation</code>, <code>5. Programme de points</code>, <code>6. Données personnelles et IA</code>, <code>7. Liens de partage</code>, <code>8. Propriété intellectuelle</code>, <code>9. Comportements interdits</code>, <code>10. Suspension et résiliation</code>, <code>11. Limitation de responsabilité</code>, <code>12. Modifications des CGU</code>, <code>13. Droit applicable et litiges</code>, <code>14. Contact</code>.</li>
+<li>Mentions notables : formule <code>Premium</code> à <code>9 € / mois après 14 jours d&#39;essai gratuit</code> ; programme « Candice Points » ; médiation <code>ec.europa.eu/consumers/odr</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>2.3 — Politique de confidentialité <code>/confidentialite</code> ✅</h2>
+<p>(fichier : <code>src/app/confidentialite/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : politique de confidentialité RGPD (données collectées, cookies, services tiers, conservation, droits, hébergement).</li>
+<li><strong>Accès</strong> : public (bêta). Ancre <code>#cookies</code> (le footer lie vers <code>/confidentialite#cookies</code> mais la section cookies n&#39;a pas d&#39;<code>id=&quot;cookies&quot;</code> explicite — non vérifié si l&#39;ancre fonctionne).</li>
+<li><strong>On y arrive depuis</strong> : footer (<code>Confidentialité</code> + <code>Politique cookies</code>), CGU, formulaire inscription, /concept, / (accueil).</li>
+<li><strong>Elle mène vers</strong> : liens externes Supabase/Resend/Vercel/CNIL, <code>mailto:candiceapp.hello@gmail.com</code>, <code>/</code> (« ← Retour à l&#39;accueil »).</li>
+<li><strong>Textes visibles (verbatim, extraits clés)</strong> :<ul>
+<li>Sur-titre <code>Légal</code> ; titre <code>Politique de confidentialité</code> ; <code>Dernière mise à jour : mai 2026 · Responsable du traitement : Candice — candiceapp.hello@gmail.com</code>.</li>
+<li>Sections : <code>Notre engagement</code>, <code>Données collectées</code>, <code>Cookies et traceurs</code> (3 catégories : <code>Cookies nécessaires</code> (Toujours actifs), <code>Cookies analytiques</code> (Si acceptés), <code>Cookies marketing</code> (Si acceptés — <code>Aucun cookie marketing actif à ce jour.</code>)), <code>Services tiers utilisés</code> (Supabase, Resend, Vercel, <code>Anthropic Claude API</code>), <code>Durée de conservation</code>, <code>Vos droits (RGPD)</code>, <code>Vente de données — zéro</code>, <code>Hébergement et localisation</code> (Irlande eu-west-1), <code>Contact</code>.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1>GROUPE 3 — Authentification &amp; accès</h1>
+<h2>3.1 — Connexion <code>/login</code> ✅</h2>
+<p>(fichier : <code>src/app/login/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : formulaire de connexion (e-mail + mot de passe). Redirige vers <code>next</code> (chemin interne) ou <code>/dashboard</code> après succès.</li>
+<li><strong>Accès</strong> : public. Si déjà connecté → redirection <code>/dashboard</code> (middleware).</li>
+<li><strong>On y arrive depuis</strong> : MarketingNav / footer (<code>Se connecter</code>), lien « Se connecter » de l&#39;accueil et /concept, lien « Déjà un compte ? Se connecter » de /register, et de nombreuses pages protégées via <code>?next=...</code> (fiche partagée, rejoindre, partage, etc.).</li>
+<li><strong>Elle mène vers</strong> : <code>/register</code> (« S&#39;inscrire »), la destination <code>next</code>, <code>/</code> (logo).</li>
+<li><strong>Textes visibles (verbatim)</strong> : logo Wordmark ; titre <code>Bon retour.</code> ; sous-titre <code>Connectez-vous à votre compte</code> ; champs <code>E-mail</code>, <code>Mot de passe</code> ; bouton <code>Se connecter</code> / état <code>Connexion en cours…</code> ; erreur <code>E-mail ou mot de passe incorrect.</code> ; <code>Pas encore de compte ? S&#39;inscrire</code>.</li>
+</ul>
+<h2>3.2 — Inscription <code>/register</code> ✅</h2>
+<p>(fichier : <code>src/app/register/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : création de compte durcie (prénom, @identifiant en temps réel, e-mail, téléphone FR optionnel, mot de passe ≥ 8, CGU). Gère les jetons <code>invite_token</code> (→ questionnaire) et <code>share_token</code> (→ /rejoindre). Écran de confirmation d&#39;e-mail ou écran d&#39;échec d&#39;envoi.</li>
+<li><strong>Accès</strong> : public. Si déjà connecté → <code>/dashboard</code> (middleware).</li>
+<li><strong>On y arrive depuis</strong> : MarketingNav / footer boutons (<code>Commencer</code>, <code>Commencer gratuitement →</code>), tous les CTA marketing, landing invite (<code>/register?invite_token=...</code>), landing rejoindre (<code>/register?share_token=...&amp;de=...</code>).</li>
+<li><strong>Elle mène vers</strong> : la destination (questionnaire / rejoindre / dashboard), <code>/login</code>, <code>/conditions-generales</code>, <code>/confidentialite</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Titre <code>Créer un compte.</code> ; sous-titre <code>Quelques secondes suffisent</code>.</li>
+<li>Champs : <code>Prénom</code>, <code>Identifiant</code> (préfixe <code>@</code>, indice <code>Unique, comme sur Instagram — c&#39;est lui que tes proches saisiront pour te trouver.</code> / <code>Disponible.</code>), <code>E-mail</code>, <code>Téléphone (optionnel)</code>, <code>Mot de passe</code> (indice <code>8 caractères minimum.</code>).</li>
+<li>CGU : <code>J&#39;accepte les conditions générales et la politique de confidentialité</code>.</li>
+<li>Bouton <code>Créer un compte</code> / <code>Création en cours…</code>.</li>
+<li>Erreurs (verbatim) : <code>Ton prénom est nécessaire.</code>, <code>Adresse email invalide.</code>, <code>8 caractères minimum.</code>, <code>Numéro français invalide (ex. 06 12 34 56 78).</code>, <code>Cet identifiant est déjà pris.</code>, <code>Tu dois accepter les conditions générales pour continuer.</code>, <code>Un compte existe déjà avec cet e-mail. Se connecter</code>, <code>Trop de tentatives. Réessaie dans un instant.</code>, <code>Une erreur est survenue. Réessaie dans un instant.</code></li>
+<li>Écran succès : <code>Ton compte est créé.</code> — <code>Va voir ta boîte mail pour confirmer ton adresse</code> (+ variante <code>— puis tu découvriras ce que {prénom} a partagé avec toi.</code>) ; <code>Rien reçu ? Regarde tes indésirables — l&#39;email vient de candice.app.</code></li>
+<li>Écran échec d&#39;envoi : <code>L&#39;email n&#39;a pas pu partir.</code> — <code>Réessaie dans un instant.</code> ; bouton <code>Renvoyer l&#39;email</code> / <code>Envoi…</code>.</li>
+<li><code>Déjà un compte ? Se connecter</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>3.3 — Accès bêta <code>/beta-access</code> ✅</h2>
+<p>(fichier : <code>src/app/beta-access/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : porte d&#39;entrée bêta fermée — un mot de passe pose le cookie <code>beta_access</code> puis renvoie vers <code>from</code>.</li>
+<li><strong>Accès</strong> : public, <strong>seule page exemptée de la barrière bêta</strong>.</li>
+<li><strong>On y arrive depuis</strong> : redirection automatique du proxy pour toute page sans cookie bêta (<code>/beta-access?from=&lt;page demandée&gt;</code>).</li>
+<li><strong>Elle mène vers</strong> : la page <code>from</code> (défaut <code>/dashboard</code>) après validation.</li>
+<li><strong>Textes visibles (verbatim)</strong> : logo <code>candice</code> ; titre <code>Accès bêta privé</code> ; <code>Candice est en accès bêta fermé. Entre le mot de passe pour continuer.</code> ; placeholder <code>Mot de passe</code> ; bouton <code>Accéder →</code> / <code>Vérification…</code> ; erreurs <code>Mot de passe incorrect.</code> / <code>Une erreur est survenue. Réessaie.</code> ; pied <code>Candice · Accès bêta privé</code>.</li>
+</ul>
+<hr>
+<h1>GROUPE 4 — Pages utilitaires / techniques</h1>
+<h2>4.1 — Continuer sur téléphone <code>/continuer-sur-telephone</code> ✅</h2>
+<p>(fichier : <code>src/app/continuer-sur-telephone/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : écran affiché quand on ouvre une page « mobile only » sur ordinateur ; propose un QR code vers l&#39;URL de l&#39;app.</li>
+<li><strong>Accès</strong> : public (bêta) ; c&#39;est la cible de la redirection desktop.</li>
+<li><strong>On y arrive depuis</strong> : redirection automatique du proxy quand un desktop tente une route de <code>DESKTOP_GATED_PREFIXES</code>.</li>
+<li><strong>Elle mène vers</strong> : <code>/</code> (logo) ; le QR code pointe vers <code>window.location.origin</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> : titre <code>Continue sur ton téléphone</code> ; <code>Candice s&#39;ouvre sur mobile. Scanne ce code depuis ton téléphone pour accéder à ton espace.</code> ; <code>Ou tape {url} dans ton navigateur mobile.</code></li>
+</ul>
+<h2>4.2 — Aperçu design <code>/design-preview</code> 🟡 (dev only)</h2>
+<p>(fichier : <code>src/app/design-preview/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : galerie interne des composants UI V4 (Brand, Orb, BottomNav, boutons, cartes, chips, jauges, radar, donut, icônes…) pour comparaison visuelle avec la maquette.</li>
+<li><strong>Accès</strong> : renvoie <code>notFound()</code> en production (<code>if (process.env.NODE_ENV === &quot;production&quot;) notFound();</code>). Accessible uniquement en développement.</li>
+<li><strong>On y arrive depuis</strong> : aucun lien entrant (route de développement, non liée).</li>
+<li><strong>Elle mène vers</strong> : rien (page vitrine statique).</li>
+<li><strong>Textes visibles (verbatim, extraits)</strong> : titre <code>Candice — design preview V4.</code> ; <code>Comparer avec design/redisign/Candice_Redesign_Mockups_v4.html. Dev only.</code> ; libellés de sections comme <code>Brand · .brand</code>, <code>Orb · .orb</code>, <code>ThinkingOrb · .think-orb</code> (<code>Candice réfléchit…</code>), boutons de démo <code>Voir mon idée pour lui</code>, <code>← Retour</code>, <code>Continuer ma fiche</code>, panneau <code>À soutenir</code> / <code>Sophie traverse une période compliquée</code>, etc.</li>
+</ul>
+<hr>
+<h1>GROUPE 5 — Espace pilote : tableau de bord</h1>
+<h2>5.1 — Tableau de bord <code>/dashboard</code> ✅</h2>
+<p>(fichier : <code>src/app/dashboard/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : accueil de l&#39;app connectée. Salutation datée, ligne de stats (proches à soutenir / dates à venir / profils à affiner), carte « À soutenir » (suggestion proactive prioritaire), « À faire aujourd&#39;hui » (dates proches), « On prend des nouvelles ? », « Tu m&#39;as dit » (notes récentes), entrée recherche, lien archives. Utilise <code>V4Shell</code> (nav basse), bannière de pause et invite aux notifications push.</li>
+<li><strong>Accès</strong> : connecté (protégé middleware <code>/dashboard</code> + <code>getUser()</code> interne → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : redirection post-connexion / post-inscription ; nav basse V4Shell (onglet accueil) ; nombreux « Retour à l&#39;accueil ».</li>
+<li><strong>Elle mène vers</strong> : <code>/contacts/[id]</code> (voir attention / dates / mettre à jour), <code>/parler-a-candice</code> (« Me raconter »), <code>/contacts/new</code> (« Ajouter un proche → »), <code>/recherche</code> (« Quelqu&#39;un est déjà sur Candice ? Demande à voir sa fiche → »), <code>/dashboard/archives</code>, <code>/moi/partage/demandes/[id]</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Date en capitales + <code>Bonjour, {prénom}</code> ; sous-titre <code>Ce qu&#39;il ne faut pas laisser passer.</code></li>
+<li>Stats : <code>proche à soutenir</code> / <code>proches à soutenir</code>, <code>date à venir</code> / <code>dates à venir</code>, <code>profil à affiner</code> / <code>profils à affiner</code>.</li>
+<li>Carte proactive : badge <code>À soutenir</code> ; boutons <code>Voir l&#39;attention</code>, <code>Déjà fait</code>.</li>
+<li>Divider <code>À faire aujourd&#39;hui</code> ; sous-libellés <code>Aujourd&#39;hui</code> / <code>Demain</code> / <code>Dans {n} jours</code> ; format <code>{label} de {prénom}</code>.</li>
+<li>Divider <code>On prend des nouvelles ?</code> ; carte <code>Comment vas-tu, {prénom} ?</code> — <code>Quelques mots, et j&#39;ajuste.</code> — bouton <code>Me raconter</code> ; carte <code>Des nouvelles de {prénom} ?</code> — bouton <code>Mettre à jour</code>.</li>
+<li>Divider <code>Tu m&#39;as dit</code> ; lien <code>Transformer en attention →</code>.</li>
+<li>Vide : bouton <code>Ajouter un proche →</code>.</li>
+<li>Entrée recherche : <code>Quelqu&#39;un est déjà sur Candice ? Demande à voir sa fiche →</code>.</li>
+<li>Archives : <code>{n} contact archivé →</code> / <code>{n} contacts archivés →</code>.</li>
+</ul>
+</li>
+<li><strong>Note</strong> : le « tour d&#39;accueil » est neutralisé (commentaire du code : violation DA + interception des taps).</li>
+</ul>
+<h2>5.2 — Contacts archivés <code>/dashboard/archives</code> ✅</h2>
+<p>(fichier : <code>src/app/dashboard/archives/page.tsx</code> ; liste via <code>ArchivesClient</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : liste des contacts archivés. Utilise <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/dashboard</code> (lien « {n} contacts archivés → »).</li>
+<li><strong>Elle mène vers</strong> : <code>/dashboard</code> (« ← Retour »).</li>
+<li><strong>Textes visibles (verbatim)</strong> : sur-titre <code>Archivés</code> ; titre <code>Contacts archivés</code> ; lien <code>← Retour</code>. (Le contenu de la liste est rendu par <code>ArchivesClient</code> — hors de ce fichier.)</li>
+</ul>
+<hr>
+<h1>GROUPE 6 — Espace pilote : ma fiche (/moi)</h1>
+<h2>6.1 — Ma fiche <code>/moi</code> ✅</h2>
+<p>(fichier : <code>src/app/moi/page.tsx</code> ; rendu par <code>ProfileV2</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : fiche profil du pilote (vue « Profil V2 », maquette gelée). Affiche analyse + scores agrégés + faits pratiques, jamais les réponses brutes. Génère l&#39;analyse au montage si nécessaire. Propose la modale de genre grammatical si absent. État vide si pas encore de profil.</li>
+<li><strong>Accès</strong> : connecté (<code>getAuthClaims()</code> → <code>/login</code>). Desktop-gated. Onglet « profil » de la nav V4.</li>
+<li><strong>On y arrive depuis</strong> : nav basse V4Shell (onglet profil), redirection <code>/moi/resultats</code>, liens « ← Ma fiche » de /moi/partage, « Retour à ma fiche » des demandes, aperçu « Fermer ».</li>
+<li><strong>Elle mène vers</strong> : <code>/moi/questionnaire</code> (état vide via <code>ResumePrompt</code>), <code>/moi/partage</code>, <code>/moi/partage/apercu</code>, <code>/moi/wishlist</code>, <code>/moi/discovery</code> (via les composants ProfileV2 / nudges), <code>/</code> (« Retour au site »), déconnexion (<code>LogoutButton</code>).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>État vide : <code>Réponds à quelques questions — tes proches pourront consulter ta fiche pour mieux prendre soin de toi.</code></li>
+<li>Pied : <code>Retour au site</code> (→ <code>/</code>) + bouton de déconnexion.</li>
+<li>(Le gros du contenu — résumé, podium, sections, faits — est rendu par <code>ProfileV2</code>, hors de ce fichier.)</li>
+</ul>
+</li>
+</ul>
+<h2>6.2 — Questionnaire personnel <code>/moi/questionnaire</code> ✅</h2>
+<p>(fichier : <code>src/app/moi/questionnaire/page.tsx</code> ; flux via <code>QuestionnaireFlow</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : questionnaire du pilote pour lui-même. Gère <code>?invite_token=</code> (récupère le prénom du pilote invitant depuis <code>invite_links</code>). <code>DashboardShell</code> sans nav (<code>noNav</code>).</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/moi</code> (état vide), <code>/recherche</code> et <code>/moi/partage</code> (« Reprendre mon questionnaire → »), <code>/fiche/[consentId]</code> (« Remplir mon questionnaire → »), lien de confirmation e-mail (<code>/moi/questionnaire?invite_token=...</code>).</li>
+<li><strong>Elle mène vers</strong> : selon le flux (contenu par <code>QuestionnaireFlow</code>, hors fichier).</li>
+<li><strong>Textes visibles (verbatim)</strong> : aucun texte propre dans ce fichier ; tout est rendu par <code>QuestionnaireFlow</code>.</li>
+</ul>
+<h2>6.3 — Discovery (micro-questions) <code>/moi/discovery</code> ✅</h2>
+<p>(fichier : <code>src/app/moi/discovery/page.tsx</code> ; flux via <code>DiscoveryFlow</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : sert la prochaine micro-question d&#39;approfondissement du profil (mode <code>quick</code> ou <code>full</code>, ou une section ciblée). Lecture seule au rendu (la session est créée à la première réponse — cf. mémoire projet). <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getAuthClaims()</code> → <code>/login</code>). Desktop-gated (préfixe <code>/moi</code>).</li>
+<li><strong>On y arrive depuis</strong> : nudges / CTA de la fiche <code>/moi</code> (via <code>ProfileV2</code>), avec paramètres <code>?mode=</code> et <code>?section=</code>.</li>
+<li><strong>Elle mène vers</strong> : contenu par <code>DiscoveryFlow</code> (hors fichier).</li>
+<li><strong>Textes visibles (verbatim)</strong> : aucun texte propre ; rendu par <code>DiscoveryFlow</code>.</li>
+</ul>
+<h2>6.4 — Résultats <code>/moi/resultats</code> 🟡 (redirection)</h2>
+<p>(fichier : <code>src/app/moi/resultats/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : ancienne page de résultats, désormais <strong>fusionnée dans <code>/moi</code></strong>. Le fichier ne fait que <code>redirect(&quot;/moi&quot;)</code>.</li>
+<li><strong>Accès</strong> : redirige immédiatement vers <code>/moi</code>.</li>
+<li><strong>On y arrive depuis</strong> : anciens liens / signets.</li>
+<li><strong>Textes visibles</strong> : aucun.</li>
+</ul>
+<h2>6.5 — Ma wishlist <code>/moi/wishlist</code> ✅</h2>
+<p>(fichier : <code>src/app/moi/wishlist/page.tsx</code> ; rendu par <code>WishlistV2Client</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : liste personnelle privée du pilote (envies pour lui-même), table <code>my_wishlist_items</code>. Strictement privée (jamais partagée aux tiers). Signe les photos du bucket. Passe la liste des contacts pour cibler des destinataires.</li>
+<li><strong>Accès</strong> : connecté (<code>getAuthClaims()</code> → <code>/login?next=/moi/wishlist</code>). Desktop-gated (préfixe <code>/moi</code>).</li>
+<li><strong>On y arrive depuis</strong> : la fiche <code>/moi</code> (via <code>ProfileV2</code>).</li>
+<li><strong>Elle mène vers</strong> : contenu par <code>WishlistV2Client</code> (hors fichier).</li>
+<li><strong>Textes visibles (verbatim)</strong> : aucun texte propre dans ce fichier ; rendu par <code>WishlistV2Client</code>.</li>
+</ul>
+<h2>6.6 — Partager ma fiche <code>/moi/partage</code> ✅</h2>
+<p>(fichier : <code>src/app/moi/partage/page.tsx</code> ; formulaire via <code>PartageClient</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : partage sortant de MA fiche. Choix du périmètre AVANT envoi (toute ma fiche / sections choisies avec socle verrouillé / aveugle). Gère : partages en cours (révoquer), liens envoyés non utilisés (annuler), demandes reçues (répondre). Exige le questionnaire complet.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login?next=/moi/partage</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : la fiche <code>/moi</code> (via ProfileV2).</li>
+<li><strong>Elle mène vers</strong> : <code>/moi</code> (« ← Ma fiche »), <code>/moi/questionnaire</code> (si incomplet), <code>/moi/partage/demandes/[id]</code> (« Répondre → »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li><code>← Ma fiche</code> ; titre <code>Partager ma fiche.</code> ; <code>Tu choisis ce qui est visible AVANT d&#39;envoyer le lien — et tu peux tout retirer à tout moment.</code></li>
+<li>Garde questionnaire : <code>Ta fiche d&#39;abord.</code> — <code>Pour partager ta fiche, termine d&#39;abord ton questionnaire — c&#39;est elle que tes proches découvriront.</code> — bouton <code>Reprendre mon questionnaire →</code>.</li>
+<li>Sections : <code>Demandes reçues</code> (<code>{prénom} veut voir ton profil.</code> + <code>Répondre →</code>), <code>Partages en cours</code> (avec libellé de portée <code>aveugle</code> / <code>essentiel seulement</code> / <code>sections choisies</code>), <code>Liens envoyés, pas encore utilisés</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>6.7 — Aperçu « fiche vue par un proche » <code>/moi/partage/apercu</code> ✅</h2>
+<p>(fichier : <code>src/app/moi/partage/apercu/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : prévisualisation condensée de ce que voient les proches (à la 3e personne), construite sur les sections cochées par défaut. Redirige vers <code>/moi</code> si pas de profil.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login?next=/moi/partage/apercu</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : la fiche <code>/moi</code> / le flux partage (via ProfileV2).</li>
+<li><strong>Elle mène vers</strong> : <code>/moi</code> (« Fermer »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>En-tête <code>Ta fiche, vue par un proche</code> ; bouton <code>Fermer</code>.</li>
+<li>Bannière : <code>Tes proches voient une version utile, jamais intime. Candice garde les détails et les utilise pour les aider à viser juste.</code></li>
+<li>Sections : <code>Résumé</code> (vide → <code>Ton résumé apparaîtra ici dès que ta fiche sera analysée.</code>), <code>Son langage d&#39;attention</code>, <code>Préférences clés</code>, <code>À éviter</code>, <code>Ses envies</code> (<code>{prénom} a choisi de ne pas partager cette section avec toi. Candice la connaît et s&#39;en sert pour te faire les recommandations les plus justes.</code>).</li>
+</ul>
+</li>
+</ul>
+<h2>6.8 — Répondre à une demande de partage <code>/moi/partage/demandes/[consentId]</code> ✅</h2>
+<p>(fichier : <code>src/app/moi/partage/demandes/[consentId]/page.tsx</code> ; via <code>DemandeClient</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : répondre à « X veut voir ton profil » — tout / sections choisies (socle verrouillé) / aveugle (rien de visible mais Candice peut aider) / refuser.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login?next=...</code>). Desktop-gated (préfixe <code>/moi</code>).</li>
+<li><strong>On y arrive depuis</strong> : <code>/dashboard</code> et <code>/historique</code> (carte « X veut voir ton profil. Que partages-tu ? → »), <code>/moi/partage</code> (« Répondre → »).</li>
+<li><strong>Elle mène vers</strong> : <code>/moi</code> (« Retour à ma fiche → »), et le choix envoyé (via <code>DemandeClient</code>).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Demande introuvable : <code>Demande introuvable.</code> — <code>Ce lien ne correspond à aucune demande te concernant.</code></li>
+<li>Déjà répondu : <code>Tu as déjà répondu.</code> — <code>La demande de {prénom} a été refusée.</code> / <code>Ton choix de partage avec {prénom} est déjà enregistré.</code></li>
+<li>Lien <code>Retour à ma fiche →</code>. (Le formulaire de réponse est rendu par <code>DemandeClient</code>.)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1>GROUPE 7 — Espace pilote : mes proches (/contacts)</h1>
+<h2>7.1 — Mes proches <code>/contacts</code> ✅</h2>
+<p>(fichier : <code>src/app/contacts/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : liste des proches avec anneau de complétion (sans %), état Candice, tags (date proche, envie repérée), signal d&#39;attention proactive, boutons d&#39;action. Chips de filtre décoratifs. Utilise <code>V4Shell</code>.</li>
+<li><strong>Accès</strong> : connecté (protégé middleware <code>/contacts</code> + <code>getUser()</code> → <code>/login</code>). Desktop-gated. Onglet « people » de la nav.</li>
+<li><strong>On y arrive depuis</strong> : nav basse V4Shell (onglet proches), « ← Mes proches » de la fiche contact.</li>
+<li><strong>Elle mène vers</strong> : <code>/contacts/new</code> (« + Ajouter »), <code>/contacts/[id]</code> (flèche, « Ouvrir », « Voir mon idée pour lui/elle »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Titre <code>Mes proches</code> ; bouton <code>+ Ajouter</code>.</li>
+<li>Chips : <code>Tous</code>, <code>Famille</code>, <code>Amis</code>, <code>À affiner</code> (décoratifs).</li>
+<li>État Candice (selon complétion) : <code>Candice connaît bien</code>, <code>Candice anticipe pour toi</code>, <code>Candice a quelques repères</code>, <code>Candice commence à apprendre</code>.</li>
+<li>Étiquettes relation : <code>Conjoint·e</code>, <code>Ami·e</code>, <code>Famille</code>, <code>Collègue</code>, <code>Autre</code>.</li>
+<li>Statut invitation : <code>Invitation envoyée · en attente</code>.</li>
+<li>Tags : <code>{label} dans {n} j</code> (ou <code>aujourd&#39;hui</code>), <code>Envie : {titre}</code>.</li>
+<li>Signal : <code>Une attention prête pour {prénom}</code>.</li>
+<li>Boutons : <code>Voir mon idée pour {lui/elle}</code>, <code>Ouvrir</code>.</li>
+<li>Vide : <code>Aucun proche encore — Candice attend de les connaître.</code> — bouton <code>Ajouter un proche →</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>7.2 — Ajouter un proche <code>/contacts/new</code> ✅</h2>
+<p>(fichier : <code>src/app/contacts/new/page.tsx</code> ; flux via <code>NewContactFlow</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : création d&#39;un profil de proche (choix du mode). <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated (préfixe <code>/contacts</code>).</li>
+<li><strong>On y arrive depuis</strong> : <code>/contacts</code> (« + Ajouter »), <code>/dashboard</code> (« Ajouter un proche → »), aide (« Inviter un premier proche »).</li>
+<li><strong>Elle mène vers</strong> : selon le flux (<code>NewContactFlow</code>).</li>
+<li><strong>Textes visibles (verbatim)</strong> : sur-titre <code>Nouveau contact</code> ; titre <code>Ajouter quelqu&#39;un.</code> ; <code>Choisis comment tu veux créer ce profil.</code> (Le reste est rendu par <code>NewContactFlow</code>.)</li>
+</ul>
+<h2>7.3 — Fiche d&#39;un proche <code>/contacts/[id]</code> ✅</h2>
+<p>(fichier : <code>src/app/contacts/[id]/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : fiche détaillée d&#39;un proche côté pilote. En-tête vert sombre (photo, nom, relation, badge « profil confirmé / invitation envoyée / pas encore invité(e) », état Candice). Corps : situation actuelle, notes rapides, analyse du proche s&#39;il a rejoint Candice, partage bidirectionnel, « Ce que Candice sait » (traits), dates importantes, attentions (question proactive + reco), confidences, carnet d&#39;envies (« À retenir »), cadence, mémoires (W1/W2). Nombreux états selon lien/invitation. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated. <code>notFound()</code> si le contact n&#39;appartient pas au user.</li>
+<li><strong>On y arrive depuis</strong> : <code>/contacts</code> (flèche/Ouvrir), <code>/dashboard</code> (dates, suggestions, notes), <code>/historique</code> (nom du contact), workflows W1/W2, relance.</li>
+<li><strong>Elle mène vers</strong> : <code>/contacts</code> (« ← Mes proches »), <code>/contacts/[id]/questionnaire</code> (« Compléter le profil → »), composants d&#39;action (partage d&#39;analyse, relance, cadence…).</li>
+<li><strong>Textes visibles (verbatim, sélection)</strong> :<ul>
+<li><code>← Mes proches</code>.</li>
+<li>Badges : <code>Profil confirmé</code>, <code>Invitation envoyée</code>, <code>Pas encore invité(e)</code>.</li>
+<li>États Candice : <code>Candice anticipe pour {prénom}</code>, <code>Candice connaît bien {prénom}</code>, <code>Candice commence à connaître {prénom}</code> ; note <code>Candice apprend votre histoire</code>.</li>
+<li>Mode souvenir : <code>En souvenir — ce profil est conservé en lecture seule.</code></li>
+<li>Dividers : <code>{prénom} selon Candice</code>, <code>Partager avec ce proche</code>, <code>Connaître {prénom}</code>, <code>Ce que Candice sait</code>, <code>Dates importantes</code>, <code>Attentions pour {prénom}</code>, <code>Ce que tu m&#39;as dit de {prénom}</code>, <code>À retenir</code>, <code>Fréquence d&#39;attention</code>, <code>Ce que Candice retient</code>.</li>
+<li>Sous-titres analyse proche : <code>Ce qui la/le touche</code>, <code>Comment lui montrer qu&#39;on pense à elle/lui</code>, <code>À éviter</code>.</li>
+<li>Relance : <code>Candice ne peut pas encore tout prendre en compte — {prénom} n&#39;a pas terminé son profil.</code></li>
+<li>Partage A→B : <code>Ton analyse avec {prénom}</code> — <code>Partage l&#39;analyse relationnelle avec {prénom} — uniquement ce que Candice a déduit, jamais tes notes ou données brutes.</code></li>
+<li>Partage B→A : <code>{prénom} partage son analyse avec toi</code> / <code>{prénom} t&#39;a proposé de partager son analyse</code>.</li>
+<li>États d&#39;invitation : <code>Candice attend de connaître {prénom}.</code> — <code>Remplissez le profil pour que Candice puisse anticiper les bons gestes.</code> / <code>Envoyez-lui un lien ou remplissez le profil vous-même — Candice pourra alors anticiper les bons gestes.</code> ; <code>{prénom} est sur Candice.</code> — <code>Son analyse sera disponible dès qu&#39;il ou elle aura répondu aux premières questions.</code> ; <code>L&#39;invitation a été envoyée à {prénom}.</code> — <code>Dès qu&#39;il ou elle crée son compte, Candice pourra anticiper les bons gestes pour lui ou elle.</code></li>
+<li>Bouton <code>Compléter le profil →</code>.</li>
+<li>Libellés de traits (verbatim) : <code>Langage d&#39;amour</code>, <code>Communication</code>, <code>Se sent apprécié(e) par</code>, <code>Énergie sociale</code>, <code>Sous stress</code>, <code>Valeurs fondamentales</code>, <code>Expression émotionnelle</code>, <code>Gestion des conflits</code>, <code>Prise de décision</code>, <code>Reconnaissance</code>, <code>Limites importantes</code>, <code>Développement</code>, <code>Loisirs</code>, <code>Cadeaux</code>.</li>
+</ul>
+</li>
+</ul>
+<h2>7.4 — Questionnaire d&#39;un proche (incognito) <code>/contacts/[id]/questionnaire</code> ✅</h2>
+<p>(fichier : <code>src/app/contacts/[id]/questionnaire/page.tsx</code> ; flux via <code>IncognitoFlow</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : le pilote remplit lui-même le profil d&#39;un proche (« incognito »). Redirige vers la fiche si le proche a lié son propre compte.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated (préfixe <code>/contacts</code>). Redirige <code>/contacts</code> si contact absent, <code>/contacts/[id]</code> si <code>proche_user_id</code> existe.</li>
+<li><strong>On y arrive depuis</strong> : <code>/contacts/[id]</code> (« Compléter le profil → »).</li>
+<li><strong>Elle mène vers</strong> : contenu par <code>IncognitoFlow</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> : aucun texte propre ; rendu par <code>IncognitoFlow</code>.</li>
+</ul>
+<h2>7.5 — Vue restreinte d&#39;analyse partagée <code>/contacts/partage/[consentId]</code> ✅</h2>
+<p>(fichier : <code>src/app/contacts/partage/[consentId]/page.tsx</code> ; actions via <code>ConsentActions</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : ce que voit <strong>B</strong> après qu&#39;un pilote lui a partagé une analyse — uniquement <code>profile_analysis</code> (jamais les données brutes). Gère les statuts du consentement : révoqué/refusé (message), en attente (prompt de consentement), actif (affichage de l&#39;analyse à la 3e personne). Note : ce chemin est l&#39;ancien mécanisme d&#39;analyse partagée (distinct de <code>/fiche/[consentId]</code>, cf. groupe 8).</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login?next=/contacts/partage/{id}</code>). <strong>Attention</strong> : préfixe <code>/partage</code> (pas <code>/contacts/partage</code>) est desktop-gated ; <code>/contacts/partage/...</code> commence par <code>/contacts</code> → donc <strong>desktop-gated</strong> via <code>/contacts</code>. <code>notFound()</code> si le consentement ne concerne pas ce user.</li>
+<li><strong>On y arrive depuis</strong> : liens de partage d&#39;analyse (via <code>ShareAnalysisButton</code> sur la fiche contact — non vérifié le chemin exact d&#39;envoi).</li>
+<li><strong>Elle mène vers</strong> : <code>/dashboard</code> (« Retour à l&#39;accueil »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>En-tête logo <code>CANDICE</code>.</li>
+<li>Révoqué/refusé : <code>Ce partage n&#39;est plus actif.</code> — <code>La personne qui avait partagé cette analyse a révoqué son partage.</code> / <code>Tu avais refusé de voir cette analyse.</code> ; lien <code>Retour à l&#39;accueil</code>.</li>
+<li>En attente : sur-titre <code>Demande de partage</code> ; titre <code>Quelqu&#39;un veut partager une analyse avec toi.</code> ; <code>Candice a généré une analyse de toi à partir des informations partagées. Tu peux choisir de la voir — ou de ne pas la voir.</code> ; <code>Ce que tu verras : uniquement l&#39;analyse relationnelle (ce que Candice retient de toi).</code> ; <code>Ce que tu ne verras jamais : les données brutes que l&#39;autre personne a saisies.</code></li>
+<li>Analyse indisponible : <code>L&#39;analyse n&#39;est pas encore disponible.</code> — <code>Candice n&#39;a pas encore généré d&#39;analyse pour ce profil. Reviens dans quelques instants.</code></li>
+<li>Analyse active : sur-titre <code>Analyse relationnelle</code> ; titre <code>Ce que Candice retient de toi.</code> ; <code>Cette analyse est basée sur des informations partagées. Elle peut évoluer.</code> ; sous-sections <code>Ce que Candice retient</code>, libellés <code>Ce qui lui fait plaisir</code>, <code>Ce qui le·la touche</code>, <code>Cadeaux</code>, <code>À éviter</code>, <code>Style</code>, <code>Restaurants</code>, <code>Voyages</code>, <code>Loisirs &amp; passions</code>, <code>Indispensables</code> ; note de bas : <code>Cette analyse ne contient que ce que Candice a déduit — jamais les informations brutes saisies par l&#39;autre personne. Tu peux à tout moment demander la révocation de ce partage.</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1>GROUPE 8 — Espace pilote : parler à Candice, recherche</h1>
+<h2>8.1 — Parler à Candice <code>/parler-a-candice</code> ✅</h2>
+<p>(fichier : <code>src/app/parler-a-candice/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : menu d&#39;intentions (« que veux-tu confier à Candice »). 7 cartes ; seules 2 sont actives (W1 « nouvelle », W2 « repéré »), les 5 autres sont visibles mais inactives (pas de lien). <code>V4Shell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/dashboard</code> (« Me raconter »), nav V4Shell (bouton central selon config).</li>
+<li><strong>Elle mène vers</strong> : <code>/parler-a-candice/w1</code>, <code>/parler-a-candice/w2</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Titre <code>Que veux-tu confier à Candice ?</code> ; sous-titre <code>Choisis un point de départ. Ensuite, parle librement.</code></li>
+<li>Cartes (titre + description) :<ul>
+<li><code>J&#39;ai une nouvelle sur un proche</code> — <code>Partage ce qui se passe — Candice retient ce qui compte.</code> (active → w1)</li>
+<li><code>J&#39;ai repéré quelque chose pour lui</code> — <code>Une photo, un lien, une description — Candice l&#39;ajoute à son profil.</code> (active → w2)</li>
+<li><code>Quelqu&#39;un ne va pas bien</code> — <code>Dis-moi ce qui se passe — je t&#39;aide à être là.</code> (inactive)</li>
+<li><code>Je suis en conflit avec quelqu&#39;un</code> — <code>Prends le temps d&#39;y voir clair avant d&#39;agir.</code> (inactive)</li>
+<li><code>Je prépare un événement</code> — <code>Anniversaire, fête, surprise — je m&#39;occupe du reste.</code> (inactive)</li>
+<li><code>Je veux faire plaisir à quelqu&#39;un</code> — <code>Pas d&#39;occasion particulière, juste l&#39;envie.</code> (inactive)</li>
+<li><code>Je veux mettre à jour une fiche</code> — <code>Quelque chose a changé — je note pour ne pas oublier.</code> (inactive)</li>
+<li><code>Je veux dire ce qui me ferait plaisir</code> — <code>Exprime une envie — Candice garde ça pour toi.</code> (inactive)</li>
+</ul>
+</li>
+<li>(Note : 8 cartes définies dans <code>ACTIONS</code>, 2 actives.)</li>
+</ul>
+</li>
+</ul>
+<h2>8.2 — Workflow W1 (nouvelle sur un proche) <code>/parler-a-candice/w1</code> ✅</h2>
+<p>(fichier : <code>src/app/parler-a-candice/w1/page.tsx</code> ; flux via <code>W1Flow</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : flux « j&#39;ai une nouvelle sur un proche ». Charge la liste des contacts, accepte <code>?contactId=</code>. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/parler-a-candice</code> (carte « J&#39;ai une nouvelle sur un proche »).</li>
+<li><strong>Elle mène vers</strong> : contenu par <code>W1Flow</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> : aucun texte propre ; rendu par <code>W1Flow</code>.</li>
+</ul>
+<h2>8.3 — Workflow W2 (repéré quelque chose) <code>/parler-a-candice/w2</code> ✅</h2>
+<p>(fichier : <code>src/app/parler-a-candice/w2/page.tsx</code> ; flux via <code>W2Flow</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : flux « j&#39;ai repéré quelque chose pour lui ». Charge les contacts, accepte <code>?contactId=</code>. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/parler-a-candice</code> (carte « J&#39;ai repéré quelque chose pour lui »).</li>
+<li><strong>Elle mène vers</strong> : contenu par <code>W2Flow</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> : aucun texte propre ; rendu par <code>W2Flow</code>.</li>
+</ul>
+<h2>8.4 — Trouver quelqu&#39;un <code>/recherche</code> ✅</h2>
+<p>(fichier : <code>src/app/recherche/page.tsx</code> ; via <code>RechercheClient</code> + <code>CancelRequestButton</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : chercher quelqu&#39;un par @identifiant ou e-mail exact et demander à voir sa fiche (Sens 1 du partage). Exige questionnaire complet (5/5). Affiche les fiches partagées avec moi et mes demandes en attente. <code>V4Shell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Non listé dans les préfixes desktop-gated → accessible sur desktop.</li>
+<li><strong>On y arrive depuis</strong> : <code>/dashboard</code> (« Quelqu&#39;un est déjà sur Candice ? Demande à voir sa fiche → »), nav V4Shell (onglet « people »), <code>/fiche/[consentId]</code> (« Retour à la recherche → »).</li>
+<li><strong>Elle mène vers</strong> : <code>/moi/questionnaire</code> (si incomplet), <code>/fiche/[consentId]</code> (« Voir → »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Titre <code>Trouver quelqu&#39;un</code> ; <code>Saisis l&#39;identifiant exact ou l&#39;email exact que la personne t&#39;a donné. Rien n&#39;est visible sans son accord explicite.</code></li>
+<li>Garde : <code>Ta fiche d&#39;abord.</code> — <code>Pour chercher quelqu&#39;un ou partager ta fiche, termine d&#39;abord ton questionnaire — c&#39;est ce qui permet à Candice d&#39;être utile des deux côtés.</code> — bouton <code>Reprendre mon questionnaire →</code>.</li>
+<li>Sections : <code>Partagées avec toi</code> (<code>Voir →</code>, mention <code>fiche protégée</code> si aveugle), <code>Demandes envoyées</code> (<code>En attente de réponse</code> + date + bouton annuler).</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1>GROUPE 9 — Espace pilote : paramètres</h1>
+<h2>9.1 — Paramètres <code>/parametres</code> ✅</h2>
+<p>(fichier : <code>src/app/parametres/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : menu des réglages + déconnexion. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : nav / menu (via V4Shell / DashboardShell — non vérifié le point d&#39;entrée exact).</li>
+<li><strong>Elle mène vers</strong> : <code>/dashboard</code> (« ← Accueil ») ; les 5 sous-pages ; déconnexion.</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li><code>← Accueil</code> ; titre <code>Paramètres</code>.</li>
+<li>Items (icône · libellé · description) : <code>👤 Mon compte</code> — <code>Adresse e-mail, mot de passe</code> (→ /parametres/compte) ; <code>🔔 Notifications</code> — <code>Fréquence et canal de contact</code> (→ /parametres/notifications) ; <code>🔒 Confidentialité</code> — <code>Données, suppression, export</code> (→ /parametres/confidentialite) ; <code>🔗 Profils partagés</code> — <code>Liens envoyés et réponses reçues</code> (→ /parametres/profils-partages) ; <code>💳 Abonnement</code> — <code>Plan, facturation, résiliation</code> (→ /parametres/abonnement).</li>
+</ul>
+</li>
+</ul>
+<h2>9.2 — Mon compte <code>/parametres/compte</code> ✅</h2>
+<p>(fichier : <code>src/app/parametres/compte/page.tsx</code> ; via <code>CompteActions</code> + <code>HandleEditor</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : infos de compte (prénom lecture seule, @identifiant modifiable, e-mail, téléphone, + champs éditables sexe/profession/date de naissance). <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/parametres</code> (<code>Mon compte</code>), aide (« Compléter ton profil »).</li>
+<li><strong>Elle mène vers</strong> : <code>/parametres</code> (« ← Paramètres »).</li>
+<li><strong>Textes visibles (verbatim)</strong> : <code>← Paramètres</code> ; titre <code>Mon compte</code> ; libellés <code>Prénom</code>, <code>Adresse e-mail</code>, <code>Téléphone</code> (lecture seule). (Champs @identifiant et éditables via <code>HandleEditor</code> / <code>CompteActions</code>.)</li>
+</ul>
+<h2>9.3 — Abonnement <code>/parametres/abonnement</code> ✅</h2>
+<p>(fichier : <code>src/app/parametres/abonnement/page.tsx</code> ; via <code>AbonnementActions</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : plan, statut d&#39;abonnement (essai/actif/pause/annulé), période d&#39;essai restante, bouton d&#39;abonnement (désactivé), reprise après pause, suppression programmée. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/parametres</code> (<code>Abonnement</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>/parametres</code> (« ← Paramètres ») ; actions internes.</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li><code>← Paramètres</code> ; titre <code>Abonnement</code>.</li>
+<li><code>Offre</code> — <code>Candice — 9 €/mois</code> — <code>1 mois d&#39;essai offert. Sans engagement.</code></li>
+<li><code>Statut</code> (libellés : <code>Essai gratuit</code>, <code>Actif</code>, <code>En pause</code>, <code>Silencieux</code>, <code>Annulé</code> ; pastille <code>Actif</code>/<code>En pause</code>/<code>Annulé</code>/<code>Essai</code>).</li>
+<li><code>Période d&#39;essai</code> : <code>Essai illimité</code> / <code>Dernier jour</code> / <code>{n} jour(s) restant(s)</code> / <code>30 jours offerts</code>.</li>
+<li>Bouton (désactivé) <code>Passer à l&#39;abonnement</code> — <code>Disponible prochainement.</code></li>
+<li>Suppression : <code>Suppression programmée le {date}.</code></li>
+</ul>
+</li>
+<li><strong>Note de cohérence</strong> : ici l&#39;essai est décrit « 1 mois offert » et le calcul du décompte utilise <strong>30 jours</strong> (<code>Math.ceil(30 - daysElapsed)</code>), alors que /offre et les CGU disent « 14 jours ». Écart signalé.</li>
+</ul>
+<h2>9.4 — Confidentialité (réglages) <code>/parametres/confidentialite</code> ✅</h2>
+<p>(fichier : <code>src/app/parametres/confidentialite/page.tsx</code> ; via <code>ConfidentialiteActions</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : réglages de confidentialité côté compte (données, suppression, export). <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/parametres</code> (<code>Confidentialité</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>/parametres</code> (« ← Paramètres ») ; actions par <code>ConfidentialiteActions</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> : <code>← Paramètres</code> ; titre <code>Confidentialité</code> ; <code>Tes données t&#39;appartiennent.</code> (Le reste — export/suppression — dans <code>ConfidentialiteActions</code>.)</li>
+</ul>
+<h2>9.5 — Notifications <code>/parametres/notifications</code> ✅</h2>
+<p>(fichier : <code>src/app/parametres/notifications/page.tsx</code> ; via <code>NotificationSettings</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : préférences de notifications (push, e-mail, heures calmes, max/jour). Défauts : push activé, e-mail activé, heures calmes 21h–8h, max 2/jour. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/parametres</code> (<code>Notifications</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>/parametres</code> (« ← Paramètres »).</li>
+<li><strong>Textes visibles (verbatim)</strong> : <code>← Paramètres</code> ; titre <code>Notifications</code> ; <code>Choisissez comment Candice vous contacte.</code> (Les commandes sont dans <code>NotificationSettings</code>.)</li>
+</ul>
+<h2>9.6 — Profils partagés <code>/parametres/profils-partages</code> 🟡 (placeholder)</h2>
+<p>(fichier : <code>src/app/parametres/profils-partages/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : placeholder « bientôt » pour la gestion des fiches partagées / accès donnés. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : <code>/parametres</code> (<code>Profils partagés</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>/parametres</code> (« ← Paramètres »).</li>
+<li><strong>Textes visibles (verbatim)</strong> : <code>← Paramètres</code> ; titre <code>Profils partagés</code> ; <code>Bientôt.</code> ; <code>Tu pourras gérer ici les fiches que tu partages et les accès que tu as donnés.</code></li>
+</ul>
+<hr>
+<h1>GROUPE 10 — Placeholders &amp; pages de service</h1>
+<h2>10.1 — Agenda / Idées <code>/idees</code> 🟡 (placeholder)</h2>
+<p>(fichier : <code>src/app/idees/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : placeholder « bientôt » d&#39;un agenda d&#39;inspirations. Note : le titre affiché est <code>Agenda</code>, la route est <code>/idees</code>, l&#39;onglet actif est <code>cal</code>. <code>V4Shell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : nav basse V4Shell (onglet calendrier/agenda — non vérifié).</li>
+<li><strong>Elle mène vers</strong> : rien.</li>
+<li><strong>Textes visibles (verbatim)</strong> : titre <code>Agenda</code> ; <code>Des inspirations personnalisées par occasion, saison et profil. Bientôt disponible.</code></li>
+</ul>
+<h2>10.2 — Historique / Parler à Candice <code>/historique</code> ✅</h2>
+<p>(fichier : <code>src/app/historique/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : fil des confidences passées (ce que le pilote a confié à Candice), groupées par date, + les demandes de vue de profil reçues (« X veut voir ton profil »). Le titre affiché est <code>Parler à Candice</code>. <code>DashboardShell</code>.</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login</code>). Desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : nav / liens internes (non vérifié le point d&#39;entrée exact ; c&#39;est un préfixe desktop-gated dédié).</li>
+<li><strong>Elle mène vers</strong> : <code>/moi/partage/demandes/[id]</code> (« Que partages-tu ? → »), <code>/contacts/[id]</code> (nom du contact).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Titre <code>Parler à Candice</code>.</li>
+<li>Demande reçue : <code>{prénom} veut voir ton profil.</code> + <code>Que partages-tu ? →</code>.</li>
+<li>Vide : <code>Aucun échange pour l&#39;instant.</code> — <code>Parlez à Candice depuis l&#39;accueil — tout ce que vous lui confiez apparaîtra ici.</code></li>
+<li>Réponses de Candice préfixées <code>✦</code>. (Note : les confidences elles-mêmes sont citées telles qu&#39;entrées par l&#39;utilisateur.)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1>GROUPE 11 — Proche / partage / invitations (vues tierces)</h1>
+<h2>11.1 — Fiche partagée <code>/fiche/[consentId]</code> ✅</h2>
+<p>(fichier : <code>src/app/fiche/[consentId]/page.tsx</code> ; rendu par <code>ProfileV2</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : ce que <strong>X</strong> voit d&#39;une fiche qu&#39;<strong>Y</strong> a partagée avec lui (consentement actif). Rendu Profil V2 à la 3e personne, filtré selon le scope (<code>invite_filtre</code> ou <code>aveugle</code>). Les données non partagées sont vidées côté serveur. La wishlist n&#39;est jamais partagée. Garde : le lecteur doit avoir son propre questionnaire complet (5/5).</li>
+<li><strong>Accès</strong> : connecté (<code>getUser()</code> → <code>/login?next=/fiche/{id}</code>). Non desktop-gated (préfixe <code>/fiche</code> absent de la liste) → accessible sur desktop. <code>V4Shell</code> onglet « people ».</li>
+<li><strong>On y arrive depuis</strong> : <code>/recherche</code> (« Voir → »), <code>/rejoindre/[token]</code> (redirection après réclamation).</li>
+<li><strong>Elle mène vers</strong> : <code>/recherche</code> (« Retour à la recherche → »), <code>/moi/questionnaire</code> (si le lecteur n&#39;a pas rempli sa fiche).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Indisponible : <code>Ce partage a été retiré.</code> / <code>Fiche non disponible.</code> ; <code>La personne a retiré son partage — sa fiche n&#39;est plus visible.</code> / <code>Ce lien ne correspond à aucune fiche partagée avec toi.</code> ; lien <code>Retour à la recherche →</code>.</li>
+<li>Garde questionnaire : <code>{prénom} partage sa fiche avec toi.</code> — <code>Remplis d&#39;abord ton questionnaire pour la découvrir — c&#39;est ce qui permet à Candice d&#39;être utile dans les deux sens.</code> — bouton <code>Remplir mon questionnaire →</code>.</li>
+<li>Sinon : rendu <code>ProfileV2</code> (contenu hors fichier).</li>
+</ul>
+</li>
+</ul>
+<h2>11.2 — Espace proche <code>/proche/[id]</code> ✅</h2>
+<p>(fichier : <code>src/app/proche/[id]/page.tsx</code> ; via <code>EspaceProcheShell</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : mini-app à 3 onglets sur un proche (le proche vu par Candice, comparatif « Nous », « Faire plaisir » = recos + carnet + envies écartées). Pour un contact non-utilisateur : synthèse minimale des faits connus, pas d&#39;analyse LLM. Réapparition paresseuse des recos refusées pour raison budget/moment.</li>
+<li><strong>Accès</strong> : connecté (<code>getAuthClaims()</code> → <code>/login?next=/proche/{id}</code>). Non desktop-gated (préfixe <code>/proche</code> absent de la liste). <code>notFound()</code> si le contact n&#39;appartient pas au user.</li>
+<li><strong>On y arrive depuis</strong> : liens internes vers l&#39;espace proche (non vérifié le point d&#39;entrée exact dans la nav/fiche).</li>
+<li><strong>Elle mène vers</strong> : contenu par <code>EspaceProcheShell</code> (onglets).</li>
+<li><strong>Textes visibles (verbatim, propres au fichier)</strong> : libellés de raison d&#39;écart : <code>Pas son goût</code>, <code>Trop cher</code>, <code>Déjà offert</code>, <code>Pas le bon moment</code>, <code>Gardée pour une occasion</code>, <code>Écartée</code>. (Le reste de l&#39;UI — onglets, titres, actions — est dans <code>EspaceProcheShell</code>.)</li>
+</ul>
+<h2>11.3 — Formulaire public d&#39;un profil <code>/profil/[id]</code> ✅</h2>
+<p>(fichier : <code>src/app/profil/[id]/page.tsx</code> ; via <code>PublicForm</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : formulaire public par lequel un proche remplit le profil qu&#39;un pilote a créé pour lui (5 min). Charge le contact via client admin (pas d&#39;auth requise pour lire le nom).</li>
+<li><strong>Accès</strong> : <strong>public</strong> (aucune vérification d&#39;auth dans la page) — mais <strong>desktop-gated</strong> (préfixe <code>/profil/</code> dans la liste). Barrière bêta appliquée. <code>notFound()</code> si contact absent.</li>
+<li><strong>On y arrive depuis</strong> : lien envoyé au proche (non vérifié le canal exact).</li>
+<li><strong>Elle mène vers</strong> : soumission via <code>PublicForm</code>.</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>En-tête logo <code>candice</code>.</li>
+<li>Sur-titre <code>5 minutes</code> ; titre <code>Aide-nous à mieux prendre soin de toi.</code> ; <code>Quelqu&#39;un qui tient à toi utilise Candice pour mieux te faire plaisir. Réponds honnêtement — tes réponses restent privées et ne servent qu&#39;à ça.</code></li>
+<li>(Le formulaire est rendu par <code>PublicForm</code>.)</li>
+</ul>
+</li>
+</ul>
+<h2>11.4 — Lien de profil (legacy) <code>/profil-partage/[token]</code> 🟡 (message « lien invalide »)</h2>
+<p>(fichier : <code>src/app/profil-partage/[token]/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : ancien mécanisme de lien de profil (<code>share_links</code>). N&#39;affiche plus qu&#39;un message « lien invalide » (lit le prénom de l&#39;expéditeur pour personnaliser le message).</li>
+<li><strong>Accès</strong> : public (bêta) ; <strong>pas</strong> desktop-gated (<code>/profil-partage/</code> distinct de <code>/profil/</code>, cf. commentaire du proxy).</li>
+<li><strong>On y arrive depuis</strong> : anciens liens de partage (legacy).</li>
+<li><strong>Elle mène vers</strong> : <code>/</code> (logo uniquement).</li>
+<li><strong>Textes visibles (verbatim)</strong> : <code>Ce lien n&#39;est plus valide.</code> ; <code>Demande à {prénom} de te renvoyer un nouveau lien d&#39;invitation depuis son application Candice.</code> / <code>Demande à la personne qui t&#39;a invité(e) de te renvoyer un lien depuis son application Candice.</code></li>
+</ul>
+<h2>11.5 — Partage (neutralisé) <code>/partage/[id]</code> ⚫ (neutralisé)</h2>
+<p>(fichier : <code>src/app/partage/[id]/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : <strong>neutralisé</strong> (commentaire du code : l&#39;accès à une fiche par simple connaissance de l&#39;URL viole « jamais de profil sans autorisation explicite »). N&#39;affiche qu&#39;un message « lien invalide ».</li>
+<li><strong>Accès</strong> : public (bêta) ; <strong>desktop-gated</strong> (préfixe <code>/partage</code>).</li>
+<li><strong>On y arrive depuis</strong> : anciens liens.</li>
+<li><strong>Elle mène vers</strong> : <code>/</code> (logo).</li>
+<li><strong>Textes visibles (verbatim)</strong> : <code>Ce lien n&#39;est plus valide.</code> ; <code>Demande à la personne qui t&#39;a invité(e) de te renvoyer un lien depuis son application Candice.</code></li>
+</ul>
+<h2>11.6 — Invitation d&#39;un proche <code>/invite/[token]</code> ✅</h2>
+<p>(fichier : <code>src/app/invite/[token]/page.tsx</code> ; landing via <code>LandingInvite</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : landing d&#39;invitation — un proche découvre que quelqu&#39;un veut apprendre à lui faire plaisir, et démarre son compte + questionnaire. Vérifie la validité/expiration du token (<code>invite_links</code>) sinon <code>notFound()</code>. Sur desktop : affiche un QR code pour continuer sur mobile.</li>
+<li><strong>Accès</strong> : public (bêta). Pas desktop-gated (mais l&#39;UI propose le QR sur desktop).</li>
+<li><strong>On y arrive depuis</strong> : lien d&#39;invitation envoyé par le pilote.</li>
+<li><strong>Elle mène vers</strong> : <code>/register?invite_token=...</code> (« Créer mon compte et commencer »).</li>
+<li><strong>Textes visibles (verbatim, via <code>LandingInvite</code>)</strong> :<ul>
+<li>Titre <code>{prénom} veut apprendre à te faire vraiment plaisir.</code></li>
+<li><code>Pas un cadeau au hasard, une fois par an. Les bonnes attentions, au bon moment — celles qui te ressemblent.</code></li>
+<li><code>{prénom} utilise Candice pour mieux prendre soin des gens qui comptent. Là, c&#39;est à toi que {prénom} pense.</code></li>
+<li><code>Ce questionnaire, c&#39;est ta façon de lui dire — sans avoir à le dire — ce qui te touche, ce qui te fait plaisir, et ce qu&#39;il vaut mieux éviter. {prénom} n&#39;en verra qu&#39;une version résumée : les détails restent entre Candice et toi.</code></li>
+<li>Encart <code>Ce que tu y gagnes</code> : <code>Et ce n&#39;est pas qu&#39;un cadeau pour {prénom}. En le remplissant, tu repars avec :</code> ; puces <code>ta propre fiche Candice, rien que pour toi ;</code> / <code>ce que tu découvres sur votre façon de fonctionner, {prénom} et toi ;</code> / <code>un mois pour essayer Candice et mieux penser, toi aussi, à ceux que tu aimes.</code></li>
+<li><code>Compte une vingtaine de minutes, au calme. Tu ne le rempliras qu&#39;une fois dans ta vie — autant le faire bien. Candice t&#39;accompagne, une question à la fois.</code></li>
+<li>Desktop : <code>Ouvre ce lien sur ton téléphone pour continuer.</code> / <code>Ou copie ce lien et ouvre-le dans ton navigateur mobile.</code></li>
+<li>Mobile : bouton <code>Créer mon compte et commencer</code> ; case <code>J&#39;accepte les conditions et je démarre mon mois d&#39;essai gratuit — sans carte bancaire, sans engagement.</code></li>
+</ul>
+</li>
+</ul>
+<h2>11.7 — Rejoindre (lien de fiche partagée) <code>/rejoindre/[token]</code> ✅</h2>
+<p>(fichier : <code>src/app/rejoindre/[token]/page.tsx</code>)</p>
+<ul>
+<li><strong>Rôle</strong> : réception d&#39;un lien de partage sortant (<code>profile_share_links</code>). Si connecté : réclamation immédiate → redirection <code>/fiche/[consentId]</code>. Sinon : porte d&#39;entrée (créer un compte / se connecter). Gère lien à soi-même, lien invalide/expiré.</li>
+<li><strong>Accès</strong> : public (bêta). Pas desktop-gated.</li>
+<li><strong>On y arrive depuis</strong> : lien de partage de fiche envoyé par un pilote ; lien de confirmation e-mail (<code>share_token</code>).</li>
+<li><strong>Elle mène vers</strong> : <code>/fiche/[consentId]</code> (réclamation réussie), <code>/moi/partage</code> (si c&#39;est son propre lien), <code>/dashboard</code> (lien invalide, connecté), <code>/register?share_token=...&amp;de=...</code> (« Créer mon compte gratuit → »), <code>/login?next=/rejoindre/{token}</code> (« J&#39;ai déjà un compte »).</li>
+<li><strong>Textes visibles (verbatim)</strong> :<ul>
+<li>Son propre lien : <code>C&#39;est ton propre lien.</code> — <code>Envoie-le à la personne de ton choix — il s&#39;activera chez elle.</code> ; lien <code>Gérer mes partages →</code>.</li>
+<li>Lien invalide (connecté) : <code>Ce lien n&#39;est plus valide.</code> — <code>Il a déjà été utilisé ou annulé. Demande à la personne de t&#39;en générer un nouveau depuis son application Candice.</code> ; lien <code>Retour à l&#39;accueil →</code>.</li>
+<li>Lien invalide (déconnecté) : <code>Ce lien n&#39;est plus valide.</code> — <code>Il a déjà été utilisé ou annulé. Demande à la personne de t&#39;en générer un nouveau depuis son application Candice.</code></li>
+<li>Porte d&#39;entrée : sur-titre <code>Fiche partagée</code> ; titre <code>{prénom} partage sa fiche avec toi.</code> ; <code>Sur Candice, chacun décrit ce qui lui fait vraiment plaisir — et choisit ce qu&#39;il partage. Crée ton compte pour découvrir ce que {prénom} a choisi de te confier, et remplis ta fiche à ton tour.</code> ; boutons <code>Créer mon compte gratuit →</code>, <code>J&#39;ai déjà un compte</code>.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h1>Récapitulatif — inventaire des pages</h1>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Route</th>
+<th>Groupe</th>
+<th>Accès</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>/</code></td>
+<td>Marketing</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>/concept</code></td>
+<td>Marketing</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>/fonctionnement</code></td>
+<td>Marketing</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>/offre</code></td>
+<td>Marketing</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>/contact</code></td>
+<td>Marketing</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>/mentions-legales</code></td>
+<td>Légal</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>/conditions-generales</code></td>
+<td>Légal</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>8</td>
+<td><code>/confidentialite</code></td>
+<td>Légal</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>9</td>
+<td><code>/login</code></td>
+<td>Auth</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>/register</code></td>
+<td>Auth</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>/beta-access</code></td>
+<td>Auth</td>
+<td>public (hors bêta)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>/continuer-sur-telephone</code></td>
+<td>Utilitaire</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>/design-preview</code></td>
+<td>Utilitaire</td>
+<td>dev only (404 en prod)</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>/dashboard</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>/dashboard/archives</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>/moi</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>/moi/questionnaire</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>18</td>
+<td><code>/moi/discovery</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>19</td>
+<td><code>/moi/resultats</code></td>
+<td>Pilote</td>
+<td>redirige → /moi</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>20</td>
+<td><code>/moi/wishlist</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>21</td>
+<td><code>/moi/partage</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>22</td>
+<td><code>/moi/partage/apercu</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>23</td>
+<td><code>/moi/partage/demandes/[consentId]</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>24</td>
+<td><code>/contacts</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>25</td>
+<td><code>/contacts/new</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>26</td>
+<td><code>/contacts/[id]</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>27</td>
+<td><code>/contacts/[id]/questionnaire</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>28</td>
+<td><code>/contacts/partage/[consentId]</code></td>
+<td>Tierce</td>
+<td>connecté · desktop-gated (via /contacts)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>29</td>
+<td><code>/parler-a-candice</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>30</td>
+<td><code>/parler-a-candice/w1</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>31</td>
+<td><code>/parler-a-candice/w2</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>32</td>
+<td><code>/recherche</code></td>
+<td>Pilote</td>
+<td>connecté</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>33</td>
+<td><code>/parametres</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>34</td>
+<td><code>/parametres/compte</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>35</td>
+<td><code>/parametres/abonnement</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>36</td>
+<td><code>/parametres/confidentialite</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>37</td>
+<td><code>/parametres/notifications</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>38</td>
+<td><code>/parametres/profils-partages</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>39</td>
+<td><code>/idees</code></td>
+<td>Placeholder</td>
+<td>connecté · desktop-gated</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>40</td>
+<td><code>/historique</code></td>
+<td>Pilote</td>
+<td>connecté · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>41</td>
+<td><code>/fiche/[consentId]</code></td>
+<td>Tierce</td>
+<td>connecté</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>42</td>
+<td><code>/proche/[id]</code></td>
+<td>Tierce/pilote</td>
+<td>connecté</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>43</td>
+<td><code>/profil/[id]</code></td>
+<td>Tierce</td>
+<td>public · desktop-gated</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>44</td>
+<td><code>/profil-partage/[token]</code></td>
+<td>Tierce</td>
+<td>public</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>45</td>
+<td><code>/partage/[id]</code></td>
+<td>Tierce</td>
+<td>public · desktop-gated</td>
+<td>⚫</td>
+</tr>
+<tr>
+<td>46</td>
+<td><code>/invite/[token]</code></td>
+<td>Tierce</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>47</td>
+<td><code>/rejoindre/[token]</code></td>
+<td>Tierce</td>
+<td>public</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<p><strong>Total : 47 pages</strong> (<code>page.tsx</code>). Aucune omise. Le fichier <code>design-preview</code> renvoie 404 en production.</p>
+</body></html>

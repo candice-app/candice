@@ -124,7 +124,7 @@ export interface CreateSourceInput extends KnowledgeScope {
  */
 export function createSourceRecord(input: CreateSourceInput): SourceRecord {
   return {
-    contactId: input.contactId,
+    about: input.about,
     ownerId: input.ownerId,
     id: input.id,
     sourceType: input.sourceType,

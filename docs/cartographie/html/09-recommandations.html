@@ -1,0 +1,387 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>09 — Recommandations</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>Cartographie — 09. Recommandations</h1>
+<blockquote>
+<p>Ce document décrit <strong>ce qui existe réellement</strong> dans le code autour des recommandations, sans jugement ni conseil.
+Source indiquée partout : <code>(fichier: …)</code> ou <code>(base: …)</code>. « non vérifié » quand l&#39;information n&#39;a pas pu être établie.
+Statuts : ✅ branché et utilisé · 🟡 partiel · ⚫ code présent mais jamais alimenté/appelé · ❌ absent.</p>
+<p><strong>Volumes réels (base) au moment de la cartographie : TOUTES les tables concernées sont à 0 ligne.</strong> La connexion base (<code>SUPABASE_DB_URL</code> de <code>.env.local</code>) répond correctement mais renvoie zéro partout — il s&#39;agit d&#39;une base de développement/QA vide, pas de la production. Les volumes de prod ne sont donc <strong>pas</strong> connus ici (non vérifié).</p>
+</blockquote>
+<hr>
+<h2>Vue d&#39;ensemble : il y a TROIS systèmes distincts, pas un seul</h2>
+<p>Le mot « recommandation » recouvre trois briques séparées, qui n&#39;écrivent pas dans les mêmes tables et ne se parlent pas entre elles :</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Brique</th>
+<th>Fichier moteur</th>
+<th>Table écrite</th>
+<th>Déclenché par</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(a)</td>
+<td><strong>Moteur reco v1</strong> (idées d&#39;attention sur la fiche proche)</td>
+<td><code>src/lib/recommendations/engine.ts</code></td>
+<td><code>contact_recommendations</code></td>
+<td>Bouton « Générer » sur la fiche proche (action manuelle du pilote)</td>
+<td>✅ branché</td>
+</tr>
+<tr>
+<td>(b)</td>
+<td><strong>Signaux + suggestions proactives</strong> (le cron qui repère les moments)</td>
+<td><code>src/lib/signals/detector.ts</code> + <code>src/lib/signals/generator.ts</code></td>
+<td><code>contextual_signals</code> puis <code>proactive_suggestions</code></td>
+<td>Cron <code>detect-and-generate</code> (2×/jour)</td>
+<td>✅ branché</td>
+</tr>
+<tr>
+<td>(c)</td>
+<td><strong>Espace Proche V2</strong> (mini-app 3 onglets <code>/proche/[id]</code>)</td>
+<td><em>(aucun moteur trouvé)</em></td>
+<td><code>contact_reco_items</code></td>
+<td><em>(rien ne l&#39;alimente)</em></td>
+<td>⚫ code mort côté génération</td>
+</tr>
+</tbody></table>
+<p>Les briques (a) et (b) appellent toutes les deux le <strong>même modèle LLM</strong> : <code>claude-sonnet-4-6</code>. La brique (c) n&#39;appelle aucun LLM et n&#39;a aucun producteur.</p>
+<hr>
+<h2>(a) Moteur reco v1 — <code>src/lib/recommendations/engine.ts</code> ✅</h2>
+<h3>Ce qu&#39;il fait, en clair</h3>
+<p>Sur la fiche d&#39;un proche, le pilote peut cliquer pour « générer » 1 à 3 idées d&#39;attention concrètes (un message, un geste, un cadeau…), chacune rattachée à un « langage d&#39;attention » (les 7 dimensions MOT/SER/CAD_C/CAD_S/EXP/GES/SUR). Le moteur :</p>
+<ol>
+<li><strong>Calcule une « kadence »</strong> (<code>haute</code> / <code>moyenne</code> / <code>basse</code>) à partir du registre de relation et du profil (<code>computeKadenceFromProfile</code>, fichier: engine.ts lignes 63-94). Le registre prime sur tout : par ex. <code>très_proche_fluide</code> → <code>haute</code>, <code>compliquée_fragile</code> → <code>basse</code>.</li>
+<li><strong>Détecte un « angle mort »</strong> (<code>detectBlindSpot</code>, lignes 98-119) : les dimensions auxquelles le proche est sensible mais que le pilote n&#39;exprime pas spontanément. Verbatim de la note générée : <code>« {Prénom} est particulièrement sensible à {dims} — c&#39;est là que tu peux avoir le plus d&#39;impact avec de petits efforts. »</code></li>
+<li><strong>Construit une liste de veto (« filtres durs »)</strong> (<code>buildVetoList</code>, lignes 123-152) : alcool, halal, casher, contraintes de mobilité, allergies, anti-surprises, interdits relationnels, etc. Ces mots sont interdits dans les idées.</li>
+<li><strong>Assemble un contexte texte</strong> riche (<code>buildContextString</code>, lignes 197-310) : registre, langages d&#39;attention, caractéristiques relationnelles, singularité (ce qu&#39;il adore, ses rêves, marques/lieux), profil classique, centres d&#39;intérêt, dates importantes, contexte récent, <strong>historique de feedback</strong> (attentions « à côté » = soft veto, « justes » = à favoriser, « pas le moment » = ajuster la cadence), et « déjà proposé récemment » (anti-répétition).</li>
+<li><strong>Appelle le LLM</strong>, filtre les idées qui violeraient un veto (<code>passesVeto</code>), marque celles qui touchent un angle mort.</li>
+<li><strong>Repli déterministe</strong> (<code>buildFallbackIdeas</code>, lignes 161-184) : si le LLM échoue ou ne renvoie rien d&#39;exploitable, une idée générique unique est fabriquée sans IA (basée sur la dimension dominante).</li>
+</ol>
+<h3>Modèle LLM</h3>
+<ul>
+<li><strong>Modèle : <code>claude-sonnet-4-6</code></strong> (fichier: engine.ts ligne 355)</li>
+<li><strong>max_tokens : 900</strong></li>
+<li>SDK : <code>@anthropic-ai/sdk</code>, clé <code>process.env.ANTHROPIC_API_KEY</code></li>
+</ul>
+<h3>Prompt système — VERBATIM (fichier: engine.ts lignes 314-335)</h3>
+<pre><code>Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d&#39;attention adaptées à chaque proche — jamais de rappels génériques.
+
+Règles absolues :
+- Chaque idée s&#39;ancre sur UN signal précis et nommé du profil (justification vide ou générique = rejet)
+- Jamais rien qui figure dans les filtres durs (veto absolu)
+- Idées concrètes, actionnables cette semaine
+- Ton : chaud, personnel, jamais clinique ni SaaS
+- Zéro score, zéro %, zéro jargon psy
+- 1 à 3 idées, chaque idée cible une dimension différente si possible
+- La justification est une phrase courte, toujours ancrée dans un élément concret
+
+Réponds uniquement avec un tableau JSON :
+[
+  {
+    &quot;title&quot;: &quot;Titre court et concret (max 7 mots)&quot;,
+    &quot;justification&quot;: &quot;Phrase courte ancrée dans le profil (ex: &#39;{prénom} est sensible aux petits gestes réguliers&#39;)&quot;,
+    &quot;dim&quot;: &quot;MOT&quot; | &quot;SER&quot; | &quot;CAD_C&quot; | &quot;CAD_S&quot; | &quot;EXP&quot; | &quot;GES&quot; | &quot;SUR&quot;,
+    &quot;canal&quot;: &quot;message&quot; | &quot;appel&quot; | &quot;en_personne&quot; | &quot;cadeau&quot; | &quot;service&quot; | &quot;experience&quot;,
+    &quot;intensite&quot;: &quot;légère&quot; | &quot;modérée&quot; | &quot;forte&quot;,
+    &quot;declencheur&quot;: &quot;Cette semaine&quot; | &quot;Ce soir&quot; | &quot;Dans 2-3 jours&quot; | &quot;Quand il/elle semble stressé(e)&quot; | (autre formulation courte et chaleureuse)
+  }
+]
+</code></pre>
+<h3>Prompt utilisateur — VERBATIM (fichier: engine.ts lignes 345-349)</h3>
+<pre><code>Génère 1 à 3 recommandations d&#39;attention concrètes et adaptées pour {contactFirstName}.
+
+{context}
+
+Respecte strictement les filtres durs. Ancre chaque idée sur un signal nommé. Réponds uniquement avec le JSON.
+</code></pre>
+<p>(<code>{context}</code> = le grand bloc décrit plus haut, dimensions + singularité + vetos + feedback, etc.)</p>
+<h3>Où c&#39;est branché</h3>
+<ul>
+<li><p><strong>Route API : <code>src/app/api/recommendations/generate/route.ts</code></strong> (POST, authentifié pilote).</p>
+<ul>
+<li>Charge le contact, le profil du pilote, l&#39;historique récent (<code>attention_log</code>), le journal de contexte (<code>context_journal</code>), le contexte « relation compliquée », l&#39;historique de feedback (10 derniers).</li>
+<li>Si le proche est un utilisateur lié (<code>proche_user_id</code>), va chercher <strong>son</strong> analyse <code>my_profile</code> (réception/expression/tempérament/filtres/vetos/singularité). Sinon, repli sur l&#39;analyse « incognito » stockée dans <code>questionnaire_responses.attention_reception</code>.</li>
+<li>Appelle <code>generateRecommendations(input)</code>.</li>
+<li><strong>Écrit dans <code>contact_recommendations</code></strong> en upsert sur <code>(user_id, contact_id)</code> : <code>ideas</code> (JSON), <code>blind_spot</code>, <code>kadence</code>, <code>generated_at</code> (fichier: generate/route.ts lignes 171-181).</li>
+<li><strong>Log</strong> chaque idée proposée dans <code>attention_log</code> (status <code>proposed</code>) pour la déduplication future.</li>
+<li><strong>Amorce une question proactive</strong> dans <code>context_journal</code> (générateur <em>déterministe</em>, sans IA — voir ci-dessous) si aucune question posée dans les 7 derniers jours.</li>
+</ul>
+</li>
+<li><p><strong>Qui appelle cette route :</strong> un seul endroit — le composant <code>src/app/contacts/[id]/AttentionContextuelle.tsx</code> (ligne 35, <code>fetch(&quot;/api/recommendations/generate&quot;)</code>), déclenché par le bouton « Générer » de la fiche proche. <strong>Aucun cron n&#39;appelle cette route</strong> : la reco v1 est 100 % à la demande du pilote.</p>
+</li>
+</ul>
+<h3>Générateur de questions — déterministe, PAS d&#39;IA (fichier: src/lib/recommendations/questions.ts)</h3>
+<p><code>generateProactiveQuestion</code> tire au sort parmi 6 modèles fixes (« Comment va {n} en ce moment ? », « Tu as des nouvelles de {n} récemment ? », etc.), en évitant les questions déjà posées. Aucun appel LLM.</p>
+<h3>Ce qui est affiché au pilote (brique a)</h3>
+<ul>
+<li><strong>Fiche proche</strong> (<code>src/app/contacts/[id]/page.tsx</code> lignes 164-172) : lit <code>contact_recommendations</code> (<code>ideas, blind_spot, kadence, generated_at</code>) et les passe au composant <code>AttentionContextuelle</code> (idées avec canal, intensité, déclencheur, badge angle mort, boutons « fait » + feedback juste/à côté/pas le moment).</li>
+<li><strong>Liste contacts</strong> (<code>src/app/contacts/page.tsx</code> lignes 113-129) : affiche seulement le <strong>titre de la 1re idée</strong> par contact (<code>recoMap</code>).</li>
+<li><strong>Dashboard</strong> (<code>src/app/dashboard/page.tsx</code> lignes 116-119) : idem, titre de la 1re idée par contact.</li>
+</ul>
+<p>➡️ La brique (a) <strong>atteint bien une interface</strong> (fiche + liste + dashboard). Volume réel : <code>contact_recommendations</code> = <strong>0 ligne</strong> (base QA vide).</p>
+<hr>
+<h2>(b) Détection de signaux + génération de suggestions ✅</h2>
+<h3>(b.1) Détecteur — <code>src/lib/signals/detector.ts</code> : 100 % DÉTERMINISTE, aucune IA</h3>
+<p><code>detectSignalsForUser(userId, admin)</code> parcourt les contacts non archivés et crée des lignes dans <strong><code>contextual_signals</code></strong> selon des <strong>règles de dates pures</strong> (fuseau Europe/Paris). Aucun appel LLM. Fenêtre de déclenchement : <code>WINDOW = 14</code> jours.</p>
+<p>Types de signaux produits (<code>signal_type</code>) et leurs règles :</p>
+<table>
+<thead>
+<tr>
+<th>Bloc</th>
+<th>Type(s)</th>
+<th>Règle</th>
+<th>Qui est concerné</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>A</td>
+<td><code>birthday_d7/d3/d1/today</code></td>
+<td>anniversaire de naissance, paliers J-7/J-3/J-1/jour J, priorités normal→urgent</td>
+<td>tout contact avec date « anniversaire/naissance »</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>couple_anniversary</code>, <code>wedding_anniversary</code></td>
+<td>dates rencontre/couple/mariage/pacs, J-7 + jour J</td>
+<td><code>relationship = partner</code></td>
+</tr>
+<tr>
+<td>C</td>
+<td><code>valentines_day</code></td>
+<td>Saint-Valentin (14/02), J-7 + jour J</td>
+<td><code>relationship = partner</code></td>
+</tr>
+<tr>
+<td>D</td>
+<td><code>mothers_day</code></td>
+<td>Fête des mères (dernier dimanche de mai), J-7 + jour J</td>
+<td>pilote a des enfants + <code>relationship = family</code></td>
+</tr>
+<tr>
+<td>E</td>
+<td><code>fathers_day</code></td>
+<td>Fête des pères (3e dimanche de juin), J-7 + jour J</td>
+<td>pilote a des enfants + <code>relationship = family</code></td>
+</tr>
+<tr>
+<td>F</td>
+<td><code>christmas</code></td>
+<td>Noël (25/12), J-14/J-7/J-3</td>
+<td>partner, family, ou proximité <code>inner_circle</code></td>
+</tr>
+<tr>
+<td>G</td>
+<td><code>custom_date</code></td>
+<td>toute autre date importante non reconnue, J-7 + jour J</td>
+<td>tout contact</td>
+</tr>
+<tr>
+<td>H</td>
+<td><code>silence</code></td>
+<td>pas de « connexion » depuis un seuil (cadence résolue via <code>resolveCadenceForContact</code>)</td>
+<td>tout contact</td>
+</tr>
+<tr>
+<td>L</td>
+<td><code>memory_anniversary</code></td>
+<td>contacts en « mode souvenir » (archivés, opt-out=false), anniversaire de l&#39;archivage</td>
+<td>contacts mémoire</td>
+</tr>
+<tr>
+<td>I</td>
+<td><code>pilote_birthday</code></td>
+<td>anniversaire du pilote lui-même</td>
+<td>pilote (contact_id null)</td>
+</tr>
+<tr>
+<td>J</td>
+<td><code>pilote_mothers_day</code>, <code>pilote_fathers_day</code></td>
+<td>fêtes des mères/pères <strong>pour le pilote parent</strong></td>
+<td>pilote (contact_id null)</td>
+</tr>
+<tr>
+<td>K</td>
+<td><code>pilote_difficult_period</code></td>
+<td>pilote a déclaré une période difficile (<code>pilote_difficult_period_until</code>), cadence hebdo</td>
+<td>pilote (contact_id null)</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Anti-doublon</strong> : <code>signalExists</code> vérifie qu&#39;il n&#39;existe pas déjà un signal même <code>(user_id, contact_id, signal_type, trigger_date)</code> en statut <code>active</code>/<code>consumed</code> avant insertion (lignes 67-114).</li>
+<li>Chaque signal porte <code>signal_data</code> (nom du contact, libellé de date…), <code>trigger_date</code>, <code>priority</code> (normal/high/urgent), <code>expires_at</code>.</li>
+<li>Log d&#39;erreur notable : <code>[detector] Insert error {type}: {message}</code>.</li>
+</ul>
+<h3>(b.2) Générateur — <code>src/lib/signals/generator.ts</code> : APPEL LLM</h3>
+<p><code>generateSuggestionForSignal(signal, admin)</code> transforme UN signal en UNE suggestion écrite dans <strong><code>proactive_suggestions</code></strong>. Deux chemins :</p>
+<ul>
+<li><strong>Signal pilote</strong> (<code>contact_id</code> null) → <code>generatePiloteSuggestion</code> : suggestion pour le pilote lui-même.</li>
+<li><strong>Signal proche</strong> → chemin principal : charge le contact, son <code>questionnaire_responses</code>, le <code>my_profile</code> du pilote.</li>
+</ul>
+<p><strong>Garde-fou cadence</strong> (lignes 306-319) : si la priorité n&#39;est pas <code>urgent</code>, et que la dernière suggestion pour ce contact est plus récente que la cadence résolue, le signal est marqué <code>consumed</code> <strong>sans</strong> générer (donc sans appel LLM). Économise les appels.</p>
+<p>Après génération : insertion dans <code>proactive_suggestions</code> (title, description, category, reasoning, estimated_price, partner_hint, priority, status <code>pending</code>, expires_at). Si priorité <code>urgent</code>/<code>high</code> → <strong>push notification</strong> via <code>sendPushToUser</code>. Puis le signal est passé en <code>consumed</code>.</p>
+<h4>Modèle LLM (les deux chemins)</h4>
+<ul>
+<li><strong>Modèle : <code>claude-sonnet-4-6</code></strong><ul>
+<li>chemin proche : ligne 369, <strong>max_tokens 600</strong></li>
+<li>chemin pilote : ligne 222, <strong>max_tokens 400</strong></li>
+</ul>
+</li>
+</ul>
+<h4>Prompt — chemin PROCHE — VERBATIM (fichier: generator.ts lignes 334-356)</h4>
+<pre><code>Tu es Candice — un service de conciergerie relationnelle, sobre et adulte. Tu aides quelqu&#39;un à faire attention à ses proches au bon moment.
+
+CONTEXTE : {contextLabel}.
+
+PROFIL DE {contact.name} ({contact.relationship}) :
+{contactDesc}{qualityConstraints}
+
+PROFIL DU PILOTE (la personne qui offre) :
+{piloteDesc}
+
+Génère UNE suggestion d&#39;attention parfaitement adaptée au contexte ci-dessus. Spécifique, actionnelle, mémorisant des détails précis du profil.
+
+Réponds UNIQUEMENT avec ce JSON, sans texte avant ni après :
+{
+  &quot;title&quot;: &quot;Titre court (max 8 mots)&quot;,
+  &quot;description&quot;: &quot;Suggestion concrète et personnalisée (2-3 phrases)&quot;,
+  &quot;category&quot;: &quot;quality_time&quot; | &quot;gift&quot; | &quot;message&quot; | &quot;gesture&quot; | &quot;activity&quot;,
+  &quot;reasoning&quot;: &quot;Une phrase qui commence par &#39;Parce que&#39; expliquant pourquoi maintenant&quot;,
+  &quot;estimated_price&quot;: &quot;Gratuit&quot; | &quot;X€&quot; | &quot;X-Y€&quot;,
+  &quot;partner_hint&quot;: &quot;Nom du lieu ou prestataire recommandé si pertinent, sinon null&quot;
+}
+
+Ton strict : premium, sobre, adulte. Pas de &#39;petit&#39;, &#39;doux&#39;, &#39;tendre&#39; en excès. Pas de leçon. Inspiré conciergerie.
+</code></pre>
+<p>Le <code>{contextLabel}</code> provient de <code>getSignalContext</code> (verbatim des phrases par type, ex. <code>birthday_d7</code> → <code>« l&#39;anniversaire de {name} est dans 7 jours »</code>, <code>silence</code> → <code>« {name} et toi ne vous êtes pas vraiment connectés depuis {n} jours — c&#39;est le bon moment »</code>). Le <code>{contactDesc}</code> est un profil psychologique + préférences détaillé (<code>describeContact</code>, lignes 56-90), et <code>{qualityConstraints}</code> ajoute des exigences selon le standing/gastronomie/hébergement/style de cadeau (<code>getQualityConstraints</code>, lignes 92-135, ex. <code>high_standards</code> → « uniquement des établissements notés 4,5/5 minimum… »).</p>
+<h4>Prompt — chemin PILOTE — VERBATIM (fichier: generator.ts lignes 193-213)</h4>
+<pre><code>Tu es Candice — un service de conciergerie relationnelle, sobre et adulte.
+
+CONTEXTE : {context}.
+
+Il s&#39;agit de la personne qui utilise Candice — pas d&#39;un de ses proches. Suggère-lui quelque chose pour elle-même.
+
+{profileLines}
+
+Génère UNE suggestion personnelle et bienveillante. Sobre, sans sentimentalisme excessif.
+
+Réponds UNIQUEMENT avec ce JSON, sans texte avant ni après :
+{
+  &quot;title&quot;: &quot;Titre court (max 8 mots)&quot;,
+  &quot;description&quot;: &quot;Suggestion concrète (1-2 phrases)&quot;,
+  &quot;category&quot;: &quot;quality_time&quot; | &quot;gift&quot; | &quot;message&quot; | &quot;gesture&quot; | &quot;activity&quot;,
+  &quot;reasoning&quot;: &quot;Une phrase qui commence par &#39;Parce que&#39;&quot;,
+  &quot;estimated_price&quot;: &quot;Gratuit&quot; | &quot;X€&quot; | null,
+  &quot;partner_hint&quot;: null
+}
+
+Ton strict : sobre, adulte, bienveillant sans excès.
+</code></pre>
+<p>Le <code>{context}</code> pilote provient de <code>getPiloteSignalContext</code> (ex. <code>pilote_birthday</code> → « C&#39;est l&#39;anniversaire du pilote aujourd&#39;hui », <code>pilote_difficult_period</code> → « Le pilote traverse une période difficile en ce moment »).</p>
+<p>Logs d&#39;erreur notables : <code>[generator] Claude error for signal {id}</code>, <code>[generator] Insert error for signal {id}</code>, <code>[generator] Push error</code>.</p>
+<h3>Ce qui est affiché au pilote (brique b)</h3>
+<ul>
+<li><strong>Dashboard</strong> (<code>src/app/dashboard/page.tsx</code>) : lit <code>proactive_suggestions</code> en statut <code>pending</code> (jointe au contact et au signal), trie par priorité et affiche <strong>la suggestion la plus prioritaire</strong> en carte principale (<code>topProactiveSuggestion</code>, lignes 158-269) + un compteur « proches à soutenir ». (NB : une seconde requête sur la table <code>suggestions</code> — legacy, différente — est chargée dans <code>suggestionsData</code> puis explicitement ignorée via <code>void suggestionsData</code>.)</li>
+<li><strong>Liste contacts</strong> (<code>src/app/contacts/page.tsx</code>) : lit aussi <code>proactive_suggestions</code>.</li>
+<li><strong>Actions</strong> : <code>src/app/api/proactive-suggestions/[id]/validate</code> et <code>/refuse</code> (le pilote valide ou refuse).</li>
+<li><strong>Relance e-mail</strong> : le cron <code>email-reminders</code> renvoie par mail les suggestions <code>pending</code> depuis &gt;48 h.</li>
+</ul>
+<p>➡️ La brique (b) <strong>atteint bien une interface</strong> (dashboard + contacts + e-mail + push). Volumes réels : <code>contextual_signals</code> = <strong>0</strong>, <code>proactive_suggestions</code> = <strong>0</strong> (base QA vide).</p>
+<hr>
+<h2>(c) Espace Proche V2 — <code>contact_reco_items</code> : ⚫ RIEN NE L&#39;ALIMENTE</h2>
+<h3>Ce qu&#39;est la table</h3>
+<p><code>contact_reco_items</code> (migration 69, <code>supabase-migration-69-contact-reco-items.sql</code>) : <strong>une ligne par reco</strong> pour l&#39;espace proche (<code>/proche/[id]</code>), pensée pour remplacer le blob <code>contact_recommendations.ideas</code>. Colonnes : <code>reco_type</code> (object/experience/place/message), <code>title</code>, <code>brand</code>, <code>price_indicative</code>, <code>photo_url</code>, <code>source_trace</code> (declared/spotted/deduced/exploratory), <code>certainty_pct</code>, <code>why_json</code>, <code>need_tag</code>, <code>origin_ref</code>, <code>status</code> (active/refused), <code>reservation_status</code> (available/intended/purchased), etc. RLS owner-only. Réservation invisible atomique via RPC <code>reserve_reco_item</code> / <code>confirm_reco_purchase</code> (péremption 30 j), calquée sur Wishlist V2.</p>
+<h3>Qui LIT / MODIFIE la table (fichier: src/app/proche/[id]/…)</h3>
+<ul>
+<li><code>src/app/proche/[id]/page.tsx</code> (ligne 46-49) : <strong>lit</strong> les items <code>active</code>+<code>refused</code> (hors <code>purchased</code>) pour l&#39;afficher dans l&#39;espace proche.</li>
+<li><code>src/app/proche/[id]/EspaceProcheShell.tsx</code> : <strong>met à jour</strong> le statut (refuser → <code>status=&#39;refused&#39;</code>, ligne 204/216/243 ; acheter → <code>reservation_status=&#39;purchased&#39;</code>, ligne 228 ; réactiver → <code>status=&#39;active&#39;</code>, ligne 254).</li>
+</ul>
+<h3>Qui ÉCRIT / INSÈRE la table</h3>
+<ul>
+<li><strong>PERSONNE.</strong> Recherche exhaustive sur tout le repo (hors <code>node_modules</code>) : aucune instruction <code>insert</code> dans <code>contact_reco_items</code>, aucun moteur/générateur, aucun cron, aucune route API. Les seules mentions sont : les 3 migrations SQL (69, 70, 72), les 2 fichiers d&#39;écran ci-dessus (lecture + update de statut), et 3 docs de STOP.</li>
+</ul>
+<h3>Cohérence avec la mémoire projet</h3>
+<p>Cohérent avec la note mémoire « Espace Proche V2 » : Phases 1-6 closes, <strong>moteur de reco = Phases 7-10 restantes, « ne pas lancer P7 sans signal »</strong>. Et avec la décision explicite dans <code>src/app/contacts/[id]/AttentionContextuelle.tsx</code> en-tête et <code>proche/[id]/page.tsx</code> ligne 69 : <em>« Décision B — pas de génération LLM »</em> pour l&#39;espace proche à ce stade.</p>
+<p>➡️ <strong>Statut : ⚫ code mort côté génération.</strong> L&#39;interface <code>/proche/[id]</code> sait afficher, refuser, réserver et acheter des recos, mais <strong>aucun producteur ne remplit la table</strong> aujourd&#39;hui. Tant qu&#39;aucune reco n&#39;y est insérée (à la main ou par un futur moteur), l&#39;onglet reste vide. Volume réel : <code>contact_reco_items</code> = <strong>0 ligne</strong>.</p>
+<hr>
+<h2>Récapitulatif — ce qui atteint une interface vs ce qui n&#39;atteint rien</h2>
+<table>
+<thead>
+<tr>
+<th>Brique</th>
+<th>Modèle LLM</th>
+<th>Table</th>
+<th>Affiché où</th>
+<th>Statut</th>
+<th>Volume base</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>(a) Reco v1</td>
+<td><code>claude-sonnet-4-6</code> (900 tk)</td>
+<td><code>contact_recommendations</code></td>
+<td>Fiche proche, liste contacts, dashboard</td>
+<td>✅ affiché</td>
+<td>0</td>
+</tr>
+<tr>
+<td>(b.1) Détecteur signaux</td>
+<td><em>aucun (déterministe)</em></td>
+<td><code>contextual_signals</code></td>
+<td><em>(interne, non affiché tel quel)</em></td>
+<td>✅ branché</td>
+<td>0</td>
+</tr>
+<tr>
+<td>(b.2) Générateur suggestions</td>
+<td><code>claude-sonnet-4-6</code> (600/400 tk)</td>
+<td><code>proactive_suggestions</code></td>
+<td>Dashboard (carte prioritaire), contacts, e-mail, push</td>
+<td>✅ affiché</td>
+<td>0</td>
+</tr>
+<tr>
+<td>(c) Espace Proche V2</td>
+<td><em>aucun</em></td>
+<td><code>contact_reco_items</code></td>
+<td><code>/proche/[id]</code> (affichage + actions)</td>
+<td>⚫ rien ne l&#39;alimente</td>
+<td>0</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>Tables annexes vues à 0 ligne aussi</strong> : <code>reco_refusals</code> (refus espace proche), <code>cadence_feedback</code> (agrégats du cron cadence), <code>attention_log</code> (log des idées v1 + feedback).</li>
+<li><strong>Note de fiabilité des volumes</strong> : la base interrogée via <code>SUPABASE_DB_URL</code> est la base réelle du projet, en état pré-lancement — les tables reco (<code>contact_recommendations</code>, <code>contextual_signals</code>, <code>proactive_suggestions</code>, <code>contact_reco_items</code>) sont vides, tandis que d&#39;autres tables sont peuplées (<code>discovery_questions</code> 70, etc.). Les 0 lignes reflètent l&#39;absence de production de recos à ce jour, pas un environnement de test distinct.</content>
+</invoke></li>
+</ul>
+</body></html>

@@ -8,13 +8,14 @@
 // colonnes qui appartiennent à la famille de l'evidence ; les autres restent null.
 // Le source_id voyage INCHANGÉ (evidence.source_id === source.id) — jamais régénéré.
 
-import type { Evidence, Fact, OpenKnowledge, SourceRecord, Signal } from '../knowledge';
+import type { AboutRef, Evidence, Fact, OpenKnowledge, SourceRecord, Signal } from '../knowledge';
 import { constructIdentity, signalKey } from '../knowledge';
 
 /* ── knowledge_sources ── */
 export interface KnowledgeSourceRow {
   id: string;
-  contact_id: string;
+  about_kind: string;
+  about_id: string;
   user_id: string;
   source_type: string;
   assertion_status: string;
@@ -31,7 +32,8 @@ export interface KnowledgeSourceRow {
 export function sourceToRow(s: SourceRecord): KnowledgeSourceRow {
   return {
     id: s.id,
-    contact_id: s.contactId,
+    about_kind: s.about.kind,
+    about_id: s.about.id,
     user_id: s.ownerId,
     source_type: s.sourceType,
     assertion_status: s.assertionStatus, // dérivé par le module, jamais saisi, jamais null
@@ -49,7 +51,8 @@ export function sourceToRow(s: SourceRecord): KnowledgeSourceRow {
 /* ── knowledge_evidences (table large : colonnes sémantiques nullables par famille) ── */
 export interface KnowledgeEvidenceRow {
   id: string;
-  contact_id: string;
+  about_kind: string;
+  about_id: string;
   user_id: string;
   source_id: string;
   target_family: string;
@@ -101,7 +104,8 @@ function evidenceAssertion(e: Evidence): string {
 export function evidenceToRow(e: Evidence): KnowledgeEvidenceRow {
   const base = {
     id: e.evidence_id,
-    contact_id: e.contactId,
+    about_kind: e.about.kind,
+    about_id: e.about.id,
     user_id: e.ownerId,
     source_id: e.source_id, // === source.id, jamais régénéré
     target_family: e.target_family,
@@ -176,7 +180,8 @@ export function evidenceToRow(e: Evidence): KnowledgeEvidenceRow {
 /* ── knowledge_facts ── */
 export interface KnowledgeFactRow {
   id: string;
-  contact_id: string;
+  about_kind: string;
+  about_id: string;
   user_id: string;
   source: string | null;
   fact_type: string;
@@ -201,7 +206,8 @@ export interface KnowledgeFactRow {
 export function factToRow(f: Fact, source: string | null): KnowledgeFactRow {
   return {
     id: f.fact_id,
-    contact_id: f.contactId,
+    about_kind: f.about.kind,
+    about_id: f.about.id,
     user_id: f.ownerId,
     source,
     fact_type: f.fact_type,
@@ -227,7 +233,8 @@ export function factToRow(f: Fact, source: string | null): KnowledgeFactRow {
 /* ── knowledge_open_knowledge ── */
 export interface KnowledgeOpenKnowledgeRow {
   id: string;
-  contact_id: string;
+  about_kind: string;
+  about_id: string;
   user_id: string;
   type: string;
   subject_id: string;
@@ -249,7 +256,8 @@ export interface KnowledgeOpenKnowledgeRow {
 export function openKnowledgeToRow(k: OpenKnowledge): KnowledgeOpenKnowledgeRow {
   return {
     id: k.open_knowledge_id,
-    contact_id: k.contactId,
+    about_kind: k.about.kind,
+    about_id: k.about.id,
     user_id: k.ownerId,
     type: k.type,
     subject_id: k.subject,
@@ -269,10 +277,11 @@ export function openKnowledgeToRow(k: OpenKnowledge): KnowledgeOpenKnowledgeRow 
   };
 }
 
-/* ── knowledge_signals (clé = contact_id scopé, grain par construct) ── */
+/* ── knowledge_signals (clé = about scopé, grain par construct) ── */
 export interface KnowledgeSignalRow {
   signal_key: string;
-  contact_id: string;
+  about_kind: string;
+  about_id: string;
   user_id: string;
   family: string;
   construct_identity: string;
@@ -292,10 +301,11 @@ export interface KnowledgeSignalRow {
   consolidation_version: string;
 }
 
-export function signalToRow(contactId: string, s: Signal): KnowledgeSignalRow {
+export function signalToRow(about: AboutRef, s: Signal): KnowledgeSignalRow {
   return {
-    signal_key: signalKey(contactId as never, s),
-    contact_id: s.contactId,
+    signal_key: signalKey(about, s),
+    about_kind: s.about.kind,
+    about_id: s.about.id,
     user_id: s.ownerId,
     family: s.family,
     construct_identity: constructIdentity(s),

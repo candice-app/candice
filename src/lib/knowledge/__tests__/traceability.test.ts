@@ -14,13 +14,13 @@ import { createOpenKnowledge } from '../open-knowledge';
 import { createExtractionRecord } from '../extraction';
 import { consolidateInterests, consolidateProfileConstruct } from '../consolidate';
 import { assessOntologyGap } from '../gaps';
-import { asContactId, asEntityId, asSubjectId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asEntityId, asSubjectId, asUserId, type KnowledgeScope } from '../identity';
 import type { SignalSnapshot } from '../snapshot';
 import { signalKey } from '../signal';
 import { JOURNAL_VERSION_STAMP } from '../version';
 import type { SourceType } from '../sources';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 const base = {
   ...scope,
   raw_information: 'v',
@@ -74,32 +74,32 @@ describe('20 — depuis un signal consolidé, on retrouve toutes les sources qui
 describe('21 — chaque structure persistée porte ses dimensions d’agrégation (section 6.5)', () => {
   it('Evidence : person, famille, concept, valeur, contexte, source, timestamp, confidence, explicite/inféré, version', () => {
     const e = interestEv('e1', 's1', 'conversation', 'photo');
-    for (const k of ['contactId', 'ownerId', 'target_family', 'target_construct', 'context', 'source_id', 'timestamp', 'confidence', 'source_type', 'version'] as const) {
+    for (const k of ['about', 'ownerId', 'target_family', 'target_construct', 'context', 'source_id', 'timestamp', 'confidence', 'source_type', 'version'] as const) {
       expect(e[k]).toBeDefined();
     }
   });
   it('Fact : person, type, valeur, contexte?, source, timestamp, confidence, version, visibility, lien evidences', () => {
     const f = createFact({ ...scope, fact_id: 'f', fact_type: 'bio', value: 'x', source: 's', timestamp: base.timestamp, confidence: 'high' });
-    for (const k of ['contactId', 'ownerId', 'fact_type', 'value', 'source', 'timestamp', 'confidence', 'version', 'visibility', 'evidence_ids'] as const) {
+    for (const k of ['about', 'ownerId', 'fact_type', 'value', 'source', 'timestamp', 'confidence', 'version', 'visibility', 'evidence_ids'] as const) {
       expect(f[k]).toBeDefined();
     }
   });
   it('OpenKnowledge : person, type, concept, relation, intensité, contexte, source, timestamp, confidence, explicite/inféré, version, visibility, evidences', () => {
     const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'INTEREST', subject: asSubjectId('photo argentique'), subjectLabel: 'photo argentique', relation: 'passion', intensity: 'strong', context: 'leisure', source: 's', timestamp: base.timestamp, confidence: 'high', assertionStatus: 'declared' });
-    for (const k of ['contactId', 'ownerId', 'type', 'subject', 'subjectLabel', 'relation', 'intensity', 'context', 'source', 'timestamp', 'confidence', 'assertionStatus', 'version', 'visibility', 'evidence_ids'] as const) {
+    for (const k of ['about', 'ownerId', 'type', 'subject', 'subjectLabel', 'relation', 'intensity', 'context', 'source', 'timestamp', 'confidence', 'assertionStatus', 'version', 'visibility', 'evidence_ids'] as const) {
       expect(ok[k]).toBeDefined();
     }
   });
   it('Signal : person, famille, identité du construct, contextes, evidences, timestamp, confidence, version, visibility', () => {
     const s = consolidateInterests(scope, [interestEv('e1', 's1', 'conversation', 'photo')])[0];
-    for (const k of ['contactId', 'ownerId', 'family', 'contexts', 'evidenceIds', 'confidence', 'version', 'visibility'] as const) {
+    for (const k of ['about', 'ownerId', 'family', 'contexts', 'evidenceIds', 'confidence', 'version', 'visibility'] as const) {
       expect(s[k]).toBeDefined();
     }
-    expect(signalKey(scope.contactId, s)).toContain('INTEREST');
+    expect(signalKey(scope.about, s)).toContain('INTEREST');
   });
   it('ExtractionRecord : person, source, modèle, version, productions', () => {
     const x = createExtractionRecord({ ...scope, extraction_id: 'x', source_id: 's', timestamp: base.timestamp, extractor: { model: 'claude', promptVersion: 'v1' }, producedEntityIds: [asEntityId('e')] });
-    for (const k of ['contactId', 'ownerId', 'source_id', 'extractor', 'version', 'producedEvidenceIds', 'producedOpenKnowledgeIds', 'producedEntityIds'] as const) {
+    for (const k of ['about', 'ownerId', 'source_id', 'extractor', 'version', 'producedEvidenceIds', 'producedOpenKnowledgeIds', 'producedEntityIds'] as const) {
       expect(x[k]).toBeDefined();
     }
   });
@@ -110,7 +110,7 @@ describe('22 — deux SignalSnapshot distinguent les trois causes de changement 
     createProfileEvidence({ ...base, evidence_id: 'e1', source_id: 's1', target_construct: 'PROFILE_OPENNESS', value: 1, context: 'GLOBAL' }),
   ]);
   function snap(takenAt: string, signal: typeof sig): SignalSnapshot {
-    return { signalKey: signalKey(scope.contactId, signal), takenAt, signal };
+    return { signalKey: signalKey(scope.about, signal), takenAt, signal };
   }
   it('le modèle a changé : version du signal différente', () => {
     const a = snap('2026-01-01T00:00:00Z', sig);

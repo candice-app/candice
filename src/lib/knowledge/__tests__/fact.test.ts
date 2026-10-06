@@ -3,10 +3,10 @@
 import { describe, expect, it } from 'vitest';
 import { createFact, isSensitiveFact } from '../fact';
 import { createSourceRecord } from '../sources';
-import { asContactId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asUserId, type KnowledgeScope } from '../identity';
 import { effectiveExposure } from '../visibility';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 
 describe('Test 24 — un FACT peut ne produire aucun signal (0 est normal, §11.1)', () => {
   it('evidence_ids vide par défaut, le FACT existe quand même', () => {

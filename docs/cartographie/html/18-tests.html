@@ -1,0 +1,132 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>18 — Tests</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>18 — Tests (ce qui est couvert vs ce qui ne l&#39;est pas)</h1>
+<blockquote>
+<p>Constats factuels. Exécution de référence : <code>npm run test</code> (= <code>vitest run</code>, non interactif).</p>
+</blockquote>
+<h2>Totaux</h2>
+<ul>
+<li><strong>Fichiers de test</strong> : <strong>10</strong> (tous sous <code>src/lib/…</code>, <code>find src -name &quot;*.test.ts*&quot;</code>).</li>
+<li><strong>Nombre de tests</strong> : <strong>165 tests</strong>, <strong>10 fichiers</strong> — tous passants.<ul>
+<li>Sortie <code>vitest run</code> (v4.1.11) : <code>Test Files 10 passed (10)</code> / <code>Tests 165 passed (165)</code> / <code>Duration 238ms</code>.</li>
+</ul>
+</li>
+<li>Framework : <strong>Vitest</strong> (<code>package.json</code> → <code>&quot;test&quot;: &quot;vitest run&quot;</code>, dép. <code>vitest ^4.1.7</code>, ici v4.1.11).</li>
+</ul>
+<h2>Détail par fichier de test (ce que ça couvre, en clair)</h2>
+<table>
+<thead>
+<tr>
+<th>Fichier</th>
+<th>Ce que ça vérifie</th>
+<th>Nb tests</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>src/lib/attention/scoring.test.ts</code></td>
+<td>Calcul du score d&#39;attention (« langage d&#39;amour » côté réception) : valeurs brutes attendues par levier (MOT, GES, SER, EXP, CAD, SUR), cas issus de la « bible ».</td>
+<td>28</td>
+</tr>
+<tr>
+<td><code>src/lib/temperament/scoring.test.ts</code></td>
+<td>Calcul du tempérament : introversion/extraversion, besoin d&#39;espace, réaction au stress et au conflit, intensités.</td>
+<td>25</td>
+</tr>
+<tr>
+<td><code>src/lib/lifestyle/scoring.test.ts</code></td>
+<td>Calcul du style de vie : profils « foodie », premium/simplicité, expérience vs objet, authenticité/luxe, exigence de standing.</td>
+<td>20</td>
+</tr>
+<tr>
+<td><code>src/lib/profile/visibility.test.ts</code></td>
+<td>Matrice de visibilité V2 : quelles sections sont visibles selon le type de vue (pilote, 2e personne, lien public, filtre invité, socle), complétude de la matrice, place de la wishlist.</td>
+<td>20</td>
+</tr>
+<tr>
+<td><code>src/lib/discovery/dataPresence.test.ts</code></td>
+<td>Moteur Discovery — présence de données : une question n&#39;est proposée que si la donnée est absente ; cas parfums (structurés vs legacy), odeurs détestées, « risque parfum ».</td>
+<td>17</td>
+</tr>
+<tr>
+<td><code>src/lib/profile/synthesis.test.ts</code></td>
+<td>Synthèse de profil : profil vide → tableaux vides ; extraction des dimensions dominantes réception/expression ; détection de contraste ; touchInsights et avoidAlerts ; label « besoin de contrôle ».</td>
+<td>12</td>
+</tr>
+<tr>
+<td><code>src/lib/profile/v2-metrics.test.ts</code></td>
+<td>Métriques fiche V2 : podium à 7 barres (dimensions réelles, jamais « Présence »), libellés verrouillés, barème de largeurs, tri ; anneau de connaissance (source unique, plafonné tant que questions restantes).</td>
+<td>12</td>
+</tr>
+<tr>
+<td><code>src/lib/discovery/guard-paths.test.ts</code></td>
+<td>Garde du moteur Discovery (chemins ②/③) : question jamais servie si donnée en fiche, GET sans écriture, statuts answered/archived/skipped, écriture du statut par <code>recordAnswer</code>.</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>src/lib/profile/share-sections.test.ts</code></td>
+<td>Groupes de partage ↔ matrice V2 : couverture exacte des sections cochables, absence de doublon de clé, défauts de sélection, non-partage de la wishlist, intersection stricte du scope.</td>
+<td>8</td>
+</tr>
+<tr>
+<td><code>src/lib/attention/breathFacts.test.ts</code></td>
+<td>« Faits de respiration » : cas de congruence multi-profils, profil unique, vrai écart réception/expression, cas vide (tout à zéro → neutre).</td>
+<td>4</td>
+</tr>
+</tbody></table>
+<ul>
+<li>Décompte par comptage manuel des <code>it(</code>/<code>test(</code> : ≈ 154 ; le décompte <strong>autoritatif de <code>vitest run</code> est 165</strong> (l&#39;écart vient des tests paramétrés/<code>.each</code>). C&#39;est <strong>165</strong> qui fait foi.</li>
+</ul>
+<h2>Grands domaines NON couverts par des tests (factuel)</h2>
+<p>Tous les fichiers de test sont concentrés sur la <strong>logique de calcul pure</strong> (<code>src/lib/attention</code>, <code>src/lib/temperament</code>, <code>src/lib/lifestyle</code>, <code>src/lib/profile</code>, <code>src/lib/discovery</code>). Aucun test trouvé (<code>find src -name &quot;*.test.ts*&quot;</code>) pour les domaines suivants :</p>
+<ul>
+<li><strong>Les 87 routes API</strong> (<code>src/app/api/**/route.ts</code>) : aucune n&#39;a de test. Cela inclut :<ul>
+<li>Compte / RGPD : <code>account/delete</code>, <code>account/export</code>, <code>account/export-download</code>, <code>account/cancel-deletion</code>.</li>
+<li>Consentement et partage : <code>contacts/[id]/consent</code>, <code>profile-view/request</code>, <code>profile-view/lookup</code>, <code>share-link/create</code>, <code>share-link/[linkId]/revoke</code>, <code>shared-profile/complete</code>.</li>
+<li>Réservation invisible / wishlist : <code>wishlist/photo</code>, <code>carnet/identify</code> (aucun test des RPC de réservation <code>reserve_wishlist_item</code> / <code>confirm_wishlist_purchase</code>).</li>
+<li>Recommandations et suggestions : <code>recommendations/generate</code>, <code>proactive-suggestions/[id]/validate</code>.</li>
+<li>Abonnement : <code>subscription/pause</code>, <code>subscription/resume</code>.</li>
+<li>Invitations : <code>invite/create</code>, <code>invite/link</code>, <code>invite/nudge</code>.</li>
+<li>Emails et tâches planifiées (cron) : <code>emails/*</code>, <code>cron/*</code> (5 routes).</li>
+<li>Confidences / souvenirs : <code>confidences</code>, <code>memories/situation</code>.</li>
+<li>Accès bêta : <code>beta-access</code>.</li>
+</ul>
+</li>
+<li><strong>Les pages et composants React</strong> (<code>src/app/**/page.tsx</code>, <code>src/components/**</code>) : aucun test de rendu ou d&#39;interaction. Notamment <code>OnboardingProgressCard</code>, <code>NewContactFlow</code>, <code>QuestionnaireForm</code>, <code>ProactiveSuggestionDetail</code>, l&#39;Espace Proche (<code>EspaceProcheShell</code>).</li>
+<li><strong>Les règles d&#39;accès en base (RLS)</strong> : aucune vérification automatisée que les policies isolent bien les données entre utilisateurs (aucun test de base de données).</li>
+<li><strong>Les fonctions de génération d&#39;analyse de bout en bout</strong> : <code>src/lib/profile/generateProfileAnalysis.ts</code> (le point d&#39;entrée qui assemble tout) n&#39;a pas de test dédié ; seuls des sous-modules (synthesis, scoring, metrics) sont testés isolément.</li>
+<li><strong>Le moteur de recommandations</strong> <code>src/lib/recommendations/engine.ts</code> et <code>src/lib/recommendations/questions.ts</code> : pas de test.</li>
+<li><strong>La détection de signaux / cadence</strong> : <code>src/lib/signals/detector.ts</code>, <code>src/lib/signals/generator.ts</code>, logique de cadence — pas de test.</li>
+<li><strong>Les liens de partage</strong> <code>src/lib/share-links.ts</code> et <strong>les URLs d&#39;avatar/notifications</strong> (<code>src/lib/profile/avatar-url.ts</code>, <code>src/lib/notifications/email-reminder.ts</code>) : pas de test.</li>
+<li><strong>Les intégrations externes</strong> (Supabase, modèle IA Anthropic, emails Resend, notifications push VAPID) : aucun test (ni réel, ni simulé).</li>
+</ul>
+<p>En résumé : les <strong>calculs de profil</strong> (attention, tempérament, lifestyle, synthèse, visibilité, podium, garde Discovery) sont couverts par 165 tests unitaires ; <strong>tout le reste</strong> (routes API, base/RLS, UI, intégrations, génération de bout en bout, reco, signaux, partage, abonnement, RGPD) n&#39;a aucun test automatisé.</p>
+</body></html>

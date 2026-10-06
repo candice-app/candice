@@ -1,0 +1,911 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>06 — Questionnaire initial</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>06 — Questionnaire initial (pilote)</h1>
+<blockquote>
+<p>Ce que le pilote remplit quand il crée / complète son profil. Ordre RÉEL de passation, libellés VERBATIM, options VERBATIM, colonne de stockage.
+Sources : <code>src/app/moi/questionnaire/QuestionnaireFlow.tsx</code> (ordre <code>STEP_ORDER</code>), les 8 composants d&#39;étape, et les 3 banques de questions (<code>src/lib/attention/questions.ts</code>, <code>src/lib/temperament/questions.ts</code>, <code>src/lib/lifestyle/questions.ts</code>).
+Toutes les réponses sont écrites dans la table <code>my_profile</code> (base : <code>my_profile</code>), une ligne par pilote (<code>user_id</code>).</p>
+</blockquote>
+<hr>
+<h2>Ordre réel de passation</h2>
+<p>Défini par <code>STEP_ORDER</code> (fichier : <code>src/app/moi/questionnaire/QuestionnaireFlow.tsx</code>, l.114-122). Les écrans « Breath » intercalaires (respiration Candice) ne sont pas des questions : ce sont des textes de transition générés après chaque bloc. L&#39;ordre des ÉCRANS DE QUESTIONS est :</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Étape (Step)</th>
+<th>Composant</th>
+<th>Libellé bandeau</th>
+<th>Bloc de questions</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td><code>gender</code></td>
+<td><code>GenderStep.tsx</code></td>
+<td>« Avant de commencer »</td>
+<td>2 questions</td>
+</tr>
+<tr>
+<td>1</td>
+<td><code>attention</code></td>
+<td><code>AttentionStep.tsx</code></td>
+<td>« 01 — 07 » Langage d&#39;attention</td>
+<td>4 questions réception (q1-q4) + 1 expression (qe)</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>temperament2</code></td>
+<td><code>TemperamentStep.tsx</code></td>
+<td>« 02 — 07 » Mon énergie relationnelle</td>
+<td>q5-q8</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>temperament3</code></td>
+<td><code>TemperamentStep.tsx</code></td>
+<td>« 03 — 07 » Communication &amp; décision</td>
+<td>q9-q11</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>lifestyle4</code></td>
+<td><code>LifestyleStep.tsx</code></td>
+<td>« 04 — 07 » Ce que j&#39;aime vivre</td>
+<td>q12-q16, q4a-q4d (9 questions)</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>lifestyle5</code></td>
+<td><code>AvoidStep.tsx</code></td>
+<td>« 05 — 07 » Ce qu&#39;il vaut mieux éviter</td>
+<td>q17 (texte libre) + q18 + q19</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>singularity6</code></td>
+<td><code>SingularityStep.tsx</code></td>
+<td>« 06 — 07 » Ce qui me rend unique</td>
+<td>centres d&#39;intérêt + 11 champs texte libre</td>
+</tr>
+<tr>
+<td>7</td>
+<td><code>practical7</code></td>
+<td><code>PracticalStep.tsx</code></td>
+<td>« 07 — 07 » Informations pratiques</td>
+<td>identité, alimentation, tailles, goûts, agenda…</td>
+</tr>
+</tbody></table>
+<p>Après chaque étape, <code>triggerSynthesis()</code> appelle <code>POST /api/profile/generate</code> (fire-and-forget) pour recalculer l&#39;analyse. À la fin : écran <code>ClosingMoment</code>.</p>
+<p>Statut de l&#39;écran : ✅ tout est câblé et actif.</p>
+<p><strong>Écran d&#39;accueil (<code>OnboardingPopup</code>)</strong> : montré une seule fois aux nouveaux profils avant <code>gender</code> ; <code>EditMenu</code> (menu de modification) montré aux profils existants (permet de reprendre, sauter à une partie via <code>?part=</code>, ou tout refaire).</p>
+<hr>
+<h2>Étape 0 — Genre (<code>GenderStep.tsx</code>)</h2>
+<p>Eyebrow : <strong>« Avant de commencer »</strong></p>
+<h3>Q0.1 — Adresse grammaticale</h3>
+<ul>
+<li><strong>Libellé VERBATIM :</strong> « Comment veux-tu que Candice s&#39;adresse à toi ? »</li>
+<li><strong>Type :</strong> choix unique (boutons)</li>
+<li><strong>Obligatoire :</strong> OUI (le bouton « Continuer » reste inactif tant que rien n&#39;est choisi)</li>
+<li><strong>Options VERBATIM</strong> (<code>GRAMMATICAL_OPTIONS</code>) :<ul>
+<li>« Au féminin » → <code>feminine</code></li>
+<li>« Au masculin » → <code>masculine</code></li>
+<li>« En neutre » → <code>neutral</code></li>
+<li>« Je préfère ne pas préciser » → <code>unspecified</code></li>
+</ul>
+</li>
+<li><strong>Colonne :</strong> <code>my_profile.grammatical_gender</code> (valeur = la string ci-dessus)</li>
+</ul>
+<h3>Q0.2 — Orientation de style</h3>
+<ul>
+<li><strong>Libellé VERBATIM :</strong> « Pour les vêtements, accessoires et parfums, tu te retrouves le plus dans… »</li>
+<li><strong>Sous-texte VERBATIM :</strong> « Plusieurs réponses possibles »</li>
+<li><strong>Type :</strong> choix multiple</li>
+<li><strong>Obligatoire :</strong> NON</li>
+<li><strong>Options VERBATIM</strong> (<code>STYLE_OPTIONS</code>) :<ul>
+<li>« Les rayons femme » → <code>femme</code></li>
+<li>« Les rayons homme » → <code>homme</code></li>
+<li>« Les deux, selon les pièces » → <code>mixte</code></li>
+<li>« Plutôt unisexe ou non genré » → <code>unisexe</code></li>
+<li>« Ça dépend, mieux vaut me demander » → <code>depends</code></li>
+</ul>
+</li>
+<li><strong>Colonne :</strong> <code>my_profile.style_gender_orientation</code> (tableau, ou <code>null</code> si vide)</li>
+</ul>
+<hr>
+<h2>Étape 1 — Langage d&#39;attention (<code>AttentionStep.tsx</code>)</h2>
+<p>Eyebrow : <strong>« Candice apprend ton langage d&#39;attention »</strong>. Chaque bloc de question porte le sur-titre <strong>« Candice t&#39;écoute »</strong>.</p>
+<p>Mécanique commune aux 5 questions : on choisit <strong>jusqu&#39;à 3 réponses, la 1re compte le plus</strong> (classement s1/s2/s3, badge de rang). Micro-texte VERBATIM sous q1-q4 : « Choisis jusqu&#39;à 3 réponses. La première compte le plus. »
+<strong>Obligatoire :</strong> OUI pour les 5 questions (le CTA « Continuer » exige que les 5 aient au moins une réponse).
+Chaque option porte des dimensions internes (<code>dims</code>) parmi : MOT, SER, CAD_C, CAD_S, EXP, GES, SUR (jamais affichées).</p>
+<p>Source : <code>src/lib/attention/questions.ts</code>.</p>
+<h3>Q1 (<code>q1</code>) — « Je me sens le plus aimé(e) quand … »</h3>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Label VERBATIM</th>
+<th>Sous-texte VERBATIM</th>
+<th>dims</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>q1a</td>
+<td>On me dit des mots sincères</td>
+<td>Un compliment vrai, une reconnaissance dite à voix haute.</td>
+<td>MOT</td>
+</tr>
+<tr>
+<td>q1b</td>
+<td>On m&#39;aide concrètement sans que je demande</td>
+<td>Quelqu&#39;un qui allège ma charge avant même que je l&#39;exprime.</td>
+<td>SER, GES</td>
+</tr>
+<tr>
+<td>q1c</td>
+<td>On me fait un cadeau pensé spécialement pour moi</td>
+<td>Un objet choisi pour moi, pas acheté au hasard.</td>
+<td>CAD_C</td>
+</tr>
+<tr>
+<td>q1d</td>
+<td>On me fait un cadeau chargé de sens</td>
+<td>Quelque chose qui porte une histoire, une intention.</td>
+<td>CAD_S</td>
+</tr>
+<tr>
+<td>q1e</td>
+<td>On me consacre un vrai moment de qualité</td>
+<td>Du temps pleinement présent, sans distraction ni écran.</td>
+<td>EXP</td>
+</tr>
+<tr>
+<td>q1f</td>
+<td>On pense à moi dans les petits détails du quotidien</td>
+<td>Des micro-attentions régulières, pas réservées aux grandes occasions.</td>
+<td>GES</td>
+</tr>
+<tr>
+<td>q1g</td>
+<td>On me surprend avec quelque chose d&#39;inattendu</td>
+<td>L&#39;imprévu, l&#39;effet de surprise qui crée l&#39;émotion.</td>
+<td>SUR</td>
+</tr>
+</tbody></table>
+<h3>Q2 (<code>q2</code>) — « Une attention réussie, pour moi, c&#39;est surtout … »</h3>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Label VERBATIM</th>
+<th>Sous-texte VERBATIM</th>
+<th>dims</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>q2a</td>
+<td>Quelque chose qui montre qu&#39;on m&#39;a écouté(e)</td>
+<td>La preuve qu&#39;on a retenu un détail que j&#39;avais glissé.</td>
+<td>CAD_C, GES</td>
+</tr>
+<tr>
+<td>q2b</td>
+<td>Quelque chose qui tombe au bon moment</td>
+<td>Le bon geste, juste quand j&#39;en avais besoin.</td>
+<td>GES, SER</td>
+</tr>
+<tr>
+<td>q2c</td>
+<td>Quelque chose qui crée un souvenir</td>
+<td>Un moment ou un objet dont on reparlera plus tard.</td>
+<td>EXP, CAD_S</td>
+</tr>
+<tr>
+<td>q2d</td>
+<td>Quelque chose qui me facilite vraiment la vie</td>
+<td>Une aide qui retire un poids concret de mes épaules.</td>
+<td>SER</td>
+</tr>
+<tr>
+<td>q2e</td>
+<td>Quelque chose de simple mais sincère</td>
+<td>Peu importe le prix, ce qui compte c&#39;est l&#39;intention.</td>
+<td>MOT, GES</td>
+</tr>
+<tr>
+<td>q2f</td>
+<td>Quelque chose que je n&#39;avais pas vu venir</td>
+<td>L&#39;effet de surprise, ce petit choc heureux.</td>
+<td>SUR</td>
+</tr>
+<tr>
+<td>q2g</td>
+<td>Quelque chose de beau, choisi avec goût</td>
+<td>Le soin, l&#39;esthétique, la qualité du choix.</td>
+<td>CAD_C</td>
+</tr>
+</tbody></table>
+<h3>Q3 (<code>q3</code>) — « Ce qui me touche le plus durablement … »</h3>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Label VERBATIM</th>
+<th>Sous-texte VERBATIM</th>
+<th>dims</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>q3a</td>
+<td>Une phrase qui reste en tête</td>
+<td>Des mots que je me répète encore longtemps après.</td>
+<td>MOT</td>
+</tr>
+<tr>
+<td>q3b</td>
+<td>Un geste fait sans bruit, mais au bon moment</td>
+<td>Une attention discrète qui montre qu&#39;on a vu mon besoin.</td>
+<td>GES, SER</td>
+</tr>
+<tr>
+<td>q3c</td>
+<td>Un objet qui a une histoire</td>
+<td>Quelque chose chargé de mémoire, pas juste neuf.</td>
+<td>CAD_S</td>
+</tr>
+<tr>
+<td>q3d</td>
+<td>Une expérience partagée dont on reparlera longtemps</td>
+<td>Un moment vécu ensemble qui devient un repère commun.</td>
+<td>EXP</td>
+</tr>
+<tr>
+<td>q3e</td>
+<td>Une surprise parfaitement pensée</td>
+<td>L&#39;imprévu, mais préparé avec soin et justesse.</td>
+<td>SUR, CAD_C</td>
+</tr>
+<tr>
+<td>q3f</td>
+<td>Une aide concrète quand j&#39;en ai vraiment besoin</td>
+<td>Un soutien réel dans les moments où je manque de ressources.</td>
+<td>SER</td>
+</tr>
+<tr>
+<td>q3g</td>
+<td>Un détail qui prouve qu&#39;on me connaît vraiment</td>
+<td>Le petit signe qui dit : on me connaît pour de vrai.</td>
+<td>CAD_C, GES</td>
+</tr>
+</tbody></table>
+<h3>Q4 (<code>q4</code>) — « Entre deux attentions, je préfère … »</h3>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Label VERBATIM</th>
+<th>Sous-texte VERBATIM</th>
+<th>dims</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>q4a</td>
+<td>Une petite attention régulière</td>
+<td>La constance vaut mieux qu&#39;un grand geste isolé.</td>
+<td>GES</td>
+</tr>
+<tr>
+<td>q4b</td>
+<td>Un grand moment rare mais marquant</td>
+<td>Peu souvent, mais quelque chose qu&#39;on n&#39;oublie pas.</td>
+<td>EXP</td>
+</tr>
+<tr>
+<td>q4c</td>
+<td>Une aide concrète quand j&#39;en ai besoin</td>
+<td>Du soutien réel plutôt que des mots.</td>
+<td>SER</td>
+</tr>
+<tr>
+<td>q4d</td>
+<td>Un mot sincère au bon moment</td>
+<td>La bonne phrase, dite au moment juste.</td>
+<td>MOT</td>
+</tr>
+<tr>
+<td>q4e</td>
+<td>Un cadeau qui a du sens</td>
+<td>Le symbole compte plus que la valeur.</td>
+<td>CAD_S</td>
+</tr>
+<tr>
+<td>q4f</td>
+<td>Une surprise qui casse la routine</td>
+<td>L&#39;inattendu qui réveille le quotidien.</td>
+<td>SUR</td>
+</tr>
+<tr>
+<td>q4g</td>
+<td>Un objet choisi avec précision</td>
+<td>Le bon objet, choisi avec exigence et justesse.</td>
+<td>CAD_C</td>
+</tr>
+</tbody></table>
+<p><em>(Note : cet <code>q4</code> « attention » est distinct des <code>q4a</code>-<code>q4d</code> du lifestyle — même préfixe, banques différentes.)</em></p>
+<h3>QE (<code>qe</code>) — Expression (sous séparateur « Comment tu donnes »)</h3>
+<ul>
+<li><strong>Libellé VERBATIM :</strong> « Et toi, comment montres-tu naturellement ton attention aux autres ? »</li>
+<li><strong>Micro VERBATIM :</strong> « Choisis jusqu&#39;à 3 réponses. Cela aidera Candice à comprendre les décalages possibles entre ce que tu donnes naturellement et ce que les autres attendent. »</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>Label VERBATIM</th>
+<th>Sous-texte VERBATIM</th>
+<th>dims</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>qea</td>
+<td>Je dis ce que je ressens, je complimente, je rassure</td>
+<td>Je mets des mots sur ce que je ressens pour les autres.</td>
+<td>MOT</td>
+</tr>
+<tr>
+<td>qeb</td>
+<td>J&#39;aide, je rends service sans qu&#39;on me le demande</td>
+<td>Je montre que je tiens à quelqu&#39;un en l&#39;aidant concrètement.</td>
+<td>SER</td>
+</tr>
+<tr>
+<td>qec</td>
+<td>J&#39;offre des cadeaux choisis avec soin</td>
+<td>Je traduis mon affection par un objet bien choisi.</td>
+<td>CAD_C</td>
+</tr>
+<tr>
+<td>qed</td>
+<td>J&#39;offre des choses qui ont du sens, une histoire</td>
+<td>J&#39;aime les attentions chargées de symbole.</td>
+<td>CAD_S</td>
+</tr>
+<tr>
+<td>qee</td>
+<td>Je passe du vrai temps de qualité avec les gens</td>
+<td>Ma façon d&#39;aimer, c&#39;est d&#39;être pleinement présent(e).</td>
+<td>EXP</td>
+</tr>
+<tr>
+<td>qef</td>
+<td>J&#39;ai mille petites attentions au quotidien</td>
+<td>Je montre que je pense à l&#39;autre dans les détails.</td>
+<td>GES</td>
+</tr>
+<tr>
+<td>qeg</td>
+<td>J&#39;aime faire des surprises</td>
+<td>J&#39;exprime mon affection en créant de l&#39;inattendu.</td>
+<td>SUR</td>
+</tr>
+</tbody></table>
+<p><strong>Colonnes (étape 1) :</strong></p>
+<ul>
+<li><code>my_profile.attention_answers</code> — réponses brutes (JSON <code>{reception: [...], expression: [...]}</code>)</li>
+<li><code>my_profile.attention_reception</code> — scoring réception (dominant/secondaire/tertiaire), calculé en code (<code>scoreAttention</code>)</li>
+<li><code>my_profile.attention_expression</code> — scoring expression</li>
+<li><code>my_profile.attention_computed_at</code> — horodatage</li>
+<li><code>my_profile.attention_breath_text</code> — texte de respiration généré (via <code>POST /api/attention/breath</code>)</li>
+</ul>
+<hr>
+<h2>Étape 2 — Mon énergie relationnelle (<code>TemperamentStep.tsx</code>, <code>STEP2_QUESTIONS</code>)</h2>
+<p>Eyebrow : <strong>« Mon énergie relationnelle »</strong>. Type : <strong>choix unique</strong> par question. Micro VERBATIM (q5-q11) : « Choisis la réponse qui te ressemble le plus. » <strong>Obligatoire :</strong> OUI (les 4 doivent être répondues). Chaque option porte des <code>deltas</code> (axes tempérament) et parfois un <code>mode</code> (conflit/stress/décision/canal), non affichés.
+Source : <code>src/lib/temperament/questions.ts</code>.</p>
+<h3>Q5 (<code>q5</code>) — « Quand je recharge mes batteries… »</h3>
+<ul>
+<li>q5_1 « J&#39;ai besoin de moments seul(e) » — « Le calme et la solitude me régénèrent vraiment. »</li>
+<li>q5_2 « Je préfère les petits groupes » — « Quelques personnes proches plutôt qu&#39;une foule. »</li>
+<li>q5_3 « Ça dépend des jours » — « Mon énergie sociale varie selon les moments. »</li>
+<li>q5_4 « J&#39;aime être entouré(e) » — « La présence des autres me donne de l&#39;énergie. »</li>
+<li>q5_5 « Plus c&#39;est animé, mieux c&#39;est » — « J&#39;aime le mouvement, la stimulation, l&#39;effervescence. »</li>
+</ul>
+<h3>Q6 (<code>q6</code>) — « Quand je suis stressé(e), j&#39;ai tendance à… »</h3>
+<ul>
+<li>q6_1 « Garder pour moi, faire bonne figure » — « J&#39;encaisse en silence plutôt que de le montrer. » <em>(mode stress : silence)</em></li>
+<li>q6_2 « Me retirer, avoir besoin de calme » — « J&#39;ai besoin de m&#39;isoler pour me reposer. » <em>(stress : retrait)</em></li>
+<li>q6_3 « En parler, me confier » — « Mettre des mots dessus m&#39;aide à aller mieux. » <em>(stress : parole)</em></li>
+<li>q6_4 « Agir, me mettre en mouvement » — « Faire quelque chose vaut mieux que ruminer. » <em>(stress : action)</em></li>
+<li>q6_5 « Chercher à contrôler ce que je peux » — « Reprendre la main sur les détails me rassure. » <em>(stress : contrôle)</em></li>
+</ul>
+<h3>Q7 (<code>q7</code>) — « Face à un désaccord, je… »</h3>
+<ul>
+<li>q7_1 « En parle directement » — « J&#39;aborde le sujet franchement, sans tourner autour. » <em>(conflit : direct)</em></li>
+<li>q7_2 « Ai besoin de temps avant d&#39;en parler » — « Je dois digérer avant de pouvoir en discuter. » <em>(conflit : temporisateur)</em></li>
+<li>q7_3 « Évite le conflit autant que possible » — « Je préfère préserver la paix, quitte à me taire. » <em>(conflit : évitant)</em></li>
+<li>q7_4 « Dédramatise avec l&#39;humour » — « Je désamorce les tensions par une touche légère. » <em>(conflit : humour)</em></li>
+<li>q7_5 « Écris plus facilement que je ne parle » — « À l&#39;écrit, je trouve mieux mes mots. » <em>(canal : écrit)</em></li>
+</ul>
+<h3>Q8 (<code>q8</code>) — « Dans une relation, ce dont j&#39;ai le plus besoin… »</h3>
+<ul>
+<li>q8_1 « De stabilité et de constance » — « Savoir sur quoi je peux compter, durablement. »</li>
+<li>q8_2 « De liberté et d&#39;espace » — « Pouvoir respirer sans me sentir enfermé(e). »</li>
+<li>q8_3 « De profondeur et d&#39;échanges vrais » — « Des conversations qui vont au-delà du superficiel. »</li>
+<li>q8_4 « De légèreté et de rire » — « Du plaisir, de la fluidité, sans lourdeur. » <em>(conflit : humour)</em></li>
+<li>q8_5 « De loyauté dans les moments difficiles » — « Être là quand ça compte vraiment. »</li>
+<li>q8_6 « De respect de mon rythme » — « Qu&#39;on n&#39;impose pas une cadence qui n&#39;est pas la mienne. »</li>
+</ul>
+<hr>
+<h2>Étape 3 — Communication &amp; décision (<code>TemperamentStep.tsx</code>, <code>STEP3_QUESTIONS</code>)</h2>
+<p>Eyebrow : <strong>« Communication &amp; décision »</strong>. Choix unique, micro identique, obligatoires.</p>
+<h3>Q9 (<code>q9</code>) — « Pour communiquer, je préfère… »</h3>
+<ul>
+<li>q9_1 « Aller droit au but » — « L&#39;efficacité et la clarté, sans détour. »</li>
+<li>q9_2 « Parler de ce que je ressens » — « Mettre l&#39;émotion au cœur de l&#39;échange. »</li>
+<li>q9_3 « Tout analyser en profondeur » — « Comprendre le fond avant d&#39;avancer. » <em>(décision : analytique)</em></li>
+<li>q9_4 « Garder ça léger, avec humour » — « Désamorcer et alléger par le rire. » <em>(conflit : humour)</em></li>
+<li>q9_5 « Écrire plutôt que parler » — « À l&#39;écrit, je m&#39;exprime plus juste. » <em>(canal : écrit)</em></li>
+</ul>
+<h3>Q10 (<code>q10</code>) — « Pour mes grandes décisions, je… »</h3>
+<ul>
+<li>q10_1 « Analyse les pour et les contre » — « Je pèse rationnellement avant de trancher. » <em>(décision : rationnel)</em></li>
+<li>q10_2 « Fais confiance à mon instinct » — « Je me fie à ce que je ressens. » <em>(décision : intuitif)</em></li>
+<li>q10_3 « Demande l&#39;avis des proches » — « Le regard des gens de confiance compte. » <em>(décision : social)</em></li>
+<li>q10_4 « Fais des recherches approfondies » — « Je veux maîtriser le sujet avant de choisir. » <em>(décision : analytique)</em></li>
+<li>q10_5 « Attends que ce soit clair en moi » — « Je laisse maturer jusqu&#39;à la certitude intérieure. » <em>(décision : maturation)</em></li>
+</ul>
+<h3>Q11 (<code>q11</code>) — « J&#39;exprime mes émotions… »</h3>
+<ul>
+<li>q11_1 « Assez librement » — « Je montre ce que je ressens sans filtre. »</li>
+<li>q11_2 « Avec quelques personnes de confiance » — « Je m&#39;ouvre, mais dans un cercle restreint. »</li>
+<li>q11_3 « Par mes actes plus que par mes mots » — « Je préfère prouver que déclarer. »</li>
+<li>q11_4 « Rarement, je préfère garder ça pour moi » — « Mes émotions restent surtout intérieures. »</li>
+<li>q11_5 « Souvent après coup, quand j&#39;ai compris ce que je ressens » — « Je comprends mes émotions avec un temps de décalage. »</li>
+</ul>
+<p><strong>Colonnes (étapes 2-3) :</strong></p>
+<ul>
+<li><code>my_profile.temperament_answers</code> — réponses brutes <code>{q5: &quot;q5_1&quot;, …}</code></li>
+<li><code>my_profile.temperament_axes</code> — 9 axes scorés en code (<code>scoreTemperament</code>)</li>
+<li><code>my_profile.temperament_modes</code> — modes conflit/stress/décision/canal</li>
+<li><code>my_profile.temperament_computed_at</code> — horodatage</li>
+</ul>
+<hr>
+<h2>Étape 4 — Ce que j&#39;aime vivre (<code>LifestyleStep.tsx</code>, <code>STEP4_QUESTIONS</code>)</h2>
+<p>Eyebrow : <strong>« Ce que j&#39;aime vivre »</strong>. Choix unique, micro « Choisis la réponse qui te ressemble le plus. », obligatoires (les 9 questions). 9 questions : q12-q16 + q4a-q4d.
+Source : <code>src/lib/lifestyle/questions.ts</code>.</p>
+<h3>Q12 (<code>q12</code>) — « Quand quelqu&#39;un m&#39;invite ou m&#39;offre quelque chose… »</h3>
+<ul>
+<li>q12_1 « N&#39;importe quelle attention sincère me touche » — « L&#39;intention compte bien plus que le standing. »</li>
+<li>q12_2 « Quelque chose de bien choisi, même simple » — « Le soin du choix me touche plus que le prix. »</li>
+<li>q12_3 « Un certain niveau de qualité compte pour moi » — « J&#39;apprécie quand c&#39;est fait avec exigence. »</li>
+<li>q12_4 « Les détails influencent beaucoup mon expérience » — « Un détail raté peut gâcher l&#39;ensemble pour moi. »</li>
+<li>q12_5 « Pas de préférence, je n&#39;y suis pas attaché(e) » — « Ces détails ne pèsent pas dans mon plaisir. »</li>
+</ul>
+<h3>Q13 (<code>q13</code>) — « Pour les cadeaux, je préfère… »</h3>
+<ul>
+<li>q13_1 « Des expériences » — « Vivre quelque chose plutôt que posséder. »</li>
+<li>q13_2 « Des objets à garder » — « Quelque chose de tangible qui dure. »</li>
+<li>q13_3 « Les deux me touchent » — « Je suis sensible à l&#39;un comme à l&#39;autre. »</li>
+<li>q13_4 « Des choses utiles » — « Ce qui me sert vraiment au quotidien. »</li>
+<li>q13_5 « Des choses symboliques » — « Ce qui porte un sens, une mémoire. »</li>
+</ul>
+<h3>Q14 (<code>q14</code>) — « Pour les cadeaux matériels, ce qui me touche le plus… »</h3>
+<ul>
+<li>q14_1 « Un objet utile et bien pensé » — « L&#39;usage avant tout, mais pensé. »</li>
+<li>q14_2 « Quelque chose qui montre qu&#39;on m&#39;a écouté(e) » — « La preuve qu&#39;on a retenu un détail. »</li>
+<li>q14_3 « Un objet beau et de qualité » — « L&#39;esthétique et la matière comptent. »</li>
+<li>q14_4 « Un objet de valeur symbolique » — « Ce qui a un sens dépasse l&#39;objet. »</li>
+<li>q14_5 « Je préfère les expériences aux objets » — « Au fond, je retiens les moments. »</li>
+</ul>
+<h3>Q15 (<code>q15</code>) — « Ma relation à la nourriture et aux restaurants… »</h3>
+<ul>
+<li>q15_1 « J&#39;aime manger partout » — « Peu exigeant(e), je m&#39;adapte facilement. »</li>
+<li>q15_2 « Je suis gourmand(e) » — « Le plaisir de la table, la convivialité. »</li>
+<li>q15_3 « J&#39;adore les belles tables » — « Le cadre et l&#39;expérience comptent. »</li>
+<li>q15_4 « La gastronomie est une passion » — « Un vrai sujet d&#39;expertise pour moi. »</li>
+<li>q15_5 « Je mange pour vivre » — « La nourriture n&#39;est pas centrale chez moi. »</li>
+</ul>
+<h3>Q16 (<code>q16</code>) — « Si on m&#39;offre un week-end, ce qui compte le plus… »</h3>
+<ul>
+<li>q16_1 « La destination avant tout » — « Découvrir un lieu nouveau. »</li>
+<li>q16_2 « Un hôtel confortable et bien situé » — « Le confort et la praticité priment. »</li>
+<li>q16_3 « Le charme et l&#39;authenticité » — « Un lieu qui a une âme. »</li>
+<li>q16_4 « Le luxe et le service » — « Être pleinement choyé(e). »</li>
+<li>q16_5 « L&#39;important, c&#39;est d&#39;être ensemble » — « Le lieu compte moins que la compagnie. »</li>
+</ul>
+<h3>Q4a (<code>q4a</code>) — « Mon rapport au temps et à l&#39;organisation… »</h3>
+<ul>
+<li>q4a_1 « J&#39;anticipe et je planifie à l&#39;avance » — « Savoir où je vais me rassure. »</li>
+<li>q4a_2 « Je gère au fil de l&#39;eau » — « Je préfère rester souple. »</li>
+<li>q4a_3 « La ponctualité compte beaucoup pour moi » — « Le retard me coûte. »</li>
+<li>q4a_4 « Je suis souvent un peu en retard, sans malice » — « Le temps m&#39;échappe parfois. »</li>
+<li>q4a_5 « La charge mentale m&#39;épuise vite » — « Trop à gérer me déborde. »</li>
+</ul>
+<h3>Q4b (<code>q4b</code>) — « Mon rapport à la qualité et au standing… »</h3>
+<ul>
+<li>q4b_1 « La qualité compte, même si je n&#39;en parle pas » — « Je le remarque sans l&#39;exiger. »</li>
+<li>q4b_2 « Je préfère la simplicité authentique au luxe » — « Le vrai vaut mieux que le clinquant. »</li>
+<li>q4b_3 « J&#39;aime le beau et le raffinement » — « Le soin esthétique me touche. »</li>
+<li>q4b_4 « Le prix m&#39;importe peu, c&#39;est l&#39;intention » — « La valeur n&#39;est pas dans le coût. »</li>
+<li>q4b_5 « Je suis sensible aux belles marques et aux lieux d&#39;exception » — « L&#39;excellence me parle. »</li>
+</ul>
+<h3>Q4c (<code>q4c</code>) — « Quand on organise quelque chose pour moi… »</h3>
+<ul>
+<li>q4c_1 « J&#39;aime tout savoir à l&#39;avance » — « Pas d&#39;inconnue, ça me détend. »</li>
+<li>q4c_2 « J&#39;aime garder une part de surprise » — « Un peu d&#39;inconnu, mais pas trop. »</li>
+<li>q4c_3 « J&#39;aime être totalement surpris(e) » — « L&#39;imprévu total m&#39;enchante. »</li>
+<li>q4c_4 « J&#39;ai besoin de valider les détails » — « Je préfère avoir un droit de regard. »</li>
+<li>q4c_5 « Je m&#39;adapte facilement » — « Je fais confiance et je suis le mouvement. »</li>
+</ul>
+<h3>Q4d (<code>q4d</code>) — « Pour rester en contact, je préfère… »</h3>
+<ul>
+<li>q4d_1 « Un appel téléphonique » — « Entendre la voix, le vrai échange. » <em>(canal : oral)</em></li>
+<li>q4d_2 « Un message écrit » — « Asynchrone, à mon rythme. » <em>(canal : écrit)</em></li>
+<li>q4d_3 « Un vocal » — « Spontané mais sans contrainte d&#39;horaire. » <em>(canal : hybride)</em></li>
+<li>q4d_4 « En personne, rien ne remplace » — « La présence physique avant tout. » <em>(canal : présentiel)</em></li>
+<li>q4d_5 « Peu importe, selon le moment » — « Je m&#39;adapte au canal. » <em>(canal : flexible)</em></li>
+</ul>
+<p><strong>Colonnes (étape 4) :</strong></p>
+<ul>
+<li><code>my_profile.lifestyle_answers</code> — réponses brutes</li>
+<li><code>my_profile.lifestyle_axes</code> — 6 axes lifestyle (<code>scoreLifestyle</code>)</li>
+<li><code>my_profile.temperament_axes</code> / <code>temperament_modes</code> — enrichis par les « suppléments » transversaux (q4a-q4d nourrissent aussi le tempérament / le canal)</li>
+</ul>
+<hr>
+<h2>Étape 5 — Ce qu&#39;il vaut mieux éviter (<code>AvoidStep.tsx</code>, <code>STEP5_CHOICE_QUESTIONS</code>)</h2>
+<p>Eyebrow : <strong>« Ce qu&#39;il vaut mieux éviter »</strong>. 3 items : un texte libre (q17) + 2 choix uniques (q18, q19). <strong>Obligatoire :</strong> seuls q18 ET q19 sont requis pour le CTA ; q17 est facultatif.</p>
+<h3>Q17 — Texte libre (optionnel)</h3>
+<ul>
+<li><strong>Eyebrow VERBATIM :</strong> « En toutes lettres »</li>
+<li><strong>Libellé VERBATIM :</strong> « Ce qu&#39;il vaut mieux éviter avec moi… »</li>
+<li><strong>Helper VERBATIM :</strong> « Aucune obligation — réponds instinctivement, ou laisse vide. »</li>
+<li><strong>Placeholder VERBATIM :</strong> « ex. les surprises, les annulations de dernière minute, certaines blagues, le bruit, les espaces bondés… »</li>
+<li><strong>Type :</strong> texte libre (textarea) + dictée vocale (<code>VoiceButton</code>)</li>
+<li><strong>Traitement :</strong> si texte &gt; 4 caractères, <code>POST /api/lifestyle/extract-filters</code> extrait une liste d&#39;interdits.</li>
+<li><strong>Colonnes :</strong> <code>my_profile.relational_filters.q17Text</code> (texte brut) et <code>relational_filters.q17Interdits</code> (interdits extraits par IA)</li>
+</ul>
+<h3>Q18 (<code>q18</code>) — « Le type de surprise que je détesterais… »</h3>
+<ul>
+<li>q18_1 « Une surprise devant beaucoup de monde » — « L&#39;attention publique me met mal à l&#39;aise. »</li>
+<li>q18_2 « Une surprise qui change mon planning » — « Bousculer mon organisation me stresse. »</li>
+<li>q18_3 « Une surprise trop intime ou trop intense » — « Trop d&#39;émotion exposée me gêne. »</li>
+<li>q18_4 « Une surprise mal organisée » — « L&#39;amateurisme gâche tout pour moi. »</li>
+<li>q18_5 « Je suis plutôt partant(e) pour tout » — « J&#39;accueille la surprise avec plaisir. »</li>
+</ul>
+<h3>Q19 (<code>q19</code>) — « Ce qui me blesse le plus dans une relation… »</h3>
+<ul>
+<li>q19_1 « Ne pas être écouté(e) » — « Avoir l&#39;impression de parler dans le vide. »</li>
+<li>q19_2 « Être oublié(e) ou mis(e) de côté » — « Sentir que je ne compte pas. »</li>
+<li>q19_3 « Être envahi(e) ou contrôlé(e) » — « Manquer d&#39;air dans la relation. »</li>
+<li>q19_4 « Les reproches ou critiques répétées » — « La critique constante m&#39;use. »</li>
+<li>q19_5 « Le manque de fiabilité » — « Ne pas pouvoir compter sur quelqu&#39;un. »</li>
+<li>q19_6 « Le manque de profondeur » — « Les relations superficielles me lassent. »</li>
+</ul>
+<p><strong>Colonnes (étape 5) :</strong> <code>my_profile.lifestyle_answers</code> (q18/q19), <code>my_profile.relational_filters</code> (filtres dérivés + q17), <code>my_profile.lifestyle_computed_at</code>.</p>
+<hr>
+<h2>Étape 6 — Ce qui me rend unique (<code>SingularityStep.tsx</code> + <code>InterestsQuestion.tsx</code>)</h2>
+<p>Eyebrow : <strong>« Ce qui me rend unique »</strong>. Intro VERBATIM :</p>
+<blockquote>
+<p>« Aucune obligation — réponds à ce qui t&#39;inspire, laisse le reste vide. Ces détails donnent à Candice la matière la plus personnelle. »</p>
+</blockquote>
+<p><strong>Tout est facultatif.</strong> Chaque champ texte dispose d&#39;un bouton de dictée vocale.</p>
+<h3>6.A — Centres d&#39;intérêt (<code>InterestsQuestion.tsx</code>)</h3>
+<ul>
+<li><strong>Libellé VERBATIM :</strong> « Mes centres d&#39;intérêt »</li>
+<li><strong>Helper VERBATIM :</strong> « Sélectionne dans l&#39;ordre — le premier compte le plus pour Candice. »</li>
+<li><strong>Type :</strong> choix multiple classé (rangs) + sous-détails</li>
+<li><strong>13 catégories VERBATIM</strong> (<code>INTEREST_CATEGORIES</code>) : Lecture · Cuisine &amp; gastronomie · Sport · Musique · Ciné &amp; séries · Art &amp; culture · Voyage · Mode &amp; beauté · Tech &amp; jeux · Nature &amp; jardinage · Bien-être · Déco &amp; maison · Vin &amp; spiritueux</li>
+<li><strong>Sous-détails selon la catégorie :</strong><ul>
+<li>Lecture → « Genre préféré » (chips) : Romans, BD &amp; mangas, Dév perso, Essais, Polars, Beaux livres, Poésie, Jeunesse, Autre</li>
+<li>Sport → « Lequel ? » (texte libre, placeholder « Ex : tennis, yoga, escalade… »)</li>
+<li>Musique → « Quel style ? » (texte libre « Ex : jazz, rock, rap, classique… ») + case « Concerts / live »</li>
+<li>Voyage → « Type de voyage » (chips) : City-trips, Nature, Dépaysement total, Gastronomie, Culture, Bien-être, Aventure, Autre</li>
+<li>Mode &amp; beauté → « Des marques aimées ? » (texte libre « Ex : Isabel Marant, Zara, Aesop… »)</li>
+</ul>
+</li>
+<li><strong>Champ libre commun VERBATIM :</strong> « Autre chose ? (facultatif) » — placeholder « Passions moins connues, collections, hobbies… »</li>
+<li><strong>Colonne :</strong> <code>my_profile.singularity_answers.interests</code> (objet <code>{ items: [{id, rank, details}], freeText }</code>)</li>
+</ul>
+<h3>6.B — 11 champs texte libre</h3>
+<p>Ordre d&#39;affichage VERBATIM (label / sous-texte s&#39;il existe / placeholder) → clé de stockage dans <code>my_profile.singularity_answers</code> :</p>
+<table>
+<thead>
+<tr>
+<th>Label VERBATIM</th>
+<th>Sous-texte VERBATIM</th>
+<th>Placeholder VERBATIM</th>
+<th>Clé</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Ce que j&#39;adore faire</td>
+<td>—</td>
+<td>ex. escalade, séries coréennes, cuisiner pour les autres, randonnée, brocantes, musées…</td>
+<td><code>adore_faire</code></td>
+</tr>
+<tr>
+<td>Ce que j&#39;évite ou déteste</td>
+<td>—</td>
+<td>ex. sports collectifs, jeux de société, soirées bruyantes, surprises…</td>
+<td><code>evite_deteste</code></td>
+</tr>
+<tr>
+<td>Les sujets qui me stimulent vraiment</td>
+<td>—</td>
+<td>ex. startups, psychologie, voyages, football, mode, musique 90s…</td>
+<td><code>sujets_stimulants</code></td>
+</tr>
+<tr>
+<td>Ce que peu de gens savent sur moi</td>
+<td>—</td>
+<td>ex. j&#39;adore les mangas, j&#39;ai peur de l&#39;avion, je fais de la poterie…</td>
+<td><code>peu_savent</code></td>
+</tr>
+<tr>
+<td>Le plus beau cadeau ou moment qu&#39;on m&#39;ait offert</td>
+<td>—</td>
+<td>ex. un week-end surprise bien pensé, une lettre manuscrite, un concert inoubliable…</td>
+<td><code>plus_beau_cadeau</code></td>
+</tr>
+<tr>
+<td>Le genre de détail qui me fait me sentir compris(e)</td>
+<td>—</td>
+<td>ex. qu&#39;on se souvienne de ce que j&#39;ai dit il y a trois mois, qu&#39;on adapte sans que je demande…</td>
+<td><code>detail_compris</code></td>
+</tr>
+<tr>
+<td>Les marques, objets ou lieux que j&#39;aime</td>
+<td>Les enseignes et endroits où tu te sens à ta place.</td>
+<td>ex. Aesop, les librairies indépendantes, Le Bon Marché, la papeterie japonaise, un bar à vin précis…</td>
+<td><code>marques_lieux</code></td>
+</tr>
+<tr>
+<td>Les cadeaux que je n&#39;aimerais pas recevoir</td>
+<td>Ce qui, même offert avec gentillesse, tombe à plat pour toi.</td>
+<td>ex. bougies, fleurs coupées, gadgets, objets « déco » impersonnels, bons d&#39;achat…</td>
+<td><code>cadeaux_non</code></td>
+</tr>
+<tr>
+<td>Mes envies ou rêves du moment</td>
+<td>Ce dont tu as envie en ce moment, petit ou grand.</td>
+<td>ex. apprendre la céramique, partir au Japon, un certain sac, me remettre au piano…</td>
+<td><code>envies_reves</code></td>
+</tr>
+<tr>
+<td>Ce que j&#39;aimerais qu&#39;on remarque davantage chez moi</td>
+<td>Ce que tu donnes et qui passe parfois inaperçu.</td>
+<td>ex. mes efforts, mon humour, mon écoute, mon travail, ma cuisine…</td>
+<td><code>remarquer</code></td>
+</tr>
+<tr>
+<td>Ce qui me fait me sentir spécial(e)</td>
+<td>Le sentiment d&#39;être unique aux yeux de quelqu&#39;un.</td>
+<td>ex. qu&#39;on se souvienne d&#39;un détail, qu&#39;on prépare quelque chose rien que pour moi, qu&#39;on prenne du temps…</td>
+<td><code>sentir_special</code></td>
+</tr>
+</tbody></table>
+<p><strong>Colonne :</strong> <code>my_profile.singularity_answers</code> (objet).</p>
+<hr>
+<h2>Étape 7 — Informations pratiques (<code>PracticalStep.tsx</code>)</h2>
+<p>Eyebrow : <strong>« Informations pratiques »</strong>. <strong>Aucun champ obligatoire</strong> (CTA « Terminer » toujours actif).
+Encart RGPD en tête (VERBATIM) :</p>
+<blockquote>
+<p>« Ces informations restent strictement privées. Elles ne seront jamais affichées à tes proches. Elles servent uniquement à éviter les recommandations maladroites : mauvais restaurant, mauvaise taille, cadeau incompatible, lieu inaccessible. »</p>
+</blockquote>
+<p>Tous les champs sont écrits dans <code>my_profile.practical_info</code> (objet), + <code>my_profile.practical_computed_at</code>.</p>
+<h3>Section « Identité »</h3>
+<ul>
+<li><strong>Prénom</strong> — texte libre, placeholder « Ton prénom » → <code>prenom</code></li>
+<li><strong>Sexe</strong> — choix unique (pills) → <code>sexe</code> : « Femme » (<code>femme</code>), « Homme » (<code>homme</code>), « Non-binaire » (<code>non_binaire</code>), « Préfère ne pas préciser » (<code>ne_se_prononce_pas</code>)</li>
+<li><strong>Âge</strong> — texte libre, placeholder « ex. 32 » → <code>age</code></li>
+<li><strong>Profession</strong> — texte libre, placeholder « ex. infirmière, développeur, enseignant… » → <code>profession</code></li>
+</ul>
+<h3>Section « Alimentation »</h3>
+<ul>
+<li><strong>Allergies alimentaires</strong> — choix multiple → <code>allergies</code> : « Aucune » (<code>aucune</code>), « Gluten » (<code>gluten</code>), « Lactose » (<code>lactose</code>), « Fruits à coque » (<code>fruits_a_coque</code>), « Fruits de mer » (<code>fruits_de_mer</code>), « Autre » (<code>autre</code>)</li>
+<li><strong>Régime alimentaire</strong> — choix unique → <code>regime</code> : « Omnivore » (<code>omnivore</code>), « Végétarien » (<code>vegetarien</code>), « Vegan » (<code>vegan</code>), « Halal » (<code>halal</code>), « Casher » (<code>casher</code>), « Sans préférence » (<code>sans_preference</code>), « Autre » (<code>autre</code>)</li>
+<li><strong>Rapport à l&#39;alcool</strong> — choix unique → <code>alcool</code> : « Je bois » (<code>je_bois</code>), « Je n&#39;en bois pas » (<code>ne_bois_pas</code>), « Occasionnel » (<code>occasionnel</code>), « Éviter les lieux centrés alcool » (<code>eviter_lieux</code>)</li>
+</ul>
+<h3>Section « Confort »</h3>
+<ul>
+<li><strong>Mobilité / santé / confort</strong> — texte libre → <code>mobilite_sante</code>. Note VERBATIM : « Mobilité, santé, confort physique — utile pour éviter les lieux inadaptés. » Placeholder « ex. genou fragile, dos sensible, je ne peux pas faire de longues marches… »</li>
+</ul>
+<h3>Section « Tailles »</h3>
+<p>Titre VERBATIM : « Quelles tailles te vont généralement le mieux ? » (note « Pour éviter les erreurs de cadeau vestimentaire. »). 4 champs texte :</p>
+<ul>
+<li>Vêtements (« ex. M, L, 40… ») → <code>taille_vetements</code></li>
+<li>Chaussures (« ex. 42, EU 38… ») → <code>taille_chaussures</code></li>
+<li>Pantalon (« ex. 40, 32×32… ») → <code>taille_pantalon</code></li>
+<li>Bague (« ex. 52, taille 7… ») → <code>taille_bague</code></li>
+</ul>
+<h3>Section « Goûts »</h3>
+<ul>
+<li><strong>Parfums et odeurs aimées</strong> — choix multiple → <code>parfums</code> : « Frais » (<code>frais</code>), « Poudré » (<code>poudre</code>), « Boisé » (<code>boise</code>), « Floral » (<code>floral</code>), « Gourmand » (<code>gourmand</code>), « Ambré » (<code>ambre</code>), « Discret » (<code>discret</code>), « Sans parfum » (<code>sans_parfum</code>)</li>
+<li><strong>Odeurs ou parfums que je déteste</strong> — texte libre → <code>odeurs_detestees</code> (placeholder « ex. muscs forts, patchouli, parfums sucrés entêtants… »)</li>
+<li><strong>Couleurs, matières, style</strong> — texte libre → <code>couleurs_matieres</code> (placeholder « ex. tons neutres, lin et soie, minimaliste — ou couleurs vives, vintage, bohème… »)</li>
+</ul>
+<h3>Section « Pratique »</h3>
+<ul>
+<li><strong>Adresse de livraison</strong> — texte libre → <code>adresse_livraison</code> (note « Pour les envois — jamais partagée avec tes proches. » ; jamais affichée aux tiers)</li>
+<li><strong>Animaux de compagnie</strong> — texte libre → <code>animaux</code> (placeholder « ex. un chien, deux chats, aucun… »)</li>
+</ul>
+<h3>Section « Agenda »</h3>
+<ul>
+<li><strong>Dates importantes</strong> — gestionnaire multi-entrées → <code>dates_importantes</code> (tableau). Note « Anniversaire, fête, mariage, dates symboliques — pour ne jamais les rater. » Chaque entrée : type (Anniversaire / Fête / Mariage / Date personnelle / Date symbolique / Autre), <strong>date (obligatoire pour valider une entrée avant d&#39;en ajouter une autre)</strong>, libellé personnalisé, récurrence (« Chaque année » / « Une seule fois »), importance (« Faible » / « Normale » / « Forte »), rappel (« 30 jours » / « 14 jours » / « 7 jours » / « Pas de rappel »).</li>
+<li><strong>Ton rôle et lien familial</strong> — choix multiple → <code>role_familial</code> : « Conjoint·e » (<code>conjoint</code>), « Ami·e » (<code>ami</code>), « Père » (<code>pere</code>), « Mère » (<code>mere</code>), « Enfant » (<code>enfant</code>), « Frère / Sœur » (<code>frere_soeur</code>), « Beaux-parents » (<code>beaux_parents</code>), « Collègue » (<code>collegue</code>), « Autre » (<code>autre</code>)</li>
+</ul>
+<h3>Vetos dérivés (calcul en code, <code>deriveVetos</code>)</h3>
+<p><code>practical_info.vetos</code> = <code>{ no_alcohol, halal, casher, mobility_constraints, allergies }</code> déduits automatiquement des champs ci-dessus.</p>
+<hr>
+<h2>Tableau récapitulatif — champs TEXTE LIBRE et leur destination</h2>
+<table>
+<thead>
+<tr>
+<th>Champ (VERBATIM)</th>
+<th>Étape</th>
+<th>Colonne / clé dans <code>my_profile</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>« Ce qu&#39;il vaut mieux éviter avec moi… » (q17)</td>
+<td>5</td>
+<td><code>relational_filters.q17Text</code> (+ <code>q17Interdits</code> extraits par IA)</td>
+</tr>
+<tr>
+<td>Sport → « Lequel ? »</td>
+<td>6</td>
+<td><code>singularity_answers.interests.items[].details.quel_sport</code></td>
+</tr>
+<tr>
+<td>Musique → « Quel style ? »</td>
+<td>6</td>
+<td><code>singularity_answers.interests.items[].details.style</code></td>
+</tr>
+<tr>
+<td>Mode → « Des marques aimées ? »</td>
+<td>6</td>
+<td><code>singularity_answers.interests.items[].details.marques</code></td>
+</tr>
+<tr>
+<td>« Autre chose ? (facultatif) »</td>
+<td>6</td>
+<td><code>singularity_answers.interests.freeText</code></td>
+</tr>
+<tr>
+<td>Ce que j&#39;adore faire</td>
+<td>6</td>
+<td><code>singularity_answers.adore_faire</code></td>
+</tr>
+<tr>
+<td>Ce que j&#39;évite ou déteste</td>
+<td>6</td>
+<td><code>singularity_answers.evite_deteste</code></td>
+</tr>
+<tr>
+<td>Les sujets qui me stimulent vraiment</td>
+<td>6</td>
+<td><code>singularity_answers.sujets_stimulants</code></td>
+</tr>
+<tr>
+<td>Ce que peu de gens savent sur moi</td>
+<td>6</td>
+<td><code>singularity_answers.peu_savent</code></td>
+</tr>
+<tr>
+<td>Le plus beau cadeau ou moment qu&#39;on m&#39;ait offert</td>
+<td>6</td>
+<td><code>singularity_answers.plus_beau_cadeau</code></td>
+</tr>
+<tr>
+<td>Le genre de détail qui me fait me sentir compris(e)</td>
+<td>6</td>
+<td><code>singularity_answers.detail_compris</code></td>
+</tr>
+<tr>
+<td>Les marques, objets ou lieux que j&#39;aime</td>
+<td>6</td>
+<td><code>singularity_answers.marques_lieux</code></td>
+</tr>
+<tr>
+<td>Les cadeaux que je n&#39;aimerais pas recevoir</td>
+<td>6</td>
+<td><code>singularity_answers.cadeaux_non</code></td>
+</tr>
+<tr>
+<td>Mes envies ou rêves du moment</td>
+<td>6</td>
+<td><code>singularity_answers.envies_reves</code></td>
+</tr>
+<tr>
+<td>Ce que j&#39;aimerais qu&#39;on remarque davantage chez moi</td>
+<td>6</td>
+<td><code>singularity_answers.remarquer</code></td>
+</tr>
+<tr>
+<td>Ce qui me fait me sentir spécial(e)</td>
+<td>6</td>
+<td><code>singularity_answers.sentir_special</code></td>
+</tr>
+<tr>
+<td>Prénom</td>
+<td>7</td>
+<td><code>practical_info.prenom</code></td>
+</tr>
+<tr>
+<td>Âge</td>
+<td>7</td>
+<td><code>practical_info.age</code></td>
+</tr>
+<tr>
+<td>Profession</td>
+<td>7</td>
+<td><code>practical_info.profession</code></td>
+</tr>
+<tr>
+<td>Mobilité / santé / confort</td>
+<td>7</td>
+<td><code>practical_info.mobilite_sante</code></td>
+</tr>
+<tr>
+<td>Tailles (vêtements, chaussures, pantalon, bague)</td>
+<td>7</td>
+<td><code>practical_info.taille_vetements</code> / <code>taille_chaussures</code> / <code>taille_pantalon</code> / <code>taille_bague</code></td>
+</tr>
+<tr>
+<td>Odeurs ou parfums que je déteste</td>
+<td>7</td>
+<td><code>practical_info.odeurs_detestees</code></td>
+</tr>
+<tr>
+<td>Couleurs, matières, style</td>
+<td>7</td>
+<td><code>practical_info.couleurs_matieres</code></td>
+</tr>
+<tr>
+<td>Adresse de livraison</td>
+<td>7</td>
+<td><code>practical_info.adresse_livraison</code> (privée, jamais affichée)</td>
+</tr>
+<tr>
+<td>Animaux de compagnie</td>
+<td>7</td>
+<td><code>practical_info.animaux</code></td>
+</tr>
+<tr>
+<td>Dates importantes → libellé</td>
+<td>7</td>
+<td><code>practical_info.dates_importantes[].label</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>À noter : les textes libres NE sont jamais affichés bruts aux tiers. Ils sont paraphrasés/fondus par le LLM de synthèse (voir <code>07-analyse-profil.md</code>), sauf les faits pratiques factuels affichés sur la fiche.</p>
+</blockquote>
+</body></html>

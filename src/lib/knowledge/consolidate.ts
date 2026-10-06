@@ -8,7 +8,7 @@
 // Lot A bis : chaque famille produit son signal TYPÉ (union discriminée), portant la
 // sémantique que le lot A perdait (relation, relationship, severity, value…). La
 // consolidation est toujours celle d'UNE personne : elle prend un `scope`
-// (contactId + ownerId) que porte chaque signal produit.
+// (about + ownerId) que porte chaque signal produit.
 //
 // Les evidences sont un journal en AJOUT SEUL ; l'état consolidé en est dérivé,
 // donc entièrement recalculable. Aucune fonction ici ne mute une evidence.
@@ -268,7 +268,7 @@ function baseFrom(
   opts: { allowGlobal?: boolean; coherent?: boolean; visibility?: VisibilityPolicy; supportingFacts?: readonly Fact[] } = {},
 ): SignalBase {
   return {
-    contactId: scope.contactId,
+    about: scope.about,
     ownerId: scope.ownerId,
     score: computeScore(inputs),
     confidence: computeConfidence(inputs),
@@ -619,7 +619,7 @@ export function consolidateAffection(
   extra: { affectionCadence?: AffectionCadence; regularityImportance?: number | null; supportingFacts?: readonly Fact[] } = {},
 ): AffectionSignalSet {
   return {
-    contactId: scope.contactId,
+    about: scope.about,
     ownerId: scope.ownerId,
     receive: buildAffectionVector(scope, evidences, 'receive', extra.supportingFacts),
     give: buildAffectionVector(scope, evidences, 'give', extra.supportingFacts),

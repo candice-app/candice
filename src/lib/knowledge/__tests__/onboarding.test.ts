@@ -36,10 +36,10 @@ import {
 import type { EvidenceValue, ProfileDirectionalCode } from '../vocabulary';
 import type { ProfileEvidence } from '../evidence';
 import { consolidateProfileConstruct } from '../consolidate';
-import { asContactId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asUserId, type KnowledgeScope } from '../identity';
 import { JOURNAL_VERSION_STAMP } from '../version';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 
 /* ── Helpers de recomptage, uniquement depuis le code. ── */
 const active = activeOptions();
@@ -299,7 +299,7 @@ describe('Test 34 — SPONTANEITY / PREMIUM : `unknown` via consolidate', () => 
     m.profileEvidences
       .filter((p) => p.construct !== 'SOCIAL_ENERGY')
       .map((p, i) => ({
-        contactId: asContactId('c1'),
+        about: contactAbout(asContactId('c1')),
         ownerId: asUserId('u1'),
         evidence_id: `${m.optionRef}:${i}`,
         source_id: m.optionRef,

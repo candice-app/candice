@@ -1,0 +1,406 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>07 — Analyse du profil</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>07 — Le pipeline d&#39;analyse du profil (<code>generateProfileAnalysis</code>)</h1>
+<blockquote>
+<p>Comment Candice transforme les réponses du questionnaire en une « fiche profil » lisible. Ce qui est calculé en code (DÉTERMINISTE, reproductible) vs. ce qui passe par un modèle de langage (LLM).
+Sources : <code>src/lib/profile/generateProfileAnalysis.ts</code> (767 l.), <code>src/lib/profile/synthesis.ts</code>, <code>src/lib/profile/v2-metrics.ts</code>.
+Sortie écrite dans la table <code>profile_analysis</code> (base : <code>profile_analysis</code>), une ligne par pilote (<code>contact_id = null</code>).
+Déclencheur : <code>POST /api/profile/generate</code>, appelé en fire-and-forget après chaque étape du questionnaire (<code>triggerSynthesis</code>).</p>
+</blockquote>
+<hr>
+<h2>Vue d&#39;ensemble — 9 étapes</h2>
+<p><code>generateProfileAnalysis(userId, contactId, supabase)</code> :</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Étape</th>
+<th>Nature</th>
+<th>Détail</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Lecture du profil</td>
+<td>DÉTERMINISTE</td>
+<td>lit <code>my_profile</code> (attention, tempérament, lifestyle, filtres, pratique, singularité, discovery, genre)</td>
+</tr>
+<tr>
+<td>—</td>
+<td>Garde</td>
+<td>DÉTERMINISTE</td>
+<td>si <code>attention_reception</code> OU <code>attention_expression</code> absent → <strong>skip</strong> (<code>reason: &quot;insufficient_data&quot;</code>). Jamais d&#39;analyse sur input quasi-vide.</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Calcul des « faits »</td>
+<td>DÉTERMINISTE</td>
+<td><code>computeProfileSynthesis</code> — scoring de toutes les dimensions, radar 7 axes, labels de niveau</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Genre grammatical</td>
+<td>DÉTERMINISTE</td>
+<td><code>resolveGender</code> (grammatical_gender, fallback sexe)</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Extraction d&#39;entités</strong></td>
+<td><strong>LLM (Haiku)</strong></td>
+<td>marques / lieux / hobbies / événements depuis 4 champs texte libre</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Mémoires récentes</td>
+<td>DÉTERMINISTE</td>
+<td>lit 8 dernières <code>memories</code> actives (<code>sanitized_summary</code>)</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Synthèse narrative</strong></td>
+<td><strong>LLM (Sonnet)</strong></td>
+<td>produit tout le texte de la fiche en un seul appel</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Label de source</td>
+<td>DÉTERMINISTE</td>
+<td><code>questionnaire[+memories][+discovery]</code></td>
+</tr>
+<tr>
+<td>8</td>
+<td>Scores de dimension</td>
+<td>DÉTERMINISTE</td>
+<td>interne, jamais affiché</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Upsert <code>profile_analysis</code></td>
+<td>DÉTERMINISTE</td>
+<td>+ pré-calcul Discovery (inactif, voir 08)</td>
+</tr>
+</tbody></table>
+<p>Tout est journalisé dans <code>processing_log</code> (correlation_id, step, status, durée). L&#39;échec du LLM de synthèse bascule sur un <strong>fallback déterministe</strong> (aucun texte inventé — champs vides gérés par l&#39;UI).</p>
+<hr>
+<h2>Les 2 appels LLM</h2>
+<h3>Appel 1 — Extraction d&#39;entités (Haiku)</h3>
+<p>Fonction : <code>extractEntities</code> (l.83-116).</p>
+<ul>
+<li><strong>Modèle VERBATIM :</strong> <code>claude-haiku-4-5-20251001</code></li>
+<li><strong>max_tokens :</strong> 500</li>
+<li><strong>Rôle :</strong> extraire les entités nommées de 4 champs texte libre concaténés — <code>singularity.marques_lieux</code>, <code>adore_faire</code>, <code>sujets_stimulants</code>, <code>envies_reves</code> (message user tronqué à 800 caractères). Si le texte combiné fait &lt; 10 caractères → retourne des listes vides sans appeler le LLM.</li>
+<li><strong>PROMPT SYSTÈME VERBATIM :</strong></li>
+</ul>
+<pre><code>Extrais les entités nommées du texte. Retourne uniquement du JSON valide :
+{&quot;brands&quot;:[&quot;...&quot;],&quot;places&quot;:[&quot;...&quot;],&quot;hobbies&quot;:[&quot;...&quot;],&quot;events&quot;:[&quot;...&quot;],&quot;brands_categorized&quot;:[{&quot;name&quot;:&quot;...&quot;,&quot;category&quot;:&quot;...&quot;}]}
+- brands : marques, enseignes, créateurs
+- places : restaurants, villes, lieux nommés
+- hobbies : activités, passions nommées
+- events : occasions, fêtes, événements nommés
+- brands_categorized : chaque marque de &quot;brands&quot; avec sa catégorie parmi EXACTEMENT :
+  Mode, Beauté, Soin, Bijoux, Maison, Accessoires, Design, Autre
+Ne génère que le JSON, sans explication.
+</code></pre>
+<ul>
+<li><strong>Sortie :</strong> <code>{ brands, places, hobbies, events, brands_categorized }</code> → colonne <code>profile_analysis.entities</code>. <code>brands_categorized</code> alimente les « marques catégorisées » de la fiche V2.</li>
+</ul>
+<h3>Appel 2 — Synthèse narrative (Sonnet)</h3>
+<p>Fonction : <code>generateProfileAnalysis</code>, l.578-588.</p>
+<ul>
+<li><strong>Modèle VERBATIM :</strong> <code>claude-sonnet-4-6</code></li>
+<li><strong>max_tokens :</strong> 3000</li>
+<li><strong>Rôle :</strong> rédiger la fiche profil complète (2e personne « tu » + 3e personne pour les proches), en UN seul appel transversal (jamais dimension par dimension). Ton Candice, jamais clinique/score/%.</li>
+<li><strong>Message user :</strong> construit par <code>buildAnalysisPrompt</code> — sérialise tous les « faits » calculés (attention, ce qui touche, à éviter, style relationnel, communication, attentions idéales/à éviter, lifestyle, labels de niveau, singularité, réponses discovery, contexte pratique de calibrage, parfums, esthétique, q17, centres d&#39;intérêt, radar 7 axes usage interne, mémoires récentes). Complété par une ligne <code>NIVEAUX « CE QUI MARCHE »</code> (calculés déterministes, à respecter).</li>
+</ul>
+<p><strong>PROMPT SYSTÈME VERBATIM (<code>buildSystemPrompt</code>, l.331-428)</strong> — <code>${genderInstruction}</code> est l&#39;une des 3 consignes de genre selon feminine/masculine/neutral :</p>
+<pre><code>Tu es Candice. Tu rédiges la fiche profil intime d&#39;une personne à partir de l&#39;ensemble de ses réponses.
+
+${genderInstruction(gender)}
+
+RÈGLES D&#39;ÉCRITURE ABSOLUES :
+- Ton : « tu sembles », « on devine », « quelque chose revient souvent », « chez toi »
+- JAMAIS clinique, coach, MBTI/psy, &quot;profil&quot;, &quot;analyse&quot;, &quot;score&quot;, &quot;compatibilité&quot;
+- Humain, fin, légèrement émotionnel, nuancé, toujours positif dans la formulation
+- Français, tutoiement (tu) pour summary / sections ; 3e personne pour summary_third_person
+- JAMAIS de troncature « … » : chaque phrase est complète
+- Candice ne juge jamais. Candice traduit.
+
+RÈGLES SUR LES SECTIONS :
+- Analyse GLOBALE et transversale — JAMAIS dimension par dimension
+- Si deux sections proches disent la même chose (ex: attention ≈ feels_loved), FUSIONNE-les en une lecture commune plus forte, et laisse l&#39;autre vide (&quot;text&quot;: &quot;&quot;, &quot;chips&quot;: [])
+- &quot;attention&quot; = comment la personne REÇOIT l&#39;attention des autres (les langages dans lesquels ELLE SE SENT aimée)
+- &quot;feels_loved&quot; = les situations concrètes qui lui font vivre cela — PAS ce qu&#39;elle donne, PAS comment elle exprime
+- &quot;what_touches&quot; = ce qui la touche profondément (émotions, gestes, moments)
+- Zéro redondance entre sections : un chip ou une idée n&#39;apparaît que dans UNE seule section
+
+RÈGLES SUR LES CHIPS :
+- Courts (2-5 mots max), nets, non-redondants
+- INTERDIT : fragments bruts (&quot;Aime planifier et anticiper&quot;), mots répétés dans 3+ sections
+- Chips informatifs et actionables pour un proche (ex: &quot;Cadeaux expérience&quot;, &quot;Hôtel boutique&quot;, &quot;Pas de surprises&quot;)
+- Chips TOUJOURS compréhensibles hors contexte, du point de vue de la personne.
+  INTERDIT : formulations ambiguës dont on ne sait pas qui est « toi »
+  (ex. INTERDIT : &quot;Marque connue de toi&quot; → écrire &quot;Une de tes marques fétiches&quot;)
+- Si une sensibilité au luxe ou au premium ressort des réponses, traduis-la en
+  un chip dans &quot;gifts&quot; (ex: &quot;sensible au luxe&quot;, &quot;belles maisons&quot;) — ce n&#39;est
+  plus un axe affiché, c&#39;est un tag d&#39;analyse
+
+RÈGLES SPÉCIFIQUES POUR L&#39;ENRICHISSEMENT :
+- ANALYSER = ENRICHIR, jamais résumer. Rends la fiche la plus riche et la plus vivante possible sans jamais citer verbatim les réponses ouvertes.
+- CONTEXTE DE CALIBRAGE : le bloc CONTEXTE (âge, profession, rôle familial) sert à CALIBRER le ton, l&#39;univers, les occasions pertinentes et le niveau des suggestions — on ne contente pas un dirigeant comme un artisan, être père ou beau-père change quelles fêtes comptent, l&#39;âge calibre tout. INTERDIT de le citer maladroitement dans les textes (&quot;en tant que CEO de 45 ans tu…&quot;) : il informe l&#39;analyse sans jamais y apparaître tel quel.
+- Les réponses libres (adore_faire, evite_deteste, peu_savent, detail_compris, plus_beau_cadeau, cadeaux_non, envies_reves, remarquer, sentir_special, sujets_stimulants, marques_lieux, q17, couleurs_matieres, odeurs_detestees, mobilité/santé) doivent être PARAPHRASÉES et FONDUES dans les sections pertinentes — jamais copiées. Une seule citation italique paraphrasée courte est tolérée dans &quot;points_fixes&quot;.
+- Chaque chip est court (2-5 mots max), informatif, distinct. Pas de fragment de phrase brut, pas de mot répété entre sections.
+- &quot;insights&quot; (3 phrases) = &quot;Ce que Candice a compris&quot; — 3 phrases courtes, actionables, qui donnent un angle non-évident. Format : &quot;Tu es touchée par…&quot;, &quot;Tu n&#39;aimes pas…&quot;, &quot;Tu préfères…&quot;.
+- &quot;modes&quot; : 4 modes de tempérament, chacun 1-3 mots doux. Si &quot;conflit&quot; est déjà donné dans le prompt (via &#39;facts&#39;), reprends-le en le reformulant en 1-3 mots. Pour stress/décision/canal : DÉDUIS-les qualitativement des axes tempérament + facts. Ne laisse JAMAIS un mode vide — propose la nuance la plus probable.
+- &quot;points_fixes&quot; : les constantes irréductibles de la personne (ce qu&#39;elle est, ce qu&#39;elle déteste, ses rêves, ses fiertés). Fonds y peu_savent + sentir_special + sujets_stimulants + envies_reves + remarquer + evite_deteste. 5-6 chips courts + éventuellement une seule phrase italique paraphrasée (jamais copiée).
+- &quot;parfums&quot; : synthèse olfactive (types aimés + ce qui répulse). 1 phrase + 2-3 chips (dont au maximum un chip &quot;warm&quot; type &quot;déteste : X&quot;).
+- Si une donnée manque totalement pour une section, laisser text: &quot;&quot; et chips: [] — sera géré côté UI avec un CTA.
+
+RÈGLES V2 (nouvelle fiche) :
+- Chaque section de &quot;sections&quot; (sauf attention_dna) porte AUSSI un champ &quot;more&quot; : un paragraphe long (3-4 phrases complètes) qui approfondit le &quot;text&quot; sans le répéter — c&#39;est le contenu du « Lire plus ». Si la section est vide, &quot;more&quot; est &quot;&quot;.
+- &quot;summary_long&quot; : l&#39;analyse complète, 3 paragraphes séparés par une ligne vide, chacun 2-3 phrases. Même ton que summary, plus profond. C&#39;est ce que la personne lit en ouvrant « Lire l&#39;analyse complète ».
+- &quot;podium_intro&quot; : 1 phrase qui introduit le classement des langages d&#39;attention (ex: « Chez toi, tous les langages comptent, mais ils ne se valent pas. ») en s&#39;appuyant sur la dimension dominante. La 7e dimension GES se nomme TOUJOURS « Esthétique · qualité ».
+- &quot;understood_cards&quot; : EXACTEMENT 4 cartes { &quot;eyebrow&quot;: 1 mot-thème (ex: Écoute, Exécution, Lieux, Surprise), &quot;text&quot;: 1-2 phrases }. Angles NON-évidents, distincts des insights.
+- &quot;works_phrases&quot; : pour CHACUNE des 6 clés (beau, personnel, experientiel, utile, premium, surprise), 1 phrase courte qui illustre comment cette famille d&#39;attention fonctionne chez la personne. Les NIVEAUX (Très fort / Fort / À doser) te sont fournis dans les données — ta phrase doit être cohérente avec le niveau indiqué, tu ne décides JAMAIS du niveau.
+- &quot;territory&quot; : le territoire idéal de sortie/évasion. { &quot;titre&quot;: accroche courte (ex: « Sortir du quotidien, sans l&#39;inconfort subi »), &quot;phrase&quot;: 1-2 phrases, &quot;cartes&quot;: EXACTEMENT 3 cartes { &quot;nom&quot;: 2-3 mots, &quot;description&quot;: 1 ligne concrète, &quot;statut&quot;: &quot;desirable&quot; ou &quot;eviter&quot; } — 2 désirables + 1 à éviter, déduites du profil (confort, aventure, lieux). }
+- &quot;universe&quot; : { &quot;lieux_ambiances&quot;: 4-6 tags de types de lieux où la personne se sent bien (ex: « Hôtels de caractère »), &quot;matieres&quot;: 3-6 tags de matières/esthétique (depuis couleurs_matieres paraphrasé), &quot;reves_envies&quot;: 4-7 tags courts (depuis envies_reves + rêves détectés), &quot;phrase&quot;: 1 phrase élégante « ce que ça dit de ton univers » (sans commencer par « Ton univers raconte » à chaque fois — varie). }
+- Si les données manquent pour territory ou universe, mettre null.
+
+Retourne UNIQUEMENT ce JSON valide (aucun markdown, aucune explication) :
+{
+  &quot;summary&quot;: &quot;string — 2-3 phrases, résumé global en 2e personne (ton &#39;tu sembles&#39;)&quot;,
+  &quot;summary_third_person&quot;: &quot;string — même synthèse mais en 3e personne neutre pour un proche (ex: &#39;Elle semble...&#39;, &#39;Il est touché par...&#39;, &#39;Pour lui faire plaisir...&#39;). Accords selon le genre indiqué.&quot;,
+  &quot;summary_chips&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;, &quot;string&quot;],
+  &quot;insights&quot;: [
+    &quot;string — phrase courte &#39;Tu es touchée par…&#39; ou équivalent&quot;,
+    &quot;string — phrase courte &#39;Tu n&#39;aimes pas…&#39; ou équivalent&quot;,
+    &quot;string — phrase courte &#39;Tu préfères…&#39; ou équivalent&quot;
+  ],
+  &quot;sections&quot;: {
+    &quot;attention&quot;:    { &quot;text&quot;: &quot;string — comment reçoit l&#39;attention (2-3 phrases complètes)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string — paragraphe long Lire plus&quot; },
+    &quot;what_touches&quot;: { &quot;text&quot;: &quot;string — ce qui la/le touche vraiment (2-3 phrases)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;feels_loved&quot;:  { &quot;text&quot;: &quot;string — situations concrètes de réception (2-3 phrases) — si trop similaire à &#39;attention&#39;, laisser vide&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;gifts&quot;:        { &quot;text&quot;: &quot;string — quel type de cadeau lui parle (2-3 phrases)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;avoid&quot;:        { &quot;text&quot;: &quot;string — ce qu&#39;il vaut mieux éviter, en intégrant le texte libre q17 et cadeaux_non paraphrasés&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;style&quot;:        { &quot;text&quot;: &quot;string — univers esthétique, en intégrant couleurs_matieres paraphrasé&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;brands&quot;:       { &quot;text&quot;: &quot;string — marques / univers (1-2 phrases, ou vide si aucune donnée)&quot;, &quot;chips&quot;: [], &quot;more&quot;: &quot;string&quot; },
+    &quot;restaurants&quot;:  { &quot;text&quot;: &quot;string — tables et cuisines (1-2 phrases, ou vide si aucune donnée)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;travel&quot;:       { &quot;text&quot;: &quot;string — comment voyage (1-2 phrases, ou vide si aucune donnée)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;hobbies&quot;:      { &quot;text&quot;: &quot;string — passions et loisirs (1-2 phrases, ou vide si aucune donnée)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;parfums&quot;:      { &quot;text&quot;: &quot;string — synthèse olfactive (1 phrase, ou vide si aucune donnée)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;points_fixes&quot;: { &quot;text&quot;: &quot;string — « À savoir pour viser juste » : 1 phrase de synthèse OU une paraphrase italique courte (jamais citation brute)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;, &quot;string&quot;, &quot;string&quot;], &quot;more&quot;: &quot;string&quot; },
+    &quot;attention_dna&quot;:{ &quot;text&quot;: &quot;string — synthèse ADN attentions (2-3 phrases)&quot;, &quot;chips&quot;: [&quot;string&quot;, &quot;string&quot;] }
+  },
+  &quot;summary_long&quot;: &quot;string — 3 paragraphes séparés par une ligne vide&quot;,
+  &quot;podium_intro&quot;: &quot;string — 1 phrase d&#39;introduction du podium&quot;,
+  &quot;understood_cards&quot;: [{ &quot;eyebrow&quot;: &quot;string — 1 mot&quot;, &quot;text&quot;: &quot;string — 1-2 phrases&quot; }],
+  &quot;works_phrases&quot;: { &quot;beau&quot;: &quot;string&quot;, &quot;personnel&quot;: &quot;string&quot;, &quot;experientiel&quot;: &quot;string&quot;, &quot;utile&quot;: &quot;string&quot;, &quot;premium&quot;: &quot;string&quot;, &quot;surprise&quot;: &quot;string&quot; },
+  &quot;territory&quot;: { &quot;titre&quot;: &quot;string&quot;, &quot;phrase&quot;: &quot;string&quot;, &quot;cartes&quot;: [{ &quot;nom&quot;: &quot;string&quot;, &quot;description&quot;: &quot;string&quot;, &quot;statut&quot;: &quot;desirable&quot; }] },
+  &quot;universe&quot;: { &quot;lieux_ambiances&quot;: [&quot;string&quot;], &quot;matieres&quot;: [&quot;string&quot;], &quot;reves_envies&quot;: [&quot;string&quot;], &quot;phrase&quot;: &quot;string&quot; },
+  &quot;modes&quot;: {
+    &quot;conflit&quot;:  &quot;string — 1-3 mots doux (ex: &#39;temporise&#39;, &#39;confronte&#39;, &#39;humour&#39;)&quot;,
+    &quot;stress&quot;:   &quot;string — 1-3 mots doux (ex: &#39;se replie&#39;, &#39;agit&#39;, &#39;partage&#39;)&quot;,
+    &quot;decision&quot;: &quot;string — 1-3 mots doux (ex: &#39;réfléchie&#39;, &#39;intuitive&#39;, &#39;consultative&#39;)&quot;,
+    &quot;canal&quot;:    &quot;string — 1-3 mots doux (ex: &#39;message écrit&#39;, &#39;voix&#39;, &#39;en face à face&#39;)&quot;
+  },
+  &quot;must_haves&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;],
+  &quot;deal_breakers&quot;: [&quot;string&quot;, &quot;string&quot;, &quot;string&quot;],
+  &quot;attention_dna&quot;: [{ &quot;dimension&quot;: &quot;string&quot;, &quot;intensity&quot;: 0, &quot;note&quot;: &quot;string&quot; }],
+  &quot;constraints&quot;: [&quot;string&quot;],
+  &quot;confidence&quot;: 0.0
+}
+
+Règles confidence : 0.3 = peu de données, 0.6 = questionnaire de base, 0.85 = questionnaire + singularité, 1.0 = tout + mémoires.
+</code></pre>
+<p><strong>Les 3 instructions de genre VERBATIM (<code>genderInstruction</code>, l.71-79) :</strong></p>
+<ul>
+<li>feminine : « La personne est une femme : accords féminins systématiques (elle, sa, ses, contente, aimée, etc.). JAMAIS de point médian « · » ni de « (-ve) ». »</li>
+<li>masculine : « La personne est un homme : accords masculins systématiques (il, son, ses, content, aimé, etc.). JAMAIS de point médian « · » ni de « (-ve) ». »</li>
+<li>neutral : « Le genre n&#39;est pas déterminé : reformule SANS accord (ex: &#39;une personne qui&#39;, &#39;quelqu&#39;un qui&#39;). INTERDIT absolument : point médian « · », tiret-genre, parenthèses d&#39;accord « (-ve) ». Utilise la 3e personne neutre ou des tournures impersonnelles. »</li>
+</ul>
+<hr>
+<h2>Ce qui est DÉTERMINISTE (jamais décidé par le LLM)</h2>
+<h3><code>computeProfileSynthesis</code> (<code>synthesis.ts</code>) — les « faits »</h3>
+<p>Calcule à partir des colonnes scorées : dimensions réception/expression top-3, contraste réception≠expression, <code>touchInsights</code>, <code>avoidAlerts</code>, <code>relationalFacts</code>, <code>communicationFacts</code>, <code>idealAttentions</code>, <code>avoidAttentions</code>, 4 labels de niveau (spontanéité, contrôle, sensibilité aux détails, besoin d&#39;espace), highlights lifestyle, résumé structuré des centres d&#39;intérêt, textes bruts (q17, mobilité, odeurs, couleurs, freeText) transmis au LLM pour préserver le ton, et le <strong>style_radar 7 axes</strong>. Sert d&#39;entrée au prompt Sonnet, ET de fallback si le LLM échoue.</p>
+<h3><code>computeWorksLevels</code> (<code>v2-metrics.ts</code>) — niveaux « Ce qui marche »</h3>
+<p>6 clés → niveau (Très fort / Fort / À doser), <strong>imposés</strong> au LLM (il rédige les phrases, ne décide jamais du niveau) :</p>
+<ul>
+<li><code>beau</code> ← radar.esthetique ; <code>personnel</code> ← radar.precision ; <code>experientiel</code> ← radar.temps ; <code>utile</code> ← radar.utilite ; <code>surprise</code> ← radar.surprise ; <code>premium</code> ← axe tempérament <code>exigenceStanding</code> (<code>50 + exigence*0.35</code>).</li>
+<li>Seuils : ≥ 65 → <code>tres_fort</code>, ≥ 40 → <code>fort</code>, sinon <code>a_doser</code>.</li>
+</ul>
+<h3>Fallback déterministe (si le LLM de synthèse échoue, l.590-648)</h3>
+<p><code>aiStatus = &quot;fallback&quot;</code> : construit summary/insights/sections minimaux depuis les <code>facts</code>. Les champs V2 narratifs (<code>summary_long</code>, <code>podium_intro</code>, <code>understood_cards</code>, <code>works_phrases</code>, <code>territory</code>, <code>universe</code>) restent VIDES/null — jamais de texte fabriqué. <code>confidence</code> = 0.6 si tempérament + singularité, sinon 0.3.</p>
+<hr>
+<h2>Les colonnes remplies dans <code>profile_analysis</code> (upsert, l.678-724)</h2>
+<p><code>engine_version</code> écrit par le code actuel = <strong>&quot;2.2&quot;</strong>. Champs :
+<code>summary</code>, <code>summary_third_person</code>, <code>summary_chips</code>, <code>insights</code>, <code>sections</code> (avec <code>more</code>), <code>modes</code>, <code>style_radar</code> (déterministe), <code>dimension_scores</code> (interne), <code>must_haves</code>, <code>deal_breakers</code>, <code>attention_dna</code>, <code>constraints</code>, <code>entities</code>, <code>gender</code>, <code>confidence</code> (borné 0-1), <code>source</code>, <code>generated_at</code>, <code>summary_long</code>, <code>podium_intro</code>, <code>understood_cards</code> (max 4, filtrées), <code>works_phrases</code>, <code>territory</code> (assaini côté code : max 3 cartes, statut normalisé), <code>universe</code>.</p>
+<hr>
+<h2>Les TROIS représentations des « dimensions »</h2>
+<p>Il y a <strong>trois objets distincts</strong> qui décrivent les dimensions d&#39;attention. Ne pas les confondre.</p>
+<h3>1. <code>style_radar</code> — DÉTERMINISTE, 7 axes</h3>
+<ul>
+<li><strong>Calcul :</strong> <code>computeStyleRadar</code> (<code>synthesis.ts</code>, l.226-299). 7 valeurs 0-100 : <strong>precision, emotion, surprise, esthetique, utilite, temps, discretion</strong>. Dérivées des poids des dimensions de réception + axes tempérament/lifestyle + filtres relationnels.</li>
+<li><strong>Usage :</strong> (a) injecté dans le prompt Sonnet « usage interne » (informe la forme sans être affiché en chiffre), (b) source des niveaux <code>computeWorksLevels</code>, (c) affiché comme heptagone « Style attentionnel » sur la fiche.</li>
+<li><strong>Stockage :</strong> <code>profile_analysis.style_radar</code>.</li>
+</ul>
+<h3>2. Le podium 7 langages — DÉTERMINISTE, libellés verrouillés</h3>
+<ul>
+<li><strong>Calcul :</strong> <code>computePodium</code> (<code>v2-metrics.ts</code>, l.54-81), à partir de <code>attention_reception</code> (dominant/secondaire/tertiaire). Aucune donnée n&#39;est stockée : recalculé à l&#39;affichage par <code>buildProfileV2Data</code> (<code>v2-data.ts</code>).</li>
+<li><strong>7 dimensions + libellés VERROUILLÉS</strong> (<code>PODIUM_LABELS</code>) : MOT « Mots justes » · CAD_C « Cadeaux choisis » · EXP « Moments partagés » · GES « Esthétique · qualité » · SER « Actes de service » · CAD_S « Attentions symboliques » · SUR « Surprise ».</li>
+<li><strong>Intensités :</strong> <code>dominant</code> (« Dominant »), <code>tres_present</code> (« Très présent »), <code>present</code> (« Présent »), <code>a_doser</code> (« À doser »). Largeurs de barre au barème validé, jamais de chiffre affiché.</li>
+<li><strong>LLM :</strong> ne fabrique que la phrase d&#39;intro (<code>podium_intro</code>), jamais le classement.</li>
+</ul>
+<h3>3. <code>attention_dna</code> — LLM</h3>
+<ul>
+<li><strong>Origine :</strong> produit par Sonnet — tableau <code>[{ dimension, intensity (0-100), note }]</code>, + une section texte <code>sections.attention_dna</code> (text + chips).</li>
+<li><strong>Stockage :</strong> <code>profile_analysis.attention_dna</code>. C&#39;est la seule des trois qui est générée par le LLM (l&#39;intensité y est un chiffre décidé par le modèle, contrairement au podium/radar déterministes). En fallback, reconstruite depuis <code>facts.topReceptionDims</code> (80 puis 50).</li>
+</ul>
+<hr>
+<h2>Confirmation sur la base réelle (base : <code>profile_analysis</code>)</h2>
+<p><strong>2 lignes</strong> présentes en prod, toutes deux `engine_version = &quot;2.0&quot;** (donc ANTÉRIEURES au code actuel qui écrit &quot;2.2&quot; et remplit territory/universe/works_phrases/podium_intro/summary_long/understood_cards). Colonnes réellement peuplées :</p>
+<table>
+<thead>
+<tr>
+<th>Colonne</th>
+<th>Lignes remplies (/2)</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>summary</code></td>
+<td>2</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>summary_chips</code></td>
+<td>2</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>sections</code></td>
+<td>2</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>generated_at</code></td>
+<td>2</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>engine_version</code></td>
+<td>2 (valeur &quot;2.0&quot;)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>summary_long</code></td>
+<td>1</td>
+<td>🟡 (1 ligne à null)</td>
+</tr>
+<tr>
+<td><code>podium_intro</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>summary_third_person</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>insights</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>style_radar</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>understood_cards</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>works_phrases</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>attention_dna</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>dimension_scores</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>entities</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>must_haves</code> / <code>deal_breakers</code> / <code>constraints</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>gender</code> / <code>confidence</code> / <code>source</code></td>
+<td>1</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td><code>modes</code></td>
+<td>0</td>
+<td>🟡 null sur les 2 lignes</td>
+</tr>
+<tr>
+<td><code>territory</code></td>
+<td>0</td>
+<td>🟡 null sur les 2 lignes</td>
+</tr>
+<tr>
+<td><code>universe</code></td>
+<td>0</td>
+<td>🟡 null sur les 2 lignes</td>
+</tr>
+<tr>
+<td><code>contact_id</code></td>
+<td>0</td>
+<td>✅ (attendu : <code>null</code> = fiche pilote)</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>Lecture : sur les 2 profils réels (dont le compte QA), une ligne est riche (V2, la plupart des champs remplis) et l&#39;autre est minimale (ancienne, seulement summary/summary_chips/sections). <code>modes</code>, <code>territory</code>, <code>universe</code> ne sont peuplés sur AUCUNE des 2 lignes en base à ce jour — le podium et le radar de la fiche sont, eux, recalculés à la volée depuis <code>my_profile.attention_reception</code> (donc indépendants de ces colonnes).</p>
+</blockquote>
+</body></html>

@@ -4,11 +4,11 @@
 import { describe, expect, it } from 'vitest';
 import { activeOptions } from '../../knowledge';
 import type { Evidence, Fact } from '../../knowledge';
-import { asContactId, asUserId, type KnowledgeScope } from '../../knowledge';
+import { asContactId, contactAbout, asUserId, type KnowledgeScope } from '../../knowledge';
 import { consolidateJournal } from '../consolidate-journal';
 import { produceFromOption, type WriteContext } from '../produce';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 
 // Parcours simulé COMPLET : chaque option active répondue, une source (uuid) par option.
 const active = activeOptions();

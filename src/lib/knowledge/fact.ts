@@ -83,7 +83,7 @@ export function createFact(input: CreateFactInput): Fact {
   const visibility: VisibilityPolicy =
     input.visibility ?? (input.sensitivity?.isSensitive ? INTERNAL_ONLY_POLICY : DEFAULT_EXPOSABLE);
   return {
-    contactId: input.contactId,
+    about: input.about,
     ownerId: input.ownerId,
     fact_id: input.fact_id,
     fact_type: input.fact_type,

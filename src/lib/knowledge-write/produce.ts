@@ -139,7 +139,7 @@ export function produceFromOption(
   const confidence = ctx.confidence ?? 'high';
   const stability = ctx.stability ?? 'contextual';
   const common = {
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     source_id: ctx.sourceId,
     source_type: ctx.sourceType,
@@ -152,7 +152,7 @@ export function produceFromOption(
   const eid = (targetKey: string) => evidenceId(ctx.sourceId, targetKey);
 
   const source = createSourceRecord({
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     id: ctx.sourceId,
     sourceType: ctx.sourceType,
@@ -241,7 +241,7 @@ export function produceFromOption(
   for (const f of mapping.facts) {
     facts.push(
       createFact({
-        contactId: ctx.contactId,
+        about: ctx.about,
         ownerId: ctx.ownerId,
         fact_id: factId(ctx.sourceId, f.fact_type, f.subject ?? f.value ?? ''),
         fact_type: f.fact_type,
@@ -285,7 +285,7 @@ export function produceSoutienOption(ctx: WriteContext, option: SoutienOption): 
   evidences: readonly NeedEvidence[];
 } {
   const source = createSourceRecord({
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     id: ctx.sourceId,
     sourceType: ctx.sourceType,
@@ -295,7 +295,7 @@ export function produceSoutienOption(ctx: WriteContext, option: SoutienOption): 
     timestamp: ctx.timestamp,
   });
   const ev: NeedEvidence = {
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     source_id: ctx.sourceId,
     source_type: ctx.sourceType,
@@ -320,7 +320,7 @@ export function produceMoteursOption(ctx: WriteContext, option: MoteurOption): {
   openKnowledge: readonly OpenKnowledge[];
 } {
   const source = createSourceRecord({
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     id: ctx.sourceId,
     sourceType: ctx.sourceType,
@@ -330,7 +330,7 @@ export function produceMoteursOption(ctx: WriteContext, option: MoteurOption): {
     timestamp: ctx.timestamp,
   });
   const ok = createOpenKnowledge({
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     open_knowledge_id: openKnowledgeId(ctx.sourceId, option.subject),
     type: MOTEURS.openKnowledge.type, // 'life_priority'
@@ -362,7 +362,7 @@ export function produceInterest(ctx: WriteContext, label: string, parentDomain?:
 } {
   const subject = asSubjectId(normalizeLabel(label));
   const source = createSourceRecord({
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     id: ctx.sourceId,
     sourceType: ctx.sourceType,
@@ -372,7 +372,7 @@ export function produceInterest(ctx: WriteContext, label: string, parentDomain?:
     timestamp: ctx.timestamp,
   });
   const ev = {
-    contactId: ctx.contactId,
+    about: ctx.about,
     ownerId: ctx.ownerId,
     source_id: ctx.sourceId,
     source_type: ctx.sourceType,

@@ -1,0 +1,534 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>12 — Emails & notifications</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>12 — Emails &amp; notifications</h1>
+<blockquote>
+<p>Cartographie de CHAQUE email envoyé par Candice, plus les notifications push.
+Source de vérité : recherche <code>grep -rn &quot;resend.emails.send&quot; src</code>.
+Statut : ✅ = réellement câblé (a un déclencheur qui l&#39;appelle) ET tracé dans <code>notification_log</code> · 🟡 = câblé mais NON tracé (ou partiellement) · ⚫ = code présent mais aucun déclencheur (orphelin) · ❌ = cassé/absent.
+« Tracé » veut dire : la ligne d&#39;envoi écrit une ligne dans la table <code>notification_log</code> (journal des notifications). La majorité des emails N&#39;écrivent PAS dans ce journal.</p>
+</blockquote>
+<h2>Configuration commune de l&#39;envoi</h2>
+<p>Fichier : <code>src/lib/resend.ts</code></p>
+<ul>
+<li>Prestataire d&#39;envoi : <strong>Resend</strong> (clé dans la variable d&#39;environnement <code>RESEND_API_KEY</code>).</li>
+<li>Expéditeur (<code>FROM_EMAIL</code>) : valeur de la variable d&#39;environnement <code>RESEND_FROM_EMAIL</code>, et à défaut <code>candice@candice.app</code> (verbatim du code).</li>
+<li>URL de l&#39;application (<code>APP_URL</code>) : <code>https://candice.app</code> (codé en dur dans ce fichier).</li>
+</ul>
+<p>Tous les liens <code>${APP_URL}</code> dans les corps ci-dessous valent donc <code>https://candice.app</code>.</p>
+<hr>
+<h2>Récapitulatif rapide (14 envois d&#39;email trouvés)</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>Email</th>
+<th>Fichier</th>
+<th>Destinataire</th>
+<th>Tracé <code>notification_log</code> ?</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Bienvenue (welcome)</td>
+<td><code>src/app/api/emails/welcome/route.ts</code></td>
+<td>Pilote qui vient de s&#39;inscrire</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Rappel « fiche incomplète » (reminder)</td>
+<td><code>src/app/api/emails/reminder/route.ts</code></td>
+<td>Proche (contact)</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Rappels d&#39;essai J-7 / J-3 / J-1 (trial-reminder)</td>
+<td><code>src/app/api/emails/trial-reminder/route.ts</code></td>
+<td>Pilote en essai</td>
+<td><strong>Oui</strong> (<code>trial_reminder_{jours}</code>)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Fiche du proche complète (profile-complete)</td>
+<td><code>src/app/api/emails/profile-complete/route.ts</code></td>
+<td>Pilote propriétaire</td>
+<td>Non</td>
+<td>⚫ (aucun appelant)</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Invitation questionnaire (questionnaire-invite)</td>
+<td><code>src/app/api/emails/questionnaire-invite/route.ts</code></td>
+<td>Proche invité</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Rappel d&#39;une suggestion en attente (reminder-suggestion / lib email-reminder)</td>
+<td><code>src/app/api/emails/reminder-suggestion/route.ts</code> + <code>src/lib/notifications/email-reminder.ts</code></td>
+<td>Pilote</td>
+<td><strong>Oui</strong> (<code>proactive_reminder</code>)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Fiche du proche complète (via lien de partage)</td>
+<td><code>src/app/api/shared-profile/complete/route.ts</code></td>
+<td>Pilote expéditeur du lien</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Demande de partage d&#39;analyse (A → B)</td>
+<td><code>src/app/api/contacts/[id]/consent/route.ts</code></td>
+<td>Proche B (a un compte)</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Proche a complété sa fiche (via invite/link)</td>
+<td><code>src/app/api/invite/link/route.ts</code></td>
+<td>Pilote</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>10</td>
+<td>Relance d&#39;invitation (nudge — email fallback)</td>
+<td><code>src/app/api/invite/nudge/route.ts</code></td>
+<td>Proche non inscrit OU proche inscrit sans push</td>
+<td>Non (email) / Oui (push, voir plus bas)</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Demande de voir un profil (X → Y)</td>
+<td><code>src/app/api/profile-view/request/route.ts</code></td>
+<td>Cible Y</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Suppression de compte programmée</td>
+<td><code>src/app/api/account/delete/route.ts</code></td>
+<td>Pilote</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>13</td>
+<td>Export RGPD des données</td>
+<td><code>src/app/api/account/export/route.ts</code></td>
+<td>Pilote (pièce jointe JSON)</td>
+<td>Non</td>
+<td>🟡</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Emails de cycle de vie (pause / silence / essai expiré)</td>
+<td><code>src/app/api/cron/lifecycle-check/route.ts</code></td>
+<td>Pilote</td>
+<td>Non</td>
+<td>🟡 (dont une branche désactivée)</td>
+</tr>
+</tbody></table>
+<p>Note importante : seuls <strong>2 emails sur 14</strong> écrivent dans le journal <code>notification_log</code> (le rappel d&#39;essai n°3 et le rappel de suggestion n°6). Tous les autres partent sans laisser de trace en base.</p>
+<hr>
+<h2>1 — Email de bienvenue (welcome) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/emails/welcome/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : appelé par la page d&#39;inscription <code>src/app/register/page.tsx</code> (ligne 222, <code>fetch(&quot;/api/emails/welcome&quot;, …)</code>) juste après la création du compte. Route publique, aucune vérification d&#39;authentification (elle exige seulement un <code>email</code> dans le corps).</li>
+<li><strong>Destinataire</strong> : le pilote qui vient de créer son compte (champ <code>email</code> du corps).</li>
+<li><strong>Tracé</strong> : Non (aucune écriture dans <code>notification_log</code>).</li>
+<li><strong>OBJET (verbatim)</strong> : <code>Candice est prête.</code></li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonjour, {prénom}.</code> (le prénom n&#39;apparaît que s&#39;il est fourni ; sinon <code>Bonjour.</code>)</li>
+<li>Sous-titre : <code>Candice est prête.</code></li>
+<li><code>Candice est prête à t&#39;aider à prendre soin de ceux que tu aimes.</code></li>
+<li><code>Commence par compléter ta fiche — c&#39;est la base de tout. Plus ton profil est précis, plus les attentions que Candice suggère seront justes.</code></li>
+<li>Bouton : <code>Compléter ma fiche →</code> (lien vers <code>https://candice.app/moi/questionnaire</code>)</li>
+<li>Note : <code>✦  Plus ta fiche est complète, plus les suggestions seront justes.</code></li>
+<li>Pied de page : <code>Tu reçois cet e-mail car tu viens de créer un compte Candice.</code> puis lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>2 — Rappel « Votre fiche est incomplète » (reminder) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/emails/reminder/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : appelé par <code>src/app/contacts/[id]/ContactActions.tsx</code> (ligne 60, <code>fetch(&quot;/api/emails/reminder&quot;, …)</code>) — action manuelle du pilote depuis la fiche d&#39;un contact. Route publique (exige seulement <code>contactEmail</code> dans le corps).</li>
+<li><strong>Destinataire</strong> : le proche (contact) dont la fiche est incomplète (<code>contactEmail</code>).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>Votre fiche est incomplète.</code></li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonjour {contactFirstName}.</code> (sinon <code>Bonjour.</code>)</li>
+<li>Sous-titre : <code>Un petit rappel de {senderFirstName}.</code> (à défaut : <code>Un petit rappel de quelqu&#39;un qui tient à toi.</code>)</li>
+<li><code>{senderFirstName} attend que tu complètes ta fiche.</code> (à défaut : <code>Cette personne attend que tu complètes ta fiche.</code>)</li>
+<li><code>Ça prend 5 minutes et ça lui permettra de te faire vraiment plaisir — les attentions les plus justes, au bon moment.</code></li>
+<li>Bouton : <code>Compléter ma fiche →</code> (lien vers <code>profileUrl</code>, à défaut <code>https://candice.app</code>)</li>
+<li>Note : <code>🔒  Tes réponses restent 100% confidentielles — {senderFirstName} ne les lira jamais.</code> (à défaut : <code>… la personne ne les lira jamais.</code>)</li>
+<li>Pied de page : <code>Tu reçois cet e-mail car tu as été invité(e) via Candice et n&#39;as pas encore complété ta fiche.</code> + lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>3 — Rappels d&#39;essai J-7 / J-3 / J-1 (trial-reminder) ✅</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/emails/trial-reminder/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : appelé UNIQUEMENT par le cron <code>src/app/api/cron/lifecycle-check/route.ts</code> (ligne 80) quand l&#39;essai atteint le jour 23 (J-7), 27 (J-3) ou 29 (J-1). Route interne protégée par <code>Authorization: Bearer ${CRON_SECRET}</code> — refuse tout appel sans ce secret. Exige <code>userId</code>, <code>email</code>, <code>daysLeft</code>.</li>
+<li><strong>Destinataire</strong> : le pilote en période d&#39;essai (<code>email</code>).</li>
+<li><strong>Tracé</strong> : <strong>Oui</strong>. Après envoi, insère dans <code>notification_log</code> : <code>channel: &#39;email&#39;</code>, <code>notification_type: &#39;trial_reminder_{daysLeft}&#39;</code>, <code>status: &#39;sent&#39;</code>.</li>
+<li><strong>OBJET (verbatim, selon <code>daysLeft</code>)</strong> :<ul>
+<li>7 jours : <code>Plus que 7 jours d&#39;essai — souhaites-tu poursuivre avec Candice ?</code></li>
+<li>3 jours : <code>Candice tient à toi — encore 3 jours pour décider</code></li>
+<li>1 jour : <code>Dernier jour de ton essai Candice</code></li>
+<li>défaut (autre valeur) : <code>Ton essai Candice arrive bientôt à terme</code></li>
+</ul>
+</li>
+<li><strong>CORPS — texte d&#39;intro (verbatim, selon <code>daysLeft</code>)</strong> :<ul>
+<li>7 : <code>Ton essai gratuit se termine dans 7 jours. Candice a déjà appris à connaître tes proches — ne laisse pas ces attentions s&#39;arrêter.</code></li>
+<li>3 : <code>Il te reste 3 jours. Candice a préparé des idées pour chacun de tes proches, et continue d&#39;en découvrir chaque jour.</code></li>
+<li>1 : <code>C&#39;est le dernier jour de ton essai. Dans 24h, Candice se mettra en pause — mais elle sera toujours là quand tu voudras reprendre.</code></li>
+<li>défaut : <code>Ton essai gratuit se termine bientôt.</code></li>
+</ul>
+</li>
+<li><strong>CORPS — reste (verbatim)</strong> :<ul>
+<li>En-tête : <code>Candice</code> / <code>Conciergerie relationnelle</code></li>
+<li>Bouton : <code>Continuer avec Candice →</code> (lien vers <code>https://candice.app/parametres/abonnement</code>)</li>
+<li><code>Ton compte reste accessible. Tu peux reprendre à tout moment depuis tes paramètres.</code></li>
+<li>Pied de page : <code>Candice ·</code> lien <code>Se désabonner</code> (vers <code>https://candice.app/parametres/notifications</code>)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>4 — Fiche du proche complète (route emails/profile-complete) ⚫ ORPHELIN</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/emails/profile-complete/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : <strong>AUCUN</strong>. La recherche <code>grep -rln &quot;emails/profile-complete&quot;</code> (hors le fichier lui-même) ne renvoie aucun appelant. La route existe mais n&#39;est jamais appelée dans le code. (La notification « fiche complète » réellement utilisée passe par les routes n°7 et n°9, qui ont leur propre HTML inline.)</li>
+<li><strong>Destinataire prévu</strong> : le pilote propriétaire (<code>ownerEmail</code>).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>Tout est prêt pour {contactFirstName}.</code> (à défaut : <code>Tout est prêt pour ton proche.</code>)</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Icône : 🎉</li>
+<li>Titre : <code>Bonne nouvelle, {ownerFirstName}.</code> (sinon <code>Bonne nouvelle.</code>)</li>
+<li>Sous-titre : <code>La fiche de {contactFirstName} est complète.</code> (à défaut <code>… de ton proche …</code>)</li>
+<li><code>{contactFirstName} a complété sa fiche. Candice a maintenant tout ce qu&#39;il faut pour vous aider.</code></li>
+<li><code>Découvrez les premières suggestions personnalisées — des attentions pensées spécialement pour {contactFirstName}.</code> (à défaut <code>… pour lui/elle.</code>)</li>
+<li>Bouton : <code>Voir les suggestions →</code> (lien vers <code>https://candice.app/dashboard</code>)</li>
+<li>Note : <code>✦  Candice connaît maintenant {contactFirstName} — les suggestions seront exactement justes.</code></li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>5 — Invitation au questionnaire (questionnaire-invite) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/emails/questionnaire-invite/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : appelé par <code>src/components/questionnaire/QuestionnaireForm.tsx</code> (ligne 381) — le pilote invite un proche par email. Route CONNECTÉE : exige une session (<code>auth.getUser()</code> ; 401 sinon). Client UTILISATEUR pour lire le prénom (<code>user_metadata.full_name</code>) et le sexe du pilote (<code>my_profile.practical_info.sexe</code>). Exige <code>contactEmail</code>.</li>
+<li><strong>Destinataire</strong> : le proche invité (<code>contactEmail</code>).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>Une invitation Candice de la part de {piloteFirstName} ✦</code> (à défaut, sans prénom : <code>Une invitation Candice ✦</code>)</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>Aperçu masqué (preheader) : <code>Pour aider tes proches à mieux penser à toi, sans avoir à tout expliquer.</code></li>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonjour {procheFirstName}.</code> (sinon <code>Bonjour.</code>)</li>
+<li>Sous-titre : <code>{piloteFirstName} t&#39;a invité(e) à créer ta fiche Candice.</code> (à défaut : <code>Tu as été invité(e) à créer ta fiche Candice.</code>)</li>
+<li><code>Candice apprend ce qui te ressemble : les attentions qui te touchent, les détails qui comptent, les choses à éviter, les petits gestes qui font vraiment la différence.</code></li>
+<li><code>L&#39;objectif n&#39;est pas de tout partager. Au contraire : ta fiche reste à toi. Candice garde les informations fines et aide simplement {piloteFirstName} à mieux choisir quand {il/elle/il ou elle} veut te faire plaisir.</code> (le pronom dépend du sexe du pilote : <code>elle</code> si femme, <code>il</code> si homme, <code>il ou elle</code> sinon ; à défaut de prénom : <code>… aide tes proches à mieux choisir quand ils veulent te faire plaisir.</code>)</li>
+<li>Bouton : <code>Découvrir mon invitation →</code> (lien vers <code>profileUrl</code>, à défaut <code>https://candice.app</code>)</li>
+<li><code>Tu peux répondre à ton rythme et garder la main sur ce qui est visible.</code></li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>6 — Rappel d&#39;une suggestion en attente (reminder-suggestion) ✅</h2>
+<ul>
+<li><strong>Fichiers</strong> : route <code>src/app/api/emails/reminder-suggestion/route.ts</code> (POST) qui délègue à la fonction <code>sendReminderEmail</code> de <code>src/lib/notifications/email-reminder.ts</code>.</li>
+<li><strong>Déclencheur</strong> : deux chemins.<ol>
+<li>La route POST <code>reminder-suggestion</code> — protégée par <code>Authorization: Bearer ${CRON_SECRET}</code> ; exige <code>user_id</code>, <code>suggestion_id</code>, <code>title</code>, <code>description</code>, <code>priority</code>.</li>
+<li>Le cron <code>src/app/api/cron/email-reminders/route.ts</code> (ligne 48) appelle directement <code>sendReminderEmail</code>.</li>
+</ol>
+</li>
+<li><strong>Destinataire</strong> : le pilote (email récupéré via l&#39;admin auth par <code>userId</code>). L&#39;envoi respecte la préférence : si <code>my_profile.notif_email_enabled === false</code>, l&#39;email n&#39;est PAS envoyé (retour <code>false</code>).</li>
+<li><strong>Tracé</strong> : <strong>Oui</strong>. Écrit dans <code>notification_log</code> : <code>channel: &#39;email&#39;</code>, <code>notification_type: &#39;proactive_reminder&#39;</code>, <code>related_suggestion_id</code>, <code>title</code>, <code>status: &#39;sent&#39;</code> ou <code>&#39;failed&#39;</code>, <code>error_message</code> si erreur.</li>
+<li><strong>OBJET (verbatim, selon <code>priority</code>)</strong> :<ul>
+<li><code>urgent</code> : <code>Une attention urgente vous attend — Candice</code></li>
+<li><code>high</code> : <code>Une attention importante vous attend — Candice</code></li>
+<li><code>normal</code> : <code>Une idée de Candice vous attend</code></li>
+<li><code>low</code> : <code>Quand vous aurez un moment — Candice</code></li>
+<li>défaut : celui de <code>normal</code></li>
+</ul>
+</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>{suggestion.title}</code> (titre dynamique de la suggestion)</li>
+<li>Corps : <code>{suggestion.description}</code> (description dynamique)</li>
+<li>Bouton : <code>Voir dans Candice →</code> (lien vers <code>https://candice.app/dashboard</code>)</li>
+<li>Note : <code>Candice garde cette attention en attente jusqu&#39;à votre décision.</code></li>
+<li>Pied de page : liens <code>Gérer mes notifications</code> (vers <code>https://candice.app/parametres/notifications</code>) et <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>7 — Fiche du proche complète, via lien de partage (shared-profile/complete) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/shared-profile/complete/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : appelé quand un proche termine sa fiche depuis un lien de partage. Route CONNECTÉE (exige <code>auth.getUser()</code>). Attribue 500 points au proche (une seule fois), puis, si un <code>token</code> est fourni, notifie l&#39;expéditeur du lien. L&#39;envoi de l&#39;email est non bloquant (dans un <code>try/catch</code>).</li>
+<li><strong>Destinataire</strong> : l&#39;expéditeur du lien de partage (email de <code>share_links.sender_id</code>, récupéré via client ADMIN <code>createAdminClient</code>).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>La fiche de ton proche est complète ✦</code></li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Icône : 🎉</li>
+<li>Titre : <code>Bonne nouvelle, {ownerFirstName}.</code> (sinon <code>Bonne nouvelle.</code>)</li>
+<li>Sous-titre : <code>La fiche de ton proche est complète.</code> (le prénom du contact est passé à <code>null</code> ici, donc c&#39;est toujours « ton proche »)</li>
+<li><code>Ton proche a complété sa fiche. Candice a maintenant tout ce qu&#39;il faut pour vous aider.</code></li>
+<li><code>Découvrez les premières suggestions personnalisées — des attentions pensées spécialement pour lui/elle.</code></li>
+<li>Bouton : <code>Voir les suggestions →</code> (lien vers <code>https://candice.app/dashboard</code>)</li>
+<li>Note : <code>✦  Cette fiche complète te rapporte 500 points supplémentaires dans ta cagnotte Candice.</code></li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>8 — Demande de partage d&#39;analyse (A → B) (contacts/[id]/consent) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/contacts/[id]/consent/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : le pilote A appuie volontairement sur « Partager » pour partager avec le proche B l&#39;analyse d&#39;un contact. Route CONNECTÉE. Conditions : le contact appartient à A, B a un compte (<code>proche_user_id</code> non nul), une analyse existe, et aucun consentement actif/pending. Crée une ligne <code>contact_consents</code> (<code>status: pending</code>, <code>scope: [&#39;analysis&#39;]</code>), puis notifie B (non bloquant). L&#39;email récupère l&#39;adresse de B via client ADMIN.</li>
+<li><strong>Destinataire</strong> : le proche B (email via admin auth par <code>proche_user_id</code>).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>{piloteFirstName} veut partager une analyse avec toi ✦</code> (prénom à défaut : <code>Quelqu&#39;un</code>)</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonjour {procheFirstName}.</code> (sinon <code>Bonjour.</code>)</li>
+<li>Sous-titre : <code>{piloteFirstName} souhaite partager avec toi l&#39;analyse que Candice a faite de {contactFirstName}.</code></li>
+<li><code>Tu peux voir ce que Candice retient de toi — ou refuser. Aucune obligation. Les données brutes saisies par {piloteFirstName} ne sont jamais partagées.</code></li>
+<li>Bouton : <code>Voir et accepter (ou refuser) →</code> (lien vers <code>https://candice.app/contacts/partage/{consentId}</code>)</li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>9 — Le proche a complété sa fiche, via invite/link (invite/link) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/invite/link/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : quand un proche ouvre/valide un lien d&#39;invitation (<code>token</code>). Route CONNECTÉE. Marque le lien comme utilisé (idempotent), rattache <code>proche_user_id</code> au contact (via client ADMIN), puis notifie le pilote (non bloquant).</li>
+<li><strong>Destinataire</strong> : le pilote (email via admin auth par <code>invite.pilote_id</code>).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>{procheFirstName} a complété sa fiche ✦</code> (à défaut : <code>Ton proche a complété sa fiche ✦</code>)</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonne nouvelle, {piloteFirstName}.</code> (sinon <code>Bonne nouvelle.</code>)</li>
+<li>Sous-titre : <code>{procheFirstName} a complété son profil sur Candice.</code> (à défaut : <code>Ton proche a complété son profil sur Candice.</code>)</li>
+<li><code>Candice a maintenant tout ce qu&#39;il faut pour t&#39;aider à prendre soin de {procheFirstName}. Découvre les premières attentions personnalisées.</code> (à défaut : <code>… de cette personne.</code>)</li>
+<li>Bouton : <code>Voir ses attentions →</code> (lien vers <code>https://candice.app/contacts</code>)</li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>10 — Relance d&#39;invitation / nudge (invite/nudge) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/invite/nudge/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : le pilote relance un proche. Route CONNECTÉE. Trois cas :<ol>
+<li><strong>Proche pas encore inscrit</strong> (<code>proche_user_id</code> nul) : si le contact a un email, crée un nouveau lien d&#39;invitation (via ADMIN) et envoie l&#39;email de RÉINVITATION.</li>
+<li><strong>Proche inscrit mais fiche incomplète</strong> : tente d&#39;abord une notification PUSH (voir section push). Si au moins un push part, pas d&#39;email.</li>
+<li><strong>Push non envoyé</strong> : envoie l&#39;email de NUDGE en repli.</li>
+</ol>
+</li>
+<li><strong>Destinataire</strong> : le proche (email du contact pour la réinvitation, ou email du compte du proche via admin auth pour le nudge).</li>
+<li><strong>Tracé</strong> : l&#39;email n&#39;est PAS tracé. Le push, lui, est tracé (voir section notifications push).</li>
+</ul>
+<h3>10a — Email de RÉINVITATION (proche non inscrit)</h3>
+<ul>
+<li><strong>OBJET (verbatim)</strong> : <code>{piloteFirstName} t&#39;invite sur Candice ✦</code> (à défaut : <code>Ton invitation Candice t&#39;attend ✦</code>)</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>Aperçu masqué : <code>Pour recevoir des attentions plus justes, moins génériques.</code></li>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonjour {procheFirstName}.</code> (sinon <code>Bonjour.</code>)</li>
+<li>Sous-titre : <code>{piloteFirstName} t&#39;a invité(e) à créer ta fiche Candice.</code> (à défaut : <code>Tu as été invité(e) à créer ta fiche Candice.</code>)</li>
+<li><code>En quelques questions, Candice comprend ce qui te fait plaisir, ce qui te touche et ce qu&#39;il vaut mieux éviter. Ensuite, elle aide {piloteFirstName} à trouver des attentions vraiment adaptées — sans lui dévoiler tous les détails de ta fiche.</code> (à défaut : <code>… elle aide tes proches à trouver des attentions vraiment adaptées — sans leur dévoiler tous les détails de ta fiche.</code>)</li>
+<li>Bouton : <code>Créer ma fiche →</code> (lien vers <code>https://candice.app/invite/{token}</code>)</li>
+<li><code>Tu choisis ce que tu partages.</code></li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<h3>10b — Email de NUDGE (proche inscrit, sans push)</h3>
+<ul>
+<li><strong>OBJET (verbatim)</strong> : <code>{piloteFirstName} voudrait mieux prendre soin de toi ✦</code> (à défaut : <code>Ton profil Candice t&#39;attend ✦</code>)</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonjour {procheFirstName}.</code> (sinon <code>Bonjour.</code>)</li>
+<li>Sous-titre : <code>{piloteFirstName} veut prendre encore mieux soin de toi — et Candice est là pour l&#39;aider.</code> (à défaut : <code>Quelques minutes pour que Candice te connaisse vraiment.</code>)</li>
+<li><code>Ton profil n&#39;est pas encore terminé. En quelques minutes de plus, Candice pourra vraiment personnaliser chaque attention pour toi — au bon moment, de la bonne façon, sans que personne n&#39;ait à y penser.</code></li>
+<li>Bouton : <code>Reprendre mon profil →</code> (lien vers <code>https://candice.app/moi/questionnaire</code>)</li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>11 — Demande de voir un profil (X → Y) (profile-view/request) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/profile-view/request/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : X demande à voir la fiche de Y. Route CONNECTÉE + exige que le questionnaire de X soit complet (5/5) sinon <code>403 questionnaire_incomplete</code>. Vérifie que la cible existe et est trouvable (<code>is_findable</code>), qu&#39;il n&#39;y a pas déjà une demande. Crée une ligne <code>contact_consents</code> (<code>kind: profile_view</code>, <code>status: pending</code>) via le client UTILISATEUR (la policy RLS <code>viewer_create_profile_view_request</code> est la garde réelle). Notifie Y (non bloquant, email via ADMIN).</li>
+<li><strong>Destinataire</strong> : la cible Y (email via admin auth).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>{requesterFirstName} veut voir ton profil</code> (prénom à défaut : <code>Quelqu&#39;un</code>)</li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>CANDICE</code></li>
+<li>Titre : <code>Bonjour {targetFirstName}.</code> (sinon <code>Bonjour.</code>)</li>
+<li>Sous-titre : <code>{requesterFirstName} veut voir ton profil.</code></li>
+<li><code>C&#39;est toi qui décides ce que tu partages : tout, seulement certaines sections, ou rien de visible — Candice pourra quand même l&#39;aider à te faire plaisir. Tu peux aussi refuser. Rien n&#39;est partagé sans ton accord.</code></li>
+<li>Bouton : <code>Choisir ce que je partage →</code> (lien vers <code>https://candice.app/moi/partage/demandes/{consentId}</code>)</li>
+<li>Pied de page : lien <code>candice.app</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>12 — Suppression de compte programmée (account/delete) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/account/delete/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : le pilote demande la suppression de son compte. Route CONNECTÉE + re-vérifie le mot de passe (<code>signInWithPassword</code>). Programme la suppression à J+30, passe le statut à <code>cancelled</code>, journalise l&#39;événement dans <code>account_lifecycle_events</code> (via ADMIN), puis envoie l&#39;email de confirmation (non bloquant, <code>.catch(() =&gt; {})</code>).</li>
+<li><strong>Destinataire</strong> : le pilote (<code>user.email</code>).</li>
+<li><strong>Tracé</strong> : Non (dans <code>notification_log</code> ; l&#39;événement lifecycle, lui, est bien journalisé dans <code>account_lifecycle_events</code>).</li>
+<li><strong>OBJET (verbatim)</strong> : <code>Suppression de compte programmée — Candice</code></li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>Candice</code></li>
+<li><code>Ta demande de suppression a été enregistrée. Ton compte et toutes tes données seront supprimés le {date au format « 4 juillet 2026 »}.</code></li>
+<li><code>Tu peux annuler cette demande jusqu&#39;à cette date depuis tes paramètres.</code></li>
+<li>Bouton : <code>Annuler la suppression →</code> (lien vers <code>https://candice.app/parametres/abonnement</code>)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>13 — Export RGPD des données (account/export) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/account/export/route.ts</code> (méthode POST)</li>
+<li><strong>Déclencheur</strong> : le pilote demande l&#39;export de ses données. Route CONNECTÉE. Rassemble via client ADMIN : <code>my_profile</code>, <code>contacts</code> (+ <code>questionnaire_responses</code>), <code>suggestions</code>, <code>proactive_suggestions</code>, <code>confidences</code>, <code>profile_notes</code>, <code>notification_log</code>, <code>account_lifecycle_events</code>. Sérialise en JSON, encode en base64, et l&#39;envoie en pièce jointe.</li>
+<li><strong>Destinataire</strong> : le pilote (<code>user.email</code>).</li>
+<li><strong>Tracé</strong> : Non.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>Ton export de données Candice (RGPD)</code></li>
+<li><strong>CORPS (texte lisible verbatim)</strong> :<ul>
+<li>En-tête : <code>Candice</code></li>
+<li><code>Conformément au RGPD, voici l&#39;ensemble des données que Candice détient sur toi. L&#39;export est joint à cet email au format JSON.</code></li>
+<li><code>Cet export inclut : ton profil, tes proches et leurs questionnaires, tes confidences, tes notes, les suggestions générées et l&#39;historique de notifications.</code></li>
+<li><strong>Pièce jointe</strong> : fichier <code>candice-export-{AAAA-MM-JJ}.json</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2>14 — Emails de cycle de vie (cron/lifecycle-check) 🟡</h2>
+<ul>
+<li><strong>Fichier</strong> : <code>src/app/api/cron/lifecycle-check/route.ts</code> (méthode GET)</li>
+<li><strong>Déclencheur</strong> : cron protégé par <code>Authorization: Bearer ${CRON_SECRET}</code>. Parcourt tous les profils et, selon le statut, envoie des emails via la fonction interne <code>sendSimpleEmail</code> (modèle générique). Ces emails-là ne sont PAS tracés dans <code>notification_log</code>. (Les rappels d&#39;essai J-7/J-3/J-1 déclenchés par ce même cron passent par la route n°3, qui elle est tracée.)</li>
+<li><strong>Destinataire</strong> : le pilote concerné (email via admin auth).</li>
+<li><strong>Tracé</strong> : Non pour <code>sendSimpleEmail</code>.</li>
+<li><strong>Trois messages envoyés par <code>sendSimpleEmail</code></strong> :</li>
+</ul>
+<h3>14a — Essai expiré → pause (BRANCHE DÉSACTIVÉE)</h3>
+<ul>
+<li><strong>Note</strong> : cette branche est gardée par <code>const ENABLE_TRIAL_LOCKOUT = false;</code> (commentaire : « Phase de test — réactiver quand Stripe est branché (Phase 7) »). Elle N&#39;ENVOIE donc RIEN aujourd&#39;hui.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>Candice est en pause</code></li>
+<li><strong>CORPS (verbatim)</strong> : <code>Ton essai de 30 jours est terminé. Candice est en pause — reprends quand tu veux depuis tes paramètres.</code></li>
+</ul>
+<h3>14b — Passage en silence (90 jours d&#39;inactivité)</h3>
+<ul>
+<li><strong>Condition</strong> : statut <code>active</code> et <code>last_active_at</code> &gt; 90 jours. Passe le statut à <code>silent</code>, journalise <code>went_silent</code>.</li>
+<li><strong>OBJET (verbatim)</strong> : <code>On t&#39;attend — Candice</code></li>
+<li><strong>CORPS (verbatim)</strong> : <code>Ça fait un moment qu&#39;on ne t&#39;a pas vu. Tes proches sont toujours là, et Candice aussi. Reviens quand tu veux.</code></li>
+</ul>
+<h3>14c — Relance après pause (60 jours)</h3>
+<ul>
+<li><p><strong>Condition</strong> : statut <code>paused</code>, <code>subscription_paused_at</code> entre 60 et 61 jours.</p>
+</li>
+<li><p><strong>OBJET (verbatim)</strong> : <code>Reprendre Candice ?</code></p>
+</li>
+<li><p><strong>CORPS (verbatim)</strong> : <code>Ça fait 2 mois que Candice est en pause. Tes proches ont peut-être un anniversaire qui approche, une attention qui serait parfaite. Reprends en un clic.</code></p>
+</li>
+<li><p><strong>Modèle commun <code>sendSimpleEmail</code> (verbatim)</strong> :</p>
+<ul>
+<li>En-tête : <code>Candice</code></li>
+<li>Corps : le texte ci-dessus</li>
+<li>Bouton : <code>Ouvrir Candice →</code> (lien vers <code>https://candice.app/dashboard</code>)</li>
+<li>Pied de page : lien <code>Se désabonner</code> (vers <code>https://candice.app/parametres/notifications</code>)</li>
+</ul>
+</li>
+<li><p><strong>Autre action du cron (pas un email)</strong> : quand <code>deletion_scheduled_at</code> est atteint pour un compte <code>cancelled</code>, il appelle <code>hardDeleteUser</code> (suppression définitive).</p>
+</li>
+</ul>
+<hr>
+<h2>Notifications push</h2>
+<ul>
+<li><p><strong>Fichier</strong> : <code>src/lib/notifications/push-sender.ts</code> — fonction <code>sendPushToUser(userId, payload, supabaseAdmin)</code>.</p>
+</li>
+<li><p><strong>Technologie</strong> : Web Push via la librairie <code>web-push</code>, avec clés VAPID (<code>VAPID_PUBLIC_KEY</code>, <code>VAPID_PRIVATE_KEY</code>, contact <code>mailto:hello@candice.app</code>).</p>
+</li>
+<li><p><strong>Statut</strong> : ✅ câblé ET tracé. Chaque envoi (réussi ou échoué) écrit une ligne dans <code>notification_log</code> : <code>channel: &#39;push&#39;</code>, <code>notification_type</code> = le <code>tag</code> du payload (ou <code>&#39;proactive&#39;</code>), <code>title</code>, <code>body</code>, <code>status</code> (<code>sent</code>/<code>failed</code>), <code>error_message</code>.</p>
+</li>
+<li><p><strong>Garde-fous appliqués avant envoi</strong> (lus depuis <code>my_profile</code>) :</p>
+<ul>
+<li><code>notif_push_enabled === false</code> → aucun envoi.</li>
+<li>Heures calmes (<code>notif_quiet_hours_start</code> défaut 21h, <code>notif_quiet_hours_end</code> défaut 8h, en fuseau Europe/Paris) → aucun envoi pendant ce créneau.</li>
+<li>Plafond quotidien (<code>notif_max_per_day</code>, défaut <strong>2</strong>) : si déjà atteint aujourd&#39;hui (compté sur <code>notification_log</code>, canal push), aucun envoi.</li>
+<li>Abonnements lus dans <code>push_subscriptions</code> ; un abonnement expiré (statut HTTP 410) est supprimé automatiquement.</li>
+</ul>
+</li>
+<li><p><strong>Qui déclenche des push ?</strong></p>
+<ol>
+<li><code>src/app/api/invite/nudge/route.ts</code> (ligne 75) — relance d&#39;un proche inscrit dont la fiche est incomplète. Payload :<ul>
+<li><code>title</code> : <code>Ton profil Candice t&#39;attend ✦</code></li>
+<li><code>body</code> : <code>{piloteFirstName} veut prendre encore mieux soin de toi — quelques minutes suffisent.</code> (à défaut : <code>Quelques minutes de plus, et Candice pourra vraiment personnaliser chaque attention pour toi.</code>)</li>
+<li><code>url</code> : <code>https://candice.app/moi/questionnaire</code> · <code>tag</code> : <code>nudge-profile</code></li>
+</ul>
+</li>
+<li><code>src/lib/signals/generator.ts</code> (lignes 260 et 412) — deux envois de push liés au moteur de signaux (contenu du payload défini dans ce fichier ; non détaillé ici car hors du périmètre « emails », signalé pour exhaustivité).</li>
+</ol>
+</li>
+<li><p><strong>Routes d&#39;abonnement/désabonnement push</strong> : <code>src/app/api/push/subscribe/route.ts</code> et <code>src/app/api/push/unsubscribe/route.ts</code> (voir doc 15 — API).</p>
+</content>
+</invoke></li>
+</ul>
+</body></html>

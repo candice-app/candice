@@ -17,13 +17,13 @@ import {
 } from '../vocabulary';
 import { createOpenKnowledge } from '../open-knowledge';
 import { consolidateInterests, consolidateNeeds, consolidateProfile } from '../consolidate';
-import { asContactId, asSubjectId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asSubjectId, asUserId, type KnowledgeScope } from '../identity';
 import type { InterestEvidence, NeedEvidence } from '../evidence';
 import { signalKey } from '../signal';
 import { JOURNAL_VERSION_STAMP } from '../version';
 import type { SourceType } from '../sources';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 const base = {
   ...scope,
   raw_information: 'v',
@@ -179,8 +179,8 @@ describe('17-19 — moteurs : 0 canonique, 6 life_priority, double contribution 
 
 describe('5 + 20 — invariants : ordre inerte, distress jamais clinique', () => {
   it('le signalKey ne dépend d’aucun ordre de sélection', () => {
-    const k1 = signalKey(scope.contactId, consolidateInterests(scope, [interestEv('i1', 'vin')])[0]);
-    const k2 = signalKey(scope.contactId, consolidateInterests(scope, [interestEv('i1', 'vin')])[0]);
+    const k1 = signalKey(scope.about, consolidateInterests(scope, [interestEv('i1', 'vin')])[0]);
+    const k2 = signalKey(scope.about, consolidateInterests(scope, [interestEv('i1', 'vin')])[0]);
     expect(k1).toBe(k2);
   });
   it('une evidence NEED en context distress ne produit aucun FACT (encore moins sensible)', () => {

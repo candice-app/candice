@@ -10,6 +10,8 @@
 // projections calculées depuis cette échelle, jamais des copies stockées. Ce lot ne
 // construit aucune projection.
 
+import type { AboutRef, UserId } from './identity';
+
 export const EXPOSURE_LEVELS = [
   'internal_only', // connaissance interne à Candice, jamais exposée
   'exposable', // pourrait figurer au portrait, pas encore rendu visible
@@ -45,25 +47,33 @@ export interface VisibilityPolicy {
 }
 
 /**
- * ⚠ PLAFOND DE SENSIBILITÉ — POINT D'ARRÊT 2 (NON TRANCHÉ).
+ * ⚠ PLAFOND DE SENSIBILITÉ — TRANCHÉ (arbitrage lot B).
  *
- * Comportement implémenté : un contenu dont `derived === 'internal_only'` (un FACT
- * sensible, par ex. une contrainte de santé concernant le proche) ne peut JAMAIS être
- * élevé au-dessus de `internal_only` par un choix utilisateur. Le `userOverride` peut
- * abaisser, jamais élever ce plancher. Un utilisateur ne rend pas partageable une
- * information de santé concernant son proche.
+ * Un contenu dont `derived === 'internal_only'` (un FACT sensible, par ex. une
+ * contrainte de santé) ne peut pas être élevé au-dessus de `internal_only` par un choix
+ * utilisateur — SAUF un seul cas : quand la personne décrite EST le titulaire qui
+ * détient la connaissance, c.-à-d. `about.kind === 'account' && about.id === holderUserId`.
  *
- * Ce n'est pas écrit tel quel dans les documents : le HSG §35 dit qu'une contrainte
- * sensible n'apparaît pas dans la justification visible, il ne dit pas ce qu'un choix
- * utilisateur explicite peut en faire. En attente d'arbitrage Estelle avant que le
- * lot B n'expose quoi que ce soit.
+ * C'est une ÉGALITÉ d'identité, jamais un drapeau `is_self` posé sur une autre table : on
+ * ne lève le plafond que lorsque celui qui décrit et celui qui est décrit sont le même
+ * compte. Un `account` qui n'est pas le détenteur ne lève rien ; un `contact` non plus.
+ * Chacun peut décider de partager SA propre information sensible, personne ne peut décider
+ * de partager celle d'un autre. Sans contexte (`ctx` absent), le plafond s'applique
+ * toujours — le cas sûr par défaut.
  */
 export const SENSITIVITY_CEILING: ExposureLevel = 'internal_only';
 
+/** Contexte d'identité nécessaire pour savoir si le plafond se lève (voir ci-dessus). */
+export interface ExposureContext {
+  readonly about?: AboutRef;
+  readonly holderUserId?: UserId;
+}
+
 /** Niveau d'exposition effectif, plafond de sensibilité appliqué. */
-export function effectiveExposure(p: VisibilityPolicy): ExposureLevel {
-  // Plafond : un contenu sensible reste internal_only quel que soit l'override.
-  if (p.derived === SENSITIVITY_CEILING) return SENSITIVITY_CEILING;
+export function effectiveExposure(p: VisibilityPolicy, ctx?: ExposureContext): ExposureLevel {
+  // Le plafond se lève UNIQUEMENT si la personne décrite est le détenteur lui-même.
+  const describesSelf = ctx?.about?.kind === 'account' && ctx.about.id === ctx.holderUserId;
+  if (p.derived === SENSITIVITY_CEILING && !describesSelf) return SENSITIVITY_CEILING;
   // Sinon le choix explicite de l'utilisateur prime sur le niveau dérivé.
   return p.userOverride ?? p.derived;
 }

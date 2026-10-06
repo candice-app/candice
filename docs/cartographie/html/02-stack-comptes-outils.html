@@ -1,0 +1,448 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>02 — Stack, comptes & outils</title><style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; font-size: 12px; line-height: 1.55; color: #1a1a1a; max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 23px; color: #173E31; border-bottom: 2px solid #173E31; padding-bottom: 6px; margin: 22px 0 14px; }
+  h2 { font-size: 17px; color: #1B4D3E; border-bottom: 1px solid #cbd5cf; padding-bottom: 4px; margin: 22px 0 10px; }
+  h3 { font-size: 14px; color: #1B4D3E; margin: 16px 0 8px; }
+  h4 { font-size: 12.5px; color: #333; margin: 12px 0 6px; }
+  p { margin: 7px 0; }
+  a { color: #1B4D3E; }
+  code { font-family: "SF Mono", Menlo, Consolas, monospace; font-size: 10.5px; background: #eef3f0; padding: 1px 4px; border-radius: 3px; word-break: break-word; }
+  pre { background: #f6f8f7; border: 1px solid #dfe6e2; border-radius: 6px; padding: 10px 12px; white-space: pre-wrap; word-break: break-word; font-size: 10px; line-height: 1.45; }
+  pre code { background: none; padding: 0; font-size: 10px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5px; }
+  th, td { border: 1px solid #c7d2cc; padding: 5px 8px; text-align: left; vertical-align: top; word-break: break-word; }
+  th { background: #e9f0ec; color: #173E31; font-weight: 600; }
+  ul, ol { margin: 7px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  blockquote { border-left: 3px solid #8DA697; margin: 12px 0; padding: 6px 16px; color: #444; background: #f7faf8; }
+  hr { border: none; border-top: 1px solid #cbd5cf; margin: 20px 0; }
+
+  /* Impression : saut de page avant chaque titre principal, tableaux/titres non coupés */
+  @media print {
+    body { max-width: none; margin: 0; padding: 0; }
+    h1, h2 { page-break-before: always; }
+    body > h1:first-child, body > h2:first-child { page-break-before: avoid; }
+    h1 + h2 { page-break-before: avoid; }
+    h1, h2, h3, h4 { page-break-after: avoid; }
+    tr, pre, blockquote, table { page-break-inside: avoid; }
+  }
+</style></head><body><h1>Cartographie Candice — 02. Stack, comptes &amp; outils externes</h1>
+<blockquote>
+<p>Document factuel. Inventaire des services externes utilisés, des « variables
+d&#39;environnement » (réglages secrets stockés hors du code, désignés ici par leur NOM
+uniquement, jamais leur valeur), et des « dépendances » (briques logicielles installées).</p>
+<p><strong>Statuts.</strong> ✅ réellement câblé et utilisé · 🟡 partiel / présent mais inactif ·
+⚫ code mort · ❌ absent.</p>
+<p>Sources citées entre parenthèses : (fichier : chemin) ou (base : table). « Non vérifié »
+quand l&#39;information n&#39;a pas pu être établie depuis le code.</p>
+</blockquote>
+<hr>
+<h2>1. Services externes</h2>
+<h3>1.1 Vercel — hébergement &amp; tâches planifiées · ✅</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> la plateforme qui héberge le site en ligne et qui exécute
+automatiquement des « tâches planifiées » (« crons ») à heures fixes.</p>
+<p><strong>Ce qui en dépend dans l&#39;app :</strong> 4 tâches planifiées déclarées (fichier : <code>vercel.json</code>) :</p>
+<ul>
+<li><code>/api/cron/detect-and-generate</code> — tous les jours à 6h et 14h (détection de signaux +
+génération de suggestions).</li>
+<li><code>/api/cron/email-reminders</code> — tous les jours à 10h (e-mails de rappel).</li>
+<li><code>/api/cron/cadence-feedback</code> — tous les lundis à 4h (ajustement du rythme des relances).</li>
+<li><code>/api/cron/lifecycle-check</code> — tous les jours à 3h (cycle de vie de l&#39;abonnement/essai).</li>
+</ul>
+<p>Ces tâches sont protégées par le secret <code>CRON_SECRET</code> (voir §2). L&#39;historique mentionne
+explicitement Vercel (commits <code>f85441f</code> « after Vercel Pro upgrade », <code>83371ed</code> « wake Vercel
+webhook »). En-têtes de sécurité HTTP configurés côté framework (fichier : <code>next.config.ts</code>).
+Aucun fichier de configuration Vercel supplémentaire (pas de <code>.vercelignore</code> repéré).</p>
+<h3>1.2 Supabase — base de données, authentification &amp; stockage de fichiers · ✅</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> le « coffre » central : la base de données (toutes les tables),
+la gestion des comptes/connexions (authentification), et le stockage de fichiers (photos).</p>
+<p><strong>Ce qui en dépend dans l&#39;app :</strong> pratiquement tout. Cinq fichiers utilitaires configurent
+l&#39;accès (dossier : <code>src/utils/supabase/</code>) :</p>
+<ul>
+<li><code>client.ts</code> — accès côté navigateur (utilise <code>NEXT_PUBLIC_SUPABASE_URL</code> +
+<code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code>).</li>
+<li><code>server.ts</code> — accès côté serveur (mêmes deux variables).</li>
+<li><code>middleware.ts</code> — vérification de session à chaque requête (mêmes deux variables).</li>
+<li><code>claims.ts</code> — lecture locale des « claims » d&#39;authentification, allégée pour la performance
+(mêmes deux variables ; voir commits perf D2/levier 2).</li>
+<li><code>admin.ts</code> — accès privilégié « service role » (utilise <code>SUPABASE_SERVICE_ROLE_KEY</code> +
+<code>NEXT_PUBLIC_SUPABASE_URL</code>).</li>
+</ul>
+<p>Bibliothèques employées (fichier : imports dans <code>src/utils/supabase/*</code>) : <code>@supabase/ssr</code>
+(<code>createBrowserClient</code>, <code>createServerClient</code>) et <code>@supabase/supabase-js</code> (<code>createClient</code>).
+Le stockage de fichiers sert notamment aux photos de contacts (bucket privé <code>contact-photos</code>,
+liens signés — commit <code>1da1abe</code>) et aux avatars (migration 55). La base compte 78+ migrations
+numérotées à la racine du dépôt (fichiers : <code>supabase-migration-*.sql</code>, plus
+<code>supabase-schema.sql</code>).</p>
+<h3>1.3 Anthropic (Claude) — intelligence artificielle rédactionnelle · ✅</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> le moteur d&#39;IA qui rédige les analyses, formule des suggestions
+et interprète des saisies en langage naturel. C&#39;est le fournisseur du modèle « Claude ».</p>
+<p><strong>Ce qui en dépend dans l&#39;app :</strong> bibliothèque <code>@anthropic-ai/sdk</code> (fichier : <code>package.json</code>),
+importée sous le nom <code>Anthropic</code> dans de nombreux fichiers. La clé <code>ANTHROPIC_API_KEY</code> est
+référencée dans 18 fichiers (voir §2). Deux modèles sont appelés dans le code :</p>
+<ul>
+<li><code>claude-sonnet-4-6</code> — modèle principal de rédaction. Utilisé dans (fichiers) :
+<code>src/app/api/questionnaire-insight/route.ts</code>, <code>src/app/api/attention/breath/route.ts</code>,
+<code>src/app/api/lifestyle/breath/route.ts</code>, <code>src/app/api/temperament/breath/route.ts</code>,
+<code>src/app/api/questionnaire/voice-conversation/route.ts</code>, <code>src/app/api/idea-suggestions/route.ts</code>,
+<code>src/app/api/candice-note/route.ts</code>, <code>src/app/api/analyse/route.ts</code>,
+<code>src/app/api/suggestions/route.ts</code>, <code>src/app/api/confidences/route.ts</code>,
+<code>src/app/api/memories/situation/route.ts</code>, <code>src/app/api/memories/w2-analyse/route.ts</code>,
+<code>src/lib/signals/generator.ts</code>, <code>src/lib/recommendations/engine.ts</code>,
+<code>src/lib/profile/generateProfileAnalysis.ts</code>, <code>src/lib/profile/synthesisAI.ts</code>.</li>
+<li><code>claude-haiku-4-5-20251001</code> — modèle rapide/économique. Utilisé dans (fichiers) :
+<code>src/app/api/lifestyle/extract-filters/route.ts</code>, <code>src/app/api/carnet/identify/route.ts</code>,
+<code>src/app/api/memories/situation/route.ts</code>, <code>src/lib/discovery/engine.ts</code>,
+<code>src/lib/profile/generateProfileAnalysis.ts</code>, <code>src/lib/brain/signal.ts</code>,
+<code>src/lib/brain/memory.ts</code>.</li>
+</ul>
+<p>Note : la reformulation IA des questions Discovery a été <strong>coupée</strong> (commit <code>0f4cb87</code> ; les
+questions sont servies mot pour mot depuis la banque). Le fichier <code>src/lib/discovery/engine.ts</code>
+garde une référence au modèle Haiku, mais le pré-calcul de personnalisation est marqué inactif
+dans la mémoire projet (flag <code>PERSONALIZATION_ACTIVE=false</code>, non vérifié dans le code ici).</p>
+<h3>1.4 Resend — envoi d&#39;e-mails transactionnels · ✅</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> le service qui envoie les e-mails automatiques (confirmation,
+invitation d&#39;un proche, relance, rappel de suggestion, rappel de fin d&#39;essai).</p>
+<p><strong>Ce qui en dépend dans l&#39;app :</strong> bibliothèque <code>resend</code> (fichier : <code>package.json</code>), configurée
+dans un seul fichier utilitaire (fichier : <code>src/lib/resend.ts</code>) qui lit <code>RESEND_API_KEY</code> et
+<code>RESEND_FROM_EMAIL</code>. Les routes d&#39;e-mail qui s&#39;en servent : <code>src/app/api/emails/trial-reminder/</code>,
+<code>src/app/api/emails/reminder-suggestion/</code>, et les tâches planifiées d&#39;e-mails. L&#39;adresse
+d&#39;expédition a été fixée à <code>candice@candice.app</code> (commit <code>ab52b13</code>).</p>
+<h3>1.5 Web Push (VAPID) — notifications navigateur · ✅</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> les notifications « push » qui s&#39;affichent dans le navigateur/sur
+le téléphone même quand l&#39;app n&#39;est pas ouverte. VAPID = le protocole de clés qui autorise ces
+envois (ce n&#39;est pas un compte payant, mais une paire de clés).</p>
+<p><strong>Ce qui en dépend dans l&#39;app :</strong> bibliothèque <code>web-push</code> (fichier : <code>package.json</code>). Envoi côté
+serveur (fichier : <code>src/lib/notifications/push-sender.ts</code>, lit <code>VAPID_PUBLIC_KEY</code> +
+<code>VAPID_PRIVATE_KEY</code>). Abonnement côté navigateur (fichier : <code>src/hooks/useWebPush.ts</code>, lit
+<code>NEXT_PUBLIC_VAPID_PUBLIC_KEY</code>). Introduit au Lot 4 phase 4 (commits <code>bc00405</code>, <code>1e433db</code>).</p>
+<h3>1.6 Stripe — paiement / abonnement · 🟡 (prévu, NON câblé)</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> ce serait le service d&#39;encaissement de l&#39;abonnement (9 €/mois).</p>
+<p><strong>État réel :</strong> <strong>non branché</strong>. Stripe n&#39;apparaît PAS dans les dépendances (fichier :
+<code>package.json</code> — aucune bibliothèque <code>stripe</code>). Il n&#39;est cité que dans des commentaires « à
+faire plus tard » :</p>
+<ul>
+<li>« Phase de test — réactiver quand Stripe est branché (Phase 7) » et « Trial expired → paused
+(Stripe Phase 7: check for payment method) » (fichier : <code>src/app/api/cron/lifecycle-check/route.ts</code>).</li>
+<li>« scaffolding — Phase 7 (Stripe) » (fichier : <code>src/app/parametres/abonnement/AbonnementActions.tsx</code>).</li>
+<li>La convention « montants en INTEGER centimes (convention Stripe) » a été adoptée en base
+(commit <code>c7df348</code>), mais aucun appel de paiement n&#39;existe.</li>
+</ul>
+<p>Aucune variable d&#39;environnement Stripe n&#39;est présente. La mémoire projet mentionne une « rotation
+mot de passe Postgres obligatoire avant lancement public » liée au lot Stripe/admin — préparatoire,
+non vérifié dans le code.</p>
+<h3>1.7 GitHub — hébergement du code · 🟡</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> l&#39;endroit où le code est versionné (le dépôt Git). Aucune
+intégration GitHub dans le code applicatif (fichier : recherche <code>octokit|github</code> dans <code>src</code> →
+aucun résultat). Le dépôt est un projet Git local (dossier : <code>.git</code>) ; l&#39;usage de GitHub comme
+hébergeur distant est probable mais <strong>non vérifié</strong> depuis le code.</p>
+<h3>1.8 Namecheap (ou autre registrar) — nom de domaine · ❌ dans le code</h3>
+<p><strong>À quoi ça sert (en clair) :</strong> le fournisseur du nom de domaine <code>candice.app</code>. Aucune trace de
+Namecheap ni d&#39;aucun registrar dans le code (fichier : recherche → aucun résultat). Le domaine
+<code>candice.app</code> est utilisé dans l&#39;adresse d&#39;expédition des e-mails, mais la gestion du domaine est
+externe au code. <strong>Non vérifié</strong> quel registrar est employé.</p>
+<h3>1.9 Récapitulatif des services</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Rôle</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Vercel</td>
+<td>Hébergement + tâches planifiées</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Supabase</td>
+<td>Base de données + auth + stockage</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Anthropic (Claude)</td>
+<td>IA rédactionnelle (Sonnet + Haiku)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Resend</td>
+<td>E-mails transactionnels</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Web Push / VAPID</td>
+<td>Notifications navigateur</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Stripe</td>
+<td>Paiement abonnement</td>
+<td>🟡 prévu, non câblé</td>
+</tr>
+<tr>
+<td>GitHub</td>
+<td>Versionnage du code</td>
+<td>🟡 probable, hors code</td>
+</tr>
+<tr>
+<td>Namecheap / registrar</td>
+<td>Nom de domaine</td>
+<td>❌ absent du code</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. Variables d&#39;environnement (NOMS uniquement)</h2>
+<p>Deux origines croisées : les clés déclarées dans <code>.env.local</code> (réglages secrets locaux) et les
+<code>process.env.XXX</code> réellement lus dans le code (<code>src</code>). Aucune valeur n&#39;est reproduite.</p>
+<h3>2.1 Déclarées dans <code>.env.local</code></h3>
+<p>(Source : <code>grep &#39;^[A-Z_]+=&#39; .env.local</code>.)</p>
+<p><code>ANTHROPIC_API_KEY</code> · <code>CRON_SECRET</code> · <code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code> ·
+<code>NEXT_PUBLIC_SUPABASE_URL</code> · <code>NEXT_PUBLIC_VAPID_PUBLIC_KEY</code> · <code>RESEND_API_KEY</code> ·
+<code>RESEND_FROM_EMAIL</code> · <code>SUPABASE_DB_URL</code> · <code>SUPABASE_SERVICE_ROLE_KEY</code> · <code>VAPID_PRIVATE_KEY</code> ·
+<code>VAPID_PUBLIC_KEY</code>.</p>
+<p>Le fichier modèle <code>.env.example</code> liste en plus <code>BETA_PASSWORD</code> (mais pas <code>SUPABASE_DB_URL</code>,
+<code>CRON_SECRET</code>, ni les clés VAPID). (Source : <code>.env.example</code>.)</p>
+<h3>2.2 Table nom → où c&#39;est utilisé</h3>
+<p>(Source : <code>grep &#39;process.env.XXX&#39; src</code>. Le nombre de références brutes suit le nom.)</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Rôle (en clair)</th>
+<th>Nb réf.</th>
+<th>Fichiers qui l&#39;utilisent</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ANTHROPIC_API_KEY</code></td>
+<td>Clé d&#39;accès à l&#39;IA Claude</td>
+<td>19</td>
+<td>Les 12 routes API listées en §1.3 + <code>src/lib/discovery/engine.ts</code>, <code>src/lib/discovery/guard-paths.test.ts</code>, <code>src/lib/signals/generator.ts</code>, <code>src/lib/recommendations/engine.ts</code>, <code>src/lib/brain/signal.ts</code>, <code>src/lib/brain/memory.ts</code></td>
+</tr>
+<tr>
+<td><code>CRON_SECRET</code></td>
+<td>Secret qui protège les tâches planifiées</td>
+<td>7</td>
+<td><code>src/app/api/emails/trial-reminder/route.ts</code>, <code>src/app/api/emails/reminder-suggestion/route.ts</code>, <code>src/app/api/cron/email-reminders/route.ts</code>, <code>src/app/api/cron/lifecycle-check/route.ts</code>, <code>src/app/api/cron/cadence-feedback/route.ts</code>, <code>src/app/api/cron/detect-and-generate/route.ts</code></td>
+</tr>
+<tr>
+<td><code>NEXT_PUBLIC_SUPABASE_URL</code></td>
+<td>Adresse du projet Supabase (publique)</td>
+<td>5</td>
+<td><code>src/utils/supabase/client.ts</code>, <code>middleware.ts</code>, <code>admin.ts</code>, <code>claims.ts</code>, <code>server.ts</code></td>
+</tr>
+<tr>
+<td><code>NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY</code></td>
+<td>Clé publique Supabase (côté navigateur)</td>
+<td>4</td>
+<td><code>src/utils/supabase/middleware.ts</code>, <code>client.ts</code>, <code>server.ts</code>, <code>claims.ts</code></td>
+</tr>
+<tr>
+<td><code>SUPABASE_SERVICE_ROLE_KEY</code></td>
+<td>Clé privilégiée Supabase (côté serveur uniquement)</td>
+<td>1</td>
+<td><code>src/utils/supabase/admin.ts</code></td>
+</tr>
+<tr>
+<td><code>SUPABASE_DB_URL</code></td>
+<td>Connexion directe à la base (usage local/scripts)</td>
+<td>0 dans <code>src</code></td>
+<td>Déclarée dans <code>.env.local</code> ; référencée en doc (fichier : <code>docs/stop-wishlist-phaseB.md</code>). Sert aux scripts locaux <code>psql</code>, pas au code applicatif. Voir mémoire projet (rotation mot de passe Postgres).</td>
+</tr>
+<tr>
+<td><code>RESEND_API_KEY</code></td>
+<td>Clé d&#39;accès au service d&#39;e-mails</td>
+<td>1</td>
+<td><code>src/lib/resend.ts</code></td>
+</tr>
+<tr>
+<td><code>RESEND_FROM_EMAIL</code></td>
+<td>Adresse d&#39;expédition des e-mails</td>
+<td>1</td>
+<td><code>src/lib/resend.ts</code></td>
+</tr>
+<tr>
+<td><code>VAPID_PUBLIC_KEY</code></td>
+<td>Clé publique notifications (serveur)</td>
+<td>1</td>
+<td><code>src/lib/notifications/push-sender.ts</code></td>
+</tr>
+<tr>
+<td><code>VAPID_PRIVATE_KEY</code></td>
+<td>Clé privée notifications (serveur)</td>
+<td>1</td>
+<td><code>src/lib/notifications/push-sender.ts</code></td>
+</tr>
+<tr>
+<td><code>NEXT_PUBLIC_VAPID_PUBLIC_KEY</code></td>
+<td>Clé publique notifications (navigateur)</td>
+<td>1</td>
+<td><code>src/hooks/useWebPush.ts</code></td>
+</tr>
+<tr>
+<td><code>BETA_PASSWORD</code></td>
+<td>Mot de passe de la barrière bêta</td>
+<td>1</td>
+<td><code>src/app/api/beta-access/route.ts</code></td>
+</tr>
+<tr>
+<td><code>NODE_ENV</code></td>
+<td>Indicateur d&#39;environnement (dev/prod) — fourni par le système, pas un secret</td>
+<td>3</td>
+<td><code>src/app/register/page.tsx</code>, <code>src/app/api/beta-access/route.ts</code>, <code>src/app/design-preview/page.tsx</code></td>
+</tr>
+</tbody></table>
+<p>Note : <code>SUPABASE_DB_URL</code> est le seul nom présent dans <code>.env.local</code> mais jamais lu dans <code>src</code>
+(usage hors application). Tous les autres noms de <code>.env.local</code> sont bien référencés dans le code.</p>
+<hr>
+<h2>3. Dépendances (briques logicielles installées)</h2>
+<p>(Source : <code>package.json</code>. Chaque ligne = rôle en une phrase.)</p>
+<h3>3.1 Dépendances de production (<code>dependencies</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Paquet</th>
+<th>Version</th>
+<th>Rôle (en clair)</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@anthropic-ai/sdk</code></td>
+<td>^0.91.0</td>
+<td>Kit officiel pour parler à l&#39;IA Claude (Anthropic)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>@supabase/ssr</code></td>
+<td>^0.10.2</td>
+<td>Connexion Supabase adaptée au rendu serveur (sessions/cookies)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>@supabase/supabase-js</code></td>
+<td>^2.104.1</td>
+<td>Kit officiel Supabase (base de données, auth, stockage)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>@types/web-push</code></td>
+<td>^3.6.4</td>
+<td>Descriptions de types pour <code>web-push</code> (aide au code)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>next</code></td>
+<td>16.3.5</td>
+<td>Le framework de l&#39;application (React côté serveur + routes)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>react</code></td>
+<td>19.2.4</td>
+<td>Bibliothèque d&#39;interface (composants)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>react-dom</code></td>
+<td>19.2.4</td>
+<td>Rendu de React dans le navigateur</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>react-qr-code</code></td>
+<td>^2.0.21</td>
+<td>Génère les QR codes (invitation / continuer sur téléphone)</td>
+<td>✅ (fichiers : <code>src/app/invite/[token]/LandingInvite.tsx</code>, <code>src/app/continuer-sur-telephone/page.tsx</code>)</td>
+</tr>
+<tr>
+<td><code>resend</code></td>
+<td>^6.12.3</td>
+<td>Kit d&#39;envoi d&#39;e-mails transactionnels</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>web-push</code></td>
+<td>^3.6.7</td>
+<td>Envoi de notifications navigateur (côté serveur)</td>
+<td>✅</td>
+</tr>
+</tbody></table>
+<h3>3.2 Dépendances de développement (<code>devDependencies</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>Paquet</th>
+<th>Version</th>
+<th>Rôle (en clair)</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>@tailwindcss/postcss</code></td>
+<td>^4</td>
+<td>Branchement de Tailwind (styles) dans l&#39;outil PostCSS</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>@types/node</code></td>
+<td>^20</td>
+<td>Descriptions de types pour Node.js (aide au code)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>@types/react</code></td>
+<td>^19</td>
+<td>Descriptions de types pour React</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>@types/react-dom</code></td>
+<td>^19</td>
+<td>Descriptions de types pour React DOM</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>opentype.js</code></td>
+<td>^2.0.0</td>
+<td>Manipulation de polices — sert à générer les favicons (fichier : <code>scripts/generate-favicons.mjs</code>)</td>
+<td>🟡 script ponctuel</td>
+</tr>
+<tr>
+<td><code>tailwindcss</code></td>
+<td>^4</td>
+<td>Système de styles utilitaires (mise en forme)</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>typescript</code></td>
+<td>^5</td>
+<td>Le langage typé utilisé pour tout le code</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>vitest</code></td>
+<td>^4.1.7</td>
+<td>Outil pour lancer les tests automatisés</td>
+<td>✅ (fichier : <code>src/lib/discovery/guard-paths.test.ts</code>)</td>
+</tr>
+</tbody></table>
+<p>Scripts définis (fichier : <code>package.json</code>) : <code>dev</code> (développement), <code>build</code> (compilation),
+<code>start</code> (démarrage), <code>test</code> (lance Vitest).</p>
+<hr>
+<h2>4. Points restés « non vérifiés »</h2>
+<ul>
+<li><strong>GitHub</strong> comme hébergeur distant du dépôt : probable, mais aucune preuve dans le code.</li>
+<li><strong>Registrar du domaine</strong> <code>candice.app</code> (Namecheap ou autre) : aucune trace dans le code.</li>
+<li><strong>Flag <code>PERSONALIZATION_ACTIVE</code></strong> (mémoire projet) : cité comme désactivé ; non retrouvé
+comme variable d&#39;environnement ni dans les fichiers lus ici.</li>
+<li><strong><code>SUPABASE_DB_URL</code></strong> : présent dans <code>.env.local</code>, utilisé hors application (scripts <code>psql</code>
+locaux) ; son usage exact n&#39;est pas visible dans <code>src</code>.</li>
+<li><strong>Écart de comptage des commits</strong> (308 listés vs 309 rapportés par Git) : voir document
+<code>01-historique.md</code>.</li>
+</ul>
+</body></html>

@@ -10,9 +10,9 @@ import {
 import { createProfileEvidence } from '../evidence';
 import { createSourceRecord } from '../sources';
 import { createFact } from '../fact';
-import { asContactId, asUserId, type KnowledgeScope } from '../identity';
+import { asContactId, contactAbout, asUserId, type KnowledgeScope } from '../identity';
 
-const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 
 describe('15 — ni evidence ni SourceRecord ne portent de champ de visibilité', () => {
   it('une evidence est de la provenance interne par nature : aucun champ visibility', () => {

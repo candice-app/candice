@@ -37,7 +37,7 @@ export interface CreateExtractionInput extends KnowledgeScope {
 
 export function createExtractionRecord(input: CreateExtractionInput): ExtractionRecord {
   return {
-    contactId: input.contactId,
+    about: input.about,
     ownerId: input.ownerId,
     extraction_id: input.extraction_id,
     source_id: input.source_id,
