@@ -86,3 +86,32 @@ describe('Invariants du branchement', () => {
     expect(allEvidences.filter((e) => !sourceIds.has(e.source_id))).toHaveLength(0);
   });
 });
+
+import { SOUTIEN, MOTEURS } from '../../knowledge';
+import { produceSoutienOption, produceMoteursOption } from '../produce';
+
+describe('Bloc 2b — soutien / moteurs (entièrement spécifiés)', () => {
+  const ctx = { ...scope, sourceId: '00000000-0000-5000-8000-000000000s01', sourceType: 'onboarding_closed' as const, timestamp: '2026-10-06T00:00:00Z' };
+  it('soutien : 1 NEED primary/strong/context distress, source_id identique', () => {
+    const { source, evidences } = produceSoutienOption(ctx, SOUTIEN.options[0]); // « Qu'on m'écoute » → NEED_SEEN_UNDERSTOOD
+    expect(evidences).toHaveLength(1);
+    const e = evidences[0];
+    expect(e.target_construct).toBe('NEED_SEEN_UNDERSTOOD');
+    expect(e.evidence_role).toBe('primary');
+    expect(e.strength).toBe('strong');
+    expect(e.context).toBe('distress');
+    expect(e.source_id).toBe(source.id);
+    expect(source.assertionStatus).toBe('declared'); // dérivé du sourceType
+  });
+  it('moteurs : 1 OpenKnowledge life_priority, AUCUNE evidence, label verbatim conservé', () => {
+    const { source, openKnowledge } = produceMoteursOption(ctx, MOTEURS.options[0]); // « La liberté » → freedom
+    expect(openKnowledge).toHaveLength(1);
+    const k = openKnowledge[0];
+    expect(k.type).toBe('life_priority');
+    expect(k.relation).toBe('matters_to');
+    expect(k.intensity).toBe('strong');
+    expect(k.context).toBe('GLOBAL');
+    expect(k.subjectLabel).toBe('La liberté'); // verbatim affiché
+    expect(k.source).toBe(source.id);
+  });
+});

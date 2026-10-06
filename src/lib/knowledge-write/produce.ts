@@ -234,3 +234,90 @@ export function produceFromOption(
 
   return { source, evidences, facts };
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Les deux questions ajoutées (lot B bloc 2b) — entièrement spécifiées par
+ * mapping-soutien-moteurs.md. Une option sélectionnée = une source (uuid), comme le socle.
+ * ──────────────────────────────────────────────────────────────────────── */
+
+import {
+  MOTEURS,
+  SOUTIEN,
+  createOpenKnowledge,
+  deriveAssertionStatus,
+  normalizeLabel,
+  asSubjectId,
+  type MoteurOption,
+  type NeedCode,
+  type OpenKnowledge,
+  type SoutienOption,
+} from '../knowledge';
+import { openKnowledgeId } from './ids';
+
+/** Une option de `soutien` répondue → source + 1 NEED (primary, strong, context distress). */
+export function produceSoutienOption(ctx: WriteContext, option: SoutienOption): {
+  source: SourceRecord;
+  evidences: readonly NeedEvidence[];
+} {
+  const source = createSourceRecord({
+    contactId: ctx.contactId,
+    ownerId: ctx.ownerId,
+    id: ctx.sourceId,
+    sourceType: ctx.sourceType,
+    questionText: SOUTIEN.questionText,
+    answerText: option.optionText,
+    questionCode: SOUTIEN.questionCode,
+    timestamp: ctx.timestamp,
+  });
+  const ev: NeedEvidence = {
+    contactId: ctx.contactId,
+    ownerId: ctx.ownerId,
+    source_id: ctx.sourceId,
+    source_type: ctx.sourceType,
+    evidence_id: evidenceId(ctx.sourceId, `NEED:${option.need}`),
+    raw_information: option.optionText,
+    confidence: ctx.confidence ?? 'high',
+    context: SOUTIEN.evidence.context, // 'distress'
+    timestamp: ctx.timestamp,
+    stability: ctx.stability ?? 'contextual',
+    evidence_role: SOUTIEN.evidence.evidence_role, // 'primary'
+    version: JOURNAL_VERSION_STAMP,
+    target_family: 'NEED',
+    target_construct: option.need as NeedCode,
+    strength: SOUTIEN.evidence.strength, // 'strong'
+  };
+  return { source, evidences: [ev] };
+}
+
+/** Une option de `moteurs` répondue → source + 1 OpenKnowledge life_priority (AUCUNE evidence). */
+export function produceMoteursOption(ctx: WriteContext, option: MoteurOption): {
+  source: SourceRecord;
+  openKnowledge: readonly OpenKnowledge[];
+} {
+  const source = createSourceRecord({
+    contactId: ctx.contactId,
+    ownerId: ctx.ownerId,
+    id: ctx.sourceId,
+    sourceType: ctx.sourceType,
+    questionText: MOTEURS.questionText,
+    answerText: option.optionText,
+    questionCode: MOTEURS.questionCode,
+    timestamp: ctx.timestamp,
+  });
+  const ok = createOpenKnowledge({
+    contactId: ctx.contactId,
+    ownerId: ctx.ownerId,
+    open_knowledge_id: openKnowledgeId(ctx.sourceId, option.subject),
+    type: MOTEURS.openKnowledge.type, // 'life_priority'
+    subject: asSubjectId(normalizeLabel(option.subject)),
+    subjectLabel: option.optionText, // verbatim affiché
+    relation: MOTEURS.openKnowledge.relation, // 'matters_to'
+    intensity: MOTEURS.openKnowledge.intensity, // 'strong'
+    context: MOTEURS.openKnowledge.context, // 'GLOBAL'
+    source: ctx.sourceId,
+    timestamp: ctx.timestamp,
+    confidence: MOTEURS.openKnowledge.confidence, // 'high'
+    assertionStatus: deriveAssertionStatus(ctx.sourceType),
+  });
+  return { source, openKnowledge: [ok] };
+}
