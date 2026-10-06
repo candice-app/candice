@@ -452,7 +452,12 @@ const GUARDRAIL_SCOPE_RESTRICTIVENESS: Record<GuardrailScope, number> = {
  * remplacé par un guardrail d'execution et laisser passer une reco à éliminer.
  */
 export function consolidateGuardrails(scope: KnowledgeScope, evidences: readonly GuardrailEvidence[], opts: ConsolidateOpts = {}): GuardrailSignal[] {
-  return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([code, evs]) => {
+  // GRAIN = (code, context). Grouper par code seul fusionnerait noise@restaurant et
+  // noise@concert — la fusion elle-même élargirait le domaine. severity/scope se
+  // calculent DANS chaque groupe ; un HARD en restaurant ne rend pas HARD le concert.
+  return [...groupBy(evidences, (e) => `${e.target_construct}::${e.context}`).entries()].map(([, evs]) => {
+    const code = evs[0].target_construct;
+    const context = evs[0].context; // tous identiques dans le groupe (grain)
     const severity: GuardrailSeverity = evs.some((e) => e.severity === 'HARD') ? 'HARD' : 'SOFT';
     const guardrailScope = evs
       .map((e) => e.guardrailScope)
@@ -461,6 +466,7 @@ export function consolidateGuardrails(scope: KnowledgeScope, evidences: readonly
       ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
       family: 'GUARDRAIL',
       code: code as GuardrailCode | GuardrailVerticalPath,
+      context,
       severity,
       guardrailScope,
     };

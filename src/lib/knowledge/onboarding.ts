@@ -126,6 +126,12 @@ export interface OnboardingGuardrail {
   readonly code: GuardrailCode;
   readonly severity: GuardrailSeverity;
   readonly guardrailScope: GuardrailScope;
+  /**
+   * Contexte DÉCLARÉ du guardrail (lot A ter, correction arbitrage guardrail). Le stem
+   * fait foi : Q18 = « le type de SURPRISE que je détesterais » → context 'surprise'. La
+   * consolidation ne l'élargit jamais ; un GRD contextuel ne devient pas un GRD global.
+   */
+  readonly context: EvidenceContext;
 }
 
 /** Une production PREFERENCE (chemin + valeur ; detail = verbatim complet du doc). */
@@ -2288,7 +2294,7 @@ export const ONBOARDING_MAPPINGS: readonly OnboardingMapping[] = [
     needs: [],
     drivers: [],
     guardrails: [
-      { code: "GRD_PUBLIC_EXPOSURE", severity: "HARD", guardrailScope: "selection" },
+      { code: "GRD_PUBLIC_EXPOSURE", severity: "HARD", guardrailScope: "selection", context: "surprise" },
     ],
     preferences: [],
     facts: [],
@@ -2308,7 +2314,7 @@ export const ONBOARDING_MAPPINGS: readonly OnboardingMapping[] = [
     needs: [],
     drivers: [],
     guardrails: [
-      { code: "GRD_SCHEDULE_DISRUPTION", severity: "HARD", guardrailScope: "selection" },
+      { code: "GRD_SCHEDULE_DISRUPTION", severity: "HARD", guardrailScope: "selection", context: "surprise" },
     ],
     preferences: [],
     facts: [],
@@ -2326,8 +2332,8 @@ export const ONBOARDING_MAPPINGS: readonly OnboardingMapping[] = [
     needs: [],
     drivers: [],
     guardrails: [
-      { code: "GRD_TOO_INTIMATE", severity: "HARD", guardrailScope: "selection" },
-      { code: "GRD_SENTIMENTAL_OVERLOAD", severity: "HARD", guardrailScope: "selection" },
+      { code: "GRD_TOO_INTIMATE", severity: "HARD", guardrailScope: "selection", context: "surprise" },
+      { code: "GRD_SENTIMENTAL_OVERLOAD", severity: "HARD", guardrailScope: "selection", context: "surprise" },
     ],
     preferences: [],
     facts: [],
@@ -2347,7 +2353,7 @@ export const ONBOARDING_MAPPINGS: readonly OnboardingMapping[] = [
     needs: [],
     drivers: [],
     guardrails: [
-      { code: "GRD_POOR_EXECUTION", severity: "HARD", guardrailScope: "execution" },
+      { code: "GRD_POOR_EXECUTION", severity: "HARD", guardrailScope: "execution", context: "surprise" },
     ],
     preferences: [],
     facts: [],

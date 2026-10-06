@@ -14,6 +14,7 @@
 // persistée (point d'arrêt 1 tranché). La clé de signal, elle, est scopée sur
 // contactId SEUL (signalKey).
 
+import type { EvidenceContext } from './evidence';
 import type { KnowledgeScope, EntityId, SubjectId } from './identity';
 import type {
   AffectionCadence,
@@ -122,8 +123,16 @@ export interface BehaviorSignal extends SignalBase {
 export interface GuardrailSignal extends SignalBase {
   readonly family: 'GUARDRAIL';
   readonly code: GuardrailCode | GuardrailVerticalPath;
-  /** La sévérité appartient à l'evidence (R20) ; la consolidée est la plus contraignante. */
+  /**
+   * Le GRAIN du signal : un guardrail est consolidé par (code, context). La consolidation
+   * n'élargit jamais le domaine — un HARD en restaurant ne rend pas HARD le concert. Champ
+   * SCALAIRE (pas contexts[0], pas de fallback GLOBAL) : si l'invariant « un seul contexte »
+   * casse, c'est un bug, pas une bascule silencieuse vers le domaine le plus large.
+   */
+  readonly context: EvidenceContext;
+  /** La sévérité appartient à l'evidence (R20) ; la consolidée est la plus contraignante DANS le groupe. */
   readonly severity: GuardrailSeverity;
+  /** Le plus restrictif PARMI les scopes observés dans le groupe — jamais une escalade. */
   readonly guardrailScope: GuardrailScope;
 }
 
@@ -177,7 +186,7 @@ export function constructIdentity(s: Signal): string {
     case 'BEHAVIOR':
       return `${s.behaviorContext}:${s.pattern}`;
     case 'GUARDRAIL':
-      return s.code;
+      return `${s.code}@${s.context}`; // grain (code, context) — jamais élargi
     case 'AFFECTION_LANGUAGE':
       return `${s.direction}:${s.modality}`;
     case 'NEED':

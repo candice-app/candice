@@ -154,6 +154,22 @@ describe('correction 4 — GUARDRAIL scope consolidé = le plus restrictif (sele
   });
 });
 
+describe('arbitrage guardrail — grain (code, context) : la consolidation n’élargit jamais le domaine', () => {
+  it('noise@restaurant HARD + noise@concert SOFT → DEUX signaux ; le concert reste SOFT', () => {
+    const restaurant = { ...guardrailEv('a', 'GRD_NOISE', 'HARD', 'context'), context: 'restaurant' };
+    const concert = { ...guardrailEv('b', 'GRD_NOISE', 'SOFT', 'context'), context: 'concert' };
+    const signals = consolidateGuardrails(scope, [restaurant, concert]);
+    expect(signals).toHaveLength(2); // pas de fusion
+    const byCtx = Object.fromEntries(signals.map((s) => [s.context, s]));
+    expect(byCtx['restaurant'].severity).toBe('HARD');
+    expect(byCtx['concert'].severity).toBe('SOFT'); // le HARD du restaurant n'a pas contaminé le concert
+    // invariant : un GuardrailSignal porte exactement un contexte
+    for (const s of signals) expect(s.contexts).toHaveLength(1);
+    expect(signalKey(scope.contactId, byCtx['restaurant'])).not.toBe(signalKey(scope.contactId, byCtx['concert']));
+    expect(signalKey(scope.contactId, byCtx['restaurant'])).toContain('GRD_NOISE@restaurant');
+  });
+});
+
 describe('correction 5 — un signal hérite du niveau le plus restrictif de ses FACT soutiens', () => {
   it('un GuardrailSignal soutenu par un FACT internal_only ne reste pas exposable', () => {
     const sensitiveFact = createFact({ ...scope, fact_id: 'fh', fact_type: 'health', value: 'allergie', source: 's', timestamp: base.timestamp, confidence: 'high', sensitivity: { isSensitive: true, category: 'santé' } });

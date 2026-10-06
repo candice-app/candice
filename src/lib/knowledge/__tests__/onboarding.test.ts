@@ -211,18 +211,19 @@ describe('Test 32 — chiffres de contrôle recalculés = valeurs attendues', ()
     const codes = active.flatMap((m) => m.guardrails);
     expect(codes).toHaveLength(5);
     for (const g of codes) expect(g.severity).toBe('HARD');
+    // context: 'surprise' (lot A ter) — le stem « surprise détestée » borne le domaine.
     expect(mappingByRef('117')!.guardrails).toEqual([
-      { code: 'GRD_PUBLIC_EXPOSURE', severity: 'HARD', guardrailScope: 'selection' },
+      { code: 'GRD_PUBLIC_EXPOSURE', severity: 'HARD', guardrailScope: 'selection', context: 'surprise' },
     ]);
     expect(mappingByRef('118')!.guardrails).toEqual([
-      { code: 'GRD_SCHEDULE_DISRUPTION', severity: 'HARD', guardrailScope: 'selection' },
+      { code: 'GRD_SCHEDULE_DISRUPTION', severity: 'HARD', guardrailScope: 'selection', context: 'surprise' },
     ]);
     expect(mappingByRef('119')!.guardrails).toEqual([
-      { code: 'GRD_TOO_INTIMATE', severity: 'HARD', guardrailScope: 'selection' },
-      { code: 'GRD_SENTIMENTAL_OVERLOAD', severity: 'HARD', guardrailScope: 'selection' },
+      { code: 'GRD_TOO_INTIMATE', severity: 'HARD', guardrailScope: 'selection', context: 'surprise' },
+      { code: 'GRD_SENTIMENTAL_OVERLOAD', severity: 'HARD', guardrailScope: 'selection', context: 'surprise' },
     ]);
     expect(mappingByRef('120')!.guardrails).toEqual([
-      { code: 'GRD_POOR_EXECUTION', severity: 'HARD', guardrailScope: 'execution' },
+      { code: 'GRD_POOR_EXECUTION', severity: 'HARD', guardrailScope: 'execution', context: 'surprise' },
     ]);
     expect(mappingByRef('121')!.guardrails).toHaveLength(0);
   });
