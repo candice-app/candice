@@ -1,0 +1,88 @@
+// Lot B bloc 2a — production d'evidences : compteurs du parcours simulé complet
+// confrontés aux chiffres du document de clôture. Tout écart = échec (on ne l'ajuste pas).
+
+import { describe, expect, it } from 'vitest';
+import { activeOptions } from '../../knowledge';
+import type { Evidence, Fact } from '../../knowledge';
+import { asContactId, asUserId, type KnowledgeScope } from '../../knowledge';
+import { consolidateJournal } from '../consolidate-journal';
+import { produceFromOption, type WriteContext } from '../produce';
+
+const scope: KnowledgeScope = { contactId: asContactId('c1'), ownerId: asUserId('u1') };
+
+// Parcours simulé COMPLET : chaque option active répondue, une source (uuid) par option.
+const active = activeOptions();
+const allEvidences: Evidence[] = [];
+const allFacts: Fact[] = [];
+const sourceIds = new Set<string>();
+let optionsWithNoEvidence = 0;
+for (const m of active) {
+  const ctx: WriteContext = {
+    ...scope,
+    sourceId: `00000000-0000-5000-8000-${m.optionRef.replace(/[^0-9a-f]/gi, '').padStart(12, '0').slice(0, 12)}`,
+    sourceType: 'onboarding_closed',
+    timestamp: '2026-10-06T00:00:00Z',
+  };
+  const { source, evidences, facts } = produceFromOption(ctx, m);
+  sourceIds.add(source.id);
+  allEvidences.push(...evidences);
+  allFacts.push(...facts);
+  if (evidences.length === 0) optionsWithNoEvidence += 1;
+}
+
+const prof = allEvidences.filter((e) => e.target_family === 'PROFILE');
+const aff = allEvidences.filter((e) => e.target_family === 'AFFECTION_LANGUAGE');
+const beh = allEvidences.filter((e) => e.target_family === 'BEHAVIOR');
+const grd = allEvidences.filter((e) => e.target_family === 'GUARDRAIL');
+const pref = allEvidences.filter((e) => e.target_family === 'PREFERENCE');
+
+describe('Compteurs du parcours simulé complet (vs clos)', () => {
+  it('options actives = 106', () => {
+    expect(active).toHaveLength(106);
+  });
+  it('PROFILE = 59 · GLOBAL_DIRECT 11 · LOCAL 48 · secondaires 17 · négatives 2', () => {
+    expect(prof).toHaveLength(59);
+    expect(prof.filter((e) => e.context === 'GLOBAL')).toHaveLength(11);
+    expect(prof.filter((e) => e.context !== 'GLOBAL')).toHaveLength(48);
+    expect(prof.filter((e) => e.evidence_role === 'secondary')).toHaveLength(17);
+    expect(prof.filter((e) => 'value' in e && (e as { value: number }).value < 0)).toHaveLength(2);
+  });
+  it('AFFECTION_RECEIVE = 14 · AFFECTION_GIVE = 7', () => {
+    expect(aff.filter((e) => 'direction' in e && (e as { direction: string }).direction === 'receive')).toHaveLength(14);
+    expect(aff.filter((e) => 'direction' in e && (e as { direction: string }).direction === 'give')).toHaveLength(7);
+  });
+  it('BEHAVIOR = 20 sur 4 contextes', () => {
+    expect(beh).toHaveLength(20);
+    const ctxs = new Set(beh.map((e) => (e as { behaviorContext: string }).behaviorContext));
+    expect(ctxs.size).toBe(4);
+  });
+  it('GUARDRAIL = 4 options → 5 evidences', () => {
+    expect(active.filter((m) => m.guardrails.length > 0)).toHaveLength(4);
+    expect(grd).toHaveLength(5);
+  });
+  it('PREFERENCE = 17 · FACT = 2', () => {
+    expect(pref).toHaveLength(17);
+    expect(allFacts).toHaveLength(2);
+  });
+  it('options sans evidence : cas normal, > 0 et pas une erreur', () => {
+    expect(optionsWithNoEvidence).toBeGreaterThan(0);
+  });
+});
+
+describe('Invariants du branchement', () => {
+  const { signals } = consolidateJournal(scope, allEvidences);
+  it('aucun construct en score low sans contraire net (R1)', () => {
+    // la consolidation ne produit 'low' que sur contraire net ; on vérifie qu'un low
+    // s'accompagne toujours d'une evidence de direction négative sur le construct.
+    const lowWithoutContrary = signals.filter(
+      (s) => s.score === 'low' && !allEvidences.some((e) => e.target_construct === (s as { construct?: string }).construct && 'value' in e && (e as { value: number }).value < 0),
+    );
+    expect(lowWithoutContrary).toHaveLength(0);
+  });
+  it('aucun construct en confidence high (une seule source_type à l’onboarding)', () => {
+    expect(signals.filter((s) => s.confidence === 'high')).toHaveLength(0);
+  });
+  it('aucune evidence sans source_id résoluble', () => {
+    expect(allEvidences.filter((e) => !sourceIds.has(e.source_id))).toHaveLength(0);
+  });
+});
