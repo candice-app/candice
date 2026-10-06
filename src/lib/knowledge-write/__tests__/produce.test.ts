@@ -115,3 +115,28 @@ describe('Bloc 2b — soutien / moteurs (entièrement spécifiés)', () => {
     expect(k.source).toBe(source.id);
   });
 });
+
+import { affectionStrengthFor } from '../produce';
+
+describe('Bloc 2b — strength affective (table discrète, switch exhaustif, aucun produit)', () => {
+  it('Q1 par rang : 1,2→strong, 3→moderate', () => {
+    expect(affectionStrengthFor('q1', 1)).toBe('strong');
+    expect(affectionStrengthFor('q1', 2)).toBe('strong');
+    expect(affectionStrengthFor('q1', 3)).toBe('moderate');
+  });
+  it('Q4 → moderate (demi-poids) ; QE → strong', () => {
+    expect(affectionStrengthFor('q4')).toBe('moderate');
+    expect(affectionStrengthFor('qe')).toBe('strong');
+  });
+  it('question sans règle affective → jette (aucun défaut silencieux)', () => {
+    expect(() => affectionStrengthFor('q7')).toThrow();
+  });
+  it('Q2 ne produit AUCUNE evidence affective', () => {
+    const q2 = active.filter((m) => m.questionCode === 'q2');
+    expect(q2.length).toBeGreaterThan(0);
+    for (const m of q2) {
+      const { evidences } = produceFromOption({ ...scope, sourceId: '00000000-0000-5000-8000-0000000000q2', sourceType: 'onboarding_closed', timestamp: '2026-10-06T00:00:00Z' }, m);
+      expect(evidences.filter((e) => e.target_family === 'AFFECTION_LANGUAGE')).toHaveLength(0);
+    }
+  });
+});

@@ -82,6 +82,28 @@ function roleFor(questionCode: string, family: Evidence['target_family']): Evide
 function strengthFor(role: EvidenceRole): EvidenceStrength {
   return role === 'primary' ? 'strong' : 'moderate'; // provisoire (carnet), rattrapable par remap
 }
+
+/**
+ * Strength d'une evidence AFFECTION (arbitrage 2b). Le demi-poids de Q4 s'exprime dans la
+ * strength, JAMAIS par un produit numérique : table discrète + switch, pas d'arithmétique
+ * sur questionWeight. Aucun défaut silencieux — une question sans règle affective jette
+ * (même interdit que le `?? 'GLOBAL'` refusé au lot A bis).
+ *   Q1 (100 %) : rang 1,2 → strong · rang 3 → moderate
+ *   Q4 (50 %)  : moderate   ·   QE : strong (clos)   ·   Q2 (0 %) : ne produit aucune affection
+ * L'égalité Q4 ≡ Q1-rang3 est assumée (3 grades ; les deux restent distinguables par rank/role/source).
+ */
+export function affectionStrengthFor(questionCode: string, rank?: 1 | 2 | 3): EvidenceStrength {
+  switch (questionCode) {
+    case 'q1':
+      return rank === 3 ? 'moderate' : 'strong';
+    case 'q4':
+      return 'moderate';
+    case 'qe':
+      return 'strong';
+    default:
+      throw new Error(`[produce] affectionStrengthFor : aucune règle affective pour « ${questionCode} »`);
+  }
+}
 function ctxFor(questionCode: string): string {
   const c = NONROLE_CONTEXT[questionCode] ?? 'GLOBAL';
   if (!isValidEvidenceContext(c)) throw new Error(`[produce] contexte invalide ${c} pour ${questionCode}`);
@@ -163,7 +185,7 @@ export function produceFromOption(
   for (const a of mapping.affectionLanguage) {
     const tkey = `AFFECTION:${a.direction}:${a.modality}`;
     const rank = opts.affectionRankByModality?.[a.modality];
-    const strength: EvidenceStrength = rank ? (rank === 3 ? 'moderate' : 'strong') : 'strong';
+    const strength: EvidenceStrength = affectionStrengthFor(mapping.questionCode, rank);
     const ev: AffectionEvidence = {
       ...common,
       evidence_id: eid(tkey),

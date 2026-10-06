@@ -121,3 +121,8 @@
 
 ### [2026-10-06] Rectification — distress N'est PAS dans CONTEXT_CODES
 - Correction de l'arbitrage guardrail : `distress` avait été ajouté à `CONTEXT_CODES` (famille CONTEXT) par erreur. `CONTEXT_CODES` revient à 10 (vocabulaire de la famille CONTEXT). Les contextes LOCAUX d'evidence (le champ `evidence.context`) vivent dans un registre DISTINCT, normalisé : `EVIDENCE_CONTEXTS` = 13 (10 du socle + distress + conflict + emotional_expression). GLOBAL n'y figure pas (opposé d'un contexte local). `isValidEvidenceContext(ctx)` = GLOBAL ou membre du registre — garde-fou contre une faute de frappe qui créerait un contexte distinct et globaliserait à tort.
+
+### [2026-10-06] Strength affective + intérêts — arbitré (provisoire, remap)
+- Affection : table discrète + switch exhaustif `affectionStrengthFor` (AUCUN produit par questionWeight, qui reste documentaire). Q1 : rang 1,2→strong, 3→moderate · Q4 (50 %)→moderate · QE→strong · Q2 (0 %)→aucune evidence affective. Égalité Q4 ≡ Q1-rang3 assumée (3 grades) ; distinguables par rank/role/source. Aucun défaut silencieux (question inconnue → jette, comme le `?? 'GLOBAL'` refusé).
+- Intérêts : strength `moderate` (sélection volontaire mais sans niveau déclaré). `relationship` reste absent = non précisé, jamais « faible ». RÈGLE : aucun chemin de strength vers un rendu d'intensité des intérêts — l'intensité affichée vient de relationship ; relationship absent → la phrase dit que l'intérêt existe sans le qualifier. À tester sur la projection quand elle existera ; note dans le code d'ici là.
+- Les deux valeurs sont provisoires (remap), n'entrent dans aucun identifiant déterministe (la clé-cible ne porte jamais la strength).
