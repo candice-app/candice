@@ -105,7 +105,10 @@ export function affectionStrengthFor(questionCode: string, rank?: 1 | 2 | 3): Ev
   }
 }
 function ctxFor(questionCode: string): string {
-  const c = NONROLE_CONTEXT[questionCode] ?? 'GLOBAL';
+  // Aucun `?? 'GLOBAL'` : une question inconnue JETTE au lieu de globaliser (arbitrage 2b,
+  // même interdit que le fallback refusé au lot A bis — GLOBAL est précisément l'élargissement).
+  const c = NONROLE_CONTEXT[questionCode];
+  if (c === undefined) throw new Error(`[produce] aucun contexte d'evidence défini pour « ${questionCode} » — pas de globalisation par défaut`);
   if (!isValidEvidenceContext(c)) throw new Error(`[produce] contexte invalide ${c} pour ${questionCode}`);
   return c;
 }
@@ -342,4 +345,52 @@ export function produceMoteursOption(ctx: WriteContext, option: MoteurOption): {
     assertionStatus: deriveAssertionStatus(ctx.sourceType),
   });
   return { source, openKnowledge: [ok] };
+}
+
+/**
+ * Une catégorie d'intérêt cochée (radar des 15) → source + 1 InterestEvidence.
+ * context: 'GLOBAL' DÉCLARÉ (arbitrage 2b) — une question d'intérêts ne situe rien, GLOBAL est
+ * le mot du vocabulaire pour « aucune situation », par NATURE (comme q4a/q4b), jamais par repli :
+ * aucun `?? 'GLOBAL'`, aucune branche par défaut. L'InterestSignal sera GLOBAL_DIRECT, ce qui
+ * ne confère NI confiance NI intensité en plus (GLOBAL dit l'absence de situation, rien d'autre).
+ * strength: 'moderate' (sélection volontaire sans niveau). relationship ABSENT = non précisé —
+ * jamais inventé, et aucun chemin strength→intensité affichée.
+ */
+export function produceInterest(ctx: WriteContext, label: string, parentDomain?: string): {
+  source: SourceRecord;
+  evidences: readonly Evidence[];
+} {
+  const subject = asSubjectId(normalizeLabel(label));
+  const source = createSourceRecord({
+    contactId: ctx.contactId,
+    ownerId: ctx.ownerId,
+    id: ctx.sourceId,
+    sourceType: ctx.sourceType,
+    questionText: 'Mes centres d’intérêt',
+    answerText: label,
+    questionCode: 'interests',
+    timestamp: ctx.timestamp,
+  });
+  const ev = {
+    contactId: ctx.contactId,
+    ownerId: ctx.ownerId,
+    source_id: ctx.sourceId,
+    source_type: ctx.sourceType,
+    evidence_id: evidenceId(ctx.sourceId, `INTEREST:${subject}`),
+    raw_information: label,
+    confidence: ctx.confidence ?? 'high',
+    context: 'GLOBAL', // déclaré (arbitrage 2b) — jamais un fallback
+    timestamp: ctx.timestamp,
+    stability: ctx.stability ?? 'contextual',
+    evidence_role: 'primary' as const, // la question porte directement sur l'intérêt
+    version: JOURNAL_VERSION_STAMP,
+    target_family: 'INTEREST' as const,
+    subject,
+    subjectLabel: label, // verbatim affiché
+    target_construct: subject,
+    strength: 'moderate' as EvidenceStrength, // sélection sans niveau
+    ...(parentDomain ? { parent_domain: parentDomain } : {}),
+    // relationship ABSENT volontairement : non précisé, jamais « faible ».
+  } satisfies import('../knowledge').InterestEvidence;
+  return { source, evidences: [ev] };
 }

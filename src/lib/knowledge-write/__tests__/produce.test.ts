@@ -140,3 +140,21 @@ describe('Bloc 2b — strength affective (table discrète, switch exhaustif, auc
     }
   });
 });
+
+import { produceInterest } from '../produce';
+import { EVIDENCE_CONTEXTS } from '../../knowledge';
+
+describe('Bloc 2b — intérêt coché (GLOBAL déclaré, moderate, relationship absent)', () => {
+  const ctx = { ...scope, sourceId: '00000000-0000-5000-8000-00000000int1', sourceType: 'onboarding_closed' as const, timestamp: '2026-10-06T00:00:00Z' };
+  it('context GLOBAL · strength moderate · relationship absent · subjectLabel verbatim', () => {
+    const { evidences } = produceInterest(ctx, 'Cuisine', 'food_gastronomy');
+    const e = evidences[0];
+    expect(e.context).toBe('GLOBAL');
+    expect((e as { strength: string }).strength).toBe('moderate');
+    expect('relationship' in e).toBe(false); // non précisé, jamais « faible »
+    expect((e as { subjectLabel: string }).subjectLabel).toBe('Cuisine');
+  });
+  it('EVIDENCE_CONTEXTS reste à 13 (chiffre de contrôle inchangé)', () => {
+    expect(EVIDENCE_CONTEXTS.seed).toHaveLength(13);
+  });
+});
