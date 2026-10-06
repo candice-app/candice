@@ -693,12 +693,12 @@ export const BEHAVIOR_PATTERNS = createOpenVocabulary(BEHAVIOR_PATTERN_SEED, nor
 
 /* ────────────────────────────────────────────────────────────────────────
  * Types de CONNAISSANCE OUVERTE (lot A ter, Dictionnaire §12). OUVERT validé :
- * la connaissance descriptive est sémantiquement ouverte. La graine contient les
- * 10 familles canoniques (une connaissance ouverte peut se rattacher à INTEREST,
- * cf. l'exemple photographie argentique) PLUS 'life_priority' (arbitré le 5 oct).
- * Un `type` dit à quelle famille la connaissance se RATTACHE ; il n'en fait jamais
- * une evidence de cette famille (voir la frontière dans open-knowledge.ts).
- * 6ᵉ registre normalisé sur 6.
+ * la connaissance descriptive est sémantiquement ouverte (architecture open-world).
+ * `type` QUALIFIE LA NATURE DESCRIPTIVE de la connaissance, pour la recherche et le
+ * routage. Il peut reprendre le nom d'une famille canonique lorsqu'elle constitue la
+ * bonne catégorie descriptive (cf. photographie argentique → INTEREST), SANS transformer
+ * cette connaissance en evidence de cette famille (voir la frontière dans open-knowledge.ts).
+ * La graine = 10 familles canoniques + 'life_priority' (arbitré le 5 oct). 6ᵉ registre normalisé sur 6.
  * ──────────────────────────────────────────────────────────────────────── */
 const OPEN_KNOWLEDGE_TYPE_SEED = [...CANONICAL_FAMILIES, 'life_priority'] as const;
 

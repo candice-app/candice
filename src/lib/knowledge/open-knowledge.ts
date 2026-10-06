@@ -26,7 +26,7 @@ import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 // deux choses différentes : l'une conserve la description, l'autre porte le signal mesurable.
 export interface OpenKnowledge extends KnowledgeScope {
   readonly open_knowledge_id: string;
-  readonly type: OpenKnowledgeType; // famille de rattachement OU type ouvert (ex. life_priority)
+  readonly type: OpenKnowledgeType; // qualifie la nature descriptive (recherche/routage) ; peut reprendre un nom de famille sans en faire une evidence
   readonly subject: SubjectId; // identité résolue
   readonly subjectLabel: string; // formulation verbatim, jamais écrasée
   readonly relation: string; // « passion », « collectionne », « fasciné par »
