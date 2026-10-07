@@ -18,11 +18,22 @@ describe('Test 19 — assertionStatus = mécanisme producteur (explicit | inferr
   it('aucune source ne produit « inferred » aujourd’hui (statut réservé au futur moteur d’extraction)', () => {
     for (const st of SOURCE_TYPES) expect(deriveAssertionStatus(st)).not.toBe('inferred');
   });
-  it('l’acte « déclaré de soi » vit sur l’axe sourceType : ni rapporté ni observé', () => {
-    expect(isSelfDeclaredAct('onboarding_closed')).toBe(true);
-    expect(isSelfDeclaredAct('user_declaration')).toBe(true);
-    expect(isSelfDeclaredAct('reported_by_relative')).toBe(false);
-    expect(isSelfDeclaredAct('observed_behavior')).toBe(false);
+  it('isSelfDeclaredAct — liste blanche EXHAUSTIVE, décision explicite par sourceType', () => {
+    // la décision attendue pour CHAQUE sourceType (aucune par exclusion)
+    const expected: Record<string, boolean> = {
+      onboarding_closed: true, onboarding_open: true, discovery_closed: true, discovery_open: true,
+      conversation: true, user_declaration: true, user_correction: true, wishlist: true,
+      reported_by_relative: false, observed_behavior: false,
+    };
+    // tout sourceType connu a une décision ET ne jette jamais (le default ne jette que pour un type non décidé)
+    for (const st of SOURCE_TYPES) {
+      expect(() => isSelfDeclaredAct(st)).not.toThrow();
+      expect(isSelfDeclaredAct(st)).toBe(expected[st]);
+    }
+    // garde-fou : si un sourceType est ajouté à SOURCE_TYPES sans l'ajouter ici, ce test échoue.
+    expect(Object.keys(expected).sort()).toEqual([...SOURCE_TYPES].sort());
+    // un sourceType non décidé (jamais dans l'union) jette au lieu de prendre le bonus par défaut.
+    expect(() => isSelfDeclaredAct('incognito_guess' as never)).toThrow();
   });
 });
 

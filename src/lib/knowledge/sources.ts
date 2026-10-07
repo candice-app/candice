@@ -91,9 +91,35 @@ export function deriveAssertionStatus(sourceType: SourceType): AssertionStatus {
  * (l'acte d'acquisition), pas sur assertionStatus (le mécanisme producteur). Le score de
  * consolidation s'en sert (un strong primary déclaré-de-soi pèse plus) — comportement
  * inchangé par la bascule explicit|inferred.
+ *
+ * LISTE BLANCHE EXHAUSTIVE, jamais par exclusion : un `default` permissif ferait entrer
+ * tout sourceType futur (l'incognito « le pilote suppose pour son proche ») dans le bonus
+ * en silence — le `?? 'GLOBAL'` sous une autre forme. Le `never` force une décision
+ * EXPLICITE à chaque nouveau type : l'ajout ne compile pas tant qu'il n'a pas de case, et
+ * à l'exécution un type non décidé jette (aucune valeur par défaut).
+ *
+ * NB : dépend du source_type de la SOURCE. La consolidation depuis la base doit le charger
+ * depuis knowledge_sources (jointure), jamais le deviner (source_type n'est pas sur les filles).
  */
 export function isSelfDeclaredAct(sourceType: SourceType): boolean {
-  return sourceType !== 'reported_by_relative' && sourceType !== 'observed_behavior';
+  switch (sourceType) {
+    case 'onboarding_closed':
+    case 'onboarding_open':
+    case 'discovery_closed':
+    case 'discovery_open':
+    case 'conversation':
+    case 'user_declaration':
+    case 'user_correction':
+    case 'wishlist':
+      return true; // la personne décrite s'exprime elle-même
+    case 'reported_by_relative': // un tiers rapporte → PAS déclaré de soi
+    case 'observed_behavior': // observé, non déclaré
+      return false;
+    default: {
+      const _exhaustive: never = sourceType;
+      throw new Error(`isSelfDeclaredAct: sourceType sans décision explicite : ${String(_exhaustive)}`);
+    }
+  }
 }
 
 /* ────────────────────────────────────────────────────────────────────────
