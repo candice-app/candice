@@ -40,9 +40,12 @@ describe('Compteurs du parcours simulé complet (vs clos)', () => {
   it('options actives = 106', () => {
     expect(active).toHaveLength(106);
   });
-  it('PROFILE = 59 · GLOBAL_DIRECT 11 · LOCAL 48 · secondaires 17 · négatives 2', () => {
-    expect(prof).toHaveLength(59);
-    expect(prof.filter((e) => e.context === 'GLOBAL')).toHaveLength(11);
+  // Chiffres RE-DÉRIVÉS du document par scripts/onboarding-active-count.mjs (58/10/48),
+  // jamais édités à la main : option 38 « Ça dépend des jours » ne produit plus d'evidence
+  // (contextDependent) → PROFILE 59→58, GLOBAL_DIRECT 11→10. LOCAL 48, secondaires 17, négatives 2 inchangés.
+  it('PROFILE = 58 · GLOBAL_DIRECT 10 · LOCAL 48 · secondaires 17 · négatives 2', () => {
+    expect(prof).toHaveLength(58);
+    expect(prof.filter((e) => e.context === 'GLOBAL')).toHaveLength(10);
     expect(prof.filter((e) => e.context !== 'GLOBAL')).toHaveLength(48);
     expect(prof.filter((e) => e.evidence_role === 'secondary')).toHaveLength(17);
     expect(prof.filter((e) => 'value' in e && (e as { value: number }).value < 0)).toHaveLength(2);

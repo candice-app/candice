@@ -853,9 +853,10 @@ export const ONBOARDING_MAPPINGS: readonly OnboardingMapping[] = [
     optionText: "Ça dépend des jours",
     domain: "énergie sociale",
     status: "ACTIF",
-    profileEvidences: [
-      { construct: "SOCIAL_ENERGY", value: 2, evidence_role: "primary", context: "GLOBAL" },
-    ],
+    // contextDependent (corrigé le 7 octobre 2026) : « ça dépend des jours » = variabilité
+    // contextuelle, PAS le milieu du continuum (SOCIAL_ENERGY 2 = recharge mixte équilibrée).
+    // Vraie réponse, AUCUNE evidence. Wording inchangé.
+    profileEvidences: [],
     affectionLanguage: [],
     needs: [],
     drivers: [],
@@ -1426,7 +1427,7 @@ export const ONBOARDING_MAPPINGS: readonly OnboardingMapping[] = [
     affectionLanguage: [],
     needs: [],
     drivers: [],
-    behavior: { context: "emotional_expression", pattern: "rarely_keeps_private" },
+    behavior: { context: "emotional_expression", pattern: "keeps_to_self" },
     guardrails: [],
     preferences: [],
     facts: [],

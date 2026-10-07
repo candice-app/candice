@@ -150,22 +150,24 @@ describe('Test 32 — chiffres de contrôle recalculés = valeurs attendues', ()
     expect(active).toHaveLength(106);
   });
 
-  it('59 evidences PROFILE : 11 GLOBAL_DIRECT · 48 LOCAL/CONTEXTUAL · 0 GLOBAL_CONSOLIDATED', () => {
-    expect(allProfileActive).toHaveLength(59);
+  // Chiffres RE-DÉRIVÉS du document par scripts/onboarding-active-count.mjs (58/10/48) :
+  // option 38 « Ça dépend des jours » = contextDependent (aucune evidence depuis le 7 oct. 2026).
+  it('58 evidences PROFILE : 10 GLOBAL_DIRECT · 48 LOCAL/CONTEXTUAL · 0 GLOBAL_CONSOLIDATED', () => {
+    expect(allProfileActive).toHaveLength(58);
     const globalDirect = allProfileActive.filter((p) => p.context === 'GLOBAL');
     const local = allProfileActive.filter((p) => p.context !== 'GLOBAL');
-    expect(globalDirect).toHaveLength(11);
+    expect(globalDirect).toHaveLength(10);
     expect(local).toHaveLength(48);
     // Aucun mapping ne produit GLOBAL_CONSOLIDATED (ne vient que de la consolidation).
     expect(allProfileActive.filter((p) => p.context === 'GLOBAL_CONSOLIDATED')).toHaveLength(0);
   });
 
-  it('les 11 GLOBAL_DIRECT viennent de 5 SOCIAL_ENERGY (q5) + 2 PROFILE_STRUCTURE (q4a) + 4 (q4b)', () => {
+  it('les 10 GLOBAL_DIRECT viennent de 4 SOCIAL_ENERGY (q5) + 2 PROFILE_STRUCTURE (q4a) + 4 (q4b)', () => {
     const gd = active.flatMap((m) =>
       m.profileEvidences.filter((p) => p.context === 'GLOBAL').map((p) => ({ q: m.questionCode, c: p.construct })),
     );
-    expect(gd).toHaveLength(11);
-    expect(gd.filter((x) => x.q === 'q5' && x.c === 'SOCIAL_ENERGY')).toHaveLength(5);
+    expect(gd).toHaveLength(10);
+    expect(gd.filter((x) => x.q === 'q5' && x.c === 'SOCIAL_ENERGY')).toHaveLength(4); // option 38 ne produit plus
     expect(gd.filter((x) => x.q === 'q4a' && x.c === 'PROFILE_STRUCTURE')).toHaveLength(2);
     expect(gd.filter((x) => x.q === 'q4b')).toHaveLength(4);
   });
@@ -259,11 +261,12 @@ describe('Test 32 — chiffres de contrôle recalculés = valeurs attendues', ()
   });
 
   // Deux compteurs divergeaient du résumé clos (qui annonçait 55 et 20, chiffres
-  // pré-retraits V13/V14). Arbitrage Estelle (2026-10-02, écart §9) : les mappings
-  // détaillés font foi → 50 et 17 sont les valeurs correctes, résumé clos corrigé.
-  it('options avec PROFILE : 50 (écart §9 tranché — mappings font foi)', () => {
+  // RE-DÉRIVÉ du document (scripts/onboarding-active-count.mjs) : 49, pas 50 — l'option 38
+  // perd sa seule evidence PROFILE (contextDependent, 7 oct. 2026). ⚠ clos.md ligne 17 dit
+  // encore 50 (et ligne 18 « 55 ») : résidu non corrigé du résumé, à rectifier côté doc (49/56).
+  it('options avec PROFILE : 49 (option 38 contextDependent — mappings font foi)', () => {
     const withProfile = active.filter((m) => m.profileEvidences.length > 0);
-    expect(withProfile).toHaveLength(50);
+    expect(withProfile).toHaveLength(49);
   });
   it('evidences PROFILE secondaires : 17 (écart §9 tranché — mappings font foi)', () => {
     const secondaries = allProfileActive.filter((p) => p.evidence_role === 'secondary');
