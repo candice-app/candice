@@ -49,7 +49,7 @@ describe('sourceToRow — verbatim, identité, assertion dérivée', () => {
     expect(row.user_id).toBe('u1');
     expect(row.raw_text).toBe('A'.repeat(300) + ' réponse non tronquée'); // verbatim
     expect(row.question_text).toBe('Question exacte ?');
-    expect(row.assertion_status).toBe('declared'); // dérivé
+    expect(row.assertion_status).toBe('explicit'); // dérivé (mapping direct)
     expect(row.assertion_status).not.toBeNull();
     expect(row.ts).toBe(base.timestamp);
   });
@@ -58,7 +58,7 @@ describe('sourceToRow — verbatim, identité, assertion dérivée', () => {
 describe('evidenceToRow — chaque famille ne remplit QUE ses colonnes (miroir des CHECK)', () => {
   it('PROFILE : value posée, strength null, aucune colonne étrangère', () => {
     const e = createProfileEvidence({ ...base, evidence_id: 'e', target_construct: 'PROFILE_OPENNESS', value: 2 });
-    const r = evidenceToRow(e);
+    const r = evidenceToRow(e, scope.about);
     expect(r.value).toBe(2);
     expect(r.strength).toBeNull();
     expect(r.severity).toBeNull();
@@ -69,13 +69,13 @@ describe('evidenceToRow — chaque famille ne remplit QUE ses colonnes (miroir d
   });
   it('value XOR strength : NEED a strength, pas value', () => {
     const e: NeedEvidence = { ...base, evidence_id: 'n', target_family: 'NEED', target_construct: 'NEED_SUPPORT', strength: 'strong', context: 'distress' };
-    const r = evidenceToRow(e);
+    const r = evidenceToRow(e, scope.about);
     expect(r.strength).toBe('strong');
     expect(r.value).toBeNull();
   });
   it('GUARDRAIL : severity + guardrail_scope, value null', () => {
     const e: GuardrailEvidence = { ...base, evidence_id: 'g', target_family: 'GUARDRAIL', target_construct: 'GRD_PUBLIC_EXPOSURE', severity: 'HARD', guardrailScope: 'selection', strength: 'strong', context: 'surprise' };
-    const r = evidenceToRow(e);
+    const r = evidenceToRow(e, scope.about);
     expect(r.severity).toBe('HARD');
     expect(r.guardrail_scope).toBe('selection');
     expect(r.context).toBe('surprise');
@@ -83,7 +83,7 @@ describe('evidenceToRow — chaque famille ne remplit QUE ses colonnes (miroir d
   });
   it('INTEREST : subject_id + label ; relationship null quand absent (jamais inventé)', () => {
     const e: InterestEvidence = { ...base, evidence_id: 'i', target_family: 'INTEREST', subject: asSubjectId('vin'), subjectLabel: 'Vin', target_construct: asSubjectId('vin'), strength: 'strong', context: 'leisure' };
-    const r = evidenceToRow(e);
+    const r = evidenceToRow(e, scope.about);
     expect(r.subject_id).toBe('vin');
     expect(r.subject_label).toBe('Vin');
     expect(r.relationship).toBeNull();

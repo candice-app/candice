@@ -51,7 +51,7 @@ import type {
 } from './signal';
 import { constructIdentity, emptyBase } from './signal';
 import type { Fact } from './fact';
-import { deriveAssertionStatus } from './sources';
+import { isSelfDeclaredAct } from './sources';
 import { CONSOLIDATION_VERSION, VERSION_STAMP } from './version';
 import { DEFAULT_EXPOSABLE, effectiveExposure, mostRestrictive, type VisibilityPolicy } from './visibility';
 
@@ -305,7 +305,7 @@ function strengthInputs(forConstruct: readonly StrengthEvidence[]): ScoreInputs 
     indepPrimary: independentCount(primaries),
     strongPrimary: primaries.some((e) => strengthMagnitude(e.strength) >= 2),
     declaredStrongPrimary: primaries.some(
-      (e) => strengthMagnitude(e.strength) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
+      (e) => strengthMagnitude(e.strength) >= 2 && isSelfDeclaredAct(e.source_type),
     ),
     onlySecondary: !forConstruct.some((e) => e.evidence_role === 'primary'),
     // Familles sans direction : aucune evidence contraire possible → jamais 'low' par le
@@ -339,7 +339,7 @@ function directionalInputs(forConstruct: readonly DirectionalEvidence[]): {
     indepPrimary: independentCount(primaries),
     strongPrimary: primaries.some((e) => Math.abs(e.value) >= 2),
     declaredStrongPrimary: primaries.some(
-      (e) => Math.abs(e.value) >= 2 && deriveAssertionStatus(e.source_type) === 'declared',
+      (e) => Math.abs(e.value) >= 2 && isSelfDeclaredAct(e.source_type),
     ),
     onlySecondary: !hasRole(forConstruct, 'primary'),
     netContrary: negatives.length > 0 && positives.length === 0,

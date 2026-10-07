@@ -132,11 +132,15 @@ describe('Non-fusion §3 : auto-déclaré (account/declared) vs rapporté (conta
   const A = produceInterest({ ...elleSelf, sourceId: '00000000-0000-5000-8000-00000000a001', sourceType: 'onboarding_closed', timestamp: ts }, 'Vin nature', 'food_gastronomy');
   const B = produceInterest({ ...elleByPilot, sourceId: '00000000-0000-5000-8000-00000000b001', sourceType: 'reported_by_relative', timestamp: ts }, 'Vin nature', 'food_gastronomy');
 
-  it('cas A → declared, cas B → reported (dérivation inchangée, deux sourceType)', () => {
-    expect(A.source.assertionStatus).toBe('declared');
-    expect(B.source.assertionStatus).toBe('reported');
-    expect(deriveAssertionStatus('onboarding_closed')).toBe('declared');
-    expect(deriveAssertionStatus('reported_by_relative')).toBe('reported');
+  it('deux sourceType distincts ; assertion = explicit des deux côtés (mapping direct, pas extraction)', () => {
+    expect(A.source.sourceType).toBe('onboarding_closed');
+    expect(B.source.sourceType).toBe('reported_by_relative');
+    // l'assertion est le mécanisme producteur : mapping direct → explicit pour les deux.
+    expect(A.source.assertionStatus).toBe('explicit');
+    expect(B.source.assertionStatus).toBe('explicit');
+    // l'acte d'acquisition (qui/comment) reste distinct sur l'axe sourceType.
+    expect(deriveAssertionStatus('onboarding_closed')).toBe('explicit');
+    expect(deriveAssertionStatus('reported_by_relative')).toBe('explicit');
   });
   it('deux abouts, deux sources → deux clés, deux evidence_id : aucun chemin ne les rapproche', () => {
     const sigA = consolidateInterests(elleSelf, A.evidences as InterestEvidence[])[0];

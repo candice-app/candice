@@ -9,7 +9,7 @@
 // Le source_id voyage INCHANGÉ (evidence.source_id === source.id) — jamais régénéré.
 
 import type { AboutRef, Evidence, Fact, OpenKnowledge, SourceRecord, Signal } from '../knowledge';
-import { constructIdentity, signalKey } from '../knowledge';
+import { constructIdentity, deriveAssertionStatus, signalKey } from '../knowledge';
 
 /* ── knowledge_sources ── */
 export interface KnowledgeSourceRow {
@@ -87,25 +87,19 @@ export interface KnowledgeEvidenceRow {
   facet: string | null;
 }
 
-/** assertion_status : porté par l'evidence si présent, sinon dérivé — jamais null. */
+/** assertion_status : porté par l'evidence si présent (ex. extraction → 'inferred'),
+ *  sinon dérivé par le mécanisme producteur direct (deriveAssertionStatus) — jamais null. */
 function evidenceAssertion(e: Evidence): string {
-  if (e.assertionStatus) return e.assertionStatus;
-  // dérivation locale miroir de deriveAssertionStatus (sans importer la table ici)
-  switch (e.source_type) {
-    case 'reported_by_relative':
-      return 'reported';
-    case 'observed_behavior':
-      return 'observed';
-    default:
-      return 'declared';
-  }
+  return e.assertionStatus ?? deriveAssertionStatus(e.source_type);
 }
 
-export function evidenceToRow(e: Evidence): KnowledgeEvidenceRow {
+/** `about` n'est PAS lu de l'evidence : il est fourni par l'appelant (la persistance le
+ *  dérive de la SOURCE, seule à en porter la référence). Rien à écraser, rien à diverger. */
+export function evidenceToRow(e: Evidence, about: AboutRef): KnowledgeEvidenceRow {
   const base = {
     id: e.evidence_id,
-    about_kind: e.about.kind,
-    about_id: e.about.id,
+    about_kind: about.kind,
+    about_id: about.id,
     user_id: e.ownerId,
     source_id: e.source_id, // === source.id, jamais régénéré
     target_family: e.target_family,
@@ -203,11 +197,11 @@ export interface KnowledgeFactRow {
   ts: string;
 }
 
-export function factToRow(f: Fact, source: string | null): KnowledgeFactRow {
+export function factToRow(f: Fact, source: string | null, about: AboutRef): KnowledgeFactRow {
   return {
     id: f.fact_id,
-    about_kind: f.about.kind,
-    about_id: f.about.id,
+    about_kind: about.kind,
+    about_id: about.id,
     user_id: f.ownerId,
     source,
     fact_type: f.fact_type,
@@ -253,11 +247,11 @@ export interface KnowledgeOpenKnowledgeRow {
   ts: string;
 }
 
-export function openKnowledgeToRow(k: OpenKnowledge): KnowledgeOpenKnowledgeRow {
+export function openKnowledgeToRow(k: OpenKnowledge, about: AboutRef): KnowledgeOpenKnowledgeRow {
   return {
     id: k.open_knowledge_id,
-    about_kind: k.about.kind,
-    about_id: k.about.id,
+    about_kind: about.kind,
+    about_id: about.id,
     user_id: k.ownerId,
     type: k.type,
     subject_id: k.subject,
@@ -301,11 +295,14 @@ export interface KnowledgeSignalRow {
   consolidation_version: string;
 }
 
+// Un signal est une PROJECTION sans source : son `about` provient du grain de consolidation
+// (un signal ne groupe qu'une personne décrite). On le passe explicitement et on l'utilise
+// pour la clé ET les colonnes — jamais deux valeurs à réconcilier.
 export function signalToRow(about: AboutRef, s: Signal): KnowledgeSignalRow {
   return {
     signal_key: signalKey(about, s),
-    about_kind: s.about.kind,
-    about_id: s.about.id,
+    about_kind: about.kind,
+    about_id: about.id,
     user_id: s.ownerId,
     family: s.family,
     construct_identity: constructIdentity(s),

@@ -96,7 +96,7 @@ describe('6-8 — OpenKnowledge.type est un vocabulaire ouvert validé', () => {
     expect(OPEN_KNOWLEDGE_TYPES.has('ma nouvelle-catégorie')).toBe(true);
   });
   it('un OpenKnowledge life_priority se crée et se relit', () => {
-    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'life_priority', subject: asSubjectId('freedom'), subjectLabel: 'La liberté', relation: 'matters_to', intensity: 'strong', context: 'GLOBAL', confidence: 'high', assertionStatus: 'declared', source: 's', timestamp: base.timestamp });
+    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'life_priority', subject: asSubjectId('freedom'), subjectLabel: 'La liberté', relation: 'matters_to', intensity: 'strong', context: 'GLOBAL', confidence: 'high', assertionStatus: 'explicit', source: 's', timestamp: base.timestamp });
     expect(ok.type).toBe('life_priority');
     expect(ok.subjectLabel).toBe('La liberté');
   });
@@ -104,7 +104,7 @@ describe('6-8 — OpenKnowledge.type est un vocabulaire ouvert validé', () => {
 
 describe('9-10 — frontière : un OpenKnowledge ne produit JAMAIS de signal', () => {
   it('aucune fonction de consolidation n’accepte un OpenKnowledge (type)', () => {
-    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'PROFILE', subject: asSubjectId('x'), subjectLabel: 'x', relation: 'matters_to', intensity: 'strong', context: 'GLOBAL', confidence: 'high', assertionStatus: 'declared', source: 's', timestamp: base.timestamp });
+    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'PROFILE', subject: asSubjectId('x'), subjectLabel: 'x', relation: 'matters_to', intensity: 'strong', context: 'GLOBAL', confidence: 'high', assertionStatus: 'explicit', source: 's', timestamp: base.timestamp });
     // @ts-expect-error consolidateProfile prend des DirectionalEvidence, jamais un OpenKnowledge
     consolidateProfile(scope, [ok]);
     expect(ok.type).toBe('PROFILE'); // se crée, mais ne devient aucun ProfileSignal

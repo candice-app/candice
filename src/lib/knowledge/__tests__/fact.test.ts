@@ -55,7 +55,7 @@ describe('Test 26 — traçabilité : la source conserve le verbatim et les lien
       timestamp: '2026-10-02T00:00:00Z',
     });
     expect(src.rawText).toBe(long); // aucun tronquage / résumé
-    expect(src.assertionStatus).toBe('declared'); // dérivé
+    expect(src.assertionStatus).toBe('explicit'); // dérivé
     expect(src.producedEvidenceIds).toEqual([]);
     expect(src.producedFactIds).toEqual([]);
     expect(src.producedOpenKnowledgeIds).toEqual([]);

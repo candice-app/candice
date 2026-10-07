@@ -2,7 +2,7 @@
 // familles interdites depuis un FACT sensible, bloc de prompt généré complet.
 
 import { describe, expect, it } from 'vitest';
-import { deriveAssertionStatus, SOURCE_TYPES } from '../sources';
+import { deriveAssertionStatus, isSelfDeclaredAct, SOURCE_TYPES } from '../sources';
 import { FAMILIES_FORBIDDEN_FROM_SENSITIVE_FACT } from '../fact';
 import {
   ABSOLUTE_RULES,
@@ -11,17 +11,18 @@ import {
 } from '../prompt';
 import { CANONICAL_FAMILIES } from '../vocabulary';
 
-describe('Test 19 — assertionStatus dérivé de sourceType (décision 5)', () => {
-  it('reported_by_relative → reported, observed_behavior → observed, le reste → declared', () => {
-    expect(deriveAssertionStatus('reported_by_relative')).toBe('reported');
-    expect(deriveAssertionStatus('observed_behavior')).toBe('observed');
-    for (const st of SOURCE_TYPES) {
-      if (st === 'reported_by_relative' || st === 'observed_behavior') continue;
-      expect(deriveAssertionStatus(st)).toBe('declared');
-    }
+describe('Test 19 — assertionStatus = mécanisme producteur (explicit | inferred)', () => {
+  it('tout mapping direct (producteur actuel) produit explicit, quel que soit le sourceType', () => {
+    for (const st of SOURCE_TYPES) expect(deriveAssertionStatus(st)).toBe('explicit');
   });
-  it('aucune source ne produit « inferred » (statut réservé à la consolidation)', () => {
+  it('aucune source ne produit « inferred » aujourd’hui (statut réservé au futur moteur d’extraction)', () => {
     for (const st of SOURCE_TYPES) expect(deriveAssertionStatus(st)).not.toBe('inferred');
+  });
+  it('l’acte « déclaré de soi » vit sur l’axe sourceType : ni rapporté ni observé', () => {
+    expect(isSelfDeclaredAct('onboarding_closed')).toBe(true);
+    expect(isSelfDeclaredAct('user_declaration')).toBe(true);
+    expect(isSelfDeclaredAct('reported_by_relative')).toBe(false);
+    expect(isSelfDeclaredAct('observed_behavior')).toBe(false);
   });
 });
 

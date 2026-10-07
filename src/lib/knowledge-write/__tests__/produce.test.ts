@@ -101,7 +101,7 @@ describe('Bloc 2b — soutien / moteurs (entièrement spécifiés)', () => {
     expect(e.strength).toBe('strong');
     expect(e.context).toBe('distress');
     expect(e.source_id).toBe(source.id);
-    expect(source.assertionStatus).toBe('declared'); // dérivé du sourceType
+    expect(source.assertionStatus).toBe('explicit'); // dérivé du sourceType
   });
   it('moteurs : 1 OpenKnowledge life_priority, AUCUNE evidence, label verbatim conservé', () => {
     const { source, openKnowledge } = produceMoteursOption(ctx, MOTEURS.options[0]); // « La liberté » → freedom

@@ -85,7 +85,7 @@ describe('21 — chaque structure persistée porte ses dimensions d’agrégatio
     }
   });
   it('OpenKnowledge : person, type, concept, relation, intensité, contexte, source, timestamp, confidence, explicite/inféré, version, visibility, evidences', () => {
-    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'INTEREST', subject: asSubjectId('photo argentique'), subjectLabel: 'photo argentique', relation: 'passion', intensity: 'strong', context: 'leisure', source: 's', timestamp: base.timestamp, confidence: 'high', assertionStatus: 'declared' });
+    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'INTEREST', subject: asSubjectId('photo argentique'), subjectLabel: 'photo argentique', relation: 'passion', intensity: 'strong', context: 'leisure', source: 's', timestamp: base.timestamp, confidence: 'high', assertionStatus: 'explicit' });
     for (const k of ['about', 'ownerId', 'type', 'subject', 'subjectLabel', 'relation', 'intensity', 'context', 'source', 'timestamp', 'confidence', 'assertionStatus', 'version', 'visibility', 'evidence_ids'] as const) {
       expect(ok[k]).toBeDefined();
     }
@@ -148,7 +148,7 @@ describe('23 — structured_open_knowledge est une voie réelle (OpenKnowledge e
     expect(res.isGap).toBe(false);
     if (!res.isGap) expect(res.representableBy).toContain('structured_open_knowledge');
     // et la voie existe désormais : on peut fabriquer l'OpenKnowledge correspondant.
-    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'INTEREST', subject: asSubjectId('photographie argentique'), subjectLabel: 'photographie argentique', relation: 'passion', intensity: 'strong', context: 'leisure', source: 's', timestamp: base.timestamp, confidence: 'high', assertionStatus: 'declared' });
+    const ok = createOpenKnowledge({ ...scope, open_knowledge_id: 'ok', type: 'INTEREST', subject: asSubjectId('photographie argentique'), subjectLabel: 'photographie argentique', relation: 'passion', intensity: 'strong', context: 'leisure', source: 's', timestamp: base.timestamp, confidence: 'high', assertionStatus: 'explicit' });
     expect(ok.subject).toBeTruthy();
   });
 });

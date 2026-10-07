@@ -43,33 +43,57 @@ export const SOURCE_TYPE_LABELS: Record<SourceType, string> = {
 };
 
 /* ────────────────────────────────────────────────────────────────────────
- * assertionStatus — DÉRIVÉ de sourceType (décision 5), jamais saisi.
- * declared | observed | reported | inferred.
- *   - 'inferred' n'est produit par AUCUNE source : c'est le statut d'une
- *     compréhension issue de la consolidation (HSG §9), pas d'un enregistrement
- *     de source. Il appartient donc au type mais n'est jamais retourné ici.
- *   - Une info 'observed' ne devient jamais 'declared'.
+ * assertionStatus — DEUX AXES ORTHOGONAUX (arbitrage lot B), jamais saisi :
+ *   - sourceType      : l'ACTE D'ACQUISITION (qui a parlé, comment c'est arrivé).
+ *   - assertionStatus : le MÉCANISME PRODUCTEUR. explicit | inferred.
+ *        · mapping direct d'une réponse        → 'explicit'
+ *        · moteur d'extraction (à venir)       → 'inferred'
+ * Les deux restent dérivés par le code producteur, jamais saisis par l'humain.
+ *
+ * L'ancien declared | observed | reported est supprimé : il redoublait le sourceType
+ * (qui porte déjà « rapporté par un proche », « observé »…) sans rien ajouter, tandis que
+ * la dimension critique — humain-affirmé vs Candice-inféré — manquait. L'acte d'acquisition
+ * reste lisible via knowledge_sources.source_type (jointure ; source_type n'est pas recopié
+ * sur les tables filles — perte nulle, jointure requise).
+ *
+ * 'inferred' n'a AUCUN producteur aujourd'hui : l'extraction n'existe pas encore. Les
+ * producteurs actuels sont tous des mappings directs → 'explicit'. deriveAssertionStatus
+ * répond donc « ce qu'un mapping direct affirme pour une source de ce type » = 'explicit' ;
+ * le moteur d'extraction, lui, posera 'inferred' à son site de production (pas ici).
  * ──────────────────────────────────────────────────────────────────────── */
 
-export const ASSERTION_STATUSES = ['declared', 'observed', 'reported', 'inferred'] as const;
+export const ASSERTION_STATUSES = ['explicit', 'inferred'] as const;
 export type AssertionStatus = (typeof ASSERTION_STATUSES)[number];
 
-const ASSERTION_BY_SOURCE: Record<SourceType, Exclude<AssertionStatus, 'inferred'>> = {
-  onboarding_closed: 'declared',
-  onboarding_open: 'declared',
-  discovery_closed: 'declared',
-  discovery_open: 'declared',
-  conversation: 'declared',
-  user_declaration: 'declared',
-  user_correction: 'declared',
-  wishlist: 'declared',
-  reported_by_relative: 'reported',
-  observed_behavior: 'observed',
+const ASSERTION_BY_SOURCE: Record<SourceType, AssertionStatus> = {
+  onboarding_closed: 'explicit',
+  onboarding_open: 'explicit',
+  discovery_closed: 'explicit',
+  discovery_open: 'explicit',
+  conversation: 'explicit',
+  user_declaration: 'explicit',
+  user_correction: 'explicit',
+  wishlist: 'explicit',
+  reported_by_relative: 'explicit',
+  observed_behavior: 'explicit',
 };
 
-/** Dérive le statut d'assertion depuis le type de source (décision 5). */
+/** Statut d'assertion d'un mapping direct (producteur actuel) — 'explicit' pour tout
+ *  sourceType. L'extraction (future) posera 'inferred' à son propre site, pas ici. */
 export function deriveAssertionStatus(sourceType: SourceType): AssertionStatus {
   return ASSERTION_BY_SOURCE[sourceType];
+}
+
+/**
+ * Acte d'acquisition « déclaratif de soi » : la personne décrite s'exprime elle-même,
+ * ni rapportée par un tiers, ni simplement observée. C'est la distinction que portait
+ * l'ancienne valeur d'assertion 'declared' ; elle vit désormais sur l'axe SOURCETYPE
+ * (l'acte d'acquisition), pas sur assertionStatus (le mécanisme producteur). Le score de
+ * consolidation s'en sert (un strong primary déclaré-de-soi pèse plus) — comportement
+ * inchangé par la bascule explicit|inferred.
+ */
+export function isSelfDeclaredAct(sourceType: SourceType): boolean {
+  return sourceType !== 'reported_by_relative' && sourceType !== 'observed_behavior';
 }
 
 /* ────────────────────────────────────────────────────────────────────────

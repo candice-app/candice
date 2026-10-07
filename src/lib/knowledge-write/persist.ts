@@ -53,8 +53,9 @@ export class PersistError extends Error {}
  * S'arrête à la première erreur (pas d'evidence orpheline de source).
  */
 export async function persistKnowledge(client: WriteClient, payload: KnowledgePayload): Promise<void> {
-  // L'about de référence est celui de la SOURCE. On le dérive et on l'impose à toute fille.
-  const aboutStamp = { about_kind: payload.source.about.kind, about_id: payload.source.about.id };
+  // L'about de référence est celui de la SOURCE. Il est PASSÉ aux mappings des filles (pas
+  // lu de la structure fille) : un appelant ne peut pas glisser un about divergent.
+  const about = payload.source.about;
 
   const srcErr = (await client.from('knowledge_sources').insert(sourceToRow(payload.source))).error;
   if (srcErr) throw new PersistError(`knowledge_sources: ${srcErr.message}`);
@@ -66,18 +67,18 @@ export async function persistKnowledge(client: WriteClient, payload: KnowledgePa
         throw new PersistError(`evidence ${e.evidence_id} : source_id ${e.source_id} ≠ source ${payload.source.id}`);
       }
     }
-    const rows: KnowledgeEvidenceRow[] = payload.evidences.map((e) => ({ ...evidenceToRow(e), ...aboutStamp }));
+    const rows: KnowledgeEvidenceRow[] = payload.evidences.map((e) => evidenceToRow(e, about));
     const evErr = (await client.from('knowledge_evidences').insert(rows)).error;
     if (evErr) throw new PersistError(`knowledge_evidences: ${evErr.message}`);
   }
 
   if (payload.facts && payload.facts.length > 0) {
-    const err = (await client.from('knowledge_facts').insert(payload.facts.map((f) => ({ ...factToRow(f, payload.source.id), ...aboutStamp })))).error;
+    const err = (await client.from('knowledge_facts').insert(payload.facts.map((f) => factToRow(f, payload.source.id, about)))).error;
     if (err) throw new PersistError(`knowledge_facts: ${err.message}`);
   }
 
   if (payload.openKnowledge && payload.openKnowledge.length > 0) {
-    const err = (await client.from('knowledge_open_knowledge').insert(payload.openKnowledge.map((k) => ({ ...openKnowledgeToRow(k), ...aboutStamp })))).error;
+    const err = (await client.from('knowledge_open_knowledge').insert(payload.openKnowledge.map((k) => openKnowledgeToRow(k, about)))).error;
     if (err) throw new PersistError(`knowledge_open_knowledge: ${err.message}`);
   }
 }
