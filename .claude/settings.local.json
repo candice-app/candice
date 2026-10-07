@@ -129,7 +129,9 @@
       "Bash(perl -pi -e 's/^\\(\\\\s*\\)contactId: ctx\\\\.contactId,/$1about: ctx.about,/' src/lib/knowledge-write/produce.ts)",
       "Bash(perl -pi -e 's/\\\\\\(contactId \\\\+ ownerId\\\\\\), comme questionnaire_responses\\\\\\(contact_id, user_id\\\\\\)\\\\./\\(about + ownerId\\), comme questionnaire_responses\\(contact_id, user_id\\)./' src/lib/knowledge/evidence.ts)",
       "Bash(perl -pi -e 's/un `scope` \\\\\\(contactId \\\\+ ownerId\\\\\\)/un `scope` \\(about + ownerId\\)/' src/lib/knowledge/__tests__/consolidate.test.ts)",
-      "Bash(perl -pi -e 's/^\\(\\\\s*\\)asContactId,$/$1asContactId,\\\\n$1contactAbout,/' src/lib/knowledge-write/__tests__/rows.test.ts)"
+      "Bash(perl -pi -e 's/^\\(\\\\s*\\)asContactId,$/$1asContactId,\\\\n$1contactAbout,/' src/lib/knowledge-write/__tests__/rows.test.ts)",
+      "Bash(perl -pi -e 's/produceInterest\\\\\\(ctx, '\\\\''Vin nature'\\\\'', '\\\\''food_gastronomy'\\\\''\\\\\\)\\\\.evidences as Evidence\\\\[\\\\]/produceInterest\\(ctx, '\\\\''Vin nature'\\\\'', '\\\\''food_gastronomy'\\\\''\\).evidences as InterestEvidence[]/' src/lib/knowledge-write/__tests__/about.test.ts)",
+      "Bash(perl -pi -e 's/A\\\\.evidences as Evidence\\\\[\\\\]/A.evidences as InterestEvidence[]/; s/B\\\\.evidences as Evidence\\\\[\\\\]/B.evidences as InterestEvidence[]/;' src/lib/knowledge-write/__tests__/about.test.ts)"
     ]
   }
 }
