@@ -16,6 +16,8 @@ export interface AttentionQuestion {
   title: string;
   micro: string;
   options: AttentionOption[];
+  /** Absent = posée. Présent = retirée du parcours (données/dims conservées pour l'ancien scoring). */
+  status?: 'REMOVED_FROM_ONBOARDING_CORE';
 }
 
 export const RECEPTION_QUESTIONS: AttentionQuestion[] = [
@@ -49,6 +51,7 @@ export const RECEPTION_QUESTIONS: AttentionQuestion[] = [
   },
   {
     id: 'q3',
+    status: 'REMOVED_FROM_ONBOARDING_CORE', // retirée du parcours (dims conservées)
     title: 'Ce qui me touche le plus durablement …',
     micro: 'Choisis jusqu’à 3 réponses. La première compte le plus.',
     options: [
@@ -72,10 +75,17 @@ export const RECEPTION_QUESTIONS: AttentionQuestion[] = [
       { id: 'q4d', label: 'Un mot sincère au bon moment', subtext: 'La bonne phrase, dite au moment juste.', dims: ['MOT'], icon: 'i-words' },
       { id: 'q4e', label: 'Un cadeau qui a du sens', subtext: 'Le symbole compte plus que la valeur.', dims: ['CAD_S'], icon: 'i-heart' },
       { id: 'q4f', label: 'Une surprise qui casse la routine', subtext: 'L’inattendu qui réveille le quotidien.', dims: ['SUR'], icon: 'i-spark' },
-      { id: 'q4g', label: 'Un objet choisi avec précision', subtext: 'Le bon objet, choisi avec exigence et justesse.', dims: ['CAD_C'], icon: 'i-gift' },
+      { id: 'q4g', label: 'Un objet choisi vraiment en fonction de moi et de mes goûts', subtext: 'Moins l’objet que le fait qu’il ait été pensé pour moi.', dims: ['CAD_C'], icon: 'i-gift' },
     ],
   },
 ];
+
+/**
+ * Vue AFFICHAGE : uniquement les questions ACTIVES. q3 reste dans RECEPTION_QUESTIONS
+ * (ses dims restent lisibles par l'ancien scoring) mais n'est plus posée. Le flux affiche
+ * RECEPTION_QUESTIONS_ACTIVE.
+ */
+export const RECEPTION_QUESTIONS_ACTIVE: AttentionQuestion[] = RECEPTION_QUESTIONS.filter((q) => !q.status);
 
 export const EXPRESSION_QUESTION: AttentionQuestion = {
   id: 'qe',

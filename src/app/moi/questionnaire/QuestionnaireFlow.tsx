@@ -10,7 +10,7 @@ import { computeTemperamentBreathFacts, buildTemperamentFallbackText } from "@/l
 import { STEP2_QUESTIONS, STEP3_QUESTIONS } from "@/lib/temperament/questions";
 import { scoreLifestyle, mergeTemperamentSupplements } from "@/lib/lifestyle/scoring";
 import { computeLifestyleBreathFacts, buildLifestyleFallbackText } from "@/lib/lifestyle/breathFacts";
-import { STEP4_QUESTIONS, STEP5_CHOICE_QUESTIONS } from "@/lib/lifestyle/questions";
+import { STEP4_QUESTIONS_ACTIVE, STEP5_CHOICE_QUESTIONS } from "@/lib/lifestyle/questions";
 import GenderStep from "@/components/questionnaire/GenderStep";
 import AttentionStep from "@/components/questionnaire/AttentionStep";
 import AttentionBreath from "@/components/questionnaire/AttentionBreath";
@@ -75,7 +75,7 @@ function isQuestionnaireComplete(p: ExtendedProfile): boolean {
   if (!STEP2_QUESTIONS.every(q => ta[q.id])) return false;
   if (!STEP3_QUESTIONS.every(q => ta[q.id])) return false;
   const la = p.lifestyle_answers ?? {};
-  if (!STEP4_QUESTIONS.every(q => la[q.id])) return false;
+  if (!STEP4_QUESTIONS_ACTIVE.every(q => la[q.id])) return false;
   if (!STEP5_CHOICE_QUESTIONS.every(q => la[q.id])) return false;
   if (!p.practical_info) return false;
   return true;
@@ -87,7 +87,7 @@ function firstIncompleteStep(p: ExtendedProfile): Step {
   if (!STEP2_QUESTIONS.every(q => ta[q.id])) return "temperament2";
   if (!STEP3_QUESTIONS.every(q => ta[q.id])) return "temperament3";
   const la = p.lifestyle_answers ?? {};
-  if (!STEP4_QUESTIONS.every(q => la[q.id])) return "lifestyle4";
+  if (!STEP4_QUESTIONS_ACTIVE.every(q => la[q.id])) return "lifestyle4";
   if (!STEP5_CHOICE_QUESTIONS.every(q => la[q.id])) return "lifestyle5";
   if (!p.practical_info) return "practical7";
   return "practical7Closing";
@@ -416,7 +416,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   if (step === "lifestyle4") {
     return withProgress(
       <LifestyleStep
-        questions={STEP4_QUESTIONS}
+        questions={STEP4_QUESTIONS_ACTIVE}
         initialAnswers={lifestyleAnswers}
         onBack={canGoBack ? goBack : undefined}
         onExit={exitQuestionnaire}

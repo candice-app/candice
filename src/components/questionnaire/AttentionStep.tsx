@@ -6,7 +6,7 @@ import { scoreAttention } from "@/lib/attention/scoring";
 import type { AttentionResult, AttentionAnswers, Question } from "@/lib/attention/scoring";
 import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFacts";
 import type { BreathFacts } from "@/lib/attention/breathFacts";
-import { RECEPTION_QUESTIONS, EXPRESSION_QUESTION } from "@/lib/attention/questions";
+import { RECEPTION_QUESTIONS_ACTIVE, EXPRESSION_QUESTION } from "@/lib/attention/questions";
 import type { AttentionQuestion } from "@/lib/attention/questions";
 import IconSprite, { Icon } from "@/components/ui/v4/IconSprite";
 import Brand from "@/components/ui/v4/Brand";
@@ -171,7 +171,7 @@ function buildAnswers(selections: Selections): AttentionAnswers {
       return opt.dims;
     });
   return {
-    reception: RECEPTION_QUESTIONS.map(buildQuestion),
+    reception: RECEPTION_QUESTIONS_ACTIVE.map(buildQuestion),
     expression: [EXPRESSION_QUESTION].map(buildQuestion),
   };
 }
@@ -184,7 +184,7 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const allQIds = [...RECEPTION_QUESTIONS.map(q => q.id), EXPRESSION_QUESTION.id];
+  const allQIds = [...RECEPTION_QUESTIONS_ACTIVE.map(q => q.id), EXPRESSION_QUESTION.id];
   const answeredCount = allQIds.filter(id => (selections[id] ?? []).length > 0).length;
   const totalQuestions = allQIds.length;
   const allAnswered = answeredCount === totalQuestions;
@@ -294,7 +294,7 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
           Candice apprend ton langage d&apos;attention
         </div>
 
-        {RECEPTION_QUESTIONS.map((q) => (
+        {RECEPTION_QUESTIONS_ACTIVE.map((q) => (
           <QuestionSection
             key={q.id}
             question={q}

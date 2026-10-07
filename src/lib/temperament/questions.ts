@@ -365,7 +365,7 @@ export const STEP3_QUESTIONS: TemperamentQuestion[] = [
       },
       {
         id: 'q11_5',
-        label: 'Souvent après coup, quand j’ai compris ce que je ressens',
+        label: 'Souvent après coup',
         subtext: 'Je comprends mes émotions avec un temps de décalage.',
         deltas: [
           { axis: 'expressiviteReserve', value: +1 },

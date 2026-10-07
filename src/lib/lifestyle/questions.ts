@@ -49,6 +49,18 @@ export interface LifestyleOption {
   deltas: UnifiedDelta[];
 }
 
+/**
+ * Statut d'affichage d'une question dans le parcours. Absent = ACTIF (posée).
+ * Une question non active CONSERVE ses données (mapping/deltas de l'ancien scoring, qui
+ * les lit via ALL_LIFESTYLE_QUESTIONS) ; elle est seulement RETIRÉE du parcours affiché.
+ * La vérité de l'exclusion vit dans src/lib/knowledge (statut d'onboarding) ; ce champ ne
+ * fait que retirer la question de l'écran — il ne supprime aucune donnée.
+ */
+export type FlowDisplayStatus =
+  | 'REMOVED_FROM_ONBOARDING_CORE'
+  | 'MOVED_TO_DISCOVERY_FOOD'
+  | 'MOVED_TO_DISCOVERY_VOYAGE';
+
 export interface LifestyleQuestion {
   id: string;
   title: string;
@@ -56,6 +68,8 @@ export interface LifestyleQuestion {
   step: 4 | 5;
   options: LifestyleOption[];
   type?: 'choice' | 'textarea';
+  /** Absent = posée. Présent = retirée du parcours (données conservées). */
+  status?: FlowDisplayStatus;
 }
 
 // ─── Étape 4 — Ce que j'aime vivre ───────────────────────────────────────────
@@ -64,6 +78,7 @@ export const STEP4_QUESTIONS: LifestyleQuestion[] = [
   {
     id: 'q12',
     step: 4,
+    status: 'REMOVED_FROM_ONBOARDING_CORE', // retirée du parcours (données conservées)
     title: "Quand quelqu'un m'invite ou m'offre quelque chose…",
     micro: 'Choisis la réponse qui te ressemble le plus.',
     options: [
@@ -211,6 +226,7 @@ export const STEP4_QUESTIONS: LifestyleQuestion[] = [
   {
     id: 'q15',
     step: 4,
+    status: 'MOVED_TO_DISCOVERY_FOOD', // sort du socle vers le Discovery (données conservées)
     title: 'Ma relation à la nourriture et aux restaurants…',
     micro: 'Choisis la réponse qui te ressemble le plus.',
     options: [
@@ -262,6 +278,7 @@ export const STEP4_QUESTIONS: LifestyleQuestion[] = [
   {
     id: 'q16',
     step: 4,
+    status: 'MOVED_TO_DISCOVERY_VOYAGE', // sort du socle vers le Discovery (données conservées)
     title: "Si on m'offre un week-end, ce qui compte le plus…",
     micro: 'Choisis la réponse qui te ressemble le plus.',
     options: [
@@ -365,7 +382,7 @@ export const STEP4_QUESTIONS: LifestyleQuestion[] = [
   {
     id: 'q4b',
     step: 4,
-    title: 'Mon rapport à la qualité et au standing…',
+    title: 'Dans ce que je choisis ou apprécie, qu’est-ce qui te ressemble le plus ?',
     micro: 'Choisis la réponse qui te ressemble le plus.',
     options: [
       {
@@ -404,8 +421,17 @@ export const STEP4_QUESTIONS: LifestyleQuestion[] = [
       },
       {
         id: 'q4b_5',
-        label: "Je suis sensible aux belles marques et aux lieux d'exception",
-        subtext: "L'excellence me parle.",
+        label: "Je suis sensible à certaines marques ou maisons",
+        subtext: "Certaines maisons me parlent plus que d'autres.",
+        deltas: [
+          { target: 'lifestyle', axis: 'authenticiteLuxe', value: -2 },
+          { target: 'lifestyle', axis: 'premiumSimplicite', value: +1 },
+        ],
+      },
+      {
+        id: 'q4b_6',
+        label: "Je suis attiré(e) par les lieux ou expériences d'exception",
+        subtext: "Une adresse rare, une expérience qu'on n'oublie pas.",
         deltas: [
           { target: 'lifestyle', axis: 'authenticiteLuxe', value: -2 },
           { target: 'lifestyle', axis: 'premiumSimplicite', value: +1 },
@@ -620,3 +646,11 @@ export const ALL_LIFESTYLE_QUESTIONS: LifestyleQuestion[] = [
   ...STEP4_QUESTIONS,
   ...STEP5_CHOICE_QUESTIONS,
 ];
+
+/**
+ * Vue AFFICHAGE de l'étape 4 : uniquement les questions ACTIVES (status absent). Les
+ * questions retirées (q12) ou déplacées vers le Discovery (q15, q16) restent dans
+ * STEP4_QUESTIONS — donc dans ALL_LIFESTYLE_QUESTIONS, donc toujours scorables par
+ * l'ancien scoring — mais ne sont plus posées. Le flux affiche STEP4_QUESTIONS_ACTIVE.
+ */
+export const STEP4_QUESTIONS_ACTIVE: LifestyleQuestion[] = STEP4_QUESTIONS.filter((q) => !q.status);
