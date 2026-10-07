@@ -148,6 +148,7 @@ export function produceFromOption(
     confidence,
     timestamp: ctx.timestamp,
     stability,
+    assertionBasis: 'self_report', // self §2 : toutes les evidences du self, sans exception. Structurel, jamais paramètre.
     version: JOURNAL_VERSION_STAMP, // les littéraux le requièrent ; les factories l'ignorent et réinjectent
   } as const;
   const eid = (targetKey: string) => evidenceId(ctx.sourceId, targetKey);
@@ -309,6 +310,7 @@ export function produceSoutienOption(ctx: WriteContext, option: SoutienOption): 
     timestamp: ctx.timestamp,
     stability: ctx.stability ?? 'contextual',
     evidence_role: SOUTIEN.evidence.evidence_role, // 'primary'
+    assertionBasis: 'self_report',
     version: JOURNAL_VERSION_STAMP,
     target_family: 'NEED',
     target_construct: option.need as NeedCode,
@@ -386,6 +388,7 @@ export function produceInterest(ctx: WriteContext, label: string, parentDomain?:
     timestamp: ctx.timestamp,
     stability: ctx.stability ?? 'contextual',
     evidence_role: 'primary' as const, // la question porte directement sur l'intérêt
+    assertionBasis: 'self_report' as const,
     version: JOURNAL_VERSION_STAMP,
     target_family: 'INTEREST' as const,
     subject,

@@ -16,6 +16,7 @@ const base = {
   evidence_id: 'e1',
   source_id: 's1',
   source_type: 'onboarding_closed' as const,
+  assertionBasis: 'self_report' as const,
   raw_information: 'verbatim',
   confidence: 'high' as const,
   context: 'GLOBAL' as const,

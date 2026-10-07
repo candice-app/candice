@@ -29,6 +29,7 @@ const base = {
   stability: 'contextual' as const,
   evidence_role: 'primary' as const,
   source_type: 'onboarding_closed' as const,
+  assertionBasis: 'self_report' as const,
 };
 const litBase = { ...base, version: JOURNAL_VERSION_STAMP };
 function interestEv(id: string, source_id: string, sourceType: SourceType, subject: string): InterestEvidence {

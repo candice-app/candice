@@ -64,6 +64,7 @@ export interface KnowledgeEvidenceRow {
   raw_information: string;
   fact_id: string | null;
   assertion_status: string;
+  assertion_basis: string;
   ontology_version: string;
   hsg_version: string;
   value: number | null;
@@ -111,6 +112,7 @@ export function evidenceToRow(e: Evidence, about: AboutRef): KnowledgeEvidenceRo
     raw_information: e.raw_information,
     fact_id: e.fact_id ?? null,
     assertion_status: evidenceAssertion(e),
+    assertion_basis: e.assertionBasis, // dérivé à la production, jamais null (migration 86 : NOT NULL)
     ontology_version: e.version.ontology_version,
     hsg_version: e.version.hsg_version,
     // toutes les colonnes sémantiques à null par défaut ; chaque famille ne remplit QUE les siennes

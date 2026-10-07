@@ -31,6 +31,7 @@ const base = {
   timestamp: '2026-10-05T00:00:00Z',
   stability: 'contextual' as const,
   evidence_role: 'primary' as const,
+  assertionBasis: 'self_report' as const,
   version: JOURNAL_VERSION_STAMP,
 };
 function needEv(id: string, need: NeedEvidence['target_construct'], sourceType: SourceType, context = 'distress'): NeedEvidence {

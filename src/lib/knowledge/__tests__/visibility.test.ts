@@ -27,6 +27,7 @@ describe('15 — ni evidence ni SourceRecord ne portent de champ de visibilité'
       timestamp: '2026-10-02T00:00:00Z',
       stability: 'contextual',
       evidence_role: 'primary',
+      assertionBasis: 'self_report',
       target_construct: 'PROFILE_OPENNESS',
       value: 1,
     });

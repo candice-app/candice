@@ -27,6 +27,7 @@ const base = {
   stability: 'contextual' as const,
   evidence_role: 'primary' as const,
   source_type: 'onboarding_closed' as const,
+  assertionBasis: 'self_report' as const,
   version: JOURNAL_VERSION_STAMP,
 };
 

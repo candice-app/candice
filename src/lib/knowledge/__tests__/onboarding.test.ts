@@ -307,6 +307,7 @@ describe('Test 34 — SPONTANEITY / PREMIUM : `unknown` via consolidate', () => 
         evidence_id: `${m.optionRef}:${i}`,
         source_id: m.optionRef,
         source_type: 'onboarding_closed' as const,
+        assertionBasis: 'self_report' as const,
         raw_information: m.optionText,
         confidence: 'high' as const,
         context: p.context,

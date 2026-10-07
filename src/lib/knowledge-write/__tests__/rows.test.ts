@@ -29,6 +29,7 @@ const base = {
   stability: 'contextual' as const,
   evidence_role: 'primary' as const,
   source_type: 'onboarding_closed' as const,
+  assertionBasis: 'self_report' as const,
   version: JOURNAL_VERSION_STAMP,
 };
 
@@ -60,6 +61,7 @@ describe('evidenceToRow — chaque famille ne remplit QUE ses colonnes (miroir d
     const e = createProfileEvidence({ ...base, evidence_id: 'e', target_construct: 'PROFILE_OPENNESS', value: 2 });
     const r = evidenceToRow(e, scope.about);
     expect(r.value).toBe(2);
+    expect(r.assertion_basis).toBe('self_report'); // §2 : dérivé à la production, self partout
     expect(r.strength).toBeNull();
     expect(r.severity).toBeNull();
     expect(r.subject_id).toBeNull();

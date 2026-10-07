@@ -13,7 +13,7 @@
 //   - evidence négative seulement via mapping contraire explicite : aucun chemin
 //     ne crée du négatif par absence ou symétrie (R3/R4).
 
-import type { AssertionStatus, SourceType } from './sources';
+import type { AssertionBasis, AssertionStatus, SourceType } from './sources';
 import type { EntityId, KnowledgeScope, SubjectId } from './identity';
 import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 import type {
@@ -70,6 +70,12 @@ interface EvidenceBase extends KnowledgeScope {
   readonly stability: EvidenceStability;
   readonly evidence_role: EvidenceRole;
   readonly assertionStatus?: AssertionStatus;
+  /**
+   * Sur quoi repose l'affirmation (incognito §2). DÉRIVÉ à la production, jamais saisi : le self
+   * porte 'self_report' sur TOUTES ses evidences sans exception ; l'incognito la valeur déclarée
+   * question par question. N'entre ni dans evidence_id ni signalKey.
+   */
+  readonly assertionBasis: AssertionBasis;
   readonly notes?: string;
   /** Lien vers le FACT source éventuel (le FACT ne disparaît jamais — R16). */
   readonly fact_id?: string;

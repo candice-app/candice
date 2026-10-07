@@ -43,6 +43,7 @@ describe('Test 28 — severity & scope appartiennent à l’evidence, pas au cod
       severity: 'SOFT',
       guardrailScope: 'selection',
       strength: 'moderate',
+      assertionBasis: 'self_report',
       version: JOURNAL_VERSION_STAMP,
     };
     const hard: GuardrailEvidence = { ...soft, evidence_id: 'g2', severity: 'HARD', guardrailScope: 'execution' };
