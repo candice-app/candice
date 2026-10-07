@@ -22,6 +22,16 @@
 BEGIN;
 
 -- ─────────────────────────────────────────────────────────────────────────
+-- 0) JOURNAL DE MIGRATIONS — créé ici (il n'existait pas). À partir de cette migration,
+--    CHAQUE fichier de migration s'inscrit lui-même en DERNIÈRE instruction (voir fin).
+--    Les migrations 1→82 ne s'y trouvent pas (appliquées avant le journal) : leur état réel
+--    est établi une fois par l'audit scripts/schema-audit-check.sql, jamais par ce journal.
+CREATE TABLE IF NOT EXISTS applied_migrations (
+  filename   text PRIMARY KEY,
+  applied_at timestamptz NOT NULL DEFAULT now()
+);
+
+-- ─────────────────────────────────────────────────────────────────────────
 -- 1) about_kind / about_id (ajout pur). Tables vides → NOT NULL direct.
 --    about_id = uuid (contacts.id OU auth.users.id selon le kind). Pas de FK directe
 --    (polymorphe, impossible en SQL) ; l'intégrité des lignes 'contact' est rendue en D1.
@@ -136,5 +146,9 @@ CREATE INDEX IF NOT EXISTS idx_kfacts_about   ON knowledge_facts              (a
 CREATE INDEX IF NOT EXISTS idx_kok_about      ON knowledge_open_knowledge     (about_kind, about_id);
 CREATE INDEX IF NOT EXISTS idx_ksig_about     ON knowledge_signals            (about_kind, about_id);
 CREATE INDEX IF NOT EXISTS idx_kextr_about    ON knowledge_extraction_records (about_kind, about_id);
+
+-- DERNIÈRE INSTRUCTION — auto-enregistrement au journal (convention permanente).
+INSERT INTO applied_migrations (filename) VALUES ('supabase-migration-83-about-ref.sql')
+  ON CONFLICT (filename) DO NOTHING;
 
 COMMIT;

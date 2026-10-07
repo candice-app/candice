@@ -1,0 +1,191 @@
+// AUDIT DE SCHÉMA — lecture de fichiers SEULE, aucun accès base.
+// Extrait les objets DDL de chaque migration, détecte les supersessions (objet créé puis
+// droppé par une migration ultérieure, cascade DROP TABLE comprise), et GÉNÈRE une requête
+// de contrôle en lecture seule. Le schéma réel est la seule vérité ; cette requête la lit.
+// Usage : node scripts/schema-audit.mjs  → écrit scripts/schema-audit-check.sql
+//
+// Modèle d'un objet ATTENDU : { migration, kind, obj, parent, expect_present, superseded }
+//   - créé par la migration        → expect_present = true
+//   - rls activé (ENABLE RLS)       → expect_present = true  (vérifié via relrowsecurity)
+//   - droppé par la migration       → expect_present = false (vérifié par l'absence)
+//   - superseded = true : objet créé puis droppé par une migration ULTÉRIEURE. Son absence
+//     n'est alors pas « non appliquée » mais « supersédée ».
+
+import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
+
+const files = readdirSync('.')
+  .filter((f) => /^supabase-migration-.*\.sql$/.test(f))
+  .sort((a, b) => {
+    const na = parseFloat(a.match(/migration-(\d+)/)[1]);
+    const nb = parseFloat(b.match(/migration-(\d+)/)[1]);
+    return na !== nb ? na - nb : a.localeCompare(b);
+  });
+const ordered = ['supabase-schema.sql', ...files];
+
+function statements(sql) {
+  const out = []; let i = 0, cur = '', n = sql.length;
+  while (i < n) {
+    const two = sql.slice(i, i + 2);
+    if (two === '--') { const e = sql.indexOf('\n', i); i = e === -1 ? n : e; continue; }
+    if (two === '/*') { const e = sql.indexOf('*/', i); i = e === -1 ? n : e + 2; continue; }
+    const d = sql.slice(i).match(/^\$([A-Za-z0-9_]*)\$/);
+    if (d) { const tag = d[0]; const e = sql.indexOf(tag, i + tag.length); const end = e === -1 ? n : e + tag.length; cur += sql.slice(i, end); i = end; continue; }
+    const ch = sql[i];
+    if (ch === ';') { if (cur.trim()) out.push(cur.trim()); cur = ''; i++; continue; }
+    cur += ch; i++;
+  }
+  if (cur.trim()) out.push(cur.trim());
+  return out;
+}
+const clean = (s) => s.replace(/"/g, '').replace(/^public\./i, '').trim();
+
+function extract(stmt) {
+  const created = [], dropped = [];
+  const s = stmt.replace(/\s+/g, ' ').trim();
+  let m;
+  if ((m = s.match(/^CREATE TABLE (?:IF NOT EXISTS )?("?[\w.]+"?)/i))) created.push({ kind: 'table', obj: clean(m[1]), parent: null });
+  if ((m = s.match(/^ALTER TABLE (?:IF EXISTS )?(?:ONLY )?("?[\w.]+"?)/i))) {
+    const t = clean(m[1]);
+    let c; const colRe = /ADD COLUMN (?:IF NOT EXISTS )?("?\w+"?)/gi;
+    while ((c = colRe.exec(s))) created.push({ kind: 'column', obj: clean(c[1]), parent: t });
+    let k; const conRe = /ADD CONSTRAINT ("?\w+"?)/gi;
+    while ((k = conRe.exec(s))) created.push({ kind: 'constraint', obj: clean(k[1]), parent: t });
+    if (/ENABLE ROW LEVEL SECURITY/i.test(s)) created.push({ kind: 'rls_enabled', obj: t, parent: t });
+    let d; const dcol = /DROP COLUMN (?:IF EXISTS )?("?\w+"?)/gi;
+    while ((d = dcol.exec(s))) dropped.push({ kind: 'column', obj: clean(d[1]), parent: t });
+    let dc; const dcon = /DROP CONSTRAINT (?:IF EXISTS )?("?\w+"?)/gi;
+    while ((dc = dcon.exec(s))) dropped.push({ kind: 'constraint', obj: clean(dc[1]), parent: t });
+  }
+  if ((m = s.match(/^CREATE (?:UNIQUE )?INDEX (?:CONCURRENTLY )?(?:IF NOT EXISTS )?("?[\w.]+"?) ON ("?[\w.]+"?)/i))) created.push({ kind: 'index', obj: clean(m[1]), parent: clean(m[2]) });
+  if ((m = s.match(/^CREATE POLICY (?:"([^"]+)"|(\S+)) ON ("?[\w.]+"?)/i))) created.push({ kind: 'policy', obj: clean(m[1] || m[2]), parent: clean(m[3]) });
+  if ((m = s.match(/^CREATE (?:OR REPLACE )?FUNCTION ("?[\w.]+"?)\s*\(/i))) created.push({ kind: 'function', obj: clean(m[1]), parent: null });
+  if ((m = s.match(/^CREATE (?:OR REPLACE )?(?:CONSTRAINT )?TRIGGER ("?\w+"?)/i))) created.push({ kind: 'trigger', obj: clean(m[1]), parent: null });
+  if ((m = s.match(/^DROP TABLE (?:IF EXISTS )?("?[\w.]+"?)/i))) dropped.push({ kind: 'table', obj: clean(m[1]), parent: null });
+  if ((m = s.match(/^DROP POLICY (?:IF EXISTS )?(?:"([^"]+)"|(\S+)) ON ("?[\w.]+"?)/i))) dropped.push({ kind: 'policy', obj: clean(m[1] || m[2]), parent: clean(m[3]) });
+  if ((m = s.match(/^DROP INDEX (?:IF EXISTS )?("?[\w.]+"?)/i))) dropped.push({ kind: 'index', obj: clean(m[1]), parent: null });
+  return { created, dropped };
+}
+
+const migs = ordered.map((file, idx) => {
+  let sql; try { sql = readFileSync(file, 'utf8'); } catch { return null; }
+  const created = [], dropped = [];
+  for (const st of statements(sql)) { const e = extract(st); created.push(...e.created); dropped.push(...e.dropped); }
+  return { file, idx, created, dropped };
+}).filter(Boolean);
+
+// ── Supersession : drops directs + cascade DROP TABLE sur les enfants (même parent) ──
+const dropIdxByKey = new Map();            // kind|obj|parent → idx du 1er drop
+const tableDropIdx = new Map();            // table → idx du DROP TABLE
+for (const mig of migs) for (const d of mig.dropped) {
+  const k = `${d.kind}|${d.obj}|${d.parent ?? ''}`;
+  if (!dropIdxByKey.has(k)) dropIdxByKey.set(k, mig.idx);
+  if (d.kind === 'table' && !tableDropIdx.has(d.obj)) tableDropIdx.set(d.obj, mig.idx);
+}
+for (const mig of migs) for (const o of mig.created) {
+  const direct = dropIdxByKey.get(`${o.kind}|${o.obj}|${o.parent ?? ''}`);
+  const viaTable = o.kind === 'table' ? tableDropIdx.get(o.obj)
+    : (o.parent ? tableDropIdx.get(o.parent) : undefined);
+  const di = [direct, viaTable].filter((x) => x !== undefined && x > mig.idx).sort((a, b) => a - b)[0];
+  o.supersededBy = di !== undefined ? migs.find((x) => x.idx === di).file : null;
+}
+
+// ── Objets ATTENDUS pour la requête ──
+const expected = [];
+for (const mig of migs) {
+  const createdKeys = new Set(mig.created.map((o) => `${o.kind}|${o.obj}|${o.parent ?? ''}`));
+  for (const o of mig.created) expected.push({ migration: mig.file, kind: o.kind, obj: o.obj, parent: o.parent, expect: true, superseded: !!o.supersededBy });
+  for (const d of mig.dropped) {
+    // auto-drop idempotent (DROP IF EXISTS puis CREATE du même objet dans la même migration) → net créé
+    if (createdKeys.has(`${d.kind}|${d.obj}|${d.parent ?? ''}`)) continue;
+    expected.push({ migration: mig.file, kind: d.kind, obj: d.obj, parent: d.parent, expect: false, superseded: false });
+  }
+}
+// Migrations SANS aucun objet attendu = invérifiables (data/valeurs pures)
+const withItems = new Set(expected.map((e) => e.migration));
+const unverifiable = migs.filter((m) => !withItems.has(m.file)).map((m) => m.file);
+
+// ── Génération SQL ──
+const esc = (v) => v === null || v === undefined ? 'NULL' : `'${String(v).replace(/'/g, "''")}'`;
+const valRows = expected.map((e) => `  (${esc(e.migration)}, ${esc(e.kind)}, ${esc(e.obj)}, ${esc(e.parent)}, ${e.expect}, ${e.superseded})`);
+
+const withBlock = `WITH expected(migration, kind, obj, parent, expect_present, superseded) AS (VALUES
+${valRows.join(',\n')}
+),
+checked AS (
+  SELECT e.*,
+    CASE e.kind
+      WHEN 'table'       THEN EXISTS (SELECT 1 FROM information_schema.tables t  WHERE t.table_schema='public' AND t.table_name=e.obj)
+      WHEN 'column'      THEN EXISTS (SELECT 1 FROM information_schema.columns c WHERE c.table_schema='public' AND c.table_name=e.parent AND c.column_name=e.obj)
+      WHEN 'index'       THEN EXISTS (SELECT 1 FROM pg_indexes i               WHERE i.schemaname='public' AND i.indexname=e.obj)
+      WHEN 'policy'      THEN EXISTS (SELECT 1 FROM pg_policies p               WHERE p.schemaname='public' AND p.tablename=e.parent AND p.policyname=e.obj)
+      WHEN 'constraint'  THEN EXISTS (SELECT 1 FROM pg_constraint k            WHERE k.conname=e.obj)
+      WHEN 'function'    THEN EXISTS (SELECT 1 FROM pg_proc pr JOIN pg_namespace n ON n.oid=pr.pronamespace WHERE n.nspname='public' AND pr.proname=e.obj)
+      WHEN 'trigger'     THEN EXISTS (SELECT 1 FROM pg_trigger tg              WHERE NOT tg.tgisinternal AND tg.tgname=e.obj)
+      WHEN 'rls_enabled' THEN EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname=e.obj AND c.relrowsecurity)
+    END AS present
+  FROM expected e
+)`;
+
+const sqlOut = `-- AUDIT DE SCHÉMA — requête de CONTRÔLE, LECTURE SEULE. Généré par scripts/schema-audit.mjs.
+-- N'ÉCRIT RIEN. Deux instructions AUTONOMES, exécutables telles quelles de haut en bas :
+--   (B) verdict par migration   (le tableau demandé)
+--   (A) détail objet par objet  (pour investiguer un verdict)
+-- expect_present : l'objet doit-il exister ? (créé/rls = oui ; droppé = non).
+-- superseded : objet créé puis droppé par une migration ULTÉRIEURE → son absence = « supersédée ».
+--
+-- INVÉRIFIABLES par le schéma seul (ni CREATE, ni DROP, ni ENABLE RLS — INSERT/UPDATE/COMMENT,
+-- correctifs de valeurs) : à confirmer par comptage de lignes ou le journal applied_migrations.
+-- Elles N'APPARAISSENT PAS ci-dessous (aucun objet à vérifier) :
+--   ${unverifiable.join(', ') || '(aucune)'}
+
+-- ════════════════ (B) VERDICT PAR MIGRATION ════════════════
+${withBlock}
+SELECT migration,
+  CASE
+    WHEN count(*) FILTER (WHERE expect_present) > 0
+     AND count(*) FILTER (WHERE expect_present AND present) = 0
+     AND count(*) FILTER (WHERE expect_present AND NOT present AND superseded)
+         = count(*) FILTER (WHERE expect_present)
+      THEN 'supersédée'
+    WHEN count(*) FILTER (WHERE (expect_present AND present) OR (expect_present AND superseded) OR (NOT expect_present AND NOT present)) = count(*)
+     AND count(*) FILTER (WHERE present) > 0
+      THEN 'appliquée'
+    WHEN count(*) FILTER (WHERE expect_present AND present) = 0
+     AND count(*) FILTER (WHERE NOT expect_present AND NOT present) = 0
+      THEN 'non appliquée'
+    ELSE 'PARTIELLE — investiguer via (A)'
+  END AS verdict,
+  count(*) FILTER (WHERE expect_present) AS attendus_presents,
+  count(*) FILTER (WHERE expect_present AND present) AS reellement_presents,
+  count(*) FILTER (WHERE NOT expect_present) AS attendus_absents,
+  count(*) FILTER (WHERE NOT expect_present AND NOT present) AS reellement_absents
+FROM checked GROUP BY migration
+ORDER BY COALESCE(NULLIF(regexp_replace(migration, '\\D', '', 'g'), '')::int, 0), migration;
+
+-- ════════════════ (A) DÉTAIL OBJET PAR OBJET ════════════════
+${withBlock}
+SELECT migration, kind, COALESCE(parent||'.', '')||obj AS objet,
+       expect_present, present, superseded,
+       (present = expect_present) AS conforme
+FROM checked
+ORDER BY migration, kind, objet;
+`;
+writeFileSync('scripts/schema-audit-check.sql', sqlOut);
+
+// ── Impression ──
+let nCreated = 0, nDropped = 0, nRls = 0, nSuper = 0;
+for (const mig of migs) {
+  const items = [];
+  for (const o of mig.created) {
+    if (o.kind === 'rls_enabled') nRls++; else nCreated++;
+    if (o.supersededBy) nSuper++;
+    items.push(`+${o.kind}:${o.parent && o.kind !== 'rls_enabled' ? o.parent + '.' : ''}${o.obj}${o.supersededBy ? ' ⟂' + o.supersededBy.match(/migration-([\w]+)/)[1] : ''}`);
+  }
+  for (const d of mig.dropped) { nDropped++; items.push(`−${d.kind}:${d.parent ? d.parent + '.' : ''}${d.obj}`); }
+  const cls = items.length === 0 ? 'INVÉRIFIABLE' : 'vérifiable';
+  console.log(`${mig.file}  [${cls}]  ${items.length ? items.join('  ') : '(aucun objet de schéma)'}`);
+}
+console.log(`\n════ SYNTHÈSE ════`);
+console.log(`objets créés: ${nCreated} · rls activés: ${nRls} · objets droppés: ${nDropped} · dont supersédés (créés puis droppés ultérieurement): ${nSuper}`);
+console.log(`INVÉRIFIABLES (${unverifiable.length}): ${unverifiable.join(', ') || '—'}`);
+console.log(`\nRequête écrite dans scripts/schema-audit-check.sql (résultats A + B).`);
