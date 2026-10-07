@@ -157,7 +157,7 @@ describe('Bloc 2b — intérêt coché (GLOBAL déclaré, moderate, relationship
     expect('relationship' in e).toBe(false); // non précisé, jamais « faible »
     expect((e as { subjectLabel: string }).subjectLabel).toBe('Cuisine');
   });
-  it('EVIDENCE_CONTEXTS reste à 13 (chiffre de contrôle inchangé)', () => {
-    expect(EVIDENCE_CONTEXTS.seed).toHaveLength(13);
+  it('EVIDENCE_CONTEXTS = 14 (13 + relationship_with_reporter, incognito §2)', () => {
+    expect(EVIDENCE_CONTEXTS.seed).toHaveLength(14);
   });
 });

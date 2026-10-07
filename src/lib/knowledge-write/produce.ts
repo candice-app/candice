@@ -17,6 +17,7 @@ import {
   createProfileEvidence,
   createSocialEnergyEvidence,
   isValidEvidenceContext,
+  assertValidEvidenceContext,
   JOURNAL_VERSION_STAMP,
   type AffectionEvidence,
   type BehaviorEvidence,
@@ -257,6 +258,8 @@ export function produceFromOption(
     );
   }
 
+  // garde-fou : aucun contexte hors vocabulaire ne sort de la production (coquille → consolidation scindée)
+  for (const e of evidences) assertValidEvidenceContext(e.context);
   return { source, evidences, facts };
 }
 

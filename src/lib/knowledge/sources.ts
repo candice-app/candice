@@ -65,6 +65,21 @@ export const SOURCE_TYPE_LABELS: Record<SourceType, string> = {
 export const ASSERTION_STATUSES = ['explicit', 'inferred'] as const;
 export type AssertionStatus = (typeof ASSERTION_STATUSES)[number];
 
+/* ────────────────────────────────────────────────────────────────────────
+ * assertionBasis — 3e axe (incognito §2) : SUR QUOI repose l'affirmation de celui qui parle.
+ * Quatre valeurs, AUCUNE optionalité, AUCUN défaut. Dérivé du mapping à la production (déclaré
+ * question par question), jamais saisi, jamais défailli — même discipline que `about`. N'entre
+ * NI dans la clé-cible de l'evidence_id, NI dans signalKey (deux bases du même construct
+ * consolident ensemble : leur convergence est précisément informative). Vocabulaire FERMÉ
+ * (contrairement aux contextes) → CHECK en base (migration 86).
+ *   self_report            : le sujet parle de lui-même (seule valeur du mode self)
+ *   observed               : le pilote a vu
+ *   subject_statement      : le pilote rapporte un propos du sujet
+ *   reporter_interpretation: le pilote conclut (plafonne la strength à 'moderate', R-I1)
+ * ──────────────────────────────────────────────────────────────────────── */
+export const ASSERTION_BASES = ['self_report', 'observed', 'subject_statement', 'reporter_interpretation'] as const;
+export type AssertionBasis = (typeof ASSERTION_BASES)[number];
+
 const ASSERTION_BY_SOURCE: Record<SourceType, AssertionStatus> = {
   onboarding_closed: 'explicit',
   onboarding_open: 'explicit',

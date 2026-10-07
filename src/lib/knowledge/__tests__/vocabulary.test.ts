@@ -13,6 +13,7 @@ import {
   CONTEXT_CODES,
   EVIDENCE_CONTEXTS,
   isValidEvidenceContext,
+  assertValidEvidenceContext,
   DEPRECATED_AXES,
   DRIVER_CODES,
   DRIVER_LABELS,
@@ -67,15 +68,22 @@ describe('Test 1 — chiffres de contrôle du vocabulaire', () => {
     expect(INTEREST_PARENT_DOMAINS.seed).toHaveLength(29);
     expect(INTEREST_RELATIONSHIPS).toHaveLength(5); // inchangé, pas de 'unspecified'
   });
-  it('EVIDENCE_CONTEXTS : 13 contextes locaux (distinct de la famille CONTEXT), distress inclus', () => {
-    expect(EVIDENCE_CONTEXTS.seed).toHaveLength(13);
+  it('EVIDENCE_CONTEXTS : 14 contextes locaux (13 + relationship_with_reporter, incognito §2)', () => {
+    expect(EVIDENCE_CONTEXTS.seed).toHaveLength(14);
     expect(EVIDENCE_CONTEXTS.has('distress')).toBe(true);
     expect(EVIDENCE_CONTEXTS.has('conflict')).toBe(true);
     expect(EVIDENCE_CONTEXTS.has('emotional_expression')).toBe(true);
+    expect(EVIDENCE_CONTEXTS.has('relationship_with_reporter')).toBe(true); // 14e
     expect(EVIDENCE_CONTEXTS.has('GLOBAL')).toBe(false); // GLOBAL n'est pas un contexte local
     expect(isValidEvidenceContext('GLOBAL')).toBe(true);
     expect(isValidEvidenceContext('stress')).toBe(true);
+    expect(isValidEvidenceContext('relationship_with_reporter')).toBe(true);
     expect(isValidEvidenceContext('faute_de_frappe')).toBe(false);
+  });
+  it('garde-fou de production : un contexte hors vocabulaire JETTE (la coquille scinderait la consolidation)', () => {
+    expect(() => assertValidEvidenceContext('stress')).not.toThrow();
+    expect(() => assertValidEvidenceContext('relationship_with_reporter')).not.toThrow();
+    expect(() => assertValidEvidenceContext('stress_reponse')).toThrow(); // coquille
   });
   it('DEPRECATED : 15 anciens axes', () => {
     expect(DEPRECATED_AXES).toHaveLength(15);

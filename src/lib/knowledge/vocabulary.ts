@@ -724,12 +724,29 @@ const EVIDENCE_CONTEXT_SEED = [
   'distress',
   'conflict',
   'emotional_expression',
+  // 14e contexte (incognito §2) : le phénomène est situé dans la dyade avec le PILOTE
+  // (ex. « Julie envoie des vocaux à Estelle »), distinct de 'relationship' (vie relationnelle
+  // en général). Jamais hérité du mode ; la provenance n'est pas le contexte. Vocabulaire
+  // OUVERT par nature (BEHAVIOR en annonce d'autres via le Discovery) → pas de CHECK en base.
+  'relationship_with_reporter',
 ] as const;
 export const EVIDENCE_CONTEXTS = createOpenVocabulary(EVIDENCE_CONTEXT_SEED, normalizeLabel);
 
 /** Un contexte d'evidence valide : GLOBAL (transversal) ou un contexte local connu du registre. */
 export function isValidEvidenceContext(context: string): boolean {
   return context === 'GLOBAL' || EVIDENCE_CONTEXTS.has(context);
+}
+
+/**
+ * GARDE-FOU DE PRODUCTION (« le CHECK au bon étage ») : aucun contexte ne sort de la couche de
+ * production s'il n'appartient pas au vocabulaire. Sans lui, une coquille (`stress_reponse`)
+ * créerait en silence un groupe de consolidation distinct — le grain de consolidation inclut le
+ * contexte — et couperait la connaissance d'une personne en deux. Appliqué aux DEUX jeux (self + incognito).
+ */
+export function assertValidEvidenceContext(context: string): void {
+  if (!isValidEvidenceContext(context)) {
+    throw new Error(`[knowledge] contexte hors EVIDENCE_CONTEXTS : « ${context} » — coquille ? il scinderait la consolidation.`);
+  }
 }
 
 /* ────────────────────────────────────────────────────────────────────────
