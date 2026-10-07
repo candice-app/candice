@@ -480,7 +480,6 @@ WITH expected(migration, kind, obj, parent, expect_present, superseded) AS (VALU
   ('supabase-migration-82-knowledge-schema.sql', 'policy', 'ksig_owner', 'knowledge_signals', true, false),
   ('supabase-migration-82-knowledge-schema.sql', 'policy', 'ksnap_owner', 'knowledge_signal_snapshots', true, false),
   ('supabase-migration-82-knowledge-schema.sql', 'policy', 'kextr_owner', 'knowledge_extraction_records', true, false),
-  ('supabase-migration-83-about-ref.sql', 'table', 'applied_migrations', NULL, true, false),
   ('supabase-migration-83-about-ref.sql', 'column', 'about_kind', 'knowledge_sources', true, false),
   ('supabase-migration-83-about-ref.sql', 'column', 'about_id', 'knowledge_sources', true, false),
   ('supabase-migration-83-about-ref.sql', 'column', 'about_kind', 'knowledge_evidences', true, false),
@@ -541,7 +540,8 @@ WITH expected(migration, kind, obj, parent, expect_present, superseded) AS (VALU
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_sources_assertion_status_check', 'knowledge_sources', false, false),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_evidences_assertion_status_check', 'knowledge_evidences', false, false),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_facts_assertion_status_check', 'knowledge_facts', false, false),
-  ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge', false, false)
+  ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge', false, false),
+  ('supabase-migration-84-applied-migrations-journal.sql', 'table', 'applied_migrations', NULL, true, false)
 ),
 checked AS (
   SELECT e.*,
@@ -1049,7 +1049,6 @@ WITH expected(migration, kind, obj, parent, expect_present, superseded) AS (VALU
   ('supabase-migration-82-knowledge-schema.sql', 'policy', 'ksig_owner', 'knowledge_signals', true, false),
   ('supabase-migration-82-knowledge-schema.sql', 'policy', 'ksnap_owner', 'knowledge_signal_snapshots', true, false),
   ('supabase-migration-82-knowledge-schema.sql', 'policy', 'kextr_owner', 'knowledge_extraction_records', true, false),
-  ('supabase-migration-83-about-ref.sql', 'table', 'applied_migrations', NULL, true, false),
   ('supabase-migration-83-about-ref.sql', 'column', 'about_kind', 'knowledge_sources', true, false),
   ('supabase-migration-83-about-ref.sql', 'column', 'about_id', 'knowledge_sources', true, false),
   ('supabase-migration-83-about-ref.sql', 'column', 'about_kind', 'knowledge_evidences', true, false),
@@ -1110,7 +1109,8 @@ WITH expected(migration, kind, obj, parent, expect_present, superseded) AS (VALU
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_sources_assertion_status_check', 'knowledge_sources', false, false),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_evidences_assertion_status_check', 'knowledge_evidences', false, false),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_facts_assertion_status_check', 'knowledge_facts', false, false),
-  ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge', false, false)
+  ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge', false, false),
+  ('supabase-migration-84-applied-migrations-journal.sql', 'table', 'applied_migrations', NULL, true, false)
 ),
 checked AS (
   SELECT e.*,

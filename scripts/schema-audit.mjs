@@ -185,6 +185,67 @@ for (const mig of migs) {
   const cls = items.length === 0 ? 'INVÉRIFIABLE' : 'vérifiable';
   console.log(`${mig.file}  [${cls}]  ${items.length ? items.join('  ') : '(aucun objet de schéma)'}`);
 }
+// ── Génération de la migration 84 (journal + backfill AUTO-VÉRIFIANT) ──
+function probe(o) {
+  const q = (v) => String(v).replace(/'/g, "''");
+  switch (o.kind) {
+    case 'table':       return `EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='${q(o.obj)}')`;
+    case 'column':      return `EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='${q(o.parent)}' AND column_name='${q(o.obj)}')`;
+    case 'index':       return `EXISTS (SELECT 1 FROM pg_indexes WHERE schemaname='public' AND indexname='${q(o.obj)}')`;
+    case 'policy':      return `EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='${q(o.parent)}' AND policyname='${q(o.obj)}')`;
+    case 'constraint':  return `EXISTS (SELECT 1 FROM pg_constraint WHERE conname='${q(o.obj)}')`;
+    case 'function':    return `EXISTS (SELECT 1 FROM pg_proc pr JOIN pg_namespace n ON n.oid=pr.pronamespace WHERE n.nspname='public' AND pr.proname='${q(o.obj)}')`;
+    case 'trigger':     return `EXISTS (SELECT 1 FROM pg_trigger WHERE NOT tgisinternal AND tgname='${q(o.obj)}')`;
+    case 'rls_enabled': return `EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname='${q(o.obj)}' AND c.relrowsecurity)`;
+  }
+}
+const MIG84 = 'supabase-migration-84-applied-migrations-journal.sql';
+const backfillLines = [], notBackfilled = [];
+for (const mig of migs) {
+  if (mig.file === MIG84) continue; // la 84 s'auto-enregistre explicitement, pas de backfill d'elle-même
+  const sig = mig.created.find((o) => !o.supersededBy);
+  const f = mig.file.replace(/'/g, "''");
+  if (sig) {
+    // créé non supersédé → appliquée ⇔ l'objet existe
+    backfillLines.push(`INSERT INTO applied_migrations (filename) SELECT '${f}'\n  WHERE ${probe(sig)}\n  ON CONFLICT (filename) DO NOTHING;`);
+  } else if (mig.dropped.length) {
+    // migration pur-DROP → appliquée ⇔ la cible est ABSENTE (cohérent avec le verdict B)
+    backfillLines.push(`INSERT INTO applied_migrations (filename) SELECT '${f}'\n  WHERE NOT (${probe(mig.dropped[0])})\n  ON CONFLICT (filename) DO NOTHING;`);
+  } else {
+    notBackfilled.push(mig.file); // data pure, ou objets entièrement supersédés
+  }
+}
+const mig84 = `-- Migration 84 — journal des migrations (applied_migrations).
+-- REJOUABLE sans dommage (CREATE IF NOT EXISTS, backfill auto-vérifiant, ON CONFLICT DO NOTHING).
+--
+-- Le journal n'existait pas. La table applied_migrations ci-dessous devient, à partir d'ICI,
+-- la trace d'application — chaque migration future s'y inscrit en DERNIÈRE instruction.
+--
+-- Backfill AUTO-VÉRIFIANT : chaque migration 1→83 n'est inscrite QUE si un objet-signature
+-- qu'elle a créé existe réellement en base (le schéma établit l'application, jamais la liste
+-- de fichiers). Les migrations suivantes NE sont PAS backfillées (aucun objet vérifiable
+-- aujourd'hui) — leur application réelle est connue mais non prouvable par le schéma seul :
+--   • sans objet de schéma (data/valeurs) : ${notBackfilled.filter((f) => unverifiable.includes(f)).join(', ') || '—'}
+--   • objets entièrement supersédés (droppés depuis) : ${notBackfilled.filter((f) => !unverifiable.includes(f)).join(', ') || '—'}
+-- Estelle peut les ajouter à la main si elle le souhaite (elles ont bien tourné).
+
+BEGIN;
+
+CREATE TABLE IF NOT EXISTS applied_migrations (
+  filename   text PRIMARY KEY,
+  applied_at timestamptz NOT NULL DEFAULT now()
+);
+
+${backfillLines.join('\n')}
+
+-- DERNIÈRE INSTRUCTION — auto-enregistrement (convention permanente à partir de la 84).
+INSERT INTO applied_migrations (filename) VALUES ('supabase-migration-84-applied-migrations-journal.sql')
+  ON CONFLICT (filename) DO NOTHING;
+
+COMMIT;
+`;
+writeFileSync('supabase-migration-84-applied-migrations-journal.sql', mig84);
+
 console.log(`\n════ SYNTHÈSE ════`);
 console.log(`objets créés: ${nCreated} · rls activés: ${nRls} · objets droppés: ${nDropped} · dont supersédés (créés puis droppés ultérieurement): ${nSuper}`);
 console.log(`INVÉRIFIABLES (${unverifiable.length}): ${unverifiable.join(', ') || '—'}`);
