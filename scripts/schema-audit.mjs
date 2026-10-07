@@ -61,6 +61,8 @@ function extract(stmt) {
   }
   if ((m = s.match(/^CREATE (?:UNIQUE )?INDEX (?:CONCURRENTLY )?(?:IF NOT EXISTS )?("?[\w.]+"?) ON ("?[\w.]+"?)/i))) created.push({ kind: 'index', obj: clean(m[1]), parent: clean(m[2]) });
   if ((m = s.match(/^CREATE POLICY (?:"([^"]+)"|(\S+)) ON ("?[\w.]+"?)/i))) created.push({ kind: 'policy', obj: clean(m[1] || m[2]), parent: clean(m[3]) });
+  // ALTER POLICY … RENAME TO … : la policy existe sous son NOUVEAU nom (effet vérifiable)
+  if ((m = s.match(/^ALTER POLICY (?:"([^"]+)"|(\S+)) ON ("?[\w.]+"?) RENAME TO (?:"([^"]+)"|(\S+))/i))) created.push({ kind: 'policy', obj: clean(m[4] || m[5]), parent: clean(m[3]) });
   if ((m = s.match(/^CREATE (?:OR REPLACE )?FUNCTION ("?[\w.]+"?)\s*\(/i))) created.push({ kind: 'function', obj: clean(m[1]), parent: null });
   if ((m = s.match(/^CREATE (?:OR REPLACE )?(?:CONSTRAINT )?TRIGGER ("?\w+"?)/i))) created.push({ kind: 'trigger', obj: clean(m[1]), parent: null });
   if ((m = s.match(/^DROP TABLE (?:IF EXISTS )?("?[\w.]+"?)/i))) dropped.push({ kind: 'table', obj: clean(m[1]), parent: null });
@@ -217,9 +219,13 @@ function probe(o) {
   }
 }
 const MIG84 = 'supabase-migration-84-applied-migrations-journal.sql';
-const backfillLines = [], notBackfilled = [];
+// Helpers one-shot CADUCS : objet de schéma = fonction transitoire SANS appelant, qu'on
+// n'applique JAMAIS (ex. 58 map_scope_v1_to_v2). Classés à part, pas « manque à combler ».
+const CADUC = new Set(['supabase-migration-58-scope-v2-mapping.sql']);
+const backfillLines = [], notBackfilled = [], caducHelpers = [];
 for (const mig of migs) {
   if (mig.file === MIG84) continue; // la 84 s'auto-enregistre explicitement, pas de backfill d'elle-même
+  if (CADUC.has(mig.file)) { caducHelpers.push(mig.file); continue; } // caduque, jamais appliquée
   const sig = mig.created.find((o) => !o.supersededBy);
   const f = mig.file.replace(/'/g, "''");
   if (sig) {
@@ -244,7 +250,9 @@ const mig84 = `-- Migration 84 — journal des migrations (applied_migrations).
 -- aujourd'hui) — leur application réelle est connue mais non prouvable par le schéma seul :
 --   • sans objet de schéma (data/valeurs) : ${notBackfilled.filter((f) => unverifiable.includes(f)).join(', ') || '—'}
 --   • objets entièrement supersédés (droppés depuis) : ${notBackfilled.filter((f) => !unverifiable.includes(f)).join(', ') || '—'}
--- Estelle peut les ajouter à la main si elle le souhaite (elles ont bien tourné).
+--   • helper one-shot CADUC, jamais à appliquer (fonction transitoire sans appelant) : ${caducHelpers.join(', ') || '—'}
+-- Estelle peut ajouter les deux premières catégories à la main (elles ont bien tourné) ;
+-- la dernière NE doit PAS être appliquée (voir migration correspondante).
 
 BEGIN;
 

@@ -10,7 +10,9 @@
 -- aujourd'hui) — leur application réelle est connue mais non prouvable par le schéma seul :
 --   • sans objet de schéma (data/valeurs) : supabase-migration-23b-dedup.sql, supabase-migration-31-discovery-bloc2.sql, supabase-migration-33-discovery-brain.sql, supabase-migration-48-discovery-questions-rework.sql, supabase-migration-51-socle-scope-backfill.sql, supabase-migration-59-nudge-labels.sql, supabase-migration-67-fuse-gift-wishlist.sql, supabase-migration-78-cron-metadata-purge.sql
 --   • objets entièrement supersédés (droppés depuis) : supabase-migration-60-perf-beacons.sql, supabase-migration-62-perf-beacons-v2.sql
--- Estelle peut les ajouter à la main si elle le souhaite (elles ont bien tourné).
+--   • helper one-shot CADUC, jamais à appliquer (fonction transitoire sans appelant) : supabase-migration-58-scope-v2-mapping.sql
+-- Estelle peut ajouter les deux premières catégories à la main (elles ont bien tourné) ;
+-- la dernière NE doit PAS être appliquée (voir migration correspondante).
 
 BEGIN;
 
@@ -178,9 +180,6 @@ INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-56-locked-t
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-57-my-wishlist.sql'
   WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='my_wishlist_items')
   ON CONFLICT (filename) DO NOTHING;
-INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-58-scope-v2-mapping.sql'
-  WHERE EXISTS (SELECT 1 FROM pg_proc pr JOIN pg_namespace n ON n.oid=pr.pronamespace WHERE n.nspname='public' AND pr.proname='map_scope_v1_to_v2')
-  ON CONFLICT (filename) DO NOTHING;
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-61-onboarding-completed.sql'
   WHERE EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='my_profile' AND column_name='onboarding_completed')
   ON CONFLICT (filename) DO NOTHING;
@@ -240,6 +239,9 @@ INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-82-knowledg
   ON CONFLICT (filename) DO NOTHING;
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-83-about-ref.sql'
   WHERE EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='knowledge_sources' AND column_name='about_kind')
+  ON CONFLICT (filename) DO NOTHING;
+INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-85-rename-profile-notes-policy.sql'
+  WHERE EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='profile_notes' AND policyname='users_own_profile_notes')
   ON CONFLICT (filename) DO NOTHING;
 
 -- DERNIÈRE INSTRUCTION — auto-enregistrement (convention permanente à partir de la 84).

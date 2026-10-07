@@ -543,7 +543,8 @@ WITH expected(migration, kind, obj, parent, expect_present, superseded, probe_ob
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_evidences_assertion_status_check', 'knowledge_evidences', false, false, 'knowledge_evidences_assertion_status_check', 'knowledge_evidences'),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_facts_assertion_status_check', 'knowledge_facts', false, false, 'knowledge_facts_assertion_status_check', 'knowledge_facts'),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge', false, false, 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge'),
-  ('supabase-migration-84-applied-migrations-journal.sql', 'table', 'applied_migrations', NULL, true, false, 'applied_migrations', NULL)
+  ('supabase-migration-84-applied-migrations-journal.sql', 'table', 'applied_migrations', NULL, true, false, 'applied_migrations', NULL),
+  ('supabase-migration-85-rename-profile-notes-policy.sql', 'policy', 'users_own_profile_notes', 'profile_notes', true, false, 'users_own_profile_notes', 'profile_notes')
 ),
 checked AS (
   SELECT e.*,
@@ -1114,7 +1115,8 @@ WITH expected(migration, kind, obj, parent, expect_present, superseded, probe_ob
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_evidences_assertion_status_check', 'knowledge_evidences', false, false, 'knowledge_evidences_assertion_status_check', 'knowledge_evidences'),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_facts_assertion_status_check', 'knowledge_facts', false, false, 'knowledge_facts_assertion_status_check', 'knowledge_facts'),
   ('supabase-migration-83-about-ref.sql', 'constraint', 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge', false, false, 'knowledge_open_knowledge_assertion_status_check', 'knowledge_open_knowledge'),
-  ('supabase-migration-84-applied-migrations-journal.sql', 'table', 'applied_migrations', NULL, true, false, 'applied_migrations', NULL)
+  ('supabase-migration-84-applied-migrations-journal.sql', 'table', 'applied_migrations', NULL, true, false, 'applied_migrations', NULL),
+  ('supabase-migration-85-rename-profile-notes-policy.sql', 'policy', 'users_own_profile_notes', 'profile_notes', true, false, 'users_own_profile_notes', 'profile_notes')
 ),
 checked AS (
   SELECT e.*,
