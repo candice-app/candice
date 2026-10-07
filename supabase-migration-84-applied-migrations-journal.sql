@@ -246,9 +246,6 @@ INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-82-knowledg
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-83-about-ref.sql'
   WHERE EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='knowledge_sources' AND column_name='about_kind')
   ON CONFLICT (filename) DO NOTHING;
-INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-85-rename-profile-notes-policy.sql'
-  WHERE EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='profile_notes' AND policyname='users_own_profile_notes')
-  ON CONFLICT (filename) DO NOTHING;
 
 -- DERNIÈRE INSTRUCTION — auto-enregistrement (convention permanente à partir de la 84).
 INSERT INTO applied_migrations (filename) VALUES ('supabase-migration-84-applied-migrations-journal.sql')

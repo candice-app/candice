@@ -222,9 +222,10 @@ const MIG84 = 'supabase-migration-84-applied-migrations-journal.sql';
 // Helpers one-shot CADUCS : objet de schéma = fonction transitoire SANS appelant, qu'on
 // n'applique JAMAIS (ex. 58 map_scope_v1_to_v2). Classés à part, pas « manque à combler ».
 const CADUC = new Set(['supabase-migration-58-scope-v2-mapping.sql']);
+const mig84idx = migs.find((m) => m.file === MIG84)?.idx ?? Infinity;
 const backfillLines = [], notBackfilled = [], caducHelpers = [];
 for (const mig of migs) {
-  if (mig.file === MIG84) continue; // la 84 s'auto-enregistre explicitement, pas de backfill d'elle-même
+  if (mig.idx >= mig84idx) continue; // 84 et APRÈS : s'auto-enregistrent, pas de backfill (journal = pré-84)
   if (CADUC.has(mig.file)) { caducHelpers.push(mig.file); continue; } // caduque, jamais appliquée
   const sig = mig.created.find((o) => !o.supersededBy);
   const f = mig.file.replace(/'/g, "''");
