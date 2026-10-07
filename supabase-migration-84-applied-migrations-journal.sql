@@ -21,6 +21,12 @@ CREATE TABLE IF NOT EXISTS applied_migrations (
   applied_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- RLS activée DÉLIBÉRÉMENT SANS politique (même parti que cron_runs, migration 76) : aucun
+-- client anon/authenticated n'a de raison de lire ce journal. Les migrations qui l'alimentent
+-- tournent avec un rôle propriétaire/service_role qui CONTOURNE la RLS (ENABLE, pas FORCE) ;
+-- les INSERT ci-dessous passent donc. Sans politique, RLS bloque tout rôle non-BYPASSRLS.
+ALTER TABLE applied_migrations ENABLE ROW LEVEL SECURITY;
+
 INSERT INTO applied_migrations (filename) SELECT 'supabase-schema.sql'
   WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='contacts')
   ON CONFLICT (filename) DO NOTHING;

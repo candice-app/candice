@@ -261,6 +261,12 @@ CREATE TABLE IF NOT EXISTS applied_migrations (
   applied_at timestamptz NOT NULL DEFAULT now()
 );
 
+-- RLS activée DÉLIBÉRÉMENT SANS politique (même parti que cron_runs, migration 76) : aucun
+-- client anon/authenticated n'a de raison de lire ce journal. Les migrations qui l'alimentent
+-- tournent avec un rôle propriétaire/service_role qui CONTOURNE la RLS (ENABLE, pas FORCE) ;
+-- les INSERT ci-dessous passent donc. Sans politique, RLS bloque tout rôle non-BYPASSRLS.
+ALTER TABLE applied_migrations ENABLE ROW LEVEL SECURITY;
+
 ${backfillLines.join('\n')}
 
 -- DERNIÈRE INSTRUCTION — auto-enregistrement (convention permanente à partir de la 84).
