@@ -92,7 +92,7 @@ INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-24-memories
   WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='memories')
   ON CONFLICT (filename) DO NOTHING;
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-25-wishlist.sql'
-  WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='wishlist_items')
+  WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='carnet_envies_items')
   ON CONFLICT (filename) DO NOTHING;
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-26-memories-v2.sql'
   WHERE EXISTS (SELECT 1 FROM pg_constraint WHERE conname='memories_sentiment_check')
@@ -140,7 +140,7 @@ INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-42-savings.
   WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='savings_goal')
   ON CONFLICT (filename) DO NOTHING;
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-43-wishlist-sourcing.sql'
-  WHERE EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='wishlist_items' AND column_name='requires_payment_sourcing')
+  WHERE EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='carnet_envies_items' AND column_name='requires_payment_sourcing')
   ON CONFLICT (filename) DO NOTHING;
 INSERT INTO applied_migrations (filename) SELECT 'supabase-migration-44-contacts-postal-address.sql'
   WHERE EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='contacts' AND column_name='postal_address')

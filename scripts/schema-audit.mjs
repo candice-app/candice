@@ -46,8 +46,11 @@ function extract(stmt) {
   if ((m = s.match(/^CREATE TABLE (?:IF NOT EXISTS )?("?[\w.]+"?)/i))) created.push({ kind: 'table', obj: clean(m[1]), parent: null });
   if ((m = s.match(/^ALTER TABLE (?:IF EXISTS )?(?:ONLY )?("?[\w.]+"?)/i))) {
     const t = clean(m[1]);
-    let c; const colRe = /ADD COLUMN (?:IF NOT EXISTS )?("?\w+"?)/gi;
-    while ((c = colRe.exec(s))) created.push({ kind: 'column', obj: clean(c[1]), parent: t });
+    let c; const colRe = /ADD COLUMN (?:IF NOT EXISTS )?("?\w+"?)/gi; const addedCols = [];
+    while ((c = colRe.exec(s))) { const col = clean(c[1]); created.push({ kind: 'column', obj: col, parent: t }); addedCols.push(col); }
+    // FK IMPLICITE : une colonne ajoutée avec REFERENCES crée une contrainte nommée par défaut
+    // <table>_<col>_fkey (ex. la colonne générée contact_id de la 83 recrée *_contact_id_fkey).
+    if (/\bREFERENCES\b/i.test(s)) for (const col of addedCols) created.push({ kind: 'constraint', obj: `${t}_${col}_fkey`, parent: t });
     let k; const conRe = /ADD CONSTRAINT ("?\w+"?)/gi;
     while ((k = conRe.exec(s))) created.push({ kind: 'constraint', obj: clean(k[1]), parent: t });
     if (/ENABLE ROW LEVEL SECURITY/i.test(s)) created.push({ kind: 'rls_enabled', obj: t, parent: t });
@@ -66,38 +69,52 @@ function extract(stmt) {
   return { created, dropped };
 }
 
+const renameMap = new Map(); // ancien nom de table → nouveau (ALTER TABLE … RENAME TO …)
 const migs = ordered.map((file, idx) => {
   let sql; try { sql = readFileSync(file, 'utf8'); } catch { return null; }
   const created = [], dropped = [];
-  for (const st of statements(sql)) { const e = extract(st); created.push(...e.created); dropped.push(...e.dropped); }
+  for (const st of statements(sql)) {
+    const e = extract(st); created.push(...e.created); dropped.push(...e.dropped);
+    const rm = st.replace(/\s+/g, ' ').match(/^ALTER TABLE (?:IF EXISTS )?("?[\w.]+"?) RENAME TO ("?[\w.]+"?)/i);
+    if (rm) renameMap.set(clean(rm[1]), clean(rm[2]));
+  }
   return { file, idx, created, dropped };
 }).filter(Boolean);
+// résolution 1 niveau (pas de chaîne de renommages dans ce dépôt)
+const resolveT = (n) => (n == null ? n : (renameMap.get(n) ?? n));
 
 // ── Supersession : drops directs + cascade DROP TABLE sur les enfants (même parent) ──
 const dropIdxByKey = new Map();            // kind|obj|parent → idx du 1er drop
+const dropByNameKind = new Map();          // kind|obj (parent ignoré) — index/contrainte : le DROP ne nomme pas la table
 const tableDropIdx = new Map();            // table → idx du DROP TABLE
 for (const mig of migs) for (const d of mig.dropped) {
   const k = `${d.kind}|${d.obj}|${d.parent ?? ''}`;
   if (!dropIdxByKey.has(k)) dropIdxByKey.set(k, mig.idx);
+  const nk = `${d.kind}|${d.obj}`;
+  if (!dropByNameKind.has(nk)) dropByNameKind.set(nk, mig.idx);
   if (d.kind === 'table' && !tableDropIdx.has(d.obj)) tableDropIdx.set(d.obj, mig.idx);
 }
 for (const mig of migs) for (const o of mig.created) {
   const direct = dropIdxByKey.get(`${o.kind}|${o.obj}|${o.parent ?? ''}`);
+  const byName = (o.kind === 'index' || o.kind === 'constraint') ? dropByNameKind.get(`${o.kind}|${o.obj}`) : undefined;
   const viaTable = o.kind === 'table' ? tableDropIdx.get(o.obj)
     : (o.parent ? tableDropIdx.get(o.parent) : undefined);
-  const di = [direct, viaTable].filter((x) => x !== undefined && x > mig.idx).sort((a, b) => a - b)[0];
+  const di = [direct, byName, viaTable].filter((x) => x !== undefined && x > mig.idx).sort((a, b) => a - b)[0];
   o.supersededBy = di !== undefined ? migs.find((x) => x.idx === di).file : null;
 }
 
 // ── Objets ATTENDUS pour la requête ──
 const expected = [];
+// nom sous lequel vérifier l'objet aujourd'hui (table/rls → obj résolu ; colonne/policy → parent résolu)
+const probeObj = (o) => (o.kind === 'table' || o.kind === 'rls_enabled') ? resolveT(o.obj) : o.obj;
+const probeParent = (o) => (o.kind === 'column' || o.kind === 'policy') ? resolveT(o.parent) : o.parent;
 for (const mig of migs) {
   const createdKeys = new Set(mig.created.map((o) => `${o.kind}|${o.obj}|${o.parent ?? ''}`));
-  for (const o of mig.created) expected.push({ migration: mig.file, kind: o.kind, obj: o.obj, parent: o.parent, expect: true, superseded: !!o.supersededBy });
+  for (const o of mig.created) expected.push({ migration: mig.file, kind: o.kind, obj: o.obj, parent: o.parent, expect: true, superseded: !!o.supersededBy, pObj: probeObj(o), pParent: probeParent(o) });
   for (const d of mig.dropped) {
     // auto-drop idempotent (DROP IF EXISTS puis CREATE du même objet dans la même migration) → net créé
     if (createdKeys.has(`${d.kind}|${d.obj}|${d.parent ?? ''}`)) continue;
-    expected.push({ migration: mig.file, kind: d.kind, obj: d.obj, parent: d.parent, expect: false, superseded: false });
+    expected.push({ migration: mig.file, kind: d.kind, obj: d.obj, parent: d.parent, expect: false, superseded: false, pObj: d.obj, pParent: d.parent });
   }
 }
 // Migrations SANS aucun objet attendu = invérifiables (data/valeurs pures)
@@ -106,22 +123,22 @@ const unverifiable = migs.filter((m) => !withItems.has(m.file)).map((m) => m.fil
 
 // ── Génération SQL ──
 const esc = (v) => v === null || v === undefined ? 'NULL' : `'${String(v).replace(/'/g, "''")}'`;
-const valRows = expected.map((e) => `  (${esc(e.migration)}, ${esc(e.kind)}, ${esc(e.obj)}, ${esc(e.parent)}, ${e.expect}, ${e.superseded})`);
+const valRows = expected.map((e) => `  (${esc(e.migration)}, ${esc(e.kind)}, ${esc(e.obj)}, ${esc(e.parent)}, ${e.expect}, ${e.superseded}, ${esc(e.pObj)}, ${esc(e.pParent)})`);
 
-const withBlock = `WITH expected(migration, kind, obj, parent, expect_present, superseded) AS (VALUES
+const withBlock = `WITH expected(migration, kind, obj, parent, expect_present, superseded, probe_obj, probe_parent) AS (VALUES
 ${valRows.join(',\n')}
 ),
 checked AS (
   SELECT e.*,
     CASE e.kind
-      WHEN 'table'       THEN EXISTS (SELECT 1 FROM information_schema.tables t  WHERE t.table_schema='public' AND t.table_name=e.obj)
-      WHEN 'column'      THEN EXISTS (SELECT 1 FROM information_schema.columns c WHERE c.table_schema='public' AND c.table_name=e.parent AND c.column_name=e.obj)
-      WHEN 'index'       THEN EXISTS (SELECT 1 FROM pg_indexes i               WHERE i.schemaname='public' AND i.indexname=e.obj)
-      WHEN 'policy'      THEN EXISTS (SELECT 1 FROM pg_policies p               WHERE p.schemaname='public' AND p.tablename=e.parent AND p.policyname=e.obj)
-      WHEN 'constraint'  THEN EXISTS (SELECT 1 FROM pg_constraint k            WHERE k.conname=e.obj)
-      WHEN 'function'    THEN EXISTS (SELECT 1 FROM pg_proc pr JOIN pg_namespace n ON n.oid=pr.pronamespace WHERE n.nspname='public' AND pr.proname=e.obj)
-      WHEN 'trigger'     THEN EXISTS (SELECT 1 FROM pg_trigger tg              WHERE NOT tg.tgisinternal AND tg.tgname=e.obj)
-      WHEN 'rls_enabled' THEN EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname=e.obj AND c.relrowsecurity)
+      WHEN 'table'       THEN EXISTS (SELECT 1 FROM information_schema.tables t  WHERE t.table_schema='public' AND t.table_name=e.probe_obj)
+      WHEN 'column'      THEN EXISTS (SELECT 1 FROM information_schema.columns c WHERE c.table_schema='public' AND c.table_name=e.probe_parent AND c.column_name=e.probe_obj)
+      WHEN 'index'       THEN EXISTS (SELECT 1 FROM pg_indexes i               WHERE i.schemaname='public' AND i.indexname=e.probe_obj)
+      WHEN 'policy'      THEN EXISTS (SELECT 1 FROM pg_policies p               WHERE p.schemaname='public' AND p.tablename=e.probe_parent AND p.policyname=e.probe_obj)
+      WHEN 'constraint'  THEN EXISTS (SELECT 1 FROM pg_constraint k            WHERE k.conname=e.probe_obj)
+      WHEN 'function'    THEN EXISTS (SELECT 1 FROM pg_proc pr JOIN pg_namespace n ON n.oid=pr.pronamespace WHERE n.nspname='public' AND pr.proname=e.probe_obj)
+      WHEN 'trigger'     THEN EXISTS (SELECT 1 FROM pg_trigger tg              WHERE NOT tg.tgisinternal AND tg.tgname=e.probe_obj)
+      WHEN 'rls_enabled' THEN EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname=e.probe_obj AND c.relrowsecurity)
     END AS present
   FROM expected e
 )`;
@@ -148,7 +165,7 @@ SELECT migration,
          = count(*) FILTER (WHERE expect_present)
       THEN 'supersédée'
     WHEN count(*) FILTER (WHERE (expect_present AND present) OR (expect_present AND superseded) OR (NOT expect_present AND NOT present)) = count(*)
-     AND count(*) FILTER (WHERE present) > 0
+     AND count(*) FILTER (WHERE (expect_present AND present) OR (NOT expect_present AND NOT present)) > 0
       THEN 'appliquée'
     WHEN count(*) FILTER (WHERE expect_present AND present) = 0
      AND count(*) FILTER (WHERE NOT expect_present AND NOT present) = 0
@@ -189,14 +206,14 @@ for (const mig of migs) {
 function probe(o) {
   const q = (v) => String(v).replace(/'/g, "''");
   switch (o.kind) {
-    case 'table':       return `EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='${q(o.obj)}')`;
-    case 'column':      return `EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='${q(o.parent)}' AND column_name='${q(o.obj)}')`;
+    case 'table':       return `EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='${q(resolveT(o.obj))}')`;
+    case 'column':      return `EXISTS (SELECT 1 FROM information_schema.columns WHERE table_schema='public' AND table_name='${q(resolveT(o.parent))}' AND column_name='${q(o.obj)}')`;
     case 'index':       return `EXISTS (SELECT 1 FROM pg_indexes WHERE schemaname='public' AND indexname='${q(o.obj)}')`;
-    case 'policy':      return `EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='${q(o.parent)}' AND policyname='${q(o.obj)}')`;
+    case 'policy':      return `EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='${q(resolveT(o.parent))}' AND policyname='${q(o.obj)}')`;
     case 'constraint':  return `EXISTS (SELECT 1 FROM pg_constraint WHERE conname='${q(o.obj)}')`;
     case 'function':    return `EXISTS (SELECT 1 FROM pg_proc pr JOIN pg_namespace n ON n.oid=pr.pronamespace WHERE n.nspname='public' AND pr.proname='${q(o.obj)}')`;
     case 'trigger':     return `EXISTS (SELECT 1 FROM pg_trigger WHERE NOT tgisinternal AND tgname='${q(o.obj)}')`;
-    case 'rls_enabled': return `EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname='${q(o.obj)}' AND c.relrowsecurity)`;
+    case 'rls_enabled': return `EXISTS (SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname='${q(resolveT(o.obj))}' AND c.relrowsecurity)`;
   }
 }
 const MIG84 = 'supabase-migration-84-applied-migrations-journal.sql';
