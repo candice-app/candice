@@ -683,6 +683,19 @@ export const INTEREST_PARENT_DOMAINS = createOpenVocabulary(INTEREST_PARENT_DOMA
 export const ENTITY_TYPES = createOpenVocabulary(ENTITY_TYPE_SEED, normalizeLabel);
 export const CONTEXT_CODES = createOpenVocabulary(CONTEXT_CODE_SEED, normalizeLabel);
 export const BEHAVIOR_CONTEXTS = createOpenVocabulary(BEHAVIOR_CONTEXT_SEED, normalizeLabel);
+
+/**
+ * GARDE-FOU de production, PENDANT de assertValidEvidenceContext sur l'autre champ/vocabulaire :
+ * le grain de consolidation BEHAVIOR est `behaviorContext:pattern`, donc une coquille sur
+ * `behaviorContext` scinde la consolidation en silence — exactement le risque que le garde-fou
+ * ferme. Aucun `behaviorContext` ne sort de la production hors `BEHAVIOR_CONTEXTS`. Appliqué aux
+ * DEUX jeux (self + incognito). Le trou préexistait à l'incognito : il se ferme pour le socle aussi.
+ */
+export function assertValidBehaviorContext(context: string): void {
+  if (!BEHAVIOR_CONTEXTS.has(context)) {
+    throw new Error(`[knowledge] behaviorContext hors BEHAVIOR_CONTEXTS : « ${context} » — coquille ? il scinderait la consolidation.`);
+  }
+}
 export const BEHAVIOR_PATTERNS = createOpenVocabulary(BEHAVIOR_PATTERN_SEED, normalizeBehaviorPattern);
 
 /* ────────────────────────────────────────────────────────────────────────

@@ -18,6 +18,7 @@ import {
   createSocialEnergyEvidence,
   isValidEvidenceContext,
   assertValidEvidenceContext,
+  assertValidBehaviorContext,
   JOURNAL_VERSION_STAMP,
   type AffectionEvidence,
   type BehaviorEvidence,
@@ -260,7 +261,10 @@ export function produceFromOption(
   }
 
   // garde-fou : aucun contexte hors vocabulaire ne sort de la production (coquille → consolidation scindée)
-  for (const e of evidences) assertValidEvidenceContext(e.context);
+  for (const e of evidences) {
+    assertValidEvidenceContext(e.context);
+    if (e.target_family === 'BEHAVIOR') assertValidBehaviorContext(e.behaviorContext);
+  }
   return { source, evidences, facts };
 }
 

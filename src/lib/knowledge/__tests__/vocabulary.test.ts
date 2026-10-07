@@ -14,6 +14,7 @@ import {
   EVIDENCE_CONTEXTS,
   isValidEvidenceContext,
   assertValidEvidenceContext,
+  assertValidBehaviorContext,
   DEPRECATED_AXES,
   DRIVER_CODES,
   DRIVER_LABELS,
@@ -84,6 +85,15 @@ describe('Test 1 — chiffres de contrôle du vocabulaire', () => {
     expect(() => assertValidEvidenceContext('stress')).not.toThrow();
     expect(() => assertValidEvidenceContext('relationship_with_reporter')).not.toThrow();
     expect(() => assertValidEvidenceContext('stress_reponse')).toThrow(); // coquille
+  });
+  it('garde-fou behaviorContext : registre SÉPARÉ, coquille rejetée sur les deux champs', () => {
+    expect(() => assertValidBehaviorContext('stress_response')).not.toThrow();
+    expect(() => assertValidBehaviorContext('conflict_response')).not.toThrow();
+    expect(() => assertValidBehaviorContext('stress_responce')).toThrow(); // coquille
+    // les deux vocabulaires sont distincts : un contexte local n'est pas un behaviorContext et inversement
+    expect(() => assertValidBehaviorContext('stress')).toThrow(); // 'stress' = local, pas BEHAVIOR
+    expect(() => assertValidEvidenceContext('stress_response')).toThrow(); // 'stress_response' = BEHAVIOR, pas local
+    expect(isValidEvidenceContext('stress_response')).toBe(false);
   });
   it('DEPRECATED : 15 anciens axes', () => {
     expect(DEPRECATED_AXES).toHaveLength(15);
