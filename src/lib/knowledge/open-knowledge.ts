@@ -30,7 +30,15 @@ export interface OpenKnowledge extends KnowledgeScope {
   readonly subject: SubjectId; // identité résolue
   readonly subjectLabel: string; // formulation verbatim, jamais écrasée
   readonly relation: string; // « passion », « collectionne », « fasciné par »
-  readonly intensity: EvidenceStrength;
+  /**
+   * Intensité DÉCLARÉE du rapport au sujet — FACULTATIVE (comme InterestEvidence.relationship,
+   * rendu optionnel le 6 oct pour la même raison). Absente = NON RENSEIGNÉE, jamais 'weak' :
+   * l'incognito I7 constate qu'une modalité « semble faire du bien » sans dire à quel point.
+   * Aucun défaut nulle part (ni ?? 'weak', ni projection qui la remplirait) — un défaut
+   * silencieux fabriquerait une donnée que personne n'a énoncée (même interdit que ?? 'GLOBAL').
+   * La strength (force du signal) reste portée par les evidences ; l'intensity ne s'y substitue pas.
+   */
+  readonly intensity?: EvidenceStrength;
   readonly context: EvidenceContext;
   readonly source: string; // source_id
   readonly timestamp: string;
@@ -47,7 +55,8 @@ export interface CreateOpenKnowledgeInput extends KnowledgeScope {
   subject: SubjectId;
   subjectLabel: string;
   relation: string;
-  intensity: EvidenceStrength;
+  /** Facultative — absente = non renseignée (voir OpenKnowledge.intensity). Aucun défaut. */
+  intensity?: EvidenceStrength;
   context: EvidenceContext;
   source: string;
   timestamp: string;
@@ -71,7 +80,8 @@ export function createOpenKnowledge(input: CreateOpenKnowledgeInput): OpenKnowle
     subject: input.subject,
     subjectLabel: input.subjectLabel,
     relation: input.relation,
-    intensity: input.intensity,
+    // absence préservée telle quelle : aucune valeur de repli (I7 = intensity non renseignée)
+    ...(input.intensity !== undefined ? { intensity: input.intensity } : {}),
     context: input.context,
     source: input.source,
     timestamp: input.timestamp,

@@ -236,7 +236,9 @@ export interface KnowledgeOpenKnowledgeRow {
   subject_id: string;
   subject_label: string;
   relation: string;
-  intensity: string;
+  /** NULLABLE : absence d'intensité (I7 « non renseignée ») → NULL, jamais une valeur de repli.
+   *  ⚠ La colonne knowledge_open_knowledge.intensity DEVRA être NULLABLE quand la table existera. */
+  intensity: string | null;
   context: string;
   source: string;
   confidence: string;
@@ -259,7 +261,7 @@ export function openKnowledgeToRow(k: OpenKnowledge, about: AboutRef): Knowledge
     subject_id: k.subject,
     subject_label: k.subjectLabel, // verbatim, jamais écrasé
     relation: k.relation,
-    intensity: k.intensity,
+    intensity: k.intensity === undefined ? null : k.intensity, // absence → NULL, jamais 'weak'
     context: k.context,
     source: k.source,
     confidence: k.confidence,

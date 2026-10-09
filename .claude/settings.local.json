@@ -152,7 +152,9 @@
       "Bash(grep -nE \"isValidEvidenceContext|return \\\\{ source, evidences, facts \\\\}|return \\\\{ source, evidences \\\\}\" src/lib/knowledge-write/produce.ts)",
       "Bash(perl -pi -e 's/^\\(\\\\s*\\)source_type: '\\\\''onboarding_closed'\\\\'' as const,$/$1source_type: '\\\\''onboarding_closed'\\\\'' as const,\\\\n$1assertionBasis: '\\\\''self_report'\\\\'' as const,/' src/lib/knowledge/__tests__/consolidation-rules.test.ts src/lib/knowledge/__tests__/traceability.test.ts src/lib/knowledge/__tests__/consolidate.test.ts src/lib/knowledge/__tests__/signal-semantics.test.ts src/lib/knowledge/__tests__/evidence.test.ts src/lib/knowledge/__tests__/onboarding.test.ts src/lib/knowledge-write/__tests__/rows.test.ts)",
       "Bash(perl -pi -e \"s/path: 'PREFERENCE\\\\.surprise_level'/path: 'PREFERENCE.organised_for_me.surprise_level'/g\" src/lib/knowledge/onboarding-incognito.ts)",
-      "Bash(grep -E \"option\\\\]|118|écart|code:|doc :|énoncé|option$|FAIL|passed|Tests \")"
+      "Bash(grep -E \"option\\\\]|118|écart|code:|doc :|énoncé|option$|FAIL|passed|Tests \")",
+      "Bash(awk '/^### I7 /{f=1} /^### I8 /{f=0} f' docs/ontologie/onboarding-incognito-v1.md)",
+      "Bash(awk '/^## 3 ·/{f=1} /^## 4 ·/{f=0} f' docs/ontologie/onboarding-incognito-v1.md)"
     ]
   }
 }
