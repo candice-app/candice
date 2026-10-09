@@ -35,7 +35,6 @@ import {
   type Evidence,
   type EvidenceConfidence,
   type EvidenceStability,
-  type EvidenceStrength,
   type EvidenceValue,
   type Fact,
   type GuardrailEvidence,
@@ -53,15 +52,10 @@ import { resolvePronoun, type ContactGender } from './pronoun';
 /** Invariant du jeu incognito (§4) : l'acte d'acquisition est toujours « rapporté par un proche ». */
 const SOURCE_TYPE: SourceType = 'reported_by_relative';
 
-/**
- * R-I1 : une interprétation est indirecte, donc plafonnée à 'moderate' — pas à cause de l'incognito.
- * Appliqué aux strength DÉRIVÉES par la production (le guardrail, seule famille sans strength dans la
- * donnée §4). Les strength EXPLICITES (affection/driver/behavior/preference) sont déjà conformes à
- * R-I1 dans la transcription (vérifié par incognito-conformance) et reprises telles quelles.
- */
-function strengthUnderBase(base: AssertionBasis, baseline: EvidenceStrength): EvidenceStrength {
-  return base === 'reporter_interpretation' && baseline === 'strong' ? 'moderate' : baseline;
-}
+// Aucune dérivation de strength ici : TOUTE strength (affection/driver/behavior/preference/guardrail)
+// est lue de la transcription §4, elle-même conforme à R-I1 (vérifié par incognito-conformance). Le
+// guardrail en particulier porte sa propre strength (colonne Strength de I15) — severity et strength
+// sont deux champs indépendants, aucun ne se déduit de l'autre (R-I4).
 
 export interface IncognitoWriteContext extends KnowledgeScope {
   readonly sourceId: string; // uuid généré à l'acquisition
@@ -225,9 +219,10 @@ export function produceIncognitoOption(
     evidences.push(ev);
   }
 
-  // GUARDRAIL (severity + scope portés par la donnée ; strength DÉRIVÉE : baseline strong plafonnée
-  // par R-I1 → moderate sous reporter_interpretation. R-I4 : la sévérité vient de l'expression,
-  // jamais de la provenance — aucune formulation fermée ne fabrique un HARD ici.)
+  // GUARDRAIL (severity, strength et scope LUS de la donnée §4, jamais dérivés l'un de l'autre).
+  // R-I4 : la sévérité vient de ce qui est exprimé, jamais de la provenance — aucune formulation
+  // fermée ne fabrique un HARD ici. La strength vient de la base épistémique (I15 =
+  // reporter_interpretation → moderate), écrite au doc, pas calculée.
   for (const g of option.guardrails ?? []) {
     const ev: GuardrailEvidence = {
       ...common,
@@ -238,7 +233,7 @@ export function produceIncognitoOption(
       target_construct: g.code,
       severity: g.severity,
       guardrailScope: g.guardrailScope,
-      strength: strengthUnderBase(base, 'strong'),
+      strength: g.strength,
     };
     evidences.push(ev);
   }

@@ -55,11 +55,12 @@ describe('R-I1 — strength = force du signal, jamais la provenance', () => {
     }
     expect(strong).toEqual([]);
   });
-  it('I15.1 (reporter_interpretation) — guardrail dérivé plafonné à moderate', () => {
+  it('I15.1 (reporter_interpretation) — guardrail LU à moderate, SOFT indépendant', () => {
     const { q, o } = findOpt('I15', 'I15.1');
     const g = produceIncognitoOption(ctxOf('Camille', null, o.code), q, o).evidences[0];
     expect(g.target_family).toBe('GUARDRAIL');
-    expect((g as { strength: string }).strength).toBe('moderate');
+    expect((g as { strength: string }).strength).toBe('moderate'); // force du signal, lue du §4
+    expect((g as { severity: string }).severity).toBe('SOFT'); // force de la contrainte, indépendante
   });
   it('aucun plafond AUTOMATIQUE : I5.1 (observed) reste strong', () => {
     const { q, o } = findOpt('I5', 'I5.1');

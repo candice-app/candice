@@ -131,8 +131,8 @@ describe('Colonne distincte (§9) — 115 · 98 · 80, dérivée du code', () =>
 // autorisent strong (les strong du §4 sont justes) ; reporter_interpretation plafonne à
 // moderate — car une interprétation est indirecte, pas parce qu'elle vient de l'incognito.
 // Base effective = surcharge de l'option, sinon base de la question. Couvre I1.*, I2.*,
-// I16.3–6 (affection/drivers moderate) ; I15.* porte une sévérité, pas une strength ;
-// les surcharges I12.1/I12.2 portent un value, pas de strength → hors champ.
+// I16.3–6 (affection/drivers) ET I15.* (guardrail, strength moderate du §4 — distincte de la
+// sévérité SOFT) ; les surcharges I12.1/I12.2 portent un value, pas de strength → hors champ.
 describe('R-I1 — toute strength sous reporter_interpretation est moderate', () => {
   it('aucune strength strong/weak sur une base reporter_interpretation', () => {
     const violations: string[] = [];
@@ -145,6 +145,7 @@ describe('R-I1 — toute strength sous reporter_interpretation est moderate', ()
         if (o.drivers?.length && o.driversStrength) strengths.push(['drivers', o.driversStrength]);
         if (o.behavior) strengths.push(['behavior', o.behavior.strength]);
         for (const p of o.preferences ?? []) strengths.push([`preference ${p.path}`, p.strength]);
+        for (const g of o.guardrails ?? []) strengths.push([`guardrail ${g.code}`, g.strength]);
         for (const [where, s] of strengths) {
           if (s !== 'moderate') violations.push(`[${o.code}] ${where} = ${s} (attendu moderate sous reporter_interpretation)`);
         }

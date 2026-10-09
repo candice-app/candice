@@ -54,7 +54,8 @@ export interface IncognitoPreference {
 }
 export interface IncognitoGuardrail {
   readonly code: GuardrailCode;
-  readonly severity: GuardrailSeverity;
+  readonly severity: GuardrailSeverity; // force de la CONTRAINTE (ce que Candice s'interdit)
+  readonly strength: EvidenceStrength; // force du SIGNAL ; indépendant de severity, lu au §4 (jamais dérivé)
   readonly guardrailScope: GuardrailScope;
 }
 /** I7 uniquement : chaque option produit un OpenKnowledge support_modality (aucun canonique). */
@@ -335,10 +336,10 @@ export const INCOGNITO_QUESTIONS: readonly IncognitoQuestion[] = [
     baseAssertionBasis: 'reporter_interpretation', selection: 'multi',
     stem: 'Parmi ces surprises, lesquelles risqueraient vraiment de mettre {Prénom} mal à l’aise ou de lui déplaire ?',
     options: [
-      { code: 'I15.1', text: 'Une surprise devant beaucoup de monde', context: 'surprise', guardrails: [{ code: 'GRD_PUBLIC_EXPOSURE', severity: 'SOFT', guardrailScope: 'execution' }] },
-      { code: 'I15.2', text: 'Une surprise qui bouleverse son planning', context: 'surprise', guardrails: [{ code: 'GRD_SCHEDULE_DISRUPTION', severity: 'SOFT', guardrailScope: 'execution' }] },
-      { code: 'I15.3', text: 'Une surprise très intime ou émotionnellement intense', context: 'surprise', guardrails: [{ code: 'GRD_SENTIMENTAL_OVERLOAD', severity: 'SOFT', guardrailScope: 'execution' }] },
-      { code: 'I15.4', text: 'Une surprise mal organisée', context: 'surprise', guardrails: [{ code: 'GRD_POOR_EXECUTION', severity: 'SOFT', guardrailScope: 'execution' }] },
+      { code: 'I15.1', text: 'Une surprise devant beaucoup de monde', context: 'surprise', guardrails: [{ code: 'GRD_PUBLIC_EXPOSURE', severity: 'SOFT', strength: 'moderate', guardrailScope: 'execution' }] },
+      { code: 'I15.2', text: 'Une surprise qui bouleverse son planning', context: 'surprise', guardrails: [{ code: 'GRD_SCHEDULE_DISRUPTION', severity: 'SOFT', strength: 'moderate', guardrailScope: 'execution' }] },
+      { code: 'I15.3', text: 'Une surprise très intime ou émotionnellement intense', context: 'surprise', guardrails: [{ code: 'GRD_SENTIMENTAL_OVERLOAD', severity: 'SOFT', strength: 'moderate', guardrailScope: 'execution' }] },
+      { code: 'I15.4', text: 'Une surprise mal organisée', context: 'surprise', guardrails: [{ code: 'GRD_POOR_EXECUTION', severity: 'SOFT', strength: 'moderate', guardrailScope: 'execution' }] },
       { code: 'I15.5', text: 'À ma connaissance, rien de tout ça ne poserait vraiment problème', status: 'CONTEXT_DEPENDENT' },
       UNKNOWN('I15.U', 'Je préfère ne pas deviner'),
     ],

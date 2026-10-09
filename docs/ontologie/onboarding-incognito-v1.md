@@ -458,14 +458,18 @@ Le stem incognito — « dans ce que Julie choisit, achète ou apprécie » — 
 
 > « Parmi ces surprises, lesquelles risqueraient vraiment de mettre {Prénom} mal à l'aise ou de lui déplaire ? »
 
-| Code | Option | Mapping | Sévérité | Scope · Context |
-|---|---|---|---|---|
-| I15.1 | Une surprise devant beaucoup de monde | `GRD_PUBLIC_EXPOSURE` | **SOFT** | `execution` · `surprise` |
-| I15.2 | Une surprise qui bouleverse son planning | `GRD_SCHEDULE_DISRUPTION` | **SOFT** | `execution` · `surprise` |
-| I15.3 | Une surprise très intime ou émotionnellement intense | `GRD_SENTIMENTAL_OVERLOAD` | **SOFT** | `execution` · `surprise` |
-| I15.4 | Une surprise mal organisée | `GRD_POOR_EXECUTION` | **SOFT** | `execution` · `surprise` |
-| I15.5 | À ma connaissance, rien de tout ça ne poserait vraiment problème | aucun | — | — |
-| I15.U | Je préfère ne pas deviner | `UNKNOWN_BY_REPORTER` | — | — |
+| Code | Option | Mapping | Sévérité | Strength | Scope · Context |
+|---|---|---|---|---|---|
+| I15.1 | Une surprise devant beaucoup de monde | `GRD_PUBLIC_EXPOSURE` | **SOFT** | `moderate` | `execution` · `surprise` |
+| I15.2 | Une surprise qui bouleverse son planning | `GRD_SCHEDULE_DISRUPTION` | **SOFT** | `moderate` | `execution` · `surprise` |
+| I15.3 | Une surprise très intime ou émotionnellement intense | `GRD_SENTIMENTAL_OVERLOAD` | **SOFT** | `moderate` | `execution` · `surprise` |
+| I15.4 | Une surprise mal organisée | `GRD_POOR_EXECUTION` | **SOFT** | `moderate` | `execution` · `surprise` |
+| I15.5 | À ma connaissance, rien de tout ça ne poserait vraiment problème | aucun | — | — | — |
+| I15.U | Je préfère ne pas deviner | `UNKNOWN_BY_REPORTER` | — | — | — |
+
+**La strength est `moderate`, et elle se lit directement dans R-I1.** *Écrite le 9 octobre ; elle manquait, et Claude Code l'avait dérivée en passant par une « baseline `strong` » plafonnée — même résultat, mais un raisonnement qui ferait école à tort.* Il n'y a **aucune baseline** : la base de I15 est `reporter_interpretation`, et R-I1 dit qu'une interprétation plafonne à `moderate` **parce qu'elle est indirecte**. Le chiffre sort de la base épistémique, pas d'une valeur par défaut qu'on abaisserait ensuite. Un guardrail ailleurs dans le produit, sur une base `subject_statement`, sera `strong` par la même règle et sans contradiction.
+
+**Sévérité et strength sont deux champs et ne se déduisent pas l'un de l'autre.** `SOFT` dit la force de la contrainte — ce que Candice s'interdit. `moderate` dit la force du signal — à quel point on est sûr que la contrainte existe. Un `HARD` pourrait parfaitement arriver en `moderate`, et un `SOFT` en `strong`.
 
 **La différence la plus importante du jeu : aucun `HARD` automatique.** Dans le self, « le type de surprise que je détesterais » est une déclaration du sujet et justifie `HARD`. Ici, le pilote **estime** ce que Julie détesterait : la sévérité vient de ce qui est réellement exprimé, et une case cochée dans une formulation prudente est un `SOFT`. R-I4.
 
