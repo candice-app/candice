@@ -13,9 +13,10 @@ const uncertainty = count(/^\| I\d+b?\.U/);
 const zeroProd = count(/^\| I\d+b?\.[0-9].*\| (aucun|\*\*aucun\*\*) \|/);
 const freeText = count(/^\| L[0-9] \|/);
 const rules = count(/^\*\*R-I[0-9]/);
-// 5 OpenKnowledge-seul (I7.1–I7.5), 2 FACT-seul (I11b.2, I11b.3) : donnés par le doc
-const okOnly = 5, factOnly = 2;
-const evidenceProducing = active - zeroProd - okOnly - factOnly;
+// La colonne « lignes » ne porte QUE ce qu'un grep dérive. Le nombre de productrices (80),
+// comme OpenKnowledge-seul (5) et FACT-seul (2), vit dans la colonne « distinctes » — vérifié
+// par incognito-conformance. Ne PAS le re-calculer ici : 101−11−5−2 soustrait des totaux
+// distincts (11/5/2) d'un total de lignes qui compte 3 récaps en trop → chiffre faux (Estelle, 9 oct).
 
 // Invariant « une sortie d'incertitude par question : 17 pour 17 »
 const uByQ = {};
@@ -29,9 +30,6 @@ row('lignes option', optionLines, 118);
 row('options actives', active, 101);
 row('sorties incertitude', uncertainty, 17);
 row('options à zéro production', zeroProd, 11);
-row('OpenKnowledge seul', okOnly, 5);
-row('FACT seul', factOnly, 2);
-row('productrices d’evidence (101−11−5−2)', evidenceProducing, 83);
 row('champs libres', freeText, 7);
 row('règles transversales', rules, 6);
 row('questions avec exactement une .U', qWithOneU, 17);
@@ -42,9 +40,8 @@ if (optionLines !== 118) fail.push(`lignes ${optionLines}≠118`);
 if (active !== 101) fail.push(`actives ${active}≠101`);
 if (uncertainty !== 17) fail.push(`incertitude ${uncertainty}≠17`);
 if (zeroProd !== 11) fail.push(`zéro-prod ${zeroProd}≠11`);
-if (evidenceProducing !== 83) fail.push(`productrices ${evidenceProducing}≠83`);
 if (freeText !== 7) fail.push(`champs libres ${freeText}≠7`);
 if (rules !== 6) fail.push(`règles ${rules}≠6`);
 if (qWithOneU !== 17 || qWithBadU.length) fail.push(`17/17 cassé : ${qWithBadU.map(([q, n]) => q + '×' + n).join(',') || qWithOneU}`);
 if (fail.length) { console.error('\nASSERTIONS ÉCHOUÉES : ' + fail.join(' ; ')); process.exit(1); }
-console.log('\nASSERTIONS OK (17/118/101/17/11/5/2/83/7/6 · une sortie .U par question, 17/17)');
+console.log('\nASSERTIONS OK (lignes : 17/118/101/17/11/7/6 · une sortie .U par question, 17/17)');
