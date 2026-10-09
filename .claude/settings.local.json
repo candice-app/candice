@@ -155,7 +155,8 @@
       "Bash(grep -E \"option\\\\]|118|écart|code:|doc :|énoncé|option$|FAIL|passed|Tests \")",
       "Bash(awk '/^### I7 /{f=1} /^### I8 /{f=0} f' docs/ontologie/onboarding-incognito-v1.md)",
       "Bash(awk '/^## 3 ·/{f=1} /^## 4 ·/{f=0} f' docs/ontologie/onboarding-incognito-v1.md)",
-      "Bash(awk '/^### I15 /{f=1} /^### I16 /{f=0} f' docs/ontologie/onboarding-incognito-v1.md)"
+      "Bash(awk '/^### I15 /{f=1} /^### I16 /{f=0} f' docs/ontologie/onboarding-incognito-v1.md)",
+      "Bash(awk '/^### I11b /{f=1} /^### I12 /{f=0} f' docs/ontologie/onboarding-incognito-v1.md)"
     ]
   }
 }

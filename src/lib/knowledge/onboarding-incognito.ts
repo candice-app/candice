@@ -280,7 +280,7 @@ export const INCOGNITO_QUESTIONS: readonly IncognitoQuestion[] = [
     stem: 'Sur les horaires, {Prénom} est plutôt…',
     options: [
       { code: 'I11b.1', text: 'Très à cheval sur la ponctualité', context: 'relationship', preferences: [{ path: 'PREFERENCE.relational.punctuality', value: 'high', strength: 'strong' }] },
-      { code: 'I11b.2', text: 'Plutôt à l’heure, sans en faire une règle', facts: [{ fact_type: 'habit', value: 'plutôt ponctuelle, sans en faire une règle', user_confirmed: false }] },
+      { code: 'I11b.2', text: 'Plutôt à l’heure, sans en faire une règle', facts: [{ fact_type: 'habit', value: 'plutôt à l’heure, sans en faire une règle', user_confirmed: false }] },
       { code: 'I11b.3', text: 'Souvent un peu en retard', facts: [{ fact_type: 'habit', value: 'souvent un peu en retard', user_confirmed: false }] },
       { code: 'I11b.4', text: 'Ça dépend vraiment du contexte', status: 'CONTEXT_DEPENDENT' },
       UNKNOWN('I11b.U', 'Je préfère ne pas deviner'),

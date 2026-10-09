@@ -368,7 +368,7 @@ Or I7 mesure **une modalité de soutien observée comme efficace**, pas un besoi
 | Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
 | I11b.1 | Très à cheval sur la ponctualité | `PREFERENCE.relational.punctuality = high` | strong | `relationship` |
-| I11b.2 | Plutôt à l'heure, sans en faire une règle | `FACT` · `fact_type = habit` · `value` « plutôt ponctuelle, sans en faire une règle » · **`user_confirmed = false`** | — | — |
+| I11b.2 | Plutôt à l'heure, sans en faire une règle | `FACT` · `fact_type = habit` · `value` « plutôt à l'heure, sans en faire une règle » · **`user_confirmed = false`** | — | — |
 | I11b.3 | Souvent un peu en retard | `FACT` · `fact_type = habit` · `value` « souvent un peu en retard » · **`user_confirmed = false`** | — | — |
 | I11b.4 | Ça dépend vraiment du contexte | **aucun** | — | — |
 | I11b.U | Je préfère ne pas deviner | `UNKNOWN_BY_REPORTER` | — | — |
@@ -520,7 +520,7 @@ Trois questions du self ne sont **pas** transposées, et l'information est récu
 
 `questionConcept` **life_priorities** · base **reporter_interpretation** · multi · **facultatif, en fin de parcours**
 
-> « Qu'est-ce que Julie semble vraiment choisir de mettre au centre de sa vie ? »
+> « Qu'est-ce que {Prénom} semble vraiment choisir de mettre au centre de sa vie ? »
 
 Options : sa famille et ses proches · sa liberté · apprendre et découvrir · construire des projets ou accomplir des choses · prendre soin des autres · contribuer ou transmettre · autre · je préfère ne pas deviner.
 
@@ -532,7 +532,7 @@ Options : sa famille et ses proches · sa liberté · apprendre et découvrir ·
 
 ### Radar d'intérêts
 
-> « Parmi ces univers, lesquels tu sais intéresser Julie ? »
+> « Parmi ces univers, lesquels tu sais intéresser {Prénom} ? »
 > *« Coche seulement ceux dont tu es assez sûr(e). Tu pourras toujours en ajouter plus tard. »*
 
 **Radar initial des 15 catégories actuellement définies, plus « Autre ».** Ce n'est pas une taxonomie fermée des intérêts : l'ontologie `INTEREST` reste open-world et aucun enum ne la referme.
@@ -547,13 +547,13 @@ Ils restent au questionnaire même sans extracteur. **À la V1, le verbatim est 
 
 | Code | Formulation | Extraction visée, plus tard |
 |---|---|---|
-| L1 | Il y a un sujet dont Julie peut parler pendant des heures, ou qui l'enthousiasme vraiment ? | `INTEREST` · `OpenKnowledge` · `ENTITY` |
-| L2 | Qu'est-ce que tu sais que Julie adore faire pendant son temps libre ? | `INTEREST` · `OpenKnowledge` |
-| L3 | Tu te souviens d'un cadeau, d'une surprise ou d'un moment qui a vraiment fait plaisir à Julie ? Qu'est-ce qui avait particulièrement marché ? | `DRIVER` · `ENTITY` · `OpenKnowledge` — base `observed` |
-| L4 | Quels petits détails ou attentions as-tu déjà vu faire particulièrement plaisir à Julie ? | `DRIVER` · `AFFECTION` — base `observed` |
-| L5 | Y a-t-il des marques, objets ou produits que tu sais que Julie aime particulièrement ? | `ENTITY` · `PREFERENCE` |
-| L6 | Est-ce que Julie a parlé récemment de quelque chose qu'{pronom} aimerait avoir, faire, découvrir ou essayer ? | `OpenKnowledge` · `ENTITY` — base `subject_statement`, pont vers le Carnet d'envies |
-| L7 | Y a-t-il quelque chose que Julie t'a déjà dit ne vraiment pas aimer, ou qui lui fait vraiment de la peine ? | `GUARDRAIL` · `PREFERENCE` — base `subject_statement`, **seule porte vers un `HARD`** |
+| L1 | Il y a un sujet dont {Prénom} peut parler pendant des heures, ou qui l'enthousiasme vraiment ? | `INTEREST` · `OpenKnowledge` · `ENTITY` |
+| L2 | Qu'est-ce que tu sais que {Prénom} adore faire pendant son temps libre ? | `INTEREST` · `OpenKnowledge` |
+| L3 | Tu te souviens d'un cadeau, d'une surprise ou d'un moment qui a vraiment fait plaisir à {Prénom} ? Qu'est-ce qui avait particulièrement marché ? | `DRIVER` · `ENTITY` · `OpenKnowledge` — base `observed` |
+| L4 | Quels petits détails ou attentions as-tu déjà vu faire particulièrement plaisir à {Prénom} ? | `DRIVER` · `AFFECTION` — base `observed` |
+| L5 | Y a-t-il des marques, objets ou produits que tu sais que {Prénom} aime particulièrement ? | `ENTITY` · `PREFERENCE` |
+| L6 | Est-ce que {Prénom} a parlé récemment de quelque chose qu'{pronom} aimerait avoir, faire, découvrir ou essayer ? | `OpenKnowledge` · `ENTITY` — base `subject_statement`, pont vers le Carnet d'envies |
+| L7 | Y a-t-il quelque chose que {Prénom} t'a déjà dit ne vraiment pas aimer, ou qui lui fait vraiment de la peine ? | `GUARDRAIL` · `PREFERENCE` — base `subject_statement`, **seule porte vers un `HARD`** |
 
 **L3 est le champ le plus riche du jeu** : le pilote raconte un cas réel, observé, avec sa réaction. Il porte simultanément l'attention, l'objet ou l'expérience, la personnalisation, les personnes présentes, le symbolique, le timing, la surprise, le contexte et la réaction constatée.
 
@@ -587,6 +587,12 @@ gender ∈ {non_binaire, non_precise, NULL} → le prénom
 
 > **Et aucune phrase du jeu ne porte d'accord sur la personne décrite.** C'est l'invariant qui rend la règle sûre, et il a été vérifié chaîne par chaîne plutôt que supposé. Vingt-six formulations ont été réécrites pour l'obtenir : les pronoms inversés — « montre-t-elle » —, les pronoms objets — « tu la vois faire » —, les disjonctifs — « pour elle », « près d'elle », « elle-même » —, et neuf accords — « stressée », « attachée », « ponctuelle », « seule », « partante », « écoutée », « rassurée », « attirée ». Quatre-vingt-douze formulations gardent leur rédaction d'origine, le jeton près. *La vingt-sixième est I1.7, « La surprendre avec quelque chose d'inattendu », devenue « Lui réserver quelque chose d'inattendu » — seul marqueur de genre qui avait survécu à la passe du 7 octobre, donc mon chiffre de vingt-cinq était faux d'une unité.*
 >
+> **Et le chantier d'accord annoncé n'a pas lieu d'être dans le questionnaire.** *Vérifié par script le 9 octobre, après l'arbitrage « on accorde dès que le genre est connu ».* Le balayage de toutes les chaînes produites — dix-sept énoncés, cent quinze libellés, sept champs libres, valeurs de `FACT` comprises — ne trouve **aucun accord portant sur la personne décrite**. Les accords qui subsistent portent sur des noms communs : « une période **chargée** », « une décision **importante** », « une surprise mal **organisée** », « la réaction **habituelle** », et le « belle » de I2.7 qui qualifie l'attention. Les neuf accords de la passe du 7 octobre ont été remplacés par des formulations neutres **qui sont du bon français** — « Quand {Prénom} traverse une période de stress », « Qu'on prenne le temps de l'écouter », « Les lieux et les expériences d'exception l'attirent » : les réécrire en version accordée serait dégrader le texte pour appliquer une règle qui n'a rien à corriger ici.
+>
+> **La règle d'accord vaut donc pleinement, et elle ne mord nulle part dans ce jeu.** Elle s'applique aux textes *sur* le proche — cartes des trois modes, notifications, copie de l'app —, pas au questionnaire, qui se trouve n'en porter aucun. Aucun jeton `{e}` n'est nécessaire ici.
+>
+> **Deux corrections sont tombées de ce balayage.** Neuf « {Prénom} » littéraux subsistaient **hors du §4** — les deux énoncés du §6 et les sept champs libres L1 à L7 —, que la passe du matin n'avait pas couverts : tokenisés. Et la `value` du `FACT` de I11b.2 portait « plutôt **ponctuelle** », un accord **stocké en base** et non affiché : devenue « plutôt à l'heure, sans en faire une règle », alignée sur son propre libellé. Une valeur stockée ne porte jamais de jeton ni d'accord.
+
 > **Conséquence : un prénom épicène ne pose aucun problème.** « Camille se retire et cherche du calme » est juste quel que soit le genre, parce que rien dans la phrase ne s'accorde avec Camille.
 >
 > **Les pronoms objets `lui`, `l'` et `le` restent et sont justes** : ils ne portent pas le genre en français — « Lui dire des mots sincères », « prendre le temps de l'écouter », « {Pronom} le dit assez librement » valent pour une femme comme pour un homme. Ils ne sont **pas** à neutraliser ni à transformer en jeton. De même, les « Elle » des libellés de I2 désignent **l'attention**, nom féminin, et non la personne décrite : « Elle arrive au bon moment » est juste pour Paul.

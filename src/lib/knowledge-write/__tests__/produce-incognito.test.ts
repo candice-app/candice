@@ -132,6 +132,29 @@ describe('R-I6 — FACT jamais user_confirmed=true en mode rapporté', () => {
   });
 });
 
+describe('Valeur stockée — jamais de jeton ni d’accord (correction du 9 oct)', () => {
+  it('aucune value stockée (FACT, preference) ne porte un jeton, quel que soit le genre', () => {
+    for (const gender of ['femme', 'homme', null] as const) {
+      for (const { q, o } of all) {
+        const { evidences, facts } = produceIncognitoOption(ctxOf('Dominique', gender, o.code), q, o);
+        const stored = [
+          ...facts.map((f) => f.value),
+          ...evidences.filter((e) => e.target_family === 'PREFERENCE').map((e) => (e as { preferenceValue: string }).preferenceValue),
+        ];
+        for (const v of stored) {
+          expect(v.includes('{'), `${o.code} (${gender}) : ${v}`).toBe(false);
+          expect(v.includes('}'), `${o.code} (${gender}) : ${v}`).toBe(false);
+        }
+      }
+    }
+  });
+  it('I11b : les FACT habit sont des formes NEUTRES — aucun accord genré (« ponctuelle »)', () => {
+    const values = all.flatMap(({ write }) => write.facts).map((f) => f.value).sort();
+    expect(values).toEqual(['plutôt à l’heure, sans en faire une règle', 'souvent un peu en retard']);
+    for (const v of values) expect(/ponctuell?e\b/i.test(v)).toBe(false); // l'accord stocké qui a été corrigé
+  });
+});
+
 describe('Invariants pronom (§2/§6)', () => {
   it('P1 — aucun pronom genré EN DUR référant au PROCHE (il/elle de la personne = jeton)', () => {
     // Exception d'accord NOMINAL, pas de genre de personne : en I2 (« Quand une attention fait
