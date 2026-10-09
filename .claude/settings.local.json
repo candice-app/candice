@@ -131,7 +131,28 @@
       "Bash(perl -pi -e 's/un `scope` \\\\\\(contactId \\\\+ ownerId\\\\\\)/un `scope` \\(about + ownerId\\)/' src/lib/knowledge/__tests__/consolidate.test.ts)",
       "Bash(perl -pi -e 's/^\\(\\\\s*\\)asContactId,$/$1asContactId,\\\\n$1contactAbout,/' src/lib/knowledge-write/__tests__/rows.test.ts)",
       "Bash(perl -pi -e 's/produceInterest\\\\\\(ctx, '\\\\''Vin nature'\\\\'', '\\\\''food_gastronomy'\\\\''\\\\\\)\\\\.evidences as Evidence\\\\[\\\\]/produceInterest\\(ctx, '\\\\''Vin nature'\\\\'', '\\\\''food_gastronomy'\\\\''\\).evidences as InterestEvidence[]/' src/lib/knowledge-write/__tests__/about.test.ts)",
-      "Bash(perl -pi -e 's/A\\\\.evidences as Evidence\\\\[\\\\]/A.evidences as InterestEvidence[]/; s/B\\\\.evidences as Evidence\\\\[\\\\]/B.evidences as InterestEvidence[]/;' src/lib/knowledge-write/__tests__/about.test.ts)"
+      "Bash(perl -pi -e 's/A\\\\.evidences as Evidence\\\\[\\\\]/A.evidences as InterestEvidence[]/; s/B\\\\.evidences as Evidence\\\\[\\\\]/B.evidences as InterestEvidence[]/;' src/lib/knowledge-write/__tests__/about.test.ts)",
+      "Bash(perl -pi -e \"s/import \\\\{ deriveAssertionStatus \\\\} from '\\\\.\\\\/sources';/import { deriveAssertionStatus, isSelfDeclaredAct } from '.\\\\/sources';/\" src/lib/knowledge/consolidate.ts)",
+      "Bash(perl -pi -e \"s/deriveAssertionStatus\\\\\\(e\\\\.source_type\\\\\\) === 'declared'/isSelfDeclaredAct\\(e.source_type\\)/g\" src/lib/knowledge/consolidate.ts)",
+      "Bash(perl -pi -e 's/evidenceToRow\\\\\\(e\\\\\\)/evidenceToRow\\(e, scope.about\\)/g' src/lib/knowledge-write/__tests__/rows.test.ts)",
+      "Bash(perl -pi -e 's/'\\\\''declared'\\\\''/'\\\\''explicit'\\\\''/g' src/lib/knowledge/__tests__/a-ter.test.ts src/lib/knowledge/__tests__/traceability.test.ts src/lib/knowledge-write/__tests__/produce.test.ts src/lib/knowledge/__tests__/fact.test.ts)",
+      "Bash(mkdir -p scripts)",
+      "Bash(cat)",
+      "Bash(cp src/lib/attention/questions.ts  /private/tmp/claude-501/-Users-estellepapillon-candice/c4041ba0-0428-477b-a86a-c4e084cc6444/scratchpad/attn.bak)",
+      "Bash(cp src/lib/lifestyle/questions.ts  /private/tmp/claude-501/-Users-estellepapillon-candice/c4041ba0-0428-477b-a86a-c4e084cc6444/scratchpad/life.bak)",
+      "Bash(perl -ni -e 'print unless \\($. >= 50 && $. <= 63\\)' src/lib/attention/questions.ts)",
+      "Bash(perl -ni -e 'print unless \\(\\($. >= 64 && $. <= 115\\) || \\($. >= 211 && $. <= 311\\)\\)' src/lib/lifestyle/questions.ts)",
+      "Bash(cp __TRACKED_VAR__/attn.bak src/lib/attention/questions.ts)",
+      "Bash(cp __TRACKED_VAR__/life.bak src/lib/lifestyle/questions.ts)",
+      "Bash(sort -t- -k3 -n)",
+      "Bash(grep -E \"false\\\\\\)$\" scripts/schema-audit-check.sql)",
+      "Bash(grep -cE \", false, \\(false|true\\)\\\\\\)$\" scripts/schema-audit-check.sql)",
+      "Bash(echo \"=== exit: $? ===\")",
+      "Bash(awk '/CREATE TABLE.*profile_notes|profile_notes ENABLE ROW|POLICY.*profile_notes|users_own_profile_notes/{p=1} p{print NR\": \"$0} /;[[:space:]]*$/{if\\(p && \\(prev ~ /profile_notes|users_own_profile_notes|ENABLE ROW/\\)\\) ; } {prev=$0}' supabase-schema.sql)",
+      "Bash(grep -nE \"isValidEvidenceContext|return \\\\{ source, evidences, facts \\\\}|return \\\\{ source, evidences \\\\}\" src/lib/knowledge-write/produce.ts)",
+      "Bash(perl -pi -e 's/^\\(\\\\s*\\)source_type: '\\\\''onboarding_closed'\\\\'' as const,$/$1source_type: '\\\\''onboarding_closed'\\\\'' as const,\\\\n$1assertionBasis: '\\\\''self_report'\\\\'' as const,/' src/lib/knowledge/__tests__/consolidation-rules.test.ts src/lib/knowledge/__tests__/traceability.test.ts src/lib/knowledge/__tests__/consolidate.test.ts src/lib/knowledge/__tests__/signal-semantics.test.ts src/lib/knowledge/__tests__/evidence.test.ts src/lib/knowledge/__tests__/onboarding.test.ts src/lib/knowledge-write/__tests__/rows.test.ts)",
+      "Bash(perl -pi -e \"s/path: 'PREFERENCE\\\\.surprise_level'/path: 'PREFERENCE.organised_for_me.surprise_level'/g\" src/lib/knowledge/onboarding-incognito.ts)",
+      "Bash(grep -E \"option\\\\]|118|écart|code:|doc :|énoncé|option$|FAIL|passed|Tests \")"
     ]
   }
 }

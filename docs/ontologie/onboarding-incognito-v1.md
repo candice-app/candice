@@ -124,7 +124,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 
 > « D'après ce que tu connais de {Prénom}, quelles attentions lui font vraiment plaisir ? »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
 | I1.1 | Lui dire des mots sincères | `AFFECTION_RECEIVE_WORDS` | moderate | `attention_received` |
 | I1.2 | L'aider concrètement sans qu'{pronom} ait besoin de demander | `AFFECTION_RECEIVE_SERVICES` + `DRV_ANTICIPATION` | moderate | `attention_received` |
@@ -147,7 +147,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 
 > « Quand une attention fait vraiment plaisir à {Prénom}, qu'est-ce qui semble faire la différence ? »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
 | I2.1 | Elle montre qu'on a vraiment écouté | `DRV_ATTENTIVENESS` | moderate | `attention_received` |
 | I2.2 | Elle arrive au bon moment | `DRV_TIMING` | moderate | `attention_received` |
@@ -168,7 +168,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 
 > « Et dans l'autre sens : comment {Prénom} montre son attention aux autres ? »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
 | I3.1 | {Pronom} dit ce qu'{pronom} ressent, complimente ou rassure | `AFFECTION_GIVE_WORDS` | strong | `affection_given` |
 | I3.2 | {Pronom} aide et rend service sans qu'on ait besoin de lui demander | `AFFECTION_GIVE_SERVICES` | strong | `affection_given` |
@@ -214,7 +214,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 
 > « Quand {Prénom} traverse une période de stress, qu'est-ce que tu observes le plus souvent ? »
 
-| Code | Option | Mapping | Strength | `evidence.context` | `behaviorContext` |
+| Code | Option | Mapping | Valeur / strength | `evidence.context` | `behaviorContext` |
 |---|---|---|---|---|---|
 | I5.1 | {Pronom} garde beaucoup pour soi et fait bonne figure | `BEHAVIOR` pattern `internalize` | strong | `stress` | `stress_response` |
 | I5.2 | {Pronom} se retire et cherche du calme | `BEHAVIOR` pattern `withdraw_seek_calm` | strong | `stress` | `stress_response` |
@@ -233,7 +233,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 
 > « Quand {Prénom} est en désaccord avec quelqu'un, {pronom} a plutôt tendance à… »
 
-| Code | Option | Mapping | Strength | `evidence.context` | `behaviorContext` |
+| Code | Option | Mapping | Valeur / strength | `evidence.context` | `behaviorContext` |
 |---|---|---|---|---|---|
 | I6.1 | En parler directement | `BEHAVIOR` pattern `address_directly` | strong | `conflict` | `conflict_response` |
 | I6.2 | Prendre du temps avant d'en parler | `BEHAVIOR` pattern `pause_before_responding` | strong | `conflict` | `conflict_response` |
@@ -283,11 +283,11 @@ Or I7 mesure **une modalité de soutien observée comme efficace**, pas un besoi
 
 > « Quand {Prénom} veut vraiment faire passer quelque chose d'important, comment {pronom} s'exprime le plus naturellement ? »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
 | I8.1 | {Pronom} va droit au but | `PREFERENCE.communication.style = direct` | strong | `communication` |
 | I8.2 | {Pronom} parle facilement de ce qu'{pronom} ressent | `PREFERENCE.communication.style = expressive` | strong | `communication` |
-| I8.3 | {Pronom} analyse et explique beaucoup | `PREFERENCE.communication.style = analytical` · **+ `PROFILE_REFLECTIVENESS` +1 `secondary`** | strong · secondaire moderate | `communication` |
+| I8.3 | {Pronom} analyse et explique beaucoup | `PREFERENCE.communication.style = analytical` · **+ `PROFILE_REFLECTIVENESS` +1 `secondary`** | strong · PROFILE +1 secondaire | `communication` |
 | I8.4 | {Pronom} garde volontiers de la légèreté ou de l'humour | `PREFERENCE.communication.style = light_humorous` | strong | `communication` |
 | I8.5 | {Pronom} écrit plus facilement qu'{pronom} ne parle | `PREFERENCE.communication.channel = written` | strong | `communication` |
 | I8.6 | Ça dépend beaucoup du sujet | aucun | — | — |
@@ -303,7 +303,7 @@ Or I7 mesure **une modalité de soutien observée comme efficace**, pas un besoi
 
 > « Quand {Prénom} doit prendre une décision importante, qu'est-ce que tu observes le plus souvent ? »
 
-| Code | Option | Mapping | Strength | `evidence.context` | `behaviorContext` |
+| Code | Option | Mapping | Valeur / strength | `evidence.context` | `behaviorContext` |
 |---|---|---|---|---|---|
 | I9.1 | {Pronom} pèse les pour et les contre | `BEHAVIOR` pattern `weigh_pros_and_cons` | strong | `decision` | `decision_process` |
 | I9.2 | {Pronom} fait beaucoup confiance à son instinct | `BEHAVIOR` pattern `trust_instinct` | strong | `decision` | `decision_process` |
@@ -321,7 +321,7 @@ Or I7 mesure **une modalité de soutien observée comme efficace**, pas un besoi
 
 > « Quand quelque chose touche vraiment {Prénom}, comment est-ce que ça s'exprime ? »
 
-| Code | Option | Mapping | Strength | `evidence.context` | `behaviorContext` |
+| Code | Option | Mapping | Valeur / strength | `evidence.context` | `behaviorContext` |
 |---|---|---|---|---|---|
 | I10.1 | {Pronom} le dit assez librement | `BEHAVIOR` pattern `openly` | strong | `emotional_expression` | `emotional_expression` |
 | I10.2 | {Pronom} en parle surtout à quelques personnes de confiance | `BEHAVIOR` pattern `with_trusted_few` | strong | `emotional_expression` | `emotional_expression` |
@@ -365,7 +365,7 @@ Or I7 mesure **une modalité de soutien observée comme efficace**, pas un besoi
 
 > « Sur les horaires, {Prénom} est plutôt… »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
 | I11b.1 | Très à cheval sur la ponctualité | `PREFERENCE.relational.punctuality = high` | strong | `relationship` |
 | I11b.2 | Plutôt à l'heure, sans en faire une règle | `FACT` · `fact_type = habit` · `value` « plutôt ponctuelle, sans en faire une règle » · **`user_confirmed = false`** | — | — |
@@ -417,13 +417,13 @@ Le stem incognito — « dans ce que Julie choisit, achète ou apprécie » — 
 
 > « Quand quelqu'un organise quelque chose pour {Prénom}, quelle est la réaction habituelle ? »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
-| I13.1 | {Pronom} aime savoir à l'avance ce qui est prévu | `PREFERENCE.organised_for_me.surprise_level = none` · **+ `PROFILE_STRUCTURE` +1 `secondary`** | strong · secondaire moderate | `organised_for_me` |
+| I13.1 | {Pronom} aime savoir à l'avance ce qui est prévu | `PREFERENCE.organised_for_me.surprise_level = none` · **+ `PROFILE_STRUCTURE` +1 `secondary`** | strong · PROFILE +1 secondaire | `organised_for_me` |
 | I13.2 | {Pronom} aime connaître l'essentiel mais garder une part de surprise | `PREFERENCE.organised_for_me.surprise_level = partial` | strong | `organised_for_me` |
 | I13.3 | {Pronom} adore pouvoir se laisser totalement surprendre | `PREFERENCE.organised_for_me.surprise_level = full` | strong | `organised_for_me` |
-| I13.4 | {Pronom} préfère valider certains détails en personne | `IMPORTANCE_MASTERY` +1 | strong | `organised_for_me` |
-| I13.5 | {Pronom} s'adapte facilement à ce qui a été prévu | `PROFILE_ADAPTABILITY` +1 | strong | `organised_for_me` |
+| I13.4 | {Pronom} préfère valider certains détails en personne | `IMPORTANCE_MASTERY` +1 | +1 | `organised_for_me` |
+| I13.5 | {Pronom} s'adapte facilement à ce qui a été prévu | `PROFILE_ADAPTABILITY` +1 | +1 | `organised_for_me` |
 | I13.6 | Ça dépend vraiment de l'occasion | aucun | — | — |
 | I13.U | Je préfère ne pas deviner | `UNKNOWN_BY_REPORTER` | — | — |
 
@@ -437,7 +437,7 @@ Le stem incognito — « dans ce que Julie choisit, achète ou apprécie » — 
 
 > « Pour rester en contact avec toi, {Prénom} utilise ou apprécie plutôt… »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
 | I14.1 | Les appels | `PREFERENCE.communication.channel = call` | strong | `relationship_with_reporter` |
 | I14.2 | Les messages écrits | `PREFERENCE.communication.channel = written` | strong | `relationship_with_reporter` |
@@ -481,12 +481,12 @@ Le stem incognito — « dans ce que Julie choisit, achète ou apprécie » — 
 
 > « D'après ce que tu connais de {Prénom}, qu'est-ce qui a le plus de chances de lui faire plaisir comme cadeau ? »
 
-| Code | Option | Mapping | Strength | Context |
+| Code | Option | Mapping | Valeur / strength | Context |
 |---|---|---|---|---|
-| I16.1 | Une expérience à vivre | `APPETENCE_EXPERIENCE` +1 | moderate | `gift` |
-| I16.2 | Un objet qu'{pronom} pourra garder | `APPETENCE_OBJECT` +1 | moderate | `gift` |
-| I16.3 | Quelque chose d'utile et bien pensé | `IMPORTANCE_FUNCTIONAL` +1 · `DRV_UTILITY` | moderate | `gift.material` |
-| I16.4 | Quelque chose de beau et de qualité | `IMPORTANCE_AESTHETIC` +1 · `DRV_AESTHETIC` · `DRV_QUALITY` | moderate | `gift.material` |
+| I16.1 | Une expérience à vivre | `APPETENCE_EXPERIENCE` +1 | +1 | `gift` |
+| I16.2 | Un objet qu'{pronom} pourra garder | `APPETENCE_OBJECT` +1 | +1 | `gift` |
+| I16.3 | Quelque chose d'utile et bien pensé | `IMPORTANCE_FUNCTIONAL` +1 · `DRV_UTILITY` | +1 · DRV moderate | `gift.material` |
+| I16.4 | Quelque chose de beau et de qualité | `IMPORTANCE_AESTHETIC` +1 · `DRV_AESTHETIC` · `DRV_QUALITY` | +1 · DRV moderate | `gift.material` |
 | I16.5 | Quelque chose de très personnel, qui montre qu'on a vraiment écouté | `DRV_PERSONALIZATION` · `DRV_ATTENTIVENESS` | moderate | `gift` |
 | I16.6 | Quelque chose de symbolique ou chargé de sens | `DRV_SYMBOLISM` | moderate | `gift` |
 | I16.7 | Les objets comme les expériences peuvent très bien marcher | aucun | — | — |
@@ -704,24 +704,50 @@ Dérivés par script depuis ce document, jamais comptés à la main.
 
 *Re-dérivés le 7 octobre après les corrections. Aucun chiffre de la version précédente n'est conservé.*
 
-| Grandeur | Valeur | Commande |
+**Deux grandeurs distinctes, et c'est la confusion des deux qui a produit un chiffre faux.** *Rectifié le 9 octobre, sur un signalement de Claude Code.* Un `grep` sur tout le fichier compte des **lignes** ; trois options — I4.3, I11.2, I11b.2 — sont re-mentionnées dans des tables récapitulatives hors §4 et comptent donc deux fois. Les **options distinctes** se dérivent du §4 seul, et ce sont elles qui gouvernent la transcription.
+
+| Grandeur | Lignes (tout le fichier) | Options distinctes (§4 seul) |
 |---|---|---|
-| Questions fermées | **17** | `grep -cE "^### I[0-9]+b? — "` |
-| Lignes d'option | **118** | `grep -cE "^\| I[0-9]+b?\.[0-9U]"` |
-| dont options actives | **101** | `grep -cE "^\| I[0-9]+b?\.[0-9]"` |
-| dont sorties d'incertitude | **17** | `grep -cE "^\| I[0-9]+b?\.U"` |
-| options actives à zéro production | **11** | `grep -cE "^\| I[0-9]+b?\.[0-9].*\| (aucun\|\*\*aucun\*\*) \|"` |
-| options produisant un `OpenKnowledge` seul | **5** | I7.1 à I7.5 |
-| options produisant un `FACT` seul | **2** | I11b.2, I11b.3 |
-| **options productrices d'evidence** | **83** | 101 − 11 − 5 − 2 |
-| Champs libres | **7** | `grep -cE "^\| L[0-9] \|"` |
-| Règles transversales | **6** | `grep -cE "^\*\*R-I[0-9]"` |
+| Questions fermées | **17** | **17** |
+| Options | **118** | **115** |
+| dont actives | **101** | **98** |
+| dont sorties d'incertitude | **17** | **17** |
+| actives à zéro production | 11 | **11** |
+| produisant un `OpenKnowledge` seul | 5 | **5** |
+| produisant un `FACT` seul | 2 | **2** |
+| **productrices d'evidence** | ~~83~~ | **80** |
+| Champs libres | **7** | **7** |
+| Règles transversales | **6** | **6** |
+
+**Le 83 était faux** : il soustrayait des zéros comptés une fois d'un total de lignes qui en comptait trois de trop. Le chiffre juste est **80**, et il se dérive du §4 seul :
+
+```python
+sec = doc[doc.index('## 4 · Les dix-sept') : doc.index('## 5 · Ce que')]
+rows   = [l for l in sec.split('\n') if re.match(r'^\| I\d+b?\.[0-9U]', l)]      # 115
+act    = [r for r in rows if not code(r).endswith('.U')]                          # 98
+zero   = [r for r in act if cell(r,2) in ('aucun','**aucun**')]                   # 11
+ok     = I7.1…I7.5                                                                # 5
+fact   = I11b.2, I11b.3                                                           # 2
+# 98 − 11 − 5 − 2 = 80
+```
+
+**Les deux colonnes sont à vérifier.** La colonne « lignes » est la garde du document — elle détecte une option ajoutée n'importe où. La colonne « options distinctes » est la garde du code — c'est elle que la conformité compare à la transcription. Un écart entre les deux colonnes supérieur à trois signale une nouvelle duplication dans un récapitulatif.
+
+| Commandes de la colonne « lignes » | |
+|---|---|
+| Questions fermées | `grep -cE "^### I[0-9]+b? — "` |
+| Options | `grep -cE "^\| I[0-9]+b?\.[0-9U]"` |
+| dont actives | `grep -cE "^\| I[0-9]+b?\.[0-9]"` |
+| dont sorties d'incertitude | `grep -cE "^\| I[0-9]+b?\.U"` |
+| zéro production | `grep -cE "^\| I[0-9]+b?\.[0-9].*\| (aucun\|\*\*aucun\*\*) \|"` |
+| Champs libres | `grep -cE "^\| L[0-9] \|"` |
+| Règles transversales | `grep -cE "^\*\*R-I[0-9]"` |
 
 **Une sortie d'incertitude par question fermée : 17 pour 17.** Invariant vérifiable d'un coup d'œil, et son échec signalerait une question sans porte de sortie.
 
 **Les 11 options actives à zéro production** sont les `CONTEXT_DEPENDENT` de I4, I6, I7, I8, I9, I10, I11, I11b et I13, plus I15.5 « plutôt partante » et I16.7 « les deux peuvent marcher ». Ce sont des **réponses**, pas des absences : code et verbatim conservés, aucune production. I4.3 en fait désormais partie.
 
-**Évolution depuis la V1 du document** — 16 → 17 questions, 111 → 118 lignes, 87 → 83 options productrices d'evidence. La baisse vient de I7, qui produit désormais de la connaissance ouverte et non cinq `NEED` · de I4.3 qui ne produit plus de valeur · et de I11b.2 qui produit un `FACT` et non une `PREFERENCE`. La hausse du total vient de I11b.
+**Évolution depuis la V1 du document** — 16 → 17 questions, 111 → 118 lignes, 87 → **80** options productrices d'evidence. La baisse vient de I7, qui produit désormais de la connaissance ouverte et non cinq `NEED` · de I4.3 qui ne produit plus de valeur · et de I11b.2 qui produit un `FACT` et non une `PREFERENCE`. La hausse du total vient de I11b.
 
 ### Chiffres du self corrigés par l'arbitrage sur `SOCIAL_ENERGY`
 
