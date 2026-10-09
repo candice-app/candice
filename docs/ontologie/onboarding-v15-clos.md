@@ -14,9 +14,9 @@ Référence de clôture. Le fichier de détail est `Candice_Questionnaire_Onboar
 | Options actives dans le socle | **106** |
 | Retirées | 12 — Q3 (7) et Q12 (5), statut `REMOVED_FROM_ONBOARDING_CORE` |
 | Déplacées vers le Discovery | 10 — Q15 Food (5), Q16 Voyage (5) |
-| Avec evidence PROFILE | **50** |
-| Sans PROFILE mais avec information utile | **55** · plus la ligne 79 qui ne produit rien : 50 + 55 + 1 = 106 |
-| **Evidences PROFILE** | **59** — 11 `GLOBAL_DIRECT`, 48 `LOCAL/CONTEXTUAL`, 0 `GLOBAL_CONSOLIDATED` |
+| Avec evidence PROFILE | **49** |
+| Sans PROFILE mais avec information utile | **56** · plus la ligne 79 qui ne produit rien : 49 + 56 + 1 = 106 |
+| **Evidences PROFILE** | **58** — 10 `GLOBAL_DIRECT`, 48 `LOCAL/CONTEXTUAL`, 0 `GLOBAL_CONSOLIDATED` |
 | dont secondaires | **17** |
 | Evidences PROFILE négatives | 2 — ligne 86 `APPETENCE_OBJECT −1`, ligne 98 `PROFILE_STRUCTURE −1` |
 | Evidences AFFECTION_RECEIVE | 14 (2 par modalité : Q1 à 100 %, Q4 à 50 %) |
@@ -149,7 +149,7 @@ Les evidences sont un journal en ajout seul ; l'état consolidé en est dérivé
 
 Pour eux, le global ne sera jamais observé directement : il sera consolidé depuis des contextes convergents, ou restera `UNKNOWN`. Ce n'est pas un défaut — un socle centré sur l'attention et le cadeau produit des evidences situées là. C'est la carte de ce que le Discovery doit aller chercher ailleurs.
 
-Les 11 `GLOBAL_DIRECT` viennent de trois endroits seulement : les 5 `SOCIAL_ENERGY` de Q5, les 2 `PROFILE_STRUCTURE` de Q4a (97 et 98), et les 4 de Q4b (102 `PROFILE_EXACTINGNESS`, 103 `IMPORTANCE_AUTHENTICITY`, 104 `IMPORTANCE_AESTHETIC` et `PROFILE_SENSITIVITY.aesthetic`).
+Les 10 `GLOBAL_DIRECT` viennent de trois endroits seulement : les 4 `SOCIAL_ENERGY` de Q5 (l'option 38 « Ça dépend des jours » ne produit plus d'evidence depuis le 7 octobre 2026), les 2 `PROFILE_STRUCTURE` de Q4a (97 et 98), et les 4 de Q4b (102 `PROFILE_EXACTINGNESS`, 103 `IMPORTANCE_AUTHENTICITY`, 104 `IMPORTANCE_AESTHETIC` et `PROFILE_SENSITIVITY.aesthetic`).
 
 Les dix contextes locaux employés : `gift` · `gift.material` · `attention_received` · `affection_given` · `surprise` · `organised_for_me` · `relationship` · `stress` · `decision` · `communication`.
 

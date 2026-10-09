@@ -429,8 +429,7 @@ Le texte des questions et des options est **le texte exact affiché à l'utilisa
 - `questionText` : « Quand je recharge mes batteries… »
 - `optionText` : « Ça dépend des jours »
 - `status` : `ACTIF`
-- `profileEvidences` :
-    - `SOCIAL_ENERGY` · `value` 2 · `evidence_role` `primary` · `context` `GLOBAL` → `GLOBAL_DIRECT`
+- `contextDependent` : vraie réponse, **aucune evidence** — corrigé le 7 octobre 2026
 - `retainedInformation` : « énergie variable selon les jours »
 
 ### Option `39` — « J'aime être entouré(e) »
@@ -768,7 +767,7 @@ Le texte des questions et des options est **le texte exact affiché à l'utilisa
 - `questionText` : « J'exprime mes émotions… »
 - `optionText` : « Rarement, je préfère garder ça pour moi »
 - `status` : `ACTIF`
-- `behavior` : `context` `emotional_expression` · `pattern` `rarely_keeps_private`
+- `behavior` : `context` `emotional_expression` · `pattern` `keeps_to_self`
 - `retainedInformation` : « expression émotionnelle réservée »
 
 ### Option `71` — « Souvent après coup »
