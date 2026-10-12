@@ -247,12 +247,20 @@ export default async function ContactPage({
   let incomingConsentData: { id: string; status: string } | null = null;
   if (procheUserId) {
     const [{ data: procheAnalysisRow }, { data: procheProfile }, { data: incomingConsentRaw }] = await Promise.all([
-      admin
+      // Auto-analyse du proche : lecture par la SESSION (pas le service-role) → la policy
+      // viewer_read_shared_self_analysis (migration 49) impose un contact_consents profile_view
+      // ACTIF et non-blind. Sans consentement, data=null et le bloc « selon Candice » ne rend rien.
+      // (Faille corrigée : l'ancien `admin` contournait la RLS et exposait l'analyse sans consentement.)
+      supabase
         .from("profile_analysis")
         .select("summary, sections, gender, confidence")
         .eq("user_id", procheUserId)
         .is("contact_id", null)
         .maybeSingle(),
+      // ⚠ FAILLE n°2 ISOLÉE (décision requise) : lecture service-role du my_profile BRUT du proche
+      // (practical_info = prénom/adresse/dates) réduite au booléen procheComplete, NON affichée.
+      // Fuite client nulle mais lecture de données perso sans consentement. Corriger proprement
+      // suppose une source de « complétude » sans lire le brut (flag dédié / consent) — à trancher.
       admin
         .from("my_profile")
         .select("attention_reception, temperament_axes, lifestyle_axes, practical_info")
