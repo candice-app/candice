@@ -159,7 +159,8 @@
       "Bash(awk '/^### I11b /{f=1} /^### I12 /{f=0} f' docs/ontologie/onboarding-incognito-v1.md)",
       "Bash(awk '/^## 4 ·/{f=1} /^## 5 ·/{f=0} f' docs/ontologie/onboarding-incognito-v1.md)",
       "Bash(awk '/^### I16 /{f=1} /^### I/{if\\(f && $0 !~ /I16 /\\)exit} f' docs/ontologie/onboarding-incognito-v1.md)",
-      "Bash(xxd)"
+      "Bash(xxd)",
+      "Bash(grep -oE \">[A-ZÀ-Ü][^<>]{10,}<\" docs/reference-questionnaire.html)"
     ]
   }
 }

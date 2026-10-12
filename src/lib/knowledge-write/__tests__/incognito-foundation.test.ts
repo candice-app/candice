@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { resolvePronoun } from '../pronoun';
-import { ASSERTION_BASES } from '../../knowledge';
+import { ASSERTION_BASES, MODE2_SOURCE_TYPE, deriveAssertionStatus, isSelfDeclaredAct } from '../../knowledge';
 
 describe('resolvePronoun — trois cas de résolution, fonction pure', () => {
   const tpl = '{Pronom} arrive au bon moment et {pronom} y pense souvent.';
@@ -36,5 +36,17 @@ describe('resolvePronoun — trois cas de résolution, fonction pure', () => {
 describe('assertionBasis — quatre valeurs fermées (incognito §2)', () => {
   it('exactement self_report / observed / subject_statement / reporter_interpretation', () => {
     expect([...ASSERTION_BASES]).toEqual(['self_report', 'observed', 'subject_statement', 'reporter_interpretation']);
+  });
+});
+
+describe('Mode « côte à côte » — provenance (sous-bloc 2)', () => {
+  it('MODE2_SOURCE_TYPE dérive explicit, et vaut acte déclaré de soi (self_report, sans plafond)', () => {
+    // le proche parle de LUI (frappe médiée) : explicit + déclaré-de-soi, comme le direct.
+    expect(MODE2_SOURCE_TYPE).toBe('declared_via_relative');
+    expect(deriveAssertionStatus(MODE2_SOURCE_TYPE)).toBe('explicit');
+    expect(isSelfDeclaredAct(MODE2_SOURCE_TYPE)).toBe(true);
+  });
+  it('se distingue de reported_by_relative (tiers), qui n’est PAS déclaré de soi', () => {
+    expect(isSelfDeclaredAct('reported_by_relative')).toBe(false);
   });
 });

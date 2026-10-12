@@ -24,10 +24,27 @@ export const SOURCE_TYPES = [
   'user_correction',
   'wishlist',
   'reported_by_relative',
+  'declared_via_relative', // mode « côte à côte » (sous-bloc 2) — voir MODE2_SOURCE_TYPE
   'observed_behavior',
 ] as const;
 
 export type SourceType = (typeof SOURCE_TYPES)[number];
+
+/**
+ * Mode « côte à côte » (sous-bloc 2) : le proche répond À VOIX HAUTE, le pilote SAISIT, le proche
+ * n'a pas de compte. Sujet = contact (hérité de l'incognito) ; base épistémique = self_report
+ * (hérité du direct : c'est le proche qui parle de LUI, seule la frappe est médiée). Il fallait donc
+ * une 3e valeur de sourceType : 'declared' effacerait la médiation de la saisie, 'reported_by_relative'
+ * ferait passer une déclaration de soi pour une observation de tiers. ASSERTION_BY_SOURCE en dérive
+ * 'explicit'·self_report, SANS plafond de strength (le plafond moderate ne vise que
+ * reporter_interpretation, cf. R-I1). Le producteur du mode 2 = le producteur SELF (produceFromOption,
+ * qui force déjà assertionBasis='self_report') appelé avec about=contact:proche + ce sourceType.
+ *
+ * ⚠ NOM EN ATTENTE D'ARBITRAGE ÉDITORIAL — RÉVERSIBLE : un renommage ne touche QUE ce fichier
+ * (le littéral dans SOURCE_TYPES, SOURCE_TYPE_LABELS, ASSERTION_BY_SOURCE, le case de isSelfDeclaredAct)
+ * et cette constante. Le code applicatif (UI/producteur du mode 2) ne référence QUE ce symbole.
+ */
+export const MODE2_SOURCE_TYPE: SourceType = 'declared_via_relative';
 
 export const SOURCE_TYPE_LABELS: Record<SourceType, string> = {
   onboarding_closed: 'Réponse fermée de l’onboarding',
@@ -39,6 +56,7 @@ export const SOURCE_TYPE_LABELS: Record<SourceType, string> = {
   user_correction: 'Correction apportée par l’utilisateur',
   wishlist: 'Wishlist / Carnet d’envies',
   reported_by_relative: 'Information renseignée par un proche',
+  declared_via_relative: 'Déclaration du proche saisie par le pilote (côte à côte)', // descripteur interne, pas une copy UI
   observed_behavior: 'Comportement ou signal observé',
 };
 
@@ -90,6 +108,7 @@ const ASSERTION_BY_SOURCE: Record<SourceType, AssertionStatus> = {
   user_correction: 'explicit',
   wishlist: 'explicit',
   reported_by_relative: 'explicit',
+  declared_via_relative: 'explicit', // mode 2 : mapping direct d'une réponse du proche
   observed_behavior: 'explicit',
 };
 
@@ -126,6 +145,7 @@ export function isSelfDeclaredAct(sourceType: SourceType): boolean {
     case 'user_declaration':
     case 'user_correction':
     case 'wishlist':
+    case 'declared_via_relative': // mode côte à côte : le proche parle de LUI (seule la frappe est médiée)
       return true; // la personne décrite s'exprime elle-même
     case 'reported_by_relative': // un tiers rapporte → PAS déclaré de soi
     case 'observed_behavior': // observé, non déclaré

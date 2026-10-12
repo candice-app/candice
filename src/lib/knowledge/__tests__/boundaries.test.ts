@@ -23,6 +23,7 @@ describe('Test 19 — assertionStatus = mécanisme producteur (explicit | inferr
     const expected: Record<string, boolean> = {
       onboarding_closed: true, onboarding_open: true, discovery_closed: true, discovery_open: true,
       conversation: true, user_declaration: true, user_correction: true, wishlist: true,
+      declared_via_relative: true, // mode côte à côte : le proche parle de lui-même (frappe médiée)
       reported_by_relative: false, observed_behavior: false,
     };
     // tout sourceType connu a une décision ET ne jette jamais (le default ne jette que pour un type non décidé)
