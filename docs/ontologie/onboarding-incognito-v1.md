@@ -177,7 +177,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 | I3.5 | {Pronom} passe du vrai temps de qualité avec les gens | `AFFECTION_GIVE_QUALITY_TIME` | strong | `affection_given` |
 | I3.6 | {Pronom} a plein de petites attentions au quotidien | `AFFECTION_GIVE_MICRO_ATTENTIONS` | strong | `affection_given` |
 | I3.7 | {Pronom} aime faire des surprises | `AFFECTION_GIVE_SURPRISE` | strong | `affection_given` |
-| I3.U | Je ne l'ai pas assez vue dans ces situations | `UNKNOWN_BY_REPORTER` | — | — |
+| I3.U | Je n'ai pas assez vu {Prénom} dans cette situation | `UNKNOWN_BY_REPORTER` | — | — |
 
 **Pourquoi `strong` ici :** la question porte sur un comportement visible, répété, dont le pilote est témoin direct. C'est le cas type de R-I1 — une evidence rapportée peut être forte.
 
@@ -221,7 +221,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 | I5.3 | {Pronom} en parle et se confie | `BEHAVIOR` pattern `confide` | strong | `stress` | `stress_response` |
 | I5.4 | {Pronom} agit, se met en mouvement | `BEHAVIOR` pattern `take_action` | strong | `stress` | `stress_response` |
 | I5.5 | {Pronom} essaie de reprendre la main sur ce qu'{pronom} peut contrôler | `BEHAVIOR` pattern `regain_control` | strong | `stress` | `stress_response` |
-| I5.U | Je ne l'ai pas assez vue dans cette situation | `UNKNOWN_BY_REPORTER` | — | — | — |
+| I5.U | Je n'ai pas assez vu {Prénom} dans cette situation | `UNKNOWN_BY_REPORTER` | — | — | — |
 
 **Pas d'inférence — et c'est la différence la plus importante avec le self.** **Aucun NEED secondaire.** Observer qu'elle se retire sous stress n'établit pas ce qu'elle veut que les autres fassent. C'est précisément pourquoi I7 existe séparément.
 
@@ -241,7 +241,7 @@ Conventions de lecture : la colonne **Context** porte `evidence.context`, le dom
 | I6.4 | Dédramatiser avec l'humour | `BEHAVIOR` pattern `use_humor_to_defuse` | strong | `conflict` | `conflict_response` |
 | I6.5 | Écrire plus facilement qu'en parler | `BEHAVIOR` pattern `prefers_writing` | strong | `conflict` | `conflict_response` |
 | I6.6 | Ça dépend beaucoup de la personne ou de la situation | aucun | — | — | — |
-| I6.U | Je ne l'ai pas assez vue dans cette situation | `UNKNOWN_BY_REPORTER` | — | — | — |
+| I6.U | Je n'ai pas assez vu {Prénom} dans cette situation | `UNKNOWN_BY_REPORTER` | — | — | — |
 
 **`CONTEXT_DEPENDENT` ici :** I6.6 est une réponse, et elle produit **zéro mapping** — ce qui n'est pas la même chose que `UNKNOWN`. Elle dit que le comportement varie selon l'interlocuteur, une information réelle qu'aucun pattern unique ne peut porter. Le verbatim et le code de l'option sont conservés, et la question reste ouverte à une relance ultérieure. **Ce n'est pas `PROFILE_ADAPTABILITY` :** adapter sa manière d'aborder un désaccord selon la personne n'est pas une souplesse de fonctionnement général.
 
@@ -311,7 +311,7 @@ Or I7 mesure **une modalité de soutien observée comme efficace**, pas un besoi
 | I9.4 | {Pronom} fait beaucoup de recherches | `BEHAVIOR` pattern `research_thoroughly` | strong | `decision` | `decision_process` |
 | I9.5 | {Pronom} attend d'avoir les idées plus claires avant de trancher | `BEHAVIOR` pattern `wait_for_inner_clarity` | strong | `decision` | `decision_process` |
 | I9.6 | Ça dépend vraiment de la décision | aucun | — | — | — |
-| I9.U | Je ne l'ai pas assez vue dans cette situation | `UNKNOWN_BY_REPORTER` | — | — | — |
+| I9.U | Je n'ai pas assez vu {Prénom} dans cette situation | `UNKNOWN_BY_REPORTER` | — | — | — |
 
 **Pas d'inférence :** aucun PROFILE. Le self en produit certains en secondaire ; l'incognito n'en produit aucun, parce qu'observer un processus de décision ne dit pas ce qui le motive.
 
@@ -375,9 +375,9 @@ Or I7 mesure **une modalité de soutien observée comme efficace**, pas un besoi
 
 **Question nouvelle, et c'est la réponse à « ne les supprime pas silencieusement ».** La ponctualité et le retard habituel ont une valeur informationnelle réelle et directement actionnable — réserver, convenir d'une heure, prévoir une marge. Mais ils n'ont rien à voir avec `PROFILE_STRUCTURE` : être ponctuel n'est pas être organisé. Les absorber dans I11 était le défaut signalé. Ils vivent donc dans leur propre question, **placée dans le bloc des informations concrètes** et non dans le bloc « comment elle fonctionne ».
 
-**Aucune valeur nouvelle n'est créée, et le modèle avait déjà la bonne représentation.** *Corrigé le 7 octobre ; la version précédente inventait `PREFERENCE.relational.punctuality = moderate`.* Vérification faite dans le classeur : la ligne 100 du socle représente « je suis souvent un peu en retard, sans malice » comme `fact_type = habit` avec une **`value` en texte libre**. L'habitude a donc déjà sa forme, et elle n'est pas bornée par un vocabulaire fermé : « plutôt ponctuelle » s'y écrit sans rien ajouter au contrat.
+**Aucune valeur nouvelle n'est créée, et le modèle avait déjà la bonne représentation.** *Corrigé le 7 octobre ; la version précédente inventait `PREFERENCE.relational.punctuality = moderate`.* Vérification faite dans le classeur : la ligne 100 du socle représente « je suis souvent un peu en retard, sans malice » comme `fact_type = habit` avec une **`value` en texte libre**. L'habitude a donc déjà sa forme, et elle n'est pas bornée par un vocabulaire fermé : « plutôt à l'heure » s'y écrit sans rien ajouter au contrat.
 
-Et la distinction que tu demandais est ainsi respectée exactement : **I11b.1 est une importance accordée** à la ponctualité — `PREFERENCE.relational.punctuality = high`, comme la ligne 99 du socle — tandis que **I11b.2 et I11b.3 sont des habitudes observées**, deux `FACT habit` de valeurs opposées. Forcer « plutôt ponctuelle » dans la `PREFERENCE` aurait confondu ce qu'elle juge important et ce qu'elle fait.
+Et la distinction que tu demandais est ainsi respectée exactement : **I11b.1 est une importance accordée** à la ponctualité — `PREFERENCE.relational.punctuality = high`, comme la ligne 99 du socle — tandis que **I11b.2 et I11b.3 sont des habitudes observées**, deux `FACT habit` de valeurs opposées. Forcer « plutôt à l'heure » dans la `PREFERENCE` aurait confondu ce qu'elle juge important et ce qu'elle fait.
 
 **Les deux FACT portent `user_confirmed = false`** — R-I6, et c'est la différence avec le socle, dont la ligne 100 porte `true` parce que la personne le déclare d'elle-même.
 
@@ -489,14 +489,22 @@ Le stem incognito — « dans ce que Julie choisit, achète ou apprécie » — 
 |---|---|---|---|---|
 | I16.1 | Une expérience à vivre | `APPETENCE_EXPERIENCE` +1 | +1 | `gift` |
 | I16.2 | Un objet qu'{pronom} pourra garder | `APPETENCE_OBJECT` +1 | +1 | `gift` |
-| I16.3 | Quelque chose d'utile et bien pensé | `IMPORTANCE_FUNCTIONAL` +1 · `DRV_UTILITY` | +1 · DRV moderate | `gift.material` |
-| I16.4 | Quelque chose de beau et de qualité | `IMPORTANCE_AESTHETIC` +1 · `DRV_AESTHETIC` · `DRV_QUALITY` | +1 · DRV moderate | `gift.material` |
+| I16.3 | Quelque chose d'utile et bien pensé | `IMPORTANCE_FUNCTIONAL` +2 · `DRV_UTILITY` | +2 · DRV moderate | `gift.material` |
+| I16.4 | Quelque chose de beau et de qualité | `IMPORTANCE_AESTHETIC` +2 · `DRV_AESTHETIC` · `DRV_QUALITY` | +2 · DRV moderate | `gift.material` |
 | I16.5 | Quelque chose de très personnel, qui montre qu'on a vraiment écouté | `DRV_PERSONALIZATION` · `DRV_ATTENTIVENESS` | moderate | `gift` |
 | I16.6 | Quelque chose de symbolique ou chargé de sens | `DRV_SYMBOLISM` | moderate | `gift` |
 | I16.7 | Les objets comme les expériences peuvent très bien marcher | aucun | — | — |
 | I16.U | Je préfère ne pas deviner | `UNKNOWN_BY_REPORTER` | — | — |
 
 **I16.7 est une réponse à zéro mapping.** Elle dit l'absence de préférence entre objet et expérience — ce qui n'est **pas** `APPETENCE_OBJECT` et `APPETENCE_EXPERIENCE` tous deux à +1. Poser les deux fabriquerait deux appétences là où le pilote énonce une indifférence.
+
+**`APPETENCE_OBJECT` n'est produit que par I16.2, et c'est une conséquence de la fusion.** *Écrit le 12 octobre, après relecture sémantique ; l'écart avec le socle existait sans être motivé.* Le socle attache `APPETENCE_OBJECT +1` à **chaque** option d'objet matériel — utile, beau, symbolique — parce qu'il pose **deux** questions : objet ou expérience en q13, puis quel objet en q14. L'appétence s'y accumule donc sur deux actes distincts.
+
+I16 fusionne les deux en **une** question multi-sélection. Attacher l'appétence aux quatre options d'objet laisserait un pilote qui en coche trois produire `+3` là où le self produit `+1`. **La fusion impose de ne la compter qu'une fois**, et I16.2 — « un objet qu'{pronom} pourra garder » — est le seul porteur légitime, puisque c'est la seule option qui parle d'objet en tant que tel plutôt que de ce que l'objet doit être.
+
+**Vérifié par script, et c'est la condition de validité du choix :** `APPETENCE_OBJECT` et `APPETENCE_EXPERIENCE` plafonnent chacun à **+1** sur l'ensemble du jeu. Aucune autre question ne les produit, donc aucune combinaison de réponses ne recrée l'accumulation qu'on évite ici.
+
+**Deux constructs peuvent s'additionner, et c'est voulu** : `IMPORTANCE_AESTHETIC` entre I12.3 et I16.4, `PROFILE_STRUCTURE` entre I11 et I13.1. Ce sont deux questions distinctes, deux actes distincts, deux contextes distincts — `GLOBAL` et `gift.material` pour la première, `GLOBAL` et `organised_for_me` pour la seconde. Le self cumule de la même façon. Ce n'est pas de la co-origination.
 
 **Pas d'inférence :** aucun `PROFILE_SENSITIVITY` sur I16.4 — le self le produit depuis une déclaration de soi, pas la perception d'un tiers.
 
@@ -586,6 +594,10 @@ gender ∈ {non_binaire, non_precise, NULL} → le prénom
 **Le jeton est résolu avant l'écriture**, jamais stocké tel quel : la couche source conserve le texte **exact affiché**, donc le prénom et le pronom y figurent résolus.
 
 > **Et aucune phrase du jeu ne porte d'accord sur la personne décrite.** C'est l'invariant qui rend la règle sûre, et il a été vérifié chaîne par chaîne plutôt que supposé. Vingt-six formulations ont été réécrites pour l'obtenir : les pronoms inversés — « montre-t-elle » —, les pronoms objets — « tu la vois faire » —, les disjonctifs — « pour elle », « près d'elle », « elle-même » —, et neuf accords — « stressée », « attachée », « ponctuelle », « seule », « partante », « écoutée », « rassurée », « attirée ». Quatre-vingt-douze formulations gardent leur rédaction d'origine, le jeton près. *La vingt-sixième est I1.7, « La surprendre avec quelque chose d'inattendu », devenue « Lui réserver quelque chose d'inattendu » — seul marqueur de genre qui avait survécu à la passe du 7 octobre, donc mon chiffre de vingt-cinq était faux d'une unité.*
+>
+> **Quatre accords avaient échappé au balayage du 9 octobre, et ils sont corrigés.** *Trouvés le 12 octobre par la relecture sémantique.* Les sorties d'incertitude de I3, I5, I6 et I9 écrivaient « Je ne l'ai pas assez **vue** » — un participe passé accordé avec le complément d'objet direct, donc avec le proche : pour Paul, l'app aurait affiché « vue ». Le balayage précédent cherchait les terminaisons `-ée`, `-elle` et `-ante`, et ne cherchait pas `-ue`.
+>
+> **Correction retenue : le repli neutre, pas le jeton.** Les quatre portent désormais la même formulation, **« Je n'ai pas assez vu {Prénom} dans cette situation »** — le complément passe après le verbe, ce qui supprime l'accord sans tordre la phrase. *Arbitré ainsi plutôt que par un jeton `{e}` : introduire un mécanisme d'accord pour quatre occurrences coûterait plus cher qu'il ne rapporte.* Aucun jeton `{e}` n'existe donc dans le produit.
 >
 > **Et le chantier d'accord annoncé n'a pas lieu d'être dans le questionnaire.** *Vérifié par script le 9 octobre, après l'arbitrage « on accorde dès que le genre est connu ».* Le balayage de toutes les chaînes produites — dix-sept énoncés, cent quinze libellés, sept champs libres, valeurs de `FACT` comprises — ne trouve **aucun accord portant sur la personne décrite**. Les accords qui subsistent portent sur des noms communs : « une période **chargée** », « une décision **importante** », « une surprise mal **organisée** », « la réaction **habituelle** », et le « belle » de I2.7 qui qualifie l'attention. Les neuf accords de la passe du 7 octobre ont été remplacés par des formulations neutres **qui sont du bon français** — « Quand {Prénom} traverse une période de stress », « Qu'on prenne le temps de l'écouter », « Les lieux et les expériences d'exception l'attirent » : les réécrire en version accordée serait dégrader le texte pour appliquer une règle qui n'a rien à corriger ici.
 >

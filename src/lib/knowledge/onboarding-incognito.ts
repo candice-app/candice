@@ -154,7 +154,7 @@ export const INCOGNITO_QUESTIONS: readonly IncognitoQuestion[] = [
       { code: 'I3.5', text: '{Pronom} passe du vrai temps de qualité avec les gens', context: 'affection_given', affection: { direction: 'give', modality: 'QUALITY_TIME', strength: 'strong' } },
       { code: 'I3.6', text: '{Pronom} a plein de petites attentions au quotidien', context: 'affection_given', affection: { direction: 'give', modality: 'MICRO_ATTENTIONS', strength: 'strong' } },
       { code: 'I3.7', text: '{Pronom} aime faire des surprises', context: 'affection_given', affection: { direction: 'give', modality: 'SURPRISE', strength: 'strong' } },
-      UNKNOWN('I3.U', 'Je ne l’ai pas assez vue dans ces situations'),
+      UNKNOWN('I3.U', 'Je n’ai pas assez vu {Prénom} dans cette situation'),
     ],
   },
   // ── I4 ───────────────────────────────────────────────────────────────────
@@ -182,7 +182,7 @@ export const INCOGNITO_QUESTIONS: readonly IncognitoQuestion[] = [
       { code: 'I5.3', text: '{Pronom} en parle et se confie', behavior: { pattern: 'confide', context: 'stress', behaviorContext: 'stress_response', strength: 'strong' } },
       { code: 'I5.4', text: '{Pronom} agit, se met en mouvement', behavior: { pattern: 'take_action', context: 'stress', behaviorContext: 'stress_response', strength: 'strong' } },
       { code: 'I5.5', text: '{Pronom} essaie de reprendre la main sur ce qu’{pronom} peut contrôler', behavior: { pattern: 'regain_control', context: 'stress', behaviorContext: 'stress_response', strength: 'strong' } },
-      UNKNOWN('I5.U', 'Je ne l’ai pas assez vue dans cette situation'),
+      UNKNOWN('I5.U', 'Je n’ai pas assez vu {Prénom} dans cette situation'),
     ],
   },
   // ── I6 ──
@@ -197,7 +197,7 @@ export const INCOGNITO_QUESTIONS: readonly IncognitoQuestion[] = [
       { code: 'I6.4', text: 'Dédramatiser avec l’humour', behavior: { pattern: 'use_humor_to_defuse', context: 'conflict', behaviorContext: 'conflict_response', strength: 'strong' } },
       { code: 'I6.5', text: 'Écrire plus facilement qu’en parler', behavior: { pattern: 'prefers_writing', context: 'conflict', behaviorContext: 'conflict_response', strength: 'strong' } },
       { code: 'I6.6', text: 'Ça dépend beaucoup de la personne ou de la situation', status: 'CONTEXT_DEPENDENT' },
-      UNKNOWN('I6.U', 'Je ne l’ai pas assez vue dans cette situation'),
+      UNKNOWN('I6.U', 'Je n’ai pas assez vu {Prénom} dans cette situation'),
     ],
   },
   // ── I7 ── (OpenKnowledge support_modality) ─────────────────────────────────
@@ -242,7 +242,7 @@ export const INCOGNITO_QUESTIONS: readonly IncognitoQuestion[] = [
       { code: 'I9.4', text: '{Pronom} fait beaucoup de recherches', behavior: { pattern: 'research_thoroughly', context: 'decision', behaviorContext: 'decision_process', strength: 'strong' } },
       { code: 'I9.5', text: '{Pronom} attend d’avoir les idées plus claires avant de trancher', behavior: { pattern: 'wait_for_inner_clarity', context: 'decision', behaviorContext: 'decision_process', strength: 'strong' } },
       { code: 'I9.6', text: 'Ça dépend vraiment de la décision', status: 'CONTEXT_DEPENDENT' },
-      UNKNOWN('I9.U', 'Je ne l’ai pas assez vue dans cette situation'),
+      UNKNOWN('I9.U', 'Je n’ai pas assez vu {Prénom} dans cette situation'),
     ],
   },
   // ── I10 ── (BEHAVIOR : deux champs ; collision légitime emotional_expression) ─
@@ -352,8 +352,8 @@ export const INCOGNITO_QUESTIONS: readonly IncognitoQuestion[] = [
     options: [
       { code: 'I16.1', text: 'Une expérience à vivre', context: 'gift', profile: [{ construct: 'APPETENCE_EXPERIENCE', value: 1, evidence_role: 'primary' }] },
       { code: 'I16.2', text: 'Un objet qu’{pronom} pourra garder', context: 'gift', profile: [{ construct: 'APPETENCE_OBJECT', value: 1, evidence_role: 'primary' }] },
-      { code: 'I16.3', text: 'Quelque chose d’utile et bien pensé', context: 'gift.material', profile: [{ construct: 'IMPORTANCE_FUNCTIONAL', value: 1, evidence_role: 'primary' }], drivers: ['DRV_UTILITY'], driversStrength: 'moderate' },
-      { code: 'I16.4', text: 'Quelque chose de beau et de qualité', context: 'gift.material', profile: [{ construct: 'IMPORTANCE_AESTHETIC', value: 1, evidence_role: 'primary' }], drivers: ['DRV_AESTHETIC', 'DRV_QUALITY'], driversStrength: 'moderate' },
+      { code: 'I16.3', text: 'Quelque chose d’utile et bien pensé', context: 'gift.material', profile: [{ construct: 'IMPORTANCE_FUNCTIONAL', value: 2, evidence_role: 'primary' }], drivers: ['DRV_UTILITY'], driversStrength: 'moderate' },
+      { code: 'I16.4', text: 'Quelque chose de beau et de qualité', context: 'gift.material', profile: [{ construct: 'IMPORTANCE_AESTHETIC', value: 2, evidence_role: 'primary' }], drivers: ['DRV_AESTHETIC', 'DRV_QUALITY'], driversStrength: 'moderate' },
       { code: 'I16.5', text: 'Quelque chose de très personnel, qui montre qu’on a vraiment écouté', context: 'gift', drivers: ['DRV_PERSONALIZATION', 'DRV_ATTENTIVENESS'], driversStrength: 'moderate' },
       { code: 'I16.6', text: 'Quelque chose de symbolique ou chargé de sens', context: 'gift', drivers: ['DRV_SYMBOLISM'], driversStrength: 'moderate' },
       { code: 'I16.7', text: 'Les objets comme les expériences peuvent très bien marcher', status: 'CONTEXT_DEPENDENT' },
