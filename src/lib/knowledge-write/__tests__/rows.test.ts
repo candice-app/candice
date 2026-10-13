@@ -6,6 +6,8 @@ import {
   contactAbout,
   asSubjectId,
   asUserId,
+  createFact,
+  createOpenKnowledge,
   createProfileEvidence,
   createSourceRecord,
   JOURNAL_VERSION_STAMP,
@@ -109,6 +111,41 @@ describe('persistKnowledge — source AVANT evidences, source_id identique', () 
     const src = createSourceRecord({ ...scope, id: 'src1', sourceType: 'onboarding_closed', questionText: 'q', timestamp: base.timestamp });
     const bad = createProfileEvidence({ ...base, source_id: 'AUTRE', evidence_id: 'e', target_construct: 'PROFILE_OPENNESS', value: 1 });
     await expect(persistKnowledge(client, { source: src, evidences: [bad] })).rejects.toBeInstanceOf(PersistError);
+  });
+});
+
+// L'écrivain devient l'AUTORITÉ (double-écriture, décision du 13 oct : journal = vérité, colonnes
+// plates = projection). Il doit être béton : FACT + OpenKnowledge écrits, about DÉRIVÉ de la source
+// (un about fille divergent est écrasé), erreur propagée par table, intensity absente → NULL (mig 87).
+describe('persistKnowledge — autorité : FACT/OpenKnowledge, about indivergeable, erreurs', () => {
+  function recording(failOn?: string) {
+    const calls: Array<{ table: string; rows: unknown }> = [];
+    const client: WriteClient = {
+      from: (t) => ({ insert: async (rows) => { calls.push({ table: t, rows }); return { error: t === failOn ? { message: 'boom' } : null }; } }),
+    };
+    return { client, calls };
+  }
+  const src = createSourceRecord({ ...scope, id: 'src1', sourceType: 'reported_by_relative', questionText: 'q', answerText: 'a', timestamp: base.timestamp });
+  // about fille DIVERGENT (c2) : la persistance doit le remplacer par celui de la source (c1).
+  const divergent = contactAbout(asContactId('c2'));
+  const ok = createOpenKnowledge({ about: divergent, ownerId: asUserId('u1'), open_knowledge_id: 'ok1', type: 'support_modality', subject: asSubjectId('ecoute'), subjectLabel: 'être écouté', relation: 'appears_to_help', context: 'distress', source: 'src1', timestamp: base.timestamp, confidence: 'high', assertionStatus: 'explicit' });
+  const fact = createFact({ about: divergent, ownerId: asUserId('u1'), fact_id: 'f1', fact_type: 'habit', value: 'plutôt à l’heure', source: 'src1', timestamp: base.timestamp, confidence: 'high', user_confirmed: false });
+
+  it('écrit FACT puis OpenKnowledge, et chaque about = celui de la SOURCE (fille divergente écrasée)', async () => {
+    const { client, calls } = recording();
+    await persistKnowledge(client, { source: src, facts: [fact], openKnowledge: [ok] });
+    expect(calls.map((c) => c.table)).toEqual(['knowledge_sources', 'knowledge_facts', 'knowledge_open_knowledge']);
+    const factRow = (calls.find((c) => c.table === 'knowledge_facts')!.rows as Array<{ about_id: string }>)[0];
+    const okRow = (calls.find((c) => c.table === 'knowledge_open_knowledge')!.rows as Array<{ about_id: string; intensity: string | null }>)[0];
+    expect(factRow.about_id).toBe('c1'); // source, pas c2
+    expect(okRow.about_id).toBe('c1');
+    expect(okRow.intensity).toBeNull(); // I7 : non renseignée → NULL, jamais 'weak' (migration 87)
+  });
+
+  it('une erreur d’insert est propagée en PersistError nommant la table', async () => {
+    const { client } = recording('knowledge_open_knowledge');
+    await expect(persistKnowledge(client, { source: src, openKnowledge: [ok] }))
+      .rejects.toThrow(/knowledge_open_knowledge/);
   });
 });
 
