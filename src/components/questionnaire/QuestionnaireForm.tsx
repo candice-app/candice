@@ -166,7 +166,13 @@ const SHORT_LABEL: React.CSSProperties = {
 
 const join = (arr: string[]) => arr.join(",") || null;
 
-export default function QuestionnaireForm() {
+export default function QuestionnaireForm({
+  initialName = "",
+  initialGender = "",
+}: {
+  initialName?: string;
+  initialGender?: string;
+} = {}) {
   const router = useRouter();
   const supabase = createClient();
 
@@ -175,11 +181,11 @@ export default function QuestionnaireForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState(initialName);
   const [relationship, setRelationship] = useState<Relationship>("friend");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [gender, setGender] = useState<string>("");
+  const [gender, setGender] = useState<string>(initialGender);
   const [dateDeNaissance, setDateDeNaissance] = useState("");
   const [register, setRegister] = useState<string>("");
 

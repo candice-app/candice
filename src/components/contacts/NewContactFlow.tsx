@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import QuestionnaireForm from "@/components/questionnaire/QuestionnaireForm";
+import ModeChoice, { type FillMode } from "@/components/contacts/ModeChoice";
+import type { ContactGender } from "@/lib/knowledge-write/pronoun";
+import { PROVISIONAL } from "@/content/provisional";
 
-type Mode = "standard" | "incognito" | null;
 type Relationship = "partner" | "friend" | "family" | "colleague" | "other";
 
 const RELATIONSHIPS: { value: Relationship; label: string }[] = [
@@ -69,11 +71,11 @@ const GENDER_OPTIONS = [
   { value: "non_precise", label: "Je préfère ne pas préciser" },
 ];
 
-function IncognitoForm() {
+function IncognitoForm({ initialName = "", initialGender = "" }: { initialName?: string; initialGender?: string } = {}) {
   const router = useRouter();
   const [infoStep, setInfoStep] = useState<0 | 1 | 2>(0);
-  const [name, setName] = useState("");
-  const [gender, setGender] = useState<string>("");
+  const [name, setName] = useState(initialName);
+  const [gender, setGender] = useState<string>(initialGender);
   const [relationship, setRelationship] = useState<Relationship>("friend");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
@@ -363,65 +365,88 @@ function IncognitoForm() {
   );
 }
 
-export default function NewContactFlow() {
-  const [mode, setMode] = useState<Mode>(null);
+const BACK_STYLE: React.CSSProperties = { fontSize: 11, fontWeight: 300, color: "var(--cond)", background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: 0 };
 
+export default function NewContactFlow() {
+  // ÉTAPE 1 identifier (nom + genre, requis pour que les cartes portent {Prénom}) → ÉTAPE 2 ModeChoice
+  // (sélecteur UNIQUE : remplace l'ancien standard|incognito ; QuestionnaireForm garde son sélecteur
+  // interne pour l'instant, consolidation au prochain passage) → ÉTAPE 3 routage des 3 modes.
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState<string>("");
+  const [identified, setIdentified] = useState(false);
+  const [mode, setMode] = useState<FillMode | null>(null);
+  const firstName = name.trim().split(" ")[0] || "";
+
+  // ── ÉTAPE 1 · identifier le proche ──
+  if (!identified) {
+    return (
+      <form
+        onSubmit={(e) => { e.preventDefault(); if (name.trim()) setIdentified(true); }}
+        style={{ display: "flex", flexDirection: "column", gap: 16 }}
+      >
+        {/* ⚠ copy PROVISOIRE (src/content/provisional.ts) */}
+        <p style={{ fontSize: 15, fontWeight: 500, color: "var(--con)" }}>{PROVISIONAL["identify.title"]}</p>
+        <div>
+          <label style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", display: "block", marginBottom: 6 }}>
+            {PROVISIONAL["identify.name.label"]}
+          </label>
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+            style={{ width: "100%", padding: "12px 14px", borderRadius: "var(--r-sm)", border: "0.5px solid var(--brd)", background: "var(--bg)", fontSize: 14 }}
+          />
+        </div>
+        <div>
+          <label style={{ fontSize: 10, fontWeight: 400, letterSpacing: 2, textTransform: "uppercase", color: "var(--cond)", display: "block", marginBottom: 6 }}>
+            {PROVISIONAL["identify.gender.label"]}
+          </label>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+            {GENDER_OPTIONS.map((g) => (
+              <button
+                key={g.value}
+                type="button"
+                onClick={() => setGender(g.value)}
+                style={{
+                  padding: "8px 12px", borderRadius: 20, fontSize: 12, fontWeight: 300, cursor: "pointer",
+                  border: gender === g.value ? "1px solid var(--terra)" : "0.5px solid var(--brd)",
+                  background: gender === g.value ? "var(--t2)" : "var(--bg)",
+                  color: gender === g.value ? "var(--terra)" : "var(--cond)",
+                }}
+              >
+                {g.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <button type="submit" disabled={!name.trim()} className="btn-primary" style={{ opacity: name.trim() ? 1 : 0.6 }}>
+          {PROVISIONAL["identify.cta"]}
+        </button>
+      </form>
+    );
+  }
+
+  // ── ÉTAPE 2 · choix du mode (3 cartes, {Prénom} résolu) ──
+  if (mode === null) {
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <button onClick={() => setIdentified(false)} style={BACK_STYLE}>← Changer de proche</button>
+        <ModeChoice firstName={firstName} gender={gender as ContactGender} onSelect={setMode} />
+      </div>
+    );
+  }
+
+  // ── ÉTAPE 3 · routage ──
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* Mode selection */}
-      {mode === null && (
-        <>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <ModeCard
-              title="Mode standard"
-              subtitle="recommandé"
-              description="Tu invites le proche, il remplit lui-même son questionnaire. Il découvre Candice avec une analyse personnelle à la fin."
-              active={false}
-              onClick={() => setMode("standard")}
-            />
-            <ModeCard
-              title="Mode incognito"
-              subtitle=""
-              description="Tu remplis tout toi-même, ton proche n'est pas informé. Idéal quand tu veux gérer les attentions de A à Z."
-              active={false}
-              onClick={() => setMode("incognito")}
-            />
-          </div>
-        </>
-      )}
-
-      {/* Standard mode */}
-      {mode === "standard" && (
-        <>
-          <button
-            onClick={() => setMode(null)}
-            style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}
-          >
-            ← Changer de mode
-          </button>
-          <QuestionnaireForm />
-        </>
-      )}
-
-      {/* Incognito mode */}
-      {mode === "incognito" && (
-        <>
-          <button
-            onClick={() => setMode(null)}
-            style={{ fontSize: 11, fontWeight: 300, color: "var(--cond)", background: "none", border: "none", cursor: "pointer", textAlign: "left", padding: 0 }}
-          >
-            ← Changer de mode
-          </button>
-          <div style={{ marginBottom: 4 }}>
-            <p style={{ fontSize: 10, fontWeight: 500, letterSpacing: 2, textTransform: "uppercase", color: "var(--terra)", marginBottom: 4 }}>
-              Mode incognito
-            </p>
-            <p style={{ fontSize: 12, fontWeight: 300, color: "var(--cond)", lineHeight: 1.6 }}>
-              Renseigne les informations essentielles. Ton proche ne sera pas notifié.
-            </p>
-          </div>
-          <IncognitoForm />
-        </>
+      <button onClick={() => setMode(null)} style={BACK_STYLE}>← Changer de mode</button>
+      {mode === "direct" && <QuestionnaireForm initialName={name} initialGender={gender} />}
+      {mode === "incognito" && <IncognitoForm initialName={name} initialGender={gender} />}
+      {mode === "cotecote" && (
+        // côte à côte : parcours construit à l'incrément (d). État provisoire HONNÊTE, pas de bouton mort.
+        <p style={{ fontSize: 13, fontWeight: 300, color: "var(--cond)", lineHeight: 1.65 }}>
+          {PROVISIONAL["cotecote.pending"]}
+        </p>
       )}
     </div>
   );
