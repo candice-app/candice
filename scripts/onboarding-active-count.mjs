@@ -54,4 +54,6 @@ console.log('ASSERTIONS OK (128/106/19/12/10 · PROFILE 58/10/48 · 106b intégr
 
 // Contrôle dépendant : options ACTIVES ayant ≥1 evidence PROFILE (gd+local > 0).
 const withProfile = active.filter((o) => (o.gd + o.local) > 0).length;
-console.log('\noptions actives AVEC evidence PROFILE :', withProfile, '(clos.md ligne 17 dit 50)');
+// clos.md l.17 (table, fait autorité) dit 49 → CONFORME. Le « 50 » de la prose l.28 est un chiffre
+// intermédiaire du 2 oct (« 50 et non 55 »), superseded par la table. Incohérence INTERNE au doc, signalée.
+console.log('\noptions actives AVEC evidence PROFILE :', withProfile, '(clos.md l.17 : 49 — conforme)');
