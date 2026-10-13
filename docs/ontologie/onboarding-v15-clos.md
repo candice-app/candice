@@ -25,7 +25,7 @@ Référence de clôture. Le fichier de détail est `Candice_Questionnaire_Onboar
 | GUARDRAIL actifs | 4, tous `severity = HARD` |
 | Constructs sortant `unknown` de l'onboarding | `APPETENCE_SPONTANEITY`, `APPETENCE_PREMIUM`, `PROFILE_INTENSITY`, `PROFILE_SENSITIVITY.sensory`, `PROFILE_SENSITIVITY.emotional` |
 
-Chiffres corrigés le 2 octobre après le lot A : 50 et non 55 avec evidence PROFILE, 17 et non 20 secondaires. Les trois chiffres d'origine avaient été calculés avant application des retraits V13 et V14 — cinq options perdent leur seule evidence PROFILE (7, 13, 105, 108, 109) et trois des six evidences APPETENCE_SPONTANEITY retirées étaient secondaires. Voir `ecarts-constates.md` §9.
+Chiffres d'origine (55 avec evidence PROFILE, 20 secondaires) calculés avant les retraits V13 et V14. Après retraits, **la table ci-dessus (l.17) fait foi : 49 avec evidence PROFILE, 17 secondaires.** Le détail des options concernées (retraits V13/V14, dont des APPETENCE_SPONTANEITY secondaires) est consigné dans `ecarts-constates.md` §9. *(Ligne toilettée le 13 oct : l'ancienne prose annonçait un chiffre intermédiaire de 50, superseded par la table.)*
 
 Ces chiffres doivent être recalculés depuis le code et comparés. Un écart, même de 1, signifie qu'une ligne n'a pas été transcrite comme elle est arbitrée.
 
