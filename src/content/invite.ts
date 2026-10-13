@@ -27,22 +27,22 @@ export const INVITE_CONTENT = {
   'mode.direct.label': 'Inviter {Prénom}',
   'mode.direct.badge': 'Recommandé',
   'mode.direct.body': [
-    '{Prénom} se présente elle-même à Candice. Elle peut ensuite partager ses nouvelles envies, ses découvertes, ce qui lui plaît ou ce dont elle a besoin. Candice apprend à la connaître au fil du temps et te conseille avec toujours plus de justesse.',
+    'C’est {Prénom} qui se présente à Candice. Elle peut ensuite partager ses nouvelles envies, ses découvertes, ce qui lui plaît ou ce dont elle a besoin. Candice apprend à connaître {Prénom} au fil du temps et te conseille avec toujours plus de justesse.',
     'Vous découvrez aussi vos analyses personnelles et votre analyse commune.',
   ],
   'mode.direct.verdict': 'Une connaissance qui évolue avec {Prénom}.',
 
   'mode.cotecote.label': 'Répondre côte à côte',
   'mode.cotecote.body': [
-    'Tu remplis le parcours avec {Prénom}, sans qu’elle crée de compte.',
+    'Tu remplis le parcours avec {Prénom}, sans création de compte.',
     'Candice recueille ses réponses une seule fois. Elle ne pourra ensuite ni l’interroger, ni connaître ses nouvelles envies ou les changements dans sa vie. Cette première photographie peut rapidement devenir incomplète.',
   ],
   'mode.cotecote.verdict': 'Une connaissance figée au jour du questionnaire.',
 
   'mode.incognito.label': 'Renseigner ce que tu sais de {Prénom}',
   'mode.incognito.body': [
-    'Tu réponds sans faire participer {Prénom}. Candice s’appuie uniquement sur ce que tu crois savoir d’elle : ses goûts, ses habitudes, ses envies.',
-    'Même en étant très proches, on ne connaît pas toujours les désirs, les besoins ou les changements de l’autre. Candice ne peut pas les vérifier directement auprès d’elle.',
+    'Tu réponds sans faire participer {Prénom}. Candice s’appuie uniquement sur ce que tu crois savoir de {Prénom} : ses goûts, ses habitudes, ses envies.',
+    'Même en étant très proches, on ne connaît pas toujours les désirs, les besoins ou les changements de l’autre. Candice ne peut pas les vérifier directement auprès de {Prénom}.',
   ],
   'mode.incognito.verdict': 'Une connaissance indirecte, forcément partielle.',
 
@@ -108,10 +108,13 @@ export const INVITE_CONTENT = {
     'Partager tes résultats si tu en as envie, ou les garder pour toi.',
   ],
   'signup.cta': 'Créer mon espace',
+  // Phrase de CONSENTEMENT EXPLICITE (rédigée par Estelle) : sous le bouton, AU-DESSUS de la ligne
+  // tarifaire. Fonde l'enregistrement de consentement — jamais la FK. Porte sur l'usage dérivé
+  // (le seul demandé) ; même frontière que landing.privacy, répétition voulue.
+  'signup.consent':
+    'En créant ton espace, tu permets à Candice de s’appuyer sur ce que tu lui dis pour aider {Prénom} à choisir juste — jamais tes réponses elles-mêmes, seulement ce qu’elle en comprend.',
   'signup.cta.note':
     'Le premier mois est offert. Ensuite, Candice reste accessible sans rien payer, et l’abonnement est à 9 € par mois si tu veux qu’elle s’occupe de tes proches.',
-  // ⚠ signup.consent : phrase de CONSENTEMENT EXPLICITE à rédiger par Estelle (proposition faite
-  //    en message). Volontairement ABSENTE du module — un verbatim ne naît jamais dans le code.
 
   // ── Notifications ────────────────────────────────────────────────────────
   'notif.proche.push.title': '{Prénom} t’invite à deux voix',

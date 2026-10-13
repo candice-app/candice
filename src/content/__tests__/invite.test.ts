@@ -39,7 +39,10 @@ describe('Copy invitation — règles Estelle', () => {
     }
   });
 
-  it('la clé signup.consent est ABSENTE (à rédiger par Estelle, jamais inventée en code)', () => {
-    expect('signup.consent' in INVITE_CONTENT).toBe(false);
+  it('signup.consent est présente (rédigée par Estelle) et porte la frontière « jamais tes réponses »', () => {
+    const c = INVITE_CONTENT['signup.consent'];
+    expect(typeof c).toBe('string');
+    expect(c).toContain('{Prénom}');
+    expect(c).toContain('jamais tes réponses');
   });
 });
