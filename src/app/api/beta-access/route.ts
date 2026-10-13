@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const BETA_PASSWORD = process.env.BETA_PASSWORD ?? "Candice2026!";
+// Fail-closed : aucun repli en dur (un secret committé reste dans l'historique Git indéfiniment —
+// c'est la rotation qui l'a neutralisé, pas ce retrait). Si BETA_PASSWORD est absent, on refuse tout.
+const BETA_PASSWORD = process.env.BETA_PASSWORD;
 
 export async function POST(request: NextRequest) {
   let password: string;
@@ -10,7 +12,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Requête invalide." }, { status: 400 });
   }
 
-  if (password !== BETA_PASSWORD) {
+  if (!BETA_PASSWORD || password !== BETA_PASSWORD) {
     return NextResponse.json({ error: "Mot de passe incorrect." }, { status: 401 });
   }
 
