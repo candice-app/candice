@@ -27,7 +27,7 @@ export const INVITE_CONTENT = {
   'mode.direct.label': 'Inviter {Prénom}',
   'mode.direct.badge': 'Recommandé',
   'mode.direct.body': [
-    'C’est {Prénom} qui se présente à Candice. Elle peut ensuite partager ses nouvelles envies, ses découvertes, ce qui lui plaît ou ce dont elle a besoin. Candice apprend à connaître {Prénom} au fil du temps et te conseille avec toujours plus de justesse.',
+    'C’est {Prénom} qui se présente à Candice, et qui continue ensuite : ses nouvelles envies, ses découvertes, ce qui lui plaît, ses besoins du moment. Candice apprend à connaître {Prénom} au fil du temps et te conseille avec toujours plus de justesse.',
     'Vous découvrez aussi vos analyses personnelles et votre analyse commune.',
   ],
   'mode.direct.verdict': 'Une connaissance qui évolue avec {Prénom}.',

@@ -165,7 +165,10 @@
       "Bash(echo \"pg présent \\($\\(node -e \"console.log\\(require\\('pg/package.json'\\).version\\)\" \\)\\)\")",
       "Bash(awk '/CREATE TABLE.*profile_analysis/,/\\\\\\);/' supabase-migration-30-profile-analysis.sql)",
       "Bash(awk '/CREATE TABLE.*contact_consents/,/\\\\\\);/' supabase-migration-40-contact-consents.sql)",
-      "Bash(awk '/CREATE TABLE.*contacts/,/\\\\\\);/' supabase-schema.sql)"
+      "Bash(awk '/CREATE TABLE.*contacts/,/\\\\\\);/' supabase-schema.sql)",
+      "Bash(ls -1 supabase-migration-8[3-7]*.sql)",
+      "Bash(ls scripts/schema-audit*)",
+      "Bash(head -30 scripts/schema-audit.mjs)"
     ]
   }
 }
