@@ -3,7 +3,7 @@
 
 import { describe, expect, it } from 'vitest';
 import { resolvePronoun } from '../pronoun';
-import { ASSERTION_BASES, MODE2_SOURCE_TYPE, deriveAssertionStatus, isSelfDeclaredAct } from '../../knowledge';
+import { ASSERTION_BASES, MODE2_SOURCE_TYPE, deriveAssertionStatus, deriveRespondentRole, isSelfDeclaredAct } from '../../knowledge';
 
 describe('resolvePronoun — trois cas de résolution, fonction pure', () => {
   const tpl = '{Pronom} arrive au bon moment et {pronom} y pense souvent.';
@@ -48,5 +48,17 @@ describe('Mode « côte à côte » — provenance (sous-bloc 2)', () => {
   });
   it('se distingue de reported_by_relative (tiers), qui n’est PAS déclaré de soi', () => {
     expect(isSelfDeclaredAct('reported_by_relative')).toBe(false);
+  });
+});
+
+describe('deriveRespondentRole — respondent dérivé, jamais stocké (fonction unique)', () => {
+  it('self_report / subject_statement → subject ; observed / reporter_interpretation → reporter', () => {
+    expect(deriveRespondentRole('self_report')).toBe('subject'); // mode 1, et mode 2 (réponse orale du proche)
+    expect(deriveRespondentRole('subject_statement')).toBe('subject');
+    expect(deriveRespondentRole('observed')).toBe('reporter');
+    expect(deriveRespondentRole('reporter_interpretation')).toBe('reporter'); // mode 3 incognito
+  });
+  it('couvre exhaustivement les 4 bases (aucune non décidée)', () => {
+    for (const b of ASSERTION_BASES) expect(() => deriveRespondentRole(b)).not.toThrow();
   });
 });

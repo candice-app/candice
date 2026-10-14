@@ -158,6 +158,39 @@ export function isSelfDeclaredAct(sourceType: SourceType): boolean {
 }
 
 /* ────────────────────────────────────────────────────────────────────────
+ * RESPONDENT (3e rôle de provenance, sous-bloc 2) — DÉRIVÉ, jamais stocké.
+ *
+ * Trois rôles d'une evidence : subject (la personne concernée, portée par about),
+ * entered_by (qui a saisi, porté par user_id), respondent (qui a FORMULÉ la réponse).
+ * Le respondent n'est JAMAIS un tiers distinct : il est soit le subject, soit celui qui
+ * saisit. Il se dérive donc de la base épistémique, sans colonne (une colonne dupliquerait
+ * une info déjà portée et divergerait le jour où une assertion_basis est corrigée).
+ *
+ * Règle (écrite aussi dans docs/ontologie/hsg-architecture.md, autorité) :
+ *   self_report | subject_statement → 'subject'   (le sujet a formulé, directement ou rapporté)
+ *   observed | reporter_interpretation → 'reporter' (celui qui saisit a formulé)
+ *
+ * UNE SEULE fonction, utilisée partout — jamais réécrite au point de lecture (sinon divergence).
+ * Liste blanche exhaustive + never, comme isSelfDeclaredAct.
+ * ──────────────────────────────────────────────────────────────────────── */
+export type RespondentRole = 'subject' | 'reporter';
+
+export function deriveRespondentRole(basis: AssertionBasis): RespondentRole {
+  switch (basis) {
+    case 'self_report': // le sujet parle de lui (mode 1, et mode 2 : réponse orale du proche saisie)
+    case 'subject_statement': // le pilote rapporte un propos explicite du sujet
+      return 'subject';
+    case 'observed': // le pilote a vu
+    case 'reporter_interpretation': // le pilote conclut
+      return 'reporter';
+    default: {
+      const _exhaustive: never = basis;
+      throw new Error(`deriveRespondentRole: assertionBasis sans décision explicite : ${String(_exhaustive)}`);
+    }
+  }
+}
+
+/* ────────────────────────────────────────────────────────────────────────
  * Enregistrement d'une source.
  * Verbatim strict : questionText / answerText|rawText conservés sans retouche.
  * Traçabilité double sens : une source référence les evidences / FACT / signaux

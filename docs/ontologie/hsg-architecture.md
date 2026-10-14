@@ -2509,6 +2509,24 @@ Cette traçabilité est nécessaire pour :
 - éviter les hallucinations de profil ;
 - permettre à l’utilisateur de nuancer ce que Candice croit savoir.
 
+### Les trois rôles de provenance
+
+Toute evidence porte trois rôles, distincts et traçables :
+
+> **subject** — la personne concernée (ce que l’evidence décrit). Portée par `about` (`about_kind` / `about_id`).
+> **entered_by** — qui a saisi l’information. Porté par `user_id`.
+> **respondent** — qui a *formulé* la réponse dont l’evidence est tirée.
+
+Le **respondent n’est jamais un tiers distinct** : il est toujours soit le `subject`, soit l’`entered_by`. Il ne porte donc **aucune colonne propre** — une colonne dupliquerait une information déjà présente et divergerait le jour où une base épistémique est corrigée. Il se **dérive** de `assertion_basis`, par une **règle unique** (fonction `deriveRespondentRole`, jamais réécrite au point de lecture) :
+
+> `self_report` · `subject_statement` → respondent = **subject** (le sujet a formulé, directement ou par propos rapporté) ;
+> `observed` · `reporter_interpretation` → respondent = **reporter** (celui qui saisit a formulé).
+
+C’est cette dérivation qui sépare réellement les modes de saisie pour un même `subject = contact` :
+
+- **côte à côte** : `about = contact`, `sourceType = declared_via_relative`, `assertion_basis = self_report` → respondent = **le proche** (il a répondu oralement ; seule la frappe est médiée) ;
+- **incognito** : `about = contact`, `sourceType = reported_by_relative`, `assertion_basis ∈ {observed, reporter_interpretation}` → respondent = **le pilote** (il suppose pour son proche).
+
 ---
 
 # 48. EXPLICABILITÉ D’UNE RECOMMANDATION
