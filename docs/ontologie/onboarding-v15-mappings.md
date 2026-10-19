@@ -1384,3 +1384,39 @@ Le texte des questions et des options est **le texte exact affiché à l'utilisa
 - `needs` : `NEED_CONNECTION`
 - `retainedInformation` : « blessure liée à la superficialité ou au manque de profondeur »
 
+
+## Dimensions affectives (dims) — reprises du scoring déployé, NON RELUES par Estelle
+
+> Passage **option → dimensions affectives** du vecteur d'attention (reçue : q1, q2, q4 ; donnée : qe). Ces 28 dims sont **reprises mécaniquement du scoring déployé V15** (par import de la banque `attention/questions.ts`), **jamais retapées, jamais inventées** — mais **PAS relues par Estelle** : autorité de FAIT, pas de validation. À relire au lot éditorial (comme les subtexts et les MICRO).
+> Gravées sur chaque evidence du domaine attention (`knowledge_evidences.dims`, migration 88) : ce qui rend `attention_reception` reconstructible depuis le journal seul (HSG §47bis.3 / §47ter).
+
+| optionRef | question | libellé | dims |
+|---|---|---|---|
+| 1 | q1 | On me dit des mots sincères | `MOT` |
+| 2 | q1 | On m'aide concrètement sans que je demande | `SER, GES` |
+| 3 | q1 | On me fait un cadeau pensé spécialement pour moi | `CAD_C` |
+| 4 | q1 | On me fait un cadeau chargé de sens | `CAD_S` |
+| 5 | q1 | On me consacre un vrai moment de qualité | `EXP` |
+| 6 | q1 | On pense à moi dans les petits détails du quotidien | `GES` |
+| 7 | q1 | On me surprend avec quelque chose d'inattendu | `SUR` |
+| 8 | q2 | Quelque chose qui montre qu'on m'a écouté(e) | `CAD_C, GES` |
+| 9 | q2 | Quelque chose qui tombe au bon moment | `GES, SER` |
+| 10 | q2 | Quelque chose qui crée un souvenir | `EXP, CAD_S` |
+| 11 | q2 | Quelque chose qui me facilite vraiment la vie | `SER` |
+| 12 | q2 | Quelque chose de simple mais sincère | `MOT, GES` |
+| 13 | q2 | Quelque chose que je n'avais pas vu venir | `SUR` |
+| 14 | q2 | Quelque chose de beau, choisi avec goût | `CAD_C` |
+| 22 | q4 | Une petite attention régulière | `GES` |
+| 23 | q4 | Un grand moment rare mais marquant | `EXP` |
+| 24 | q4 | Une aide concrète quand j'en ai besoin | `SER` |
+| 25 | q4 | Un mot sincère au bon moment | `MOT` |
+| 26 | q4 | Un cadeau qui a du sens | `CAD_S` |
+| 27 | q4 | Une surprise qui casse la routine | `SUR` |
+| 28 | q4 | Un objet choisi vraiment en fonction de moi et de mes goûts | `CAD_C` |
+| 29 | qe | Je dis ce que je ressens, je complimente, je rassure | `MOT` |
+| 30 | qe | J'aide, je rends service sans qu'on me le demande | `SER` |
+| 31 | qe | J'offre des cadeaux choisis avec soin | `CAD_C` |
+| 32 | qe | J'offre des choses qui ont du sens, une histoire | `CAD_S` |
+| 33 | qe | Je passe du vrai temps de qualité avec les gens | `EXP` |
+| 34 | qe | J'ai mille petites attentions au quotidien | `GES` |
+| 35 | qe | J'aime faire des surprises | `SUR` |
