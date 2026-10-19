@@ -14,6 +14,10 @@
 
 - **Trou de couverture Food (q15) & Voyage (q16)** : jamais rendues depuis la clôture V15 (déplacées vers le Discovery, exclues des listes `_ACTIVE`). Le trou est **antérieur au lot B**. Reprise = chantier Discovery (hors périmètre de ce lot).
 
+## Dette d'alignement (datée par événement, pas à traiter hors de son déclencheur)
+
+- **Dims/rank de l'attention** (E-4) sont de la sémantique LEGACY logée dans les colonnes `dims`/`rank` au lieu de `projection_bridge` — pour éviter un refactor pur sur le domaine qui marche. Elles portent **la même interdiction** (jamais lues comme connaissance par HSG/respiration/analyse, cf. §47bis) et **la même condition de mort que `projection_bridge`** : `dims`, `rank`, `projection_bridge` et les colonnes du scoring legacy meurent **au même événement** — le jour où la reco réécrite lit les PROFILE constructs V15.
+
 ## À venir (sera inscrit quand gravé)
 
 - Deltas d'axes **lifestyle** (A2) — même nature PONT que E-5, quand le domaine sera câblé.

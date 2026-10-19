@@ -8,6 +8,11 @@ import type { AttentionResult } from "@/lib/attention/scoring";
 import { scoreTemperament } from "@/lib/temperament/scoring";
 import { computeTemperamentBreathFacts, buildTemperamentFallbackText } from "@/lib/temperament/breathFacts";
 import { STEP2_QUESTIONS, STEP3_QUESTIONS } from "@/lib/temperament/questions";
+import { socleCanonicalTemperament } from "@/lib/questionnaire/flags";
+import { buildCanonicalTemperamentQuestion, legacyIdToRef } from "@/lib/questionnaire/canonical-temperament";
+import { produceSocleAnswer } from "@/lib/questionnaire/produce-socle";
+import { readSocleTags, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
+import type { WriteClient } from "@/lib/knowledge-write/persist";
 import { scoreLifestyle, mergeTemperamentSupplements } from "@/lib/lifestyle/scoring";
 import { computeLifestyleBreathFacts, buildLifestyleFallbackText } from "@/lib/lifestyle/breathFacts";
 import { STEP4_QUESTIONS_ACTIVE, STEP5_CHOICE_QUESTIONS } from "@/lib/lifestyle/questions";
@@ -25,6 +30,38 @@ import EditMenu from "@/components/questionnaire/EditMenu";
 import OnboardingPopup from "@/components/questionnaire/OnboardingPopup";
 import type { SingularityAnswers } from "@/components/questionnaire/SingularityStep";
 import type { PracticalInfo } from "@/components/questionnaire/PracticalStep";
+
+// Lot B A1 : flag ON → tempérament rendu DEPUIS LE CANONIQUE (labels/subtexts canoniques, id d'option
+// legacy conservé → scoring + temperament_answers inchangés). OFF → banque legacy inchangée.
+const TEMP_STEP2_RENDERED = socleCanonicalTemperament ? STEP2_QUESTIONS.map((q) => buildCanonicalTemperamentQuestion(q.id)) : STEP2_QUESTIONS;
+const TEMP_STEP3_RENDERED = socleCanonicalTemperament ? STEP3_QUESTIONS.map((q) => buildCanonicalTemperamentQuestion(q.id)) : STEP3_QUESTIONS;
+
+// Journal (par réponse) + respiration CUMULATIVE (attention + tempérament) depuis le journal.
+// Renvoie le texte de respiration (vide si échec — jamais de repli legacy, cf. §47bis).
+async function temperamentJournalAndBreath(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  stepAnswers: Record<string, string>,
+): Promise<string> {
+  const ts = new Date().toISOString();
+  const client = supabase as unknown as WriteClient;
+  try {
+    for (const legId of Object.values(stepAnswers)) {
+      const ref = legacyIdToRef.get(legId); // id legacy → optionRef canonique
+      if (ref) await produceSocleAnswer(client, { userId, selectedOptionRefs: [ref], timestamp: ts });
+    }
+  } catch (e) {
+    console.error("[QuestionnaireFlow] produceSocleAnswer (tempérament) a échoué :", e);
+  }
+  try {
+    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // cumulatif
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    const data = (await res.json()) as { text: string };
+    return data.text ?? "";
+  } catch {
+    return "";
+  }
+}
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -308,7 +345,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   if (step === "temperament2") {
     return withProgress(
       <TemperamentStep
-        questions={STEP2_QUESTIONS}
+        questions={TEMP_STEP2_RENDERED}
         stepNumber={2}
         totalSteps={7}
         initialAnswers={temperamentAnswers}
@@ -318,6 +355,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           const merged = { ...temperamentAnswers, ...step2Answers };
           setTemperamentAnswers(merged);
 
+          // Projection INCHANGÉE : scoreTemperament sur les ids legacy (conservés), my_profile identique.
           const result = scoreTemperament(merged);
           const facts = computeTemperamentBreathFacts(result.axes, result.modes, 2);
           setLatestTemperamentAxes(result.axes as unknown as Record<string, { score: number; intensity: number }>);
@@ -331,11 +369,16 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
-          try {
-            const res = await fetch("/api/temperament/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
-            const data = await res.json() as { text: string };
-            text = data.text || buildTemperamentFallbackText(facts);
-          } catch { text = buildTemperamentFallbackText(facts); }
+          if (socleCanonicalTemperament) {
+            // A1 : journal (par réponse) + respiration CUMULATIVE (attention + tempérament).
+            text = await temperamentJournalAndBreath(supabase, userId, step2Answers);
+          } else {
+            try {
+              const res = await fetch("/api/temperament/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
+              const data = await res.json() as { text: string };
+              text = data.text || buildTemperamentFallbackText(facts);
+            } catch { text = buildTemperamentFallbackText(facts); }
+          }
 
           setStep2BreathText(text);
           navigate("temperament2Breath");
@@ -360,7 +403,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   if (step === "temperament3") {
     return withProgress(
       <TemperamentStep
-        questions={STEP3_QUESTIONS}
+        questions={TEMP_STEP3_RENDERED}
         stepNumber={3}
         totalSteps={7}
         initialAnswers={temperamentAnswers}
@@ -387,11 +430,15 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
-          try {
-            const res = await fetch("/api/temperament/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
-            const data = await res.json() as { text: string };
-            text = data.text || buildTemperamentFallbackText(facts);
-          } catch { text = buildTemperamentFallbackText(facts); }
+          if (socleCanonicalTemperament) {
+            text = await temperamentJournalAndBreath(supabase, userId, step3Answers);
+          } else {
+            try {
+              const res = await fetch("/api/temperament/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
+              const data = await res.json() as { text: string };
+              text = data.text || buildTemperamentFallbackText(facts);
+            } catch { text = buildTemperamentFallbackText(facts); }
+          }
 
           setStep3BreathText(text);
           navigate("temperament3Breath");

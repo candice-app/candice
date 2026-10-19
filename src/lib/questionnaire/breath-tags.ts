@@ -29,6 +29,44 @@ export interface AttentionBreathInput {
   readonly giveTop?: string; // modalité donnée de rang 1
 }
 
+/** Entrée d'une respiration CUMULATIVE : tous les tags du journal (tous domaines jusqu'ici). */
+export interface SocleBreathInput {
+  readonly tags: readonly AttentionBreathTag[];
+  readonly tagCount: number;
+  readonly relation: AttentionRelation; // relation attention (give≈receive), définie par le HSG
+  readonly receiveTop?: string;
+  readonly giveTop?: string;
+}
+
+/**
+ * Lit TOUT le journal de `userId` (cumulatif : attention + tempérament + …) et en dérive les tags
+ * + provenance. ⚠ NE LIT JAMAIS `dims` ni `projection_bridge` (sémantique legacy, interdite comme
+ * connaissance — §47bis / §47quater). Récence appliquée par construct.
+ */
+export async function readSocleTags(client: TagsReadClient, userId: string): Promise<SocleBreathInput> {
+  const { data } = await client
+    .from('knowledge_evidences')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, ts')
+    .eq('user_id', userId);
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; ts: string };
+  const rows = (data ?? []) as Row[];
+  const latest = new Map<string, Row>();
+  for (const r of rows) {
+    const prev = latest.get(r.target_construct);
+    if (!prev || r.ts > prev.ts) latest.set(r.target_construct, r);
+  }
+  const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
+    family: r.target_family,
+    construct: r.target_construct,
+    ...(r.direction ? { direction: r.direction } : {}),
+    ...(r.modality ? { modality: r.modality } : {}),
+    strength: r.strength,
+    rank: r.rank,
+    basis: r.assertion_basis,
+  }));
+  return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
+}
+
 /** Dérive la relation give≈receive DÉTERMINISTIQUEMENT depuis les tags (jamais le modèle). */
 export function deriveAttentionRelation(tags: readonly AttentionBreathTag[]): Pick<AttentionBreathInput, 'relation' | 'receiveTop' | 'giveTop'> {
   const byRank = (a: AttentionBreathTag, b: AttentionBreathTag) => (a.rank ?? 9) - (b.rank ?? 9);
