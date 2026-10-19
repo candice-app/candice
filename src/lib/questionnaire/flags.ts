@@ -6,3 +6,6 @@ export const socleCanonicalAttention = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_A
 
 // Domaine TEMPÉRAMENT (q5–q11) rendu depuis le canonique + journal + pont + respiration cumulative.
 export const socleCanonicalTemperament = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_TEMPERAMENT === '1';
+
+// Domaine LIFESTYLE (q13/q14/q4a–q4d, q18/q19) rendu depuis le canonique + journal + pont + respiration cumulative.
+export const socleCanonicalLifestyle = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_LIFESTYLE === '1';

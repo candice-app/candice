@@ -12,6 +12,7 @@ import { produceFromOption, type WriteContext } from '../knowledge-write/produce
 import { persistKnowledge, type WriteClient } from '../knowledge-write/persist';
 import { ATTENTION_DIMS } from './attention-dims';
 import { TEMPERAMENT_DELTAS } from './temperament-deltas';
+import { LIFESTYLE_DELTAS } from './lifestyle-deltas';
 
 const byRef = new Map(ONBOARDING_MAPPINGS.map((m) => [m.optionRef, m] as const));
 
@@ -53,15 +54,21 @@ export async function produceSocleAnswer(
     }
     const { source, evidences, facts } = produceFromOption(ctx, mapping, opts);
     // SÉMANTIQUE attention (hsg §47ter) : dims + rang sur l'evidence → attention_reception
-    // reconstructible du journal. PONT legacy tempérament (hsg §47quater) : les deltas d'axes →
-    // temperament_axes reconstructible, dans projection_bridge (JAMAIS lu par le HSG).
+    // reconstructible du journal. PONT legacy tempérament ET lifestyle (hsg §47quater) : les deltas
+    // d'axes → temperament_axes / lifestyle_axes reconstructibles, dans projection_bridge (JAMAIS lu par
+    // le HSG). Un ref est tempérament OU lifestyle, jamais les deux. Côté lifestyle, les deltas 'filter'
+    // et 'canal' ne sont PAS au pont : ils sont canoniques (NEED/GUARDRAIL/… cas 1) et déjà dans `evidences`.
     const dims = ATTENTION_DIMS[ref];
-    const deltas = TEMPERAMENT_DELTAS[ref];
+    const deltas = TEMPERAMENT_DELTAS[ref] ?? LIFESTYLE_DELTAS[ref];
+    // Le PONT est de niveau ACQUISITION (une réponse = une contribution de projection), pas evidence :
+    // on l'attache à UNE SEULE evidence (la 1ʳᵉ). Sinon une option qui produit N evidences (fréquent
+    // côté lifestyle : plusieurs constructs canoniques) dupliquerait ses deltas N fois → la reconstruction
+    // les additionnerait N fois. (Côté tempérament, 1 evidence/option, donc déjà correct.)
     const enriched = (dims || deltas)
-      ? evidences.map((e) => ({
+      ? evidences.map((e, idx) => ({
           ...e,
           ...(dims ? { dims, rank } : {}),
-          ...(deltas ? { projectionBridge: { deltas } } : {}),
+          ...(deltas && idx === 0 ? { projectionBridge: { deltas } } : {}),
         }))
       : evidences;
     await persistKnowledge(client, { source, evidences: enriched, facts });

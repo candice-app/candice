@@ -8,8 +8,9 @@ import type { AttentionResult } from "@/lib/attention/scoring";
 import { scoreTemperament } from "@/lib/temperament/scoring";
 import { computeTemperamentBreathFacts, buildTemperamentFallbackText } from "@/lib/temperament/breathFacts";
 import { STEP2_QUESTIONS, STEP3_QUESTIONS } from "@/lib/temperament/questions";
-import { socleCanonicalTemperament } from "@/lib/questionnaire/flags";
+import { socleCanonicalTemperament, socleCanonicalLifestyle } from "@/lib/questionnaire/flags";
 import { buildCanonicalTemperamentQuestion, legacyIdToRef } from "@/lib/questionnaire/canonical-temperament";
+import { buildCanonicalLifestyleQuestion, legacyIdToRef as lifestyleLegacyIdToRef } from "@/lib/questionnaire/canonical-lifestyle";
 import { produceSocleAnswer } from "@/lib/questionnaire/produce-socle";
 import { readSocleTags, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
@@ -35,6 +36,8 @@ import type { PracticalInfo } from "@/components/questionnaire/PracticalStep";
 // legacy conservé → scoring + temperament_answers inchangés). OFF → banque legacy inchangée.
 const TEMP_STEP2_RENDERED = socleCanonicalTemperament ? STEP2_QUESTIONS.map((q) => buildCanonicalTemperamentQuestion(q.id)) : STEP2_QUESTIONS;
 const TEMP_STEP3_RENDERED = socleCanonicalTemperament ? STEP3_QUESTIONS.map((q) => buildCanonicalTemperamentQuestion(q.id)) : STEP3_QUESTIONS;
+const LIFE_STEP4_RENDERED = socleCanonicalLifestyle ? STEP4_QUESTIONS_ACTIVE.map((q) => buildCanonicalLifestyleQuestion(q.id)) : STEP4_QUESTIONS_ACTIVE;
+const LIFE_STEP5_RENDERED = socleCanonicalLifestyle ? STEP5_CHOICE_QUESTIONS.map((q) => buildCanonicalLifestyleQuestion(q.id)) : STEP5_CHOICE_QUESTIONS;
 
 // Journal (par réponse) + respiration CUMULATIVE (attention + tempérament) depuis le journal.
 // Renvoie le texte de respiration (vide si échec — jamais de repli legacy, cf. §47bis).
@@ -52,6 +55,33 @@ async function temperamentJournalAndBreath(
     }
   } catch (e) {
     console.error("[QuestionnaireFlow] produceSocleAnswer (tempérament) a échoué :", e);
+  }
+  try {
+    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // cumulatif
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    const data = (await res.json()) as { text: string };
+    return data.text ?? "";
+  } catch {
+    return "";
+  }
+}
+
+// Idem pour le lifestyle : journal (par réponse, via le mapping canonique) + respiration CUMULATIVE
+// (attention + tempérament + lifestyle) depuis le journal. Vide si échec — jamais de repli legacy (§47bis).
+async function lifestyleJournalAndBreath(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  stepAnswers: Record<string, string>,
+): Promise<string> {
+  const ts = new Date().toISOString();
+  const client = supabase as unknown as WriteClient;
+  try {
+    for (const legId of Object.values(stepAnswers)) {
+      const ref = lifestyleLegacyIdToRef.get(legId); // id legacy → optionRef canonique
+      if (ref) await produceSocleAnswer(client, { userId, selectedOptionRefs: [ref], timestamp: ts });
+    }
+  } catch (e) {
+    console.error("[QuestionnaireFlow] produceSocleAnswer (lifestyle) a échoué :", e);
   }
   try {
     const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // cumulatif
@@ -463,7 +493,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   if (step === "lifestyle4") {
     return withProgress(
       <LifestyleStep
-        questions={STEP4_QUESTIONS_ACTIVE}
+        questions={LIFE_STEP4_RENDERED}
         initialAnswers={lifestyleAnswers}
         onBack={canGoBack ? goBack : undefined}
         onExit={exitQuestionnaire}
@@ -495,11 +525,16 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
-          try {
-            const res = await fetch("/api/lifestyle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
-            const data = await res.json() as { text: string };
-            text = data.text || buildLifestyleFallbackText(facts);
-          } catch { text = buildLifestyleFallbackText(facts); }
+          if (socleCanonicalLifestyle) {
+            // Journal (par réponse) + respiration CUMULATIVE depuis le journal. Jamais de repli legacy (§47bis).
+            text = await lifestyleJournalAndBreath(supabase, userId, step4Answers);
+          } else {
+            try {
+              const res = await fetch("/api/lifestyle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
+              const data = await res.json() as { text: string };
+              text = data.text || buildLifestyleFallbackText(facts);
+            } catch { text = buildLifestyleFallbackText(facts); }
+          }
 
           setLifestyle4BreathText(text);
           navigate("lifestyle4Breath");
@@ -522,8 +557,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   // ─── Step 5: Ce qu'il vaut mieux éviter ──────────────────────────────────
 
   if (step === "lifestyle5") {
-    const q18 = STEP5_CHOICE_QUESTIONS[0];
-    const q19 = STEP5_CHOICE_QUESTIONS[1];
+    const q18 = LIFE_STEP5_RENDERED[0];
+    const q19 = LIFE_STEP5_RENDERED[1];
     const q17TextInit = typeof ext?.relational_filters?.q17Text === "string"
       ? ext.relational_filters.q17Text as string : "";
 
@@ -570,11 +605,15 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
           let text: string;
-          try {
-            const res = await fetch("/api/lifestyle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
-            const data = await res.json() as { text: string };
-            text = data.text || buildLifestyleFallbackText(facts);
-          } catch { text = buildLifestyleFallbackText(facts); }
+          if (socleCanonicalLifestyle) {
+            text = await lifestyleJournalAndBreath(supabase, userId, step5Answers);
+          } else {
+            try {
+              const res = await fetch("/api/lifestyle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
+              const data = await res.json() as { text: string };
+              text = data.text || buildLifestyleFallbackText(facts);
+            } catch { text = buildLifestyleFallbackText(facts); }
+          }
 
           setLifestyle5BreathText(text);
           navigate("lifestyle5Breath");

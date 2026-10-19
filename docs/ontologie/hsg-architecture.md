@@ -2616,6 +2616,17 @@ Quand une projection (ex. `attention_reception`, `temperament_axes`) n'est pas d
 
 **Procédure (les deux cas)** : extraction MÉCANIQUE par import (jamais de parseur de texte, jamais retapé), compte avant/après, inscription au document d'autorité avec « NON RELUE par Estelle », renvoi au lot éditorial.
 
+## Application au LIFESTYLE (règle D2, triage flag par flag)
+
+Les deltas lifestyle portent un champ `target` à quatre valeurs. Triés par la règle D2 (un flag qui a un équivalent canonique entre comme evidence dans sa famille ; le pont est réservé à la sémantique legacy qu'un lecteur consomme) :
+
+- `target: 'lifestyle'` (axes `lifestyle_axes`, 6 clés) → **PONT** (legacy, ancien dictionnaire).
+- `target: 'temperament'` (suppléances cross-domaine de `temperament_axes`) → **PONT** (legacy). ⚠ **Les domaines ne sont pas étanches** : le lifestyle écrit dans la projection du tempérament. La reconstruction de `temperament_axes` doit donc lire les ponts tempérament **ET** lifestyle, en rejouant la **double-application** legacy (merge au step4 *puis* au step5 sur le re-calcul de toutes les réponses — les suppléances step4 sont comptées deux fois). L'égalité de vecteur du tempérament est **rejouée après** le câblage lifestyle.
+- `target: 'filter'` (16 options → `relational_filters`) → **CANONIQUE (cas 1)**, PAS de pont : chaque option produit déjà, pour la même réponse, un construct canonique auto-produit — anti-surprise (q18) → **GUARDRAIL** `GRD_*` ; besoins/peur (q19) → **NEED** (`NEED_SEEN_UNDERSTOOD`, `NEED_LOVED_MATTER`/`NEED_CHOSEN`, `NEED_FREEDOM`/`NEED_RHYTHM_RESPECT`, `NEED_ACCEPTANCE`, `NEED_TRUST`/`NEED_REASSURANCE`, `NEED_CONNECTION`) ; exigence (q4c « valider les détails ») → **IMPORTANCE** `IMPORTANCE_MASTERY` ; charge mentale (q4a) → **FACT** `functional_impact`. `relational_filters` se reconstruit donc du journal. **Aucun trou d'ontologie (cas 3) sur le lifestyle.**
+- `target: 'canal'` (q4d → `temperament_modes.canal`) → **CANONIQUE (cas 1)** : `PREFERENCE.communication.channel`, auto-produite. PAS de pont.
+
+**Le pont est de niveau ACQUISITION, pas evidence.** Il est attaché à **une seule** evidence par réponse (la 1ʳᵉ). Sinon une option qui produit N evidences (fréquent côté lifestyle : plusieurs constructs canoniques par option) dupliquerait ses deltas N fois → la reconstruction les additionnerait N fois. *(Côté tempérament, 1 evidence/option, donc le bug était masqué — l'attach-once le corrige sans changer le résultat tempérament.)*
+
 ---
 
 # 48. EXPLICABILITÉ D’UNE RECOMMANDATION
