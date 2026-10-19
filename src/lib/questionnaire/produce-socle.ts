@@ -10,9 +10,13 @@ import { ONBOARDING_MAPPINGS } from '../knowledge/onboarding';
 import { accountAbout, asUserId } from '../knowledge/identity';
 import { produceFromOption, type WriteContext } from '../knowledge-write/produce';
 import { persistKnowledge, type WriteClient } from '../knowledge-write/persist';
+import { createSourceRecord } from '../knowledge/sources';
+import { createFact } from '../knowledge/fact';
+import { factId } from '../knowledge-write/ids';
 import { ATTENTION_DIMS } from './attention-dims';
 import { TEMPERAMENT_DELTAS } from './temperament-deltas';
 import { LIFESTYLE_DELTAS } from './lifestyle-deltas';
+import type { FactFieldSpec } from './socle-facts-fields';
 
 const byRef = new Map(ONBOARDING_MAPPINGS.map((m) => [m.optionRef, m] as const));
 
@@ -75,6 +79,54 @@ export async function produceSocleAnswer(
       : evidences;
     await persistKnowledge(client, { source, evidences: enriched, facts });
     written += enriched.length;
+  }
+  return written;
+}
+
+/**
+ * A3 — produit des FACTs depuis des réponses TEXTE LIBRE / pratiques (singularité, pratique, q17).
+ * VERBATIM : la valeur saisie est conservée telle quelle (rawText + fact.value), SANS mapping, SANS
+ * inférence. Un FACT ne produit aucun signal (R16/§11.1) et ne disparaît jamais (append, source_id frais).
+ * Jamais de FACT vide (règle produit : jamais d'analyse sur input vide). Projection my_profile inchangée.
+ */
+export async function produceSocleFact(
+  client: WriteClient,
+  input: {
+    userId: string;
+    entries: ReadonlyArray<{ spec: FactFieldSpec; value: string }>;
+    timestamp: string;
+  },
+): Promise<number> {
+  const about = accountAbout(asUserId(input.userId));
+  const ownerId = asUserId(input.userId);
+  let written = 0;
+  for (const { spec, value } of input.entries) {
+    const text = value.trim();
+    if (!text) continue; // jamais de FACT vide
+    const sourceId = globalThis.crypto.randomUUID(); // FRAIS par acquisition (append)
+    const source = createSourceRecord({
+      about,
+      ownerId,
+      id: sourceId,
+      sourceType: 'onboarding_open', // texte libre
+      questionText: spec.questionText, // libellé EXACT du composant
+      rawText: text, // verbatim, jamais tronqué/normalisé
+      timestamp: input.timestamp,
+    });
+    const fact = createFact({
+      about,
+      ownerId,
+      fact_id: factId(sourceId, spec.factType, text),
+      fact_type: spec.factType,
+      value: text, // verbatim
+      source: sourceId,
+      timestamp: input.timestamp,
+      confidence: 'high',
+      user_confirmed: true, // la personne l'a saisi elle-même
+      ...(spec.sensitive ? { sensitivity: { isSensitive: true } } : {}),
+    });
+    await persistKnowledge(client, { source, facts: [fact] });
+    written++;
   }
   return written;
 }

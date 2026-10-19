@@ -10,6 +10,7 @@
 | E-4 | **Dims** affectives (option → MOT/SER/…) | `attention-dims.ts` + doc mappings | 28 | Sémantique de fait, reprise du scoring déployé V15, NON RELUE. Gravée au journal (`dims`). |
 | E-5 | **Deltas d'axes** tempérament (option → axe·valeur) | `temperament-deltas.ts` + doc mappings | 36 | PONT legacy (ancien dictionnaire), NON RELU. `projection_bridge`, interdit au HSG. Condition de mort §47quater. |
 | E-6 | **Deltas d'axes** lifestyle (option → axe·valeur·target·q) | `lifestyle-deltas.ts` | 42 entrées (19 deltas `lifestyle` + 26 suppléances `temperament`) | PONT legacy, extrait par import, NON RELU. `projection_bridge`, interdit au HSG. **Seuls les axes** : `filter`/`canal` exclus (canoniques, cas 1 — §47quater). Condition de mort §47quater. |
+| E-7 | **Libellés de champs** A3 singularité/pratique/q17 (questionText des FACTs) | `socle-facts-fields.ts` | 11 + 17 + 1 | Repris MOT POUR MOT des composants (SingularityStep/PracticalStep/AvoidStep). Provenance verbatim ; aucune valeur inventée. Les FACTs eux-mêmes sont verbatim, sans mapping. |
 
 ## À ne pas traiter dans ce lot (inscrit pour mémoire)
 

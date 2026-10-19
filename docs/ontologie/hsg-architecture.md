@@ -2625,6 +2625,13 @@ Les deltas lifestyle portent un champ `target` à quatre valeurs. Triés par la 
 - `target: 'filter'` (16 options → `relational_filters`) → **CANONIQUE (cas 1)**, PAS de pont : chaque option produit déjà, pour la même réponse, un construct canonique auto-produit — anti-surprise (q18) → **GUARDRAIL** `GRD_*` ; besoins/peur (q19) → **NEED** (`NEED_SEEN_UNDERSTOOD`, `NEED_LOVED_MATTER`/`NEED_CHOSEN`, `NEED_FREEDOM`/`NEED_RHYTHM_RESPECT`, `NEED_ACCEPTANCE`, `NEED_TRUST`/`NEED_REASSURANCE`, `NEED_CONNECTION`) ; exigence (q4c « valider les détails ») → **IMPORTANCE** `IMPORTANCE_MASTERY` ; charge mentale (q4a) → **FACT** `functional_impact`. `relational_filters` se reconstruit donc du journal. **Aucun trou d'ontologie (cas 3) sur le lifestyle.**
 - `target: 'canal'` (q4d → `temperament_modes.canal`) → **CANONIQUE (cas 1)** : `PREFERENCE.communication.channel`, auto-produite. PAS de pont.
 
+## A3 — SINGULARITÉ & PRATIQUE : FACT verbatim, NI projection NI pont
+
+Les champs texte libre (singularité, 11 champs) et pratiques (identité, tailles, alimentation, confort…) + q17 n'ont **aucun mapping canonique** : ils entrent au journal comme **FACT** (`knowledge_facts`), source `onboarding_open`, **VERBATIM** (`rawText` + `value` = la saisie telle quelle, jamais normalisée). Un FACT **ne produit aucun signal** (R16/§11.1), n'alimente **aucun axe**, **ne disparaît jamais** (append, `source_id` frais). Les champs santé/vie privée (allergies, mobilité/santé, adresse) sont **sensibles** → `visibility_derived = internal_only` (§35/R12).
+
+- **Pas de vecteur à reconstruire** pour ce domaine : il n'y a pas de projection scorée. Le test du domaine est le **ROUND-TRIP VERBATIM** (`knowledge_facts.value == saisie`), pas une égalité de vecteur.
+- **Respiration** : les FACTs ne créant pas de construct, `readSocleTags` ne gagne pas de domaine. Le texte libre q17 est journalé verbatim ; son EXTRACTION (`q17Interdits`) reste **hors journal** (inférence = lot futur).
+
 **Le pont est de niveau ACQUISITION, keyé par `source_id`.** Une option qui produit N evidences (fréquent côté lifestyle : plusieurs constructs canoniques par option) porterait sinon ses deltas N fois → la reconstruction les additionnerait N fois (bug masqué sur le tempérament, 1 evidence/option). Choix : `produceSocleAnswer` attache le pont à **TOUTES** les evidences de l'acquisition (elles partagent le `source_id` ; si l'une est filtrée un jour, une autre le porte — aucun couplage à l'ordre de production), et la **reconstruction dédoublonne par `source_id`** (`bridgesFromEvidenceRows`) : une acquisition = un pont compté une fois. *(Une variante « attacher à la 1ʳᵉ evidence » marche aussi mais couplerait le pont à l'ordre des evidences — rejetée pour cette raison.)*
 
 ---

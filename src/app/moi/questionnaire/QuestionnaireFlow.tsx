@@ -8,10 +8,11 @@ import type { AttentionResult } from "@/lib/attention/scoring";
 import { scoreTemperament } from "@/lib/temperament/scoring";
 import { computeTemperamentBreathFacts, buildTemperamentFallbackText } from "@/lib/temperament/breathFacts";
 import { STEP2_QUESTIONS, STEP3_QUESTIONS } from "@/lib/temperament/questions";
-import { socleCanonicalTemperament, socleCanonicalLifestyle } from "@/lib/questionnaire/flags";
+import { socleCanonicalTemperament, socleCanonicalLifestyle, socleCanonicalSingularity } from "@/lib/questionnaire/flags";
 import { buildCanonicalTemperamentQuestion, legacyIdToRef } from "@/lib/questionnaire/canonical-temperament";
 import { buildCanonicalLifestyleQuestion, legacyIdToRef as lifestyleLegacyIdToRef } from "@/lib/questionnaire/canonical-lifestyle";
-import { produceSocleAnswer } from "@/lib/questionnaire/produce-socle";
+import { produceSocleAnswer, produceSocleFact } from "@/lib/questionnaire/produce-socle";
+import { SINGULARITY_FACT_FIELDS, PRACTICAL_FACT_FIELDS, Q17_FACT_FIELD } from "@/lib/questionnaire/socle-facts-fields";
 import { readSocleTags, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
 import { scoreLifestyle, mergeTemperamentSupplements } from "@/lib/lifestyle/scoring";
@@ -58,6 +59,30 @@ async function temperamentJournalAndBreath(
   }
   try {
     const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // cumulatif
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    const data = (await res.json()) as { text: string };
+    return data.text ?? "";
+  } catch {
+    return "";
+  }
+}
+
+// A3 — produit les FACTs verbatim (singularité + q17 + pratique) puis renvoie la respiration CUMULATIVE
+// depuis le journal. Les FACTs ne produisent AUCUN signal : ils n'ajoutent pas de tag à la respiration
+// (qui lit les constructs). Vide si échec — jamais de repli legacy (§47bis).
+async function singularityFactsAndBreath(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  entries: ReadonlyArray<{ spec: (typeof SINGULARITY_FACT_FIELDS)[string]; value: string }>,
+): Promise<string> {
+  const ts = new Date().toISOString();
+  try {
+    await produceSocleFact(supabase as unknown as WriteClient, { userId, entries, timestamp: ts });
+  } catch (e) {
+    console.error("[QuestionnaireFlow] produceSocleFact (singularité) a échoué :", e);
+  }
+  try {
+    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId);
     const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
     const data = (await res.json()) as { text: string };
     return data.text ?? "";
@@ -275,6 +300,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   const [step3BreathText, setStep3BreathText]       = useState<string>("");
   const [lifestyle4BreathText, setLifestyle4BreathText] = useState<string>("");
   const [lifestyle5BreathText, setLifestyle5BreathText] = useState<string>("");
+  const [singularity6BreathText, setSingularity6BreathText] = useState<string>("");
 
   const [temperamentAnswers, setTemperamentAnswers] = useState<Record<string, string>>(
     ext?.temperament_answers ?? {}
@@ -659,7 +685,17 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 
-          const hasContent = Object.values(answers).some(v => v.trim().length > 0);
+          const hasContent = Object.keys(SINGULARITY_FACT_FIELDS).some((k) => (answers[k as keyof SingularityAnswers] as string | undefined)?.trim());
+          if (socleCanonicalSingularity) {
+            // FACTs verbatim : les 11 champs singularité + q17 (texte libre déjà saisi au step avoid).
+            const entries = Object.entries(SINGULARITY_FACT_FIELDS).map(([k, spec]) => ({ spec, value: (answers[k as keyof SingularityAnswers] as string) ?? "" }));
+            const q17Text = typeof ext?.relational_filters?.q17Text === "string" ? (ext.relational_filters.q17Text as string) : "";
+            if (q17Text) entries.push({ spec: Q17_FACT_FIELD, value: q17Text });
+            const text = await singularityFactsAndBreath(supabase, userId, entries);
+            setSingularity6BreathText(text);
+            navigate(hasContent ? "singularity6Breath" : "practical7");
+            return;
+          }
           navigate(hasContent ? "singularity6Breath" : "practical7");
         }}
       />
@@ -669,7 +705,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   if (step === "singularity6Breath") {
     return withProgress(
       <TemperamentBreath
-        breathText={SINGULARITY_BREATH}
+        breathText={socleCanonicalSingularity ? singularity6BreathText : SINGULARITY_BREATH}
         onContinue={() => navigate("practical7")}
         ctaLabel="Continuer →"
         progressLabel="Encore quelques questions, et Candice te connaîtra vraiment."
@@ -697,6 +733,18 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             { onConflict: "user_id" }
           );
           if (error) console.error("[QuestionnaireFlow] my_profile upsert (practical onDone)", error.message);
+
+          if (socleCanonicalSingularity) {
+            // FACTs verbatim des champs pratiques (tableaux joints tels quels). Projection inchangée.
+            const entries = Object.entries(PRACTICAL_FACT_FIELDS).map(([k, spec]) => {
+              const raw = (info as unknown as Record<string, unknown>)[k];
+              const value = Array.isArray(raw) ? raw.join(", ") : typeof raw === "string" ? raw : "";
+              return { spec, value };
+            });
+            try { await produceSocleFact(supabase as unknown as WriteClient, { userId, entries, timestamp: new Date().toISOString() }); }
+            catch (e) { console.error("[QuestionnaireFlow] produceSocleFact (pratique) a échoué :", e); }
+          }
+
           triggerSynthesis();
           afterSave();
           if (editMode !== "single") navigate("practical7Closing");

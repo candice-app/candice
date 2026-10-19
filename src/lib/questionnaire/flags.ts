@@ -9,3 +9,7 @@ export const socleCanonicalTemperament = process.env.NEXT_PUBLIC_SOCLE_CANONICAL
 
 // Domaine LIFESTYLE (q13/q14/q4a–q4d, q18/q19) rendu depuis le canonique + journal + pont + respiration cumulative.
 export const socleCanonicalLifestyle = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_LIFESTYLE === '1';
+
+// A3 — SINGULARITÉ & PRATIQUE (texte libre + champs pratiques + q17) journalisés en FACT verbatim.
+// Pas d'axes, pas de pont : un FACT ne produit aucun signal. Projection my_profile inchangée.
+export const socleCanonicalSingularity = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_SINGULARITY === '1';
