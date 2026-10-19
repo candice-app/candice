@@ -1,6 +1,8 @@
-// ASSET DE DIMS — métadonnée de PROJECTION (hsg §47bis.3), keyée par optionRef. Alimente le
-// scoring legacy (attention_reception) pour les lecteurs ; JAMAIS lue par le HSG/produceFromOption.
-// Générée par import des banques attention. Round-trip : attention-dims-roundtrip.test.ts.
+// MAPPING SÉMANTIQUE option → dimensions affectives (hsg §47ter), keyé par optionRef. C'est le
+// passage V15 d'une option d'attention vers les dimensions du vecteur (MOT/SER/CAD_C/CAD_S/EXP/GES/SUR).
+// ⚠ CE N'EST PAS de la présentation (corrigé le 19 oct) : une dim est de la SÉMANTIQUE. Utilisé à la
+// PRODUCTION (produce-socle) pour graver `dims` sur l'evidence → attention_reception reconstructible
+// depuis le JOURNAL seul (le journal est l'autorité). Généré par import des banques V15, jamais inventé.
 
 import type { AttentionDim } from '@/lib/attention/scoring';
 

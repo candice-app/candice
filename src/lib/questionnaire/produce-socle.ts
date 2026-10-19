@@ -10,6 +10,7 @@ import { ONBOARDING_MAPPINGS } from '../knowledge/onboarding';
 import { accountAbout, asUserId } from '../knowledge/identity';
 import { produceFromOption, type WriteContext } from '../knowledge-write/produce';
 import { persistKnowledge, type WriteClient } from '../knowledge-write/persist';
+import { ATTENTION_DIMS } from './attention-dims';
 
 const byRef = new Map(ONBOARDING_MAPPINGS.map((m) => [m.optionRef, m] as const));
 
@@ -45,12 +46,17 @@ export async function produceSocleAnswer(
     };
     // q1 : le rang (ordre de sélection, 1..3) alimente la strength affective via la modalité.
     const opts: { affectionRankByModality?: Record<string, 1 | 2 | 3> } = {};
-    if (input.ranked && i < 3 && mapping.affectionLanguage.length > 0) {
-      opts.affectionRankByModality = { [mapping.affectionLanguage[0].modality]: (i + 1) as 1 | 2 | 3 };
+    const rank = i < 3 ? ((i + 1) as 1 | 2 | 3) : undefined; // ordre de sélection
+    if (input.ranked && rank && mapping.affectionLanguage.length > 0) {
+      opts.affectionRankByModality = { [mapping.affectionLanguage[0].modality]: rank };
     }
     const { source, evidences, facts } = produceFromOption(ctx, mapping, opts);
-    await persistKnowledge(client, { source, evidences, facts });
-    written += evidences.length;
+    // SÉMANTIQUE attention (hsg §47ter) : on grave dims + rang sur l'evidence → attention_reception
+    // reste reconstructible depuis le journal seul. dims viennent du mapping V15 (jamais inventés).
+    const dims = ATTENTION_DIMS[ref];
+    const enriched = dims ? evidences.map((e) => ({ ...e, dims, rank })) : evidences;
+    await persistKnowledge(client, { source, evidences: enriched, facts });
+    written += enriched.length;
   }
   return written;
 }

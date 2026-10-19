@@ -67,6 +67,8 @@ export interface KnowledgeEvidenceRow {
   assertion_basis: string;
   ontology_version: string;
   hsg_version: string;
+  dims: string[] | null; // sémantique attention (migration 88) — reconstructible en attention_reception
+  rank: number | null; // ordre de sélection 1..3 (attention)
   value: number | null;
   strength: string | null;
   direction: string | null;
@@ -115,6 +117,8 @@ export function evidenceToRow(e: Evidence, about: AboutRef): KnowledgeEvidenceRo
     assertion_basis: e.assertionBasis, // dérivé à la production, jamais null (migration 86 : NOT NULL)
     ontology_version: e.version.ontology_version,
     hsg_version: e.version.hsg_version,
+    dims: e.dims ? [...e.dims] : null, // sémantique attention ; NULL hors domaine attention
+    rank: e.rank ?? null,
     // toutes les colonnes sémantiques à null par défaut ; chaque famille ne remplit QUE les siennes
     value: null as number | null,
     strength: null as string | null,

@@ -77,6 +77,16 @@ interface EvidenceBase extends KnowledgeScope {
    */
   readonly assertionBasis: AssertionBasis;
   readonly notes?: string;
+  /**
+   * SÉMANTIQUE du domaine attention (migration 88) — le passage option → dimensions affectives.
+   * `dims` : les dimensions affectives que l'option touche (MOT/SER/CAD_C/CAD_S/EXP/GES/SUR).
+   * `rank` : l'ORDRE de sélection (1..3) dans la question, qui pondère le vecteur (5/3/1).
+   * Ensemble, ils rendent attention_reception / attention_expression RECONSTRUCTIBLES depuis le
+   * journal seul (hsg §47bis.3 / §47ter). Nullables : seul le domaine attention les porte.
+   * Ce N'EST PAS de la présentation — ils viennent du mapping V15, jamais inventés.
+   */
+  readonly dims?: readonly string[];
+  readonly rank?: 1 | 2 | 3;
   /** Lien vers le FACT source éventuel (le FACT ne disparaît jamais — R16). */
   readonly fact_id?: string;
   /**
@@ -110,13 +120,9 @@ export interface AffectionEvidence extends EvidenceBase {
   readonly modality: AffectionModality;
   readonly target_construct: string; // code dérivé AFFECTION_<DIR>_<MOD>
   readonly strength: EvidenceStrength;
-  /**
-   * Rang DÉCLARÉ par l'utilisateur (lot A ter) — uniquement pour les questions où
-   * l'écran demande explicitement un classement (Q1 : « la première compte le plus »).
-   * Donnée déclarée, conservée telle quelle. La force se dérive du rang
-   * (rankToAffectionStrength), mais le rang n'ordonne JAMAIS l'AffectionSignalSet.
-   */
-  readonly rank?: 1 | 2 | 3;
+  // NB : `rank` est désormais sur EvidenceBase (migration 88) — porté par toutes les familles du
+  // domaine attention (q2 produit un DRIVER, pas une AFFECTION, mais porte aussi un rang). La force
+  // affective se dérive toujours du rang (affectionStrengthFor) ; le rang n'ordonne jamais l'AffectionSignalSet.
 }
 
 /* ── NEED : strength ── */

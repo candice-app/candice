@@ -9,6 +9,8 @@ import { produceFromOption } from '../../knowledge-write/produce';
 import type { WriteClient } from '../../knowledge-write/persist';
 import { produceSocleAnswer } from '../produce-socle';
 import { ATTENTION_DIMS } from '../attention-dims';
+import { reconstructAttentionVectors, type AttentionJournalItem } from '../reconstruct-attention';
+import { scoreAttention, type AttentionDim } from '../../attention/scoring';
 
 function recordingClient() {
   const rows: Record<string, unknown[]> = {};
@@ -46,24 +48,42 @@ describe('produceSocleAnswer — journal en APPEND', () => {
   });
 });
 
-describe('Cohérence projection ↔ journal — ATTENTION (condition de retrait du scoring legacy)', () => {
-  // Les options ACTIVES du domaine attention : q1,q2,q4 (reçues) + qe (donnée).
-  const activeAttn = ONBOARDING_MAPPINGS.filter((m) => ['q1', 'q2', 'q4', 'qe'].includes(m.questionCode) && m.status === 'ACTIF');
+describe('Cohérence projection ↔ journal — ATTENTION : ÉGALITÉ DU VECTEUR (condition de retrait)', () => {
+  // optionRef actifs par question, pour composer des sélections ordonnées.
+  const refs = (qc: string) => ONBOARDING_MAPPINGS.filter((m) => m.questionCode === qc && m.status === 'ACTIF').map((m) => m.optionRef);
+  // une sélection = { questionCode, [refs dans l'ordre de sélection] }
+  const selections = [
+    { qc: 'q1', picks: [refs('q1')[0], refs('q1')[5]] }, // deux choix classés (rang 1, 2)
+    { qc: 'q2', picks: [refs('q2')[0], refs('q2')[2]] },
+    { qc: 'q4', picks: [refs('q4')[0]] },
+    { qc: 'qe', picks: [refs('qe')[0], refs('qe')[1], refs('qe')[2]] }, // trois (rangs 1,2,3)
+  ];
+  const RECEPTION = new Set(['q1', 'q2', 'q4']);
 
-  it('chaque option active produit ≥1 evidence au journal (aucune perdue côté journal)', () => {
-    const scope = { about: accountAbout(asUserId('00000000-0000-4000-8000-000000000003')), ownerId: asUserId('00000000-0000-4000-8000-000000000003') } as const;
-    for (const m of activeAttn) {
-      const { evidences } = produceFromOption({ ...scope, sourceId: '00000000-0000-4000-8000-00000000000a', sourceType: 'onboarding_closed', timestamp: '2026-10-19T00:00:00Z' }, m);
-      expect(evidences.length, `${m.questionCode}/${m.optionRef}`).toBeGreaterThan(0);
-    }
+  it('attention_reception/expression reconstruits DEPUIS LE JOURNAL == projection directe (vecteur égal)', () => {
+    // PROJECTION DIRECTE : exactement ce que buildAnswers→scoreAttention calcule pour l'écran.
+    const directAnswers = {
+      reception: selections.filter((s) => RECEPTION.has(s.qc)).map((s) => s.picks.map((r) => ATTENTION_DIMS[r] as AttentionDim[])),
+      expression: selections.filter((s) => !RECEPTION.has(s.qc)).map((s) => s.picks.map((r) => ATTENTION_DIMS[r] as AttentionDim[])),
+    };
+    const direct = scoreAttention(directAnswers);
+
+    // JOURNAL : fragments (questionCode + dims + rang) tels que produce-socle les grave sur l'evidence.
+    const journal: AttentionJournalItem[] = selections.flatMap((s) =>
+      s.picks.map((r, i) => ({ questionCode: s.qc, dims: ATTENTION_DIMS[r], rank: i + 1 })),
+    );
+    const reconstructed = reconstructAttentionVectors(journal);
+
+    // ÉGALITÉ DU VECTEUR — pas « couverture d'options ». Divergence = échec.
+    expect(reconstructed.reception).toEqual(direct.reception);
+    expect(reconstructed.expression).toEqual(direct.expression);
   });
 
-  it('les deux sources couvrent le MÊME jeu d’options (journal ∩ projection) — divergence = échec', () => {
-    const journalRefs = new Set(activeAttn.map((m) => m.optionRef));
-    const projectionRefs = new Set(Object.keys(ATTENTION_DIMS)); // dims = projection
-    // toute option du domaine attention est dans les DEUX (ni l'une sans l'autre)
-    for (const r of journalRefs) expect(projectionRefs.has(r), `ref ${r} : journal mais pas projection`).toBe(true);
-    for (const r of projectionRefs) expect(journalRefs.has(r), `ref ${r} : projection mais pas journal`).toBe(true);
-    expect(journalRefs.size).toBe(28); // q1 7 + q2 7 + q4 7 + qe 7
+  it('produce-socle grave bien dims + rank sur les evidences attention (le journal porte la sémantique)', async () => {
+    const { client, rows } = recordingClient();
+    await produceSocleAnswer(client, { userId: '00000000-0000-4000-8000-000000000004', selectedOptionRefs: [refs('q2')[0]], timestamp: '2026-10-19T10:00:00Z' });
+    const ev = (rows['knowledge_evidences'] as Array<Record<string, unknown>>)[0];
+    expect(ev.dims).toEqual(ATTENTION_DIMS[refs('q2')[0]]);
+    expect(ev.rank).toBe(1);
   });
 });

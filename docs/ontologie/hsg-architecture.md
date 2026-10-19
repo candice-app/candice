@@ -2541,6 +2541,8 @@ Les libellés d'option et leurs **mappings** (tags, pondérations, familles) vie
 
 Un subtext qui porterait du sens deviendrait une seconde source de vérité. Zéro mapping, zéro tag, zéro pondération ne sort de la couche de présentation. *(Ces 131→128 subtexts, écrits avant le verrouillage du ton Candice et de la DA V11, relèvent d'un **lot éditorial futur** : ils ne sont pas canoniques, ils sont provisoires.)*
 
+**⚠ Les `dims` ne sont PAS dans cette couche (corrigé le 19 oct).** Une dim (MOT/SER/CAD_C/CAD_S/EXP/GES/SUR) porte le passage d'une option vers les dimensions affectives : c'est de la **SÉMANTIQUE**, pas de la présentation. Elle entre dans l'**evidence** (migration 88, `dims` + `rank`) et dans le **journal**, pas dans un asset inerte. Les ranger avec les subtexts était une erreur de catégorie — et elle aurait fait du journal un second log, puisque sans les dims `attention_reception` n'est pas dérivable du journal.
+
 ## 2. Le découpage en ÉTAPES est de la STRUCTURE, pas un asset
 
 Les étapes (attention · tempérament · lifestyle · singularité/pratique) **ne sont pas** rangées avec les subtexts/icônes. Elles sont **structurelles** : elles déterminent **où tombent les respirations**, donc la progressivité de l'analyse cumulative (règle 7 ci-dessous). Le découpage est **explicite, nommé et documenté** comme structure, jamais enfoui dans une couche d'assets.
@@ -2551,7 +2553,7 @@ Les étapes (attention · tempérament · lifestyle · singularité/pratique) **
 
 > **Autorité : le journal `knowledge_*` fait foi.** Les colonnes calculées de `my_profile` sont une **projection de service**. En cas de divergence, le journal a raison. Rien d'autre que la projection ne doit lire `result.axes` / `result.modes` comme une vérité.
 
-**Condition de retrait du scoring legacy.** Deux sources coexistent par décision assumée ; un **test de cohérence** doit les surveiller : il recalcule la projection depuis le journal et la compare à la sortie du scoring legacy, **domaine par domaine**, et **ÉCHOUE** en cas de divergence. Le jour où ce test passe au vert sur **tous** les domaines, le scoring parallèle peut mourir. **Sans lui, il ne mourra jamais** — personne ne saurait s'il le peut. (À construire au fil des domaines basculés ; pas avant qu'un domaine écrive réellement le journal.)
+**Condition de retrait du scoring legacy.** Deux sources coexistent par décision assumée ; un **test de cohérence** doit les surveiller : il **reconstruit la projection DEPUIS LE JOURNAL SEUL** (via les `dims` + `rank` gravés sur les evidences) et exige l'**ÉGALITÉ DU VECTEUR** avec la sortie du scoring legacy, **domaine par domaine** — pas une simple « couverture d'options ». Il **ÉCHOUE** en cas de divergence. Le jour où il passe au vert sur **tous** les domaines, le scoring parallèle peut mourir. **Sans lui, il ne mourra jamais.** (Attention : fait — `reconstruct-attention.ts` + le test d'égalité du vecteur. À étendre à chaque domaine basculé.)
 
 ## 4. Respirations — règles de génération (7a, 7b)
 
