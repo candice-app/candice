@@ -11,6 +11,7 @@ import type { AttentionQuestion } from "@/lib/attention/questions";
 import { socleCanonicalAttention } from "@/lib/questionnaire/flags";
 import { buildCanonicalAttentionQuestion } from "@/lib/questionnaire/canonical-attention";
 import { produceSocleAnswer } from "@/lib/questionnaire/produce-socle";
+import { readAttentionTags, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
 
 // Lot B : flag ON → domaine attention (q1 classé, q2, q4 reçues + qe donnée) rendu DEPUIS LE
@@ -260,17 +261,34 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
 
       const facts: BreathFacts = computeBreathFacts(result.reception, result.expression);
       let breathText: string;
-      try {
-        const res = await fetch("/api/attention/breath", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ facts }),
-        });
-        if (!res.ok) throw new Error("api_error");
-        const data = await res.json() as { text: string };
-        breathText = data.text || buildFallbackText(facts);
-      } catch {
-        breathText = buildFallbackText(facts);
+      if (socleCanonicalAttention) {
+        // ÉTAPE 3 — la respiration lit le JOURNAL (tags produits), jamais result.axes. Règles 7a/7b
+        // dans le prompt de /api/socle/attention-breath. Mince si peu de tags (droit d'être brève).
+        try {
+          const input = await readAttentionTags(supabase as unknown as TagsReadClient, userId);
+          const res = await fetch("/api/socle/attention-breath", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(input),
+          });
+          const data = await res.json() as { text: string };
+          breathText = data.text || buildFallbackText(facts); // repli neutre si le modèle échoue
+        } catch {
+          breathText = buildFallbackText(facts);
+        }
+      } else {
+        try {
+          const res = await fetch("/api/attention/breath", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ facts }),
+          });
+          if (!res.ok) throw new Error("api_error");
+          const data = await res.json() as { text: string };
+          breathText = data.text || buildFallbackText(facts);
+        } catch {
+          breathText = buildFallbackText(facts);
+        }
       }
 
       const { error: updateError } = await supabase.from("my_profile")
