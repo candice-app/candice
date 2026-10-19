@@ -168,7 +168,28 @@
       "Bash(awk '/CREATE TABLE.*contacts/,/\\\\\\);/' supabase-schema.sql)",
       "Bash(ls -1 supabase-migration-8[3-7]*.sql)",
       "Bash(ls scripts/schema-audit*)",
-      "Bash(head -30 scripts/schema-audit.mjs)"
+      "Bash(head -30 scripts/schema-audit.mjs)",
+      "Bash(awk '{print $5, $9}')",
+      "Skill(artifact-design)",
+      "Artifact",
+      "Bash(PORT=3000 npm run dev)",
+      "Bash(echo \"serveur relancé \\(pid $!\\)\")",
+      "Bash(curl -s -o /dev/null http://localhost:3000/ --max-time 3)",
+      "Bash(break)",
+      "Bash(lsof -tiTCP:3000 -sTCP:LISTEN)",
+      "Bash(xargs kill)",
+      "Bash(curl -s -o /dev/null -w 'ancien mdp → HTTP %{http_code}\\\\n' -X POST http://localhost:3000/api/beta-access -H 'Content-Type: application/json' -d '{\"password\":\"Candice2026!\"}' --max-time 10)",
+      "Bash(curl -s -o /dev/null -w 'bidon     → HTTP %{http_code}\\\\n' -X POST http://localhost:3000/api/beta-access -H 'Content-Type: application/json' -d '{\"password\":\"xxx\"}' --max-time 10)",
+      "Bash(ipconfig getifaddr *)",
+      "Bash(awk '{print \"vocabulary.ts :\", $1, \"lignes\"}')",
+      "Bash(grep -oE \"'[A-Z][A-Z0-9_]{2,}'\" src/lib/knowledge/vocabulary.ts)",
+      "Bash(grep -oE \"\\\\`?[A-Z][A-Z0-9_]{2,}\\\\`?\" docs/ontologie/dictionnaire-canonique.md)",
+      "Bash(awk '/CREATE TABLE.*questionnaire_responses/,/\\\\\\);/' supabase-schema.sql)",
+      "Bash(awk '/CREATE TABLE IF NOT EXISTS knowledge_evidences/,/\\\\\\);/' supabase-migration-82-knowledge-schema.sql)",
+      "Bash(awk '/CREATE TABLE.*my_profile/,/\\\\\\);/' supabase-schema.sql)",
+      "Bash(awk '/questionCode: \"q5\"/{found=1} found && /optionRef:|optionText:/{print} /optionRef: \"1[0-9]\"/{if\\(found\\)exit}' src/lib/knowledge/onboarding.ts)",
+      "Bash(awk \"/id: 'q5'/{f=1} f && /id: 'q5_|label:/{print} /id: 'q6'/{if\\(f\\)exit}\" src/lib/temperament/questions.ts)",
+      "Bash(rm -f _bridge.mjs)"
     ]
   }
 }
