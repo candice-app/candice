@@ -19,6 +19,20 @@
 
 - **Dims/rank de l'attention** (E-4) sont de la sémantique LEGACY logée dans les colonnes `dims`/`rank` au lieu de `projection_bridge` — pour éviter un refactor pur sur le domaine qui marche. Elles portent **la même interdiction** (jamais lues comme connaissance par HSG/respiration/analyse, cf. §47bis) et **la même condition de mort que `projection_bridge`** : `dims`, `rank`, `projection_bridge` et les colonnes du scoring legacy meurent **au même événement** — le jour où la reco réécrite lit les PROFILE constructs V15.
 
+## Questions ouvertes (à arbitrer au LOT RECO, pas avant — ces axes meurent avec la réécriture)
+
+- **Double-application des suppléances tempérament du lifestyle (BUG LATENT du scoring déployé).**
+  `QuestionnaireFlow` appelle `mergeTemperamentSupplements` DEUX fois : au step4 (sur les suppléances des
+  questions step4) puis au step5 (sur le RE-calcul de TOUTES les réponses = step4 + q18/q19). Les
+  suppléances **step4** sont donc ajoutées **deux fois** à `temperament_axes`. **Axes surpondérés** :
+  `sensibiliteDetails` (q14,q4a), `rapportTemps` (q4a,q4c), `spontaneiteControle` (q4a,q4c),
+  `exigenceStanding` (q4a,q4c). Surpoids ≈ `round(raw_step4/8×100)` compté une fois de trop par axe
+  (ex. mesuré : `rapportTemps` raw=3 → +38 appliqué deux fois → 76 au lieu de 38). Les suppléances
+  **step5** (q18/q19) ne sont PAS doublées. **Décision Estelle : NE PAS corriger maintenant** — ces axes
+  legacy meurent avec la réécriture de la reco (le corriger serait du travail jeté). La reconstruction du
+  journal reproduit FIDÈLEMENT ce double-comptage (sinon l'égalité de vecteur échouerait, .6/.7). À
+  rouvrir quand la reco lira les PROFILE constructs V15.
+
 ## À venir (sera inscrit quand gravé)
 
 - *(rien en attente sur le socle — attention, tempérament et lifestyle gravés : E-1…E-6.)*

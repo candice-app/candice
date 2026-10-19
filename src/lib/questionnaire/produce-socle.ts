@@ -60,15 +60,17 @@ export async function produceSocleAnswer(
     // et 'canal' ne sont PAS au pont : ils sont canoniques (NEED/GUARDRAIL/… cas 1) et déjà dans `evidences`.
     const dims = ATTENTION_DIMS[ref];
     const deltas = TEMPERAMENT_DELTAS[ref] ?? LIFESTYLE_DELTAS[ref];
-    // Le PONT est de niveau ACQUISITION (une réponse = une contribution de projection), pas evidence :
-    // on l'attache à UNE SEULE evidence (la 1ʳᵉ). Sinon une option qui produit N evidences (fréquent
-    // côté lifestyle : plusieurs constructs canoniques) dupliquerait ses deltas N fois → la reconstruction
-    // les additionnerait N fois. (Côté tempérament, 1 evidence/option, donc déjà correct.)
+    // Le PONT est de niveau ACQUISITION (une réponse = une contribution de projection), keyé par
+    // `source_id` (frais par acquisition). On l'attache à TOUTES les evidences de l'acquisition : elles
+    // partagent le même source_id et le même pont, donc si l'une est filtrée un jour, une autre le porte
+    // encore — pas de couplage à l'ordre de production. La RECONSTRUCTION dédoublonne par `source_id`
+    // (bridgesFromEvidenceRows) : une acquisition = un pont compté une fois, jamais N fois même si l'option
+    // produit N evidences (fréquent côté lifestyle : plusieurs constructs canoniques par réponse).
     const enriched = (dims || deltas)
-      ? evidences.map((e, idx) => ({
+      ? evidences.map((e) => ({
           ...e,
           ...(dims ? { dims, rank } : {}),
-          ...(deltas && idx === 0 ? { projectionBridge: { deltas } } : {}),
+          ...(deltas ? { projectionBridge: { deltas } } : {}),
         }))
       : evidences;
     await persistKnowledge(client, { source, evidences: enriched, facts });

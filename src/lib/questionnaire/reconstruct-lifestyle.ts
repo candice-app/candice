@@ -24,6 +24,24 @@ export type LifestyleAxisScores = Record<string, { score: number; intensity: num
 
 const clamp = (n: number) => Math.max(-100, Math.min(100, n));
 
+/**
+ * Le pont est de niveau ACQUISITION, keyé par `source_id`. produceSocleAnswer l'attache à TOUTES les
+ * evidences d'une même acquisition (robustesse au filtrage, aucun couplage à l'ordre) — mais il décrit UNE
+ * contribution de projection, pas N. On dédoublonne donc par `source_id` : un pont compté une seule fois
+ * par acquisition. INVARIANT à passer avant toute reconstruction (temperament comme lifestyle).
+ */
+export function bridgesFromEvidenceRows(
+  rows: ReadonlyArray<{ source_id: string; projection_bridge: unknown }>,
+): Array<{ deltas: readonly { axis: string; value: number; target?: string; q?: string }[] }> {
+  const bySource = new Map<string, { deltas: readonly { axis: string; value: number; target?: string; q?: string }[] }>();
+  for (const r of rows) {
+    const b = r.projection_bridge as { deltas?: unknown } | null;
+    if (!b || !Array.isArray(b.deltas) || bySource.has(r.source_id)) continue;
+    bySource.set(r.source_id, { deltas: b.deltas as { axis: string; value: number; target?: string; q?: string }[] });
+  }
+  return [...bySource.values()];
+}
+
 /** Reconstruit lifestyle_axes depuis les deltas 'lifestyle' du pont (pool brut, recalcul plein = pas de double-app). */
 export function reconstructLifestyleAxes(bridges: ReadonlyArray<{ deltas: readonly LifestyleBridgeDelta[] }>): LifestyleAxisScores {
   const acc: Record<string, { raw: number; intensity: number }> = Object.fromEntries(LIFESTYLE_AXIS_KEYS.map((k) => [k, { raw: 0, intensity: 0 }]));
