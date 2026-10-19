@@ -2551,6 +2551,8 @@ Les étapes (attention · tempérament · lifestyle · singularité/pratique) **
 
 > **Autorité : le journal `knowledge_*` fait foi.** Les colonnes calculées de `my_profile` sont une **projection de service**. En cas de divergence, le journal a raison. Rien d'autre que la projection ne doit lire `result.axes` / `result.modes` comme une vérité.
 
+**Condition de retrait du scoring legacy.** Deux sources coexistent par décision assumée ; un **test de cohérence** doit les surveiller : il recalcule la projection depuis le journal et la compare à la sortie du scoring legacy, **domaine par domaine**, et **ÉCHOUE** en cas de divergence. Le jour où ce test passe au vert sur **tous** les domaines, le scoring parallèle peut mourir. **Sans lui, il ne mourra jamais** — personne ne saurait s'il le peut. (À construire au fil des domaines basculés ; pas avant qu'un domaine écrive réellement le journal.)
+
 ## 4. Respirations — règles de génération (7a, 7b)
 
 La respiration **reformule ce que le HSG a produit** (tags et pondérations issus des mappings appliqués à chaque réponse), lus depuis le journal. Elle est générée par IA (texte réactif, non pré-écrit). Deux règles non négociables :
