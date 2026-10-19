@@ -64,9 +64,12 @@ for (const q of Object.keys(canon)) {
   rows.push(`${q.padEnd(5)} | ${String(act.length).padStart(2)} actives | ${String(matched).padStart(2)} rendues | ${verdict}`);
 }
 
-// ── Sens inverse : libellés rendus à l'écran absents du canonique (legacy pur) ──
+// ── Sens inverse : chaque libellé rendu est-il actif-canon, inactif-canon (traînard), ou étranger ? ──
 const canonActiveSet = new Set(Object.values(canon).flatMap((o) => o.filter((x) => x.active).map((x) => norm(x.text))));
-const screenOnly = [...new Set(screen)].filter((s) => !canonActiveSet.has(norm(s)));
+const canonAllSet = new Set(Object.values(canon).flatMap((o) => o.map((x) => norm(x.text))));
+const screenUniq = [...new Set(screen)];
+const stragglers = screenUniq.filter((s) => !canonActiveSet.has(norm(s)) && canonAllSet.has(norm(s))); // inactif-canon, encore rendu
+const foreign = screenUniq.filter((s) => !canonAllSet.has(norm(s))); // vraiment étranger au V15
 
 console.log('CONFORMITÉ ÉCRAN → CANONIQUE (options ACTIVES du V15)\n');
 rows.forEach((r) => console.log('  ' + r));
@@ -78,12 +81,16 @@ console.log(`options rendues à l'écran: ${rendues}`);
 console.log(`VRAIE LACUNE (active, non rendue) : ${totalActive - rendues}`);
 console.log(`verdicts : IDENTIQUE ${identique} · PARTIELLE ${partielle} · ABSENTE ${absente}`);
 console.log(`lacune par question : ${gaps.join(' · ')}`);
-console.log(`\nlibellés rendus NON canoniques (legacy étranger au V15) : ${screenOnly.length}`);
-screenOnly.forEach((s) => console.log('   · ' + s));
+// Traînards legacy : rendus à l'écran MAIS inactifs au V15 (retirés/déplacés) → (B) les retirera.
+console.log(`\nTRAÎNARDS legacy (rendus mais INACTIFS au V15 — à retirer par B) : ${stragglers.length}`);
+stragglers.forEach((s) => console.log('   · ' + s));
+console.log(`   [typiquement q3 (retirée), q15 Food & q16 Voyage (déplacées vers Discovery)]`);
+console.log(`\nlibellés VRAIMENT étrangers au V15 (ni actif ni inactif) : ${foreign.length}`);
+foreign.forEach((s) => console.log('   · ' + s));
 
-// Gate : aucun libellé d'écran ne doit être étranger au V15 (le déployé est un SOUS-ENSEMBLE)
-if (screenOnly.length !== 0) {
-  console.error(`\n⚠ ${screenOnly.length} libellé(s) d'écran absent(s) du canonique V15 — à investiguer.`);
+// Gate : aucun libellé d'écran ne doit être VRAIMENT étranger au V15 (inconnu du canonique).
+if (foreign.length !== 0) {
+  console.error(`\n⚠ ${foreign.length} libellé(s) d'écran inconnu(s) du V15 — à investiguer.`);
   process.exit(1);
 }
-console.log('\n✓ Tout libellé rendu existe au canonique V15 (déployé = sous-ensemble strict).');
+console.log('\n✓ Aucun libellé rendu n’est étranger au V15 ; mais l’écran rend encore des traînards inactifs (ci-dessus).');
