@@ -8,16 +8,22 @@ import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFac
 import type { BreathFacts } from "@/lib/attention/breathFacts";
 import { RECEPTION_QUESTIONS_ACTIVE, EXPRESSION_QUESTION } from "@/lib/attention/questions";
 import type { AttentionQuestion } from "@/lib/attention/questions";
-import { socleCanonicalQ2 } from "@/lib/questionnaire/flags";
+import { socleCanonicalAttention } from "@/lib/questionnaire/flags";
 import { buildCanonicalAttentionQuestion } from "@/lib/questionnaire/canonical-attention";
 import { produceSocleAnswer } from "@/lib/questionnaire/produce-socle";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
 
-// Lot B : quand le flag est ON, q2 est rendue DEPUIS LE CANONIQUE (labels + présentation + dims).
-// OFF (défaut) : banque legacy inchangée. Les ids d'option de q2 deviennent alors les optionRef.
-const RECEPTION_RENDERED: AttentionQuestion[] = socleCanonicalQ2
-  ? RECEPTION_QUESTIONS_ACTIVE.map((q) => (q.id === "q2" ? buildCanonicalAttentionQuestion("q2") : q))
+// Lot B : flag ON → domaine attention (q1 classé, q2, q4 reçues + qe donnée) rendu DEPUIS LE
+// CANONIQUE (labels + présentation + dims). OFF (défaut) : banque legacy inchangée. Les ids
+// d'option deviennent alors les optionRef canoniques.
+const RECEPTION_RENDERED: AttentionQuestion[] = socleCanonicalAttention
+  ? RECEPTION_QUESTIONS_ACTIVE.map((q) =>
+      ["q1", "q2", "q4"].includes(q.id) ? buildCanonicalAttentionQuestion(q.id) : q,
+    )
   : RECEPTION_QUESTIONS_ACTIVE;
+const EXPRESSION_RENDERED: AttentionQuestion = socleCanonicalAttention
+  ? buildCanonicalAttentionQuestion("qe")
+  : EXPRESSION_QUESTION;
 import IconSprite, { Icon } from "@/components/ui/v4/IconSprite";
 import Brand from "@/components/ui/v4/Brand";
 import ProgressBar from "@/components/ui/v4/ProgressBar";
@@ -182,7 +188,7 @@ function buildAnswers(selections: Selections): AttentionAnswers {
     });
   return {
     reception: RECEPTION_RENDERED.map(buildQuestion),
-    expression: [EXPRESSION_QUESTION].map(buildQuestion),
+    expression: [EXPRESSION_RENDERED].map(buildQuestion),
   };
 }
 
@@ -194,7 +200,7 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const allQIds = [...RECEPTION_RENDERED.map(q => q.id), EXPRESSION_QUESTION.id];
+  const allQIds = [...RECEPTION_RENDERED.map(q => q.id), EXPRESSION_RENDERED.id];
   const answeredCount = allQIds.filter(id => (selections[id] ?? []).length > 0).length;
   const totalQuestions = allQIds.length;
   const allAnswered = answeredCount === totalQuestions;
@@ -234,19 +240,21 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
         return;
       }
 
-      // Lot B : production de connaissance DEPUIS LE CANONIQUE pour q2, AU MOMENT de la réponse.
-      // Journal = autorité ; la projection my_profile ci-dessus reste inchangée. Flag OFF → ignoré.
-      if (socleCanonicalQ2) {
+      // Lot B : production de connaissance DEPUIS LE CANONIQUE pour le domaine attention, AU MOMENT
+      // de la réponse. Journal = autorité ; la projection my_profile ci-dessus reste inchangée.
+      // Flag OFF → ignoré. q1 est classé (ordre = rang) ; q2/q4/qe non classés.
+      if (socleCanonicalAttention) {
+        const ts = new Date().toISOString();
+        const client = supabase as unknown as WriteClient;
         try {
-          await produceSocleAnswer(supabase as unknown as WriteClient, {
-            userId,
-            selectedOptionRefs: selections["q2"] ?? [], // ids = optionRef canoniques (render canonique)
-            timestamp: new Date().toISOString(),
-          });
+          await produceSocleAnswer(client, { userId, selectedOptionRefs: selections["q1"] ?? [], timestamp: ts, ranked: true });
+          await produceSocleAnswer(client, { userId, selectedOptionRefs: selections["q2"] ?? [], timestamp: ts });
+          await produceSocleAnswer(client, { userId, selectedOptionRefs: selections["q4"] ?? [], timestamp: ts });
+          await produceSocleAnswer(client, { userId, selectedOptionRefs: selections["qe"] ?? [], timestamp: ts });
         } catch (e) {
           // Le journal est l'autorité : un échec est une information, pas à masquer. On le signale
           // sans bloquer le parcours (la projection est déjà écrite).
-          console.error("[AttentionStep] produceSocleAnswer (q2) a échoué :", e);
+          console.error("[AttentionStep] produceSocleAnswer (attention) a échoué :", e);
         }
       }
 
@@ -341,9 +349,9 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
         </div>
 
         <QuestionSection
-          question={EXPRESSION_QUESTION}
-          selectedIds={selections[EXPRESSION_QUESTION.id] ?? []}
-          onToggle={(optId) => toggle(EXPRESSION_QUESTION.id, optId)}
+          question={EXPRESSION_RENDERED}
+          selectedIds={selections[EXPRESSION_RENDERED.id] ?? []}
+          onToggle={(optId) => toggle(EXPRESSION_RENDERED.id, optId)}
         />
 
         {error && (

@@ -27,10 +27,16 @@ function sourceIdFor(userId: string, optionRef: string): string {
  */
 export async function produceSocleAnswer(
   client: WriteClient,
-  input: { userId: string; selectedOptionRefs: readonly string[]; timestamp: string },
+  input: {
+    userId: string;
+    selectedOptionRefs: readonly string[]; // ORDRE = rang quand `ranked` (1er = rang 1)
+    timestamp: string;
+    ranked?: boolean; // q1 : le classement déclaré porte une information (QUESTIONS_WITH_EXPLICIT_RANKING)
+  },
 ): Promise<number> {
   let written = 0;
-  for (const ref of input.selectedOptionRefs) {
+  for (let i = 0; i < input.selectedOptionRefs.length; i++) {
+    const ref = input.selectedOptionRefs[i];
     const mapping = byRef.get(ref);
     if (!mapping) continue; // option inconnue du canonique → rien (jamais inventer)
     const ctx: WriteContext = {
@@ -40,7 +46,12 @@ export async function produceSocleAnswer(
       sourceType: 'onboarding_closed',
       timestamp: input.timestamp,
     };
-    const { source, evidences, facts } = produceFromOption(ctx, mapping);
+    // q1 : le rang (ordre de sélection, 1..3) alimente la strength affective via la modalité.
+    const opts: { affectionRankByModality?: Record<string, 1 | 2 | 3> } = {};
+    if (input.ranked && i < 3 && mapping.affectionLanguage.length > 0) {
+      opts.affectionRankByModality = { [mapping.affectionLanguage[0].modality]: (i + 1) as 1 | 2 | 3 };
+    }
+    const { source, evidences, facts } = produceFromOption(ctx, mapping, opts);
     await persistKnowledge(client, { source, evidences, facts });
     written += evidences.length;
   }

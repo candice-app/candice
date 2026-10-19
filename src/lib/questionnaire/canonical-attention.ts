@@ -12,7 +12,10 @@ import { ATTENTION_DIMS } from './attention-dims';
 // micro (consigne sous le titre) = texte UI PROVISOIRE (lot éditorial futur), non canonique.
 // Repris tel quel du déployé, jamais inventé.
 const MICRO: Record<string, string> = {
+  q1: 'Choisis jusqu’à 3 réponses. La première compte le plus.',
   q2: 'Choisis jusqu’à 3 réponses. La première compte le plus.',
+  q4: 'Choisis jusqu’à 3 réponses. La première compte le plus.',
+  qe: 'Choisis jusqu’à 3 réponses. Cela aidera Candice à comprendre les décalages possibles entre ce que tu donnes naturellement et ce que les autres attendent.',
 };
 
 /**
