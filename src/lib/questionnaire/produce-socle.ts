@@ -10,20 +10,17 @@ import { ONBOARDING_MAPPINGS } from '../knowledge/onboarding';
 import { accountAbout, asUserId } from '../knowledge/identity';
 import { produceFromOption, type WriteContext } from '../knowledge-write/produce';
 import { persistKnowledge, type WriteClient } from '../knowledge-write/persist';
-import { evidenceId } from '../knowledge-write/ids';
 
 const byRef = new Map(ONBOARDING_MAPPINGS.map((m) => [m.optionRef, m] as const));
 
-/** uuid v5 déterministe (réponse rejouée → même source, upsert idempotent) via le même ns que les evidences. */
-function sourceIdFor(userId: string, optionRef: string): string {
-  // on réutilise evidenceId (uuid v5 stable) pour dériver un id de source déterministe par (user, option)
-  return evidenceId(`socle:${userId}`, `SRC:${optionRef}`);
-}
-
 /**
- * Écrit dans le journal les evidences d'UNE question socle répondue (self). Idempotent : re-répondre
- * réécrit les mêmes ids (source déterministe + evidence_id déterministe) → upsert, pas d'accumulation.
- * Renvoie le nombre d'evidences écrites.
+ * JOURNAL EN APPEND (décision Estelle, 19 oct) : chaque réponse est un ACTE D'ACQUISITION distinct,
+ * avec son propre `source_id` FRAIS (uuid à l'acquisition, jamais dérivé du contenu — doctrine ids.ts).
+ * Deux réponses à la même question à deux dates coexistent ; deux respondents (modes 1/2/3) coexistent.
+ * On N'ÉCRASE JAMAIS une evidence. L'état courant se dérive par la RÈGLE DE RÉCENCE (hsg §47ter) :
+ * le plus récent par (sujet, questionCode, dimension), lu à la projection — rien n'est marqué ni supprimé.
+ * (evidence_id reste déterministe PAR source → re-rejouer la MÊME acquisition reste idempotent ;
+ *  une NOUVELLE réponse a une nouvelle source donc de nouvelles evidences.)
  */
 export async function produceSocleAnswer(
   client: WriteClient,
@@ -42,7 +39,7 @@ export async function produceSocleAnswer(
     const ctx: WriteContext = {
       about: accountAbout(asUserId(input.userId)),
       ownerId: asUserId(input.userId),
-      sourceId: sourceIdFor(input.userId, ref),
+      sourceId: globalThis.crypto.randomUUID(), // FRAIS par acquisition (append) — jamais dérivé du contenu
       sourceType: 'onboarding_closed',
       timestamp: input.timestamp,
     };

@@ -2568,6 +2568,33 @@ Ces deux règles figurent dans le **prompt** de la route de respiration, en plus
 
 ---
 
+# 47 ter. LE JOURNAL EST EN APPEND — RÈGLE DE RÉCENCE
+
+Décision (19 oct) : **on n'écrase JAMAIS une evidence.** Répondre deux fois à la même question crée **deux** evidences qui coexistent. La connaissance ÉVOLUE (micro-questions, affinage continu) : un journal qui écrase détruit la dimension temporelle du HSG, qui est sa valeur. Et une même personne est décrite par plusieurs **respondents** (soi en mode 1, un proche via le pilote en mode 2, le pilote en mode 3) : ces evidences ont des `assertion_basis` différents et **doivent** coexister.
+
+## Composition de la clé
+
+> **`source_id`** = uuid **frais, généré à l'ACQUISITION** (jamais dérivé du contenu). C'est l'identité d'un acte de réponse. La source porte `about` (sujet), `source_type` (acte d'acquisition), `assertion_basis` (base du respondent), `ts` (horodatage de la réponse d'origine).
+> **`evidence_id`** = `uuidv5(source_id + clé-cible)`. Déterministe **dans** une acquisition (re-rejouer la même acquisition remplace ses evidences — pas de doublon de rejeu), unique **entre** acquisitions.
+
+Cette clé sépare, au minimum :
+- **deux réponses de la même personne à la même question à deux dates** → deux acquisitions → deux `source_id` → deux `evidence_id` ;
+- **deux réponses de respondents différents sur le même sujet** → deux sources (`about`/`source_type`/`assertion_basis` distincts) + `source_id` frais.
+
+## Règle de récence (état courant)
+
+> L'**état courant** d'une dimension se lit à la **PROJECTION** : pour un `(sujet = about, questionCode [via la source], dimension = target_family + target_construct [+ facet/direction/modality])`, l'evidence **retenue est celle dont la source a le `ts` le plus récent**.
+
+C'est une règle **sémantique de LECTURE**, pas une mutation. Rien n'est marqué `superseded` en base, **rien n'est supprimé** : le « superseded » est **dérivé** de l'horodatage. L'append reste intact ; l'historique complet est interrogeable.
+
+## Édition d'une réponse
+
+Corriger une réponse = un **nouvel acte d'acquisition** (nouvelle source, `ts` postérieur, nouvelles evidences). L'ancienne evidence **reste**. La projection cesse de la retenir (récence), mais elle n'est ni marquée ni effacée.
+
+**Aucune migration** : le schéma est déjà un journal (PK = `id` seul, aucune contrainte d'unicité sur `(user, construct)`) ; la récence est une règle de lecture (consolidation/projection), pas une colonne.
+
+---
+
 # 48. EXPLICABILITÉ D’UNE RECOMMANDATION
 
 Candice doit pouvoir produire une justification compréhensible sans révéler inutilement les données sensibles ou la mécanique interne.

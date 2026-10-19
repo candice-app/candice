@@ -53,3 +53,9 @@
 - **Lot** : le chiffre attendu annonçait « 4, tous HARD ».
 - **Explication** : les deux chiffres sont justes mais comptent deux choses différentes — **4 options** de Q18 portent un guardrail, et elles produisent **5 evidences** parce que la ligne 119 porte deux codes. Le « 4 » du prompt comptait les options, le module compte les evidences.
 - **Code** : **rien à corriger, l'implémentation est juste** (5 evidences guardrail, toutes HARD). C'est la valeur attendue dans le prompt qui était ambiguë. **Arbitrage Estelle (2026-10-05).**
+
+## 11 · Socle : 0 traînard rendu, q15/q16 jamais rendues depuis la V15 (méthode : compter l'ÉCRAN)
+
+- **Constat** : le rendu du questionnaire utilise les listes `_ACTIVE` (filtrées sur `status`). q3 (`REMOVED_FROM_ONBOARDING_CORE`), q15 Food (`MOVED_TO_DISCOVERY_FOOD`) et q16 Voyage (`MOVED_TO_DISCOVERY_VOYAGE`) sont **exclus du rendu**. L'écran rend **exactement 106/106 options actives, zéro inactive**. La liste de retrait écran est **vide**.
+- **Conséquence** : q15 Food et q16 Voyage **n'ont jamais été rendues depuis la clôture V15**. Le trou de couverture sur ces deux domaines est **antérieur au lot B**, pas créé par lui ; les réponses existantes datent d'avant le retrait. Rien à retirer de l'écran ; reste la seule question de la **reprise par le Discovery** (à trancher au domaine lifestyle : `discovery/engine.ts` ingère-t-il ce vocabulaire sans traduction inventée ?).
+- **Règle de méthode (a payé quatre fois — 16, puis 22, puis une lacune de 17, tous faux)** : **tout compte part de ce qui est RENDU À L'ÉCRAN** (listes `_ACTIVE` / composants), **jamais de la lecture des banques complètes** ni d'un parseur texte. Les quatre erreurs venaient de là. Outil : import des modules rendus (cf. `presentation-roundtrip.test.ts`). **Arbitrage/constat Estelle (2026-10-19).**
