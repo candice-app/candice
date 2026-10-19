@@ -2529,6 +2529,43 @@ C’est cette dérivation qui sépare réellement les modes de saisie pour un m�
 
 ---
 
+# 47 bis. ARCHITECTURE DU RENDU DU QUESTIONNAIRE (lot B — banque unique)
+
+Le questionnaire (socle et incognito) est **rendu depuis la banque canonique** (`onboarding.ts`, conforme au document V15 ; `onboarding-incognito.ts` pour l'incognito). Les banques `temperament/questions.ts`, `lifestyle/questions.ts`, `attention/questions.ts` sont **legacy** et retirées comme banques de questions. Cinq règles encadrent ce rendu.
+
+## 1. La couche de présentation est INERTE
+
+Les libellés d'option et leurs **mappings** (tags, pondérations, familles) viennent **exclusivement** du canonique. Les **subtexts** et **icônes** sont des **assets de présentation** keyés par `optionRef`, extraits mécaniquement des banques legacy puis figés. Ils sont **INERTES** :
+
+> Aucun subtext, aucune icône n'est JAMAIS lu par le HSG, par `produceFromOption`, par le discovery engine, ni par une respiration.
+
+Un subtext qui porterait du sens deviendrait une seconde source de vérité. Zéro mapping, zéro tag, zéro pondération ne sort de la couche de présentation. *(Ces 131→128 subtexts, écrits avant le verrouillage du ton Candice et de la DA V11, relèvent d'un **lot éditorial futur** : ils ne sont pas canoniques, ils sont provisoires.)*
+
+## 2. Le découpage en ÉTAPES est de la STRUCTURE, pas un asset
+
+Les étapes (attention · tempérament · lifestyle · singularité/pratique) **ne sont pas** rangées avec les subtexts/icônes. Elles sont **structurelles** : elles déterminent **où tombent les respirations**, donc la progressivité de l'analyse cumulative (règle 7 ci-dessous). Le découpage est **explicite, nommé et documenté** comme structure, jamais enfoui dans une couche d'assets.
+
+## 3. Le scoring legacy est CONSERVÉ — uniquement pour la projection
+
+`my_profile` porte des **colonnes calculées** (`temperament_axes`, `temperament_modes`, `attention_reception`, `attention_expression`) lues par de nombreuses surfaces (reco, génération de portrait, fiches, nudge…). Le scoring legacy (`scoreAttention`, scoring tempérament) qui les produit est donc **conservé**, mais **sa seule raison d'être est d'alimenter la projection plate** le temps que les lecteurs migrent vers le journal.
+
+> **Autorité : le journal `knowledge_*` fait foi.** Les colonnes calculées de `my_profile` sont une **projection de service**. En cas de divergence, le journal a raison. Rien d'autre que la projection ne doit lire `result.axes` / `result.modes` comme une vérité.
+
+## 4. Respirations — règles de génération (7a, 7b)
+
+La respiration **reformule ce que le HSG a produit** (tags et pondérations issus des mappings appliqués à chaque réponse), lus depuis le journal. Elle est générée par IA (texte réactif, non pré-écrit). Deux règles non négociables :
+
+> **7a — Aucun attribut sans provenance.** La respiration ne dit que ce que les tags produits soutiennent. Jamais ce que le modèle déduit des réponses brutes. Même règle que l'analyse de profil générale.
+> **7b — La profondeur suit la connaissance.** À l'étape 2 le HSG n'a que quelques tags : la respiration est courte, et elle a le **droit** d'être courte. Elle ne comble jamais un vide par une formulation générique ou flatteuse. Mince à l'étape 2, dense à l'étape 7. C'est la jauge de connaissance appliquée à l'onboarding.
+
+Ces deux règles figurent dans le **prompt** de la route de respiration, en plus du ton Candice.
+
+## 5. Mode « côte à côte » — hypothèse non démontrée
+
+« Un seul chantier couvre les modes 1 et 2 » est une **HYPOTHÈSE** : le mode 2 réutilisera la banque du socle, mais **aucun parcours côte à côte n'existe à l'écran** aujourd'hui (route vers un placeholder). L'hypothèse ne sera **vérifiée qu'à l'ouverture de la route mode 2**. Pas de banque propre au mode 2, aucun travail anticipé dessus dans le lot B.
+
+---
+
 # 48. EXPLICABILITÉ D’UNE RECOMMANDATION
 
 Candice doit pouvoir produire une justification compréhensible sans révéler inutilement les données sensibles ou la mécanique interne.
