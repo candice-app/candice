@@ -44,16 +44,17 @@ export interface SocleBreathInput {
  * connaissance — §47bis / §47quater). Récence appliquée par construct.
  */
 export async function readSocleTags(client: TagsReadClient, userId: string): Promise<SocleBreathInput> {
-  const { data } = await client
+  const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, ts')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, created_at')
     .eq('user_id', userId);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; ts: string };
+  if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`); // jamais de 0 silencieux
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; created_at: string };
   const rows = (data ?? []) as Row[];
   const latest = new Map<string, Row>();
   for (const r of rows) {
     const prev = latest.get(r.target_construct);
-    if (!prev || r.ts > prev.ts) latest.set(r.target_construct, r);
+    if (!prev || r.created_at > prev.created_at) latest.set(r.target_construct, r);
   }
   const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
     family: r.target_family,
@@ -83,28 +84,33 @@ export function deriveAttentionRelation(tags: readonly AttentionBreathTag[]): Pi
 export interface TagsReadClient {
   from(table: string): {
     select(cols: string): {
-      eq(col: string, val: string): Promise<{ data: unknown[] | null; error: unknown }>;
+      eq(col: string, val: string): Promise<{ data: unknown[] | null; error: { message: string } | null }>;
     };
   };
 }
+
+export class BreathReadError extends Error {}
 
 /**
  * Lit les evidences du domaine attention produites pour `userId` et en dérive les tags (récence
  * appliquée). AUCUNE réponse brute, AUCUN axe : uniquement ce que le journal porte.
  */
 export async function readAttentionTags(client: TagsReadClient, userId: string): Promise<AttentionBreathInput> {
-  const { data } = await client
+  const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, ts')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, created_at')
     .eq('user_id', userId);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; ts: string };
+  // ⚠ L'ERREUR EST BRUYANTE : une lecture qui échoue ne doit JAMAIS retomber en 0 tag silencieux
+  // (sinon un vrai utilisateur verrait une respiration vide sans qu'on le sache). Bug = bug.
+  if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`);
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; created_at: string };
   const rows = ((data ?? []) as Row[]).filter((r) => r.context === 'attention_received' || r.context === 'affection_given');
 
   // récence : le plus récent par construct
   const latest = new Map<string, Row>();
   for (const r of rows) {
     const prev = latest.get(r.target_construct);
-    if (!prev || r.ts > prev.ts) latest.set(r.target_construct, r);
+    if (!prev || r.created_at > prev.created_at) latest.set(r.target_construct, r);
   }
   const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
     family: r.target_family,
