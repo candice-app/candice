@@ -8,6 +8,16 @@ import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFac
 import type { BreathFacts } from "@/lib/attention/breathFacts";
 import { RECEPTION_QUESTIONS_ACTIVE, EXPRESSION_QUESTION } from "@/lib/attention/questions";
 import type { AttentionQuestion } from "@/lib/attention/questions";
+import { socleCanonicalQ2 } from "@/lib/questionnaire/flags";
+import { buildCanonicalAttentionQuestion } from "@/lib/questionnaire/canonical-attention";
+import { produceSocleAnswer } from "@/lib/questionnaire/produce-socle";
+import type { WriteClient } from "@/lib/knowledge-write/persist";
+
+// Lot B : quand le flag est ON, q2 est rendue DEPUIS LE CANONIQUE (labels + présentation + dims).
+// OFF (défaut) : banque legacy inchangée. Les ids d'option de q2 deviennent alors les optionRef.
+const RECEPTION_RENDERED: AttentionQuestion[] = socleCanonicalQ2
+  ? RECEPTION_QUESTIONS_ACTIVE.map((q) => (q.id === "q2" ? buildCanonicalAttentionQuestion("q2") : q))
+  : RECEPTION_QUESTIONS_ACTIVE;
 import IconSprite, { Icon } from "@/components/ui/v4/IconSprite";
 import Brand from "@/components/ui/v4/Brand";
 import ProgressBar from "@/components/ui/v4/ProgressBar";
@@ -171,7 +181,7 @@ function buildAnswers(selections: Selections): AttentionAnswers {
       return opt.dims;
     });
   return {
-    reception: RECEPTION_QUESTIONS_ACTIVE.map(buildQuestion),
+    reception: RECEPTION_RENDERED.map(buildQuestion),
     expression: [EXPRESSION_QUESTION].map(buildQuestion),
   };
 }
@@ -184,7 +194,7 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const allQIds = [...RECEPTION_QUESTIONS_ACTIVE.map(q => q.id), EXPRESSION_QUESTION.id];
+  const allQIds = [...RECEPTION_RENDERED.map(q => q.id), EXPRESSION_QUESTION.id];
   const answeredCount = allQIds.filter(id => (selections[id] ?? []).length > 0).length;
   const totalQuestions = allQIds.length;
   const allAnswered = answeredCount === totalQuestions;
@@ -222,6 +232,22 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
       if (dbErr) {
         setError("Impossible d'enregistrer — vérifie ta connexion et réessaie.");
         return;
+      }
+
+      // Lot B : production de connaissance DEPUIS LE CANONIQUE pour q2, AU MOMENT de la réponse.
+      // Journal = autorité ; la projection my_profile ci-dessus reste inchangée. Flag OFF → ignoré.
+      if (socleCanonicalQ2) {
+        try {
+          await produceSocleAnswer(supabase as unknown as WriteClient, {
+            userId,
+            selectedOptionRefs: selections["q2"] ?? [], // ids = optionRef canoniques (render canonique)
+            timestamp: new Date().toISOString(),
+          });
+        } catch (e) {
+          // Le journal est l'autorité : un échec est une information, pas à masquer. On le signale
+          // sans bloquer le parcours (la projection est déjà écrite).
+          console.error("[AttentionStep] produceSocleAnswer (q2) a échoué :", e);
+        }
       }
 
       const facts: BreathFacts = computeBreathFacts(result.reception, result.expression);
@@ -294,7 +320,7 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
           Candice apprend ton langage d&apos;attention
         </div>
 
-        {RECEPTION_QUESTIONS_ACTIVE.map((q) => (
+        {RECEPTION_RENDERED.map((q) => (
           <QuestionSection
             key={q.id}
             question={q}
