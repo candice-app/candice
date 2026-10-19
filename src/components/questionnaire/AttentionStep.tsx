@@ -264,6 +264,9 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
       if (socleCanonicalAttention) {
         // ÉTAPE 3 — la respiration lit le JOURNAL (tags produits), jamais result.axes. Règles 7a/7b
         // dans le prompt de /api/socle/attention-breath. Mince si peu de tags (droit d'être brève).
+        // ⚠ EN CAS D'ÉCHEC : AUCUNE respiration (texte vide), JAMAIS buildFallbackText — celui-ci
+        // vient du scoring legacy, et retomber dessus réintroduirait la mauvaise source en silence.
+        // Mieux vaut un écran sans respiration qu'une respiration sans provenance.
         try {
           const input = await readAttentionTags(supabase as unknown as TagsReadClient, userId);
           const res = await fetch("/api/socle/attention-breath", {
@@ -272,9 +275,9 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
             body: JSON.stringify(input),
           });
           const data = await res.json() as { text: string };
-          breathText = data.text || buildFallbackText(facts); // repli neutre si le modèle échoue
+          breathText = data.text ?? ""; // vide si le modèle n'a rien produit — pas de repli legacy
         } catch {
-          breathText = buildFallbackText(facts);
+          breathText = ""; // panne → rien, jamais la source legacy
         }
       } else {
         try {

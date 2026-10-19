@@ -12,9 +12,33 @@ export interface AttentionBreathTag {
   readonly basis: string; // provenance : assertion_basis
 }
 
+/**
+ * RELATION give≈receive sur la MODALITÉ — DÉFINIE par le HSG (déterministe), pas observée par le
+ * modèle. C'est la seule relation que la respiration a le droit d'énoncer (hsg §47bis.4) :
+ *   congruence : la modalité qu'elle préfère recevoir, elle la donne aussi ;
+ *   ecart      : sa 1ʳᵉ modalité reçue n'est pas parmi celles qu'elle donne ;
+ *   neutre     : pas assez de données (manque le reçu ou le donné).
+ */
+export type AttentionRelation = 'congruence' | 'ecart' | 'neutre';
+
 export interface AttentionBreathInput {
   readonly tags: readonly AttentionBreathTag[];
   readonly tagCount: number; // 7b : la profondeur suit ce nombre
+  readonly relation: AttentionRelation; // DÉFINIE par le HSG, fournie à la respiration
+  readonly receiveTop?: string; // modalité reçue de rang 1 (pour nommer l'écart)
+  readonly giveTop?: string; // modalité donnée de rang 1
+}
+
+/** Dérive la relation give≈receive DÉTERMINISTIQUEMENT depuis les tags (jamais le modèle). */
+export function deriveAttentionRelation(tags: readonly AttentionBreathTag[]): Pick<AttentionBreathInput, 'relation' | 'receiveTop' | 'giveTop'> {
+  const byRank = (a: AttentionBreathTag, b: AttentionBreathTag) => (a.rank ?? 9) - (b.rank ?? 9);
+  const recv = tags.filter((t) => t.family === 'AFFECTION_LANGUAGE' && t.direction === 'receive').sort(byRank);
+  const give = tags.filter((t) => t.family === 'AFFECTION_LANGUAGE' && t.direction === 'give').sort(byRank);
+  if (recv.length === 0 || give.length === 0) return { relation: 'neutre' };
+  const giveModalities = new Set(give.map((t) => t.modality));
+  const receiveTop = recv[0].modality;
+  const giveTop = give[0].modality;
+  return { relation: giveModalities.has(receiveTop) ? 'congruence' : 'ecart', receiveTop, giveTop };
 }
 
 /** Client de lecture minimal (supabase-compatible). */
@@ -53,5 +77,5 @@ export async function readAttentionTags(client: TagsReadClient, userId: string):
     rank: r.rank,
     basis: r.assertion_basis,
   }));
-  return { tags, tagCount: tags.length };
+  return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }

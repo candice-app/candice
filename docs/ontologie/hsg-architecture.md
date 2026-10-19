@@ -2564,6 +2564,10 @@ La respiration **reformule ce que le HSG a produit** (tags et pondérations issu
 
 Ces deux règles figurent dans le **prompt** de la route de respiration, en plus du ton Candice.
 
+> **7c — La respiration n'énonce que les RELATIONS que le HSG définit, jamais celles que le modèle observe.** Un lien entre deux tags (ex. « elle donne ce qu'elle aime recevoir ») est une **affirmation** : s'il n'est pas défini et calculé par le HSG, il contourne 7a. **Relation autorisée pour l'attention** : `give ≈ receive` sur la MODALITÉ — `congruence` (la modalité préférée en réception est aussi donnée), `ecart` (1ʳᵉ modalité reçue absente du donné), `neutre` (données insuffisantes). Elle est **dérivée déterministiquement** du journal (`deriveAttentionRelation`) et **fournie** à la respiration ; le modèle n'a pas le droit d'en inventer une autre. Toute nouvelle relation autorisée doit être ajoutée ici AVANT d'être énonçable.
+
+> **Repli en cas de panne** : si le modèle échoue ou ne produit rien, la respiration est **VIDE** — jamais un texte de repli issu du scoring legacy (ce serait revenir en silence à la mauvaise source). Mieux vaut un écran sans respiration qu'une respiration sans provenance.
+
 ## 5. Mode « côte à côte » — hypothèse non démontrée
 
 « Un seul chantier couvre les modes 1 et 2 » est une **HYPOTHÈSE** : le mode 2 réutilisera la banque du socle, mais **aucun parcours côte à côte n'existe à l'écran** aujourd'hui (route vers un placeholder). L'hypothèse ne sera **vérifiée qu'à l'ouverture de la route mode 2**. Pas de banque propre au mode 2, aucun travail anticipé dessus dans le lot B.
