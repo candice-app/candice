@@ -192,7 +192,8 @@
       "Bash(rm -f _bridge.mjs)",
       "Bash(grep -nA6 \"ADD COLUMN contact_id\\\\|contact_id uuid GENERATED\\\\|GENERATED ALWAYS\" supabase-migration-83-about-ref.sql)",
       "Bash(cat /tmp/dimsdoc.md)",
-      "Bash(grep -c \"^| [0-9].* | q[0-9e].* | .* | \\\\`\" docs/ontologie/onboarding-v15-mappings.md)"
+      "Bash(grep -c \"^| [0-9].* | q[0-9e].* | .* | \\\\`\" docs/ontologie/onboarding-v15-mappings.md)",
+      "Bash(echo \"### deltas tempérament : $\\(node -e 'const r=require\\(\"/tmp/tempd.json\"\\);console.log\\(\"active=\"+r.active,\"unmatched=\"+r.unmatched,r.un.length?JSON.stringify\\(r.un\\):\"\"\\)'\\)\")"
     ]
   }
 }

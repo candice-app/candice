@@ -1420,3 +1420,47 @@ Le texte des questions et des options est **le texte exact affiché à l'utilisa
 | 33 | qe | Je passe du vrai temps de qualité avec les gens | `EXP` |
 | 34 | qe | J'ai mille petites attentions au quotidien | `GES` |
 | 35 | qe | J'aime faire des surprises | `SUR` |
+
+## Deltas d’axes (tempérament) — PONT legacy, NON RELUS par Estelle
+
+> ⚠ **Ce N'EST PAS la vérité canonique du tempérament** — la vérité canonique reste les PROFILE constructs V15. Ces 36 deltas d'axes sont **l'ANCIEN DICTIONNAIRE**, repris mécaniquement du scoring déployé (import de `temperament/questions.ts`), **jamais retapés, jamais inventés**, **NON RELUS par Estelle**.
+> Ils vivent dans le champ `knowledge_evidences.projection_bridge` (migration 89) — **INTERDIT à la lecture par le HSG, les respirations et l'analyse**. Ils existent UNIQUEMENT pour reconstruire `temperament_axes` (projection), avec CONDITION DE MORT : supprimés le jour où la reco réécrite lit les PROFILE constructs (HSG §47quater). À relire au lot éditorial.
+
+| optionRef | question | libellé | deltas (axe · valeur) |
+|---|---|---|---|
+| 36 | q5 | J'ai besoin de moments seul(e) | `energieSociale -2, espaceProsimite -2` |
+| 37 | q5 | Je préfère les petits groupes | `energieSociale -1, espaceProsimite +1` |
+| 38 | q5 | Ça dépend des jours | `` |
+| 39 | q5 | J'aime être entouré(e) | `energieSociale +2, espaceProsimite +1` |
+| 40 | q5 | Plus c'est animé, mieux c'est | `energieSociale +2, stabiliteNouveaute +1` |
+| 41 | q6 | Garder pour moi, faire bonne figure | `expressiviteReserve +2` |
+| 42 | q6 | Me retirer, avoir besoin de calme | `espaceProsimite -2` |
+| 43 | q6 | En parler, me confier | `expressiviteReserve -2` |
+| 44 | q6 | Agir, me mettre en mouvement | `spontaneiteControle -1` |
+| 45 | q6 | Chercher à contrôler ce que je peux | `spontaneiteControle +2, rapportTemps +1` |
+| 46 | q7 | En parle directement | `communicationStyle -2` |
+| 47 | q7 | Ai besoin de temps avant d'en parler | `rapportTemps +1` |
+| 48 | q7 | Évite le conflit autant que possible | `expressiviteReserve +1` |
+| 49 | q7 | Dédramatise avec l'humour | `communicationStyle +1` |
+| 50 | q7 | Écris plus facilement que je ne parle | `communicationStyle +1` |
+| 51 | q8 | De stabilité et de constance | `stabiliteNouveaute -2` |
+| 52 | q8 | De liberté et d'espace | `espaceProsimite -2` |
+| 53 | q8 | De profondeur et d'échanges vrais | `expressiviteReserve -1` |
+| 54 | q8 | De légèreté et de rire | `stabiliteNouveaute +1` |
+| 55 | q8 | De loyauté dans les moments difficiles | `stabiliteNouveaute -1` |
+| 56 | q8 | De respect de mon rythme | `espaceProsimite -1, spontaneiteControle +1` |
+| 57 | q9 | Aller droit au but | `communicationStyle -2` |
+| 58 | q9 | Parler de ce que je ressens | `expressiviteReserve -2` |
+| 59 | q9 | Tout analyser en profondeur | `sensibiliteDetails +1` |
+| 60 | q9 | Garder ça léger, avec humour | `communicationStyle +1` |
+| 61 | q9 | Écrire plutôt que parler | `` |
+| 62 | q10 | Analyse les pour et les contre | `sensibiliteDetails +1` |
+| 63 | q10 | Fais confiance à mon instinct | `spontaneiteControle -1` |
+| 64 | q10 | Demande l'avis des proches | `espaceProsimite +1` |
+| 65 | q10 | Fais des recherches approfondies | `exigenceStanding +1, spontaneiteControle +1` |
+| 66 | q10 | Attends que ce soit clair en moi | `rapportTemps +1` |
+| 67 | q11 | Assez librement | `expressiviteReserve -2` |
+| 68 | q11 | Avec quelques personnes de confiance | `expressiviteReserve -1` |
+| 69 | q11 | Par mes actes plus que par mes mots | `` |
+| 70 | q11 | Rarement, je préfère garder ça pour moi | `expressiviteReserve +2` |
+| 71 | q11 | Souvent après coup | `expressiviteReserve +1, rapportTemps +1` |

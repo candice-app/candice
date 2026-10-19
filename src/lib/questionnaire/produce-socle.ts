@@ -11,6 +11,7 @@ import { accountAbout, asUserId } from '../knowledge/identity';
 import { produceFromOption, type WriteContext } from '../knowledge-write/produce';
 import { persistKnowledge, type WriteClient } from '../knowledge-write/persist';
 import { ATTENTION_DIMS } from './attention-dims';
+import { TEMPERAMENT_DELTAS } from './temperament-deltas';
 
 const byRef = new Map(ONBOARDING_MAPPINGS.map((m) => [m.optionRef, m] as const));
 
@@ -51,10 +52,18 @@ export async function produceSocleAnswer(
       opts.affectionRankByModality = { [mapping.affectionLanguage[0].modality]: rank };
     }
     const { source, evidences, facts } = produceFromOption(ctx, mapping, opts);
-    // SÉMANTIQUE attention (hsg §47ter) : on grave dims + rang sur l'evidence → attention_reception
-    // reste reconstructible depuis le journal seul. dims viennent du mapping V15 (jamais inventés).
+    // SÉMANTIQUE attention (hsg §47ter) : dims + rang sur l'evidence → attention_reception
+    // reconstructible du journal. PONT legacy tempérament (hsg §47quater) : les deltas d'axes →
+    // temperament_axes reconstructible, dans projection_bridge (JAMAIS lu par le HSG).
     const dims = ATTENTION_DIMS[ref];
-    const enriched = dims ? evidences.map((e) => ({ ...e, dims, rank })) : evidences;
+    const deltas = TEMPERAMENT_DELTAS[ref];
+    const enriched = (dims || deltas)
+      ? evidences.map((e) => ({
+          ...e,
+          ...(dims ? { dims, rank } : {}),
+          ...(deltas ? { projectionBridge: { deltas } } : {}),
+        }))
+      : evidences;
     await persistKnowledge(client, { source, evidences: enriched, facts });
     written += enriched.length;
   }

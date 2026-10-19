@@ -2601,6 +2601,21 @@ Corriger une réponse = un **nouvel acte d'acquisition** (nouvelle source, `ts` 
 
 ---
 
+# 47 quater. SÉMANTIQUE CANONIQUE vs PONT DE PROJECTION LEGACY
+
+Quand une projection (ex. `attention_reception`, `temperament_axes`) n'est pas dérivable du journal, ce qui manque doit y être gravé — sinon le journal n'est pas l'autorité. **Mais deux cas, à distinguer** (leçon du tempérament) :
+
+> **Sémantique CANONIQUE** (définie dans les documents V15) → entre comme **evidence**, dans sa famille. Ex. les PROFILE constructs du tempérament (`SOCIAL_ENERGY`…), les AFFECTION de l'attention.
+> **Sémantique LEGACY** (n'existe que dans le code déployé, parce qu'un lecteur la consomme) → entre comme **PONT**, dans un champ **nommé comme tel** (`projection_bridge`), **INTERDIT à la lecture par le HSG, les respirations et l'analyse**. Ex. les `deltas` d'axes de `temperament_axes` / `lifestyle_axes` : c'est l'ANCIEN DICTIONNAIRE, pas une connaissance sur la personne.
+
+**La vérité canonique du tempérament reste les PROFILE constructs V15.** Les deltas sont inscrits au document de mappings comme « sémantique legacy, conservée pour la seule projection, NON RELUE par Estelle ».
+
+**CONDITION DE MORT (datée par un ÉVÉNEMENT, pas une date calendaire)** : **le jour où le moteur de recommandation réécrit lit les PROFILE constructs V15**, le champ `projection_bridge` et les colonnes du scoring legacy sont **supprimés**. Une redondance sans condition de retrait devient permanente. Le migrer maintenant (option B) serait du travail jeté, puisque la reco est en réécriture.
+
+**Procédure (les deux cas)** : extraction MÉCANIQUE par import (jamais de parseur de texte, jamais retapé), compte avant/après, inscription au document d'autorité avec « NON RELUE par Estelle », renvoi au lot éditorial.
+
+---
+
 # 48. EXPLICABILITÉ D’UNE RECOMMANDATION
 
 Candice doit pouvoir produire une justification compréhensible sans révéler inutilement les données sensibles ou la mécanique interne.

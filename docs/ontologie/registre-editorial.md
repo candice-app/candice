@@ -1,0 +1,19 @@
+# Registre éditorial — ce qui est dans le produit SANS être passé par la relecture d'Estelle
+
+> Garantie contre l'oubli. **Rien ne sort de ce registre sans qu'Estelle l'ait relu. Rien n'y entre en silence.** Chaque entrée : ce que c'est, où ça vit, combien, et sa nature (provisoire / legacy / pont).
+
+| # | Contenu | Où | Compte | Nature |
+|---|---|---|---|---|
+| E-1 | **Subtexts** d'options (consignes sous chaque option) | `presentation.ts` + doc mappings | 128 | Provisoire — écrits avant verrouillage ton Candice + DA V11. Présentation INERTE. |
+| E-2 | **Icônes** d'options (attention) | `presentation.ts` | 35 | Provisoire. Présentation INERTE. |
+| E-3 | **MICRO** (consignes sous les titres de question) | `canonical-attention.ts` | 4 (q1,q2,q4,qe) | Provisoire — repris du legacy, non relus. |
+| E-4 | **Dims** affectives (option → MOT/SER/…) | `attention-dims.ts` + doc mappings | 28 | Sémantique de fait, reprise du scoring déployé V15, NON RELUE. Gravée au journal (`dims`). |
+| E-5 | **Deltas d'axes** tempérament (option → axe·valeur) | `temperament-deltas.ts` + doc mappings | 36 | PONT legacy (ancien dictionnaire), NON RELU. `projection_bridge`, interdit au HSG. Condition de mort §47quater. |
+
+## À ne pas traiter dans ce lot (inscrit pour mémoire)
+
+- **Trou de couverture Food (q15) & Voyage (q16)** : jamais rendues depuis la clôture V15 (déplacées vers le Discovery, exclues des listes `_ACTIVE`). Le trou est **antérieur au lot B**. Reprise = chantier Discovery (hors périmètre de ce lot).
+
+## À venir (sera inscrit quand gravé)
+
+- Deltas d'axes **lifestyle** (A2) — même nature PONT que E-5, quand le domaine sera câblé.

@@ -69,6 +69,7 @@ export interface KnowledgeEvidenceRow {
   hsg_version: string;
   dims: string[] | null; // sémantique attention (migration 88) — reconstructible en attention_reception
   rank: number | null; // ordre de sélection 1..3 (attention)
+  projection_bridge: unknown; // PONT legacy (migration 89) — deltas d'axes ; JAMAIS lu par le HSG
   value: number | null;
   strength: string | null;
   direction: string | null;
@@ -119,6 +120,7 @@ export function evidenceToRow(e: Evidence, about: AboutRef): KnowledgeEvidenceRo
     hsg_version: e.version.hsg_version,
     dims: e.dims ? [...e.dims] : null, // sémantique attention ; NULL hors domaine attention
     rank: e.rank ?? null,
+    projection_bridge: e.projectionBridge ?? null, // PONT legacy ; NULL hors domaines à axes
     // toutes les colonnes sémantiques à null par défaut ; chaque famille ne remplit QUE les siennes
     value: null as number | null,
     strength: null as string | null,

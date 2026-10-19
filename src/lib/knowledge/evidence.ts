@@ -87,6 +87,13 @@ interface EvidenceBase extends KnowledgeScope {
    */
   readonly dims?: readonly string[];
   readonly rank?: 1 | 2 | 3;
+  /**
+   * PONT DE PROJECTION LEGACY (migration 89, hsg §47quater) — l'ANCIEN DICTIONNAIRE (deltas d'axes
+   * de temperament_axes / lifestyle_axes). ⚠ INTERDIT à la lecture par le HSG, les respirations et
+   * l'analyse : ce n'est PAS une connaissance sur la personne. N'existe QUE pour reconstruire la
+   * projection le temps que la reco migre vers les PROFILE constructs V15. Condition de mort écrite.
+   */
+  readonly projectionBridge?: unknown;
   /** Lien vers le FACT source éventuel (le FACT ne disparaît jamais — R16). */
   readonly fact_id?: string;
   /**
