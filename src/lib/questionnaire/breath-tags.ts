@@ -91,6 +91,29 @@ export interface TagsReadClient {
 
 export class BreathReadError extends Error {}
 
+/** Un FACT restituable dans la prose : déclaration brute (self-écrite), à NOMMER sans interpréter. */
+export interface SocleFact {
+  readonly factType: string;
+  readonly value: string;
+}
+
+/**
+ * Lit les FACTs restituables du journal. FILTRE MÉCANIQUE DE VISIBILITÉ (condition dans le code, aucune
+ * exception) : seuls les FACTs `visibility_derived != 'internal_only'` entrent — santé, mobilité, adresse
+ * ne sortent JAMAIS (§35/R12, et protège une future fiche de proche). Erreur bruyante, jamais de 0 silencieux.
+ */
+export async function readSocleFacts(client: TagsReadClient, userId: string): Promise<SocleFact[]> {
+  const { data, error } = await client
+    .from('knowledge_facts')
+    .select('fact_type, value, visibility_derived')
+    .eq('user_id', userId);
+  if (error) throw new BreathReadError(`knowledge_facts read: ${error.message}`);
+  type Row = { fact_type: string; value: string; visibility_derived: string };
+  return ((data ?? []) as Row[])
+    .filter((r) => r.visibility_derived !== 'internal_only')
+    .map((r) => ({ factType: r.fact_type, value: r.value }));
+}
+
 /**
  * Lit les evidences du domaine attention produites pour `userId` et en dérive les tags (récence
  * appliquée). AUCUNE réponse brute, AUCUN axe : uniquement ce que le journal porte.

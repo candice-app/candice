@@ -13,7 +13,7 @@ import { buildCanonicalTemperamentQuestion, legacyIdToRef } from "@/lib/question
 import { buildCanonicalLifestyleQuestion, legacyIdToRef as lifestyleLegacyIdToRef } from "@/lib/questionnaire/canonical-lifestyle";
 import { produceSocleAnswer, produceSocleFact } from "@/lib/questionnaire/produce-socle";
 import { SINGULARITY_FACT_FIELDS, PRACTICAL_FACT_FIELDS, Q17_FACT_FIELD } from "@/lib/questionnaire/socle-facts-fields";
-import { readSocleTags, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
+import { readSocleTags, readSocleFacts, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
 import { scoreLifestyle, mergeTemperamentSupplements } from "@/lib/lifestyle/scoring";
 import { computeLifestyleBreathFacts, buildLifestyleFallbackText } from "@/lib/lifestyle/breathFacts";
@@ -83,7 +83,9 @@ async function singularityFactsAndBreath(
   }
   try {
     const input = await readSocleTags(supabase as unknown as TagsReadClient, userId);
-    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    // FACTs restituables (filtre de visibilité mécanique dans readSocleFacts) → nommés, jamais interprétés.
+    const facts = await readSocleFacts(supabase as unknown as TagsReadClient, userId);
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...input, facts }) });
     const data = (await res.json()) as { text: string };
     return data.text ?? "";
   } catch {

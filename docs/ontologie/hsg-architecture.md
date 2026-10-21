@@ -2632,6 +2632,18 @@ Les champs texte libre (singularité, 11 champs) et pratiques (identité, taille
 - **Pas de vecteur à reconstruire** pour ce domaine : il n'y a pas de projection scorée. Le test du domaine est le **ROUND-TRIP VERBATIM** (`knowledge_facts.value == saisie`), pas une égalité de vecteur.
 - **Respiration** : les FACTs ne créant pas de construct, `readSocleTags` ne gagne pas de domaine. Le texte libre q17 est journalé verbatim ; son EXTRACTION (`q17Interdits`) reste **hors journal** (inférence = lot futur).
 
+> **Le journal est l'autorité au sens d'une propriété démontrée, pas d'un fait de fonctionnement ; il le devient au runtime quand la reco réécrite le lit.** (Aujourd'hui : les reconstructions ne tournent qu'en preuve, les FACTs ne sont lus par aucune surface. C'est voulu et transitoire.)
+
+## RESTITUTION DES FACTs DANS LA PROSE (respiration ET conclusion analytique finale — UNE SEULE RÈGLE)
+
+« FACT = aucun signal » veut dire : un FACT **n'alimente pas la couche d'inférence** (axes, scores, convergence). Ça ne dit **rien** sur la restitution. Un FACT est la chose la MOINS inférentielle du journal — la personne l'a écrit elle-même, sa provenance est la meilleure possible. **Donc les FACTs ENTRENT dans la prose** (respiration cumulative ET conclusion analytique B), sous **trois conditions non négociables** :
+
+1. **NOMMER, JAMAIS INTERPRÉTER.** « Tu fais de la poterie » : oui. « Tu sembles avoir besoin de créer avec tes mains » : NON — c'est un trait inféré d'un FACT sans mapping derrière, donc une violation de 7a. L'interdiction est écrite **en toutes lettres dans le prompt**.
+2. **FILTRE MÉCANIQUE DE VISIBILITÉ.** Seuls les FACTs dont `visibility_derived != 'internal_only'` peuvent entrer dans la prose. **Condition dans le code, pas de jugement éditorial, aucune exception.** Santé, mobilité, adresse ne sortent jamais — et le jour où le même moteur sert une fiche de proche, cette règle évite qu'on raconte la santé d'autrui.
+3. **LA PREUVE SÉPARE LES DEUX SOURCES.** Toute preuve de respiration/conclusion liste les **constructs** (issus d'un mapping) d'un côté, les **FACTs** (déclaration brute) de l'autre, puis le texte. Si on ne distingue pas à l'écran ce qui vient d'un mapping de ce qui vient d'une déclaration, « aucun attribut sans provenance » devient invérifiable.
+
+*(Cette règle vaut à l'identique pour B. Ne pas re-décider : même réponse, mêmes conditions.)*
+
 **Le pont est de niveau ACQUISITION, keyé par `source_id`.** Une option qui produit N evidences (fréquent côté lifestyle : plusieurs constructs canoniques par option) porterait sinon ses deltas N fois → la reconstruction les additionnerait N fois (bug masqué sur le tempérament, 1 evidence/option). Choix : `produceSocleAnswer` attache le pont à **TOUTES** les evidences de l'acquisition (elles partagent le `source_id` ; si l'une est filtrée un jour, une autre le porte — aucun couplage à l'ordre de production), et la **reconstruction dédoublonne par `source_id`** (`bridgesFromEvidenceRows`) : une acquisition = un pont compté une fois. *(Une variante « attacher à la 1ʳᵉ evidence » marche aussi mais couplerait le pont à l'ordre des evidences — rejetée pour cette raison.)*
 
 ---
