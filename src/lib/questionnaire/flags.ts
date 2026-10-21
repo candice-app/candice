@@ -13,3 +13,7 @@ export const socleCanonicalLifestyle = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_L
 // A3 — SINGULARITÉ & PRATIQUE (texte libre + champs pratiques + q17) journalisés en FACT verbatim.
 // Pas d'axes, pas de pont : un FACT ne produit aucun signal. Projection my_profile inchangée.
 export const socleCanonicalSingularity = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_SINGULARITY === '1';
+
+// A4 — INCOGNITO rendu depuis la banque canonique unique (17 questions), journal about=contact.
+// Provenance reported_by_relative, assertionBasis par question. Projection questionnaire_responses inchangée.
+export const socleCanonicalIncognito = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_INCOGNITO === '1';
