@@ -2644,6 +2644,19 @@ Les champs texte libre (singularité, 11 champs) et pratiques (identité, taille
 
 *(Cette règle vaut à l'identique pour B. Ne pas re-décider : même réponse, mêmes conditions.)*
 
+## RÈGLE 7d — RESTITUTION QUAND ON PARLE DE QUELQU'UN D'AUTRE (mode 3 / incognito)
+
+La respiration incognito lit le journal `about=contact` (sujet ≠ pilote). C'est la **première fois que la restitution parle d'un tiers** qui n'a rien demandé. En plus de 7a/7b/7c, **trois règles plus dures** :
+
+1. **FILTRE DE SENSIBILITÉ CRITIQUE (plus large que pour le pilote).** Qu'on dise de moi que j'évite le gluten est anodin ; raconter au pilote la santé, les allergies ou la période difficile d'un proche, c'est de la donnée **article 9 sur un tiers**. Rien de `internal_only` n'entre dans la prose, et la liste `internal_only` du mode 3 est **PLUS large** que celle du pilote. **Liste mécanique proposée (À VALIDER par Estelle)** — n'entrent jamais dans la prose incognito :
+   - tout FACT sensible (santé/corps/vie privée), comme pour le pilote ;
+   - **en plus**, toute connaissance issue des questions de vulnérabilité émotionnelle d'un tiers : `questionConcept ∈ { stress_response (I5), support_in_distress (I7), emotional_expression (I10) }` — on ne raconte pas à quelqu'un comment un proche encaisse le stress, ce dont il a besoin quand il va mal, ou comment il exprime ses émotions.
+   - (Affection, préférences, profil « goûts », appétence cadeau restent restituables : c'est l'objet utile et non intime.)
+2. **PERCEPTION, PAS VÉRITÉ.** Le mode 3 est ce qu'un tiers SUPPOSE. La donnée le porte déjà (`reported_by_relative`) ; **le texte aussi** : « d'après ce que tu sais d'elle », « il te semble que… » — **jamais** « elle est », « il a besoin de ». Affirmer sur quelqu'un à partir de ce qu'un tiers en suppose est interdit.
+3. **NE JAMAIS COMBLER LES TROUS.** Les options `status: UNKNOWN_BY_REPORTER` et `CONTEXT_DEPENDENT` ne produisent rien. La respiration **ne comble jamais** ces trous : « tu ne sais pas encore » est une réponse acceptable à l'écran.
+
+*(7d resservira pour le côte à côte B quand il parlera d'un proche.)*
+
 **Le pont est de niveau ACQUISITION, keyé par `source_id`.** Une option qui produit N evidences (fréquent côté lifestyle : plusieurs constructs canoniques par option) porterait sinon ses deltas N fois → la reconstruction les additionnerait N fois (bug masqué sur le tempérament, 1 evidence/option). Choix : `produceSocleAnswer` attache le pont à **TOUTES** les evidences de l'acquisition (elles partagent le `source_id` ; si l'une est filtrée un jour, une autre le porte — aucun couplage à l'ordre de production), et la **reconstruction dédoublonne par `source_id`** (`bridgesFromEvidenceRows`) : une acquisition = un pont compté une fois. *(Une variante « attacher à la 1ʳᵉ evidence » marche aussi mais couplerait le pont à l'ordre des evidences — rejetée pour cette raison.)*
 
 ---
