@@ -2715,7 +2715,30 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 - **TRAITS (evidences)** : `self_report` (respondentRole=`subject`, cf. `deriveRespondentRole`) l'emporte sur `reported_by_relative` (role=`reporter`), **quelles que soient les dates**. Entre deux evidences de MÊME provenance, la **récence** décide (comme aujourd'hui).
 - **FACTS et CONTEXT déclarés par le pilote** : jamais masqués par les déclarations du sujet — ils **coexistent**.
 - **Restitution au SUJET** : filtre mécanique — il ne lit que les evidences `self_report` **le concernant**. Rien d'autre ne peut l'atteindre.
-- **Suppression de compte** : seules les evidences `self_report` du partant sont supprimées ; celles d'un tiers à son sujet ne sont pas touchées. Conséquence : le **retour de l'incognito n'est pas une restauration** — c'est la préséance qui **retombe d'elle-même** (les evidences `reported_by_relative`, jamais supprimées, redeviennent le plus haut rang disponible).
+- **Suppression de compte** : la suppression s'opère **par propriétaire** (`user_id`) — chaque déclarant possède ses evidences. Quand le sujet exerce son droit à l'effacement, **ses** lignes partent ; celles d'un tiers à son sujet (`user_id` du pilote) **ne sont pas touchées** — pas de suppression sélective à écrire, la propriété suffit (et c'est la raison **juridique** qui fait tenir l'incognito). Conséquence : le **retour de l'incognito n'est pas une restauration** — c'est la préséance qui **retombe d'elle-même** (les evidences `reported_by_relative`, jamais supprimées, redeviennent le plus haut rang disponible).
+
+**ÉCHELLE À 3 NIVEAUX (keyée sur `source_type`, pas sur `deriveRespondentRole`)** : `compte du sujet` (onboarding_closed/open, self_report, about=account) **>** `côte à côte` (`declared_via_relative`, self_report, about=contact — le proche a répondu lui-même depuis la session du pilote, sans compte) **>** `incognito` (`reported_by_relative`, observed/reporter_interpretation). Le côte à côte l'emporte sur l'incognito parce que **la réponse vient de lui**. ⚠ `declared_via_relative` **manque au CHECK DB (migration 82)** et **aucun flux ne le produit** : son activation est une **migration + le flux mode 2** (lot sous-bloc 2). L'échelle de préséance **étend** `reviseWithCorrection` (consolidate.ts), elle n'en crée pas une seconde.
+
+## 48 ter. IDENTITÉ, MERGE ET DÉPART — SPÉCIFICATION (écrite, non implémentée)
+
+**3.1 — Candice ne sait JAMAIS que c'est la bonne Julie ; elle ne doit jamais le deviner.** Aucun rapprochement automatique sur un prénom, un mail ou un téléphone. Un rapprochement automatique ferait cesser l'incognito d'être anonyme — précisément ce que l'avocate a validé. Trois chemins où Julie arrive **sans** l'invitation (moteur de recherche ; elle invite le pilote ; elle s'inscrit seule puis on se croise) : dans les trois, **le même acte explicite du pilote** — « cette Julie est celle que j'ai en incognito ». Le **token d'invitation** reste le seul cas automatique, et il **porte déjà la déclaration du pilote** (en envoyant l'invitation, le pilote déclare que la fiche est Julie).
+
+**3.2 — GARDE-FOU : LE MERGE EST UN LIEN, PAS UNE ÉCRITURE.**
+- **INTERDIT** : recopier les réponses de Julie dans les lignes du pilote au moment du merge. La suppression de compte efface par propriétaire ; des réponses recopiées chez le pilote **survivraient à l'effacement de Julie** — illégal.
+- **EXIGÉ** : les réponses du sujet **restent chez le sujet** ; la fiche les lit **à travers le lien, à l'affichage, avec son consentement**. **La préséance vit dans la LECTURE.**
+- Conséquence : **aucun merge écrit en base, sous aucune forme** — pas de copie, pas de cache, pas de projection recopiée. L'incognito qui réapparaît n'est **pas une restauration** : la préséance retombe, rien n'a bougé.
+
+**3.3 — PRÉSÉANCE CONSTRUCT PAR CONSTRUCT, pas fiche par fiche.**
+- Là où le sujet a répondu ET accepté de partager → **sa réponse s'affiche**.
+- Là où il n'a rien dit ou n'a pas partagé ce construct → **la connaissance incognito du pilote reste visible**, présentée comme **SA perception** (« d'après ce que tu sais d'elle »), jamais comme une vérité sur elle.
+- Les **FACTS, ÉTATS et historique du pilote** ne sont **jamais concernés** : à lui dans tous les cas, toujours affichés.
+- Le **sujet ne voit que ses propres déclarations**.
+
+**3.4 — EFFACEMENT.** Le sujet efface son compte → ses lignes partent, celles du pilote **remontent seules**. Le pilote a le droit de conserver ce qu'il a déclaré : **ses mots sur sa relation**, sans donnée personnelle le concernant **au-delà d'un prénom**.
+
+**3.5 — TOUT EXPLIQUER AU PILOTE (sinon il ne mergera jamais).** L'écran de merge dit, **AVANT l'acte** : ce que tu as écrit n'est pas perdu ; il reste chez nous ; si Julie repart il revient ; ton historique (événements, attentions, confidences) est conservé dans tous les cas ; à partir de maintenant c'est Julie qui décide de ce qu'elle partage. *(Textes = Estelle → registre éditorial, non rédigés par l'assistant.)*
+
+**3.6 — CONSÉQUENCE DE CALENDRIER.** La fiche proche lit aujourd'hui l'ancien rangement à plat. Un affichage mergé exige que le **bloc des traits de la fiche lise le JOURNAL**. Donc la **fiche proche devient le PREMIER des 14 écrans à débrancher**, et le merge en est la raison d'être. **Ordre définitif du lot** : préséance au read → bloc traits de la fiche branché au journal → acte de merge déclaré + écran d'explication → départ et retour.
 
 ---
 

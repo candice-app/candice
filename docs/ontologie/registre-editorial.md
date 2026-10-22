@@ -35,7 +35,9 @@ La règle de préséance et de visibilité est **tranchée et validée par l'avo
 
 1. **Lien fiche ↔ compte (merge déclaré par le pilote)** — cf. inventaire b. Jamais automatique (en incognito on n'a qu'un prénom).
 2. **Suppression de compte et cascade sélective** — cf. inventaire d. Ne supprimer que les `self_report` du partant ; les evidences d'un tiers à son sujet ne bougent pas. Le retour de l'incognito n'est PAS une restauration : la préséance retombe d'elle-même (à prouver quand la préséance sera codée).
-3. **Écrans** — « c'est la même Julie » (déclaration de merge) ; choix du pilote au départ de Julie ; proposition incognito / côte à côte. Cf. inventaire f.
+3. **Écrans** — « c'est la même Julie » (déclaration de merge) ; choix du pilote au départ de Julie ; proposition incognito / côte à côte. Cf. inventaire f. **Textes de l'écran de merge = Estelle** (non rédigés par l'assistant) : « ce que tu as écrit n'est pas perdu / reste chez nous / revient si Julie repart / ton historique est conservé / désormais Julie décide de ce qu'elle partage ».
+
+**Calendrier (hsg §48ter.6)** : la **fiche proche** (`/contacts/[id]`) est le **1ᵉʳ des 14 écrans** à débrancher du rangement à plat vers le JOURNAL — c'est le préalable d'un affichage mergé. Ordre du lot : préséance au read → bloc traits fiche au journal → acte de merge + écran → départ/retour. **Migration préalable** : ajouter `declared_via_relative` au CHECK `source_type` (migration 82 ne l'a pas) avant tout flux côte à côte.
 
 ## Questions ouvertes (à arbitrer au LOT RECO, pas avant — ces axes meurent avec la réécriture)
 
