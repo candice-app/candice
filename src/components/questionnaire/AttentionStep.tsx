@@ -4,7 +4,7 @@ import { useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { scoreAttention } from "@/lib/attention/scoring";
 import type { AttentionResult, AttentionAnswers, Question } from "@/lib/attention/scoring";
-import { computeBreathFacts, buildFallbackText } from "@/lib/attention/breathFacts";
+import { computeBreathFacts } from "@/lib/attention/breathFacts";
 import type { BreathFacts } from "@/lib/attention/breathFacts";
 import { RECEPTION_QUESTIONS_ACTIVE, EXPRESSION_QUESTION } from "@/lib/attention/questions";
 import type { AttentionQuestion } from "@/lib/attention/questions";
@@ -288,9 +288,9 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
           });
           if (!res.ok) throw new Error("api_error");
           const data = await res.json() as { text: string };
-          breathText = data.text || buildFallbackText(facts);
+          breathText = data.text || "";
         } catch {
-          breathText = buildFallbackText(facts);
+          breathText = "";
         }
       }
 

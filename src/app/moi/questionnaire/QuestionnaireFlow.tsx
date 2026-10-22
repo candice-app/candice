@@ -6,7 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import type { MyProfile } from "@/types";
 import type { AttentionResult } from "@/lib/attention/scoring";
 import { scoreTemperament } from "@/lib/temperament/scoring";
-import { computeTemperamentBreathFacts, buildTemperamentFallbackText } from "@/lib/temperament/breathFacts";
+import { computeTemperamentBreathFacts } from "@/lib/temperament/breathFacts";
 import { STEP2_QUESTIONS, STEP3_QUESTIONS } from "@/lib/temperament/questions";
 import { socleCanonicalTemperament, socleCanonicalLifestyle, socleCanonicalSingularity } from "@/lib/questionnaire/flags";
 import { buildCanonicalTemperamentQuestion, legacyIdToRef } from "@/lib/questionnaire/canonical-temperament";
@@ -16,7 +16,7 @@ import { SINGULARITY_FACT_FIELDS, PRACTICAL_FACT_FIELDS, Q17_FACT_FIELD } from "
 import { readSocleTags, readSocleFacts, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
 import { scoreLifestyle, mergeTemperamentSupplements } from "@/lib/lifestyle/scoring";
-import { computeLifestyleBreathFacts, buildLifestyleFallbackText } from "@/lib/lifestyle/breathFacts";
+import { computeLifestyleBreathFacts } from "@/lib/lifestyle/breathFacts";
 import { STEP4_QUESTIONS_ACTIVE, STEP5_CHOICE_QUESTIONS } from "@/lib/lifestyle/questions";
 import GenderStep from "@/components/questionnaire/GenderStep";
 import AttentionStep from "@/components/questionnaire/AttentionStep";
@@ -434,8 +434,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             try {
               const res = await fetch("/api/temperament/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
               const data = await res.json() as { text: string };
-              text = data.text || buildTemperamentFallbackText(facts);
-            } catch { text = buildTemperamentFallbackText(facts); }
+              text = data.text || "";
+            } catch { text = ""; }
           }
 
           setStep2BreathText(text);
@@ -494,8 +494,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             try {
               const res = await fetch("/api/temperament/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
               const data = await res.json() as { text: string };
-              text = data.text || buildTemperamentFallbackText(facts);
-            } catch { text = buildTemperamentFallbackText(facts); }
+              text = data.text || "";
+            } catch { text = ""; }
           }
 
           setStep3BreathText(text);
@@ -560,8 +560,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             try {
               const res = await fetch("/api/lifestyle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
               const data = await res.json() as { text: string };
-              text = data.text || buildLifestyleFallbackText(facts);
-            } catch { text = buildLifestyleFallbackText(facts); }
+              text = data.text || "";
+            } catch { text = ""; }
           }
 
           setLifestyle4BreathText(text);
@@ -639,8 +639,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             try {
               const res = await fetch("/api/lifestyle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ facts }) });
               const data = await res.json() as { text: string };
-              text = data.text || buildLifestyleFallbackText(facts);
-            } catch { text = buildLifestyleFallbackText(facts); }
+              text = data.text || "";
+            } catch { text = ""; }
           }
 
           setLifestyle5BreathText(text);

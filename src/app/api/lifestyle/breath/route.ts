@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import { buildLifestyleFallbackText } from "@/lib/lifestyle/breathFacts";
 import type { LifestyleBreathFacts } from "@/lib/lifestyle/breathFacts";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -111,13 +110,11 @@ export async function POST(request: NextRequest) {
       messages: [{ role: "user", content: buildUserMessage(facts) }],
     });
 
-    const text =
-      message.content[0].type === "text"
-        ? message.content[0].text.trim()
-        : buildLifestyleFallbackText(facts);
+    // Échec → texte vide, jamais de repli legacy (règle Estelle : écran sans respiration plutôt que sans provenance).
+    const text = message.content[0].type === "text" ? message.content[0].text.trim() : "";
 
     return NextResponse.json({ text });
   } catch {
-    return NextResponse.json({ text: buildLifestyleFallbackText(facts) });
+    return NextResponse.json({ text: "" });
   }
 }

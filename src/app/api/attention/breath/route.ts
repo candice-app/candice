@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import type { AttentionDim } from "@/lib/attention/scoring";
-import { DIM_LABELS, buildFallbackText } from "@/lib/attention/breathFacts";
+import { DIM_LABELS } from "@/lib/attention/breathFacts";
 import type { BreathFacts } from "@/lib/attention/breathFacts";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -51,13 +51,12 @@ export async function POST(request: NextRequest) {
       messages: [{ role: "user", content: buildUserMessage(facts) }],
     });
 
-    const text =
-      message.content[0].type === "text"
-        ? message.content[0].text.trim()
-        : buildFallbackText(facts);
+    // En cas d'échec : AUCUNE respiration (texte vide), jamais de repli legacy (règle Estelle :
+    // mieux vaut un écran sans respiration qu'une respiration sans provenance).
+    const text = message.content[0].type === "text" ? message.content[0].text.trim() : "";
 
     return NextResponse.json({ text });
   } catch {
-    return NextResponse.json({ text: buildFallbackText(facts) });
+    return NextResponse.json({ text: "" });
   }
 }
