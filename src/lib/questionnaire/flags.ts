@@ -17,3 +17,7 @@ export const socleCanonicalSingularity = process.env.NEXT_PUBLIC_SOCLE_CANONICAL
 // A4 — INCOGNITO rendu depuis la banque canonique unique (17 questions), journal about=contact.
 // Provenance reported_by_relative, assertionBasis par question. Projection questionnaire_responses inchangée.
 export const socleCanonicalIncognito = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_INCOGNITO === '1';
+
+// B — CONCLUSION ANALYTIQUE FINALE : l'écran qui ferme l'onboarding du pilote. Lit TOUT le journal self
+// (5 domaines), applique 7a/7b/7c/7d, jamais my_profile, jamais de repli. Vide si échec.
+export const socleCanonicalConclusion = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_CONCLUSION === '1';

@@ -8,7 +8,7 @@ import type { AttentionResult } from "@/lib/attention/scoring";
 import { scoreTemperament } from "@/lib/temperament/scoring";
 import { computeTemperamentBreathFacts } from "@/lib/temperament/breathFacts";
 import { STEP2_QUESTIONS, STEP3_QUESTIONS } from "@/lib/temperament/questions";
-import { socleCanonicalTemperament, socleCanonicalLifestyle, socleCanonicalSingularity } from "@/lib/questionnaire/flags";
+import { socleCanonicalTemperament, socleCanonicalLifestyle, socleCanonicalSingularity, socleCanonicalConclusion } from "@/lib/questionnaire/flags";
 import { buildCanonicalTemperamentQuestion, legacyIdToRef } from "@/lib/questionnaire/canonical-temperament";
 import { buildCanonicalLifestyleQuestion, legacyIdToRef as lifestyleLegacyIdToRef } from "@/lib/questionnaire/canonical-lifestyle";
 import { produceSocleAnswer, produceSocleFact } from "@/lib/questionnaire/produce-socle";
@@ -120,6 +120,23 @@ async function lifestyleJournalAndBreath(
   }
 }
 
+// B — CONCLUSION ANALYTIQUE FINALE. Lit TOUT le journal self (5 domaines) + les FACTs restituables,
+// applique 7a/7b/7c/7d via /api/socle/breath (self). JAMAIS my_profile, JAMAIS de repli : vide si échec.
+async function finalConclusionFromJournal(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+): Promise<string> {
+  try {
+    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // tout le journal, cumulatif
+    const facts = await readSocleFacts(supabase as unknown as TagsReadClient, userId); // FACTs restituables (filtre visibilité)
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...input, facts, subject: "self" }) });
+    const data = (await res.json()) as { text: string };
+    return data.text ?? "";
+  } catch {
+    return ""; // panne → rien, jamais de repli
+  }
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type Step =
@@ -139,6 +156,7 @@ type Step =
   | "singularity6"
   | "singularity6Breath"
   | "practical7"
+  | "conclusion8"
   | "practical7Closing";
 
 // "single" = user jumped to one specific part; after saving it, go straight to closing
@@ -303,6 +321,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
   const [lifestyle4BreathText, setLifestyle4BreathText] = useState<string>("");
   const [lifestyle5BreathText, setLifestyle5BreathText] = useState<string>("");
   const [singularity6BreathText, setSingularity6BreathText] = useState<string>("");
+  const [conclusionText, setConclusionText] = useState<string>("");
 
   const [temperamentAnswers, setTemperamentAnswers] = useState<Record<string, string>>(
     ext?.temperament_answers ?? {}
@@ -749,8 +768,30 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
 
           triggerSynthesis();
           afterSave();
-          if (editMode !== "single") navigate("practical7Closing");
+          if (editMode !== "single") {
+            if (socleCanonicalConclusion) {
+              // B — conclusion analytique finale : lit TOUT le journal self (5 domaines), jamais my_profile.
+              const text = await finalConclusionFromJournal(supabase, userId);
+              setConclusionText(text);
+              navigate("conclusion8");
+            } else {
+              navigate("practical7Closing");
+            }
+          }
         }}
+      />
+    );
+  }
+
+  // ─── Conclusion analytique finale (B) — flag-gated ─────────────────────────
+
+  if (step === "conclusion8") {
+    return withProgress(
+      <TemperamentBreath
+        breathText={conclusionText}
+        onContinue={() => navigate("practical7Closing")}
+        ctaLabel="Découvrir mon profil →"
+        progressLabel="Candice a fait le tour de ce que tu lui as confié."
       />
     );
   }
