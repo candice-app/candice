@@ -2684,6 +2684,41 @@ Le système n’a pas besoin d’exposer les tags.
 
 ---
 
+# 48 bis. IDENTITÉ, MERGE ET DÉPART — PRÉSÉANCE PAR PROVENANCE
+
+Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot « IDENTITÉ, MERGE ET DÉPART » (registre). Trois façons dont une fiche sur Julie existe : **incognito** (le pilote seul), **côte à côte** (rempli avec Julie présente, sans compte), **compte de Julie** (elle s'est inscrite elle-même).
+
+> **PRÉSÉANCE (une phrase) : la fiche remplie par le proche lui-même l'emporte toujours sur l'incognito et sur le côte à côte.**
+
+**CAS 1 — Julie s'inscrit alors que le pilote a une fiche incognito (ou côte à côte) sur elle.**
+- Le **merge est déclaré par le PILOTE** (« c'est la même Julie »). **Jamais automatique, jamais déduit** : en incognito on n'a qu'un prénom — c'est précisément pourquoi l'incognito est validé juridiquement.
+- Les réponses d'onboarding de Julie **écrasent VISUELLEMENT** la fiche : l'ancienne disparaît de l'app du pilote, il est connecté à la fiche de Julie.
+- Les réponses incognito **restent EN BASE, jamais supprimées**.
+- Julie décide de ce qu'elle partage, comme n'importe qui.
+- Tout ce que le pilote avait ajouté lui-même est **CONSERVÉ** : les **faits**, les **états** — **pas les traits** — et son **historique** (événements, attentions, confidences). Rapatriés sur la fiche de Julie, côté pilote.
+- Julie ne voit **que ses propres déclarations**. Jamais le déclaratif du pilote sur elle.
+
+**CAS 2 — Julie part et supprime sa fiche.** Ses déclarations à elle disparaissent (son droit). Celles du pilote ne bougent pas : l'incognito revient, avec l'historique.
+
+**CAS 3 — Fiche classique, Julie part, le pilote garde son profil.** Il choisit de conserver son historique (faits, états, attentions). Candice lui propose de remplir le profil en incognito, ou en côte à côte si elle est là. Si Julie revient : merge du cas 1.
+
+**CAS 4 — Côte à côte puis Julie s'inscrit.** Même processus que l'incognito : elle remplit de zéro, le pilote garde en base, la fiche de Julie prend le dessus, l'historique est conservé.
+
+**INVARIANTS.**
+- Rien n'est jamais supprimé côté pilote. Incognito et côte à côte sont **masqués, pas effacés**.
+- Les **traits** du pilote sont **masqués** par ceux du sujet, **jamais écrasés**.
+- Les **faits et états** déclarés par le pilote ne sont **jamais masqués** (ils coexistent).
+- L'**historique** appartient au pilote, toujours.
+- Le **sujet ne voit jamais** le déclaratif d'un tiers sur lui.
+
+**RÈGLE DE RÉSOLUTION (préséance par provenance, remplace « récence seule »).**
+- **TRAITS (evidences)** : `self_report` (respondentRole=`subject`, cf. `deriveRespondentRole`) l'emporte sur `reported_by_relative` (role=`reporter`), **quelles que soient les dates**. Entre deux evidences de MÊME provenance, la **récence** décide (comme aujourd'hui).
+- **FACTS et CONTEXT déclarés par le pilote** : jamais masqués par les déclarations du sujet — ils **coexistent**.
+- **Restitution au SUJET** : filtre mécanique — il ne lit que les evidences `self_report` **le concernant**. Rien d'autre ne peut l'atteindre.
+- **Suppression de compte** : seules les evidences `self_report` du partant sont supprimées ; celles d'un tiers à son sujet ne sont pas touchées. Conséquence : le **retour de l'incognito n'est pas une restauration** — c'est la préséance qui **retombe d'elle-même** (les evidences `reported_by_relative`, jamais supprimées, redeviennent le plus haut rang disponible).
+
+---
+
 # 49. CANDICE N’EST PAS UN TEST PSYCHOLOGIQUE
 
 Le HSG constitue une architecture de personnalisation relationnelle.
