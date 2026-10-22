@@ -43,14 +43,18 @@ function buildUserMessage(tags: readonly AttentionBreathTag[]): string {
 // MODE 3 (incognito, subject='other') — règle 7d : PERCEPTION, pas vérité, et ne jamais combler les trous.
 const MODE3_PROMPT = `\n\nTU PARLES D'UN TIERS, PAS DU PILOTE (règle 7d). Ce sont des PERCEPTIONS rapportées par un proche, pas des vérités. Formule TOUJOURS depuis le point de vue du pilote : « d'après ce que tu sais d'elle », « il te semble que… », « tu la décris comme… ». JAMAIS « elle est », « il a besoin de », aucune affirmation directe sur le tiers. Ne comble JAMAIS un trou : s'il manque quelque chose, « tu ne sais pas encore » est acceptable — n'invente rien pour remplir.`;
 
+// FORME « LIGNES » (fiche, form A) — reformule les tags en courtes lignes thématiques plutôt qu'en prose.
+// Mêmes règles 7a–7d ; aucune ligne pour une famille sans tag ; aucun code brut.
+const LINES_FORMAT = `\n\nFORMAT : au lieu d'un paragraphe, écris de COURTES LIGNES thématiques, une par thème présent, sous la forme « Thème — reformulation courte des tags ». Exemples de thèmes selon les tags : ce qui la touche, comment elle fonctionne, ce qui compte dans ses choix, ses besoins, sous stress, à éviter, ses préférences, ses centres d'intérêt. Une ligne par thème qui a des tags, jamais de thème vide, jamais de code. Reformule, n'énumère pas les libellés d'options.`;
+
 export async function POST(request: NextRequest) {
-  const { tags, tagCount, relation, receiveTop, giveTop, facts, subject } = (await request.json()) as {
+  const { tags, tagCount, relation, receiveTop, giveTop, facts, subject, format } = (await request.json()) as {
     tags: AttentionBreathTag[]; tagCount: number; relation: AttentionRelation; receiveTop?: string; giveTop?: string;
-    facts?: { factType: string; value: string }[]; subject?: 'self' | 'other';
+    facts?: { factType: string; value: string }[]; subject?: 'self' | 'other'; format?: 'narrative' | 'lines';
   };
   const factList = facts ?? [];
   if ((!tags || tags.length === 0) && factList.length === 0) return NextResponse.json({ text: "" });
-  const systemPrompt = subject === 'other' ? SYSTEM_PROMPT + MODE3_PROMPT : SYSTEM_PROMPT;
+  const systemPrompt = (subject === 'other' ? SYSTEM_PROMPT + MODE3_PROMPT : SYSTEM_PROMPT) + (format === 'lines' ? LINES_FORMAT : "");
   const relationLine = `relation attention (DÉFINIE par le HSG, la seule autorisée) : ${relation}` +
     (relation === "ecart" ? ` · receiveTop=${receiveTop} · giveTop=${giveTop}` : "");
   // FAITS : déclaration brute, à NOMMER sans interpréter (filtre de visibilité déjà appliqué à la lecture).

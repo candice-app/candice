@@ -2775,18 +2775,41 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 
 **Constat (inventaire 22 oct) :** aujourd'hui le texte libre (singularité, pratique, q17) entre au journal comme **FACT verbatim** seul. **Aucune extraction** ne transforme un texte libre en connaissance structurée : `extraction.ts` est une structure dormante (« AUCUN appel à un modèle dans ce lot »), `/api/lifestyle/extract-filters` écrit la projection legacy (`relational_filters`, pas le journal). Les cinq familles ouvertes — **INTEREST, PREFERENCE, ENTITY, GUARDRAIL, CONTEXT** — existent comme types d'evidence mais ne sont produites que par des cases/widgets fermés (GUARDRAIL, PREFERENCE, INTEREST générique sur 15 catégories) ; **ENTITY et CONTEXT n'ont aucun producteur**. Elles ne s'affichent **nulle part** (la fiche ne rend que AFFECTION/PROFILE/NEED). Seul le texte libre peut produire « photographie argentique », « le café de ce torréfacteur », « allergique aux fruits à coque », « ne supporte pas les fleurs coupées ».
 
-**Les 9 règles de ce lot (extraction) :**
-1. **LE VERBATIM EST L'AUTORITÉ.** Conservé tel quel, toujours, jamais remplacé par une extraction. Une extraction **s'ajoute**, elle ne se substitue pas.
-2. **L'EXTRACTION EST UNE INFÉRENCE IA — niveau 5** de l'échelle (§48bis). Marquée comme telle, **jamais promue** au rang d'une déclaration : toujours plus faible que ce qui est déclaré ou coché.
-3. **RÉSOLUTION DE LA TENSION AVEC 7a** (à ne pas re-trancher) : 7a interdit de *déduire d'une réponse brute dans la prose*. L'extraction, elle, **déduit d'une réponse brute — c'est son métier — mais PRODUIT un tag avec sa provenance** (niveau 5). À partir de là, la respiration **reformule un tag produit** (pas une réponse brute) : 7a est respectée. La frontière : l'extraction produit des evidences tracées ; la prose ne déduit jamais, elle reformule.
-4. **NE JAMAIS PERDRE UNE INFORMATION** faute de tag : ce qui n'entre dans aucune famille va en **connaissance ouverte structurée** (`OpenKnowledge` : type + subject + subjectLabel verbatim + relation + intensity + context + source).
-5. **NE JAMAIS REMPLACER UN SUJET PRÉCIS PAR UN TAG GÉNÉRIQUE.** « Photographie argentique » ne devient pas « photographie ». Le `subjectLabel` précis est toujours conservé.
-6. **NE JAMAIS INVENTER UN TRAIT À PARTIR D'UN FAIT.** Une allergie, une situation, une contrainte ne produisent **jamais** un PROFILE, un NEED ou un DRIVER.
-7. **UNE PRÉFÉRENCE NÉGATIVE N'EST PAS UNE INTERDICTION.** `severity SOFT` par défaut ; `HARD` seulement pour ce qui est déclaré comme tel **ou une allergie** (`food.allergy.*`).
-8. **SORTIE VALIDÉE PAR SCHÉMA.** L'extraction émet des evidences **structurées et validées** dans le journal. Pas de texte libre réinjecté comme s'il était une connaissance.
-9. **SI ELLE NE SAIT PAS, ELLE N'EXTRAIT PAS.** Une réponse libre sans connaissance exploitable produit **zéro evidence** — résultat normal.
+**AUDIT (autorité = HSG + dictionnaire canonique + onboarding seuls).** La plupart des « 9 règles » que j'avais listées sont **DÉJÀ dites** ailleurs — on ne les redouble pas, on cite. Ne restent que les points réellement **ABSENTS**.
 
-**Structure canonique attendue (rappel)** : INTEREST (sujet précis résolu + relationship) ; PREFERENCE.[contexte].[attribut]=valeur ; ENTITY + relation (LOVE/WANT_TO_TRY/DISLIKE/AVOID) ; GUARDRAIL + severity SOFT|HARD ; CONTEXT (périssable, cf. lot ÉTATS). *(Lot non construit — inventaire + règles seulement.)*
+| Règle | Statut | Où c'est déjà dit (origine) |
+|---|---|---|
+| Verbatim = autorité, l'extraction s'ajoute jamais ne remplace | **DÉJÀ** | §47quater + §48ter.2 (FACT verbatim) ; dictionnaire `open-knowledge.ts` (`subjectLabel` « formulation verbatim, jamais écrasée ») |
+| Extraction = inférence, plus faible, jamais promue | **DÉJÀ** | §9 INFÉRENCE (« traçable, confiance… Mieux vaut UNKNOWN qu'une fausse connaissance ») + §48bis (échelle, inférence IA = niveau 5 < déclaré/coché) |
+| Ne jamais perdre une info faute de tag → connaissance ouverte | **DÉJÀ** | dictionnaire `OpenKnowledge` (type+subject+subjectLabel+relation+intensity+context+source) |
+| Ne jamais remplacer un sujet précis par un tag générique | **DÉJÀ** | dictionnaire `open-knowledge.ts` (`subjectLabel` verbatim jamais écrasée) |
+| Ne jamais inventer un trait à partir d'un fait | **DÉJÀ** | **§7.3** (« Aucun PROFILE, BEHAVIOR, NEED ou GUARDRAIL ne doit être automatiquement produit ») + « ne produit pas automatiquement NEED_RELIEF » |
+| Préférence négative ≠ interdiction (severity SOFT/HARD) | **DÉJÀ** | §7.2/§7.3 severity `SOFT`/`HARD` ; dictionnaire guardrail (severity ⟂ strength) |
+| Si elle ne sait pas, elle n'extrait pas (zéro evidence) | **DÉJÀ** | §9 UNKNOWN (« Mieux vaut UNKNOWN ») + incognito **R-I2** (UNKNOWN_BY_REPORTER → zéro de tout) |
+
+**RESTENT RÉELLEMENT ABSENTS (on les garde, c'est l'apport de ce lot) :**
+1. **Résolution explicite de la tension 7a × extraction** (pour ne pas la re-trancher) : 7a interdit à **la prose** de déduire d'une réponse brute. L'extraction, elle, **déduit — c'est son métier — mais PRODUIT un tag tracé** (niveau 5, §48bis). La prose reformule ensuite **le tag**, pas la réponse brute → 7a respectée. Frontière : l'extraction produit des evidences ; la prose ne déduit jamais.
+2. **Sortie validée par schéma** : l'extraction émet des evidences **structurées et validées**, jamais du texte libre réinjecté comme connaissance. *(Discipline d'implémentation, pas dans le HSG philosophique.)*
+
+**Contradiction : aucune relevée** entre ces points et les fichiers d'autorité. *(Lot non construit — inventaire + renvois seulement. Structure canonique des familles : dictionnaire.)*
+
+---
+
+# 48 septies. ANALYSE DE LA PAGE PROFIL — FIGÉE, RÉÉCRITE AU CHANGEMENT
+
+**État constaté (inventaire 22 oct) :** l'analyse est **déjà figée**, pas recalculée à chaque vue. `generateProfileAnalysis` **upsert** dans la table `profile_analysis` (migration 30, « source unique d'analyse ») ; les écrans la **lisent** depuis cette table. Elle est **réécrite** quand `generateProfileAnalysis` est rappelé — aujourd'hui via `triggerSynthesis()` → `POST /api/profile/generate`, appelé à **chaque étape** de l'onboarding (chaque modification de la fiche du pilote). Donc le comportement demandé — *écrite une fois, stockée, réécrite à chaque modification de ma fiche, jamais regénérée à l'affichage* — **est déjà celui en place**.
+
+**Ce qu'il faut maintenir (règle) :** (a) l'analyse vit dans `profile_analysis`, **lue** par les écrans, **jamais** regénérée au rendu ; (b) **toute** modification de la fiche du pilote (onboarding, édition d'une partie, Discovery, confidence) **déclenche** une réécriture (`generateProfileAnalysis`) ; (c) quand l'analyse lira le JOURNAL (étape 1.2), ce principe ne change pas : elle reste figée + réécrite au changement, elle lit simplement le journal au lieu de my_profile.
+
+---
+
+# 48 sexies. DEUX NATURES DE TEXTE — ON NE LES CONFOND PLUS
+
+**A. TEXTE SUR UNE PERSONNE, construit à partir de ses tags** — respirations, analyse de la page profil, fiche d'un proche. C'est **le MODÈLE qui l'écrit, toujours** : il reformule, tisse, raconte, avec la pondération des tags. Il ne peut pas être écrit d'avance (il dépend de la personne). Règles : **7a** aucun attribut sans provenance ; **7b** la profondeur suit les tags, droit d'être bref ; **7c** seules les relations que le HSG définit ; **7d** les FACTs sensibles hors prose ; **7e** aucun domaine n'est omis s'il a des tags. Échec du modèle → **on n'affiche rien, l'étape est sautée**. **Un code brut à l'écran (« I1.1 », « ✓ ») est une FAUTE, pas une prudence** : reformuler un tag produit est le métier du modèle (7a l'autorise explicitement : « on reformule des tags produits »), pas une transgression.
+
+**B. TEXTE DE L'APPLICATION** — questions, options, subtexts, boutons, titres d'écran, textes de l'écran de merge. C'est **ESTELLE**, écrit d'avance, au **registre éditorial**. Le modèle n'y touche jamais et n'en invente aucun.
+
+*(Frontière : A dépend de la personne → modèle ; B est fixe → Estelle. On ne demande jamais à Estelle un libellé de type A, ni au modèle un texte de type B.)*
 
 ---
 
