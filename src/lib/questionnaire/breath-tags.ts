@@ -68,6 +68,52 @@ export async function readSocleTags(client: TagsReadClient, userId: string): Pro
   return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }
 
+/** Client chaînable (deux `.eq`) — pour filtrer le journal d'UN proche (about=contact). */
+export interface ContactTagsReadClient {
+  from(table: string): {
+    select(cols: string): {
+      eq(col: string, val: string): {
+        eq(col: string, val: string): Promise<{ data: unknown[] | null; error: { message: string } | null }>;
+      };
+    };
+  };
+}
+
+/**
+ * Respiration MODE 3 : lit le journal d'UN proche (`about_id = contactId`), jamais celui du pilote.
+ * ⚠ Filtre about OBLIGATOIRE : sans lui, on mélangerait les traits du pilote et du proche (même user_id).
+ */
+export async function readContactTags(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleBreathInput> {
+  const { data, error } = await client
+    .from('knowledge_evidences')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, created_at')
+    .eq('user_id', userId)
+    .eq('about_id', contactId);
+  if (error) throw new BreathReadError(`knowledge_evidences (contact) read: ${error.message}`);
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; created_at: string };
+  const rows = (data ?? []) as Row[];
+  const latest = new Map<string, Row>();
+  for (const r of rows) { const prev = latest.get(r.target_construct); if (!prev || r.created_at > prev.created_at) latest.set(r.target_construct, r); }
+  const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
+    family: r.target_family, construct: r.target_construct,
+    ...(r.direction ? { direction: r.direction } : {}), ...(r.modality ? { modality: r.modality } : {}),
+    strength: r.strength, rank: r.rank, basis: r.assertion_basis,
+  }));
+  return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
+}
+
+/** FACTs restituables d'UN proche. MÊME filtre qu'au pilote (7d corrigé) : seuls les sensibles sortent. */
+export async function readContactFacts(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleFact[]> {
+  const { data, error } = await client
+    .from('knowledge_facts')
+    .select('fact_type, value, visibility_derived')
+    .eq('user_id', userId)
+    .eq('about_id', contactId);
+  if (error) throw new BreathReadError(`knowledge_facts (contact) read: ${error.message}`);
+  type Row = { fact_type: string; value: string; visibility_derived: string };
+  return ((data ?? []) as Row[]).filter((r) => r.visibility_derived !== 'internal_only').map((r) => ({ factType: r.fact_type, value: r.value }));
+}
+
 /** Dérive la relation give≈receive DÉTERMINISTIQUEMENT depuis les tags (jamais le modèle). */
 export function deriveAttentionRelation(tags: readonly AttentionBreathTag[]): Pick<AttentionBreathInput, 'relation' | 'receiveTop' | 'giveTop'> {
   const byRank = (a: AttentionBreathTag, b: AttentionBreathTag) => (a.rank ?? 9) - (b.rank ?? 9);

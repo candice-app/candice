@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import IncognitoFlow from "./IncognitoFlow";
+import IncognitoFlowCanonical from "./IncognitoFlowCanonical";
+import { socleCanonicalIncognito } from "@/lib/questionnaire/flags";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -31,6 +33,11 @@ export default async function IncognitoQuestionnairePage({ params }: Props) {
     .eq("contact_id", id)
     .eq("user_id", user.id)
     .maybeSingle();
+
+  // Swap flag-gated : banque canonique (17 questions) si le flag est ON, legacy sinon (chemin OFF intact).
+  if (socleCanonicalIncognito) {
+    return <IncognitoFlowCanonical contactId={id} contactName={contact.name} contactGender={contact.gender ?? null} />;
+  }
 
   return (
     <IncognitoFlow

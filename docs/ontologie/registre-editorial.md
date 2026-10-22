@@ -11,6 +11,7 @@
 | E-5 | **Deltas d'axes** tempérament (option → axe·valeur) | `temperament-deltas.ts` + doc mappings | 36 | PONT legacy (ancien dictionnaire), NON RELU. `projection_bridge`, interdit au HSG. Condition de mort §47quater. |
 | E-6 | **Deltas d'axes** lifestyle (option → axe·valeur·target·q) | `lifestyle-deltas.ts` | 42 entrées (19 deltas `lifestyle` + 26 suppléances `temperament`) | PONT legacy, extrait par import, NON RELU. `projection_bridge`, interdit au HSG. **Seuls les axes** : `filter`/`canal` exclus (canoniques, cas 1 — §47quater). Condition de mort §47quater. |
 | E-7 | **Libellés de champs** A3 singularité/pratique/q17 (questionText des FACTs) | `socle-facts-fields.ts` | 11 + 17 + 1 | Repris MOT POUR MOT des composants (SingularityStep/PracticalStep/AvoidStep). Provenance verbatim ; aucune valeur inventée. Les FACTs eux-mêmes sont verbatim, sans mapping. |
+| E-8 | **Libellés + options** incognito (A4 : stems I1–I16, textes d'options, jetons) | `onboarding-incognito.ts` | 17 questions / ~118 options | Banque canonique de la transcription §4, **NON RELUE par Estelle**. Ne pas la faire passer pour validée. Jetons {Prénom}/{Pronom}/{pronom} résolus au rendu. |
 
 ## À ne pas traiter dans ce lot (inscrit pour mémoire)
 
@@ -19,6 +20,18 @@
 ## Dette d'alignement (datée par événement, pas à traiter hors de son déclencheur)
 
 - **Dims/rank de l'attention** (E-4) sont de la sémantique LEGACY logée dans les colonnes `dims`/`rank` au lieu de `projection_bridge` — pour éviter un refactor pur sur le domaine qui marche. Elles portent **la même interdiction** (jamais lues comme connaissance par HSG/respiration/analyse, cf. §47bis) et **la même condition de mort que `projection_bridge`** : `dims`, `rank`, `projection_bridge` et les colonnes du scoring legacy meurent **au même événement** — le jour où la reco réécrite lit les PROFILE constructs V15.
+
+## Lot distinct « ÉTATS ET RELANCES » — NE PAS FAIRE MAINTENANT
+
+N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'existent pas encore** : le mode conversationnel, et l'ajout d'une info sur la fiche d'un proche **hors questionnaire**. À faire quand elles existent :
+- La famille **CONTEXT se périme** ; les autres familles non. Une evidence CONTEXT est **restituée avec sa date** et **devient une question** passé un certain âge.
+- Quand un **état difficile** est déclaré, Candice **revient au bout d'un délai** qui dépend du type de contexte, **auprès du PILOTE, jamais du proche**.
+- Estelle pose les **durées** ; la **cadence** passe par le **score de fatigue**.
+- ⚠ À ne pas confondre avec la restitution de TRAITS (toujours autorisée, 7d) : ce lot ne concerne que les ÉTATS périssables.
+
+## Question ouverte — VISIBILITÉ PAR LE SUJET (incognito), à trancher par Estelle + son avocate
+
+« Que devient une fiche décrite en incognito le jour où le proche crée son compte et découvre sa fiche ? » Chaque question canonique incognito doit porter un niveau de visibilité sujet (**visible sans dommage** / **visible reformulé sans attribution au pilote** / **jamais visible**) — proposé par l'assistant, validé par Estelle, écrit dans `onboarding-incognito.ts`. Ne porte PAS sur ce qu'on redit au pilote (c'est lui qui a tout saisi) mais sur ce que le PROCHE verra.
 
 ## Questions ouvertes (à arbitrer au LOT RECO, pas avant — ces axes meurent avec la réécriture)
 

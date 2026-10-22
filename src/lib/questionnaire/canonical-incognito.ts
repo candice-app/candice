@@ -40,6 +40,13 @@ export function resolveIncognitoQuestions(firstName: string, gender: ContactGend
 
 const questionByCode = new Map(INCOGNITO_QUESTIONS.map((q) => [q.code, q]));
 
+/** code d'option I1 (I1.1…) → modalité canonique (WORDS…), pour le 7D côté composant. */
+export const I1_MODALITY_BY_CODE: Record<string, string> = Object.fromEntries(
+  (INCOGNITO_QUESTIONS.find((q) => q.code === 'I1')?.options ?? [])
+    .filter((o) => o.affection?.modality)
+    .map((o) => [o.code, o.affection!.modality]),
+);
+
 /**
  * Persiste au JOURNAL les options sélectionnées d'UNE question incognito (ordre = rang pour I1).
  * - provenance : about=contact, sourceType=reported_by_relative, entered_by=pilote (ownerId).
