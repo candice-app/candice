@@ -1,23 +1,11 @@
-// Feature-flags du lot B (banque unique). OFF par défaut : sans la variable, parcours legacy
-// inchangé. Allumé via env (NEXT_PUBLIC_*). Retour arrière = retirer la variable.
+// Lot B (banque unique) — ÉTAPE 0 de la suppression de l'ancien (hsg §48quater) :
+// le canonique est désormais le CHEMIN UNIQUE côté questionnaire. Les flags sont forcés `true` en dur
+// (plus d'env, plus d'interrupteur). L'ancien parcours existe encore en code mais n'est plus atteint ;
+// il sera supprimé à l'ÉTAPE 2, avec ces constantes. Ne pas réintroduire de gate env.
 
-// Domaine ATTENTION entier (q1 classé, q2, q4, qe) rendu depuis le canonique + journal.
-export const socleCanonicalAttention = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_ATTENTION === '1';
-
-// Domaine TEMPÉRAMENT (q5–q11) rendu depuis le canonique + journal + pont + respiration cumulative.
-export const socleCanonicalTemperament = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_TEMPERAMENT === '1';
-
-// Domaine LIFESTYLE (q13/q14/q4a–q4d, q18/q19) rendu depuis le canonique + journal + pont + respiration cumulative.
-export const socleCanonicalLifestyle = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_LIFESTYLE === '1';
-
-// A3 — SINGULARITÉ & PRATIQUE (texte libre + champs pratiques + q17) journalisés en FACT verbatim.
-// Pas d'axes, pas de pont : un FACT ne produit aucun signal. Projection my_profile inchangée.
-export const socleCanonicalSingularity = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_SINGULARITY === '1';
-
-// A4 — INCOGNITO rendu depuis la banque canonique unique (17 questions), journal about=contact.
-// Provenance reported_by_relative, assertionBasis par question. Projection questionnaire_responses inchangée.
-export const socleCanonicalIncognito = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_INCOGNITO === '1';
-
-// B — CONCLUSION ANALYTIQUE FINALE : l'écran qui ferme l'onboarding du pilote. Lit TOUT le journal self
-// (5 domaines), applique 7a/7b/7c/7d, jamais my_profile, jamais de repli. Vide si échec.
-export const socleCanonicalConclusion = process.env.NEXT_PUBLIC_SOCLE_CANONICAL_CONCLUSION === '1';
+export const socleCanonicalAttention = true;
+export const socleCanonicalTemperament = true;
+export const socleCanonicalLifestyle = true;
+export const socleCanonicalSingularity = true;
+export const socleCanonicalIncognito = true;
+export const socleCanonicalConclusion = true;

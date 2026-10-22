@@ -29,6 +29,10 @@ N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'exi
 - Estelle pose les **durées** ; la **cadence** passe par le **score de fatigue**.
 - ⚠ À ne pas confondre avec la restitution de TRAITS (toujours autorisée, 7d) : ce lot ne concerne que les ÉTATS périssables.
 
+## Point A (pont d'alignement des clés incognito) — ANNULÉ (22 oct)
+
+Raison : décision « on supprime l'ancien » (hsg §48quater). Maintenir l'ancien affichage via un pont de clés ne protège personne (seule utilisatrice). Les écrans lisent le journal, puis l'ancien est supprimé. Le pont aurait été du travail jeté.
+
 ## Lot officiel « IDENTITÉ, MERGE ET DÉPART » — règle validée (voir hsg §48bis), 3 pièces à construire
 
 La règle de préséance et de visibilité est **tranchée et validée par l'avocate** (pas en attente d'un avis). Elle est **écrite au document** (hsg §48bis) ; **rien n'est encore implémenté** (ni préséance, ni merge, ni écran). Les 3 pièces, chiffrées par l'inventaire (22 oct), non construites :

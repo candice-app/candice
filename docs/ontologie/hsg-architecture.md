@@ -2742,6 +2742,18 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 
 ---
 
+# 48 quater. SUPPRESSION DE L'ANCIEN — UN SEUL RANGEMENT (le journal)
+
+**Décision (22 oct) :** Estelle est la seule utilisatrice ; la cohabitation ancien/canonique ne protège personne. **Le point A (pont d'alignement des clés) est ANNULÉ** — on ne maintient pas l'ancien affichage. Destination : **le journal est le rangement unique**. Plus de flags, plus d'ancien questionnaire, plus d'écriture en double, plus de routes de respiration legacy, plus de maps d'affichage legacy.
+
+**ORDRE NON NÉGOCIABLE** (on ne supprime pas en premier, sinon les 14 écrans se vident) :
+
+- **ÉTAPE 0** — Canonique = chemin UNIQUE côté questionnaire (flags forcés `true`, en dur). Estelle refait son onboarding complet + remplit une fiche de proche → le journal contient du vrai. L'écriture de projection (my_profile / questionnaire_responses) **continue** à ce stade (double-write toléré, supprimé à l'étape 2).
+- **ÉTAPE 1** — Les écrans lisent le JOURNAL, dans l'ordre : (1) **fiche proche `/contacts/[id]`** (la plus visible, bloc traits par construct, préalable du merge) ; (2) les autres des 14 (page profil, generateProfileAnalysis, sheet-data, v2-data, suggestions, signals/generator, idea-suggestions, discovery, invite/nudge…) ; (3) **moteur de reco : strict minimum** — il va chercher la même chose dans le journal au lieu des anciennes cases, **pas de réécriture** (chantier à part).
+- **ÉTAPE 2** — Suppression **en un commit**, quand le dernier écran est passé : ancien questionnaire + `saveStage*`, écriture en double, **tous les flags**, routes de respiration legacy, maps d'affichage inutiles, **toutes les lectures des anciennes colonnes**. ⚠ **AUCUNE colonne supprimée en base dans ce commit** — les colonnes restent **inertes** (plus lues ni écrites). Une **migration de suppression séparée** sera écrite, qu'Estelle appliquera après avoir tout vu tourner. Une colonne supprimée ne revient pas.
+
+---
+
 # 49. CANDICE N’EST PAS UN TEST PSYCHOLOGIQUE
 
 Le HSG constitue une architecture de personnalisation relationnelle.

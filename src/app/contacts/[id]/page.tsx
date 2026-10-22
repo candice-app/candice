@@ -2,6 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { readContactTraitRows } from "@/lib/contacts/traits-from-journal";
 import DashboardShell from "@/components/layout/DashboardShell";
 import { Contact, QuestionnaireResponse, ProfileNote, CadenceLevel } from "@/types";
 import type { ContactRecommendations } from "@/lib/recommendations/types";
@@ -389,23 +390,10 @@ export default async function ContactPage({
     photoSignedUrl = data?.signedUrl ?? null;
   }
 
-  // Profile traits to show (only filled ones, in priority order)
-  const traitRows: { label: string; value: string }[] = [
-    { label: "Langage d'amour", value: resolve("love_language", profile?.love_language ?? null) },
-    { label: "Communication", value: resolve("communication_style", profile?.communication_style ?? null) },
-    { label: "Se sent apprécié(e) par", value: resolve("appreciation_style", profile?.appreciation_style ?? null) },
-    { label: "Énergie sociale", value: resolve("social_energy", profile?.social_energy ?? null) },
-    { label: "Sous stress", value: resolve("stress_response", profile?.stress_response ?? null) },
-    { label: "Valeurs fondamentales", value: resolve("core_values", profile?.core_values ?? null) },
-    { label: "Expression émotionnelle", value: resolve("emotional_expression", profile?.emotional_expression ?? null) },
-    { label: "Gestion des conflits", value: resolve("conflict_resolution", profile?.conflict_resolution ?? null) },
-    { label: "Prise de décision", value: resolve("decision_making", profile?.decision_making ?? null) },
-    { label: "Reconnaissance", value: resolve("recognition_preference", profile?.recognition_preference ?? null) },
-    { label: "Limites importantes", value: resolve("boundaries", profile?.boundaries ?? null) },
-    { label: "Développement", value: resolve("growth_mindset", profile?.growth_mindset ?? null) },
-    { label: "Loisirs", value: profile?.hobbies ?? "" },
-    { label: "Cadeaux", value: resolve("gift_preference", profile?.gift_preference ?? null) },
-  ].filter(r => r.value);
+  // ÉTAPE 1.1 (hsg §48quater) — bloc traits LU DEPUIS LE JOURNAL (about=contact), par construct.
+  // Remplace la lecture à plat de questionnaire_responses (slugs bruts / codes / phrases). Fiche sans
+  // journal → bloc vide (la personne (re)remplit depuis le questionnaire canonique).
+  const traitRows: { label: string; value: string }[] = await readContactTraitRows(admin as never, user.id, id);
 
   return (
     <DashboardShell>
