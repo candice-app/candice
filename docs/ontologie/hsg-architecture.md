@@ -2717,7 +2717,24 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 - **Restitution au SUJET** : filtre mécanique — il ne lit que les evidences `self_report` **le concernant**. Rien d'autre ne peut l'atteindre.
 - **Suppression de compte** : la suppression s'opère **par propriétaire** (`user_id`) — chaque déclarant possède ses evidences. Quand le sujet exerce son droit à l'effacement, **ses** lignes partent ; celles d'un tiers à son sujet (`user_id` du pilote) **ne sont pas touchées** — pas de suppression sélective à écrire, la propriété suffit (et c'est la raison **juridique** qui fait tenir l'incognito). Conséquence : le **retour de l'incognito n'est pas une restauration** — c'est la préséance qui **retombe d'elle-même** (les evidences `reported_by_relative`, jamais supprimées, redeviennent le plus haut rang disponible).
 
-**ÉCHELLE À 3 NIVEAUX (keyée sur `source_type`, pas sur `deriveRespondentRole`)** : `compte du sujet` (onboarding_closed/open, self_report, about=account) **>** `côte à côte` (`declared_via_relative`, self_report, about=contact — le proche a répondu lui-même depuis la session du pilote, sans compte) **>** `incognito` (`reported_by_relative`, observed/reporter_interpretation). Le côte à côte l'emporte sur l'incognito parce que **la réponse vient de lui**. ⚠ `declared_via_relative` **manque au CHECK DB (migration 82)** et **aucun flux ne le produit** : son activation est une **migration + le flux mode 2** (lot sous-bloc 2). L'échelle de préséance **étend** `reviseWithCorrection` (consolidate.ts), elle n'en crée pas une seconde.
+**ÉCHELLE DE PROVENANCE À SIX NIVEAUX (UNE SEULE échelle, étend `reviseWithCorrection` de consolidate.ts — jamais une seconde à côté).** Du plus fort au plus faible ; deux niveaux ne se confondent JAMAIS ; une déclaration du pilote sur son proche n'a jamais la force d'une préférence exprimée par le proche lui-même :
+
+| Niveau | Définition | Provenance en base (aujourd'hui) | Mode fiche |
+|---|---|---|---|
+| **1** | déclaration directe du proche sur lui-même | `self_report` + about=account (onboarding_*, discovery_*, conversation, user_declaration, wishlist) | **compte du proche** |
+| **2** | déclaration du pilote rapportant les propos EXPLICITES du proche | `declared_via_relative` (côte à côte) · `subject_statement` | **côte à côte** |
+| **3** | observation directe du pilote | assertionBasis `observed` (incognito) | incognito (selon la question) |
+| **4** | impression / interprétation du pilote | assertionBasis `reporter_interpretation` (incognito) | incognito (selon la question) |
+| **5** | inférence IA | *(aucune valeur aujourd'hui — viendra avec le lot d'extraction)* | — |
+| **6** | information non confirmée | *(aucune valeur aujourd'hui)* | — |
+
+- **`assertionBasis` porte DÉJÀ la distinction 3 vs 4** (`observed` vs `reporter_interpretation`) : l'échelle s'y raccroche, **pas de nouvelle colonne**. Le 1 vs 2 se lit sur `source_type` (+ about). 
+- **`user_correction` N'EST PAS un niveau, c'est un ACTE** : une correction du pilote sur une inférence (R22/§21, `reviseWithCorrection`). Elle révise un signal existant, elle ne se classe pas dans l'échelle.
+- **Niveaux 5 et 6 : aucune valeur aujourd'hui** (aucune extraction ne tourne, cf. §48quinquies). Ils s'activeront avec le lot d'extraction (nouvelle valeur de base « inférence IA », niveau 5, toujours < déclaré/coché — règle 2 de §48quinquies).
+- **Les trois modes de fiche** tombent dans l'échelle : compte du proche = 1, côte à côte = 2, incognito = 3 ou 4 selon la question. Le **côte à côte est EXACTEMENT le même questionnaire que l'onboarding classique** (même banque, même parcours) ; seules changent la **provenance** (niveau 2, `declared_via_relative`) et le **sujet** (un contact au lieu du pilote). **Deux questionnaires pour trois modes — pas de 3ᵉ parcours.**
+- ⚠ `declared_via_relative` **manquait au CHECK DB** → **migration 90** (écrite, à appliquer) l'ajoute. Le flux mode 2 reste un lot (sous-bloc 2).
+
+**RÉSOLUTION AU READ (à construct égal) :** le **niveau le plus fort gagne, quelles que soient les dates** ; à **niveau égal, la récence**. *(Implémentation = lot IDENTITÉ/MERGE/DÉPART, non codée ici — la résolution actuelle est encore la récence seule, breath-tags.)*
 
 ## 48 ter. IDENTITÉ, MERGE ET DÉPART — SPÉCIFICATION (écrite, non implémentée)
 
@@ -2751,6 +2768,25 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 - **ÉTAPE 0** — Canonique = chemin UNIQUE côté questionnaire (flags forcés `true`, en dur). Estelle refait son onboarding complet + remplit une fiche de proche → le journal contient du vrai. L'écriture de projection (my_profile / questionnaire_responses) **continue** à ce stade (double-write toléré, supprimé à l'étape 2).
 - **ÉTAPE 1** — Les écrans lisent le JOURNAL, dans l'ordre : (1) **fiche proche `/contacts/[id]`** (la plus visible, bloc traits par construct, préalable du merge) ; (2) les autres des 14 (page profil, generateProfileAnalysis, sheet-data, v2-data, suggestions, signals/generator, idea-suggestions, discovery, invite/nudge…) ; (3) **moteur de reco : strict minimum** — il va chercher la même chose dans le journal au lieu des anciennes cases, **pas de réécriture** (chantier à part).
 - **ÉTAPE 2** — Suppression **en un commit**, quand le dernier écran est passé : ancien questionnaire + `saveStage*`, écriture en double, **tous les flags**, routes de respiration legacy, maps d'affichage inutiles, **toutes les lectures des anciennes colonnes**. ⚠ **AUCUNE colonne supprimée en base dans ce commit** — les colonnes restent **inertes** (plus lues ni écrites). Une **migration de suppression séparée** sera écrite, qu'Estelle appliquera après avoir tout vu tourner. Une colonne supprimée ne revient pas.
+
+---
+
+# 48 quinquies. EXTRACTION DES RÉPONSES LIBRES — LES 9 RÈGLES
+
+**Constat (inventaire 22 oct) :** aujourd'hui le texte libre (singularité, pratique, q17) entre au journal comme **FACT verbatim** seul. **Aucune extraction** ne transforme un texte libre en connaissance structurée : `extraction.ts` est une structure dormante (« AUCUN appel à un modèle dans ce lot »), `/api/lifestyle/extract-filters` écrit la projection legacy (`relational_filters`, pas le journal). Les cinq familles ouvertes — **INTEREST, PREFERENCE, ENTITY, GUARDRAIL, CONTEXT** — existent comme types d'evidence mais ne sont produites que par des cases/widgets fermés (GUARDRAIL, PREFERENCE, INTEREST générique sur 15 catégories) ; **ENTITY et CONTEXT n'ont aucun producteur**. Elles ne s'affichent **nulle part** (la fiche ne rend que AFFECTION/PROFILE/NEED). Seul le texte libre peut produire « photographie argentique », « le café de ce torréfacteur », « allergique aux fruits à coque », « ne supporte pas les fleurs coupées ».
+
+**Les 9 règles de ce lot (extraction) :**
+1. **LE VERBATIM EST L'AUTORITÉ.** Conservé tel quel, toujours, jamais remplacé par une extraction. Une extraction **s'ajoute**, elle ne se substitue pas.
+2. **L'EXTRACTION EST UNE INFÉRENCE IA — niveau 5** de l'échelle (§48bis). Marquée comme telle, **jamais promue** au rang d'une déclaration : toujours plus faible que ce qui est déclaré ou coché.
+3. **RÉSOLUTION DE LA TENSION AVEC 7a** (à ne pas re-trancher) : 7a interdit de *déduire d'une réponse brute dans la prose*. L'extraction, elle, **déduit d'une réponse brute — c'est son métier — mais PRODUIT un tag avec sa provenance** (niveau 5). À partir de là, la respiration **reformule un tag produit** (pas une réponse brute) : 7a est respectée. La frontière : l'extraction produit des evidences tracées ; la prose ne déduit jamais, elle reformule.
+4. **NE JAMAIS PERDRE UNE INFORMATION** faute de tag : ce qui n'entre dans aucune famille va en **connaissance ouverte structurée** (`OpenKnowledge` : type + subject + subjectLabel verbatim + relation + intensity + context + source).
+5. **NE JAMAIS REMPLACER UN SUJET PRÉCIS PAR UN TAG GÉNÉRIQUE.** « Photographie argentique » ne devient pas « photographie ». Le `subjectLabel` précis est toujours conservé.
+6. **NE JAMAIS INVENTER UN TRAIT À PARTIR D'UN FAIT.** Une allergie, une situation, une contrainte ne produisent **jamais** un PROFILE, un NEED ou un DRIVER.
+7. **UNE PRÉFÉRENCE NÉGATIVE N'EST PAS UNE INTERDICTION.** `severity SOFT` par défaut ; `HARD` seulement pour ce qui est déclaré comme tel **ou une allergie** (`food.allergy.*`).
+8. **SORTIE VALIDÉE PAR SCHÉMA.** L'extraction émet des evidences **structurées et validées** dans le journal. Pas de texte libre réinjecté comme s'il était une connaissance.
+9. **SI ELLE NE SAIT PAS, ELLE N'EXTRAIT PAS.** Une réponse libre sans connaissance exploitable produit **zéro evidence** — résultat normal.
+
+**Structure canonique attendue (rappel)** : INTEREST (sujet précis résolu + relationship) ; PREFERENCE.[contexte].[attribut]=valeur ; ENTITY + relation (LOVE/WANT_TO_TRY/DISLIKE/AVOID) ; GUARDRAIL + severity SOFT|HARD ; CONTEXT (périssable, cf. lot ÉTATS). *(Lot non construit — inventaire + règles seulement.)*
 
 ---
 

@@ -77,16 +77,20 @@ export default function IncognitoFlowCanonical({ contactId, contactName, contact
     const { error } = await supabase.from("questionnaire_responses").upsert(row, { onConflict: "contact_id,user_id" });
     if (error) console.error("[IncognitoFlowCanonical] questionnaire_responses upsert", error.message);
 
-    // 3) RESPIRATION MODE 3 (journal about=contact, 7a/7b/7c + 7d corrigé) — vide si échec, jamais de repli
+    // 3) RESPIRATION MODE 3 (journal about=contact, 7a/7b/7c + 7d corrigé) — vide si échec, jamais de repli.
+    // Point 3 : texte vide → on SAUTE l'écran de respiration et on va à la fiche (jamais un cadre sans prose).
+    let text = "";
     try {
       const { readContactTags, readContactFacts } = await import("@/lib/questionnaire/breath-tags");
       const input = await readContactTags(supabase as never, ownerId, contactId);
       const facts = await readContactFacts(supabase as never, ownerId, contactId);
       const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...input, facts, subject: "other" }) });
       const data = (await res.json()) as { text: string };
-      setBreath(data.text ?? "");
-    } catch { setBreath(""); }
+      text = data.text ?? "";
+    } catch { text = ""; }
     setSaving(false);
+    if (!text) { router.push(`/contacts/${contactId}`); return; } // saut si vide
+    setBreath(text);
   }
 
   function next() {
@@ -98,7 +102,7 @@ export default function IncognitoFlowCanonical({ contactId, contactName, contact
   if (breath !== null) {
     return (
       <main style={{ maxWidth: 620, margin: "0 auto", padding: "2rem 1.25rem" }}>
-        <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{breath || "Tu ne sais pas encore grand-chose d'elle — ça viendra."}</p>
+        <p style={{ whiteSpace: "pre-wrap", lineHeight: 1.6 }}>{breath}</p>
         <button type="button" onClick={() => router.push(`/contacts/${contactId}`)} style={{ marginTop: 24 }}>Terminer →</button>
       </main>
     );

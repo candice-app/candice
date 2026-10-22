@@ -401,6 +401,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           setAttentionBreathText(text);
           triggerSynthesis();
           if (editMode === "single") { navigate("practical7Closing"); return; }
+          // Point 3 : texte vide → étape SAUTÉE, jamais un cadre de respiration sans prose.
+          if (!text) { navigate("temperament2"); return; }
           navigate("attentionBreath");
         }}
       />
@@ -458,6 +460,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           }
 
           setStep2BreathText(text);
+          if (!text) { navigate("temperament3"); return; } // point 3 : saut si vide
           navigate("temperament2Breath");
         }}
       />
@@ -518,6 +521,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           }
 
           setStep3BreathText(text);
+          if (!text) { navigate("lifestyle4"); return; } // point 3 : saut si vide
           navigate("temperament3Breath");
         }}
       />
@@ -584,6 +588,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           }
 
           setLifestyle4BreathText(text);
+          if (!text) { navigate("lifestyle5"); return; } // point 3 : saut si vide
           navigate("lifestyle4Breath");
         }}
       />
@@ -663,6 +668,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           }
 
           setLifestyle5BreathText(text);
+          if (!text) { navigate("singularity6"); return; } // point 3 : saut si vide
           navigate("lifestyle5Breath");
         }}
       />
@@ -714,7 +720,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             if (q17Text) entries.push({ spec: Q17_FACT_FIELD, value: q17Text });
             const text = await singularityFactsAndBreath(supabase, userId, entries);
             setSingularity6BreathText(text);
-            navigate(hasContent ? "singularity6Breath" : "practical7");
+            // point 3 : pas de contenu OU texte vide → saut (jamais un cadre sans prose).
+            navigate(text ? "singularity6Breath" : "practical7");
             return;
           }
           navigate(hasContent ? "singularity6Breath" : "practical7");
@@ -773,7 +780,8 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
               // B — conclusion analytique finale : lit TOUT le journal self (5 domaines), jamais my_profile.
               const text = await finalConclusionFromJournal(supabase, userId);
               setConclusionText(text);
-              navigate("conclusion8");
+              // point 3 : conclusion vide → on saute vers la clôture, jamais un cadre sans prose.
+              navigate(text ? "conclusion8" : "practical7Closing");
             } else {
               navigate("practical7Closing");
             }

@@ -64,13 +64,10 @@ export async function readContactTraitRows(client: ContactJournalClient, userId:
     .map((e) => NEED_LABELS[e.target_construct as keyof typeof NEED_LABELS]);
   if (needs.length) out.push({ label: 'Ses besoins', value: join(needs) });
 
-  // BEHAVIOR — sous stress / face au conflit (construct = "stress_response:pattern")
-  const behaviorLabel: Record<string, string> = { stress_response: 'Sous stress', conflict_response: 'Face au conflit' };
-  for (const e of ev.filter((x) => x.target_family === 'BEHAVIOR')) {
-    const [ctx] = e.target_construct.split(':');
-    const lbl = behaviorLabel[ctx];
-    if (lbl && !out.some((r) => r.label === lbl)) out.push({ label: lbl, value: '✓' });
-  }
+  // BEHAVIOR : NON rendu ici. Les options incognito (I5/I6/I8/I10) n'ont qu'un `text` (phrase entière,
+  // interdite à l'affichage) + un `behavior.pattern` (code, ex. `internalize`) — AUCUN libellé court dans
+  // la banque. Les libellés courts des patterns partent au REGISTRE ÉDITORIAL (Estelle les écrit) ; le
+  // BEHAVIOR est « dans le journal mais pas rendu » tant qu'ils n'existent pas. Ne rien inventer.
 
   return out;
 }

@@ -12,6 +12,7 @@
 | E-6 | **Deltas d'axes** lifestyle (option → axe·valeur·target·q) | `lifestyle-deltas.ts` | 42 entrées (19 deltas `lifestyle` + 26 suppléances `temperament`) | PONT legacy, extrait par import, NON RELU. `projection_bridge`, interdit au HSG. **Seuls les axes** : `filter`/`canal` exclus (canoniques, cas 1 — §47quater). Condition de mort §47quater. |
 | E-7 | **Libellés de champs** A3 singularité/pratique/q17 (questionText des FACTs) | `socle-facts-fields.ts` | 11 + 17 + 1 | Repris MOT POUR MOT des composants (SingularityStep/PracticalStep/AvoidStep). Provenance verbatim ; aucune valeur inventée. Les FACTs eux-mêmes sont verbatim, sans mapping. |
 | E-8 | **Libellés + options** incognito (A4 : stems I1–I16, textes d'options, jetons) | `onboarding-incognito.ts` | 17 questions / ~118 options | Banque canonique de la transcription §4, **NON RELUE par Estelle**. Ne pas la faire passer pour validée. Jetons {Prénom}/{Pronom}/{pronom} résolus au rendu. |
+| E-9 | **Libellés COURTS des patterns BEHAVIOR** (fiche proche) | à créer (banque / option) | stress : `internalize`, `withdraw_seek_calm`, `confide`, `take_action`, `regain_control` ; + patterns de I6 (conflit), I8 (communication), I10 (expression) | ⚠ MANQUANT : les options incognito n'ont qu'un `text` (phrase entière, interdite à l'affichage) + un `pattern` (code). Pas de libellé court → **BEHAVIOR « dans le journal mais pas rendu » sur la fiche** tant qu'Estelle n'a pas écrit ces libellés courts. Ne rien inventer. |
 
 ## À ne pas traiter dans ce lot (inscrit pour mémoire)
 
