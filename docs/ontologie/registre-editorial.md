@@ -33,6 +33,15 @@ Le compteur « générations incomplètes » (règle 7e bis : 2ᵉ tentative →
 
 L'extraction (§27) produit aujourd'hui **INTEREST** et **ENTITY** en structuré (+ reliquat OpenKnowledge). Elle **NE produit PAS encore** de **GUARDRAIL**, **PREFERENCE** ni **CONTEXT** structurés (vocabulaire fermé/semi-fermé, risqué depuis du libre sans garde-fou). **Conséquence écrite noir sur blanc : tout rejet ou préférence exprimé en TEXTE LIBRE est aujourd'hui INERTE** — « je ne supporte pas X » devient une ENTITY-AVOID (déjà excluante par la règle du rejet si la reco est branchée), mais « je préfère toujours le simple » ou « jamais avant 10h » ne deviennent pas une PREFERENCE/CONTEXT exploitable. **À étendre** (prochain raffinement) : ajouter GUARDRAIL (vertical path + severity SOFT/HARD), PREFERENCE (path+value), CONTEXT (périssable, cf. lot ÉTATS) à la sortie de l'extracteur, avec validation de schéma. Pas un détail d'implémentation.
 
+**Limite du prédicat de rejet (honnête, à lever au lot d'extension)** : `candidateRejectedBy` écarte par **recoupement de termes** (le candidat partage un mot avec le rejet). Ça couvre « bouquet de fleurs » vs « fleurs coupées » (mot « fleurs » commun), mais **PAS** « bouquet de roses » vs « fleurs coupées » (aucun mot commun — « roses » n'est pas « fleurs »). **Un rejet exprimé en langage naturel demande un rapprochement SÉMANTIQUE, pas un recoupement de mots.** C'est au lot d'extension (même lot que GUARDRAIL/PREFERENCE/CONTEXT structurés) : embeddings ou normalisation vers un vocabulaire d'entités. Écrit noir sur blanc pour qu'on ne croie pas la couverture complète.
+
+## Rebranchement de la reco sur le JOURNAL — conditions BLOQUANTES (à tenir le jour du lot reco)
+
+Aujourd'hui la reco lit l'ancienne projection, pas le journal. Le jour où on la rebranche, DEUX conditions sont **bloquantes** (pas « à voir plus tard ») :
+
+1. **La reco lit les rejets DANS LE JOURNAL** (ENTITY DISLIKE/AVOID + GUARDRAIL via `isRejection`), et la **preuve de bout en bout est due à CE moment-là** : un rejet déclaré dans le journal → le candidat correspondant est mécaniquement écarté à la sortie de la reco. Tant que ce n'est pas prouvé à l'écran, la dette d'exclusion n'est pas soldée. C'est la contrepartie du fait qu'on a construit `rejection-match` AVANT la reco : il reste inerte jusqu'à ce branchement, et le branchement doit prouver qu'il mord.
+2. **ENTITY ou GUARDRAIL : UNE SEULE source d'exclusion.** Un même rejet ne doit pas pouvoir être écrit à la fois comme ENTITY-AVOID et comme GUARDRAIL « au cas où » — deux représentations de la même vérité (interdit). **La question « laquelle fait foi » se tranche AVEC le rebranchement reco**, pas avant : c'est là qu'on voit ce que le moteur consomme réellement. Décision à inscrire ici ce jour-là. D'ici là, l'extraction n'écrit QUE ENTITY (GUARDRAIL structuré est au lot d'extension ci-dessus), donc le conflit ne peut pas encore naître — mais il naîtra dès que GUARDRAIL sera produit, d'où la règle posée d'avance.
+
 ## Lot distinct « ÉTATS ET RELANCES » — NE PAS FAIRE MAINTENANT
 
 N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'existent pas encore** : le mode conversationnel, et l'ajout d'une info sur la fiche d'un proche **hors questionnaire**. À faire quand elles existent :
@@ -43,11 +52,12 @@ N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'exi
 
 ## SÉQUENCE DIRECTRICE (décision 24 oct) — rappelée à la fin de CHAQUE rapport, avec l'état de chaque ligne
 
-Lister ne suffit pas (trois livrables ont dérivé 4 tours en étant listés). État à jour obligatoire :
-1. **Extraction du texte libre** — spec + écart faits (lecture) ; **BUILD à venir**.
-2. **Étape 0** (Estelle refait onboarding complet + une fiche proche → journal réel et entier) — EN ATTENTE (après 1).
-3. **Orchestration** (génération par section ; cœur déterministe fait) — EN ATTENTE (après 1+2). **BLOQUANT : rien de visuel tant que non livré.**
-4. **Câblage affichage** (masquage/régé/calculé qui tient) + **fiche sur la maquette gelée** — après 3.
+Lister ne suffit pas (trois livrables ont dérivé 4 tours en étant listés). État à jour obligatoire.
+**Réordonnée le 25 oct** : la préséance passe AVANT l'extraction. Raison : l'extraction écrit des inférences (niveau 5) dans le MÊME journal que les déclarations. Avec la récence seule, une inférence écrite APRÈS une déclaration l'écrasait en silence à l'écran. On ferme le trou avant de l'ouvrir.
+1. **Brancher `resolveByProvenance` aux lecteurs** (préséance au read, niveau le plus fort gagne, récence à niveau égal) — **FAIT (25 oct)**. Les 3 lecteurs de respiration (`readSocleTags`, `readContactTags`, `readAttentionTags`) résolvent par provenance, plus par récence seule. **Preuve à l'écran** livrée (`breath-preseance-e2e.test.ts`) : extraite écrite EN DERNIER → le lecteur de l'écran rend la DÉCLARÉE.
+2. **Câbler l'extraction au parcours** (après chaque réponse libre A3) — spec + build de l'extracteur faits ; **CÂBLAGE au parcours à venir** (prochaine ligne).
+3. **Étape 0** (Estelle refait onboarding complet + une fiche proche → journal réel et entier) — EN ATTENTE (après 2).
+4. **Orchestration** (génération par section ; cœur déterministe fait) — EN ATTENTE (après 2+3). **BLOQUANT : rien de visuel tant que non livré.** Puis **câblage affichage** (masquage/régé/calculé) + **fiche sur la maquette gelée**.
 5. **Écrans** : 2→5 (profil/analyse/synthèse), puis 6→11 et 14, puis 12, 13 et la reco au minimum.
 6. **Suppression de l'ancien chemin** en un commit, puis **migration de suppression des colonnes** (séparée).
 

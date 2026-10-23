@@ -29,4 +29,17 @@ describe('préséance par niveau de provenance', () => {
     expect(provenanceLevel('declared_via_relative', 'self_report')).toBe(2);
     expect(provenanceLevel('onboarding_open', 'self_report')).toBe(1);
   });
+
+  it('user_correction est un ACTE, pas un niveau : niveau 1 sur SOI, 3/4 sur un PROCHE', () => {
+    // sur soi (self_report) : correction d'une déclaration directe → niveau 1
+    expect(provenanceLevel('user_correction', 'self_report')).toBe(1);
+    // sur un proche : le pilote a VU (observed) → niveau 3 ; il CONCLUT (reporter_interpretation) → niveau 4
+    expect(provenanceLevel('user_correction', 'observed')).toBe(3);
+    expect(provenanceLevel('user_correction', 'reporter_interpretation')).toBe(4);
+    // conséquence au read : une déclaration de soi (niv.1) l'emporte sur une correction-observation du pilote (niv.3)
+    const selfDeclared = ev('onboarding_open', '2026-01-01T00:00:00Z', 'self_report');          // niv.1, ancien
+    const pilotObserved = ev('user_correction', '2026-10-25T00:00:00Z', 'observed');            // niv.3, récent
+    const [winner] = resolveByProvenance([pilotObserved, selfDeclared]);
+    expect(winner.source_type).toBe('onboarding_open');
+  });
 });

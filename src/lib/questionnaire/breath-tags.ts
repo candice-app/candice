@@ -1,3 +1,6 @@
+import { resolveByProvenance } from '../knowledge/preseance';
+import type { SourceType, AssertionBasis } from '../knowledge/sources';
+
 // La respiration lit le JOURNAL, jamais les réponses brutes ni result.axes (hsg §47ter, règle 7a).
 // Construit les TAGS produits (ce que le HSG a dérivé) + leur PROVENANCE, pour que la respiration les
 // REFORMULE sans rien déduire. Règle de récence appliquée : le plus récent par construct (append).
@@ -44,20 +47,23 @@ export interface SocleBreathInput {
  * + provenance. ⚠ NE LIT JAMAIS `dims` ni `projection_bridge` (sémantique legacy, interdite comme
  * connaissance — §47bis / §47quater). Récence appliquée par construct.
  */
+// RÉSOLUTION AU READ par PRÉSÉANCE (hsg §48bis) — remplace la récence SEULE : à construct égal, le niveau
+// de provenance le plus fort gagne (une inférence IA niveau 5 ne bat JAMAIS une déclaration), récence à
+// niveau égal. Depuis que l'extraction écrit des inférences dans le même journal, la récence seule laissait
+// une supposition écraser une déclaration en silence — plus maintenant.
+function resolveRows<R extends { target_construct: string; source_type: string; assertion_basis: string; created_at: string }>(rows: readonly R[]): R[] {
+  return resolveByProvenance(rows.map((r) => ({ ...r, source_type: r.source_type as SourceType, assertionBasis: r.assertion_basis as AssertionBasis }))) as unknown as R[];
+}
+
 export async function readSocleTags(client: TagsReadClient, userId: string): Promise<SocleBreathInput> {
   const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, confidence, context, created_at')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, source_type, confidence, context, created_at')
     .eq('user_id', userId);
   if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`); // jamais de 0 silencieux
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; confidence: string | null; context: string; created_at: string };
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; source_type: string; confidence: string | null; context: string; created_at: string };
   const rows = (data ?? []) as Row[];
-  const latest = new Map<string, Row>();
-  for (const r of rows) {
-    const prev = latest.get(r.target_construct);
-    if (!prev || r.created_at > prev.created_at) latest.set(r.target_construct, r);
-  }
-  const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
+  const tags: AttentionBreathTag[] = resolveRows(rows).map((r) => ({
     family: r.target_family,
     construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}),
@@ -87,15 +93,13 @@ export interface ContactTagsReadClient {
 export async function readContactTags(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleBreathInput> {
   const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, confidence, context, created_at')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, source_type, confidence, context, created_at')
     .eq('user_id', userId)
     .eq('about_id', contactId);
   if (error) throw new BreathReadError(`knowledge_evidences (contact) read: ${error.message}`);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; confidence: string | null; context: string; created_at: string };
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; source_type: string; confidence: string | null; context: string; created_at: string };
   const rows = (data ?? []) as Row[];
-  const latest = new Map<string, Row>();
-  for (const r of rows) { const prev = latest.get(r.target_construct); if (!prev || r.created_at > prev.created_at) latest.set(r.target_construct, r); }
-  const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
+  const tags: AttentionBreathTag[] = resolveRows(rows).map((r) => ({
     family: r.target_family, construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}), ...(r.modality ? { modality: r.modality } : {}),
     strength: r.strength, rank: r.rank, basis: r.assertion_basis, confidence: r.confidence,
@@ -168,21 +172,16 @@ export async function readSocleFacts(client: TagsReadClient, userId: string): Pr
 export async function readAttentionTags(client: TagsReadClient, userId: string): Promise<AttentionBreathInput> {
   const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, confidence, context, created_at')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, source_type, confidence, context, created_at')
     .eq('user_id', userId);
   // ⚠ L'ERREUR EST BRUYANTE : une lecture qui échoue ne doit JAMAIS retomber en 0 tag silencieux
   // (sinon un vrai utilisateur verrait une respiration vide sans qu'on le sache). Bug = bug.
   if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; confidence: string | null; context: string; created_at: string };
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; source_type: string; confidence: string | null; context: string; created_at: string };
   const rows = ((data ?? []) as Row[]).filter((r) => r.context === 'attention_received' || r.context === 'affection_given');
 
   // récence : le plus récent par construct
-  const latest = new Map<string, Row>();
-  for (const r of rows) {
-    const prev = latest.get(r.target_construct);
-    if (!prev || r.created_at > prev.created_at) latest.set(r.target_construct, r);
-  }
-  const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
+  const tags: AttentionBreathTag[] = resolveRows(rows).map((r) => ({
     family: r.target_family,
     construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}),

@@ -129,11 +129,14 @@ export function deriveAssertionStatus(sourceType: SourceType): AssertionStatus {
  * que soient les dates. `user_correction` est un ACTE, pas un niveau ; il vaut 1 (déclaration explicite).
  */
 export function provenanceLevel(sourceType: SourceType, basis: AssertionBasis): number {
-  if (sourceType === 'extraction_inferred') return 5;             // inférence IA
-  if (sourceType === 'declared_via_relative') return 2;           // côte à côte : le proche parle de lui, saisi par le pilote
-  if (sourceType === 'reported_by_relative') return basis === 'observed' ? 3 : 4; // incognito : observé (3) vs interprété (4)
-  if (sourceType === 'observed_behavior') return 3;               // observation directe
-  return 1;                                                        // déclaration directe (onboarding/discovery/conversation/wishlist/user_declaration/user_correction)
+  // Keyé D'ABORD sur la BASE (sur quoi repose l'affirmation), puis sur le sourceType. Ainsi une
+  // user_correction sur UN PROCHE (base observed/reporter_interpretation) est un niveau 3/4, pas 1 —
+  // ce n'est pas une déclaration du sujet, c'est l'observation/interprétation du pilote.
+  if (sourceType === 'extraction_inferred') return 5;             // inférence IA (la base est self_report mais l'acte est une inférence)
+  if (basis === 'reporter_interpretation') return 4;             // le pilote conclut
+  if (basis === 'observed') return 3;                            // le pilote a vu
+  if (sourceType === 'declared_via_relative') return 2;          // côte à côte : le proche parle de lui, saisi par le pilote
+  return 1;                                                       // déclaration directe du sujet sur lui-même (self_report/subject_statement)
 }
 
 /**
