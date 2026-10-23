@@ -25,6 +25,10 @@
 
 La prose SUR une personne est générée par le modèle (hsg §48sexies), mais son **ton** est guidé par le prompt. Les formulations d'exemple produites par l'assistant (ex. « elle rentre à l'intérieur plutôt que d'extérioriser ») ne sont **pas du français qu'Estelle signerait** : les tournures / few-shots de ton des prompts de respiration et de fiche sont à **reprendre par Estelle**. Le modèle garde la main sur le contenu (tags) ; Estelle cadre le registre de langue.
 
+## Signal qualité 7e (générations incomplètes) — emplacement provisoire
+
+Le compteur « générations incomplètes » (règle 7e bis : 2ᵉ tentative → rien + signal) vit **provisoirement** dans `/parametres/compte` (atteignable, gratuit). **Sa vraie place = la CONSOLE DE VALIDATION** (cahier des charges moteur d'événements : l'écran où Estelle voit ce que l'IA recommande / exclut / ce dont elle doute). **Le compteur y déménage le jour où la console existe**, avec les autres signaux de qualité. On ne construit pas d'écran console aujourd'hui.
+
 ## Lot distinct « ÉTATS ET RELANCES » — NE PAS FAIRE MAINTENANT
 
 N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'existent pas encore** : le mode conversationnel, et l'ajout d'une info sur la fiche d'un proche **hors questionnaire**. À faire quand elles existent :
