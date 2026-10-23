@@ -38,3 +38,27 @@ export function mustNotDisplay(text: StoredText, current: readonly CurrentEviden
   }
   return false;
 }
+
+/** Une section (détail) et sa date d'écriture — pour la péremption des synthèses (hsg §48octies). */
+export interface SectionStamp {
+  readonly sectionKey: string;
+  readonly generatedAt: string; // ISO
+}
+
+/**
+ * SECTION DE SYNTHÈSE (résumé, carrousel, mode d'emploi du duo) — périmée si l'une des sections de DÉTAIL
+ * dont elle dépend a été RÉÉCRITE après sa propre date (`synth.generatedAt < max(dépendances.generatedAt)`).
+ * S'ajoute aux trois sorts : une détail qui change → se réécrit → les synthèses qui en dépendent périssent.
+ * Cascade à un seul niveau (détail → synthèse). `details` = l'état courant des sections de détail du sujet.
+ */
+export function synthesisNeedsRegeneration(
+  synth: { readonly generatedAt: string; readonly dependsOnSections: readonly string[] },
+  details: readonly SectionStamp[],
+): boolean {
+  const byKey = new Map(details.map((d) => [d.sectionKey, d]));
+  for (const key of synth.dependsOnSections) {
+    const d = byKey.get(key);
+    if (d && d.generatedAt > synth.generatedAt) return true; // une dépendance réécrite après la synthèse
+  }
+  return false;
+}

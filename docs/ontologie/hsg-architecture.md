@@ -2835,12 +2835,23 @@ Le texte stocké porte **`source_evidence_ids`** + **`generated_at`** (déjà pr
 
 Déclencheurs, à propos du sujet concerné : **nouvelle evidence**, **`user_correction`**, **suppression**, **invalidation / non-autorisé**, **changement de CONSOLIDATION** (résultat consolidé modifié même sans écriture). Couvre onboarding, corrections futures depuis la page profil, et plus tard le conversationnel.
 
-Trois règles de cadence (décision 23 oct) :
-- **a) Pendant un parcours déclaré** (onboarding, ou une section reprise) : **AUCUNE** régénération — **une seule, à la fin** du parcours. *(Corrige le « triggerSynthesis à chaque étape » actuel, trop coûteux.)*
-- **b) Hors parcours** : fenêtre de regroupement courte, **15 s**.
-- **c) À l'ouverture d'une page dont le texte est périmé** : régénération **immédiate**, sans attendre le minuteur. *(Avec la péremption-par-requête + la régénération-à-l'ouverture, le « trou » — texte masqué, nouveau pas encore arrivé — n'existe jamais : l'ouverture déclenche tout de suite.)*
+Deux règles de cadence (décision 24 oct — la fenêtre (b) 15 s est ABANDONNÉE : en serverless, pas de minuteur transverse ni de file d'attente ; (c) paresseux groupe déjà naturellement les changements rapprochés, donc (b) n'apportait qu'une régé proactive coûteuse sans gain de correction) :
+- **a) Pendant un parcours déclaré** (onboarding, ou une section reprise) : **AUCUNE** régénération — **une seule, à la fin** du parcours. *(Corrige le « triggerSynthesis à chaque étape » actuel.)*
+- **c) À l'ouverture d'une page dont le texte doit être réécrit** : régénération **immédiate, PARESSEUSE** (à l'ouverture, pas de minuteur).
 
-*(Note d'implémentation serverless : (c) rend le mécanisme essentiellement **paresseux** — on régénère à l'ouverture si périmé — ce qui groupe naturellement plusieurs changements rapprochés sans minuteur transverse. La fenêtre (b) de 15 s n'est alors qu'une régénération **proactive** optionnelle ; (a) et (c) suffisent à la correction. À confirmer par Estelle.)*
+**CONTREPARTIE DU PARESSEUX (obligatoire, tombe du découpage calculé/écrit) :** à l'ouverture d'une page dont le texte doit être réécrit, le **CALCULÉ s'affiche IMMÉDIATEMENT** — podium, barres, niveaux, tags, chips — et **seule la prose arrive après**. **Jamais une page vide** : une page qui **se complète**. *(Le calculé se lit en direct du journal, toujours exact ; la prose, plus lente, se régénère puis apparaît.)*
+
+---
+
+# 48 octies. GÉNÉRATION PAR SECTION — DEUX ÉTAGES (décision 24 oct)
+
+Les textes sont **générés et stockés PAR SECTION** (table `profile_analysis_sections` : `section_key`, `text`, `source_evidence_ids`, `generated_at`, `tier`), jamais en un bloc — sinon on ne peut pas partager une section sans exposer les autres (le partage par section existe déjà : `scope`/`SectionPicker`/`visibility`). Chaque section régénérable **seule**.
+
+**Piège évité — la cohérence d'ensemble.** Si chaque section était écrite isolément depuis ses seuls tags, personne ne tiendrait la cohérence et le résumé répéterait « En profondeur ». Donc **deux étages** :
+- **SECTIONS DE DÉTAIL** (`tier=detail`) : écrites depuis **leurs tags**. Indépendantes, régénérables seules. Ex. langage d'attention, les 4 blocs d'« En profondeur », ce qui marche, infos pratiques.
+- **SECTIONS DE SYNTHÈSE** (`tier=synthesis`, `depends_on_sections text[]`) : le **résumé**, le carrousel « Ce que Candice a compris », le **mode d'emploi du duo**. Écrites **APRÈS**, en **recevant les sections de détail** (pas seulement des tags). Le résumé est une **synthèse des autres**, pas une section comme les autres.
+
+**Péremption de la synthèse (dépendance) :** une section de synthèse est **périmée si l'une des sections de détail dont elle dépend a été RÉÉCRITE après** son propre `generated_at` (`synth.generated_at < max(detail.generated_at)` parmi ses dépendances). S'ajoute aux trois sorts : une détail qui change (fate a/b/c) → la détail se réécrit → les synthèses qui en dépendent deviennent périmées à leur tour. Cascade à un seul niveau (détail → synthèse ; les synthèses ne dépendent pas d'autres synthèses).
 
 ---
 
