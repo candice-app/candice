@@ -21,6 +21,10 @@
 
 - **Dims/rank de l'attention** (E-4) sont de la sémantique LEGACY logée dans les colonnes `dims`/`rank` au lieu de `projection_bridge` — pour éviter un refactor pur sur le domaine qui marche. Elles portent **la même interdiction** (jamais lues comme connaissance par HSG/respiration/analyse, cf. §47bis) et **la même condition de mort que `projection_bridge`** : `dims`, `rank`, `projection_bridge` et les colonnes du scoring legacy meurent **au même événement** — le jour où la reco réécrite lit les PROFILE constructs V15.
 
+## Ton de la prose « type A » (fiche, respirations, analyse) — éditorial à affiner par Estelle
+
+La prose SUR une personne est générée par le modèle (hsg §48sexies), mais son **ton** est guidé par le prompt. Les formulations d'exemple produites par l'assistant (ex. « elle rentre à l'intérieur plutôt que d'extérioriser ») ne sont **pas du français qu'Estelle signerait** : les tournures / few-shots de ton des prompts de respiration et de fiche sont à **reprendre par Estelle**. Le modèle garde la main sur le contenu (tags) ; Estelle cadre le registre de langue.
+
 ## Lot distinct « ÉTATS ET RELANCES » — NE PAS FAIRE MAINTENANT
 
 N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'existent pas encore** : le mode conversationnel, et l'ajout d'une info sur la fiche d'un proche **hors questionnaire**. À faire quand elles existent :

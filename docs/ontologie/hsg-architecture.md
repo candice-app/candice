@@ -2568,7 +2568,11 @@ Ces deux règles figurent dans le **prompt** de la route de respiration, en plus
 
 > **7c — La respiration n'énonce que les RELATIONS que le HSG définit, jamais celles que le modèle observe.** Un lien entre deux tags (ex. « elle donne ce qu'elle aime recevoir ») est une **affirmation** : s'il n'est pas défini et calculé par le HSG, il contourne 7a. **Relation autorisée pour l'attention** : `give ≈ receive` sur la MODALITÉ — `congruence` (la modalité préférée en réception est aussi donnée), `ecart` (1ʳᵉ modalité reçue absente du donné), `neutre` (données insuffisantes). Elle est **dérivée déterministiquement** du journal (`deriveAttentionRelation`) et **fournie** à la respiration ; le modèle n'a pas le droit d'en inventer une autre. Toute nouvelle relation autorisée doit être ajoutée ici AVANT d'être énonçable.
 
-> **Repli en cas de panne** : si le modèle échoue ou ne produit rien, la respiration est **VIDE** — jamais un texte de repli issu du scoring legacy (ce serait revenir en silence à la mauvaise source). Mieux vaut un écran sans respiration qu'une respiration sans provenance.
+> **7e — Aucun domaine n'est OMIS s'il a des tags.** La conclusion analytique finale (et tout texte cumulatif) a le droit d'être **brève SUR** un domaine, jamais de le faire **disparaître** : un domaine qui porte des tags doit laisser une trace dans la prose. Un domaine **sans tag**, elle n'en parle pas — c'est normal, pas une omission. *(Garantie déterministe : la matière des cinq domaines — attention, tempérament, lifestyle [constructs], singularité, pratique [FACTs] — atteint l'entrée du modèle, cf. test `conclusion-domains`. Que la prose les tisse tous relève du prompt, le modèle ne tronque pas un domaine présent.)*
+
+> **Repli en cas de panne** : si le modèle échoue ou ne produit rien, la respiration est **VIDE** — jamais un texte de repli issu du scoring legacy (ce serait revenir en silence à la mauvaise source). Mieux vaut un écran sans respiration qu'une respiration sans provenance. **Texte vide → l'étape est SAUTÉE** (jamais un cadre de respiration sans prose) — les cinq respirations, les trois modes et la conclusion finale.
+
+> **7d bis — MARQUE DE PERCEPTION, posée UNE FOIS à l'affichage (mode 3).** À l'écran : **une seule** marque en tête du bloc — « D'après ce que tu sais d'elle » — puis des phrases **nettes**, sans hedging ligne à ligne (cinq « il te semble » empilés = illisibles, et ce n'est pas ce que demande 7d). **Dans les données : rien ne change** — chaque evidence garde sa provenance et son niveau de confiance intacts ; la marque unique est une décision d'AFFICHAGE, jamais un aplatissement. **Le texte ne promeut rien** : une inférence fragile ne devient jamais une caractéristique certaine. Pour que ce soit tenable, **le niveau de confiance VOYAGE JUSQU'AU MODÈLE avec chaque tag** (comme 7b fait suivre la profondeur au nombre de tags) : s'il reçoit des tags nus, il écrit tout du même ton. **La fermeté de la phrase suit la confiance de la donnée.**
 
 ## 5. Mode « côte à côte » — hypothèse non démontrée
 
@@ -2792,6 +2796,10 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 2. **Sortie validée par schéma** : l'extraction émet des evidences **structurées et validées**, jamais du texte libre réinjecté comme connaissance. *(Discipline d'implémentation, pas dans le HSG philosophique.)*
 
 **Contradiction : aucune relevée** entre ces points et les fichiers d'autorité. *(Lot non construit — inventaire + renvois seulement. Structure canonique des familles : dictionnaire.)*
+
+**DEUX POINTS DE SÉCURITÉ, ÉCRITS NOIR SUR BLANC (ne se déduisent jamais d'un mécanisme général) :**
+- **ALLERGIE = `severity HARD`, toujours.** Même si le mécanisme `severity SOFT|HARD` est documenté ailleurs, une règle de sécurité se lit explicitement : une allergie (`food.allergy.*`) est **HARD**, jamais SOFT. Une préférence négative ordinaire reste SOFT par défaut.
+- **LE TEXTE AFFICHÉ ET LA RÈGLE D'EXCLUSION SONT SÉPARÉS.** Un GUARDRAIL raconté en douceur sur la fiche (« l'exposition en public, qu'elle préfère éviter ») **n'affaiblit JAMAIS la sévérité stockée**. La fiche **raconte** (prose, type A), le moteur **exclut** (sur la `severity` de la donnée). **Un HARD reste un HARD** quelle que soit la douceur de la formulation. La restitution ne touche pas à la donnée.
 
 ---
 
