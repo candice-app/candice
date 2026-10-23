@@ -1,11 +1,12 @@
 // ÉTAPE 1.1 (hsg §48quater) — BLOC TRAITS de la fiche proche LU DEPUIS LE JOURNAL (about=contact),
 // par construct. Remplace la lecture à plat de questionnaire_responses (slugs bruts). La donnée est
 // propre à la source : AFFECTION_RECEIVE_WORDS → « Les mots », jamais « I1.1 » ni une phrase entière.
-// Récence par construct (incognito = tout reported_by_relative ; la préséance 3-niveaux viendra avec le
-// merge, §48ter — ici un seul rang de provenance). N'invente aucun libellé : réutilise les maps du
-// vocabulaire canonique ; une famille sans libellé connu n'est pas rendue (plutôt que bricoler).
+// PRÉSÉANCE par construct (resolveJournalRows, §48bis) : niveau le plus fort gagne, récence à niveau égal —
+// comme tous les lecteurs du journal, jamais la récence seule. N'invente aucun libellé : réutilise les maps
+// du vocabulaire canonique ; une famille sans libellé connu n'est pas rendue (plutôt que bricoler).
 
 import { PROFILE_FUNCTIONING_LABELS, PROFILE_ORIENTATION_LABELS, NEED_LABELS } from '../knowledge/vocabulary';
+import { resolveJournalRows } from '../knowledge/preseance';
 
 /** Modalités d'affection → libellé (repris de la légende de respiration). */
 const MODALITY_LABELS: Record<string, string> = {
@@ -18,7 +19,8 @@ export interface TraitRow { readonly label: string; readonly value: string; }
 
 interface EvidenceLite {
   target_family: string; target_construct: string;
-  direction?: string | null; modality?: string | null; rank?: number | null; created_at: string;
+  direction?: string | null; modality?: string | null; rank?: number | null;
+  assertion_basis: string; source_type: string; created_at: string;
 }
 export interface ContactJournalClient {
   from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): Promise<{ data: unknown[] | null; error: { message: string } | null }> } } };
@@ -30,15 +32,15 @@ export interface ContactJournalClient {
  */
 export async function readContactTraitRows(client: ContactJournalClient, userId: string, contactId: string): Promise<TraitRow[]> {
   const { data, error } = await client.from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, rank, created_at')
+    .select('target_family, target_construct, direction, modality, rank, assertion_basis, source_type, created_at')
     .eq('user_id', userId).eq('about_id', contactId);
   if (error) throw new Error(`[traits-from-journal] ${error.message}`);
   const rows = (data ?? []) as EvidenceLite[];
 
-  // récence : le plus récent par construct
-  const latest = new Map<string, EvidenceLite>();
-  for (const r of rows) { const p = latest.get(r.target_construct); if (!p || r.created_at > p.created_at) latest.set(r.target_construct, r); }
-  const ev = [...latest.values()];
+  // PRÉSÉANCE par construct (resolveJournalRows, hsg §48bis) : niveau le plus fort, récence à niveau égal —
+  // JAMAIS la récence seule. La fiche proche lit le journal depuis le début ; sans préséance, une inférence
+  // écrasait une déclaration en silence ici aussi.
+  const ev = resolveJournalRows(rows);
 
   const out: TraitRow[] = [];
   const join = (xs: string[]) => xs.filter(Boolean).join(', ');

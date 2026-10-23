@@ -13,6 +13,19 @@ export interface ResolvableEvidence {
   readonly created_at: string; // ISO
 }
 
+/**
+ * PRIMITIF CANONIQUE pour tous les lecteurs du journal. Prend des lignes TELLES QUE la base les stocke
+ * (colonnes snake_case `assertion_basis` + `source_type`), les résout par préséance, rend les gagnants.
+ * TOUT lecteur qui réduit le journal à UNE evidence par construct DOIT passer par ici — sinon il résout
+ * par récence seule et une inférence IA écrase une déclaration en silence. (Les lecteurs de FACTs, qui
+ * renvoient une LISTE sans réduire, n'ont rien à résoudre : ils ne masquent rien.)
+ */
+export function resolveJournalRows<R extends { target_construct: string; source_type: string; assertion_basis: string; created_at: string }>(rows: readonly R[]): R[] {
+  return resolveByProvenance(
+    rows.map((r) => ({ ...r, source_type: r.source_type as SourceType, assertionBasis: r.assertion_basis as AssertionBasis })),
+  ) as unknown as R[];
+}
+
 /** Résout, par construct, l'evidence qui FAIT FOI : niveau le plus fort d'abord, récence à niveau égal. */
 export function resolveByProvenance<E extends ResolvableEvidence>(evidences: readonly E[]): E[] {
   const winner = new Map<string, E>();
