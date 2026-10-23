@@ -1,7 +1,7 @@
 // Cœur déterministe de la génération par section (fixtures) : sélection (le modèle n'élit rien) + double
 // contrôle (7a mécanique). Pas de modèle, pas de base.
 import { describe, expect, it } from 'vitest';
-import { selectSectionInputs, verifySection, SECTION_SPECS } from '../profile-sections';
+import { selectSectionInputs, verifySection, SECTION_SPECS, consumedFamilies } from '../profile-sections';
 import type { AttentionBreathTag, SocleFact } from '../../questionnaire/breath-tags';
 
 const tag = (family: string, construct: string, strength: string, rank: number | null, extra: Partial<AttentionBreathTag> = {}): AttentionBreathTag =>
@@ -57,6 +57,16 @@ describe('verifySection — 7a mécanique (omission / invention / forme)', () =>
     expect(verifySection(['a'], ['a'], '   ').formFault).toBe('empty_with_matter');
     expect(verifySection(['a'], ['a'], 'Elle aime les mots et').formFault).toBe('truncated');
   });
+});
+
+// CONTRÔLE STRUCTUREL (hsg §48octies) : toute famille qui PRODUIT des tags doit être CONSOMMÉE par au
+// moins une section. L'angle mort que le double contrôle ne voit pas (il ne vérifie que ce qui est DONNÉ
+// à une section, pas qu'une famille entière n'est jamais donnée). ENTITY/CONTEXT exemptées : aucun
+// producteur aujourd'hui (elles viendront de l'extraction / du lot ÉTATS).
+it('toute famille produite est consommée par ≥1 section (pas d\'angle mort)', () => {
+  const PRODUCED = ['AFFECTION_LANGUAGE', 'NEED', 'PREFERENCE', 'PROFILE', 'GUARDRAIL', 'DRIVER', 'BEHAVIOR', 'INTEREST'];
+  const consumed = consumedFamilies();
+  for (const fam of PRODUCED) expect(consumed.has(fam), `famille ${fam} consommée par aucune section`).toBe(true);
 });
 
 it('synthèses dépendent uniquement de détails (jamais d\'autres synthèses)', () => {

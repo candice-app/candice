@@ -26,15 +26,18 @@ export interface SectionSpec {
 
 // Mapping tag/fact → section (le « calculé » de 7a bis). À RELIRE par Estelle (classement maquette).
 export const SECTION_SPECS: readonly SectionSpec[] = [
-  // ── DÉTAIL ──
+  // ── DÉTAIL ── (vérifié contre ce que la maquette AFFICHE, pas contre les titres)
   { key: 'attention_insights', tier: 'detail', sources: [{ kind: 'family', family: 'AFFECTION_LANGUAGE' }] },
-  { key: 'deep_touch',   tier: 'detail', sources: [{ kind: 'family', family: 'AFFECTION_LANGUAGE', direction: 'receive' }] },
-  { key: 'deep_loved',   tier: 'detail', sources: [{ kind: 'family', family: 'NEED' }] },
-  { key: 'deep_pleasure',tier: 'detail', sources: [{ kind: 'family', family: 'PREFERENCE' }, { kind: 'construct', constructs: ['APPETENCE_EXPERIENCE', 'APPETENCE_OBJECT', 'APPETENCE_PREMIUM'] }] },
+  // « Ce qui le touche » affiche : Présence sincère/Temps à deux (AFFECTION) + Geste anticipé (DRV_ANTICIPATION).
+  { key: 'deep_touch',   tier: 'detail', sources: [{ kind: 'family', family: 'AFFECTION_LANGUAGE', direction: 'receive' }, { kind: 'family', family: 'DRIVER' }] },
+  // « Se sentir aimé » affiche : Prendre en charge/Charge mentale en moins (NEED + DRV_RELIEF) + comment il réagit sous pression (BEHAVIOR).
+  { key: 'deep_loved',   tier: 'detail', sources: [{ kind: 'family', family: 'NEED' }, { kind: 'family', family: 'DRIVER' }, { kind: 'family', family: 'BEHAVIOR' }] },
+  { key: 'deep_pleasure',tier: 'detail', sources: [{ kind: 'family', family: 'PREFERENCE' }, { kind: 'construct', constructs: ['APPETENCE_EXPERIENCE', 'APPETENCE_OBJECT', 'APPETENCE_PREMIUM'] }, { kind: 'family', family: 'DRIVER' }] },
   { key: 'deep_miss',    tier: 'detail', sources: [{ kind: 'family', family: 'GUARDRAIL' }] },
-  { key: 'works',        tier: 'detail', sources: [{ kind: 'family', family: 'AFFECTION_LANGUAGE' }] }, // phrase par ligne (les barres sont calculées ailleurs)
+  // « Ce qui marche avec lui » : le beau/personnel/expérientiel/utile/premium/surprise = PROFILE orientations + DRIVER (PAS de l'affection). La phrase par ligne ; les barres sont calculées ailleurs.
+  { key: 'works',        tier: 'detail', sources: [{ kind: 'construct', constructs: ['IMPORTANCE_AESTHETIC', 'IMPORTANCE_FUNCTIONAL', 'IMPORTANCE_AUTHENTICITY', 'APPETENCE_PREMIUM', 'APPETENCE_EXPERIENCE', 'APPETENCE_SPONTANEITY'] }, { kind: 'construct', constructs: ['DRV_PERSONALIZATION'] }] },
   { key: 'territoire',   tier: 'detail', sources: [{ kind: 'construct', constructs: ['APPETENCE_EXPERIENCE', 'IMPORTANCE_FUNCTIONAL', 'IMPORTANCE_AUTHENTICITY', 'APPETENCE_PREMIUM'] }] },
-  { key: 'monde_passions', tier: 'detail', sources: [{ kind: 'fact', factTypes: ['singularity.adore_faire', 'singularity.sujets_stimulants'] }] },
+  { key: 'monde_passions', tier: 'detail', sources: [{ kind: 'fact', factTypes: ['singularity.adore_faire', 'singularity.sujets_stimulants'] }, { kind: 'family', family: 'INTEREST' }] },
   { key: 'monde_gouts',  tier: 'detail', sources: [{ kind: 'construct', constructs: ['IMPORTANCE_AESTHETIC', 'IMPORTANCE_AUTHENTICITY'] }] },
   { key: 'univers_matieres', tier: 'detail', sources: [{ kind: 'construct', constructs: ['IMPORTANCE_AESTHETIC', 'IMPORTANCE_AUTHENTICITY'] }] },
   { key: 'univers_marques',  tier: 'detail', sources: [{ kind: 'fact', factTypes: ['singularity.marques_lieux'] }] },
@@ -93,6 +96,30 @@ export function selectSectionInputs(tags: readonly AttentionBreathTag[], facts: 
     out.push({ key: spec.key, tier: 'detail', items: orderItems(items, meta), freeTextOnly: false });
   }
   return out;
+}
+
+/** Famille canonique d'un construct (préfixe) — pour le contrôle de couverture. */
+export function familyOfConstruct(construct: string): string {
+  if (construct.startsWith('AFFECTION_')) return 'AFFECTION_LANGUAGE';
+  if (construct.startsWith('NEED_')) return 'NEED';
+  if (construct.startsWith('DRV_')) return 'DRIVER';
+  if (construct.startsWith('GRD_')) return 'GUARDRAIL';
+  if (construct.startsWith('PREFERENCE')) return 'PREFERENCE';
+  if (/^(IMPORTANCE_|APPETENCE_|PROFILE_|SOCIAL_ENERGY)/.test(construct)) return 'PROFILE';
+  if (construct.includes(':')) return 'BEHAVIOR'; // ex. stress_response:internalize
+  return 'UNKNOWN';
+}
+
+/** Familles canoniques CONSOMMÉES par au moins une section (via les sélecteurs family + construct). */
+export function consumedFamilies(): Set<string> {
+  const fams = new Set<string>();
+  for (const spec of SECTION_SPECS) {
+    for (const sel of spec.sources ?? []) {
+      if (sel.kind === 'family') fams.add(sel.family);
+      else if (sel.kind === 'construct') for (const c of sel.constructs) fams.add(familyOfConstruct(c));
+    }
+  }
+  return fams;
 }
 
 export interface SectionVerdict { readonly ok: boolean; readonly omission: readonly string[]; readonly invention: readonly string[]; readonly formFault: 'empty_with_matter' | 'truncated' | null; }

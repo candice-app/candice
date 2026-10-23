@@ -37,6 +37,24 @@ N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'exi
 - Estelle pose les **durées** ; la **cadence** passe par le **score de fatigue**.
 - ⚠ À ne pas confondre avec la restitution de TRAITS (toujours autorisée, 7d) : ce lot ne concerne que les ÉTATS périssables.
 
+## SÉQUENCE DIRECTRICE (décision 24 oct) — rappelée à la fin de CHAQUE rapport, avec l'état de chaque ligne
+
+Lister ne suffit pas (trois livrables ont dérivé 4 tours en étant listés). État à jour obligatoire :
+1. **Extraction du texte libre** — spec + écart faits (lecture) ; **BUILD à venir**.
+2. **Étape 0** (Estelle refait onboarding complet + une fiche proche → journal réel et entier) — EN ATTENTE (après 1).
+3. **Orchestration** (génération par section ; cœur déterministe fait) — EN ATTENTE (après 1+2). **BLOQUANT : rien de visuel tant que non livré.**
+4. **Câblage affichage** (masquage/régé/calculé qui tient) + **fiche sur la maquette gelée** — après 3.
+5. **Écrans** : 2→5 (profil/analyse/synthèse), puis 6→11 et 14, puis 12, 13 et la reco au minimum.
+6. **Suppression de l'ancien chemin** en un commit, puis **migration de suppression des colonnes** (séparée).
+
+## Mécanisme radar → INTEREST (double mappings) — proposé, Estelle tranche
+
+Le radar (13 catégories, le « 15 » est un nom faux) journalise dans INTEREST au domaine parent. **Une case cochée ne compte jamais deux fois** : proposition = **un domaine PRINCIPAL + un alias non pondéré**. Ex. « Art & culture » → **1 evidence INTEREST** `parent_domain = art` (principal) ; `culture_history` noté comme **alias** (champ descriptif, pas une 2ᵉ evidence) → pèse une fois dans les classements. Les catégories mono-domaine (Lecture→books_literature) : 1 evidence, pas d'alias.
+
+## Libellés de vide (éditorial, Estelle) — « Pas encore d'éléments » provisoire
+
+Tout libellé de section vide (ex. Tables/Voyages en attente d'extraction) est provisoire, de l'assistant, à reprendre par Estelle. Marques+lieux fusionnés en un bloc tant qu'il n'y a qu'un fait : validé, scindé à l'extraction.
+
 ## Point A (pont d'alignement des clés incognito) — ANNULÉ (22 oct)
 
 Raison : décision « on supprime l'ancien » (hsg §48quater). Maintenir l'ancien affichage via un pont de clés ne protège personne (seule utilisatrice). Les écrans lisent le journal, puis l'ancien est supprimé. Le pont aurait été du travail jeté.
