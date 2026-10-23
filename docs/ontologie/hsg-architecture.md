@@ -2572,6 +2572,8 @@ Ces deux règles figurent dans le **prompt** de la route de respiration, en plus
 
 > **7e — Aucun domaine n'est OMIS s'il a des tags.** La conclusion analytique finale (et tout texte cumulatif) a le droit d'être **brève SUR** un domaine, jamais de le faire **disparaître** : un domaine qui porte des tags doit laisser une trace dans la prose. Un domaine **sans tag**, elle n'en parle pas — c'est normal, pas une omission. *(Garantie déterministe : la matière des cinq domaines — attention, tempérament, lifestyle [constructs], singularité, pratique [FACTs] — atteint l'entrée du modèle, cf. test `conclusion-domains`. Que la prose les tisse tous relève du prompt, le modèle ne tronque pas un domaine présent.)*
 
+> **7e ter — AUCUNE SÉLECTION PAR VALENCE. On affiche TOUT, neutrement.** Par défaut un profil montre **tout** — forces ET faiblesses, positif ET négatif — du **même ton neutre**. Le modèle ne choisit pas ce qu'il met en avant (7a bis) **et ne choisit pas non plus ce qu'il TAIT** : rien n'est adouci, rien n'est omis parce que ce serait moins flatteur. « Sous stress elle se referme », « elle n'aime pas qu'on décide pour elle », « elle est exigeante » s'affichent **comme le reste**. **Toute matière fournie est traitée.** Deux raisons, la seconde est structurante : Candice doit pouvoir **expliquer à quelqu'un qui il est** ; et **confronter** un profil à un autre — si chaque profil est raboté différemment, la **comparaison** ne veut plus rien dire.
+
 > **7e bis — 7e est VÉRIFIÉE, pas espérée.** Le modèle renvoie, à côté de son texte, la **liste des domaines qu'il a traités** — en **sortie structurée validée par schéma** (comme toute extraction). On la compare à la liste des domaines **fournis en entrée**. S'il en manque un, c'est **détecté**. **Sur écart : une seconde tentative ; si elle manque encore un domaine présent en entrée → le texte est écarté (traité comme un échec modèle : vide, étape sautée, les éléments calculés tiennent la fiche) ET un signal est journalisé pour relecture.** *(Estelle tranche ce comportement.)* Même mécanisme partout où un texte doit couvrir une matière donnée : conclusion finale, résumé de fiche, blocs d'« En profondeur ».
 
 > **Repli en cas de panne** : si le modèle échoue ou ne produit rien, la respiration est **VIDE** — jamais un texte de repli issu du scoring legacy (ce serait revenir en silence à la mauvaise source). Mieux vaut un écran sans respiration qu'une respiration sans provenance. **Texte vide → l'étape est SAUTÉE** (jamais un cadre de respiration sans prose) — les cinq respirations, les trois modes et la conclusion finale.
@@ -2813,14 +2815,21 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 
 **Ce qu'il faut maintenir (règle) :** (a) l'analyse vit dans `profile_analysis`, **lue** par les écrans, **jamais** regénérée au rendu ; (b) **toute** modification de la fiche du pilote **déclenche** une réécriture ; (c) quand l'analyse lira le JOURNAL, elle reste figée + réécrite au changement, elle lit le journal au lieu de my_profile. **Mécanisme unique pour l'analyse profil ET les textes de fiche proche** (même table `profile_analysis` : `contact_id` null = profil, `contact_id` set = fiche).
 
-### Péremption — PAR REQUÊTE, jamais par drapeau (décision 23 oct)
+### Les TROIS SORTS d'une connaissance (décision 23 oct) — ne jamais les confondre
 
-Un drapeau `stale` est un champ dérivable qu'on stocke : il **ment** dès qu'un chemin d'invalidation oublie de le mettre à jour (et il y en aura plusieurs). **Interdit.** À la place, le texte stocké porte **`source_evidence_ids`** (les connaissances dont il est issu) **+ `generated_at`** (déjà présent). Un texte est **périmé — calculé par requête, au moment de l'affichage** — si l'une de ses sources :
-- a été **modifiée après** `generated_at` (journal append : une evidence plus récente pour le même sujet, `created_at > generated_at`), ou
-- a été **supprimée** (un `source_evidence_id` n'existe plus), ou
-- **n'est plus autorisée** (visibilité/consentement révoqués).
+Le texte ne « périme » pas en bloc : selon ce qui change à sa source, trois sorts DISTINCTS.
 
-**Un texte périmé n'est PLUS AFFICHÉ**, même avant régénération. Pendant l'intervalle, la fiche tient par les **éléments CALCULÉS** (podium, barres, niveaux, tags — lus en direct, donc toujours exacts). Une info supprimée/non-autorisée ne survit jamais dans un texte en attente. *(Si la requête de péremption s'avérait trop coûteuse à l'affichage, on rediscute avec le chiffre — pas avant.)*
+- **a) DATÉ ET RÉVOLU** — un état, un événement : « en mars elle n'allait pas bien », « il s'est cassé la jambe en juin ». Ça ne devient pas **faux**, ça devient du **passé**. Ça **ne disparaît JAMAIS** : ça part dans une section **HISTORIQUE**, repliée par défaut, datée, classée par date. Cette section **EST le journal rendu visible** — pas un second rangement.
+- **b) CORRIGÉ** — « elle déteste les fleurs » → corrigé en « elle les adore ». L'ancien texte n'est **pas de l'histoire, c'est une erreur** : il est **REMPLACÉ, pas archivé**, et ne s'affiche **nulle part**. L'evidence d'origine **reste dans le journal** (le journal n'efface rien) mais **n'est plus restituée** (récence/préséance).
+- **c) SUPPRIMÉ / NON AUTORISÉ** — effacement demandé, consentement retiré : ça **DISPARAÎT PARTOUT, y compris de l'historique**. Aucune exception, **non négociable** : sinon l'historique devient l'endroit où survivent les données qu'on a demandé d'effacer.
+
+### Péremption — PAR REQUÊTE, jamais par drapeau
+
+Le texte stocké porte **`source_evidence_ids`** + **`generated_at`** (déjà présent). Pas de colonne `stale` (dérivé stocké = ment). On en déduit À L'AFFICHAGE **deux choses séparées** (`staleness.ts`) :
+- **`needsRegeneration`** → le texte doit être **réécrit** : une source est postérieure (fates a/b), supprimée ou non autorisée (fate c). Réécriture **paresseuse à l'ouverture** (cf. déclencheur) ; la réécriture envoie le daté-révolu en HISTORIQUE (a) et laisse tomber le corrigé (b).
+- **`mustNotDisplay`** → **SÉCURITÉ (fate c uniquement)** : une source **supprimée ou non autorisée** → le texte **ne s'affiche plus**, même avant réécriture. Pendant l'intervalle, les **éléments CALCULÉS** (podium, barres, niveaux, tags — lus en direct) tiennent la fiche. Une donnée effacée/non-autorisée ne survit **jamais** dans un texte en attente.
+
+*(Si la requête s'avérait trop coûteuse à l'affichage, on rediscute avec le chiffre — pas avant.)*
 
 ### Déclencheur de régénération — ÉVÉNEMENTS de connaissance (pas « étapes »)
 
