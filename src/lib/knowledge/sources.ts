@@ -26,6 +26,7 @@ export const SOURCE_TYPES = [
   'reported_by_relative',
   'declared_via_relative', // mode « côte à côte » (sous-bloc 2) — voir MODE2_SOURCE_TYPE
   'observed_behavior',
+  'extraction_inferred', // niveau 5 : inférence IA depuis un texte libre (hsg §48bis) — toujours < déclaré
 ] as const;
 
 export type SourceType = (typeof SOURCE_TYPES)[number];
@@ -58,6 +59,7 @@ export const SOURCE_TYPE_LABELS: Record<SourceType, string> = {
   reported_by_relative: 'Information renseignée par un proche',
   declared_via_relative: 'Déclaration du proche saisie par le pilote (côte à côte)', // descripteur interne, pas une copy UI
   observed_behavior: 'Comportement ou signal observé',
+  extraction_inferred: 'Inférence IA depuis une réponse libre (niveau 5)',
 };
 
 /* ────────────────────────────────────────────────────────────────────────
@@ -110,6 +112,7 @@ const ASSERTION_BY_SOURCE: Record<SourceType, AssertionStatus> = {
   reported_by_relative: 'explicit',
   declared_via_relative: 'explicit', // mode 2 : mapping direct d'une réponse du proche
   observed_behavior: 'explicit',
+  extraction_inferred: 'inferred', // niveau 5 : jamais promu au rang d'une déclaration
 };
 
 /** Statut d'assertion d'un mapping direct (producteur actuel) — 'explicit' pour tout
@@ -149,6 +152,7 @@ export function isSelfDeclaredAct(sourceType: SourceType): boolean {
       return true; // la personne décrite s'exprime elle-même
     case 'reported_by_relative': // un tiers rapporte → PAS déclaré de soi
     case 'observed_behavior': // observé, non déclaré
+    case 'extraction_inferred': // inférence IA (niveau 5) → PAS déclaré de soi
       return false;
     default: {
       const _exhaustive: never = sourceType;

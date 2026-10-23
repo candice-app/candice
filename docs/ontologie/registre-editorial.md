@@ -47,6 +47,14 @@ Lister ne suffit pas (trois livrables ont dérivé 4 tours en étant listés). �
 5. **Écrans** : 2→5 (profil/analyse/synthèse), puis 6→11 et 14, puis 12, 13 et la reco au minimum.
 6. **Suppression de l'ancien chemin** en un commit, puis **migration de suppression des colonnes** (séparée).
 
+## Question ouverte — OÙ VIT LA FAMILLE BEHAVIOR SUR LA FICHE (décision design d'Estelle)
+
+BEHAVIOR (« sous pression, il garde pour lui » — stress/conflit/communication/expression) est **produite** mais n'a **aucune maison** sur la maquette gelée (4 blocs « En profondeur », aucun ne porte le comportement). **Ne pas la force-placer** (l'enfouir dans « se sentir aimé » la déforme). Laissée **non consommée et signalée** (test de couverture l'acte). Estelle décide sa section ; d'ici là, elle n'apparaît pas sur la fiche.
+
+## Radar : 11 domaines du dictionnaire SANS catégorie (Estelle choisit lesquels ajouter)
+
+Le radar (13 catégories) ne couvre pas 11 domaines d'INTEREST : **bijoux & montres, architecture, photographie, automobile, artisanat, sciences, entrepreneuriat, développement personnel, famille & enfants, animaux, collection**. Quatre pèsent pour une attention : **bijoux/montres, animaux, photographie, artisanat**. Estelle choisit lesquels ajouter ; **le libellé des nouvelles catégories est d'Estelle** (éditorial).
+
 ## Mécanisme radar → INTEREST (double mappings) — proposé, Estelle tranche
 
 Le radar (13 catégories, le « 15 » est un nom faux) journalise dans INTEREST au domaine parent. **Une case cochée ne compte jamais deux fois** : proposition = **un domaine PRINCIPAL + un alias non pondéré**. Ex. « Art & culture » → **1 evidence INTEREST** `parent_domain = art` (principal) ; `culture_history` noté comme **alias** (champ descriptif, pas une 2ᵉ evidence) → pèse une fois dans les classements. Les catégories mono-domaine (Lecture→books_literature) : 1 evidence, pas d'alias.

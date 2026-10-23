@@ -30,9 +30,12 @@ export const SECTION_SPECS: readonly SectionSpec[] = [
   { key: 'attention_insights', tier: 'detail', sources: [{ kind: 'family', family: 'AFFECTION_LANGUAGE' }] },
   // « Ce qui le touche » affiche : Présence sincère/Temps à deux (AFFECTION) + Geste anticipé (DRV_ANTICIPATION).
   { key: 'deep_touch',   tier: 'detail', sources: [{ kind: 'family', family: 'AFFECTION_LANGUAGE', direction: 'receive' }, { kind: 'family', family: 'DRIVER' }] },
-  // « Se sentir aimé » affiche : Prendre en charge/Charge mentale en moins (NEED + DRV_RELIEF) + comment il réagit sous pression (BEHAVIOR).
-  { key: 'deep_loved',   tier: 'detail', sources: [{ kind: 'family', family: 'NEED' }, { kind: 'family', family: 'DRIVER' }, { kind: 'family', family: 'BEHAVIOR' }] },
-  { key: 'deep_pleasure',tier: 'detail', sources: [{ kind: 'family', family: 'PREFERENCE' }, { kind: 'construct', constructs: ['APPETENCE_EXPERIENCE', 'APPETENCE_OBJECT', 'APPETENCE_PREMIUM'] }, { kind: 'family', family: 'DRIVER' }] },
+  // « Se sentir aimé » affiche : Prendre en charge/Charge mentale en moins (NEED + DRV_RELIEF). PAS de BEHAVIOR :
+  // la réaction sous pression n'est pas ce qui fait se sentir aimé — l'y ranger la ferait disparaître sous un
+  // autre sens (décision de DESIGN d'Estelle : « où vit BEHAVIOR sur la fiche » → registre). Laissée NON CONSOMMÉE.
+  { key: 'deep_loved',   tier: 'detail', sources: [{ kind: 'family', family: 'NEED' }, { kind: 'family', family: 'DRIVER' }] },
+  // « Ce qui pourrait lui plaire » affiche : Expérience/Belle matière/Objet durable/Bonne table = PREFERENCE + APPETENCE (aucune chip DRIVER ici → pas de DRIVER forcé).
+  { key: 'deep_pleasure',tier: 'detail', sources: [{ kind: 'family', family: 'PREFERENCE' }, { kind: 'construct', constructs: ['APPETENCE_EXPERIENCE', 'APPETENCE_OBJECT', 'APPETENCE_PREMIUM'] }] },
   { key: 'deep_miss',    tier: 'detail', sources: [{ kind: 'family', family: 'GUARDRAIL' }] },
   // « Ce qui marche avec lui » : le beau/personnel/expérientiel/utile/premium/surprise = PROFILE orientations + DRIVER (PAS de l'affection). La phrase par ligne ; les barres sont calculées ailleurs.
   { key: 'works',        tier: 'detail', sources: [{ kind: 'construct', constructs: ['IMPORTANCE_AESTHETIC', 'IMPORTANCE_FUNCTIONAL', 'IMPORTANCE_AUTHENTICITY', 'APPETENCE_PREMIUM', 'APPETENCE_EXPERIENCE', 'APPETENCE_SPONTANEITY'] }, { kind: 'construct', constructs: ['DRV_PERSONALIZATION'] }] },

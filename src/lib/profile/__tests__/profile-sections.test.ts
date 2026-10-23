@@ -64,9 +64,14 @@ describe('verifySection — 7a mécanique (omission / invention / forme)', () =>
 // à une section, pas qu'une famille entière n'est jamais donnée). ENTITY/CONTEXT exemptées : aucun
 // producteur aujourd'hui (elles viendront de l'extraction / du lot ÉTATS).
 it('toute famille produite est consommée par ≥1 section (pas d\'angle mort)', () => {
-  const PRODUCED = ['AFFECTION_LANGUAGE', 'NEED', 'PREFERENCE', 'PROFILE', 'GUARDRAIL', 'DRIVER', 'BEHAVIOR', 'INTEREST'];
+  // Doivent être consommées. BEHAVIOR est EXEMPTÉE : produite mais volontairement NON placée — sa maison
+  // sur la fiche est une décision de design d'Estelle (registre « où vit BEHAVIOR »), signalée et non forcée.
+  // ENTITY/CONTEXT exemptées faute de producteur (exemption levée dès que l'extraction les produit).
+  const MUST_CONSUME = ['AFFECTION_LANGUAGE', 'NEED', 'PREFERENCE', 'PROFILE', 'GUARDRAIL', 'DRIVER', 'INTEREST'];
   const consumed = consumedFamilies();
-  for (const fam of PRODUCED) expect(consumed.has(fam), `famille ${fam} consommée par aucune section`).toBe(true);
+  for (const fam of MUST_CONSUME) expect(consumed.has(fam), `famille ${fam} consommée par aucune section`).toBe(true);
+  // BEHAVIOR : exemption SIGNALÉE — le test acte qu'elle n'est pas (encore) consommée, pour qu'on la revoie.
+  expect(consumed.has('BEHAVIOR'), 'BEHAVIOR : décision design en attente (registre), ne pas force-placer').toBe(false);
 });
 
 it('synthèses dépendent uniquement de détails (jamais d\'autres synthèses)', () => {
