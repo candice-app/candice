@@ -12,11 +12,12 @@ import {
 import { CANONICAL_FAMILIES } from '../vocabulary';
 
 describe('Test 19 — assertionStatus = mécanisme producteur (explicit | inferred)', () => {
-  it('tout mapping direct (producteur actuel) produit explicit, quel que soit le sourceType', () => {
-    for (const st of SOURCE_TYPES) expect(deriveAssertionStatus(st)).toBe('explicit');
+  it('tout mapping direct produit explicit, SAUF l\'extraction (inférence IA niveau 5 → inferred)', () => {
+    for (const st of SOURCE_TYPES) expect(deriveAssertionStatus(st)).toBe(st === 'extraction_inferred' ? 'inferred' : 'explicit');
   });
-  it('aucune source ne produit « inferred » aujourd’hui (statut réservé au futur moteur d’extraction)', () => {
-    for (const st of SOURCE_TYPES) expect(deriveAssertionStatus(st)).not.toBe('inferred');
+  it('SEULE l\'extraction produit « inferred » (niveau 5, hsg §48bis) — le reste est explicit', () => {
+    const inferred = SOURCE_TYPES.filter((st) => deriveAssertionStatus(st) === 'inferred');
+    expect(inferred).toEqual(['extraction_inferred']);
   });
   it('isSelfDeclaredAct — liste blanche EXHAUSTIVE, décision explicite par sourceType', () => {
     // la décision attendue pour CHAQUE sourceType (aucune par exclusion)
@@ -25,6 +26,7 @@ describe('Test 19 — assertionStatus = mécanisme producteur (explicit | inferr
       conversation: true, user_declaration: true, user_correction: true, wishlist: true,
       declared_via_relative: true, // mode côte à côte : le proche parle de lui-même (frappe médiée)
       reported_by_relative: false, observed_behavior: false,
+      extraction_inferred: false, // inférence IA : PAS un acte déclaré de soi
     };
     // tout sourceType connu a une décision ET ne jette jamais (le default ne jette que pour un type non décidé)
     for (const st of SOURCE_TYPES) {
