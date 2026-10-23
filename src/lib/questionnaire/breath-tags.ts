@@ -10,6 +10,7 @@ export interface AttentionBreathTag {
   readonly strength: string | null;
   readonly rank: number | null;
   readonly basis: string; // provenance : assertion_basis
+  readonly confidence: string | null; // confiance de la donnée — VOYAGE jusqu'au modèle (7b : la fermeté suit la confiance)
 }
 
 /**
@@ -46,10 +47,10 @@ export interface SocleBreathInput {
 export async function readSocleTags(client: TagsReadClient, userId: string): Promise<SocleBreathInput> {
   const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, created_at')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, confidence, context, created_at')
     .eq('user_id', userId);
   if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`); // jamais de 0 silencieux
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; created_at: string };
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; confidence: string | null; context: string; created_at: string };
   const rows = (data ?? []) as Row[];
   const latest = new Map<string, Row>();
   for (const r of rows) {
@@ -63,7 +64,7 @@ export async function readSocleTags(client: TagsReadClient, userId: string): Pro
     ...(r.modality ? { modality: r.modality } : {}),
     strength: r.strength,
     rank: r.rank,
-    basis: r.assertion_basis,
+    basis: r.assertion_basis, confidence: r.confidence,
   }));
   return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }
@@ -86,18 +87,18 @@ export interface ContactTagsReadClient {
 export async function readContactTags(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleBreathInput> {
   const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, created_at')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, confidence, context, created_at')
     .eq('user_id', userId)
     .eq('about_id', contactId);
   if (error) throw new BreathReadError(`knowledge_evidences (contact) read: ${error.message}`);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; created_at: string };
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; confidence: string | null; context: string; created_at: string };
   const rows = (data ?? []) as Row[];
   const latest = new Map<string, Row>();
   for (const r of rows) { const prev = latest.get(r.target_construct); if (!prev || r.created_at > prev.created_at) latest.set(r.target_construct, r); }
   const tags: AttentionBreathTag[] = [...latest.values()].map((r) => ({
     family: r.target_family, construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}), ...(r.modality ? { modality: r.modality } : {}),
-    strength: r.strength, rank: r.rank, basis: r.assertion_basis,
+    strength: r.strength, rank: r.rank, basis: r.assertion_basis, confidence: r.confidence,
   }));
   return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }
@@ -167,12 +168,12 @@ export async function readSocleFacts(client: TagsReadClient, userId: string): Pr
 export async function readAttentionTags(client: TagsReadClient, userId: string): Promise<AttentionBreathInput> {
   const { data, error } = await client
     .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, context, created_at')
+    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, confidence, context, created_at')
     .eq('user_id', userId);
   // ⚠ L'ERREUR EST BRUYANTE : une lecture qui échoue ne doit JAMAIS retomber en 0 tag silencieux
   // (sinon un vrai utilisateur verrait une respiration vide sans qu'on le sache). Bug = bug.
   if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; context: string; created_at: string };
+  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; confidence: string | null; context: string; created_at: string };
   const rows = ((data ?? []) as Row[]).filter((r) => r.context === 'attention_received' || r.context === 'affection_given');
 
   // récence : le plus récent par construct
@@ -188,7 +189,7 @@ export async function readAttentionTags(client: TagsReadClient, userId: string):
     ...(r.modality ? { modality: r.modality } : {}),
     strength: r.strength,
     rank: r.rank,
-    basis: r.assertion_basis,
+    basis: r.assertion_basis, confidence: r.confidence,
   }));
   return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }

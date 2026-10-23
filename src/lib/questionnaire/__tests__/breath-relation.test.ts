@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 import { deriveAttentionRelation, type AttentionBreathTag } from '../breath-tags';
 
 const t = (direction: 'receive' | 'give', modality: string, rank: number): AttentionBreathTag => ({
-  family: 'AFFECTION_LANGUAGE', construct: `AFFECTION_${direction.toUpperCase()}_${modality}`, direction, modality, strength: 'strong', rank, basis: 'self_report',
+  family: 'AFFECTION_LANGUAGE', construct: `AFFECTION_${direction.toUpperCase()}_${modality}`, direction, modality, strength: 'strong', rank, basis: 'self_report', confidence: 'high',
 });
 
 describe('deriveAttentionRelation — relation DÉFINIE par le HSG (7c)', () => {
