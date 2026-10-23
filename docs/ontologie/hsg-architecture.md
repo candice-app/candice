@@ -2562,6 +2562,8 @@ Les étapes (attention · tempérament · lifestyle · singularité/pratique) **
 La respiration **reformule ce que le HSG a produit** (tags et pondérations issus des mappings appliqués à chaque réponse), lus depuis le journal. Elle est générée par IA (texte réactif, non pré-écrit). Deux règles non négociables :
 
 > **7a — Aucun attribut sans provenance.** La respiration ne dit que ce que les tags produits soutiennent. Jamais ce que le modèle déduit des réponses brutes. Même règle que l'analyse de profil générale.
+> **7a bis — LE MODÈLE N'ÉLIT JAMAIS CE QU'ON MONTRE.** Choisir *quoi* mettre en avant d'une personne (le carrousel « Ce que Candice a compris », les quatre blocs d'« En profondeur », les chips du résumé) et *dans quel ordre* est une **décision SUR elle**, pas une question de style — donc **calculé, jamais choisi par le modèle** : par la **force et le rang** des tags + le **mapping du dictionnaire** (quel tag appartient à quel bloc). Le modèle **reçoit la sélection déjà faite et l'ÉCRIT** — il n'ajoute rien, ne retire rien, ne réordonne rien. *(Sinon deux ouvertures de la même fiche mettraient en avant deux choses différentes.)*
+
 > **7b — La profondeur suit la connaissance.** À l'étape 2 le HSG n'a que quelques tags : la respiration est courte, et elle a le **droit** d'être courte. Elle ne comble jamais un vide par une formulation générique ou flatteuse. Mince à l'étape 2, dense à l'étape 7. C'est la jauge de connaissance appliquée à l'onboarding.
 
 Ces deux règles figurent dans le **prompt** de la route de respiration, en plus du ton Candice.
@@ -2569,6 +2571,8 @@ Ces deux règles figurent dans le **prompt** de la route de respiration, en plus
 > **7c — La respiration n'énonce que les RELATIONS que le HSG définit, jamais celles que le modèle observe.** Un lien entre deux tags (ex. « elle donne ce qu'elle aime recevoir ») est une **affirmation** : s'il n'est pas défini et calculé par le HSG, il contourne 7a. **Relation autorisée pour l'attention** : `give ≈ receive` sur la MODALITÉ — `congruence` (la modalité préférée en réception est aussi donnée), `ecart` (1ʳᵉ modalité reçue absente du donné), `neutre` (données insuffisantes). Elle est **dérivée déterministiquement** du journal (`deriveAttentionRelation`) et **fournie** à la respiration ; le modèle n'a pas le droit d'en inventer une autre. Toute nouvelle relation autorisée doit être ajoutée ici AVANT d'être énonçable.
 
 > **7e — Aucun domaine n'est OMIS s'il a des tags.** La conclusion analytique finale (et tout texte cumulatif) a le droit d'être **brève SUR** un domaine, jamais de le faire **disparaître** : un domaine qui porte des tags doit laisser une trace dans la prose. Un domaine **sans tag**, elle n'en parle pas — c'est normal, pas une omission. *(Garantie déterministe : la matière des cinq domaines — attention, tempérament, lifestyle [constructs], singularité, pratique [FACTs] — atteint l'entrée du modèle, cf. test `conclusion-domains`. Que la prose les tisse tous relève du prompt, le modèle ne tronque pas un domaine présent.)*
+
+> **7e bis — 7e est VÉRIFIÉE, pas espérée.** Le modèle renvoie, à côté de son texte, la **liste des domaines qu'il a traités** — en **sortie structurée validée par schéma** (comme toute extraction). On la compare à la liste des domaines **fournis en entrée**. S'il en manque un, c'est **détecté**. **Sur écart : une seconde tentative ; si elle manque encore un domaine présent en entrée → le texte est écarté (traité comme un échec modèle : vide, étape sautée, les éléments calculés tiennent la fiche) ET un signal est journalisé pour relecture.** *(Estelle tranche ce comportement.)* Même mécanisme partout où un texte doit couvrir une matière donnée : conclusion finale, résumé de fiche, blocs d'« En profondeur ».
 
 > **Repli en cas de panne** : si le modèle échoue ou ne produit rien, la respiration est **VIDE** — jamais un texte de repli issu du scoring legacy (ce serait revenir en silence à la mauvaise source). Mieux vaut un écran sans respiration qu'une respiration sans provenance. **Texte vide → l'étape est SAUTÉE** (jamais un cadre de respiration sans prose) — les cinq respirations, les trois modes et la conclusion finale.
 
@@ -2807,7 +2811,27 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 
 **État constaté (inventaire 22 oct) :** l'analyse est **déjà figée**, pas recalculée à chaque vue. `generateProfileAnalysis` **upsert** dans la table `profile_analysis` (migration 30, « source unique d'analyse ») ; les écrans la **lisent** depuis cette table. Elle est **réécrite** quand `generateProfileAnalysis` est rappelé — aujourd'hui via `triggerSynthesis()` → `POST /api/profile/generate`, appelé à **chaque étape** de l'onboarding (chaque modification de la fiche du pilote). Donc le comportement demandé — *écrite une fois, stockée, réécrite à chaque modification de ma fiche, jamais regénérée à l'affichage* — **est déjà celui en place**.
 
-**Ce qu'il faut maintenir (règle) :** (a) l'analyse vit dans `profile_analysis`, **lue** par les écrans, **jamais** regénérée au rendu ; (b) **toute** modification de la fiche du pilote (onboarding, édition d'une partie, Discovery, confidence) **déclenche** une réécriture (`generateProfileAnalysis`) ; (c) quand l'analyse lira le JOURNAL (étape 1.2), ce principe ne change pas : elle reste figée + réécrite au changement, elle lit simplement le journal au lieu de my_profile.
+**Ce qu'il faut maintenir (règle) :** (a) l'analyse vit dans `profile_analysis`, **lue** par les écrans, **jamais** regénérée au rendu ; (b) **toute** modification de la fiche du pilote **déclenche** une réécriture ; (c) quand l'analyse lira le JOURNAL, elle reste figée + réécrite au changement, elle lit le journal au lieu de my_profile. **Mécanisme unique pour l'analyse profil ET les textes de fiche proche** (même table `profile_analysis` : `contact_id` null = profil, `contact_id` set = fiche).
+
+### Péremption — PAR REQUÊTE, jamais par drapeau (décision 23 oct)
+
+Un drapeau `stale` est un champ dérivable qu'on stocke : il **ment** dès qu'un chemin d'invalidation oublie de le mettre à jour (et il y en aura plusieurs). **Interdit.** À la place, le texte stocké porte **`source_evidence_ids`** (les connaissances dont il est issu) **+ `generated_at`** (déjà présent). Un texte est **périmé — calculé par requête, au moment de l'affichage** — si l'une de ses sources :
+- a été **modifiée après** `generated_at` (journal append : une evidence plus récente pour le même sujet, `created_at > generated_at`), ou
+- a été **supprimée** (un `source_evidence_id` n'existe plus), ou
+- **n'est plus autorisée** (visibilité/consentement révoqués).
+
+**Un texte périmé n'est PLUS AFFICHÉ**, même avant régénération. Pendant l'intervalle, la fiche tient par les **éléments CALCULÉS** (podium, barres, niveaux, tags — lus en direct, donc toujours exacts). Une info supprimée/non-autorisée ne survit jamais dans un texte en attente. *(Si la requête de péremption s'avérait trop coûteuse à l'affichage, on rediscute avec le chiffre — pas avant.)*
+
+### Déclencheur de régénération — ÉVÉNEMENTS de connaissance (pas « étapes »)
+
+Déclencheurs, à propos du sujet concerné : **nouvelle evidence**, **`user_correction`**, **suppression**, **invalidation / non-autorisé**, **changement de CONSOLIDATION** (résultat consolidé modifié même sans écriture). Couvre onboarding, corrections futures depuis la page profil, et plus tard le conversationnel.
+
+Trois règles de cadence (décision 23 oct) :
+- **a) Pendant un parcours déclaré** (onboarding, ou une section reprise) : **AUCUNE** régénération — **une seule, à la fin** du parcours. *(Corrige le « triggerSynthesis à chaque étape » actuel, trop coûteux.)*
+- **b) Hors parcours** : fenêtre de regroupement courte, **15 s**.
+- **c) À l'ouverture d'une page dont le texte est périmé** : régénération **immédiate**, sans attendre le minuteur. *(Avec la péremption-par-requête + la régénération-à-l'ouverture, le « trou » — texte masqué, nouveau pas encore arrivé — n'existe jamais : l'ouverture déclenche tout de suite.)*
+
+*(Note d'implémentation serverless : (c) rend le mécanisme essentiellement **paresseux** — on régénère à l'ouverture si périmé — ce qui groupe naturellement plusieurs changements rapprochés sans minuteur transverse. La fenêtre (b) de 15 s n'est alors qu'une régénération **proactive** optionnelle ; (a) et (c) suffisent à la correction. À confirmer par Estelle.)*
 
 ---
 
