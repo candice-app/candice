@@ -47,9 +47,10 @@ const TOOL = {
           properties: {
             family: { type: 'string', enum: ['INTEREST', 'ENTITY', 'OTHER'] },
             label: { type: 'string', description: 'formulation PRÉCISE, verbatim, jamais généralisée' },
-            parentDomain: { type: 'string', description: 'INTEREST : domaine parent (ex. photography, music)' },
-            entityType: { type: 'string', description: 'ENTITY : brand/place/restaurant/book/film/artist…' },
-            relation: { type: 'string', enum: ['LOVE', 'WANT_TO_TRY', 'DISLIKE', 'AVOID'], description: 'ENTITY : relation à la chose' },
+            parentDomain: { type: 'string', description: 'INTEREST : domaine parent (ex. photography, music, food_gastronomy)' },
+            relationship: { type: 'string', enum: ['passion', 'appreciation', 'curiosity', 'aversion'], description: 'INTEREST : rapport au sujet (laisse vide si non évident)' },
+            entityType: { type: 'string', enum: ['brand', 'place', 'restaurant', 'hotel', 'product', 'food', 'drink', 'book', 'film_series', 'music', 'artist', 'destination', 'event', 'person'], description: 'ENTITY : sous-type exact' },
+            relation: { type: 'string', enum: ['LOVE', 'LIKE', 'CURIOUS', 'WANT_TO_TRY', 'WANT_TO_OWN', 'WANT_TO_VISIT', 'NEUTRAL', 'DISLIKE', 'AVOID'], description: 'ENTITY : relation à la chose (DISLIKE/AVOID pour un rejet)' },
             relation_label: { type: 'string', description: 'OTHER : la nature du lien, en mots (ex. « passion », « collectionne »)' },
           },
           required: ['family', 'label'],
@@ -60,7 +61,7 @@ const TOOL = {
   },
 };
 
-interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; entityType?: string; relation?: EntityRelation; relation_label?: string; }
+interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: string; entityType?: string; relation?: EntityRelation; relation_label?: string; }
 
 export interface ExtractResult { readonly evidences: readonly Evidence[]; readonly openKnowledge: readonly OpenKnowledge[] }
 export interface ExtractBuild extends ExtractResult { readonly source: ReturnType<typeof createSourceRecord> | null }
@@ -118,7 +119,8 @@ export async function buildFromFreeText(
     if (u.family === 'INTEREST') {
       evidences.push({ ...common, evidence_id: evidenceId(sourceId, `INTEREST:${normalizeLabel(label)}`), raw_information: label,
         target_family: 'INTEREST', subject: asSubjectId(normalizeLabel(label)), target_construct: asSubjectId(normalizeLabel(label)),
-        subjectLabel: label, ...(u.parentDomain ? { parent_domain: normalizeLabel(u.parentDomain) } : {}), strength: 'moderate' } as Evidence);
+        subjectLabel: label, ...(u.parentDomain ? { parent_domain: normalizeLabel(u.parentDomain) } : {}),
+        ...(u.relationship ? { relationship: normalizeLabel(u.relationship) } : {}), strength: 'moderate' } as Evidence);
     } else if (u.family === 'ENTITY') {
       evidences.push({ ...common, evidence_id: evidenceId(sourceId, `ENTITY:${normalizeLabel(label)}`), raw_information: label,
         target_family: 'ENTITY', entity_id: asEntityId(normalizeLabel(label)), target_construct: asEntityId(normalizeLabel(label)),

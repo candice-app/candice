@@ -122,6 +122,21 @@ export function deriveAssertionStatus(sourceType: SourceType): AssertionStatus {
 }
 
 /**
+ * NIVEAU DE PROVENANCE (hsg §48bis) — échelle à 6 niveaux, du plus fort (1) au plus faible (6).
+ * Keyé sur (sourceType, assertionBasis) : le 1 vs 2 vient du sourceType, le 3 vs 4 de l'assertionBasis
+ * (observé vs interprété). L'EXTRACTION est une inférence IA = niveau 5, TOUJOURS sous une déclaration.
+ * ⚠ Ne jamais confondre deux niveaux : une inférence ne monte jamais au rang d'une déclaration, quelles
+ * que soient les dates. `user_correction` est un ACTE, pas un niveau ; il vaut 1 (déclaration explicite).
+ */
+export function provenanceLevel(sourceType: SourceType, basis: AssertionBasis): number {
+  if (sourceType === 'extraction_inferred') return 5;             // inférence IA
+  if (sourceType === 'declared_via_relative') return 2;           // côte à côte : le proche parle de lui, saisi par le pilote
+  if (sourceType === 'reported_by_relative') return basis === 'observed' ? 3 : 4; // incognito : observé (3) vs interprété (4)
+  if (sourceType === 'observed_behavior') return 3;               // observation directe
+  return 1;                                                        // déclaration directe (onboarding/discovery/conversation/wishlist/user_declaration/user_correction)
+}
+
+/**
  * Acte d'acquisition « déclaratif de soi » : la personne décrite s'exprime elle-même,
  * ni rapportée par un tiers, ni simplement observée. C'est la distinction que portait
  * l'ancienne valeur d'assertion 'declared' ; elle vit désormais sur l'axe SOURCETYPE

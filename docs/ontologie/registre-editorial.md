@@ -29,6 +29,10 @@ La prose SUR une personne est générée par le modèle (hsg §48sexies), mais s
 
 Le compteur « générations incomplètes » (règle 7e bis : 2ᵉ tentative → rien + signal) vit **provisoirement** dans `/parametres/compte` (atteignable, gratuit). **Sa vraie place = la CONSOLE DE VALIDATION** (cahier des charges moteur d'événements : l'écran où Estelle voit ce que l'IA recommande / exclut / ce dont elle doute). **Le compteur y déménage le jour où la console existe**, avec les autres signaux de qualité. On ne construit pas d'écran console aujourd'hui.
 
+## Lot « EXTRACTION STRUCTURÉE DES REJETS / PRÉFÉRENCES / CONTEXTES » — limitation de fond, à étendre
+
+L'extraction (§27) produit aujourd'hui **INTEREST** et **ENTITY** en structuré (+ reliquat OpenKnowledge). Elle **NE produit PAS encore** de **GUARDRAIL**, **PREFERENCE** ni **CONTEXT** structurés (vocabulaire fermé/semi-fermé, risqué depuis du libre sans garde-fou). **Conséquence écrite noir sur blanc : tout rejet ou préférence exprimé en TEXTE LIBRE est aujourd'hui INERTE** — « je ne supporte pas X » devient une ENTITY-AVOID (déjà excluante par la règle du rejet si la reco est branchée), mais « je préfère toujours le simple » ou « jamais avant 10h » ne deviennent pas une PREFERENCE/CONTEXT exploitable. **À étendre** (prochain raffinement) : ajouter GUARDRAIL (vertical path + severity SOFT/HARD), PREFERENCE (path+value), CONTEXT (périssable, cf. lot ÉTATS) à la sortie de l'extracteur, avec validation de schéma. Pas un détail d'implémentation.
+
 ## Lot distinct « ÉTATS ET RELANCES » — NE PAS FAIRE MAINTENANT
 
 N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'existent pas encore** : le mode conversationnel, et l'ajout d'une info sur la fiche d'un proche **hors questionnaire**. À faire quand elles existent :
