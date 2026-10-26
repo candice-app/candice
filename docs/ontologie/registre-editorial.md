@@ -48,6 +48,21 @@ Aujourd'hui la reco lit l'ancienne projection, pas le journal. Le jour où on la
 1. **La reco lit les rejets DANS LE JOURNAL** (ENTITY DISLIKE/AVOID + GUARDRAIL via `isRejection`), et la **preuve de bout en bout est due à CE moment-là** : un rejet déclaré dans le journal → le candidat correspondant est mécaniquement écarté à la sortie de la reco. Tant que ce n'est pas prouvé à l'écran, la dette d'exclusion n'est pas soldée. C'est la contrepartie du fait qu'on a construit `rejection-match` AVANT la reco : il reste inerte jusqu'à ce branchement, et le branchement doit prouver qu'il mord.
 2. **ENTITY ou GUARDRAIL : UNE SEULE source d'exclusion.** Un même rejet ne doit pas pouvoir être écrit à la fois comme ENTITY-AVOID et comme GUARDRAIL « au cas où » — deux représentations de la même vérité (interdit). **La question « laquelle fait foi » se tranche AVEC le rebranchement reco**, pas avant : c'est là qu'on voit ce que le moteur consomme réellement. Décision à inscrire ici ce jour-là. D'ici là, l'extraction n'écrit QUE ENTITY (GUARDRAIL structuré est au lot d'extension ci-dessus), donc le conflit ne peut pas encore naître — mais il naîtra dès que GUARDRAIL sera produit, d'où la règle posée d'avance.
 
+## Comptes de TEST en base de PRODUCTION (hygiène)
+
+- **Sophie** — `sophie.test.journal@candice.app`, nom « Sophie — COMPTE DE TEST ». Journal SEUL (knowledge_*), garni via `scripts/sophie-garnish.mts` (vrais modules). Banc d'essai de la génération depuis un texte rédigé.
+- **Thomas** — `thomas.test.journal@candice.app` (réservé profil-2 du comparatif, créé à l'étape 4-5).
+- **Suppression propre** : `npx tsx scripts/sophie-delete.mts` → `deleteUser` cascade ON DELETE sur toutes les tables `knowledge_*` (migration 82). On ne garnit PAS `my_profile` → rien d'autre à nettoyer. À ne pas laisser traîner : deux utilisateurs fantômes sans provenance, non.
+
+## Findings du banc Sophie (26 oct) — à traiter dans les lots adéquats
+
+1. **BUG prod corrigé (commit a40fc39)** : les lecteurs sélectionnaient `knowledge_evidences.source_type`, colonne INEXISTANTE → toutes les respirations auraient cassé en prod. Attrapé seulement en lisant la vraie base (les tests à faux client l'ignoraient). Préséance re-keyée sur `assertion_status` + `assertion_basis`.
+2. **SÉCURITÉ — fuite d'info sensible en texte libre** : « je suis cœliaque… » tapé dans un champ RÉDACTIONNEL (evite_deteste) devient un FACT `exposable` (le filtre de sensibilité est au CHAMP, pas au CONTENU) ET le prompt de respiration autorise explicitement de nommer « allergique au gluten ». Résultat : l'info santé SORT dans la prose. À arbitrer : détection de sensibilité au CONTENU, ou champ rédactionnel traité comme potentiellement sensible. (Même esprit que les allergies en tête du lot d'extension.)
+3. **FACT « functional_impact » pollué** : une option tempérament (q4a « la charge mentale m'épuise ») écrit un FACT dont la `value` est une NOTE INTERNE de mapping (« … Ne produit PAS NEED_RELIEF ») marquée `exposable` → risque d'apparaître en prose. À nettoyer (le mapping ne devrait pas émettre ça comme FACT restituable).
+4. **Rejet net vs réserve non distingué** : « surtout pas de fleurs coupées » (net) et « les bijoux très peu pour moi » (réserve) deviennent tous deux ENTITY `AVOID`, même force. L'analyse les traite pareil. Nuance à gagner au lot d'extension (sévérité du rejet).
+5. **Récit long → 0 reliquat** : la réponse introspective longue (peu_savent) ne produit ni trait (correct, §27) ni OpenKnowledge — rien de structuré retenu, seul le verbatim survit. À voir si le reliquat devrait capter l'anecdote concrète (« relit ses mails trois fois »).
+6. **assertion_status des FACTs = null** : `produceSocleFact` n'écrit pas `assertion_status` → la provenance des FACTs (voyage §48bis) sort `null` au lieu de `explicit`. À poser au write.
+
 ## Lot distinct « ÉTATS ET RELANCES » — NE PAS FAIRE MAINTENANT
 
 N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'existent pas encore** : le mode conversationnel, et l'ajout d'une info sur la fiche d'un proche **hors questionnaire**. À faire quand elles existent :
