@@ -122,21 +122,22 @@ export function deriveAssertionStatus(sourceType: SourceType): AssertionStatus {
 }
 
 /**
- * NIVEAU DE PROVENANCE (hsg §48bis) — échelle à 6 niveaux, du plus fort (1) au plus faible (6).
- * Keyé sur (sourceType, assertionBasis) : le 1 vs 2 vient du sourceType, le 3 vs 4 de l'assertionBasis
- * (observé vs interprété). L'EXTRACTION est une inférence IA = niveau 5, TOUJOURS sous une déclaration.
- * ⚠ Ne jamais confondre deux niveaux : une inférence ne monte jamais au rang d'une déclaration, quelles
- * que soient les dates. `user_correction` est un ACTE, pas un niveau ; il vaut 1 (déclaration explicite).
+ * NIVEAU DE PROVENANCE (hsg §48bis) — du plus fort (1) au plus faible (5).
+ * ⚠ Keyé sur les SEULES colonnes présentes sur une evidence (knowledge_evidences) : `assertion_status`
+ * (declared/observed/reported/inferred) + `assertion_basis` (self_report/observed/subject_statement/
+ * reporter_interpretation). `source_type` N'EXISTE PAS sur l'evidence (il vit sur knowledge_sources) — ne
+ * jamais le lire au read. L'EXTRACTION est une inférence IA → assertion_status='inferred' = niveau 5,
+ * TOUJOURS sous une déclaration (assertion_status='declared' = niveau 1), quelles que soient les dates.
+ * `user_correction` sur UN PROCHE est une observation/interprétation du pilote (status observed /
+ * basis reporter_interpretation → 3/4), pas une déclaration du sujet. Note : la distinction côte-à-côte
+ * (ancien « niveau 2 ») n'est pas portée par l'evidence seule → elle retombe en déclaration (1).
  */
-export function provenanceLevel(sourceType: SourceType, basis: AssertionBasis): number {
-  // Keyé D'ABORD sur la BASE (sur quoi repose l'affirmation), puis sur le sourceType. Ainsi une
-  // user_correction sur UN PROCHE (base observed/reporter_interpretation) est un niveau 3/4, pas 1 —
-  // ce n'est pas une déclaration du sujet, c'est l'observation/interprétation du pilote.
-  if (sourceType === 'extraction_inferred') return 5;             // inférence IA (la base est self_report mais l'acte est une inférence)
+export function provenanceLevel(assertionStatus: string, basis: AssertionBasis): number {
+  if (assertionStatus === 'inferred') return 5;                  // inférence IA / extraction
   if (basis === 'reporter_interpretation') return 4;             // le pilote conclut
-  if (basis === 'observed') return 3;                            // le pilote a vu
-  if (sourceType === 'declared_via_relative') return 2;          // côte à côte : le proche parle de lui, saisi par le pilote
-  return 1;                                                       // déclaration directe du sujet sur lui-même (self_report/subject_statement)
+  if (assertionStatus === 'observed' || basis === 'observed') return 3; // le pilote a vu
+  if (assertionStatus === 'reported') return 3;                  // rapporté par un tiers
+  return 1;                                                       // declared (self_report / subject_statement)
 }
 
 /**

@@ -29,15 +29,16 @@ const twoEq = (rows: unknown[]) => ({
 // Construit une paire (déclaration ancienne forte, extraction récente faible) sur le MÊME construct.
 // `declaredSource`/`declaredBasis` varient selon pilote (déclaration de soi, niv.1) ou proche (observation, niv.3) —
 // dans les deux cas plus fort que l'extraction (niv.5), donc la déclaration doit gagner.
-function pair(over: Partial<Record<string, unknown>>, declaredSource: string, declaredBasis: string) {
+function pair(over: Partial<Record<string, unknown>>, declaredStatus: string, declaredBasis: string) {
   const base = {
     target_family: 'AFFECTION_LANGUAGE', target_construct: 'AFFECTION_RECEIVE',
     direction: 'receive', context: 'attention_received',
   };
+  // assertion_status/assertion_basis = les SEULES colonnes de provenance d'une evidence (pas source_type).
   const declared = { ...base, ...over, modality: 'WORDS', strength: 'strong', rank: 1, confidence: 'high',
-    assertion_basis: declaredBasis, source_type: declaredSource, created_at: '2026-01-01T00:00:00Z' };
+    assertion_basis: declaredBasis, assertion_status: declaredStatus, created_at: '2026-01-01T00:00:00Z' };
   const extracted = { ...base, ...over, modality: 'SERVICES', strength: 'weak', rank: 1, confidence: 'low',
-    assertion_basis: 'self_report', source_type: 'extraction_inferred', created_at: '2026-10-25T00:00:00Z' };
+    assertion_basis: 'self_report', assertion_status: 'inferred', created_at: '2026-10-25T00:00:00Z' };
   return [declared, extracted]; // extraction EN DERNIER (ordre d'insertion + date)
 }
 
@@ -46,7 +47,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readSocleTags (respiration socle, pilote)',
     declaredWon: async () => {
-      const r = await readSocleTags(oneEq(pair({}, 'onboarding_open', 'self_report')) as never, 'u');
+      const r = await readSocleTags(oneEq(pair({}, 'declared', 'self_report')) as never, 'u');
       const t = r.tags.find((x) => x.construct === 'AFFECTION_RECEIVE');
       return t?.confidence === 'high' && t?.modality === 'WORDS';
     },
@@ -54,7 +55,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readAttentionTags (respiration attention, pilote)',
     declaredWon: async () => {
-      const r = await readAttentionTags(oneEq(pair({}, 'onboarding_open', 'self_report')) as never, 'u');
+      const r = await readAttentionTags(oneEq(pair({}, 'declared', 'self_report')) as never, 'u');
       const t = r.tags.find((x) => x.construct === 'AFFECTION_RECEIVE');
       return t?.confidence === 'high' && t?.modality === 'WORDS';
     },
@@ -62,7 +63,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readContactTags (respiration, proche)',
     declaredWon: async () => {
-      const r = await readContactTags(twoEq(pair({}, 'reported_by_relative', 'observed')) as never, 'u', 'c');
+      const r = await readContactTags(twoEq(pair({}, 'observed', 'observed')) as never, 'u', 'c');
       const t = r.tags.find((x) => x.construct === 'AFFECTION_RECEIVE');
       return t?.confidence === 'high' && t?.modality === 'WORDS';
     },
@@ -70,7 +71,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readContactTraitRows (bloc traits de la fiche proche)',
     declaredWon: async () => {
-      const rows = await readContactTraitRows(twoEq(pair({}, 'reported_by_relative', 'observed')) as never, 'u', 'c');
+      const rows = await readContactTraitRows(twoEq(pair({}, 'observed', 'observed')) as never, 'u', 'c');
       const trait = rows.find((x) => x.label === 'Ce qui la touche');
       return trait?.value === 'Les mots'; // modality WORDS (déclarée), pas 'Les gestes…' (extraite)
     },

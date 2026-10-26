@@ -4,25 +4,26 @@
 // C'est la résolution au read de l'échelle à 6 niveaux ; on étend l'esprit de reviseWithCorrection, on ne
 // crée pas une 2ᵉ échelle.
 
-import { provenanceLevel, type SourceType, type AssertionBasis } from './sources';
+import { provenanceLevel, type AssertionBasis } from './sources';
 
 export interface ResolvableEvidence {
   readonly target_construct: string;
-  readonly source_type: SourceType;
-  readonly assertionBasis: AssertionBasis;
+  readonly assertion_status: string; // declared | observed | reported | inferred (colonne réelle)
+  readonly assertion_basis: AssertionBasis;
   readonly created_at: string; // ISO
 }
 
 /**
  * PRIMITIF CANONIQUE pour tous les lecteurs du journal. Prend des lignes TELLES QUE la base les stocke
- * (colonnes snake_case `assertion_basis` + `source_type`), les résout par préséance, rend les gagnants.
- * TOUT lecteur qui réduit le journal à UNE evidence par construct DOIT passer par ici — sinon il résout
- * par récence seule et une inférence IA écrase une déclaration en silence. (Les lecteurs de FACTs, qui
- * renvoient une LISTE sans réduire, n'ont rien à résoudre : ils ne masquent rien.)
+ * (colonnes snake_case `assertion_status` + `assertion_basis` — les SEULES colonnes de provenance présentes
+ * sur une evidence ; `source_type` n'existe PAS sur l'evidence, il vit sur knowledge_sources), les résout
+ * par préséance, rend les gagnants. TOUT lecteur qui réduit le journal à UNE evidence par construct DOIT
+ * passer par ici — sinon il résout par récence seule et une inférence IA écrase une déclaration en silence.
+ * (Les lecteurs de FACTs, qui renvoient une LISTE sans réduire, n'ont rien à résoudre : ils ne masquent rien.)
  */
-export function resolveJournalRows<R extends { target_construct: string; source_type: string; assertion_basis: string; created_at: string }>(rows: readonly R[]): R[] {
+export function resolveJournalRows<R extends { target_construct: string; assertion_status: string; assertion_basis: string; created_at: string }>(rows: readonly R[]): R[] {
   return resolveByProvenance(
-    rows.map((r) => ({ ...r, source_type: r.source_type as SourceType, assertionBasis: r.assertion_basis as AssertionBasis })),
+    rows.map((r) => ({ ...r, assertion_basis: r.assertion_basis as AssertionBasis })),
   ) as unknown as R[];
 }
 
@@ -39,7 +40,7 @@ export function resolveJournalRows<R extends { target_construct: string; source_
 // construct, n'alimente aucun écran — ce n'est pas une surface de masquage.)
 
 const EVIDENCE_COLUMNS =
-  'target_family, target_construct, direction, modality, strength, rank, assertion_basis, source_type, confidence, context, created_at';
+  'target_family, target_construct, direction, modality, strength, rank, assertion_basis, assertion_status, confidence, context, created_at';
 
 export class JournalReadError extends Error {}
 
@@ -52,7 +53,7 @@ export interface ResolvedEvidenceRow {
   strength: string | null;
   rank: number | null;
   assertion_basis: string;
-  source_type: string;
+  assertion_status: string;
   confidence: string | null;
   context: string;
   created_at: string;
@@ -93,8 +94,8 @@ export function resolveByProvenance<E extends ResolvableEvidence>(evidences: rea
   for (const e of evidences) {
     const cur = winner.get(e.target_construct);
     if (!cur) { winner.set(e.target_construct, e); continue; }
-    const le = provenanceLevel(e.source_type, e.assertionBasis);
-    const lc = provenanceLevel(cur.source_type, cur.assertionBasis);
+    const le = provenanceLevel(e.assertion_status, e.assertion_basis);
+    const lc = provenanceLevel(cur.assertion_status, cur.assertion_basis);
     if (le < lc) winner.set(e.target_construct, e);                 // niveau plus fort (chiffre plus petit) gagne
     else if (le === lc && e.created_at > cur.created_at) winner.set(e.target_construct, e); // récence à niveau égal
     // sinon : le gagnant courant reste (niveau plus fort, ou même niveau mais plus récent)

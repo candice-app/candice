@@ -21,7 +21,7 @@ type JournalRow = {
   strength: string | null;
   rank: number | null;
   assertion_basis: string;
-  source_type: string;
+  assertion_status: string;
   confidence: string | null;
   context: string;
   created_at: string;
@@ -52,7 +52,7 @@ describe('préséance À L\'ÉCRAN : l\'extraction écrite EN DERNIER ne masque 
     const declared: JournalRow = {
       target_family: 'VALUES', target_construct: construct,
       strength: 'strong', rank: 1,
-      assertion_basis: 'self_report', source_type: 'onboarding_open', confidence: 'high',
+      assertion_basis: 'self_report', assertion_status: 'declared', confidence: 'high',
       context: 'values', created_at: '2026-01-01T00:00:00Z',
     };
     // 2) PLUS TARD, l'extraction d'une réponse libre INFÈRE le même construct — niveau 5, source_type
@@ -61,7 +61,7 @@ describe('préséance À L\'ÉCRAN : l\'extraction écrite EN DERNIER ne masque 
     const extracted: JournalRow = {
       target_family: 'VALUES', target_construct: construct,
       strength: 'weak', rank: 3,
-      assertion_basis: 'self_report', source_type: 'extraction_inferred', confidence: 'low',
+      assertion_basis: 'self_report', assertion_status: 'inferred', confidence: 'low',
       context: 'values', created_at: '2026-10-25T00:00:00Z',
     };
 
