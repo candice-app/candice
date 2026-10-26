@@ -77,6 +77,10 @@ Le radar (13 catégories, le « 15 » est un nom faux) journalise dans INTEREST 
 
 Tout libellé de section vide (ex. Tables/Voyages en attente d'extraction) est provisoire, de l'assistant, à reprendre par Estelle. Marques+lieux fusionnés en un bloc tant qu'il n'y a qu'un fait : validé, scindé à l'extraction.
 
+## Distinguer un fait SUPPOSÉ d'un fait DÉCLARÉ à l'affichage (forme éditoriale, Estelle)
+
+Le champ est posé et voyage : `SocleFact.assertionStatus` ('explicit' = déclaré, 'inferred' = supposé — colonne `knowledge_facts.assertion_status`, déjà en base). Les FACTs ne se résolvent pas (liste), donc le jour où l'extraction produit des FACTs, un fait **supposé** s'affichera à côté d'un fait **déclaré** avec le même poids. **Le rendu DOIT les distinguer ; la FORME est d'Estelle** (une mention « à vérifier », une teinte, une icône, un regroupement… non tranché). L'assistant ne décide pas de la forme ; il garantit que le signal est disponible au rendu. Tant que la forme n'est pas posée, aucune surface ne montre encore de fait inféré (l'extraction n'écrit pas de FACT inféré affiché).
+
 ## Point A (pont d'alignement des clés incognito) — ANNULÉ (22 oct)
 
 Raison : décision « on supprime l'ancien » (hsg §48quater). Maintenir l'ancien affichage via un pont de clés ne protège personne (seule utilisatrice). Les écrans lisent le journal, puis l'ancien est supprimé. Le pont aurait été du travail jeté.

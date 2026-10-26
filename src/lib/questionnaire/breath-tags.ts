@@ -1,4 +1,4 @@
-import { resolveJournalRows } from '../knowledge/preseance';
+import { readResolvedEvidences, type JournalEvidenceClient } from '../knowledge/preseance';
 
 // La respiration lit le JOURNAL, jamais les réponses brutes ni result.axes (hsg §47ter, règle 7a).
 // Construit les TAGS produits (ce que le HSG a dérivé) + leur PROVENANCE, pour que la respiration les
@@ -49,14 +49,8 @@ export interface SocleBreathInput {
  * connaissance — §47bis / §47quater). Préséance par construct (resolveJournalRows).
  */
 export async function readSocleTags(client: TagsReadClient, userId: string): Promise<SocleBreathInput> {
-  const { data, error } = await client
-    .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, source_type, confidence, context, created_at')
-    .eq('user_id', userId);
-  if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`); // jamais de 0 silencieux
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; source_type: string; confidence: string | null; context: string; created_at: string };
-  const rows = (data ?? []) as Row[];
-  const tags: AttentionBreathTag[] = resolveJournalRows(rows).map((r) => ({
+  const rows = await readResolvedEvidences(client as unknown as JournalEvidenceClient, { userId });
+  const tags: AttentionBreathTag[] = rows.map((r) => ({
     family: r.target_family,
     construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}),
@@ -84,15 +78,8 @@ export interface ContactTagsReadClient {
  * ⚠ Filtre about OBLIGATOIRE : sans lui, on mélangerait les traits du pilote et du proche (même user_id).
  */
 export async function readContactTags(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleBreathInput> {
-  const { data, error } = await client
-    .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, source_type, confidence, context, created_at')
-    .eq('user_id', userId)
-    .eq('about_id', contactId);
-  if (error) throw new BreathReadError(`knowledge_evidences (contact) read: ${error.message}`);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; source_type: string; confidence: string | null; context: string; created_at: string };
-  const rows = (data ?? []) as Row[];
-  const tags: AttentionBreathTag[] = resolveJournalRows(rows).map((r) => ({
+  const rows = await readResolvedEvidences(client as unknown as JournalEvidenceClient, { userId, aboutId: contactId });
+  const tags: AttentionBreathTag[] = rows.map((r) => ({
     family: r.target_family, construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}), ...(r.modality ? { modality: r.modality } : {}),
     strength: r.strength, rank: r.rank, basis: r.assertion_basis, confidence: r.confidence,
@@ -104,12 +91,12 @@ export async function readContactTags(client: ContactTagsReadClient, userId: str
 export async function readContactFacts(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
-    .select('fact_type, value, visibility_derived')
+    .select('fact_type, value, visibility_derived, assertion_status')
     .eq('user_id', userId)
     .eq('about_id', contactId);
   if (error) throw new BreathReadError(`knowledge_facts (contact) read: ${error.message}`);
-  type Row = { fact_type: string; value: string; visibility_derived: string };
-  return ((data ?? []) as Row[]).filter((r) => r.visibility_derived !== 'internal_only').map((r) => ({ factType: r.fact_type, value: r.value }));
+  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null };
+  return ((data ?? []) as Row[]).filter((r) => r.visibility_derived !== 'internal_only').map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status }));
 }
 
 /** Dérive la relation give≈receive DÉTERMINISTIQUEMENT depuis les tags (jamais le modèle). */
@@ -135,10 +122,18 @@ export interface TagsReadClient {
 
 export class BreathReadError extends Error {}
 
-/** Un FACT restituable dans la prose : déclaration brute (self-écrite), à NOMMER sans interpréter. */
+/**
+ * Un FACT restituable dans la prose : déclaration brute (self-écrite), à NOMMER sans interpréter.
+ * `assertionStatus` PORTE LA PROVENANCE jusqu'à l'affichage (hsg §48bis) : 'explicit' = déclaré,
+ * 'inferred' = SUPPOSÉ (extrait d'une réponse libre). Les FACTs ne se résolvent pas (liste, pas de
+ * gagnant), donc un fait inféré et un fait déclaré coexistent dans la même liste avec le même poids —
+ * SAUF que le rendu DOIT les distinguer. La FORME de la distinction est éditoriale (Estelle, registre) ;
+ * ici on garantit seulement que le signal voyage et n'est pas perdu au read.
+ */
 export interface SocleFact {
   readonly factType: string;
   readonly value: string;
+  readonly assertionStatus: string | null; // 'explicit' | 'inferred' | null
 }
 
 /**
@@ -149,13 +144,13 @@ export interface SocleFact {
 export async function readSocleFacts(client: TagsReadClient, userId: string): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
-    .select('fact_type, value, visibility_derived')
+    .select('fact_type, value, visibility_derived, assertion_status')
     .eq('user_id', userId);
   if (error) throw new BreathReadError(`knowledge_facts read: ${error.message}`);
-  type Row = { fact_type: string; value: string; visibility_derived: string };
+  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null };
   return ((data ?? []) as Row[])
     .filter((r) => r.visibility_derived !== 'internal_only')
-    .map((r) => ({ factType: r.fact_type, value: r.value }));
+    .map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status }));
 }
 
 /**
@@ -163,18 +158,13 @@ export async function readSocleFacts(client: TagsReadClient, userId: string): Pr
  * appliquée). AUCUNE réponse brute, AUCUN axe : uniquement ce que le journal porte.
  */
 export async function readAttentionTags(client: TagsReadClient, userId: string): Promise<AttentionBreathInput> {
-  const { data, error } = await client
-    .from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, strength, rank, assertion_basis, source_type, confidence, context, created_at')
-    .eq('user_id', userId);
-  // ⚠ L'ERREUR EST BRUYANTE : une lecture qui échoue ne doit JAMAIS retomber en 0 tag silencieux
-  // (sinon un vrai utilisateur verrait une respiration vide sans qu'on le sache). Bug = bug.
-  if (error) throw new BreathReadError(`knowledge_evidences read: ${error.message}`);
-  type Row = { target_family: string; target_construct: string; direction?: string; modality?: string; strength: string | null; rank: number | null; assertion_basis: string; source_type: string; confidence: string | null; context: string; created_at: string };
-  const rows = ((data ?? []) as Row[]).filter((r) => r.context === 'attention_received' || r.context === 'affection_given');
-
-  // préséance par construct (niveau le plus fort, récence à niveau égal)
-  const tags: AttentionBreathTag[] = resolveJournalRows(rows).map((r) => ({
+  // ⚠ Contextes filtrés AVANT résolution (le portail s'en charge) : on réduit par construct dans le seul
+  // périmètre attention, pas à travers tout le journal. L'erreur reste bruyante (JournalReadError), jamais
+  // de 0 tag silencieux.
+  const rows = await readResolvedEvidences(client as unknown as JournalEvidenceClient, {
+    userId, contexts: ['attention_received', 'affection_given'],
+  });
+  const tags: AttentionBreathTag[] = rows.map((r) => ({
     family: r.target_family,
     construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}),

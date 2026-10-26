@@ -16,8 +16,8 @@ describe('selectSectionInputs — le modèle n\'élit rien (sélection + ordre d
     tag('GUARDRAIL', 'GRD_PUBLIC_EXPOSURE', 'strong', null),
   ];
   const facts: SocleFact[] = [
-    { factType: 'singularity.marques_lieux', value: 'Aesop, Le Bon Marché' },
-    { factType: 'singularity.envies_reves', value: 'apprendre la céramique' },
+    { factType: 'singularity.marques_lieux', value: 'Aesop, Le Bon Marché', assertionStatus: 'explicit' },
+    { factType: 'singularity.envies_reves', value: 'apprendre la céramique', assertionStatus: 'explicit' },
   ];
   const inputs = selectSectionInputs(tags, facts);
   const byKey = new Map(inputs.map((i) => [i.key, i]));

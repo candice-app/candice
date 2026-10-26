@@ -6,7 +6,7 @@
 // du vocabulaire canonique ; une famille sans libellé connu n'est pas rendue (plutôt que bricoler).
 
 import { PROFILE_FUNCTIONING_LABELS, PROFILE_ORIENTATION_LABELS, NEED_LABELS } from '../knowledge/vocabulary';
-import { resolveJournalRows } from '../knowledge/preseance';
+import { readResolvedEvidences, type JournalEvidenceClient } from '../knowledge/preseance';
 
 /** Modalités d'affection → libellé (repris de la légende de respiration). */
 const MODALITY_LABELS: Record<string, string> = {
@@ -17,11 +17,6 @@ const MODALITY_LABELS: Record<string, string> = {
 
 export interface TraitRow { readonly label: string; readonly value: string; }
 
-interface EvidenceLite {
-  target_family: string; target_construct: string;
-  direction?: string | null; modality?: string | null; rank?: number | null;
-  assertion_basis: string; source_type: string; created_at: string;
-}
 export interface ContactJournalClient {
   from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): Promise<{ data: unknown[] | null; error: { message: string } | null }> } } };
 }
@@ -31,16 +26,10 @@ export interface ContactJournalClient {
  * Récence par construct. Renvoie [] si rien (fiche vide → la personne (re)remplit).
  */
 export async function readContactTraitRows(client: ContactJournalClient, userId: string, contactId: string): Promise<TraitRow[]> {
-  const { data, error } = await client.from('knowledge_evidences')
-    .select('target_family, target_construct, direction, modality, rank, assertion_basis, source_type, created_at')
-    .eq('user_id', userId).eq('about_id', contactId);
-  if (error) throw new Error(`[traits-from-journal] ${error.message}`);
-  const rows = (data ?? []) as EvidenceLite[];
-
-  // PRÉSÉANCE par construct (resolveJournalRows, hsg §48bis) : niveau le plus fort, récence à niveau égal —
-  // JAMAIS la récence seule. La fiche proche lit le journal depuis le début ; sans préséance, une inférence
-  // écrasait une déclaration en silence ici aussi.
-  const ev = resolveJournalRows(rows);
+  // PRÉSÉANCE par construct via le PORTAIL UNIQUE (readResolvedEvidences, §48bis) : niveau le plus fort,
+  // récence à niveau égal — JAMAIS la récence seule. La fiche proche lit le journal depuis le début ; sans
+  // préséance, une inférence écrasait une déclaration en silence ici aussi.
+  const ev = await readResolvedEvidences(client as unknown as JournalEvidenceClient, { userId, aboutId: contactId });
 
   const out: TraitRow[] = [];
   const join = (xs: string[]) => xs.filter(Boolean).join(', ');
