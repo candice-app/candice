@@ -62,10 +62,16 @@ Lister ne suffit pas (trois livrables ont dérivé 4 tours en étant listés). �
 **Réordonnée le 25 oct** : la préséance passe AVANT l'extraction. Raison : l'extraction écrit des inférences (niveau 5) dans le MÊME journal que les déclarations. Avec la récence seule, une inférence écrite APRÈS une déclaration l'écrasait en silence à l'écran. On ferme le trou avant de l'ouvrir.
 1. **Brancher `resolveByProvenance` aux lecteurs** (préséance au read, niveau le plus fort gagne, récence à niveau égal) — **FAIT (25 oct)**. Les 3 lecteurs de respiration (`readSocleTags`, `readContactTags`, `readAttentionTags`) résolvent par provenance, plus par récence seule. **Preuve à l'écran** livrée (`breath-preseance-e2e.test.ts`) : extraite écrite EN DERNIER → le lecteur de l'écran rend la DÉCLARÉE.
 2. **Câbler l'extraction au parcours** (après chaque réponse libre A3) — **FAIT côté SOI, AU CHAMP (26 oct)**. L'extraction part **au blur de chaque champ**, pas à la validation de page (`useFieldExtraction` + `FieldExtractionController`, `src/lib/questionnaire/field-extraction.ts`). Route serveur `POST /api/knowledge/extract-free-text` (clé Anthropic jamais au navigateur). Chaque champ **porte son état** (à faire / en cours / faite / échouée), visible discrètement (`ExtractionNote`). À la **validation de page**, on attend ce qui reste en cours (un ou deux champs). **Rattrapage paresseux** au montage : on relit le journal (`knowledge_sources` type `extraction_inferred`) et on relance les champs non encore faits — ce qui a échoué est repris à la visite suivante. q17 (saisi à un autre step) : extrait en une passe attendue au `onDone`. **Scope (décidé, à valider)** : les champs PRATIQUES plats (prénom, âge, tailles, adresse, allergies…) NE passent PAS par l'extraction — voir l'exception ALLERGIES en tête du lot d'extension. **PROCHE** : le parcours proche CANONIQUE (`IncognitoFlowCanonical`, celui qui écrit au journal, flag ON) ne contient QUE des options fermées, **zéro texte libre → rien à extraire** (les textareas n'existent que dans le legacy `IncognitoFlow`, OFF, qui écrit dans `questionnaire_responses`, pas le journal). L'étape 0 proche n'est donc pas aveugle.
-3. **Étape 0** (Estelle refait onboarding complet + une fiche proche → journal réel et entier) — EN ATTENTE (après 2). **Checklist étape 0** : (a) vérifier sur la VRAIE base qu'une **déclaration l'emporte sur une extraction plus récente** visant le même construct (préséance prouvée en test contre un client conforme) ; (b) vérifier que l'extraction A3 a bien produit des INTEREST/ENTITY + OpenKnowledge niveau 5 à partir des réponses libres rédactionnelles.
-4. **Orchestration** (génération par section ; cœur déterministe fait) — EN ATTENTE (après 2+3). **BLOQUANT : rien de visuel tant que non livré.** Puis **câblage affichage** (masquage/régé/calculé) + **fiche sur la maquette gelée**.
-5. **Écrans** : 2→5 (profil/analyse/synthèse), puis 6→11 et 14, puis 12, 13 et la reco au minimum.
-6. **Suppression de l'ancien chemin** en un commit, puis **migration de suppression des colonnes** (séparée).
+**Replan du 26 oct (décision d'Estelle)** : elle NE refait PAS son étape 0 maintenant — le rangement va encore bouger (trois sorts, merge, reco), et elle a déjà perdu ses données à chaque refonte. Son étape 0 passe TOUT À LA FIN. À la place, un **profil de test SOPHIE** (onboarding classique entier, réponses rédigées avec des pièges) sert de banc d'essai visible à chaque étape.
+3. **Profil SOPHIE garni + rapport** — à faire. Onboarding classique entier (pas incognito, pas côte à côte) → journal. Réponses d'une vraie personne avec pièges (contradiction, domaine presque vide, formulation ambiguë, rejet en langage naturel, détail très précis, réponse longue). Rapport : toutes les Q/R, les tags produits (famille/provenance/confiance), le texte de chaque respiration, la conclusion analytique, la fiche. Puis analyse comparative Sophie × second profil de test (le profil d'Estelle est dans l'ANCIEN rangement, pas le journal → pas de comparaison sur elle, aucun bricolage mi-journal mi-legacy).
+4. **Orchestration de la génération** (par section ; cœur déterministe fait) — vérifiée SUR SOPHIE. **BLOQUANT : rien de visuel tant que non livré.**
+5. **Câblage de l'affichage** (masquage/régé/calculé qui tient) + **la fiche sur la maquette gelée**.
+6. **Écrans** : 2→5 (profil/analyse/synthèse), puis 6→11 et 14, puis 12, 13 et la reco au minimum.
+7. **SUPPRESSION de l'ancien chemin** en un commit, puis **migration de drop des colonnes** (séparée). → à partir d'ici les données d'Estelle ne peuvent plus mourir.
+8. **Parcours incognito complet + parcours entier.**
+9. **Discovery Engine.** (Ne pas y toucher ni en parler avant ce point.)
+10. **Modèle de recommandation.**
+11. **ÉTAPE 0 d'Estelle** — elle remplit, une seule fois, pour de bon.
 
 ## Question ouverte — OÙ VIT LA FAMILLE BEHAVIOR SUR LA FICHE (décision design d'Estelle)
 
@@ -82,6 +88,13 @@ Le radar (13 catégories, le « 15 » est un nom faux) journalise dans INTEREST 
 ## Libellés de vide (éditorial, Estelle) — « Pas encore d'éléments » provisoire
 
 Tout libellé de section vide (ex. Tables/Voyages en attente d'extraction) est provisoire, de l'assistant, à reprendre par Estelle. Marques+lieux fusionnés en un bloc tant qu'il n'y a qu'un fait : validé, scindé à l'extraction.
+
+## Indicateur d'extraction au champ (SingularityStep) — libellés provisoires, Estelle
+
+Chaque réponse libre montre discrètement l'état de son analyse, « comme on voit qu'un texte est enregistré ».
+Libellés actuels (de l'assistant, à reprendre) : **« Candice prend en compte… »** (en cours), **« ✓ pris en
+compte »** (fait), **« sera repris plus tard »** (échoué, rejoué à la visite suivante). Tout ce qui s'affiche
+t'appartient : à réécrire si besoin.
 
 ## Distinguer un fait SUPPOSÉ d'un fait DÉCLARÉ à l'affichage (forme éditoriale, Estelle)
 

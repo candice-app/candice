@@ -30,10 +30,12 @@ interface Props {
   onBack?: () => void;
   onExit?: (currentAnswers: SingularityAnswers) => void;
   // Extraction §27 AU CHAMP (optionnelle — fournie seulement quand le flag canonique est ON ; sinon inerte).
-  // `onExtractField` lance l'extraction d'UNE réponse (throw si échec) ; `loadExtractedKeys` renvoie les
-  // (champ, valeur) déjà extraits (journal) pour le rattrapage au montage.
+  // `onCommitField` écrit le VERBATIM (autorité) d'une réponse (throw si échec → pas d'extraction) ;
+  // `onExtractField` lance l'extraction APRÈS (throw si échec) ; `loadExtractedState` renvoie le déjà-fait
+  // du journal (verbatim / extraction) pour le rattrapage au montage.
+  onCommitField?: (fieldKey: string, fieldContext: string, rawText: string) => Promise<void>;
   onExtractField?: (fieldContext: string, rawText: string) => Promise<void>;
-  loadExtractedKeys?: () => Promise<Iterable<string>>;
+  loadExtractedState?: () => Promise<{ committed?: Iterable<string>; done?: Iterable<string> }>;
 }
 
 // Les 11 champs texte libre singularité — clé → libellé EXACT (= questionText, aligné sur le journal).
@@ -173,7 +175,7 @@ const EMPTY: SingularityAnswers = {
   interests: undefined,
 };
 
-export default function SingularityStep({ onDone, initialAnswers, onBack, onExit, onExtractField, loadExtractedKeys }: Props) {
+export default function SingularityStep({ onDone, initialAnswers, onBack, onExit, onCommitField, onExtractField, loadExtractedState }: Props) {
   const router = useRouter();
   const [answers, setAnswers] = useState<SingularityAnswers>(initialAnswers ?? EMPTY);
   const [saving, setSaving] = useState(false);
@@ -182,14 +184,15 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
     return (v: string) => setAnswers(prev => ({ ...prev, [key]: v }));
   }
 
-  // Extraction AU CHAMP (hook). Inerte si `onExtractField` absent (chemin flag OFF) : aucun champ fourni,
-  // aucun appel. Sinon : rattrapage au montage + relance au blur de chaque champ.
-  const extractionOn = !!onExtractField;
+  // Extraction AU CHAMP (hook). Inerte si les callbacks sont absents (chemin flag OFF) : aucun champ fourni,
+  // aucun appel. Sinon : au blur (et au montage, rattrapage) → VERBATIM puis extraction, dans cet ordre.
+  const extractionOn = !!onCommitField && !!onExtractField;
   const extraction = useFieldExtraction({
     fields: extractionOn ? EXTRACT_FIELDS : [],
     valueOf: (k) => (answers[k as keyof SingularityAnswers] as string) ?? "",
+    commit: onCommitField ?? (async () => {}),
     extract: onExtractField ?? (async () => {}),
-    loadDone: loadExtractedKeys,
+    loadState: loadExtractedState,
   });
   // Props d'extraction pour un champ : état courant + handler de blur (ou rien si inerte).
   const fieldProps = (key: SingularityTextKey) => ({
@@ -311,9 +314,18 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           <button
             type="button"
             onClick={async () => {
-              // Validation de page : s'il reste une extraction EN COURS, on l'attend (un ou deux champs,
-              // pas onze — le reste est déjà analysé au fil de la saisie). Jamais bloquant au-delà.
-              if (extractionOn) { setSaving(true); await extraction.awaitPending(); setSaving(false); }
+              // Validation de page. D'abord une RAFALE DE SÉCURITÉ : on (re)déclenche chaque champ non vide
+              // — le contrôleur ignore ce qui est déjà fait, et COMMIT+EXTRAIT ce qui ne l'est pas (un champ
+              // saisi sans jamais blurer, p.ex. le dernier avant le clic). Garantit qu'aucun verbatim ne
+              // manque. Puis on attend ce qui reste en cours (un ou deux champs, pas onze).
+              if (extractionOn) {
+                setSaving(true);
+                for (const f of EXTRACT_FIELDS) {
+                  extraction.onFieldBlur(f.key, f.fieldContext, (answers[f.key as keyof SingularityAnswers] as string) ?? "");
+                }
+                await extraction.awaitPending();
+                setSaving(false);
+              }
               onDone(answers);
             }}
             disabled={saving}

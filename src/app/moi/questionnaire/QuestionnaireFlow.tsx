@@ -76,25 +76,28 @@ async function singularityFactsAndBreath(
   entries: ReadonlyArray<{ spec: (typeof SINGULARITY_FACT_FIELDS)[string]; value: string }>,
 ): Promise<string> {
   const ts = new Date().toISOString();
-  try {
-    await produceSocleFact(supabase as unknown as WriteClient, { userId, entries, timestamp: ts });
-  } catch (e) {
-    console.error("[QuestionnaireFlow] produceSocleFact (singularité) a échoué :", e);
-  }
-  // Extraction §27 (inférence niveau 5) : les 11 champs SINGULARITÉ sont extraits AU CHAMP (au blur, cf.
-  // SingularityStep + useFieldExtraction) — plus de rafale ici. Reste q17 (saisi à un AUTRE step, AvoidStep) :
-  // une seule réponse libre, extraite ici, ATTENDUE (un champ ≈ deux secondes). Côté SERVEUR (clé Anthropic),
-  // best-effort : un échec ne casse pas le parcours. Champs PRATIQUES plats : jamais extraits.
+  // Les 11 champs SINGULARITÉ sont déjà COMMITÉS (verbatim) + EXTRAITS au champ (SingularityStep + sweep de
+  // validation). Ici ne reste que q17 (saisi à un AUTRE step, AvoidStep) : VERBATIM d'abord (autorité), PUIS
+  // extraction — jamais d'inférence orpheline. Un champ ≈ deux secondes, attendu. Champs PRATIQUES : jamais.
   const q17 = entries.find((e) => e.spec.factType === Q17_FACT_FIELD.factType && e.value?.trim());
   if (q17) {
+    let verbatimOk = false;
     try {
-      await fetch("/api/knowledge/extract-free-text", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entries: [{ rawText: q17.value, fieldContext: q17.spec.questionText }], timestamp: ts }),
-      });
+      await produceSocleFact(supabase as unknown as WriteClient, { userId, entries: [q17], timestamp: ts });
+      verbatimOk = true;
     } catch (e) {
-      console.error("[QuestionnaireFlow] extraction q17 a échoué :", e);
+      console.error("[QuestionnaireFlow] produceSocleFact (q17 verbatim) a échoué :", e);
+    }
+    if (verbatimOk) { // extraction SEULEMENT si le verbatim est écrit (pas d'orpheline)
+      try {
+        await fetch("/api/knowledge/extract-free-text", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ entries: [{ rawText: q17.value, fieldContext: q17.spec.questionText }], timestamp: ts }),
+        });
+      } catch (e) {
+        console.error("[QuestionnaireFlow] extraction q17 a échoué :", e);
+      }
     }
   }
   try {
@@ -712,9 +715,17 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
     return withProgress(
       <SingularityStep
         initialAnswers={singInit}
-        // Extraction §27 AU CHAMP — fournie UNIQUEMENT quand le flag canonique est ON (sinon inerte, chemin OFF
-        // intact). `onExtractField` passe par la route SERVEUR (clé Anthropic) et throw si échec (→ 'failed',
-        // rejoué). `loadExtractedKeys` lit les (champ, valeur) déjà extraits du journal pour le rattrapage.
+        // Extraction §27 AU CHAMP — fournie UNIQUEMENT quand le flag canonique est ON (sinon inerte, chemin
+        // OFF intact). ORDRE : `onCommitField` écrit le VERBATIM (produceSocleFact, autorité) ; ce n'est
+        // qu'ensuite que `onExtractField` (route SERVEUR, clé Anthropic) lance l'inférence. Les deux throw si
+        // échec. `loadExtractedState` relit le journal (verbatim / extraction) pour le rattrapage.
+        onCommitField={socleCanonicalSingularity ? async (fieldKey, _fieldContext, rawText) => {
+          const spec = SINGULARITY_FACT_FIELDS[fieldKey as keyof typeof SINGULARITY_FACT_FIELDS];
+          if (!spec) return;
+          await produceSocleFact(supabase as unknown as WriteClient, {
+            userId, entries: [{ spec, value: rawText }], timestamp: new Date().toISOString(),
+          });
+        } : undefined}
         onExtractField={socleCanonicalSingularity ? async (fieldContext, rawText) => {
           const res = await fetch("/api/knowledge/extract-free-text", {
             method: "POST", headers: { "Content-Type": "application/json" },
@@ -723,13 +734,18 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
           const d = (await res.json().catch(() => ({ failed: 1 }))) as { failed?: number };
           if (!res.ok || (d.failed ?? 0) > 0) throw new Error("extraction échouée");
         } : undefined}
-        loadExtractedKeys={socleCanonicalSingularity ? async () => {
+        loadExtractedState={socleCanonicalSingularity ? async () => {
           const { data } = await supabase
             .from("knowledge_sources")
-            .select("question_text, raw_text")
+            .select("question_text, raw_text, source_type")
             .eq("user_id", userId)
-            .eq("source_type", "extraction_inferred");
-          return (data ?? []).map((r) => `${r.question_text ?? ""} ${r.raw_text ?? ""}`);
+            .in("source_type", ["onboarding_open", "extraction_inferred"]);
+          const committed: string[] = [], done: string[] = [];
+          for (const r of data ?? []) {
+            const k = `${r.question_text ?? ""} ${r.raw_text ?? ""}`;
+            if (r.source_type === "extraction_inferred") done.push(k); else committed.push(k);
+          }
+          return { committed, done };
         } : undefined}
         onBack={canGoBack ? goBack : undefined}
         onExit={(answers) => {
