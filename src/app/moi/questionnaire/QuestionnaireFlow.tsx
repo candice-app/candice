@@ -81,6 +81,24 @@ async function singularityFactsAndBreath(
   } catch (e) {
     console.error("[QuestionnaireFlow] produceSocleFact (singularité) a échoué :", e);
   }
+  // Extraction §27 (inférence niveau 5) sur les réponses LIBRES rédactionnelles (singularité + q17) — côté
+  // SERVEUR (clé Anthropic). Fire-and-forget : n'ajoute aucune attente au parcours ; le FACT verbatim déclaré
+  // est déjà écrit, l'extraction enrichit. Les champs PRATIQUES plats (prénom, taille, adresse…) ne passent
+  // JAMAIS par là. La préséance garantit que l'inféré ne masque pas le déclaré au read (§48bis).
+  try {
+    const toExtract = entries
+      .filter((e) => e.value?.trim())
+      .map((e) => ({ rawText: e.value, fieldContext: e.spec.questionText }));
+    if (toExtract.length) {
+      void fetch("/api/knowledge/extract-free-text", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ entries: toExtract, timestamp: ts }),
+      }).catch((e) => console.error("[QuestionnaireFlow] extraction A3 (fire-and-forget) a échoué :", e));
+    }
+  } catch (e) {
+    console.error("[QuestionnaireFlow] extraction A3 (préparation) a échoué :", e);
+  }
   try {
     const input = await readSocleTags(supabase as unknown as TagsReadClient, userId);
     // FACTs restituables (filtre de visibilité mécanique dans readSocleFacts) → nommés, jamais interprétés.
