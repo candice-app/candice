@@ -81,23 +81,21 @@ async function singularityFactsAndBreath(
   } catch (e) {
     console.error("[QuestionnaireFlow] produceSocleFact (singularité) a échoué :", e);
   }
-  // Extraction §27 (inférence niveau 5) sur les réponses LIBRES rédactionnelles (singularité + q17) — côté
-  // SERVEUR (clé Anthropic). Fire-and-forget : n'ajoute aucune attente au parcours ; le FACT verbatim déclaré
-  // est déjà écrit, l'extraction enrichit. Les champs PRATIQUES plats (prénom, taille, adresse…) ne passent
-  // JAMAIS par là. La préséance garantit que l'inféré ne masque pas le déclaré au read (§48bis).
-  try {
-    const toExtract = entries
-      .filter((e) => e.value?.trim())
-      .map((e) => ({ rawText: e.value, fieldContext: e.spec.questionText }));
-    if (toExtract.length) {
-      void fetch("/api/knowledge/extract-free-text", {
+  // Extraction §27 (inférence niveau 5) : les 11 champs SINGULARITÉ sont extraits AU CHAMP (au blur, cf.
+  // SingularityStep + useFieldExtraction) — plus de rafale ici. Reste q17 (saisi à un AUTRE step, AvoidStep) :
+  // une seule réponse libre, extraite ici, ATTENDUE (un champ ≈ deux secondes). Côté SERVEUR (clé Anthropic),
+  // best-effort : un échec ne casse pas le parcours. Champs PRATIQUES plats : jamais extraits.
+  const q17 = entries.find((e) => e.spec.factType === Q17_FACT_FIELD.factType && e.value?.trim());
+  if (q17) {
+    try {
+      await fetch("/api/knowledge/extract-free-text", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entries: toExtract, timestamp: ts }),
-      }).catch((e) => console.error("[QuestionnaireFlow] extraction A3 (fire-and-forget) a échoué :", e));
+        body: JSON.stringify({ entries: [{ rawText: q17.value, fieldContext: q17.spec.questionText }], timestamp: ts }),
+      });
+    } catch (e) {
+      console.error("[QuestionnaireFlow] extraction q17 a échoué :", e);
     }
-  } catch (e) {
-    console.error("[QuestionnaireFlow] extraction A3 (préparation) a échoué :", e);
   }
   try {
     const input = await readSocleTags(supabase as unknown as TagsReadClient, userId);
@@ -714,6 +712,25 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
     return withProgress(
       <SingularityStep
         initialAnswers={singInit}
+        // Extraction §27 AU CHAMP — fournie UNIQUEMENT quand le flag canonique est ON (sinon inerte, chemin OFF
+        // intact). `onExtractField` passe par la route SERVEUR (clé Anthropic) et throw si échec (→ 'failed',
+        // rejoué). `loadExtractedKeys` lit les (champ, valeur) déjà extraits du journal pour le rattrapage.
+        onExtractField={socleCanonicalSingularity ? async (fieldContext, rawText) => {
+          const res = await fetch("/api/knowledge/extract-free-text", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ entries: [{ rawText, fieldContext }], timestamp: new Date().toISOString() }),
+          });
+          const d = (await res.json().catch(() => ({ failed: 1 }))) as { failed?: number };
+          if (!res.ok || (d.failed ?? 0) > 0) throw new Error("extraction échouée");
+        } : undefined}
+        loadExtractedKeys={socleCanonicalSingularity ? async () => {
+          const { data } = await supabase
+            .from("knowledge_sources")
+            .select("question_text, raw_text")
+            .eq("user_id", userId)
+            .eq("source_type", "extraction_inferred");
+          return (data ?? []).map((r) => `${r.question_text ?? ""} ${r.raw_text ?? ""}`);
+        } : undefined}
         onBack={canGoBack ? goBack : undefined}
         onExit={(answers) => {
           supabase.from("my_profile").upsert(

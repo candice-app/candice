@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import VoiceButton from "./VoiceButton";
 import InterestsQuestion, { type InterestsValue, EMPTY_INTERESTS } from "./InterestsQuestion";
+import { SINGULARITY_FACT_FIELDS } from "@/lib/questionnaire/socle-facts-fields";
+import { useFieldExtraction, type FieldExtractionStatus } from "@/lib/questionnaire/field-extraction";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -27,6 +29,31 @@ interface Props {
   initialAnswers?: SingularityAnswers;
   onBack?: () => void;
   onExit?: (currentAnswers: SingularityAnswers) => void;
+  // Extraction §27 AU CHAMP (optionnelle — fournie seulement quand le flag canonique est ON ; sinon inerte).
+  // `onExtractField` lance l'extraction d'UNE réponse (throw si échec) ; `loadExtractedKeys` renvoie les
+  // (champ, valeur) déjà extraits (journal) pour le rattrapage au montage.
+  onExtractField?: (fieldContext: string, rawText: string) => Promise<void>;
+  loadExtractedKeys?: () => Promise<Iterable<string>>;
+}
+
+// Les 11 champs texte libre singularité — clé → libellé EXACT (= questionText, aligné sur le journal).
+type SingularityTextKey = keyof typeof SINGULARITY_FACT_FIELDS;
+const EXTRACT_FIELDS: readonly { key: SingularityTextKey; fieldContext: string }[] = (
+  Object.keys(SINGULARITY_FACT_FIELDS) as SingularityTextKey[]
+).map((key) => ({ key, fieldContext: SINGULARITY_FACT_FIELDS[key].questionText }));
+
+// Repère discret de l'état d'extraction d'un champ — « comme on voit qu'un texte est enregistré ».
+function ExtractionNote({ status }: { status?: FieldExtractionStatus }) {
+  if (!status || status === "idle" || status === "pending") return null;
+  const label =
+    status === "extracting" ? "Candice prend en compte…" :
+    status === "done" ? "✓ pris en compte" :
+    "sera repris plus tard";
+  return (
+    <p style={{ fontSize: 11, fontWeight: 300, fontStyle: "italic", color: "var(--ink-3)", marginTop: 6, textAlign: "right" }}>
+      {label}
+    </p>
+  );
 }
 
 const qNavBtn: React.CSSProperties = {
@@ -59,13 +86,15 @@ function SingularityHero({ onBack, onExit }: { onBack?: () => void; onExit?: () 
 // ─── Single textarea field ────────────────────────────────────────────────────
 
 function TextareaField({
-  label, subtext, placeholder, value, onChange,
+  label, subtext, placeholder, value, onChange, status, onBlurField,
 }: {
   label: string;
   subtext?: string;
   placeholder: string;
   value: string;
   onChange: (v: string) => void;
+  status?: FieldExtractionStatus;
+  onBlurField?: (value: string) => void; // appelé au blur → lance l'extraction §27 de CE champ
 }) {
   const [focused, setFocused] = useState(false);
   return (
@@ -103,7 +132,7 @@ function TextareaField({
         placeholder={placeholder}
         rows={3}
         onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
+        onBlur={() => { setFocused(false); onBlurField?.(value); }}
         style={{
           width: "100%",
           padding: "12px 14px",
@@ -122,6 +151,7 @@ function TextareaField({
           boxSizing: "border-box",
         } as React.CSSProperties}
       />
+      <ExtractionNote status={status} />
     </div>
   );
 }
@@ -143,13 +173,31 @@ const EMPTY: SingularityAnswers = {
   interests: undefined,
 };
 
-export default function SingularityStep({ onDone, initialAnswers, onBack, onExit }: Props) {
+export default function SingularityStep({ onDone, initialAnswers, onBack, onExit, onExtractField, loadExtractedKeys }: Props) {
   const router = useRouter();
   const [answers, setAnswers] = useState<SingularityAnswers>(initialAnswers ?? EMPTY);
+  const [saving, setSaving] = useState(false);
 
   function set(key: keyof SingularityAnswers) {
     return (v: string) => setAnswers(prev => ({ ...prev, [key]: v }));
   }
+
+  // Extraction AU CHAMP (hook). Inerte si `onExtractField` absent (chemin flag OFF) : aucun champ fourni,
+  // aucun appel. Sinon : rattrapage au montage + relance au blur de chaque champ.
+  const extractionOn = !!onExtractField;
+  const extraction = useFieldExtraction({
+    fields: extractionOn ? EXTRACT_FIELDS : [],
+    valueOf: (k) => (answers[k as keyof SingularityAnswers] as string) ?? "",
+    extract: onExtractField ?? (async () => {}),
+    loadDone: loadExtractedKeys,
+  });
+  // Props d'extraction pour un champ : état courant + handler de blur (ou rien si inerte).
+  const fieldProps = (key: SingularityTextKey) => ({
+    status: extraction.status[key],
+    onBlurField: extractionOn
+      ? (v: string) => extraction.onFieldBlur(key, SINGULARITY_FACT_FIELDS[key].questionText, v)
+      : undefined,
+  });
 
   return (
     <div style={{ background: "var(--canvas)", minHeight: "100vh" }}>
@@ -181,36 +229,42 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           placeholder="ex. escalade, séries coréennes, cuisiner pour les autres, randonnée, brocantes, musées…"
           value={answers.adore_faire}
           onChange={set("adore_faire")}
+          {...fieldProps("adore_faire")}
         />
         <TextareaField
           label="Ce que j'évite ou déteste"
           placeholder="ex. sports collectifs, jeux de société, soirées bruyantes, surprises…"
           value={answers.evite_deteste}
           onChange={set("evite_deteste")}
+          {...fieldProps("evite_deteste")}
         />
         <TextareaField
           label="Les sujets qui me stimulent vraiment"
           placeholder="ex. startups, psychologie, voyages, football, mode, musique 90s…"
           value={answers.sujets_stimulants}
           onChange={set("sujets_stimulants")}
+          {...fieldProps("sujets_stimulants")}
         />
         <TextareaField
           label="Ce que peu de gens savent sur moi"
           placeholder="ex. j'adore les mangas, j'ai peur de l'avion, je fais de la poterie…"
           value={answers.peu_savent}
           onChange={set("peu_savent")}
+          {...fieldProps("peu_savent")}
         />
         <TextareaField
           label="Le plus beau cadeau ou moment qu'on m'ait offert"
           placeholder="ex. un week-end surprise bien pensé, une lettre manuscrite, un concert inoubliable…"
           value={answers.plus_beau_cadeau}
           onChange={set("plus_beau_cadeau")}
+          {...fieldProps("plus_beau_cadeau")}
         />
         <TextareaField
           label="Le genre de détail qui me fait me sentir compris(e)"
           placeholder="ex. qu'on se souvienne de ce que j'ai dit il y a trois mois, qu'on adapte sans que je demande…"
           value={answers.detail_compris}
           onChange={set("detail_compris")}
+          {...fieldProps("detail_compris")}
         />
         <TextareaField
           label="Les marques, objets ou lieux que j'aime"
@@ -218,6 +272,7 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           placeholder="ex. Aesop, les librairies indépendantes, Le Bon Marché, la papeterie japonaise, un bar à vin précis…"
           value={answers.marques_lieux}
           onChange={set("marques_lieux")}
+          {...fieldProps("marques_lieux")}
         />
         <TextareaField
           label="Les cadeaux que je n'aimerais pas recevoir"
@@ -225,6 +280,7 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           placeholder="ex. bougies, fleurs coupées, gadgets, objets « déco » impersonnels, bons d'achat…"
           value={answers.cadeaux_non}
           onChange={set("cadeaux_non")}
+          {...fieldProps("cadeaux_non")}
         />
         <TextareaField
           label="Mes envies ou rêves du moment"
@@ -232,6 +288,7 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           placeholder="ex. apprendre la céramique, partir au Japon, un certain sac, me remettre au piano…"
           value={answers.envies_reves}
           onChange={set("envies_reves")}
+          {...fieldProps("envies_reves")}
         />
         <TextareaField
           label="Ce que j'aimerais qu'on remarque davantage chez moi"
@@ -239,6 +296,7 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           placeholder="ex. mes efforts, mon humour, mon écoute, mon travail, ma cuisine…"
           value={answers.remarquer}
           onChange={set("remarquer")}
+          {...fieldProps("remarquer")}
         />
         <TextareaField
           label="Ce qui me fait me sentir spécial(e)"
@@ -246,16 +304,23 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
           placeholder="ex. qu'on se souvienne d'un détail, qu'on prépare quelque chose rien que pour moi, qu'on prenne du temps…"
           value={answers.sentir_special}
           onChange={set("sentir_special")}
+          {...fieldProps("sentir_special")}
         />
 
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <button
             type="button"
-            onClick={() => onDone(answers)}
+            onClick={async () => {
+              // Validation de page : s'il reste une extraction EN COURS, on l'attend (un ou deux champs,
+              // pas onze — le reste est déjà analysé au fil de la saisie). Jamais bloquant au-delà.
+              if (extractionOn) { setSaving(true); await extraction.awaitPending(); setSaving(false); }
+              onDone(answers);
+            }}
+            disabled={saving}
             className="btn-primary"
             style={{ width: "100%", minHeight: 52 }}
           >
-            Continuer →
+            {saving ? "…" : "Continuer →"}
           </button>
           <button
             type="button"
