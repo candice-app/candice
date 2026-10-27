@@ -16,6 +16,7 @@ import type { KnowledgeScope, SubjectId } from './identity';
 import type { EvidenceStrength, OpenKnowledgeType } from './vocabulary';
 import { DEFAULT_EXPOSABLE, INTERNAL_ONLY_POLICY, type VisibilityPolicy } from './visibility';
 import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
+import { classifyContentSensitivity } from './sensitivity';
 
 // FRONTIÈRE (lot A ter) : un OpenKnowledge ne produit JAMAIS de signal. Seules les
 // evidences alimentent la consolidation. `type: 'PROFILE'` ne crée pas un ProfileSignal —
@@ -70,8 +71,11 @@ export interface CreateOpenKnowledgeInput extends KnowledgeScope {
 }
 
 export function createOpenKnowledge(input: CreateOpenKnowledgeInput): OpenKnowledge {
+  // SENSIBILITÉ AU CONTENU (règle 27 oct, comme createFact) : un contenu santé/allergie/médical/adresse
+  // verrouille internal_only quel que soit le champ — pour que le reliquat non plus ne fuite jamais en prose.
+  const contentSensitive = input.sensitive === true || classifyContentSensitivity(input.subjectLabel);
   const visibility: VisibilityPolicy =
-    input.visibility ?? (input.sensitive ? INTERNAL_ONLY_POLICY : DEFAULT_EXPOSABLE);
+    input.visibility ?? (contentSensitive ? INTERNAL_ONLY_POLICY : DEFAULT_EXPOSABLE);
   return {
     about: input.about,
     ownerId: input.ownerId,

@@ -123,6 +123,7 @@ export async function produceSocleFact(
       timestamp: input.timestamp,
       confidence: 'high',
       user_confirmed: true, // la personne l'a saisi elle-même
+      assertionStatus: 'explicit', // déclaré par la personne → la provenance voyage jusqu'à l'affichage (§48bis)
       ...(spec.sensitive ? { sensitivity: { isSensitive: true } } : {}),
     });
     await persistKnowledge(client, { source, facts: [fact] });

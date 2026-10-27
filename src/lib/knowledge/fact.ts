@@ -12,6 +12,7 @@
 
 import type { AssertionStatus } from './sources';
 import type { KnowledgeScope } from './identity';
+import { classifyContentSensitivity } from './sensitivity';
 import { DEFAULT_EXPOSABLE, INTERNAL_ONLY_POLICY, type VisibilityPolicy } from './visibility';
 import { JOURNAL_VERSION_STAMP, type JournalVersionStamp } from './version';
 
@@ -79,9 +80,14 @@ export interface CreateFactInput extends KnowledgeScope {
 }
 
 export function createFact(input: CreateFactInput): Fact {
+  // SENSIBILITÉ AU CONTENU (règle 27 oct) : la sensibilité est une propriété de CE QUE DIT l'info, pas du
+  // champ. Un contenu santé/allergie/médical/adresse verrouille internal_only MÊME si le champ n'était pas
+  // marqué sensible — sinon une info santé tapée en texte libre fuit dans la prose. Appliqué ICI = partout.
+  const contentSensitive = input.sensitivity?.isSensitive === true || classifyContentSensitivity(input.value);
+  const sensitivity: FactSensitivity | undefined = contentSensitive ? { isSensitive: true } : input.sensitivity;
   // Un FACT sensible est internal_only (plafond) ; sinon candidat au portrait.
   const visibility: VisibilityPolicy =
-    input.visibility ?? (input.sensitivity?.isSensitive ? INTERNAL_ONLY_POLICY : DEFAULT_EXPOSABLE);
+    input.visibility ?? (contentSensitive ? INTERNAL_ONLY_POLICY : DEFAULT_EXPOSABLE);
   return {
     about: input.about,
     ownerId: input.ownerId,
@@ -92,7 +98,7 @@ export function createFact(input: CreateFactInput): Fact {
     timestamp: input.timestamp,
     confidence: input.confidence,
     context: input.context,
-    sensitivity: input.sensitivity,
+    sensitivity,
     visibility,
     user_confirmed: input.user_confirmed ?? false,
     evidence_ids: [],

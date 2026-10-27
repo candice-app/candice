@@ -1988,7 +1988,7 @@ export const ONBOARDING_MAPPINGS: readonly OnboardingMapping[] = [
     guardrails: [],
     preferences: [],
     facts: [
-      { fact_type: "functional_impact", subject: "mental_load", relation: "causes", effect: "rapid_exhaustion", user_confirmed: true, implication: "réduire le nombre de décisions, coordinations et tâches nécessaires. Ne produit PAS NEED_RELIEF.", detail: "fact_type = functional_impact   ·   subject = mental_load   ·   relation = causes   ·   effect = rapid_exhaustion   ·   user_confirmed = true   ·   implication : réduire le nombre de décisions, coordinations et tâches nécessaires. Ne produit PAS NEED_RELIEF." },
+      { fact_type: "functional_impact", value: "La charge mentale m'épuise vite", subject: "mental_load", relation: "causes", effect: "rapid_exhaustion", user_confirmed: true, implication: "réduire le nombre de décisions, coordinations et tâches nécessaires. Ne produit PAS NEED_RELIEF.", detail: "fact_type = functional_impact   ·   subject = mental_load   ·   relation = causes   ·   effect = rapid_exhaustion   ·   user_confirmed = true   ·   implication : réduire le nombre de décisions, coordinations et tâches nécessaires. Ne produit PAS NEED_RELIEF." },
     ],
     retainedInformation: "sensibilité à la charge mentale, coût énergétique de la charge mentale",
   },

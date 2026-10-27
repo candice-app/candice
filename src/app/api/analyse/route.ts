@@ -96,7 +96,7 @@ Tout en français. Sois concret, bienveillant et actionnable. Le score doit refl
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 1200,
+    max_tokens: 4096, // conclusion comparative = prose, pas de plafond (règle verrouillée)
     messages: [{ role: "user", content: prompt }],
   });
 

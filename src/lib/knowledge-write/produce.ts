@@ -253,6 +253,7 @@ export function produceFromOption(
         timestamp: ctx.timestamp,
         confidence,
         user_confirmed: f.user_confirmed,
+        assertionStatus: 'explicit', // mapping direct d'une réponse déclarée → provenance jusqu'à l'affichage
         ...(f.subject ? { subject: f.subject } : {}),
         ...(f.relation ? { relation: f.relation } : {}),
         ...(f.effect ? { effect: f.effect } : {}),

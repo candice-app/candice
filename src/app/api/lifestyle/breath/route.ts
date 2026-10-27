@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
   try {
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 300,
+      max_tokens: 4096, // pas de plafond de longueur (prose = matière, règle verrouillée)
       system: systemPrompt,
       messages: [{ role: "user", content: buildUserMessage(facts) }],
     });

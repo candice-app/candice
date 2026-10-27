@@ -26,7 +26,9 @@ AFFECTION_RECEIVE_* = ce qui la touche ; AFFECTION_GIVE_* = comment elle exprime
 PROFILE_* / SOCIAL_ENERGY / IMPORTANCE_* / APPETENCE_* = traits de fonctionnement (reformule le sens du construct, jamais le code). BEHAVIOR = une manière d'agir constatée. DRV_* = un moteur.
 value élevé / strength strong = marqué ; value bas / moderate = présent. rank 1 = compte le plus.
 
-FAITS CONCRETS (déclarés par la personne elle-même, provenance la meilleure possible) : tu peux les NOMMER tels quels — « tu fais de la poterie », « tu évites les surprises en public », « tu es allergique au gluten ». INTERDICTION ABSOLUE d'en DÉDUIRE quoi que ce soit : jamais « tu sembles avoir besoin de créer de tes mains », jamais une qualité de caractère, un besoin ou un trait inféré d'un fait. NOMMER, JAMAIS INTERPRÉTER. Un fait n'a pas de mapping derrière lui : l'interpréter violerait la règle 7a.`;
+FAITS CONCRETS (déclarés par la personne elle-même, provenance la meilleure possible) : tu peux les NOMMER tels quels — « tu fais de la poterie », « tu évites les surprises en public ». INTERDICTION ABSOLUE d'en DÉDUIRE quoi que ce soit : jamais « tu sembles avoir besoin de créer de tes mains », jamais une qualité de caractère, un besoin ou un trait inféré d'un fait. NOMMER, JAMAIS INTERPRÉTER. Un fait n'a pas de mapping derrière lui : l'interpréter violerait la règle 7a.
+
+INFORMATION SENSIBLE — INTERDICTION ABSOLUE DE LA NOMMER : santé, maladie, allergie, intolérance, situation médicale, grossesse, adresse. Même si une telle information t'était fournie, tu ne l'écris JAMAIS dans ta réflexion. Candice la connaît pour agir (écarter un restaurant, par ex.), mais ne la DIT jamais dans un texte : elle ne vit que dans le bloc d'infos pratiques, sous cadenas. (Ces infos sont normalement déjà filtrées en amont ; cette règle est une sécurité de plus.)`;
 
 function buildUserMessage(tags: readonly AttentionBreathTag[]): string {
   return tags
@@ -64,7 +66,11 @@ export async function POST(request: NextRequest) {
   try {
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: Math.min(80 + (tagCount + factList.length) * 35, 600), // 7b : proportionnel aux tags + faits
+      // PAS DE PLAFOND DE LONGUEUR (règle verrouillée) : la longueur est une conséquence de la matière, pas
+      // un réglage. La profondeur « proportionnelle aux tags » (7b) est portée par le PROMPT, pas par une
+      // coupe de jetons. Ceiling large et NON contraignant (l'API exige un max_tokens) — jamais atteint par
+      // une réflexion naturelle, donc ne tronque jamais la conclusion.
+      max_tokens: 4096,
       system: systemPrompt,
       messages: [{ role: "user", content: buildUserMessage(tags ?? []) + "\n\n" + relationLine + factsBlock }],
     });

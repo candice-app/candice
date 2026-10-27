@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       // 7b : budget proportionnel au nombre de tags (mince quand peu, dense quand beaucoup)
-      max_tokens: Math.min(80 + tagCount * 40, 400),
+      max_tokens: 4096, // pas de plafond de longueur (prose = matière)
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: buildUserMessage(tags) + "\n\n" + relationLine }],
     });
