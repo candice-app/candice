@@ -39,7 +39,7 @@ function domainHint(url: string): string {
 async function describeFromPhoto(photoBase64: string, mimeType: SupportedMime): Promise<string> {
   const msg = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 80,
+    max_tokens: 256, // borné par le PROMPT (10-20 mots) — plafond généreux, jamais de coupe
     messages: [{
       role: "user",
       content: [
@@ -54,6 +54,7 @@ async function describeFromPhoto(photoBase64: string, mimeType: SupportedMime): 
       ],
     }],
   });
+  if (msg.stop_reason === "max_tokens") console.error("[w2-analyse] TRONCATURE max_tokens — plafond à relever.");
   const text = msg.content[0]?.type === "text" ? msg.content[0].text.trim() : "";
   return text || "Je ne distingue pas clairement l'article.";
 }
@@ -61,12 +62,13 @@ async function describeFromPhoto(photoBase64: string, mimeType: SupportedMime): 
 async function reformatDescription(description: string): Promise<string> {
   const msg = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 80,
+    max_tokens: 256, // borné par le PROMPT (10-20 mots) — plafond généreux, jamais de coupe
     messages: [{
       role: "user",
       content: `Reformule en 10-20 mots cette description d'article de manière sobre et précise : "${description}". Commence directement par la description.`,
     }],
   });
+  if (msg.stop_reason === "max_tokens") console.error("[w2-analyse] TRONCATURE max_tokens — plafond à relever.");
   const text = msg.content[0]?.type === "text" ? msg.content[0].text.trim() : "";
   return text || description;
 }

@@ -43,7 +43,18 @@ export async function proxy(request: NextRequest) {
     BETA_EXEMPT_EXACT.has(pathname) ||
     BETA_EXEMPT_PREFIXES.some((p) => pathname.startsWith(p));
 
-  if (!isBetaExempt && !request.cookies.get("beta_access")) {
+  // La porte bêta protège candice.app DU PUBLIC, pas une machine de dev. On la rend INOPÉRANTE uniquement
+  // en développement local. DEUX conditions, dont une INFALSIFIABLE par une requête :
+  //   1. process.env.NODE_ENV !== 'production' — la garantie DURE. Sur Vercel / `next build` / `next start`,
+  //      NODE_ENV vaut TOUJOURS 'production' (variable du runtime, jamais portée par la requête). Une requête
+  //      ne peut pas la changer → en production ce booléen est TOUJOURS false, donc betaBypass TOUJOURS false,
+  //      même si quelqu'un envoie `Host: localhost` à candice.app.
+  //   2. l'hôte est local (localhost / 127.0.0.1) — correspond à « sur ma machine ».
+  const host = request.nextUrl.hostname;
+  const isLocalHost = host === "localhost" || host === "127.0.0.1" || host === "::1" || host === "[::1]";
+  const betaBypass = process.env.NODE_ENV !== "production" && isLocalHost;
+
+  if (!isBetaExempt && !betaBypass && !request.cookies.get("beta_access")) {
     const url = new URL("/beta-access", request.url);
     url.searchParams.set("from", pathname);
     return NextResponse.redirect(url);

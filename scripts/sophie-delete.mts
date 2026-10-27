@@ -7,7 +7,7 @@ for (const line of readFileSync(new URL("../.env.local", import.meta.url), "utf8
 }
 const { createAdminClient } = await import("../src/utils/supabase/admin.ts");
 const admin = createAdminClient();
-const EMAILS = ["sophie.test.journal@candice.app", "thomas.test.journal@candice.app"];
+const EMAILS = ["sophie.test.journal@candice.app", "thomas.test.journal@candice.app", "parcours.test.journal@candice.app"];
 
 let page = 1;
 const toDelete: { id: string; email: string }[] = [];

@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
     const msg = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 120,
+      max_tokens: 384, // structure bornée (objet {brand, product}) — plafond GÉNÉREUX, jamais de coupe
       system: "Tu identifies un produit sur une photo pour aider à repérer une idée cadeau. Réponds UNIQUEMENT en JSON: {\"brand\": string|null, \"product\": string court|null}. Si tu n'es pas sûr, mets null. Jamais de phrase, juste le JSON.",
       messages: [{
         role: "user",
@@ -36,6 +36,7 @@ export async function POST(req: Request) {
         ],
       }],
     });
+    if (msg.stop_reason === "max_tokens") console.error("[carnet/identify] TRONCATURE max_tokens — plafond à relever.");
     const text = msg.content[0]?.type === "text" ? msg.content[0].text.trim() : "";
     const json = text.match(/\{[\s\S]*\}/)?.[0];
     const parsed = json ? JSON.parse(json) as { brand?: string | null; product?: string | null } : {};

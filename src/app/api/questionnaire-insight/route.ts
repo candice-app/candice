@@ -65,7 +65,7 @@ Exemples du bon registre :
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 120,
+    max_tokens: 4096, // prose = matière, pas de plafond (règle verrouillée) ; 4096 imposé par l API, non contraignant
     messages: [{ role: "user", content: prompt }],
   });
 

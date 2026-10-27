@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 256,
+    max_tokens: 4096, // prose = matière, pas de plafond (le prompt borne un tour de voix, pas une coupe)
     messages: [{
       role: "user",
       content: `Tu aides à remplir un questionnaire de profil personnel.

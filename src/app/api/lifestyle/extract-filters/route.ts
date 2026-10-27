@@ -21,10 +21,13 @@ export async function POST(request: NextRequest) {
   try {
     const message = await anthropic.messages.create({
       model: "claude-haiku-4-5-20251001",
-      max_tokens: 200,
+      max_tokens: 512, // structure bornée (3-6 interdits courts) — plafond GÉNÉREUX, jamais de coupe
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: `Texte : "${text.trim()}"` }],
     });
+
+    // Troncature détectée et remontée (jamais avalée) : une liste coupée n'est pas une liste.
+    if (message.stop_reason === "max_tokens") console.error("[extract-filters] TRONCATURE max_tokens — plafond à relever.");
 
     const raw = message.content[0].type === "text" ? message.content[0].text.trim() : "[]";
 

@@ -179,9 +179,15 @@ Toutes les valeurs en français. Suggestions concrètes, actionnables, profondé
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 1500,
+    max_tokens: 3072, // structure bornée (6 idées) — plafond GÉNÉREUX (~3-4× la sortie observée), jamais de coupe
     messages: [{ role: "user", content: prompt }],
   });
+
+  // Troncature DÉTECTÉE et remontée, jamais avalée : on ne sert JAMAIS une liste coupée en plein milieu.
+  if (message.stop_reason === "max_tokens") {
+    console.error("[suggestions] TRONCATURE max_tokens : liste coupée — plafond à RELEVER, jamais à baisser.");
+    return NextResponse.json({ error: "Génération tronquée (max_tokens)." }, { status: 500 });
+  }
 
   const text = message.content[0].type === "text" ? message.content[0].text : "";
   const jsonMatch = text.match(/\[[\s\S]*\]/);

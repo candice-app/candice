@@ -19,7 +19,7 @@ interface SituationExtraction {
 async function extractSituation(rawText: string): Promise<SituationExtraction> {
   const msg = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 300,
+    max_tokens: 4096, // prose = matière, pas de plafond
     system: `Analyse cette note sur une personne. Retourne uniquement du JSON valide :
 {
   "category": "travail|santé|famille|couple|humeur|finances|deuil|autre",
@@ -46,7 +46,7 @@ async function reformulateSituation(
 ): Promise<string> {
   const msg = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 200,
+    max_tokens: 4096, // prose = matière, pas de plafond
     system: `Tu es Candice. Tu reformules une note brute sur un proche en 1-2 phrases douces, jamais alarmistes, jamais médicales, jamais dramatiques.
 Ton Candice : bienveillant, humain, nuancé. Utilise le prénom si pertinent. Ne répète pas la note brute.
 Retourne uniquement la reformulation (pas de JSON, pas d'explication).`,

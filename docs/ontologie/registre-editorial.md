@@ -48,6 +48,14 @@ Aujourd'hui la reco lit l'ancienne projection, pas le journal. Le jour où on la
 1. **La reco lit les rejets DANS LE JOURNAL** (ENTITY DISLIKE/AVOID + GUARDRAIL via `isRejection`), et la **preuve de bout en bout est due à CE moment-là** : un rejet déclaré dans le journal → le candidat correspondant est mécaniquement écarté à la sortie de la reco. Tant que ce n'est pas prouvé à l'écran, la dette d'exclusion n'est pas soldée. C'est la contrepartie du fait qu'on a construit `rejection-match` AVANT la reco : il reste inerte jusqu'à ce branchement, et le branchement doit prouver qu'il mord.
 2. **ENTITY ou GUARDRAIL : UNE SEULE source d'exclusion.** Un même rejet ne doit pas pouvoir être écrit à la fois comme ENTITY-AVOID et comme GUARDRAIL « au cas où » — deux représentations de la même vérité (interdit). **La question « laquelle fait foi » se tranche AVEC le rebranchement reco**, pas avant : c'est là qu'on voit ce que le moteur consomme réellement. Décision à inscrire ici ce jour-là. D'ici là, l'extraction n'écrit QUE ENTITY (GUARDRAIL structuré est au lot d'extension ci-dessus), donc le conflit ne peut pas encore naître — mais il naîtra dès que GUARDRAIL sera produit, d'où la règle posée d'avance.
 
+## RÈGLE — un profil de test est TOUJOURS un compte séparé (27 oct, sans exception)
+
+Tout profil de test est un **COMPTE SÉPARÉ, avec ses propres identifiants**. On ne se connecte **JAMAIS** avec le compte d'Estelle, on n'écrit **JAMAIS** sous son `userId` — pour aucun test, aucune garniture, aucune vérification. Son profil ne doit **jamais** être écrasé ni modifié par un parcours de test. Chaque compte de test (Sophie, Thomas, le compte de parcours navigateur, etc.) est neuf et distinct. Ses identifiants vivent dans le script de garniture, **jamais dans la conversation**, et sont supprimés proprement avec le reste (`sophie-delete.mts`). **C'est une règle permanente, pas une précaution d'un tour.**
+
+## Porte bêta — INOPÉRANTE en dev local uniquement (27 oct)
+
+La porte bêta (`beta_access`, `proxy.ts`) protège candice.app du public, pas une machine de dev. Elle est rendue inopérante **uniquement** quand `process.env.NODE_ENV !== 'production'` ET l'hôte est local (localhost / 127.0.0.1). **Garantie de prod INFALSIFIABLE** : `NODE_ENV` vaut toujours `'production'` sur Vercel / `next build` / `next start` et n'est jamais porté par la requête → en production `betaBypass` est toujours `false`, même avec un `Host: localhost` usurpé. La prod reste protégée quoi qu'il arrive.
+
 ## Comptes de TEST en base de PRODUCTION (hygiène)
 
 - **Sophie** — `sophie.test.journal@candice.app`, nom « Sophie — COMPTE DE TEST ». Journal SEUL (knowledge_*), garni via `scripts/sophie-garnish.mts` (vrais modules). Banc d'essai de la génération depuis un texte rédigé.
