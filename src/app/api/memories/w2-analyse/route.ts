@@ -39,7 +39,7 @@ function domainHint(url: string): string {
 async function describeFromPhoto(photoBase64: string, mimeType: SupportedMime): Promise<string> {
   const msg = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 256, // borné par le PROMPT (10-20 mots) — plafond généreux, jamais de coupe
+    max_tokens: 4096, // prose bornée par le prompt (10-20 mots) = pas de plafond ; 4096 non contraignant
     messages: [{
       role: "user",
       content: [
@@ -62,7 +62,7 @@ async function describeFromPhoto(photoBase64: string, mimeType: SupportedMime): 
 async function reformatDescription(description: string): Promise<string> {
   const msg = await anthropic.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 256, // borné par le PROMPT (10-20 mots) — plafond généreux, jamais de coupe
+    max_tokens: 4096, // prose bornée par le prompt (10-20 mots) = pas de plafond ; 4096 non contraignant
     messages: [{
       role: "user",
       content: `Reformule en 10-20 mots cette description d'article de manière sobre et précise : "${description}". Commence directement par la description.`,

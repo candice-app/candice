@@ -18,6 +18,7 @@ const { extractFreeText } = await import("../src/lib/knowledge-write/extract-fre
 const { accountAbout, asUserId } = await import("../src/lib/knowledge/identity.ts");
 
 const EMAIL = "sophie.test.journal@candice.app";
+const PASSWORD = "Sophie-Test-Journal-2026!"; // fixe, connu, DANS le script seulement (jamais dans la conversation)
 const DISPLAY = "Sophie — COMPTE DE TEST";
 
 const admin = createAdminClient();
@@ -39,7 +40,7 @@ async function freshUser(): Promise<string> {
     page++;
   }
   const { data, error } = await admin.auth.admin.createUser({
-    email: EMAIL, password: crypto.randomUUID(), email_confirm: true,
+    email: EMAIL, password: PASSWORD, email_confirm: true,
     user_metadata: { display_name: DISPLAY, test_account: true },
   });
   if (error) throw error;
