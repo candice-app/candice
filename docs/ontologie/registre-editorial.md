@@ -57,19 +57,31 @@ Aujourd'hui la reco lit l'ancienne projection, pas le journal. Le jour où on la
 ## Findings du banc Sophie (26-27 oct)
 
 1. **BUG prod CORRIGÉ (a40fc39)** : les lecteurs sélectionnaient `knowledge_evidences.source_type`, colonne INEXISTANTE → toutes les respirations auraient cassé en prod. Attrapé seulement en lisant la vraie base. Préséance re-keyée sur `assertion_status` + `assertion_basis`.
-2. **SÉCURITÉ — fuite d'info sensible en texte libre : CORRIGÉ (27 oct)**. Tranché par Estelle : **c'est un bug structurel**. La sensibilité est désormais une propriété du **CONTENU, pas du champ** (`classifyContentSensitivity`, branché dans `createFact` ET `createOpenKnowledge` → partout). Un contenu santé/allergie/médical/adresse verrouille `internal_only` → filtré de la prose. Prompt de respiration : l'exemple « allergique au gluten » retiré + interdiction explicite de nommer toute info sensible. Vérifié sur Sophie : « cœliaque » absent des textes régénérés. ⚠ Couche DÉTERMINISTE (lexique) — la couche robuste = classifieur modèle, au **lot sensibilité** (angles morts documentés dans `sensitivity.ts`).
+2. **SÉCURITÉ — fuite d'info sensible en texte libre : CORRIGÉ (27 oct)**. Tranché par Estelle : **c'est un bug structurel**. La sensibilité est une propriété du **CONTENU, pas du champ**. DEUX couches, **zéro appel modèle supplémentaire** :
+   - **texte libre** : l'extraction (appel modèle qui a DÉJÀ lieu) juge la sensibilité — champ `sensitive` ajouté à sa sortie structurée, y compris l'IMPLICITE (« je ne peux pas manger de pain », « depuis mon opération »). Routé vers `createOpenKnowledge({sensitive})`.
+   - **champs plats** (aucun modèle n'y passe) : le **lexique** `classifyContentSensitivity` (`sensitivity.ts`), branché dans `createFact` ET `createOpenKnowledge` → couvre partout, y compris le FACT verbatim d'un champ rédactionnel.
+   Un contenu sensible verrouille `internal_only` → filtré de la prose ; conservé + utilisable par le moteur, montré seulement au bloc pratique sous cadenas. Prompt respiration : exemple « gluten » retiré + interdiction explicite. Vérifié sur Sophie : « cœliaque » absent des textes régénérés.
+   - ⚠ **CONDITION BLOQUANTE de l'ouverture au public** (même rang que le durcissement base) : **le filtre de sensibilité doit être ÉPROUVÉ avant tout utilisateur réel.** Le lexique rate l'implicite ; le modèle d'extraction le rattrape pour le texte libre, mais pas pour les champs plats, et aucune des deux couches n'est éprouvée à grande échelle. Aujourd'hui, 0 utilisateur → un angle mort ne coûte rien ; au 1er utilisateur, c'est toute la thèse sur les données qui s'effondre si une info santé fuit.
 3. **FACT « functional_impact » pollué : CORRIGÉ (27 oct)** — `value` propre ajoutée au mapping, `produce.ts` cesse d'utiliser la note de debug `detail` comme valeur.
 4. **assertion_status des FACTs = null : CORRIGÉ (27 oct)** — `produceSocleFact` et les mappings (`produce.ts`) posent `assertionStatus: 'explicit'`. La provenance des FACTs voyage (§48bis).
 5. **Rejet net vs réserve non distingué (OUVERT)** : « surtout pas de fleurs coupées » (net) et « les bijoux très peu pour moi » (réserve) → tous deux ENTITY `AVOID`, même force. **L'intensité existe DÉJÀ dans la structure de connaissance ouverte du dictionnaire et l'extraction ne s'en sert pas.** À gagner au **lot d'extension**, avec les garde-fous.
 6. **Récit long → 0 reliquat (OUVERT)** : la réponse introspective longue (peu_savent) ne produit ni trait (correct, §27) ni OpenKnowledge. À voir si le reliquat devrait capter l'anecdote concrète. Au lot d'extension.
+7. **ENTITY : la relation ne voyage PAS jusqu'à la prose — STRUCTUREL (OUVERT, à réparer à l'étape 4)** : la conclusion a dit « tu FAIS du thé Lapsang Souchong » alors que Sophie a dit l'AIMER. Cause : `AttentionBreathTag` ne porte QUE la relation give≈receive de l'attention — PAS la relation ENTITY (LOVE/WANT_TO_VISIT/AVOID) ni l'`entity_label`. Une evidence ENTITY arrive à la respiration comme un construct = slug nu, sans sa relation → le modèle INVENTE le verbe. C'est une invention (la relation déclarée changée en passant dans la prose). **Fix (étape 4)** : l'entrée de génération doit transporter, pour les ENTITY, la `relation` + le label, et le prompt doit reformuler la relation (aime / veut visiter / évite), jamais inventer un verbe.
 
 ## PAS DE PLAFOND DE LONGUEUR — règle verrouillée (corrigé 27 oct)
 
-La longueur d'un texte est une **conséquence de la matière, jamais un réglage** (ni plancher ni plafond). La conclusion de Sophie était tronquée par `max_tokens` de `/api/socle/breath` (`Math.min(…, 600)`) : **violation**. Corrigé : toutes les routes de PROSE (respirations socle/attention/tempérament/lifestyle + conclusion + analyse comparative) passent à un ceiling LARGE et NON contraignant (4096), jamais atteint par une réflexion naturelle ; la profondeur « proportionnelle aux tags » (7b) est portée par le PROMPT, pas par une coupe. **À vérifier par Estelle — routes encore bornées** (bornes par NATURE de la tâche, pas prose libre ; à confirmer ou lever) : `questionnaire-insight` (120), `voice-conversation` (256), `lifestyle/extract-filters` (200), `carnet/identify` (120), `memories/situation` (300/200), `memories/w2-analyse` (80), `candice-note` (300), `confidences` (600), `idea-suggestions` (1200), `suggestions` (1500).
+La longueur d'un texte est une **conséquence de la matière, jamais un réglage** (ni plancher ni plafond). La conclusion de Sophie était tronquée par `max_tokens` de `/api/socle/breath` (`Math.min(…, 600)`) : **violation**. Corrigé : toutes les routes de PROSE (respirations socle/attention/tempérament/lifestyle + conclusion + analyse comparative) passent à **4096**, ceiling LARGE et NON contraignant ; la profondeur « proportionnelle aux tags » (7b) est portée par le PROMPT, pas par une coupe.
+
+**POURQUOI 4096, noir sur blanc** : l'API Anthropic EXIGE un `max_tokens` — « aucune limite » n'existe pas techniquement. 4096 n'est JAMAIS atteint par une prose naturelle, donc il ne tronque rien : **ce n'est pas un paramètre de conception.** Si un texte est un jour tronqué, c'est un **BUG à remonter**, jamais une limite à ajuster — et personne ne le baisse « pour optimiser ». **À vérifier par Estelle — routes encore bornées** (bornes par NATURE de la tâche, pas prose libre ; à confirmer ou lever) : `questionnaire-insight` (120), `voice-conversation` (256), `lifestyle/extract-filters` (200), `carnet/identify` (120), `memories/situation` (300/200), `memories/w2-analyse` (80), `candice-note` (300), `confidences` (600), `idea-suggestions` (1200), `suggestions` (1500).
 
 ## Lot « DÉTECTION ET RESTITUTION DES CONTRADICTIONS » — à construire (nommé 27 oct)
 
-Spec d'Estelle : une contradiction RÉELLE doit être **CONSERVÉE ET EXPOSÉE, jamais réconciliée ni ignorée**. Aujourd'hui RIEN n'est construit pour ça — et sur Sophie le moteur, selon les tirages, soit **lisse** (énonce les deux faces sans voir la tension), soit **réconcilie ad hoc** (« l'attention préparée, pas la surprise imposée »). Les deux violent la spec. **Ce qu'il faut** : (a) une DÉFINITION du conflit entre deux evidences — même construct/axe, directions opposées, forces comparables, et provenances toutes deux déclarées (une inférence contre une déclaration n'est pas un conflit, c'est la préséance qui tranche) ; (b) un passage DÉTERMINISTE qui détecte ces paires (pas le modèle) et les FOURNIT à la prose comme une relation nommée « tension », exactement comme la relation give≈receive est fournie ; (c) une consigne de prose : NOMMER la tension, ne pas la résoudre à la place d'Estelle. Estelle décide QUAND ; moi je dis ce que ça demande.
+Spec d'Estelle, **précisée le 27 oct** — NE PAS confondre deux choses :
+- **LISSER = faute** : énoncer les deux faces sans voir le problème (tirage 1 de Sophie).
+- **RÉCONCILIER AVEC UNE RAISON TIRÉE DE LA MATIÈRE = analyse JUSTE** : « aimer qu'on ait tout prévu pour soi » n'est PAS « aimer qu'on décide à sa place » — le moteur a trouvé la vraie nuance (tirage 2 : « l'attention préparée, pas la surprise imposée »). C'est l'intelligence du produit, à garder.
+- **EXPOSER SANS TRANCHER** : quand deux déclarations sont vraiment incompatibles et qu'AUCUNE lecture ne les concilie, on montre la tension sans décider à la place d'Estelle.
+
+**Règle exacte à écrire dans le lot** : on ne résout JAMAIS en inventant une raison que la matière ne porte pas ; quand la résolution est FONDÉE, on la donne ; quand elle ne l'est pas, on expose la tension. **La vraie difficulté du lot = DISTINGUER les deux** (résolution fondée vs tension irréductible) — dis-le dedans. **Ce qu'il faut** : (a) une DÉFINITION du conflit candidat entre deux evidences — même construct/axe, directions opposées, forces comparables, provenances toutes deux déclarées (une inférence contre une déclaration n'est pas un conflit : la préséance tranche) ; (b) un passage DÉTERMINISTE qui détecte ces paires et les fournit à la prose comme une relation « tension » (comme give≈receive) ; (c) une consigne de prose : tenter une résolution FONDÉE sur la matière ; si rien ne la fonde, NOMMER la tension sans la résoudre. Estelle décide QUAND.
 
 ## Lot distinct « ÉTATS ET RELANCES » — NE PAS FAIRE MAINTENANT
 
@@ -78,6 +90,27 @@ N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'exi
 - Quand un **état difficile** est déclaré, Candice **revient au bout d'un délai** qui dépend du type de contexte, **auprès du PILOTE, jamais du proche**.
 - Estelle pose les **durées** ; la **cadence** passe par le **score de fatigue**.
 - ⚠ À ne pas confondre avec la restitution de TRAITS (toujours autorisée, 7d) : ce lot ne concerne que les ÉTATS périssables.
+
+## DEUX SORTIES : VITRINE & COULISSES (décision 27 oct) — exigence DÈS l'étape 4
+
+Chaque analyse produit DEUX choses pour DEUX lecteurs :
+- **A. LA VITRINE** — ce que la PERSONNE lit : la prose romancée (page profil, fiche d'un proche). C'est ce que l'étape 4 écrit dans `profile_analysis_sections.text`/`chips`.
+- **B. LES COULISSES** — ce qu'ESTELLE voit dans une **console à créer** : la matière brute, lisible pour arbitrer. PAS une vitrine plus détaillée : la matière.
+
+**Exigée à l'étape 4 (pas la console — la MATIÈRE) :** la génération doit **PRODUIRE et CONSERVER** sa matière, pas la jeter. Pour chaque section générée, dans `profile_analysis_sections.generation_material` (JSONB, **migration 94**) :
+- `selection` : les tags FOURNIS au modèle, DANS L'ORDRE — construct, famille, direction/modalité, force, rang, **provenance** (`assertion_status` + `assertion_basis`), **confiance** ;
+- `treated` : ce que le modèle dit avoir TRAITÉ (déjà produit pour le double contrôle omission/invention) ;
+- `facts_used` + `facts_excluded_sensitive` (les FACTs écartés car sensibles — trace) ;
+- (les `source_evidence_ids` restent dans leur colonne).
+Rangé pour qu'une console l'affiche plus tard **sans retoucher la génération**. Si c'est jeté maintenant, on refait l'étape 4.
+
+## CONSOLE DE DÉCISION (section 14 du cahier des charges moteur d'événements) — au point 10 (reco)
+
+L'écran où Estelle voit les coulisses et ACTE : vue d'ensemble du profil, fiche de décision, **signaux mobilisés avec leurs codes canoniques EXACTS**, exclusions avec leur motif, incertitudes, actions humaines (acter / refuser). Vient AVEC le moteur de reco (**point 10**). Le **compteur des générations incomplètes** (7e bis, aujourd'hui provisoirement dans `/parametres/compte`) y **déménage** quand elle existe.
+
+## TRACE DES EXCLUSIONS — exigence du point 10 (pas un raffinement)
+
+Pour que la console ait quelque chose à montrer, le moteur de reco DEVRA enregistrer, pour **chaque candidat écarté**, la RÈGLE qui l'a écarté et les EVIDENCES qui l'ont déclenchée. Inscrit comme exigence du point 10 (rebranchement reco), pas comme un plus.
 
 ## SÉQUENCE DIRECTRICE (décision 24 oct) — rappelée à la fin de CHAQUE rapport, avec l'état de chaque ligne
 

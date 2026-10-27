@@ -32,7 +32,9 @@ INTERDICTIONS ABSOLUES :
 - Ne JAMAIS inférer un trait psychologique (personnalité, besoin, motivation) à partir d'un fait. Une allergie, une passion, une contrainte ne produisent jamais de trait.
 - Ne JAMAIS généraliser un sujet précis : « photographie argentique japonaise » reste tel quel, pas « photographie ».
 - Si la réponse ne porte aucune connaissance exploitable, renvoie une liste VIDE. C'est normal.
-- Tu N'INVENTES rien qui ne soit pas dans la réponse.`;
+- Tu N'INVENTES rien qui ne soit pas dans la réponse.
+
+SENSIBILITÉ (champ \`sensitive\` de chaque unité) : mets \`sensitive: true\` dès qu'une unité touche la SANTÉ, une allergie/intolérance, une situation ou un traitement MÉDICAL, une grossesse, ou une ADRESSE — y compris formulé de façon implicite (« je ne peux pas manger de pain », « depuis mon opération », « mon traitement me fatigue »). Une info sensible est conservée (Candice doit savoir pour agir) mais ne sera JAMAIS nommée dans un texte généré. Dans le doute, \`sensitive: true\`.`;
 
 const TOOL = {
   name: 'units',
@@ -52,6 +54,7 @@ const TOOL = {
             entityType: { type: 'string', enum: ['brand', 'place', 'restaurant', 'hotel', 'product', 'food', 'drink', 'book', 'film_series', 'music', 'artist', 'destination', 'event', 'person'], description: 'ENTITY : sous-type exact' },
             relation: { type: 'string', enum: ['LOVE', 'LIKE', 'CURIOUS', 'WANT_TO_TRY', 'WANT_TO_OWN', 'WANT_TO_VISIT', 'NEUTRAL', 'DISLIKE', 'AVOID'], description: 'ENTITY : relation à la chose (DISLIKE/AVOID pour un rejet)' },
             relation_label: { type: 'string', description: 'OTHER : la nature du lien, en mots (ex. « passion », « collectionne »)' },
+            sensitive: { type: 'boolean', description: 'true si l\'unité touche la SANTÉ, une allergie/intolérance, une situation/traitement MÉDICAL, une grossesse, ou une ADRESSE (même implicite). Dans le doute, true.' },
           },
           required: ['family', 'label'],
         },
@@ -61,7 +64,7 @@ const TOOL = {
   },
 };
 
-interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: string; entityType?: string; relation?: EntityRelation; relation_label?: string; }
+interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: string; entityType?: string; relation?: EntityRelation; relation_label?: string; sensitive?: boolean; }
 
 export interface ExtractResult { readonly evidences: readonly Evidence[]; readonly openKnowledge: readonly OpenKnowledge[] }
 export interface ExtractBuild extends ExtractResult { readonly source: ReturnType<typeof createSourceRecord> | null }
@@ -131,6 +134,8 @@ export async function buildFromFreeText(
         about: input.about, ownerId: input.ownerId, open_knowledge_id: openKnowledgeId(sourceId, normalizeLabel(label)),
         type: 'descriptive', subject: asSubjectId(normalizeLabel(label)), subjectLabel: label, relation: u.relation_label ?? 'évoqué',
         context: 'GLOBAL', source: sourceId, timestamp: input.timestamp, confidence: 'low', assertionStatus: 'inferred',
+        // Sensibilité jugée par le MODÈLE (zéro appel de plus) ; le lexique dans createOpenKnowledge est la 2e couche.
+        ...(u.sensitive ? { sensitive: true } : {}),
       }));
     }
   }
