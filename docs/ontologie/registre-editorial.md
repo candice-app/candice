@@ -103,9 +103,9 @@ N'appartient pas au lot socle. Les états arrivent par deux surfaces **qui n'exi
 
 La fin d'onboarding = **première génération STOCKÉE** de l'analyse de la fiche (`profile_analysis_sections`), pas un écran de conclusion jetable (cf. hsg §48octies). Donc une modification doit faire vivre cette analyse. Trace d'une correction d'une réponse RÉDIGÉE (via « Modifier une partie ») :
 
-1. **Le nouveau gagne-t-il au journal ?** Le verbatim : append (nouveau FACT, ancien conservé) — mais les FACTs **ne se résolvent pas** (liste) → les deux ressortent aujourd'hui. **⚠ ÉTAPE 4** : la génération doit lire l'état COURANT (le nouveau gagne), pas les deux.
+1. **Le nouveau gagne-t-il au journal ?** **✅ RÉSOLU par le marqueur de supersession (27 oct, migration 95).** Verbatim : append (ancien conservé) mais l'ancien FACT est marqué `superseded_at` → **exclu au read** (`readSocleFacts`). Plus de dépendance à `my_profile` : les FACTs se résolvent comme le reste. (Écriture du marqueur à la modification = étape 4 ; lecture déjà câblée.)
 2. **L'extraction repart-elle sur le nouveau texte ?** **✅ OUI** — au blur du champ modifié (`onExtractField`), vérifié dans l'interface.
-3. **L'ancienne inférence niveau 5 traîne-t-elle ?** **⚠ OUI, partiellement.** Même construct → la récence couvre (préséance). Construct DIFFÉRENT (ancien « escalade » vs nouveau « poterie ») → l'ancienne evidence subsiste, aucune collision → **deux inférences contradictoires, l'ancienne peut ressortir.** **ÉTAPE 4** : à la modification, **superséder la source d'extraction de l'ancienne version du champ** (clé = `fieldContext`) pour que seules les inférences courantes comptent ; le journal garde l'ancien (append) mais marqué supersédé / exclu au read.
+3. **L'ancienne inférence niveau 5 traîne-t-elle ?** **✅ RÉSOLU par le marqueur (27 oct).** Les evidences de l'ancienne version (TOUS constructs, même « escalade » différent du nouveau « poterie ») sont marquées `superseded_at` → `readResolvedEvidences` les exclut AVANT la préséance. L'ancienne ne peut plus ressortir. (Écriture = étape 4 : `supersedeSources` marque les lignes des anciennes sources du champ ; lecture déjà câblée + testée.)
 4. **L'analyse STOCKÉE de la fiche se réécrit-elle ?** **⚠ PAS AUJOURD'HUI** (la génération écrit le blob legacy, la fiche ne lit pas les sections). **ÉTAPE 4 — invariant le plus important** : la correction écrit au journal → `needsRegeneration` (par section) → **réécriture paresseuse à l'ouverture de la fiche**. *Une analyse qui ne se met pas à jour quand on se corrige est pire que pas d'analyse.*
 5. **Déclencheur = écriture au JOURNAL, pas franchissement d'étape ?** **✅ OUI, par conception** (`needsRegeneration` keye sur `created_at > generated_at`, `staleness.ts`). Une modif hors parcours n'avance aucune étape mais écrit au journal → périme les sections touchées. À **câbler** à l'étape 4 (la fiche doit appeler `needsRegeneration` + régénérer).
 
@@ -131,6 +131,8 @@ L'écran où Estelle voit les coulisses et ACTE : vue d'ensemble du profil, fich
 ## TRACE DES EXCLUSIONS — exigence du point 10 (pas un raffinement)
 
 Pour que la console ait quelque chose à montrer, le moteur de reco DEVRA enregistrer, pour **chaque candidat écarté**, la RÈGLE qui l'a écarté et les EVIDENCES qui l'ont déclenchée. Inscrit comme exigence du point 10 (rebranchement reco), pas comme un plus.
+
+**Déjà servi en partie (27 oct)** : les exclusions par **CORRECTION** sont tracées gratuitement par le marqueur de supersession (`superseded_at` + `superseded_by`, migration 95) — « pourquoi cette ligne ne compte plus ? → remplacée par la source X à la date T ». La console lira ce marqueur ; restent à tracer les exclusions par RÈGLE DE RECO (candidats écartés), au point 10.
 
 ## SÉQUENCE DIRECTRICE (décision 24 oct) — rappelée à la fin de CHAQUE rapport, avec l'état de chaque ligne
 

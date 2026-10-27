@@ -91,12 +91,13 @@ export async function readContactTags(client: ContactTagsReadClient, userId: str
 export async function readContactFacts(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
-    .select('fact_type, value, visibility_derived, assertion_status')
+    .select('fact_type, value, visibility_derived, assertion_status, superseded_at')
     .eq('user_id', userId)
     .eq('about_id', contactId);
   if (error) throw new BreathReadError(`knowledge_facts (contact) read: ${error.message}`);
-  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null };
-  return ((data ?? []) as Row[]).filter((r) => r.visibility_derived !== 'internal_only').map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status }));
+  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null };
+  // superseded_at non null = FACT corrigé (remplacé) → exclu de la prose, comme les evidences (§48septies).
+  return ((data ?? []) as Row[]).filter((r) => r.visibility_derived !== 'internal_only' && !r.superseded_at).map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status }));
 }
 
 /** Dérive la relation give≈receive DÉTERMINISTIQUEMENT depuis les tags (jamais le modèle). */
@@ -144,12 +145,13 @@ export interface SocleFact {
 export async function readSocleFacts(client: TagsReadClient, userId: string): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
-    .select('fact_type, value, visibility_derived, assertion_status')
+    .select('fact_type, value, visibility_derived, assertion_status, superseded_at')
     .eq('user_id', userId);
   if (error) throw new BreathReadError(`knowledge_facts read: ${error.message}`);
-  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null };
+  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null };
+  // superseded_at non null = FACT corrigé (remplacé) → exclu de la prose, comme les evidences (§48septies).
   return ((data ?? []) as Row[])
-    .filter((r) => r.visibility_derived !== 'internal_only')
+    .filter((r) => r.visibility_derived !== 'internal_only' && !r.superseded_at)
     .map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status }));
 }
 

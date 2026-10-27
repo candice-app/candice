@@ -40,7 +40,7 @@ export function resolveJournalRows<R extends { target_construct: string; asserti
 // construct, n'alimente aucun écran — ce n'est pas une surface de masquage.)
 
 const EVIDENCE_COLUMNS =
-  'target_family, target_construct, direction, modality, strength, rank, assertion_basis, assertion_status, confidence, context, created_at';
+  'target_family, target_construct, direction, modality, strength, rank, assertion_basis, assertion_status, confidence, context, created_at, superseded_at';
 
 export class JournalReadError extends Error {}
 
@@ -57,6 +57,7 @@ export interface ResolvedEvidenceRow {
   confidence: string | null;
   context: string;
   created_at: string;
+  superseded_at?: string | null; // non null = corrigée (remplacée), exclue de TOUTE restitution (§48septies)
 }
 
 type EvidenceQueryResult = { data: unknown[] | null; error: { message: string } | null };
@@ -81,6 +82,9 @@ export async function readResolvedEvidences(
   const { data, error } = await (opts.aboutId ? q.eq('about_id', opts.aboutId) : q);
   if (error) throw new JournalReadError(`knowledge_evidences read: ${error.message}`);
   let rows = (data ?? []) as ResolvedEvidenceRow[];
+  // SUPERSESSION (§48septies) : une evidence CORRIGÉE (superseded_at non null) est REMPLACÉE — exclue de
+  // toute restitution, AVANT même la préséance. Le journal la garde ; aucun lecteur ne la rend.
+  rows = rows.filter((r) => !r.superseded_at);
   if (opts.contexts) {
     const set = new Set(opts.contexts);
     rows = rows.filter((r) => set.has(r.context));
