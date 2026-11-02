@@ -1,9 +1,66 @@
 // SUPERSESSION (décision 27 oct) — marqueur explicite : une ligne corrigée est REMPLACÉE, exclue de TOUTE
 // restitution (préséance, FACTs, et HISTORIQUE — fate b des trois sorts : corrigé = nulle part).
 import { describe, expect, it, vi } from 'vitest';
-import { supersedeSources } from '../../knowledge-write/supersede';
+import { supersedeSources, liveSelfSourceIdsForQuestion } from '../../knowledge-write/supersede';
 import { readResolvedEvidences } from '../preseance';
 import { readSocleFacts, type TagsReadClient } from '../../questionnaire/breath-tags';
+
+// ── Identification des anciennes sources : portée (question stable + même déclarant + même voie) ──
+describe('liveSelfSourceIdsForQuestion — portée de la supersession', () => {
+  const lookup = (rows: unknown[]) => ({ from: () => ({ select: () => ({ match: async () => ({ data: rows, error: null }) }) }) });
+
+  it('⚠ CÔTE À CÔTE (cas Julie) : une correction du pilote ne supersède JAMAIS la source d\'un tiers', async () => {
+    const rows = [
+      { id: 'self-verbatim', rapporteur: null, source_type: 'onboarding_open' },      // pilote, texte libre
+      { id: 'self-extract',  rapporteur: null, source_type: 'extraction_inferred' },  // pilote, inférence
+      { id: 'julie',         rapporteur: 'julie-id', source_type: 'reported_by_relative' }, // Julie SUR le pilote
+    ];
+    const ids = await liveSelfSourceIdsForQuestion(lookup(rows) as never,
+      { ownerId: 'u', aboutKind: 'account', aboutId: 'u', questionCode: 'singularity.adore_faire' });
+    expect(ids.sort()).toEqual(['self-extract', 'self-verbatim']); // Julie ABSENTE
+    expect(ids).not.toContain('julie');
+  });
+
+  it('corrections SUCCESSIVES : toutes les versions self vivantes sont visées (la 2ᵉ supersède l\'originale ET la 1ʳᵉ)', async () => {
+    const rows = [
+      { id: 'v0', rapporteur: null, source_type: 'onboarding_open' },
+      { id: 'v1', rapporteur: null, source_type: 'onboarding_open' }, // 1ʳᵉ correction
+      { id: 'e0', rapporteur: null, source_type: 'extraction_inferred' },
+    ];
+    const ids = await liveSelfSourceIdsForQuestion(lookup(rows) as never,
+      { ownerId: 'u', aboutKind: 'account', aboutId: 'u', questionCode: 'singularity.adore_faire' });
+    expect(ids.sort()).toEqual(['e0', 'v0', 'v1']);
+  });
+
+  it('autre VOIE (conversationnel) : exclu — une correction d\'onboarding ne supersède pas un autre canal', async () => {
+    const rows = [
+      { id: 'onb', rapporteur: null, source_type: 'onboarding_open' },
+      { id: 'conv', rapporteur: null, source_type: 'conversation' }, // même personne, AUTRE voie
+    ];
+    const ids = await liveSelfSourceIdsForQuestion(lookup(rows) as never,
+      { ownerId: 'u', aboutKind: 'account', aboutId: 'u', questionCode: 'singularity.adore_faire' });
+    expect(ids).toEqual(['onb']);
+  });
+
+  it('DEUX QUESTIONS, DEUX factTypes : corriger l\'une n\'effleure PAS l\'autre (preuve point 1)', async () => {
+    // Faux client qui RESPECTE le filtre question_code (comme .match en SQL).
+    const db = [
+      { id: 'A-verb', rapporteur: null, source_type: 'onboarding_open', question_code: 'singularity.adore_faire' },
+      { id: 'A-extr', rapporteur: null, source_type: 'extraction_inferred', question_code: 'singularity.adore_faire' },
+      { id: 'B-verb', rapporteur: null, source_type: 'onboarding_open', question_code: 'singularity.evite_deteste' },
+    ];
+    const matchClient = { from: () => ({ select: () => ({ match: async (q: Record<string, string>) => ({ data: db.filter((r) => r.question_code === q.question_code), error: null }) }) }) };
+    const ids = await liveSelfSourceIdsForQuestion(matchClient as never,
+      { ownerId: 'u', aboutKind: 'account', aboutId: 'u', questionCode: 'singularity.adore_faire' });
+    expect(ids.sort()).toEqual(['A-extr', 'A-verb']); // seulement la question corrigée
+    expect(ids).not.toContain('B-verb'); // l'autre question, intacte
+  });
+
+  it('clé VIDE → throw (jamais de requête sur null qui apparierait tout)', async () => {
+    await expect(liveSelfSourceIdsForQuestion(lookup([]) as never,
+      { ownerId: 'u', aboutKind: 'account', aboutId: 'u', questionCode: '' })).rejects.toThrow(/questionCode vide/);
+  });
+});
 
 // ── Écriture : marque les 3 tables restituables, exclut la nouvelle source, bruyant sur erreur ──
 describe('supersedeSources (écriture du marqueur)', () => {

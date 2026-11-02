@@ -93,7 +93,7 @@ async function singularityFactsAndBreath(
         await fetch("/api/knowledge/extract-free-text", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ entries: [{ rawText: q17.value, fieldContext: q17.spec.questionText }], timestamp: ts }),
+          body: JSON.stringify({ entries: [{ rawText: q17.value, fieldContext: q17.spec.questionText, questionCode: q17.spec.factType }], timestamp: ts }),
         });
       } catch (e) {
         console.error("[QuestionnaireFlow] extraction q17 a échoué :", e);
@@ -726,10 +726,12 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             userId, entries: [{ spec, value: rawText }], timestamp: new Date().toISOString(),
           });
         } : undefined}
-        onExtractField={socleCanonicalSingularity ? async (fieldContext, rawText) => {
+        onExtractField={socleCanonicalSingularity ? async (fieldKey, fieldContext, rawText) => {
+          // factType = IDENTIFIANT STABLE de la question, envoyé explicitement (plus de dérivation par libellé).
+          const questionCode = SINGULARITY_FACT_FIELDS[fieldKey]?.factType;
           const res = await fetch("/api/knowledge/extract-free-text", {
             method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ entries: [{ rawText, fieldContext }], timestamp: new Date().toISOString() }),
+            body: JSON.stringify({ entries: [{ rawText, fieldContext, questionCode }], timestamp: new Date().toISOString() }),
           });
           const d = (await res.json().catch(() => ({ failed: 1 }))) as { failed?: number };
           if (!res.ok || (d.failed ?? 0) > 0) throw new Error("extraction échouée");

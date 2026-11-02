@@ -110,12 +110,12 @@ async function main() {
   const about = accountAbout(asUserId(userId));
   const ownerId = asUserId(userId);
   const toExtract = [
-    ...Object.entries(FREE).map(([k, value]) => ({ fieldContext: SINGULARITY_FACT_FIELDS[k].questionText, value })),
-    { fieldContext: Q17_FACT_FIELD.questionText, value: Q17_VALUE },
+    ...Object.entries(FREE).map(([k, value]) => ({ fieldContext: SINGULARITY_FACT_FIELDS[k].questionText, questionCode: SINGULARITY_FACT_FIELDS[k].factType, value })),
+    { fieldContext: Q17_FACT_FIELD.questionText, questionCode: Q17_FACT_FIELD.factType, value: Q17_VALUE },
   ].filter((e) => e.value.trim());
   for (const e of toExtract) {
     try {
-      const r = await extractFreeText(client as never, { about, ownerId, rawText: e.value, fieldContext: e.fieldContext, timestamp: new Date().toISOString() });
+      const r = await extractFreeText(client as never, { about, ownerId, rawText: e.value, fieldContext: e.fieldContext, timestamp: new Date().toISOString(), questionCode: e.questionCode });
       console.log(`[extract] ${e.fieldContext.slice(0, 38).padEnd(38)} → ${r.evidences.length} evidence(s), ${r.openKnowledge.length} open`);
     } catch (err) {
       console.error(`[extract] ÉCHEC ${e.fieldContext} :`, (err as Error).message);

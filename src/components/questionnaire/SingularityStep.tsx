@@ -34,7 +34,7 @@ interface Props {
   // `onExtractField` lance l'extraction APRÈS (throw si échec) ; `loadExtractedState` renvoie le déjà-fait
   // du journal (verbatim / extraction) pour le rattrapage au montage.
   onCommitField?: (fieldKey: string, fieldContext: string, rawText: string) => Promise<void>;
-  onExtractField?: (fieldContext: string, rawText: string) => Promise<void>;
+  onExtractField?: (fieldKey: string, fieldContext: string, rawText: string) => Promise<void>;
   loadExtractedState?: () => Promise<{ committed?: Iterable<string>; done?: Iterable<string> }>;
 }
 
@@ -191,7 +191,7 @@ export default function SingularityStep({ onDone, initialAnswers, onBack, onExit
     fields: extractionOn ? EXTRACT_FIELDS : [],
     valueOf: (k) => (answers[k as keyof SingularityAnswers] as string) ?? "",
     commit: onCommitField ?? (async () => {}),
-    extract: onExtractField ?? (async () => {}),
+    extract: onExtractField ?? (async () => {}),  // (fieldKey, fieldContext, rawText) — fieldKey → factType stable pour la supersession
     loadState: loadExtractedState,
   });
   // Props d'extraction pour un champ : état courant + handler de blur (ou rien si inerte).

@@ -75,7 +75,7 @@ export interface ExtractBuild extends ExtractResult { readonly source: ReturnTyp
  */
 export async function extractFreeText(
   client: WriteClient,
-  input: { about: AboutRef; ownerId: UserId; rawText: string; fieldContext: string; timestamp: string },
+  input: { about: AboutRef; ownerId: UserId; rawText: string; fieldContext: string; timestamp: string; questionCode?: string },
 ): Promise<ExtractResult> {
   const built = await buildFromFreeText(input);
   if (built.source) await persistKnowledge(client, { source: built.source, evidences: [...built.evidences], facts: [], openKnowledge: [...built.openKnowledge] });
@@ -87,7 +87,7 @@ export async function extractFreeText(
  * §27 étapes 1-2-4-5-6. Renvoie aussi la source (null si rien à extraire).
  */
 export async function buildFromFreeText(
-  input: { about: AboutRef; ownerId: UserId; rawText: string; fieldContext: string; timestamp: string },
+  input: { about: AboutRef; ownerId: UserId; rawText: string; fieldContext: string; timestamp: string; questionCode?: string },
 ): Promise<ExtractBuild> {
   const text = input.rawText.trim();
   if (!text) return { source: null, evidences: [], openKnowledge: [] }; // rien à extraire → zéro
@@ -107,6 +107,7 @@ export async function buildFromFreeText(
   const source = createSourceRecord({
     about: input.about, ownerId: input.ownerId, id: sourceId,
     sourceType: 'extraction_inferred', questionText: input.fieldContext, rawText: text, timestamp: input.timestamp,
+    ...(input.questionCode ? { questionCode: input.questionCode } : {}), // IDENTIFIANT STABLE (= factType du champ) — même clé que le verbatim, survit au changement de libellé
   });
   const common = {
     about: input.about, ownerId: input.ownerId, source_id: sourceId, source_type: 'extraction_inferred' as const,

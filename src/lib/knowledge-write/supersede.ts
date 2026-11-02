@@ -24,6 +24,50 @@ export interface SupersedeClient {
 
 export class SupersedeError extends Error {}
 
+// ─────────────────────────────────────────────────────────────────────────────────────────────────────
+// IDENTIFICATION DES ANCIENNES SOURCES À SUPERSÉDER (décision Estelle 28 oct) — portée VERROUILLÉE :
+//   même IDENTIFIANT STABLE de question (`question_code`, pas le libellé)
+//   + MÊME PERSONNE DÉCLARANTE (self : `about` identique ET `rapporteur` nul)
+//   + MÊME VOIE d'acquisition (texte libre self : source_type ∈ {onboarding_open, extraction_inferred}).
+// Une correction ne supersède QUE ce que la MÊME personne a déclaré par le MÊME chemin — jamais au-delà :
+//   1. clé = question_code (stable) → survit à la réécriture d'un libellé (refonte de la banque) ;
+//   2. TOUTES les versions vivantes (corrections successives : la 2ᵉ supersède l'originale ET la 1ʳᵉ) ;
+//   3. ⚠ CÔTE À CÔTE : une source sur le même sujet venue d'AUTRUI (Julie, `rapporteur` renseigné /
+//      source_type reported_by_relative / declared_via_relative) est EXCLUE. Les faits du pilote sont
+//      toujours conservés+reportés, c'est la PRÉSÉANCE qui décide ce qui s'affiche — jamais une supersession.
+
+const SELF_FREETEXT_SOURCE_TYPES = new Set(['onboarding_open', 'extraction_inferred']);
+
+interface SourceRow { id: string; rapporteur: string | null; source_type: string }
+export interface SourceLookupClient {
+  from(table: string): {
+    select(cols: string): {
+      match(q: Record<string, string>): Promise<{ data: unknown[] | null; error: { message: string } | null }>;
+    };
+  };
+}
+
+/**
+ * Renvoie les source_id des anciennes versions d'un champ RÉDIGÉ à superséder lors d'une correction du
+ * PILOTE sur lui-même. Scope : (user_id, about, question_code) en base, puis filtre `rapporteur` nul ET
+ * voie self free-text. Exclut par construction toute source d'un tiers (côte à côte).
+ */
+export async function liveSelfSourceIdsForQuestion(
+  client: SourceLookupClient,
+  input: { ownerId: string; aboutKind: string; aboutId: string; questionCode: string },
+): Promise<string[]> {
+  // JAMAIS requêter une clé vide : un question_code vide apparierait tous les null entre eux et supersèderait
+  // au hasard. Une correction porte toujours un identifiant stable — sinon c'est un bug, pas un cas à avaler.
+  if (!input.questionCode?.trim()) throw new SupersedeError('liveSelfSourceIdsForQuestion: questionCode vide (clé de supersession manquante)');
+  const { data, error } = await client.from('knowledge_sources')
+    .select('id, rapporteur, source_type')
+    .match({ user_id: input.ownerId, about_kind: input.aboutKind, about_id: input.aboutId, question_code: input.questionCode });
+  if (error) throw new SupersedeError(`lookup sources: ${error.message}`);
+  return ((data ?? []) as SourceRow[])
+    .filter((s) => (s.rapporteur == null) && SELF_FREETEXT_SOURCE_TYPES.has(s.source_type)) // self + même voie ; exclut le côte à côte
+    .map((s) => s.id);
+}
+
 /** Tables restituables portant le marqueur (migration 95). Les trois sont marquées ensemble. */
 const SUPERSEDABLE_TABLES = ['knowledge_evidences', 'knowledge_facts', 'knowledge_open_knowledge'] as const;
 

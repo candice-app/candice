@@ -109,6 +109,7 @@ export async function produceSocleFact(
       ownerId,
       id: sourceId,
       sourceType: 'onboarding_open', // texte libre
+      questionCode: spec.factType, // IDENTIFIANT STABLE de la question (factType namespacé) — survit au changement de libellé ; clé de la supersession
       questionText: spec.questionText, // libellé EXACT du composant
       rawText: text, // verbatim, jamais tronqué/normalisé
       timestamp: input.timestamp,
