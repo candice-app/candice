@@ -1,22 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { siteMetadata, schemaOrg } from "./metadata";
 import CookieBanner from "@/components/CookieBanner";
 import ScrollMemory from "@/components/layout/ScrollMemory";
 
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  weight: "variable",
-  style: ["normal", "italic"],
-  axes: ["opsz"],
+// Polices AUTO-HÉBERGÉES (woff2 dans src/app/fonts) — le build ne dépend PLUS du réseau Google Fonts.
+// Mêmes variables CSS qu'avant (--font-fraunces / --font-dm-sans) → aucun changement côté app.
+// Fichiers = variantes variables @fontsource (Fraunces standard : wght+opsz, normal+italic ; DM Sans : wght).
+const fraunces = localFont({
+  src: [
+    { path: "./fonts/fraunces-latin-standard-normal.woff2", style: "normal" },
+    { path: "./fonts/fraunces-latin-standard-italic.woff2", style: "italic" },
+  ],
   variable: "--font-fraunces",
   display: "swap",
 });
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
+const dmSans = localFont({
+  src: "./fonts/dm-sans-latin-wght-normal.woff2",
   variable: "--font-dm-sans",
   display: "swap",
 });
