@@ -13,7 +13,7 @@
 --     ajouté est gardé pour l'idempotence : colonnes en ADD COLUMN IF NOT EXISTS, contraintes via un bloc
 --     qui vérifie pg_constraint d'abord (PostgreSQL n'a pas d'ADD CONSTRAINT IF NOT EXISTS).
 --
--- Additive. Aucune donnée touchée : aucune supersession n'a encore tourné (étape 4 non livrée), toutes les
+-- Additive. Aucune donnée touchée : aucune supersession n'a encore tourné (ligne 4 du chantier non livrée), toutes les
 -- lignes ont les deux colonnes nulles → la contrainte passe sur l'existant.
 
 BEGIN;
