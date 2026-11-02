@@ -15,6 +15,7 @@ export interface AttentionBreathTag {
   readonly rank: number | null;
   readonly basis: string; // provenance : assertion_basis
   readonly confidence: string | null; // confiance de la donnée — VOYAGE jusqu'au modèle (7b : la fermeté suit la confiance)
+  readonly sourceId: string; // knowledge_sources.id de l'evidence GAGNANTE (préséance) — traçabilité à l'affirmation (ligne 4)
 }
 
 /**
@@ -58,6 +59,7 @@ export async function readSocleTags(client: TagsReadClient, userId: string): Pro
     strength: r.strength,
     rank: r.rank,
     basis: r.assertion_basis, confidence: r.confidence,
+    sourceId: r.source_id,
   }));
   return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }
@@ -82,7 +84,7 @@ export async function readContactTags(client: ContactTagsReadClient, userId: str
   const tags: AttentionBreathTag[] = rows.map((r) => ({
     family: r.target_family, construct: r.target_construct,
     ...(r.direction ? { direction: r.direction } : {}), ...(r.modality ? { modality: r.modality } : {}),
-    strength: r.strength, rank: r.rank, basis: r.assertion_basis, confidence: r.confidence,
+    strength: r.strength, rank: r.rank, basis: r.assertion_basis, confidence: r.confidence, sourceId: r.source_id,
   }));
   return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }
@@ -91,13 +93,13 @@ export async function readContactTags(client: ContactTagsReadClient, userId: str
 export async function readContactFacts(client: ContactTagsReadClient, userId: string, contactId: string): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
-    .select('fact_type, value, visibility_derived, assertion_status, superseded_at')
+    .select('fact_type, value, visibility_derived, assertion_status, superseded_at, source')
     .eq('user_id', userId)
     .eq('about_id', contactId);
   if (error) throw new BreathReadError(`knowledge_facts (contact) read: ${error.message}`);
-  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null };
+  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null; source?: string | null };
   // superseded_at non null = FACT corrigé (remplacé) → exclu de la prose, comme les evidences (§48septies).
-  return ((data ?? []) as Row[]).filter((r) => r.visibility_derived !== 'internal_only' && !r.superseded_at).map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status }));
+  return ((data ?? []) as Row[]).filter((r) => r.visibility_derived !== 'internal_only' && !r.superseded_at).map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status, sourceId: r.source ?? null }));
 }
 
 /** Dérive la relation give≈receive DÉTERMINISTIQUEMENT depuis les tags (jamais le modèle). */
@@ -135,6 +137,7 @@ export interface SocleFact {
   readonly factType: string;
   readonly value: string;
   readonly assertionStatus: string | null; // 'explicit' | 'inferred' | null
+  readonly sourceId: string | null; // knowledge_sources.id (colonne `source`) — traçabilité à l'affirmation (ligne 4) ; null = trou de source
 }
 
 /**
@@ -145,14 +148,14 @@ export interface SocleFact {
 export async function readSocleFacts(client: TagsReadClient, userId: string): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
-    .select('fact_type, value, visibility_derived, assertion_status, superseded_at')
+    .select('fact_type, value, visibility_derived, assertion_status, superseded_at, source')
     .eq('user_id', userId);
   if (error) throw new BreathReadError(`knowledge_facts read: ${error.message}`);
-  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null };
+  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null; source?: string | null };
   // superseded_at non null = FACT corrigé (remplacé) → exclu de la prose, comme les evidences (§48septies).
   return ((data ?? []) as Row[])
     .filter((r) => r.visibility_derived !== 'internal_only' && !r.superseded_at)
-    .map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status }));
+    .map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status, sourceId: r.source ?? null }));
 }
 
 /**
@@ -174,6 +177,7 @@ export async function readAttentionTags(client: TagsReadClient, userId: string):
     strength: r.strength,
     rank: r.rank,
     basis: r.assertion_basis, confidence: r.confidence,
+    sourceId: r.source_id,
   }));
   return { tags, tagCount: tags.length, ...deriveAttentionRelation(tags) };
 }

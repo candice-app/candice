@@ -40,12 +40,13 @@ export function resolveJournalRows<R extends { target_construct: string; asserti
 // construct, n'alimente aucun écran — ce n'est pas une surface de masquage.)
 
 const EVIDENCE_COLUMNS =
-  'target_family, target_construct, direction, modality, strength, rank, assertion_basis, assertion_status, confidence, context, created_at, superseded_at';
+  'source_id, target_family, target_construct, direction, modality, strength, rank, assertion_basis, assertion_status, confidence, context, created_at, superseded_at';
 
 export class JournalReadError extends Error {}
 
 /** Une evidence résolue, telle que la rendent les lecteurs (colonnes snake_case de la base). */
 export interface ResolvedEvidenceRow {
+  source_id: string; // knowledge_sources.id — unité de traçabilité (supersession/autorisation/récence)
   target_family: string;
   target_construct: string;
   direction?: string;

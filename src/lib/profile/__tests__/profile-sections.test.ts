@@ -5,7 +5,7 @@ import { selectSectionInputs, verifySection, SECTION_SPECS, consumedFamilies } f
 import type { AttentionBreathTag, SocleFact } from '../../questionnaire/breath-tags';
 
 const tag = (family: string, construct: string, strength: string, rank: number | null, extra: Partial<AttentionBreathTag> = {}): AttentionBreathTag =>
-  ({ family, construct, strength, rank, basis: 'self_report', confidence: 'high', ...extra });
+  ({ family, construct, strength, rank, basis: 'self_report', confidence: 'high', sourceId: `src-${construct}`, ...extra });
 
 describe('selectSectionInputs — le modèle n\'élit rien (sélection + ordre déterministes)', () => {
   const tags: AttentionBreathTag[] = [
@@ -16,8 +16,8 @@ describe('selectSectionInputs — le modèle n\'élit rien (sélection + ordre d
     tag('GUARDRAIL', 'GRD_PUBLIC_EXPOSURE', 'strong', null),
   ];
   const facts: SocleFact[] = [
-    { factType: 'singularity.marques_lieux', value: 'Aesop, Le Bon Marché', assertionStatus: 'explicit' },
-    { factType: 'singularity.envies_reves', value: 'apprendre la céramique', assertionStatus: 'explicit' },
+    { factType: 'singularity.marques_lieux', value: 'Aesop, Le Bon Marché', assertionStatus: 'explicit', sourceId: 'src-marques' },
+    { factType: 'singularity.envies_reves', value: 'apprendre la céramique', assertionStatus: 'explicit', sourceId: 'src-reves' },
   ];
   const inputs = selectSectionInputs(tags, facts);
   const byKey = new Map(inputs.map((i) => [i.key, i]));
