@@ -2794,43 +2794,7 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
    *Verrouille : ce qui est généré s'affiche vraiment, et la fiche de Sophie devient regardable. C'est bien une étape distincte de la 4 : la 4 produit, la 5 montre.*
 6. **Écrans 2→5, 6→11, 14, 12/13, et la recommandation au minimum vital.**
    *Verrouille : le produit se traverse d'un bout à l'autre.*
-   **LISTE DE CONTRÔLE — lecteurs runtime de l'ancien stockage à basculer sur le JOURNAL** (établie par recensement du code le 2 nov, PAS de mémoire ; la **fiche proche EN PREMIER**, cf. §3.6 ; cochés un par un ; **condition d'entrée de la ligne 7a**). **Le compte n'est pas « 14 » — ce chiffre n'avait jamais été vérifié. Le recensement donne 33 points d'entrée** qui font un `.select()` sur `my_profile` / `questionnaire_responses` touchant une colonne de connaissance legacy (ou `select('*')`, marqué `[*]` → lit toute la ligne, dépendance connaissance à confirmer au câblage). Les libs de transformation (sheet-data, v2-data, reconstruct/canonical/produce-*) sont **en aval** — elles reçoivent la ligne, ne requêtent pas — donc hors de cette liste ; elles suivent leurs appelants.
-   *Pages / écrans :*
-   - [ ] `src/app/contacts/[id]/page.tsx` — **fiche proche (EN PREMIER)** `[*]`
-   - [ ] `src/app/moi/page.tsx`
-   - [ ] `src/app/moi/partage/page.tsx`
-   - [ ] `src/app/moi/partage/apercu/page.tsx`
-   - [ ] `src/app/fiche/[consentId]/page.tsx`
-   - [ ] `src/app/recherche/page.tsx`
-   - [ ] `src/app/proche/[id]/page.tsx`
-   - [ ] `src/app/dashboard/page.tsx` `[*]`
-   - [ ] `src/app/moi/questionnaire/page.tsx` `[*]`
-   - [ ] `src/app/moi/questionnaire/QuestionnaireFlow.tsx`
-   - [ ] `src/app/contacts/[id]/questionnaire/page.tsx` `[*]`
-   - [ ] `src/components/dashboard/OnboardingProgressCard.tsx` `[*]`
-   - [ ] `src/components/questionnaire/QuestionnaireForm.tsx`
-   - [ ] `src/app/parametres/compte/page.tsx`
-   - [ ] `src/app/parametres/compte/CompteActions.tsx`
-   *Routes API :*
-   - [ ] `src/app/api/recommendations/generate/route.ts` — **moteur de reco au STRICT MINIMUM** : va chercher la même chose dans le journal, **pas de réécriture** (chantier à part)
-   - [ ] `src/app/api/invite/nudge/route.ts`
-   - [ ] `src/app/api/profile-view/lookup/route.ts`
-   - [ ] `src/app/api/profile-view/request/route.ts`
-   - [ ] `src/app/api/share-link/create/route.ts`
-   - [ ] `src/app/api/discovery/answer/route.ts`
-   - [ ] `src/app/api/profile/practical/route.ts`
-   - [ ] `src/app/api/emails/questionnaire-invite/route.ts`
-   - [ ] `src/app/api/confidences/route.ts` — `my_profile` + `questionnaire_responses`
-   - [ ] `src/app/api/profil/submit/route.ts` — `questionnaire_responses`
-   - [ ] `src/app/api/profile-updates/[id]/route.ts` — `questionnaire_responses`
-   - [ ] `src/app/api/analyse/route.ts` `[*]`
-   - [ ] `src/app/api/account/export/route.ts` `[*]`
-   - [ ] `src/app/api/account/export-download/route.ts` `[*]`
-   - [ ] `src/app/api/cron/detect-and-generate/route.ts` `[*]`
-   *Libs / moteurs (requêtent directement) :*
-   - [ ] `src/lib/profile/generateProfileAnalysis.ts` — le plus gros lecteur
-   - [ ] `src/lib/discovery/engine.ts` `[*]`
-   - [ ] `src/lib/signals/generator.ts` — `my_profile` + `questionnaire_responses` `[*]`
+   — La **liste de contrôle des lecteurs de l'ancien stockage** (condition d'entrée de la ligne 7a ; la **fiche proche d'abord**) est **factuelle** : son énumération nominative, tenue à jour, vit dans le relevé de l'état du code → **`docs/ontologie/releve-etat-du-code.md`** (elle inclut les lecteurs du blob `profile_analysis`, remplacé en ligne 4).
 7. **SUPPRESSION de l'ancien chemin, EN DEUX TEMPS.** *(redictée Estelle, 2 nov)*
    **Condition d'entrée : les 14 lecteurs sont passés au journal** (liste de contrôle de la ligne 6 — aucune suppression avant).
    - **7a** — le code de l'ancien chemin disparaît en **UN SEUL commit** : ancien questionnaire, `saveStage*`, écriture en double, tous les flags, routes de respiration legacy, maps d'affichage inutiles, toutes les lectures des anciennes colonnes. **AUCUNE colonne supprimée en base. Elles restent inertes.**
