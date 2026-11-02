@@ -2778,7 +2778,9 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
 
 **ORDRE : porté par la SÉQUENCE DU CHANTIER ci-dessous, nulle part ailleurs.** L'ancien bloc « ORDRE NON NÉGOCIABLE / ÉTAPE 0/1/2 » a été **absorbé (décision Estelle, 2 nov)** — plus aucun numéro réemployé dans ce document. Sa matière vit désormais DANS les lignes qu'elle contraint : la bascule des 14 lecteurs sur le journal = **liste de contrôle de la ligne 6** (la fiche proche d'abord, cf. §3.6) ; « lire avant de supprimer » = **condition d'entrée de la ligne 7** ; la suppression **en deux temps** (code puis migration de drop) = **lignes 7a / 7b**. (L'ex-étape 0 — « refaire l'onboarding avec double-write » — est morte : Sophie peuple le journal sans remplissage réel (ligne 3), le remplissage réel est la ligne 11, et la ligne 7 supprime `my_profile` avant la 11, donc aucun double-write ne survit.)
 
-#### SÉQUENCE DU CHANTIER — 11 LIGNES (dictée par Estelle le 2 nov — transcription VERBATIM, autorité)
+#### LA SÉQUENCE DU CHANTIER (dictée par Estelle le 2 nov — transcription VERBATIM, autorité)
+
+> *(Titre sans compte, décision Estelle 2 nov : la colonne vertébrale fait onze, mais avec 7bis, 7ter et LE RELAIS la liste porte quatorze choses — un chiffre faux dans un titre est pire que pas de chiffre.)*
 
 > ⚠ **UNE SEULE SÉQUENCE DE CHANTIER DANS CE DOCUMENT.** Elle se cite **« ligne N du chantier »**. Depuis le 2 nov, plus aucun numéro n'est réemployé pour un plan concurrent (l'ex-« ORDRE NON NÉGOCIABLE / ÉTAPE 0/1/2 » a été absorbé ici). Le mot « étape » employé ailleurs dans ce document ne désigne JAMAIS cette séquence — il renvoie à des jauges locales distinctes (p. ex. la progression de l'onboarding affichée à l'utilisateur : la jauge de connaissance, « mince tôt, dense tard »).
 

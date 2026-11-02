@@ -33,7 +33,7 @@ Nature : spécification UX, UI, contenu éditorial et règles produit. Ce docume
 
 Tu es simultanément Head of Product Design, UX Writing Lead, Design Systems Lead et architecte d'intégration de Candice. Ta mission est d'enrichir et finaliser l'interface existante, et non de créer un profil simplifié. Tu dois examiner le code réel et les fichiers de référence AVANT toute modification. Produis une implémentation fidèle, élégante, cohérente, progressive, intégrée aux données existantes.
 
-0. Sources de vérité et hiérarchie
+## 0. Sources de vérité et hiérarchie
 
 1. Maquette Profil V2 — référence gelée.html : référence visuelle et structurelle impérative. Conserver ses graphiques, analyses, barres, cartes, catégories, marqueurs, blocs « Lire plus », « Tes mondes », « Ce qui marche avec toi », « Ton territoire idéal », « Ton univers », « Infos pratiques », « Pour mieux viser », et la navigation. Aucun remplacement par des cartes génériques minimalistes. Examiner aussi le code de l'application actuelle : la maquette n'est pas un prétexte pour écraser les améliorations déjà intégrées.
 
@@ -49,7 +49,7 @@ Tu es simultanément Head of Product Design, UX Writing Lead, Design Systems Lea
 
 Règle absolue : conserver l'architecture riche du profil existant, ses visualisations et catégories ; réviser leur sémantique, leur complétude, leur organisation et leur comportement. Le texte de la maquette V2 est illustratif, pas une vérité sur tous les utilisateurs. Ne jamais hardcoder le portrait d'Estelle pour d'autres comptes.
 
-1. Vision produit et navigation
+## 1. Vision produit et navigation
 
 Candice ne présente ni un test de personnalité ni un « dossier » médical ou psychologique. La fiche est un portrait vivant, esthétique, compréhensible et utile à l'action. Une même connaissance, alimentée par onboarding, Discovery, conversations, Wishlist, Carnet d'envies, corrections et contributions autorisées, nourrit les recommandations et les vues. Une information n'est jamais « perdue » faute de tag.
 
@@ -63,7 +63,7 @@ Trois expériences distinctes :
 
 Navigation à conserver ou articuler avec l'existant : « Le fil », « Proches », « Candice », « Agenda », « Profil ». Dans Profil : onglets/ancres « Mon portrait », « Mes univers », « Mes envies », « Infos pratiques », « Partage ». Dans un proche : « Son portrait », « Ce que je sais », « Ses envies », « Nous deux » (activé uniquement à la ligne 7ter) ; ne pas inventer une section vide sans usage. Les libellés doivent être stables et courts.
 
-2. Grammaire UI — non négociable
+## 2. Grammaire UI — non négociable
 
 Conserver les graphiques existants, jauges, barres de progression, cartes, chips, nuages d'indices, sections visuelles, hiérarchie typographique, rythmes, contrastes et animations sobres. Conserver la profondeur des analyses de la V2 ; ne pas la remplacer par « 4 cartes et une bio ». Les familles d'information doivent pouvoir être parcourues par scan rapide puis ouvertes en détail.
 
@@ -81,7 +81,7 @@ Contrôles d'affichage :
 
     •    Mobile : une colonne, graphiques lisibles, sections repliables, actions de partage toujours explicites ; desktop : respecter la densité et les mises en page riches existantes.
 
-3. En-tête de « Ma fiche » — wording exact
+## 3. En-tête de « Ma fiche » — wording exact
 
 Titre : « Ma fiche » (libellé produit définitif ; ne pas alterner avec « Mon profil »).
 
@@ -111,7 +111,7 @@ Résumé éditorial, sous le nom : 2 à 4 phrases maximum, personnelles, naturel
 
 Chips sous résumé : 3 à 6 indices concrets justifiés, jamais de diagnostic, de pseudo-score de personnalité ou d'adjectif générique plaqué. CTA : « Lire l'analyse complète » ; panneau détaillé : titre « Ton portrait, en profondeur », bouton « Fermer ».
 
-4. Tableau de bord de connaissance — progression honnête
+## 4. Tableau de bord de connaissance — progression honnête
 
 Conserver les visualisations de la V2 et y intégrer, sans écraser la composition, un indicateur de progression de connaissance, non de « valeur personnelle » :
 
@@ -129,7 +129,7 @@ Si données insuffisantes : barre non remplie ou état « À découvrir » ; jam
 
 Action par domaine : « Explorer ce sujet » ou « Affiner » ; ne pas promettre un nombre de questions exact si l'orchestrateur est adaptatif. Estimation possible seulement si calculée : « Environ 1 min ».
 
-5. « Ton langage d'attention » — garder le graphique riche
+## 5. « Ton langage d'attention » — garder le graphique riche
 
 Titre « Ton langage d'attention ». Sous-titre « Les gestes qui te font sentir que tu comptes » (formulation naturellement neutre, sans dépendance au champ sexe). Intro dynamique : « Les attentions ne te touchent pas toutes de la même manière. Voici celles qui semblent le plus compter pour toi. » uniquement si suffisamment établi ; sinon « Candice découvre peu à peu les gestes qui te touchent. ».
 
@@ -155,7 +155,7 @@ Barres : afficher l'intensité relative uniquement si evidence suffisante. Libel
 
 Sous-graphique : « Ce que Candice a compris » ; 2 à 4 interprétations contextualisées. Lien « Comprendre cette analyse » ; « Corriger ». Une deuxième visualisation peut montrer « Comment tu montres ton affection » avec les 7 modalités GIVE, séparées de RECEIVE, sans déduction entre les deux. Afficher seulement lorsque suffisamment documenté ou en état découverte. Cadence séparée : « Ton rythme d'attentions » : « De petits gestes réguliers », « Des moments rares mais marquants », « Cela dépend du contexte », « À découvrir ».
 
-6. « En profondeur » — sections éditoriales de la V2 à préserver
+## 6. « En profondeur » — sections éditoriales de la V2 à préserver
 
 Conserver les quatre cartes narratives majeures avec leur espace graphique/chips, résumé court, version développée et sources :
 
@@ -215,7 +215,7 @@ Prévoir une destination visible et corrigeable aux informations ouvertes pertin
 
 Pour chaque connaissance ouverte : qualification de la provenance, date, contexte, portée, sensibilité, statut et correction. La couverture exhaustive du graphe ne signifie pas exposition exhaustive au premier écran : prioriser le scan, puis la découverte en profondeur. Les observations incognito de tiers sur le sujet ne sont jamais rendues visibles au sujet, y compris dans cette section.
 
-7. « Tes mondes » — conserver toutes les catégories, enrichir depuis la banque
+## 7. « Tes mondes » — conserver toutes les catégories, enrichir depuis la banque
 
 Titre « Tes mondes » ; sous-texte « Les univers qui t'intéressent et les détails qui font la différence. ». Conserver au minimum les catégories visibles dans la V2 : « Tes tables », « Tes voyages », « Tes passions », « Tes goûts esthétiques ». Elles doivent être des cartes éditoriales, pas un inventaire plat. Les catégories complémentaires proviennent des branches réelles de la banque Discovery, jamais d'une liste arbitrairement rétrécie.
 
@@ -245,7 +245,7 @@ Règle d'exhaustivité : parcourir intégralement `Ouverture`/`Banque` du Discov
 
 Pour chaque univers : nom, résumé personnalisé, 3 à 8 chips maximum avant expansion, éventuelle jauge de connaissance, sections internes « Ce que tu aimes », « Ce que tu préfères », « Ce que tu aimerais découvrir », « Ce que tu évites », « Tes références » ; ne rendre que celles étayées. Boutons « Lire plus », « Ajouter un détail », « Affiner cet univers ». Un univers sans données n'est pas affiché comme passion ; dans « Explorer d'autres univers », CTA « Découvrir ».
 
-8. « Ce qui marche avec toi » — graphiques de moteurs et d'arbitrage
+## 8. « Ce qui marche avec toi » — graphiques de moteurs et d'arbitrage
 
 Conserver les barres de la V2 pour les facettes d’arbitrage justifiées : « Le beau », « Le personnel », « L’expérientiel », « L’utile », « Le premium », « La surprise », et prévoir explicitement les quatre orientations manquantes (appétence objet, importance de l’authenticité, spontanéité, maîtrise) selon les codes exacts du dictionnaire. Les libellés sont des facettes UI, pas de nouveaux tags. Les barres d’arbitrage ne doivent pas redire les moteurs symboliques/mémoriels de la carte « Ce qui te touche ».
 
@@ -263,15 +263,15 @@ Conserver les barres de la V2 pour les facettes d’arbitrage justifiées : « L
 
 Chaque barre est un résumé éditorial contextualisé, pas une mesure clinique. Ne pas forcer une compétition entre dimensions indépendantes ; les deux « objet » et « expérience », « beau » et « fonctionnel », « spontanéité » et « maîtrise » peuvent être simultanément élevés. Libellés : « Très marqué », « Marqué », « À nuancer », « À découvrir ». Afficher le niveau de confiance séparément dans « Comprendre ».
 
-9. « Ton territoire idéal » — matrice de contextes
+## 9. « Ton territoire idéal » — matrice de contextes
 
 Conserver le format visuel de la V2 (types d'expériences, niveau d'adéquation, raison). Titre « Ton territoire idéal » ; sous-texte « Les ambiances et expériences dans lesquelles tu pourrais vraiment te retrouver. ». Cartes issues de préférences/contextes réels, jamais les trois exemples fixes de la maquette pour tout le monde. Libellés d'adéquation « Très prometteur », « À explorer », « À vérifier », « À éviter » (ce dernier uniquement avec contrainte explicite). « Pourquoi ? » affiche les critères, sans dévoiler une information privée dans une vue partagée.
 
-10. « Ton univers » — entités, inspirations, rêves
+## 10. « Ton univers » — entités, inspirations, rêves
 
 Conserver les modules V2 : « Marques repères », « Lieux & ambiances », « Matières & esthétique », « Rêves & envies ». Ajouter si étayé « Œuvres & artistes », « Saveurs & boissons », « Activités & pratiques », « Personnes & souvenirs importants » (privé par défaut, attention aux tiers). Les cartes ENTITY affichent nom précis, type, relation « J'adore » / « J'aime » / « J'aimerais essayer » / « J'aimerais avoir » / « J'aimerais visiter » / « J'évite » uniquement selon relation réellement connue. Ne pas déduire une passion générale d'une marque aimée.
 
-11. « Mes envies » — distinguer wishlist et carnet
+## 11. « Mes envies » — distinguer wishlist et carnet
 
 Sur Ma fiche :
 
@@ -283,19 +283,19 @@ Ne jamais fusionner les deux ni transformer automatiquement une envie repérée 
 
 Dans la fiche d'un proche, section « Ses envies » : présenter des recommandations ou envies autorisées ; ne pas montrer sa wishlist privée ni sa source sans permission. Si l'utilisateur a repéré une envie : afficher dans « Mon carnet sur [Prénom] », avec badge de provenance « Repéré par moi », jamais « [Prénom] souhaite » comme fait confirmé. Le moteur peut utiliser des souhaits privés pour calculer une recommandation sans exposer le souhait source ; ne pas garantir l'anonymat absolu si l'item recommandé lui-même rend la source évidente.
 
-12. « Infos pratiques » — visible par moi, utile à l'action
+## 12. « Infos pratiques » — visible par moi, utile à l'action
 
 Conserver le module V2 et ses catégories : « Tailles », « Alimentation », « Parfums », « Livraison », « Mobilité & confort », « Dates clés », « Informations sensibles » uniquement après validation du filtre de sensibilité, des droits et des parcours de confidentialité ; aucune exposition automatique. Ajouter de manière contextuelle « Préférences cadeaux », « Contraintes d'organisation », « Allergies & restrictions » sans multiplier les champs redondants. Ces informations peuvent être FACT/CONTEXT/GUARDRAIL, pas nécessairement PROFILE.
 
 Titre « Infos pratiques » ; sous-texte « Les détails qui aident Candice à éviter les erreurs. » ; label « Privé par défaut ». Boutons « Ajouter », « Modifier », « Supprimer », « Gérer la confidentialité ». Pour les données sensibles, ne jamais afficher le détail dans une prévisualisation partagée par défaut. Exemple « Mobilité & confort » : résumé visible à soi « Éviter l'attente debout prolongée » ; détail source privé si sensible ; recommandations filtrées sans révélation du diagnostic.
 
-13. « Pour mieux viser » — Discovery adaptatif et non scolaire
+## 13. « Pour mieux viser » — Discovery adaptatif et non scolaire
 
 Conserver les suggestions V2, sous le titre « Pour mieux viser », texte « Quelques précisions peuvent aider Candice à être encore plus juste. À ton rythme. ». À la LIGNE 5, l’orchestrateur Discovery de la ligne 9 n’existe pas encore : alimenter cette section uniquement par les questions et lacunes de l’onboarding effectivement opérationnels, en vérifiant les états SKIP/DEFERRED/DO_NOT_PROBE connus ; ne pas inventer une éligibilité Discovery. Si aucune source fiable n’est disponible, afficher un état éditorial léger « Candice te proposera bientôt d’explorer de nouveaux sujets » sans CTA inopérant. À la LIGNE 9 seulement, brancher les suggestions adaptatives sur l’orchestrateur et ses branches réellement éligibles, sans parcours figé ni promesse de nombre de questions restant.
 
 États : « À découvrir » ; « À préciser » ; « Bien compris pour le moment » ; « Mis de côté » uniquement si l'utilisateur a explicitement demandé le report. Ne pas transformer SKIP en manque ou désintérêt ; DEFERRED n'impose pas une relance ; DO_NOT_PROBE interdit toute sollicitation spontanée ; LOW_INTEREST réduit la pression, sans interdiction définitive. Un « Je ne sais pas » est UNKNOWN, pas un rejet. Chaque question doit proposer « Passer cette question » et « J'y répondrai plus tard ». Note discrète : « 🔒 Tes réponses restent privées. Tu choisis ce que tu partages. » uniquement si cette promesse est techniquement vraie.
 
-14. États de la fiche — 0 %, onboarding, Discovery, maturité
+## 14. États de la fiche — 0 %, onboarding, Discovery, maturité
 
 S0 — rien renseigné : identité déclarée seulement, intro chaleureuse, carte de démarrage ; aucun graphique rempli artificiellement. Les catégories peuvent être visibles sous forme de navigation « À découvrir », sans faux résultats. CTA « Commencer à me découvrir ».
 
@@ -313,7 +313,7 @@ S6 — refus de sujet / données supprimées : ne pas réintroduire la question 
 
 Règle visuelle : pas de graphique à zéro pour un UNKNOWN, pas de faux « profil complété à 100 % », pas de textes de personnalité stéréotypés. Le contenu doit être utile dès les premières réponses, sans attendre un seuil global artificiel.
 
-15. FICHE PROCHE — architecture complète
+## 15. FICHE PROCHE — architecture complète
 
 En-tête : « [Prénom] », nature du lien si déclarée (« Mon conjoint », « Mon amie », « Mon père »…), avatar, anniversaire si connu/autorisé, actions « Préparer une attention », « Ajouter une information », « Ajouter une envie repérée », « Nous deux », menu « Gérer ce proche ».
 
@@ -323,11 +323,11 @@ Sections de « Son portrait » (seulement si partagées) : « En quelques mots �
 
 Sections privées pour le visiteur : « Ce que je sais de [Prénom] », « Mes observations », « Ses envies repérées », « Sa situation en ce moment », « Nos souvenirs et idées », « Mes idées d'attentions ». Chaque élément précise son origine (« Noté par moi », « Dit par [Prénom] selon moi », « Déduit par Candice — à confirmer »). Ne pas faire passer une observation subjective pour une déclaration de la personne.
 
-15.1 — Modules relationnels de la V2 : propriété exclusive de la ligne 7ter
+### 15.1 — Modules relationnels de la V2 : propriété exclusive de la ligne 7ter
 
 La maquette gelée comporte « Vos langages comparés », « Le mode d’emploi de votre duo », « Ce qui vous lie » et « Là où vous vous ratez parfois ». Ils sont préservés comme spécifications de « Nous deux », sans suppression ni réécriture en cartes génériques. À la ligne 6, préserver leurs points d’ancrage et interfaces sans afficher de comparaisons ni implémenter prématurément leur logique. Leur réalisation complète et leurs tests d’autorisations appartiennent exclusivement à la ligne 7ter, après la ligne 7 et 7bis. Toute formulation de difficulté relationnelle doit être descriptive, non culpabilisante et soutenue par des preuves partagées des deux côtés.
 
-16. « Ajouter une information sur [Prénom] » — parcours intégral et wording
+## 16. « Ajouter une information sur [Prénom] » — parcours intégral et wording
 
 Point d'entrée visible dans la fiche proche : « Ajouter une information » ; raccourcis « Noter un goût », « Signaler un changement », « Ajouter une envie repérée », « Raconter quelque chose sur lui/elle ».
 
@@ -379,7 +379,7 @@ Succès : « C'est noté. Je m'en servirai pour te proposer des attentions plus 
 
 Gestion : chaque note a « Modifier », « Supprimer », « Corriger la provenance », « Marquer comme plus d'actualité ». Suppression réelle suivant politique de rétention ; invalidation des dérivés concernés. Aucun partage automatique de cette note avec le proche ou avec d'autres personnes.
 
-17. Deux perspectives sur une même personne — règle de confiance
+## 17. Deux perspectives sur une même personne — règle de confiance
 
 Une fiche proche peut agréger pour le moteur (sous conditions d'accès) :
 
@@ -391,7 +391,7 @@ C. Ce que Candice infère : conclusions justifiées, traçables, contextualisée
 
 Si A et B divergent, ne jamais écraser la déclaration de la personne par l'avis du proche. Afficher dans mon carnet : « Ton observation diffère de ce que [Prénom] a choisi de partager. Candice gardera cette nuance à l'esprit. » uniquement si la comparaison est autorisée et ne révèle aucune donnée cachée. Sinon pas d'alerte de divergence. Ne jamais fusionner silencieusement des carnets de plusieurs proches ni révéler qui a dit quoi. Les observations peuvent améliorer mes recommandations concernant cette personne sans devenir automatiquement ses connaissances personnelles certifiées.
 
-18. Partager « Ma fiche » — AU CAS PAR CAS, PAR PERSONNE
+## 18. Partager « Ma fiche » — AU CAS PAR CAS, PAR PERSONNE
 
 Le partage n'est ni global, ni automatique, ni réciproque. Il est décidé pour chaque proche individuellement, avec granularité des informations. Une autorisation donnée à Thibaud n'autorise rien pour une amie, un parent, un collègue ou un autre proche. Le fait de partager ne rend jamais publiques les réponses brutes de l'onboarding/Discovery, les evidences, les confidences, les notes des tiers, les textes privés ni les raisonnements internes.
 
@@ -439,13 +439,13 @@ Avertissement : « Tu peux modifier ces choix à tout moment. Ils s'appliquent u
 
 IMPORTANT : les permissions doivent porter sur les données et les sorties calculées, pas uniquement sur l'affichage. Toute analyse générée, recommandation expliquée, aperçu, export, notification, comparaison et API doivent respecter la même politique. Si une phrase résume plusieurs données et qu'une seule est interdite, régénérer le résumé sur la base autorisée ; ne pas utiliser la phrase d'origine. Ne jamais révéler un élément masqué par un score, un libellé de confiance ou une suggestion de question.
 
-19. « Voir ma fiche partagée » — prévisualisation fidèle
+## 19. « Voir ma fiche partagée » — prévisualisation fidèle
 
 Bouton « Voir ma fiche partagée » dans Ma fiche. Si aucun proche choisi : « Choisis un proche pour voir exactement ce qu'il peut consulter. ». Sélecteur « Voir en tant que : [Prénom] ». En-tête aperçu « Ta fiche, vue par [Prénom] » ; aide « Voici exactement les informations auxquelles [Prénom] a accès. ». Même mise en page et mêmes graphiques que la vraie vue du proche, filtrés par autorisations ; pas une maquette générique.
 
 Si aucun partage : « Tu n'as rien partagé avec [Prénom]. Candice peut néanmoins l'aider à choisir une attention grâce à ce qu'elle connaît de toi, sans lui dévoiler tes informations privées. » Cette phrase n'autorise pas à afficher les faits ou leur source. Si aucune relation connectée, expliquer la différence entre recommandation et divulgation sans prétendre qu'une recommandation est impossible à deviner.
 
-20. Paramètres de partage et confidentialité — arborescence complète
+## 20. Paramètres de partage et confidentialité — arborescence complète
 
 Dans Paramètres → Confidentialité et partage :
 
@@ -463,7 +463,7 @@ Dans Paramètres → Confidentialité et partage :
 
 Texte de rappel : « Partager une partie de ton profil n'est jamais obligatoire. Tes choix sont propres à chaque proche. ».
 
-21. « Nous deux » — comparaison sans pseudo-compatibilité
+## 21. « Nous deux » — comparaison sans pseudo-compatibilité
 
 Titre « Nous deux » ; sous-texte « Ce qui vous rapproche, ce qui vous distingue et ce qui peut vous faire plaisir ensemble. ». Ne pas afficher « 92 % compatibles », « âme sœur », score de qualité de relation, diagnostic relationnel, ou classement des personnes. L'objectif est l'aide à la relation et aux attentions, pas une note.
 
@@ -497,7 +497,7 @@ Exemples de wording dynamiques :
 
     •    Insuffisant : « Candice n'a pas encore assez de repères partagés pour analyser vos affinités sur ce sujet. ».
 
-22. États et permissions de « Nous deux »
+## 22. États et permissions de « Nous deux »
 
 Aucun partage des deux côtés : « Vos profils ne sont pas partagés pour le moment. Tu peux toujours préparer une attention pour [Prénom]. » Pas de comparaison cachée.
 
@@ -507,11 +507,11 @@ Informations insuffisantes pour la comparaison : conserver une explication globa
 
 Partage partiel : montrer uniquement les sections comparables, les autres restent non révélées. Si un partage est retiré, supprimer les dérivés/affichages calculés non autorisés des caches et comparatifs ; ne pas continuer à montrer les anciens résultats.
 
-23. Réglages d'une fiche proche
+## 23. Réglages d'une fiche proche
 
 Menu « Gérer [Prénom] » : « Modifier le lien », « Gérer la connexion », « Voir les informations partagées », « Gérer mon carnet », « Exporter mes notes » si la fonction existe et la politique l'autorise, « Retirer de mes proches », « Bloquer » si prévu. Ne pas confondre retirer un proche, révoquer un partage et supprimer mes notes. Dialogues de confirmation explicites ; ne pas supprimer les données de [Prénom] appartenant à son compte.
 
-24. Microcopy transverse — états, actions, erreurs
+## 24. Microcopy transverse — états, actions, erreurs
 
     •    Sauvegarde : « Enregistré » ; échec : « Impossible d'enregistrer pour le moment. Réessaie. » ; ne jamais afficher « Enregistré » avant confirmation serveur.
 
@@ -535,7 +535,7 @@ Menu « Gérer [Prénom] » : « Modifier le lien », « Gérer la connexion »,
 
     •    Suppression : « Supprimer ce détail ? Il ne sera plus utilisé pour personnaliser tes recommandations. » à adapter si d'autres evidences indépendantes subsistent ; ne pas promettre l'effacement de faits appris indépendamment.
 
-24.1 — États de régénération des sections et politique de fraîcheur
+### 24.1 — États de régénération des sections et politique de fraîcheur
 
 État nommé « Cette partie de ton portrait se met à jour… » après correction, suppression, modification de provenance ou changement des règles de génération. Afficher l’ossature stable de la carte, son titre et un indicateur discret, avec action « Réessayer » si erreur ; ne jamais afficher un faux résultat ni un score de zéro. Les autres sections valides restent visibles. Ne pas bloquer toute la fiche pour une seule section.
 
@@ -543,7 +543,7 @@ Règle de fraîcheur : pour Ma fiche aussi, une analyse invalidée par une corre
 
 États : updating (génération en cours), regeneration_failed (erreur avec relance), current (analyse valide), insufficient_evidence (pas assez d’éléments), access_revoked (vue partagée inaccessible). La vue doit distinguer « information inconnue » de « analyse momentanément indisponible ». Ne jamais montrer un contenu périmé sous un simple spinner.
 
-25. Architecture de données, provenance et confidentialité
+## 25. Architecture de données, provenance et confidentialité
 
 Ne pas créer trois profils disjoints. Utiliser le graphe de connaissance existant. Le HSG conserve les 10 familles `INTEREST`, `PREFERENCE`, `PROFILE`, `AFFECTION_LANGUAGE`, `NEED`, `DRIVER`, `BEHAVIOR`, `GUARDRAIL`, `ENTITY`, `CONTEXT`. `FACT` est hors familles ; `ONTOLOGY_GAP` n'est pas une famille. `UNKNOWN` est un état valide. Les scores de confiance et de force ne sont pas interchangeables.
 
@@ -553,11 +553,11 @@ Autorisation par destinataire et par champ/section, y compris outputs dérivés 
 
 Règle de rendu : distinguer `evidence`, `FACT`, `signal`, `summary` et `view_permission`. L'analyse d'une vue partagée est recalculée sur les seules informations autorisées, pas copiée depuis le résumé privé. Les graphiques utilisent des valeurs autorisées et une confiance appropriée. Une correction utilisateur invalide ou révise les dérivés ; l'ancienne inference ne reste pas affichée.
 
-26. Accessibilité, qualité éditoriale, design system
+## 26. Accessibilité, qualité éditoriale, design system
 
 Typographie élégante et chaleureuse, sans infantilisation ; phrases courtes, précises, naturelles, pas de vocabulaire technique HSG visible dans l'interface. Préserver le caractère premium de la V2, ses visuels, graphes, respirations et niveaux de détail. Pas de « badge » décoratif partout, pas de questionnaires administratifs. Tous les états (vide, partiel, complet, partagé, non partagé, révoqué, erreur) doivent avoir un contenu soigné. Responsive, navigation clavier, labels d'écran, contrastes, alternatives aux graphiques, états de chargement, gestion du texte long, pluriels et accords.
 
-27. Consignes d'exécution Claude Code — PAR LOTS DÉPENDANTS ET VALIDÉS
+## 27. Consignes d'exécution Claude Code — PAR LOTS DÉPENDANTS ET VALIDÉS
 
 1. Auditer le dépôt et identifier composants/routing de Ma fiche, Fiche proche, partage, HSG, Discovery, wishlist, Carnet d'envies et comparatif. Lire les cinq sources listées en tête. Ne pas générer un HTML autonome.
 
@@ -573,7 +573,7 @@ Typographie élégante et chaleureuse, sans infantilisation ; phrases courtes, p
 
 7. Livrer à la fin une synthèse unique : fichiers modifiés, sections conservées, sections ajoutées, mappings, tests exécutés, points bloquants précis. Ne pas demander de validation à chaque étape ; ne solliciter l'utilisatrice que pour un arbitrage réellement bloquant. Ne pas inventer un tag canonique ou une fonctionnalité backend non existante en la présentant comme opérationnelle.
 
-28. Critères de recette non négociables
+## 28. Critères de recette non négociables
 
     •    La fiche personnelle est au moins aussi riche que la V2 gelée, avec graphiques, barres, catégories, textes longs et navigation approfondie conservés.
 
@@ -614,7 +614,7 @@ TENSIONS : deux constructs apparemment opposés et contextualisés sont conserv�
 Livrable attendu : l'expérience Candice existante enrichie et pleinement intégrée, pas une nouvelle maquette.
 
 
-29. Arbitrages consolidés — statut et priorité
+## 29. Arbitrages consolidés — statut et priorité
 
 Les sections 0 à 28 demeurent le socle détaillé. Les corrections directement applicables ont été intégrées dans leur texte ; les sections 29 à 38 constituent les règles d’exécution complémentaires et prévalent en cas d’ambiguïté résiduelle. Aucune règle ne permet de contourner le HSG, le dictionnaire canonique, la maquette V2 ou les permissions serveur.
 
@@ -630,11 +630,11 @@ Les sections 0 à 28 demeurent le socle détaillé. Les corrections directement 
 
     •    La cartographie éditoriale est arbitrée par la responsable produit, pas improvisée par Claude Code ; la ligne 4 prépare les fondations techniques pendant cet arbitrage.
 
-30. Règle fondatrice : profondeur proportionnée aux preuves
+## 30. Règle fondatrice : profondeur proportionnée aux preuves
 
 Candice peut être profonde sans être catégorique. Elle doit chercher à comprendre toute la personne — goûts, besoins, moteurs, comportements, contradictions, sensibilités et contextes — mais ne jamais présenter comme certaine une lecture que ses preuves ne soutiennent pas. La qualité littéraire ne doit pas accroître artificiellement la certitude.
 
-30.1 Quatre niveaux de lecture NON stockés sur les evidences
+### 30.1 Quatre niveaux de lecture NON stockés sur les evidences
 
     1.    CONNAISSANCE EXPRIMÉE : restitution fidèle de la déclaration ou de l’observation, avec provenance, temps et contexte. Exemple : « Dans les périodes difficiles, tu préfères parfois avoir un moment pour toi. »
 
@@ -646,7 +646,7 @@ Candice peut être profonde sans être catégorique. Elle doit chercher à compr
 
 Ces quatre niveaux qualifient la portée interprétative de chaque phrase produite, calculée à la génération depuis les preuves éligibles. Ils ne sont ni un nouveau champ du journal d’evidence ni une quatrième échelle persistée à côté de provenance (six niveaux), force, confiance et stabilité. La section générée peut stocker la portée des affirmations et ses références de traçabilité ; ne pas écraser les échelles canoniques. Aucun passage automatique du niveau 1 au niveau 4. Une information précise et utile de niveau 1 vaut mieux qu’une interprétation de niveau 4 inventée. Les exemples sont fictifs et ne constituent jamais des textes à hardcoder.
 
-30.2 Contrat de génération et de contrôle
+### 30.2 Contrat de génération et de contrôle
 
     5.    Rassembler uniquement les evidences éligibles, avec identité du sujet, source, statut, contexte, temporalité, sensibilité, permissions et supersession.
 
@@ -664,21 +664,21 @@ Ces quatre niveaux qualifient la portée interprétative de chaque phrase produi
 
 Une correction utilisateur doit pouvoir réviser l’interprétation et invalider les dérivés, sans transformer automatiquement toutes les hypothèses associées en FACT. Ne pas confondre intensité du signal, confiance, fréquence, couverture et importance personnelle.
 
-30.2 bis — Traçabilité au niveau des affirmations (décision d’architecture)
+### 30.2 bis — Traçabilité au niveau des affirmations (décision d’architecture)
 
 DÉCISION : la traçabilité sectionnelle source_evidence_ids (migration 91) est conservée pour compatibilité, mais ne satisfait pas « Pourquoi dis-tu cela ? » phrase par phrase. La ligne 4 doit produire une structure interne d’affirmations significatives, chacune avec identifiant stable, texte ou plage de texte, type (déclaration/tendance/hypothèse/implication), sous-ensemble exact des evidence_ids, versions/supersession et contexte admissibles. Une phrase comportant deux affirmations distinctes doit être segmentée ou porter deux justifications distinctes.
 
 Ne pas exposer mécaniquement ces IDs à l’utilisateur : dans Ma fiche, l’explication peut montrer uniquement ses propres déclarations et sources autorisées ; dans une fiche proche, jamais de réponses brutes, d’evidences cachées ni d’observations incognito. Si une affirmation n’a pas de justification suffisamment fine, la retirer ou revenir à une formulation descriptive. Tests : attribution exacte, modification d’une evidence, révocation, supersession, observation de tiers, et impossibilité de reconstruire une source interdite.
 
-30.2 ter — Incertitude structurée, pas une pluie de « semble »
+### 30.2 ter — Incertitude structurée, pas une pluie de « semble »
 
 Écrire une proposition principale lisible et calibrée ; placer les limites et questions ouvertes dans des sous-blocs progressifs « Ce que Candice comprend » et « Ce qui reste à préciser » lorsque le contenu le justifie. Une hypothèse importante reste clairement identifiable comme hypothèse, mais ne pas répéter « peut-être », « semble », « pourrait » dans chaque phrase. L’interface et la structure de la carte portent une part de l’incertitude ; ne jamais laisser une affirmation spéculative paraître certaine dans un titre isolé, un aperçu, une notification ou une citation extraite de son contexte.
 
-30.3 Contradictions, honnêteté et style
+### 30.3 Contradictions, honnêteté et style
 
 Une personne peut aimer la spontanéité pour ses loisirs et l’anticipation pour les décisions importantes ; ces dimensions ne s’annulent pas. Candice cherche les contextes qui les rendent compatibles et accepte aussi de ne pas savoir. Elle peut dire qu’une exigence aide à soigner les détails tout en compliquant parfois l’acceptation de l’imprévu, si les preuves le soutiennent. Ne jamais transformer mécaniquement une difficulté en qualité ni une nuance en jugement.
 
-31. BEHAVIOR et PROFILE — couverture intégrale et restitution
+## 31. BEHAVIOR et PROFILE — couverture intégrale et restitution
 
 Aucun contexte BEHAVIOR canonique ne doit être exclu du portrait du seul fait qu’il évoque le conflit, l’expression des émotions, la détresse, le deuil, la demande d’aide ou les moments difficiles. Chaque contexte du dictionnaire a un emplacement éditorial et un état de connaissance. L’utilisateur doit pouvoir découvrir ce que Candice a compris, avec nuance et possibilité de correction.
 
@@ -696,11 +696,11 @@ L’intitulé du contexte ne décide pas de la sensibilité. La classification p
 
     •    BEHAVIOR, PROFILE et SOCIAL_ENERGY peuvent être présentés en mosaïques, cartes narratives, axes et approfondissements, sans rabattre toutes les dimensions sur un graphique unique.
 
-31.1 — Identité des sources : frontière absolue
+### 31.1 — Identité des sources : frontière absolue
 
 Le portrait personnel est complet sur le périmètre de connaissances dont la personne est l’auteur ou dont elle a autorisé l’intégration à son propre portrait. Une déclaration incognito ou une observation de Julie (ou de tout autre tiers) au sujet de cette personne appartient au carnet privé du tiers : elle ne doit JAMAIS être présentée au sujet, ni comme donnée brute, ni comme analyse attribuable, ni par « Pourquoi Candice pense ça ? ». Le moteur peut en tenir compte uniquement dans les usages légitimes et autorisés de l’observateur, sans transfert de provenance ni contamination du portrait visible du sujet.
 
-32. Architecture éditoriale complète — variété et absence d’orphelins
+## 32. Architecture éditoriale complète — variété et absence d’orphelins
 
 La fiche est un portrait éditorial vivant, pas un rapport d’analyse. Chaque catégorie a une destination technique et un accès possible ; toutes ne doivent pas occuper autant d’espace au premier niveau. Préserver les composants et la densité visuelle de la V2 : barres, cartes, graphiques, chips, mosaïques, axes, blocs narratifs, carrousels utiles, espaces de respiration, expansions « Lire plus ». Pas de répétition mécanique de vingt cartes identiques.
 
@@ -796,7 +796,7 @@ Placement contextuel dans le bon chapitre, ou espace éditorial « Autres détai
 
 La cartographie définitive doit être produite au niveau produit et validée avant la ligne 5 : chaque construct exact du dictionnaire → chapitre → section → composant → représentation → état vide/partiel/riche → permissions/sensibilité → source. Les lignes ci-dessus sont un cadre éditorial à confronter aux codes officiels et à la V2, pas une substitution au mapping construct par construct.
 
-32.1 Frontières anti-redondance
+### 32.1 Frontières anti-redondance
 
     •    Graphique RECEIVE (§5) : QUELLES modalités touchent la personne et avec quelle solidité ; carte B : COMMENT ces gestes se manifestent dans sa vie, avec exemples et contextes.
 
@@ -808,13 +808,13 @@ La cartographie définitive doit être produite au niveau produit et validée av
 
     •    Une evidence peut soutenir plusieurs constructions si elle est pertinente, mais deux blocs ne doivent pas reformuler la même conclusion. Si le contenu différenciant manque, état « À découvrir » plutôt que répétition.
 
-32.2 — Tensions structurantes : relations entre constructs
+### 32.2 — Tensions structurantes : relations entre constructs
 
 Ajouter dans la cartographie éditoriale une couche de RELATIONS entre constructs, sans créer de onzième famille HSG ni de construct fermé fictif. Exemple : spontanéité × maîtrise selon le contexte. Une tension structurante ne se résout jamais par une moyenne ni par l’effacement de l’un des pôles ; elle peut être plus informative que chacun des deux signaux. Sa restitution requiert des evidences distinctes, la comparabilité des contextes, l’analyse des explications alternatives et un niveau de confiance suffisant.
 
 Prévoir une représentation « Tes nuances » / « Ce qui coexiste chez toi » : cartes contrastées, axes contextuels ou récit court avec conditions « dans telle situation / dans telle autre », puis développement. Ne pas fabriquer une tension à partir de deux préférences simplement différentes ; conserver les tensions non résolues sans interprétation forcée. Dans « Nous deux », seules les tensions fondées sur des informations mutuellement partageables peuvent être comparées. Mapping obligatoire : paire de constructs → contexte → evidences → section → représentation → états vide/partiel/riche → permissions.
 
-33. Partage : expérience engageante, permissions strictes
+## 33. Partage : expérience engageante, permissions strictes
 
 Interrupteur principal OFF par défaut ; toutes les catégories et sous-options OFF par défaut ; rien n’est partagé sans action positive. Proposer de petites cases lisibles, des regroupements, une sélection rapide uniquement sûre et une prévisualisation fidèle. Le wording doit donner envie de partager sans minimiser la portée des analyses : « Tu choisis les analyses que [Prénom] peut découvrir. Tes réponses, confidences et notes privées ne sont jamais affichées telles quelles. »
 
@@ -822,11 +822,11 @@ La granularité est au minimum destinataire → catégorie → élément lorsque
 
 Libellé de sélection rapide possible après recette : « Sélectionner les catégories partageables » ; texte d’aide : « Les éléments sensibles et privés restent exclus. Vérifie l’aperçu avant de confirmer. » « Tout partager » ne peut signifier que sélectionner les catégories d’analyses explicitement partageables, jamais toutes les données.
 
-33.1 Ce que signifie partager une analyse
+### 33.1 Ce que signifie partager une analyse
 
 Aucune réponse brute de l’onboarding, du Discovery, aucune evidence, note de tiers, confidence ou trace interne n’est exposée. Une analyse peut néanmoins révéler indirectement un fait sensible : le filtre de sensibilité et la vérification des permissions s’appliquent aussi aux résumés, scores, graphiques, explications, recommandations, notifications, exports et API. L’aperçu doit être produit par le même chemin serveur que la vraie vue du destinataire, sans mode dérogatoire.
 
-34. Génération par destinataire, cache et révocation
+## 34. Génération par destinataire, cache et révocation
 
 Une analyse privée stockée une fois par section ne peut pas être réutilisée telle quelle pour les proches. Pour une vue partagée, filtrer AVANT génération l’ensemble des evidences autorisées au destinataire ; produire ensuite le texte et les graphiques sur ce seul ensemble. L’analyse est donc générée par périmètre d’autorisation, pas obligatoirement par personne si les périmètres sont rigoureusement identiques et vérifiés.
 
@@ -836,7 +836,7 @@ La clé de cache ne remplace jamais une vérification d’autorisation au moment
 
 Révocation : bloquer immédiatement la lecture serveur, supprimer ou rendre irrévocablement inaccessibles les sorties dérivées et caches concernés, invalider aperçus, comparatifs, notifications en attente et liens ; régénérer au prochain accès autorisé. Les jobs concurrents doivent contrôler la version des permissions avant publication ; une sortie calculée avec une ancienne version est rejetée. Ne jamais servir une ancienne analyse pendant la régénération. Les copies déjà vues ou enregistrées hors de Candice ne sont pas effaçables par promesse produit.
 
-35. « Nous deux » — comparaison strictement réciproque et progressive
+## 35. « Nous deux » — comparaison strictement réciproque et progressive
 
 Nom unique : « Nous deux » dans navigation, CTA, écrans, documentation et tests. Ce module n’est ni un score de compatibilité ni un diagnostic relationnel. Il compare seulement les dimensions pour lesquelles les DEUX personnes disposent d’informations pertinentes, comparables et autorisées pour CETTE relation. Aucune inférence issue d’un domaine non partagé ne peut enrichir la comparaison.
 
@@ -846,13 +846,13 @@ Si la comparaison est partielle : « Il reste encore des choses à découvrir su
 
 Les observations de mon carnet sur l’autre restent des observations privées : elles peuvent soutenir des conseils dans leur périmètre autorisé mais ne constituent pas une déclaration réciproque, ne remplacent pas une permission et ne doivent pas être utilisées pour inférer un profil caché. Comparer GIVE↔RECEIVE seulement avec deux modalités et deux périmètres étayés ; comparer des constructs homologues sur des échelles compatibles.
 
-36. Microcopy, neutralité et sensibilité
+## 36. Microcopy, neutralité et sensibilité
 
 Utiliser un français fluide et naturellement neutre, sans points médians et sans faire dépendre les accords du champ sexe. Le sexe éventuellement demandé au début du profil n’est pas une source de personnalisation grammaticale. Exemples : « Les gestes qui te font sentir que tu comptes », « Ce que Candice a compris de toi », « Quand tu as besoin de recul ». Revoir tous les anciens « aimé·e », « touché·e », « seul·e », « il/elle » dans les écrans réellement livrés ; ne pas remplacer par une langue artificielle.
 
 La sensibilité est une propriété du contenu, pas du nom du chapitre. AMENDEMENT EXPLICITE À LA RÈGLE ANTÉRIEURE : les faits sensibles provenant de l’utilisateur ou de sources qu’il a autorisées PEUVENT être nommés dans la prose de SA fiche privée, avec une présentation mesurée, contextualisée et contrôlable ; ils ne sont JAMAIS nommés dans la prose destinée à un autre utilisateur, ni dans une justification de recommandation visible d’un proche. Cette règle remplace la consigne ancienne « faits sensibles jamais nommés dans la prose générée », uniquement pour Ma fiche privée. Les données sensibles concernant un tiers et issues d’un carnet privé restent invisibles pour ce tiers, même s’il est le sujet. Dans Ma fiche, l’utilisateur peut consulter, corriger et supprimer les connaissances issues de ses propres déclarations et des sources qu’il a explicitement autorisées, y compris les analyses BEHAVIOR difficiles, avec présentation adaptée. Les déclarations et observations d’un tiers recueillies en mode incognito ou dans son carnet privé ne sont JAMAIS visibles par le sujet, y compris sous forme de sources, de citations, de justification ou de reconstitution indirecte ; elles ne sont pas absorbées dans un portrait personnel qui permettrait de les deviner. Dans une fiche partagée, seules les analyses autorisées et filtrées apparaissent. Pour les tiers, éviter la collecte inutile de données de santé, religion ou vulnérabilités ; ne jamais présenter un diagnostic comme un fait inféré.
 
-37. Séquencement impératif et responsabilités
+## 37. Séquencement impératif et responsabilités
 
     12.    LIGNE 4 — Construire la génération rejouable depuis le sous-ensemble autorisé, les versions, la provenance, le filtre et les règles de suppression/révocation ; préparer les interfaces techniques des vues partagées sans les publier.
 
@@ -874,15 +874,15 @@ LIGNE 10 — Modèle de recommandation : maintenir ce chantier dans le séquence
 
 LIGNE 11 — Remplissage / alimentation des données : maintenir ce chantier et son étape 0 préparatoire telle que définie dans le registre. Auditer ses sources, conditions de lancement et dépendances avant toute exécution ; ne pas confondre remplissage du HSG, génération des analyses et interface. Si le nom exact ou l’état de la ligne diffère dans le registre, conserver la source de vérité et remonter l’écart, sans supprimer le chantier.
 
-37.1 — Conditions bloquantes avant 7bis et 7ter
+### 37.1 — Conditions bloquantes avant 7bis et 7ter
 
 Le registre adopte les noms 7bis (partage individualisé et prévisualisation) et 7ter (Nous deux), placés APRÈS la ligne 7. Toutes les mentions résiduelles « 6bis/6ter » dans spécifications, routes de projet, planification et livrables doivent être renommées. La ligne 7 doit démontrer l’arrêt effectif de la double écriture et l’absence de lecture non gardée via my_profile, y compris dans les jobs, exports et chemins hérités. 7ter dépend de 7bis validée, jamais l’inverse.
 
-37.2 — Tests de recette complémentaires pour les sept arbitrages
+### 37.2 — Tests de recette complémentaires pour les sept arbitrages
 
 Vérifier : (1) les deux permissions supplémentaires indépendantes et décochées par défaut ; aucune fuite de tension si un seul construct est partagé ; (2) présence effective dans les sections détaillées des quatre modules Ma fiche ; (3) les quatre modules relationnels V2 différés à 7ter sans suppression à la ligne 6 ; (4) section stale de Ma fiche remplacée par un état « se met à jour », sans texte périmé ; (5) « Pour mieux viser » ligne 5 sans orchestrateur Discovery fictif ; (6) absence de  inopérant ; (7) lignes 10 et 11 présentes dans le plan et étape 0 contrôlée. Ajouter tests de non-régression des permissions des neuf catégories initiales.
 
-38. Recette renforcée et livrables de contrôle
+## 38. Recette renforcée et livrables de contrôle
 
     •    Test de traçabilité : 100 % des familles, constructs et branches Discovery réellement présents disposent d’une destination, y compris BEHAVIOR, PROFILE, SOCIAL_ENERGY, les quatre orientations d’arbitrage et la connaissance ouverte structurée.
 
