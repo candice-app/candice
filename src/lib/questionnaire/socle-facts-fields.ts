@@ -4,6 +4,8 @@
 // pour mot, jamais inventé). factType namespacé par domaine. `sensitive` → FactSensitivity → visibilité
 // internal_only (santé/vie privée, §35/R12).
 
+import { assertUniqueFactTypes } from './question-bank-guard';
+
 export interface FactFieldSpec {
   readonly factType: string;
   readonly questionText: string;
@@ -48,3 +50,11 @@ export const PRACTICAL_FACT_FIELDS: Record<string, FactFieldSpec> = {
 
 /** q17 (AvoidStep) — texte libre « ce qu'il vaut mieux éviter ». Verbatim seul : l'EXTRACTION (q17Interdits) reste hors journal (lot futur). */
 export const Q17_FACT_FIELD: FactFieldSpec = { factType: 'relational.q17_register', questionText: "Ce qu'il vaut mieux éviter avec moi…" };
+
+// GARDE AU CHARGEMENT — le factType est la clé de supersession : deux champs ne peuvent pas le partager
+// (sinon corriger l'un supersèderait l'autre). Vérifiée ICI, à l'import de la banque, pas dans un test.
+assertUniqueFactTypes([
+  ...Object.entries(SINGULARITY_FACT_FIELDS).map(([k, s]) => ({ factType: s.factType, where: `SINGULARITY_FACT_FIELDS.${k}` })),
+  ...Object.entries(PRACTICAL_FACT_FIELDS).map(([k, s]) => ({ factType: s.factType, where: `PRACTICAL_FACT_FIELDS.${k}` })),
+  { factType: Q17_FACT_FIELD.factType, where: 'Q17_FACT_FIELD' },
+]);
