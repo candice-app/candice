@@ -146,9 +146,12 @@ Lister ne suffit pas (trois livrables ont dérivé 4 tours en étant listés). �
 5. **Câblage de l'affichage** (masquage/régé/calculé qui tient) + **la fiche sur la maquette gelée**.
 6. **Écrans** : 2→5 (profil/analyse/synthèse), puis 6→11 et 14, puis 12, 13 et la reco au minimum.
 7. **SUPPRESSION de l'ancien chemin** en un commit, puis **migration de drop des colonnes** (séparée). → à partir d'ici les données d'Estelle ne peuvent plus mourir.
+   **7bis.** Partage par personne, permissions fines, sélection sûre, prévisualisation identique à la vue réelle, révocation et tests *(ajout 2 nov ; prompt maître §37 item 17/§37.1 — placé APRÈS la 7 : le partage applique les permissions sur le journal, donc après la mort de la double écriture)*.
+   **7ter.** « Nous deux », après 7bis et ses garanties de confidentialité *(ajout 2 nov ; §37 item 18/§21/§35 ; 7ter dépend de 7bis, jamais l'inverse)*.
 8. **Parcours incognito complet + parcours entier.**
 9. **Discovery Engine.** (Ne pas y toucher ni en parler avant ce point.)
 10. **Modèle de recommandation.**
+    ▸ **LE RELAIS** *(ajout 2 nov ; placé APRÈS la 10, pas de numéro assigné)* — relaie un BESOIN, jamais un FAIT. Filtrage silencieux (aucun accord, ne révèle rien) vs relais aux proches (accord explicite, par personne, défaut à non). Dépend de 7bis + ligne 10. Spec au démarrage du lot.
 11. **ÉTAPE 0 d'Estelle** — elle remplit, une seule fois, pour de bon.
 
 ## Question ouverte — OÙ VIT LA FAMILLE BEHAVIOR SUR LA FICHE (décision design d'Estelle)

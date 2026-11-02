@@ -2790,6 +2790,7 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
    *Verrouille : les écrans sont vus par un œil humain sans que je remplisse quoi que ce soit, et une correction efface proprement ce qu'elle remplace.*
 4. **Orchestration : génération depuis le JOURNAL vers les sections STOCKÉES, matière conservée, correctif ENTITY, réécriture sur modification, écriture du marqueur de supersession — vérifiée sur Sophie.**
    *Verrouille : mon analyse existe, elle est stockée par section, et elle se réécrit quand je me corrige.*
+   ⚠ **FORME ÉLARGIE (dictée Estelle, 2 nov) :** la génération doit être **REJOUABLE sur un sous-ensemble d'evidences autorisées**, avec une **traçabilité au niveau de CHAQUE AFFIRMATION, pas de la section** (`source_evidence_ids` sectionnel, migration 91, ne suffit plus). Détail dans le prompt maître (`docs/ontologie/prompt-maitre.md`) : **§30.1** (4 niveaux de lecture non stockés), **§30.2** (contrat de génération), **§30.2 bis** (traçabilité à l'affirmation — décision d'architecture), **§34** (génération par périmètre d'autorisation, cache déterministe, révocation), **§37 item 12** (rejouable + préparer les interfaces techniques des vues partagées *sans les publier*). Le plan détaillé et son **coût** sont arbitrés au STOP de la ligne 4.
 5. **Câblage de l'affichage : la fiche sur la maquette gelée.**
    *Verrouille : ce qui est généré s'affiche vraiment, et la fiche de Sophie devient regardable. C'est bien une étape distincte de la 4 : la 4 produit, la 5 montre.*
 6. **Écrans 2→5, 6→11, 14, 12/13, et la recommandation au minimum vital.**
@@ -2800,12 +2801,18 @@ Règle **tranchée et validée (avocate)**. Écrite ici ; implémentation = lot 
    - **7a** — le code de l'ancien chemin disparaît en **UN SEUL commit** : ancien questionnaire, `saveStage*`, écriture en double, tous les flags, routes de respiration legacy, maps d'affichage inutiles, toutes les lectures des anciennes colonnes. **AUCUNE colonne supprimée en base. Elles restent inertes.**
    - **7b** — quand Estelle a **tout vu tourner**, et seulement alors, la **migration de suppression qu'elle applique elle-même** : les colonnes meurent, `my_profile` meurt, et **les lignes du journal sans `question_code` meurent avec** (purge — voir « Les TROIS SORTS », preuve de clé point 3).
    *Verrouille : une seule source de vérité, plus aucune ligne increvable, et un filet entre les deux moitiés.*
+**7bis.** **Partage par personne, permissions fines, sélection sûre, prévisualisation identique à la vue réelle, révocation et tests.** *(lot ajouté — dictée Estelle 2 nov ; prompt maître §37 item 17 + §37.1, verbatim)*
+   *Placé APRÈS la ligne 7 (dictée Estelle) : le partage applique les permissions SUR LE JOURNAL ; tant que `my_profile` vit et reçoit la double écriture, une 2ᵉ copie des données échappe à la couche de permissions. La ligne 7 doit d'abord démontrer l'arrêt effectif de la double écriture et l'absence de lecture non gardée de `my_profile` — jobs, exports, chemins hérités compris (§37.1).*
+**7ter.** **« Nous deux », après 7bis et ses garanties de confidentialité.** *(lot ajouté — dictée Estelle 2 nov ; prompt maître §37 item 18 + §21 + §35, verbatim)*
+   *Dépendance verrouillée : 7ter dépend de 7bis validée, jamais l'inverse (§37.1). Comparaison strictement réciproque et progressive ; ni score de compatibilité ni diagnostic relationnel (§35). Les 4 modules relationnels de la V2 sont préservés en ligne 6 (points d'ancrage, sans logique) et réalisés ici (§15.1).*
 8. **Parcours incognito complet, puis le parcours entier.**
    *Verrouille : le mode pilote existe pour de vrai, pas seulement en base.*
 9. **Discovery Engine.**
    *Verrouille : la banque de questions, les règles d'ouverture, les déclencheurs. Tu n'y touches pas avant.*
 10. **Modèle de recommandation, console de décision de la section 14, trace des exclusions.**
     *Verrouille : Candice propose, et je peux voir pourquoi.*
+▸ **LE RELAIS** *(lot ajouté — dictée Estelle 2 nov ; placé APRÈS la ligne 10, AVANT la 11 ; pas de numéro assigné — Estelle nomme. Spec complète donnée au démarrage du lot, rien à faire d'ici là.)* — **Candice relaie un BESOIN, jamais un FAIT :** elle ne dit pas ce qui m'est arrivé, elle dit qu'un message me ferait du bien.
+    *Deux usages à NE PAS confondre : (a) **filtrage silencieux** d'une recommandation — aucun accord demandé, ne révèle rien ; (b) **relais vers mes proches** — accord EXPLICITE, par personne, par défaut à NON. Dépend de **7bis** (partage individualisé) et de la **ligne 10** (moteur de recommandation).*
 11. **MON ÉTAPE 0 — le remplissage. Une seule fois, pour de bon.**
     *Verrouille : mes vraies données entrent, et elles ne se perdent plus.*
 

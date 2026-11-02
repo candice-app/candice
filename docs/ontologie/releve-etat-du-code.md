@@ -96,6 +96,13 @@ connaissance (ce n'est pas une note qu'on oublie, c'est une case).
 > personne veut *recevoir* de l'attention) : cette dernière est une **connaissance** et vit dans le JOURNAL,
 > pas comme colonne de `my_profile` (aucune colonne de ce nom n'existe sur la table).
 
+> **Colonne qui MEURT en 7b — ni infra, ni à migrer (décision Estelle, 2 nov).** `grammatical_gender` ne va
+> **nulle part** : le prompt maître (§36 / §824, et §5 des consignes) tranche que toute l'application s'écrit
+> en formulations naturellement neutres et que **les accords ne dépendent jamais de ce champ**. Il n'est donc
+> ni dans l'allowlist infra, ni un lecteur de connaissance à basculer : il rejoint la **liste des colonnes
+> supprimées à la ligne 7b** (comme `my_profile` et les colonnes legacy). Le genre éventuellement demandé en
+> début de profil n'est pas une source de personnalisation grammaticale.
+
 Lecteurs infra-seule (lisent `my_profile` uniquement pour l'allowlist, et ne lisent ni qr ni blob) :
 `api/account/cancel-deletion` · `api/cadence/auto-adjust` · `api/cron/detect-and-generate` ·
 `api/cron/lifecycle-check` · `api/handle/check` · `api/subscription/pause` · `api/subscription/resume` ·
@@ -113,6 +120,6 @@ Lecteurs infra-seule (lisent `my_profile` uniquement pour l'allowlist, et ne lis
 
 ## État réel des migrations (vérifié en base le 2026-11-02)
 
-90→95 toutes **appliquées** (journal `applied_migrations` + sondes de colonnes). 96 écrite, à appliquer par
-Estelle. Détail et méthode : voir la mémoire `project_migration_journal`. (Rappel : ne jamais interroger la
-base par une route — script CLI qu'Estelle lance elle-même.)
+90→96 toutes **appliquées** (journal `applied_migrations` + sondes de colonnes ; 96 confirmée appliquée par
+Estelle le 2 nov). Détail et méthode : voir la mémoire `project_migration_journal`. (Rappel : ne jamais
+interroger la base par une route — script CLI qu'Estelle lance elle-même.)
