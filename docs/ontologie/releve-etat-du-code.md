@@ -120,6 +120,20 @@ Lecteurs infra-seule (lisent `my_profile` uniquement pour l'allowlist, et ne lis
 
 ## État réel des migrations (vérifié en base le 2026-11-02)
 
+**97 ÉCRITE, à appliquer par Estelle** (`supabase-migration-97-affirmations-scope.sql`) : `affirmations JSONB`
++ `scope` sur `profile_analysis_sections`, index GIN inverse, CHECK union exacte. Tant qu'elle n'est pas
+appliquée, l'écriture des sections (`storeSelfSections`) échoue (colonnes absentes) → **la vérif Sophie attend 97**.
+
+**Ligne 4 — état (3 nov).** Construit + testé + build vert : traçabilité à l'affirmation (`source_id` porté
+jusqu'à `MatterItem.sourceIds`), orchestration `generate-sections.ts` (règle d'ensemble vide : affirmation sans
+source retirée + log bruyant ; union exacte), caller Anthropic + `storeSelfSections` (tampon `scope='self'`),
+point d'entrée `regenerateSelfSections`. **RESTE** : (1) câblage supersession à la correction — BIFURCATION
+ouverte (une correction = 2 sources : verbatim déclaré côté client + extraction inférée côté serveur ; les
+primitives `liveSelfSourceIdsForQuestion`/`supersedeSources` ne distinguent pas vieux/neuf quand il y a 2
+sources neuves) ; (2) déclencheur de réécriture paresseuse à l'ouverture (couplé à l'affichage, ligne 5/6) ;
+(3) correctif ENTITY à vérifier au rendu ; (4) vérif Sophie (gated sur 97 appliquée). `generateProfileAnalysis`
+écrit TOUJOURS le blob legacy en parallèle (retrait = ligne 7).
+
 90→96 toutes **appliquées** (journal `applied_migrations` + sondes de colonnes ; 96 confirmée appliquée par
 Estelle le 2 nov). Détail et méthode : voir la mémoire `project_migration_journal`. (Rappel : ne jamais
 interroger la base par une route — script CLI qu'Estelle lance elle-même.)
