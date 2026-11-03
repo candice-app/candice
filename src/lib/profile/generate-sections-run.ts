@@ -8,7 +8,8 @@
 //     `source_evidence_ids` = l'union exacte (la CHECK de la migration 97 refuse toute divergence).
 
 import Anthropic from '@anthropic-ai/sdk';
-import type { SectionModelCaller, ModelAffirmation, GeneratedSection } from './generate-sections';
+import { generateAllSections, type SectionModelCaller, type ModelAffirmation, type GeneratedSection } from './generate-sections';
+import { readSocleTags, readSocleFacts, type TagsReadClient } from '../questionnaire/breath-tags';
 
 const anthropic = new Anthropic();
 const MODEL = 'claude-sonnet-4-6'; // aligné sur la prose du projet (non upgradé ici — hors périmètre)
@@ -93,4 +94,23 @@ export async function storeSelfSections(client: SectionStoreClient, userId: stri
     const ins = await client.from('profile_analysis_sections').insert(sectionToRow(userId, s));
     if (ins.error) throw new SectionStoreError(`insert ${s.key}: ${ins.error.message}`);
   }
+}
+
+/**
+ * POINT D'ENTRÉE de la ligne 4 pour le périmètre SELF : lit le JOURNAL (tags + facts résolus par préséance,
+ * supersédées exclues), génère toutes les sections (traçabilité à l'affirmation), les écrit. C'est ce que
+ * Sophie exerce : « mon analyse existe, stockée par section ». Le `call` est injectable (fake en test) et vaut
+ * le modèle réel par défaut. Retourne les sections produites (pour inspection/rapport).
+ */
+export async function regenerateSelfSections(opts: {
+  readClient: TagsReadClient;
+  storeClient: SectionStoreClient;
+  userId: string;
+  call?: SectionModelCaller;
+}): Promise<GeneratedSection[]> {
+  const { tags } = await readSocleTags(opts.readClient, opts.userId);
+  const facts = await readSocleFacts(opts.readClient, opts.userId);
+  const sections = await generateAllSections(tags, facts, opts.call ?? anthropicSectionCaller);
+  await storeSelfSections(opts.storeClient, opts.userId, sections);
+  return sections;
 }
