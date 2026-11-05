@@ -119,6 +119,48 @@ describe('proportionnalité §30.2 — jamais plus d\'affirmations que d\'eviden
     expect(warnings.length).toBe(0);           // 2 affirmations / 2 evidences → conforme
   });
 
+  it('CONVERGENCE exemptée (bornée) : 2 déclarations + 1 tendance sur ≥2 evidences → conforme (cas deep_miss)', () => {
+    const warnings: string[] = [];
+    const m = [matter('G1', ['s1']), matter('G2', ['s2'])]; // 2 evidences (2 garde-fous)
+    const raw: ModelAffirmation[] = [
+      { id: 'a1', type: 'declaration', text: 'g1', treatedKeys: ['G1'] },
+      { id: 'a2', type: 'declaration', text: 'g2', treatedKeys: ['G2'] },
+      { id: 'a3', type: 'tendance', text: 'les deux ensemble', treatedKeys: ['G1', 'G2'] }, // convergence ≥2 ev
+    ];
+    const { affirmations } = resolveAffirmations('deep_miss', m, raw, { warn: (w) => warnings.push(w) });
+    expect(affirmations.length).toBe(3);
+    expect(warnings.length).toBe(0); // 3 affirmations mais 1 convergence exemptée → 2 à charge / 2 evidences
+  });
+
+  it('CONVERGENCE bornée : une seule exemptée — N convergences ne gamment PAS le plafond', () => {
+    const warnings: string[] = [];
+    const m = [matter('G1', ['s1']), matter('G2', ['s2'])]; // 2 evidences
+    // 2 déclarations (une par evidence) + 3 convergences : l'abus que l'exemption bornée doit attraper.
+    const raw: ModelAffirmation[] = [
+      { id: 'a1', type: 'declaration', text: 'g1', treatedKeys: ['G1'] },
+      { id: 'a2', type: 'declaration', text: 'g2', treatedKeys: ['G2'] },
+      { id: 'a3', type: 'tendance', text: 'c1', treatedKeys: ['G1', 'G2'] },
+      { id: 'a4', type: 'tendance', text: 'c2', treatedKeys: ['G1', 'G2'] },
+      { id: 'a5', type: 'implication', text: 'c3', treatedKeys: ['G1', 'G2'] },
+    ];
+    resolveAffirmations('x', m, raw, { warn: (w) => warnings.push(w) });
+    // 5 affirmations, 1 seule convergence exemptée → 4 à charge / 2 evidences → violation.
+    expect(warnings.some((w) => w.includes('PROPORTIONNALITÉ VIOLÉE'))).toBe(true);
+  });
+
+  it('CONVERGENCE : une declaration ≥2 evidences n\'est PAS exemptée (restitue, ne déduit pas) → compte', () => {
+    const warnings: string[] = [];
+    const m = [matter('K1', ['s1']), matter('K2', ['s2'])]; // 2 evidences
+    const raw: ModelAffirmation[] = [
+      { id: 'a1', type: 'declaration', text: 'dit K1 et K2', treatedKeys: ['K1', 'K2'] }, // ≥2 ev MAIS declaration
+      { id: 'a2', type: 'declaration', text: 'k1', treatedKeys: ['K1'] },
+      { id: 'a3', type: 'declaration', text: 'k2', treatedKeys: ['K2'] },
+    ];
+    resolveAffirmations('x', m, raw, { warn: (w) => warnings.push(w) });
+    // a1 n'est pas exemptée (declaration) → 3 à charge / 2 evidences → violation (si exemptée à tort : 2/2 vert)
+    expect(warnings.some((w) => w.includes('PROPORTIONNALITÉ VIOLÉE'))).toBe(true);
+  });
+
   it('ZÉRO evidence résolue : affirmations sur un fact verbatim (fromFact) → signalé bruyamment', () => {
     const warnings: string[] = [];
     const m: MatterItem[] = [{ key: 'singularity.marques_lieux', content: '…', confidence: null, sourceIds: ['sf'], fromFact: true }];

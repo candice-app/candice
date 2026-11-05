@@ -49,7 +49,10 @@ for (const r of rows ?? []) {
   // Synthèses : évidences héritées des détails (union) → on prend secUnion ; détails : évidences de la matière.
   const distinctEv = r.tier === "synthesis" ? secUnion.length : (evBackedByKey.get(r.section_key) ?? secUnion.length);
   const zero = affs.length > 0 && distinctEv === 0;
-  const prop = !zero && affs.length > distinctEv;
+  // Exemption convergence bornée (≥2 ev, tendance|implication, au plus 1) — miroir du détecteur.
+  const convergences = affs.filter((a) => (a.evidence_ids?.length ?? 0) >= 2 && (a.type === "tendance" || a.type === "implication")).length;
+  const chargeable = affs.length - Math.min(1, convergences); // au plus 1 convergence exemptée
+  const prop = !zero && chargeable > distinctEv;
   if (zero) { zeroEv++; zeroEvList.push(`${r.section_key} (${affs.length} aff / 0 ev)`); }
   if (prop) { propViol++; violators.push(`${r.section_key} (${affs.length}>${distinctEv})`); }
   const flag = zero ? " — ZÉRO EVIDENCE ⚠" : prop ? " — PROPORTIONNALITÉ ⚠" : "";

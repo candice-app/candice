@@ -242,14 +242,29 @@ violations**, cas « sous-découpage extraction » : source `onboarding_open` ve
 ligne) ayant produit ZÉRO evidence ; les entités réelles existent sous des sources d'EXTRACTION non câblées dans
 la matière de ces sections. **Aucune sur-lecture du générateur.**
 
-**Re-base FAITE (5 nov) + contrôle ZÉRO EVIDENCE.** Dénominateur re-basé sur les **evidences distinctes de la
-matière** (`MatterItem.fromFact` marque les items verbatim ; dénominateur = items non-fact), + contrôle « section
-à zéro evidence résolue » (affirmations sur du verbatim non extrait → log bruyant, branche `else if`). Mesuré
-(déterministe, `sophie-sections-dump.mts`) sur les 17 : **proportionnalité re-basée = 1** (`deep_miss` 3>2 ;
-`deep_loved` passe au vert — faux positif disparu) ; **zéro evidence = 2** (`univers_marques`, `univers_reves`,
-3 aff / 0 ev). `deep_miss` 3>2 = une affirmation de **convergence** (§30.1, adossée aux 2 garde-fous) : à EXEMPTER
-si Estelle valide (traiter ≥2 clés n'est pas un « extra »). **EN ATTENTE :** (a) exemption convergence ;
-(b) câblage amont des `univers_*` (entités EXTRAITES dans la matière — « montre-moi avant de faire »).
+**Re-base FAITE (5 nov) + contrôle ZÉRO EVIDENCE + exemption CONVERGENCE bornée.** Dénominateur re-basé sur les
+**evidences distinctes de la matière** (`MatterItem.fromFact` marque les items verbatim ; dénominateur = items
+non-fact). Contrôle « zéro evidence résolue » (affirmations sur verbatim non extrait → log bruyant, branche
+`else if`). **Exemption convergence (décision Estelle 5 nov) :** une affirmation citant ≥2 evidences de type
+`tendance`|`implication` (jamais `declaration`) ne compte pas au plafond, **au plus UNE exemptée** (les suivantes
+comptent → pas de gaming ; pas de règle dure « >1 convergence » qui faux-flaggerait une section riche sous budget).
+Mesuré (déterministe, `sophie-sections-dump.mts`) sur les 17 : **proportionnalité = 0** (`deep_miss` au vert par
+l'exemption, `deep_loved` au vert par la re-base) ; **zéro evidence = 2** (`univers_marques`, `univers_reves`).
+**EN ATTENTE :** câblage amont des `univers_*` (ci-dessous) — « montre-moi avant de faire ».
+
+**Lot `univers_*` RÉDUIT À PRESQUE RIEN (5 nov).** Les sources d'EXTRACTION portent `question_code` = la clé du
+champ libre (`SINGULARITY_FACT_FIELDS[fieldKey].factType` = `singularity.marques_lieux` / `singularity.envies_reves`,
+= même clé stable que le verbatim ; `extract-free-text.ts:110`, `QuestionnaireFlow onExtractField`). **Le lien
+existe déjà** → PAS de lot extraction. Le câblage se réduit à : (1) exposer `question_code` sur le tag résolu
+(`readSocleTags` joint `knowledge_sources`) ; (2) un sélecteur `SECTION_SPECS` (kind `questionCode`) qui tire les
+evidences dont la source porte ce code. Entièrement dans la couche read/génération. Gated sur le go d'Estelle.
+
+**Migration 99 — GARDE D'IDENTITÉ DE SOURCE ajoutée (5 nov).** `ON CONFLICT (id) DO NOTHING` est silencieux : un
+id de source appartenant à AUTRUI passerait sans bruit, et les evidences s'accrocheraient à une source invisible
+à l'appelant (provenance illisible = autorité corrompue). Après l'insert source : `PERFORM 1 FROM knowledge_sources
+WHERE id = … AND user_id = v_uid` → sinon `RAISE`. Le RLS ne rend visibles que les siennes → source étrangère =
+NOT FOUND = échec bruyant + rollback. DOCTRINE à graver : **DO NOTHING, JAMAIS DO UPDATE** (journal append-only ;
+une correction = nouvelle ligne + supersession, jamais dernier-arrivé-gagne).
 
 **Proportionnalité §30.2 — DÉFAUT, pas ton (décision Estelle 5 nov).** Règle : *une section ne publie jamais
 plus d'affirmations que d'evidences DISTINCTES*. Détecteur `proportionalityViolation` (pur, testé) + log bruyant

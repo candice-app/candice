@@ -108,14 +108,23 @@ export function resolveAffirmations(
   // facts verbatim (décision Estelle 5 nov : la source dit d'où ça vient, l'evidence dit ce que ça a produit —
   // une source qui produit deux constructs justifie deux affirmations). Détecteur BRUYANT, NON mutant.
   const distinctEvidences = matter.filter((m) => !m.fromFact).length;
+  // EXEMPTION CONVERGENCE (bornée, décision Estelle 5 nov) : une affirmation qui lit À TRAVERS ≥2 evidences
+  // (tendance consolidée / lecture relationnelle) ne consomme aucune matière neuve → hors plafond. MAIS au plus
+  // UNE par section (deux lectures croisées de la même matière = sur-lecture), et JAMAIS une 'declaration'
+  // (elle restitue ce qui a été dit, pas ce qu'on déduit). Hypothèse ≥2 evidences : NON exemptée (compte).
+  const convergences = kept.filter((a) => a.evidence_ids.length >= 2 && (a.type === 'tendance' || a.type === 'implication'));
+  // AU PLUS UNE convergence exemptée : la 1ʳᵉ ne compte pas dans le plafond, les suivantes SI (sinon on gamme
+  // le plafond avec N convergences). Le plafond lui-même attrape l'abus — pas de règle dure « >1 convergence »
+  // qui faux-flaggerait une section riche sous budget.
+  const chargeable = kept.length - Math.min(1, convergences.length);
   if (kept.length > 0 && distinctEvidences === 0) {
     // ZÉRO evidence résolue (§30.2) : affirmations bâties sur du verbatim non extrait. Pas interdit (ce sont
     // les mots de la personne), mais c'est un trou d'extraction sur ce domaine — et un vert de traçabilité qui
     // le cache (la source existe, l'union est exacte, mais aucune connaissance résolue dessous). On le crie.
     logger.warn(`[generate-sections] section "${sectionKey}" : ZÉRO evidence résolue — ${kept.length} affirmation(s) sur du verbatim non extrait (trou d'extraction sur ce domaine).`);
-  } else if (proportionalityViolation(kept.length, distinctEvidences)) {
+  } else if (proportionalityViolation(chargeable, distinctEvidences)) {
     // La stratégie de réduction (relance plafonnée / fusion / retrait) reste une décision produit EN ATTENTE.
-    logger.warn(`[generate-sections] section "${sectionKey}" : PROPORTIONNALITÉ VIOLÉE (§30.2) — ${kept.length} affirmations pour ${distinctEvidences} evidence(s) distincte(s).`);
+    logger.warn(`[generate-sections] section "${sectionKey}" : PROPORTIONNALITÉ VIOLÉE (§30.2) — ${chargeable} affirmation(s) à charge pour ${distinctEvidences} evidence(s) distincte(s)${convergences.length ? ' (1 convergence exemptée)' : ''}.`);
   }
   return { affirmations: kept, sourceEvidenceIds };
 }
