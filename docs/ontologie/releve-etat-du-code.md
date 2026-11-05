@@ -130,18 +130,48 @@ appliquée, l'écriture des sections (`storeSelfSections`) échoue (colonnes abs
 + `supersedePriorVersions` (`supersede.ts`) : supersède les sources vivantes self free-text de la question SAUF
 celles portant l'id de correction courant ; `superseded_by` = source DÉCLARÉE. `created_at` = `DEFAULT now()`
 DB confirmé (`sourceToRow` n'écrit que `ts`). Testé (4 cas). **RESTE** : invoquer `supersedePriorVersions` au
-point d'écriture du verbatim déclaré (double-write, pas encore pinné en prod) + le client qui tire l'uuid et
-l'envoie aux deux écritures.
+point d'écriture du verbatim déclaré (= `produceSocleFact` dans `QuestionnaireFlow.tsx`, PINNÉ — voir
+recensement écrivains) + le client qui tire l'uuid à CHAQUE écriture (règle d'émission 5 nov) et l'envoie aux
+deux écritures ; threader `correctionEventId` dans `produceSocleFact`/`produceSocleAnswer` (fait pour
+`extract-free-text`).
+
+## Recensement des ÉCRIVAINS (2026-11-05) — par voie
+
+⚠ **CORRECTION D'UNE ERREUR À MOI (5 nov).** J'avais écrit (3 nov) que « le socle déclaré n'atteint pas le
+journal en production ». **FAUX.** Cause : `grep` est une fonction shell et saute les fichiers que `file`
+classe « binaires » ; **`src/app/moi/questionnaire/QuestionnaireFlow.tsx` (le flux pilote vivant) est classé
+« data »** → tous mes greps l'ont sauté en silence. Lu avec `grep -a`/Read : il écrit bien le socle déclaré
+(fermé ET verbatim) au journal. Seuls 2 fichiers src sont « binaires » (ce flux + un test) → le recensement
+des 38 lecteurs n'est pas affecté (QuestionnaireFlow est un écrivain, pas un lecteur de connaissance).
+
+| Voie | Point d'écriture (fichier:ligne) | Prod ? | Écrit | question_code | correction_event_id | provenance |
+|---|---|---|---|---|---|---|
+| Socle déclaré (fermé) — attention | `AttentionStep.tsx:251-254` (`produceSocleAnswer`) + legacy `AttentionStep.tsx:227` | **oui** (flag `true`) | journal **+** legacy my_profile | oui | non | declared (niv.1) |
+| Socle déclaré (fermé) — tempérament | `QuestionnaireFlow.tsx:55` (`produceSocleAnswer`) + legacy `:462/:521` | **oui** | journal **+** legacy my_profile | oui | non | declared |
+| Socle déclaré (fermé) — lifestyle | `QuestionnaireFlow.tsx:127` (`produceSocleAnswer`) + legacy `:590/:668` | **oui** | journal **+** legacy my_profile | oui | non | declared |
+| Texte libre — VERBATIM déclaré | `QuestionnaireFlow.tsx:86` (q17), `:725` (singularité), `:825` (pratique) (`produceSocleFact`) + legacy my_profile | **oui** | journal **+** legacy my_profile | oui | non | declared |
+| Texte libre — INFÉRÉ | route `extract-free-text` ← `QuestionnaireFlow.tsx:93,:732` | **oui** | journal seul | oui | **accepté** (route), pas encore envoyé par le client | inferred (niv.5) |
+| Incognito (proche) | `IncognitoFlowCanonical.tsx:59` (`persistIncognitoAnswer`) + legacy `:78` | **oui** (flag `true`) | journal **+** legacy questionnaire_responses | oui (I-codes) | s.o. (voie tierce, hors scope supersession) | reported (rapporteur) |
+
+**Écritures SANS appelant de production (isolées) :**
+- **Côte-à-côte** (`declared_via_relative`, `MODE2_SOURCE_TYPE` `sources.ts:48`) : **défini, AUCUN écrivain** — non implémenté (l'UI proche dit « dès que X aura son profil »).
+- **`writeDouble`** (`double-write.ts:32`) : **aucun appelant de prod** — la double-écriture est faite À LA MAIN dans `QuestionnaireFlow`/`AttentionStep` (legacy upsert PUIS journal, l'échec journal seulement loggué). ⚠ La garantie « journal d'abord, sinon pas de projection » (règle 1 de double-write) **n'est donc PAS en vigueur** : le legacy est écrit AVANT le journal, et un échec journal ne bloque pas le legacy. Divergence silencieuse possible. À remonter avant 7a.
+- **`IncognitoFlow.tsx`** (legacy, saveStage1/2/3 → questionnaire_responses) + Steps non montés via ce chemin : **code mort** (flag incognito `true` → `IncognitoFlowCanonical` seul monté). Meurt en 7a.
+
+**Conséquence pour la ligne 4 :** le journal reçoit les 5 domaines self déclarés en prod → la génération Sophie
+sera nourrie partout (pas « maigre »). Le vrai défaut n'est pas l'écriture du socle (elle existe) mais : (a) la
+double-écriture non atomique (ordre inversé) ; (b) le verbatim déclaré et l'inféré ne portent pas encore
+`correction_event_id` → aucune supersession ne tourne à la correction aujourd'hui (append pur).
 
 **Ligne 4 — état (3 nov).** Construit + testé + build vert : traçabilité à l'affirmation (`source_id` porté
 jusqu'à `MatterItem.sourceIds`), orchestration `generate-sections.ts` (règle d'ensemble vide : affirmation sans
 source retirée + log bruyant ; union exacte), caller Anthropic + `storeSelfSections` (tampon `scope='self'`),
-point d'entrée `regenerateSelfSections`. **RESTE** : (1) câblage supersession à la correction — BIFURCATION
-ouverte (une correction = 2 sources : verbatim déclaré côté client + extraction inférée côté serveur ; les
-primitives `liveSelfSourceIdsForQuestion`/`supersedeSources` ne distinguent pas vieux/neuf quand il y a 2
-sources neuves) ; (2) déclencheur de réécriture paresseuse à l'ouverture (couplé à l'affichage, ligne 5/6) ;
-(3) correctif ENTITY à vérifier au rendu ; (4) vérif Sophie (gated sur 97 appliquée). `generateProfileAnalysis`
-écrit TOUJOURS le blob legacy en parallèle (retrait = ligne 7).
+point d'entrée `regenerateSelfSections`. **RESTE** : (1) câblage supersession à la correction — BIFURCATION RÉSOLUE par la 3ᵉ forme (migration 98,
+`supersedePriorVersions`) ; reste à l'INVOQUER au point d'écriture déclaré (`QuestionnaireFlow`, pinné) + client
+qui tire l'uuid ; (2) déclencheur de réécriture paresseuse à l'ouverture (couplé à l'affichage, ligne 5/6) ;
+(3) correctif ENTITY à vérifier au rendu ; (4) vérif Sophie (gated sur 97+98 appliquées). `generateProfileAnalysis`
+écrit TOUJOURS le blob legacy en parallèle (retrait = ligne 7). *(La note « double-write câblé au seul chemin
+test/Sophie » du 3 nov était FAUSSE — grep sautait QuestionnaireFlow « binaire » ; voir recensement écrivains.)*
 
 90→96 toutes **appliquées** (journal `applied_migrations` + sondes de colonnes ; 96 confirmée appliquée par
 Estelle le 2 nov). Détail et méthode : voir la mémoire `project_migration_journal`. (Rappel : ne jamais

@@ -48,6 +48,11 @@ export interface SourceLookupClient {
 }
 
 /**
+ * @deprecated Remplacée par `oldSelfSourceIdsForCorrection` + `supersedePriorVersions` (3ᵉ forme,
+ *   identité d'évènement de correction). Cette primitive distingue mal « ancien » de « neuf » quand une
+ *   correction crée DEUX sources (verbatim déclaré + extraction). NE PAS la câbler dans un nouveau chemin.
+ *   À SUPPRIMER quand ses tests seront réécrits contre la nouvelle primitive (lot dédié, pas « un jour »).
+ *
  * Renvoie les source_id des anciennes versions d'un champ RÉDIGÉ à superséder lors d'une correction du
  * PILOTE sur lui-même. Scope : (user_id, about, question_code) en base, puis filtre `rapporteur` nul ET
  * voie self free-text. Exclut par construction toute source d'un tiers (côte à côte).
