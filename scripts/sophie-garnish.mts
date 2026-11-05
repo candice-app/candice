@@ -18,7 +18,9 @@ const { extractFreeText } = await import("../src/lib/knowledge-write/extract-fre
 const { accountAbout, asUserId } = await import("../src/lib/knowledge/identity.ts");
 
 const EMAIL = "sophie.test.journal@candice.app";
-const PASSWORD = "Sophie-Test-Journal-2026!"; // fixe, connu, DANS le script seulement (jamais dans la conversation)
+// Mot de passe du compte de test : dans .env.local (SOPHIE_TEST_PASSWORD), JAMAIS en dur ni dans la conversation.
+const PASSWORD = process.env.SOPHIE_TEST_PASSWORD;
+if (!PASSWORD) { console.error("SOPHIE_TEST_PASSWORD absent de .env.local"); process.exit(1); }
 const DISPLAY = "Sophie — COMPTE DE TEST";
 
 const admin = createAdminClient();
