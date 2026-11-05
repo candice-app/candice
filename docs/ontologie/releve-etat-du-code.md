@@ -124,6 +124,15 @@ Lecteurs infra-seule (lisent `my_profile` uniquement pour l'allowlist, et ne lis
 + `scope` sur `profile_analysis_sections`, index GIN inverse, CHECK union exacte. Tant qu'elle n'est pas
 appliquée, l'écriture des sections (`storeSelfSections`) échoue (colonnes absentes) → **la vérif Sophie attend 97**.
 
+**Supersession 3ᵉ forme (5 nov) — LIVRÉ (primitives) :** migration **98** (à appliquer) ajoute
+`knowledge_sources.correction_event_id` + index partiel. `correctionEventId` threadé par `createSourceRecord`
+/`SourceRecord`/`sourceToRow` (et `extract-free-text` lib+route). Nouvelles primitives `oldSelfSourceIdsForCorrection`
++ `supersedePriorVersions` (`supersede.ts`) : supersède les sources vivantes self free-text de la question SAUF
+celles portant l'id de correction courant ; `superseded_by` = source DÉCLARÉE. `created_at` = `DEFAULT now()`
+DB confirmé (`sourceToRow` n'écrit que `ts`). Testé (4 cas). **RESTE** : invoquer `supersedePriorVersions` au
+point d'écriture du verbatim déclaré (double-write, pas encore pinné en prod) + le client qui tire l'uuid et
+l'envoie aux deux écritures.
+
 **Ligne 4 — état (3 nov).** Construit + testé + build vert : traçabilité à l'affirmation (`source_id` porté
 jusqu'à `MatterItem.sourceIds`), orchestration `generate-sections.ts` (règle d'ensemble vide : affirmation sans
 source retirée + log bruyant ; union exacte), caller Anthropic + `storeSelfSections` (tampon `scope='self'`),

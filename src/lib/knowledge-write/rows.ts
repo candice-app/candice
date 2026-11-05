@@ -26,6 +26,7 @@ export interface KnowledgeSourceRow {
   question_text: string | null;
   answer_text: string | null;
   raw_text: string | null;
+  correction_event_id: string | null;
   ts: string;
 }
 
@@ -44,6 +45,7 @@ export function sourceToRow(s: SourceRecord): KnowledgeSourceRow {
     question_text: s.questionText ?? null, // verbatim, jamais tronqué
     answer_text: s.answerText ?? null, // verbatim
     raw_text: s.rawText ?? null, // verbatim
+    correction_event_id: s.correctionEventId ?? null, // 3ᵉ forme (migration 98) ; created_at reste au DEFAULT now() de la base
     ts: s.timestamp,
   };
 }

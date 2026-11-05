@@ -18,9 +18,9 @@ export async function POST(request: NextRequest) {
   const sub = claims?.sub as string | undefined;
   if (!sub) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  const body = (await request.json()) as { entries?: { rawText?: string; fieldContext?: string; questionCode?: string }[]; timestamp?: string };
+  const body = (await request.json()) as { entries?: { rawText?: string; fieldContext?: string; questionCode?: string; correctionEventId?: string }[]; timestamp?: string };
   const all = (body.entries ?? []).filter(
-    (e): e is { rawText: string; fieldContext: string; questionCode?: string } => !!e?.rawText?.trim() && !!e?.fieldContext,
+    (e): e is { rawText: string; fieldContext: string; questionCode?: string; correctionEventId?: string } => !!e?.rawText?.trim() && !!e?.fieldContext,
   );
   // IDENTIFIANT STABLE OBLIGATOIRE : une extraction SANS questionCode produirait des inférences jamais
   // supersédables (une correction future ne les nettoierait pas). On REFUSE bruyamment, on ne l'écrit pas.
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
   // n'empêche pas les autres et ne casse jamais le parcours (le FACT déclaré est déjà écrit côté client).
   const results = await Promise.allSettled(
     entries.map((e) =>
-      extractFreeText(client, { about, ownerId, rawText: e.rawText, fieldContext: e.fieldContext, timestamp, questionCode: e.questionCode }),
+      extractFreeText(client, { about, ownerId, rawText: e.rawText, fieldContext: e.fieldContext, timestamp, questionCode: e.questionCode, correctionEventId: e.correctionEventId }),
     ),
   );
   const extracted = results.filter((r) => r.status === "fulfilled").length;

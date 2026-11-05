@@ -38,7 +38,7 @@ export class SupersedeError extends Error {}
 
 const SELF_FREETEXT_SOURCE_TYPES = new Set(['onboarding_open', 'extraction_inferred']);
 
-interface SourceRow { id: string; rapporteur: string | null; source_type: string }
+interface SourceRow { id: string; rapporteur: string | null; source_type: string; correction_event_id?: string | null }
 export interface SourceLookupClient {
   from(table: string): {
     select(cols: string): {
@@ -66,6 +66,44 @@ export async function liveSelfSourceIdsForQuestion(
   return ((data ?? []) as SourceRow[])
     .filter((s) => (s.rapporteur == null) && SELF_FREETEXT_SOURCE_TYPES.has(s.source_type)) // self + même voie ; exclut le côte à côte
     .map((s) => s.id);
+}
+
+/**
+ * 3ᵉ FORME (décision Estelle 5 nov) — supersession par IDENTITÉ D'ÉVÈNEMENT DE CORRECTION. Rend les source_id
+ * des ANCIENNES versions d'un champ RÉDIGÉ par le pilote sur lui-même, à superséder lors d'une correction :
+ * toutes les sources vivantes self free-text de (user_id, about, question_code) **SAUF celles qui portent
+ * `correctionEventId`** (les DEUX sources de la correction courante — verbatim déclaré + extraction — le
+ * portent). Aucune dépendance à une horloge ; les sources pré-identifiant (correction_event_id NULL) sont
+ * d'anciennes versions → supersédées. Exclut par construction toute source d'un tiers (côte à côte).
+ */
+export async function oldSelfSourceIdsForCorrection(
+  client: SourceLookupClient,
+  input: { ownerId: string; aboutKind: string; aboutId: string; questionCode: string; correctionEventId: string },
+): Promise<string[]> {
+  if (!input.questionCode?.trim()) throw new SupersedeError('oldSelfSourceIdsForCorrection: questionCode vide (clé de supersession manquante)');
+  if (!input.correctionEventId?.trim()) throw new SupersedeError('oldSelfSourceIdsForCorrection: correctionEventId vide (sans lui, on supersèderait les sources de la correction courante)');
+  const { data, error } = await client.from('knowledge_sources')
+    .select('id, rapporteur, source_type, correction_event_id')
+    .match({ user_id: input.ownerId, about_kind: input.aboutKind, about_id: input.aboutId, question_code: input.questionCode });
+  if (error) throw new SupersedeError(`lookup sources (correction): ${error.message}`);
+  return ((data ?? []) as SourceRow[])
+    .filter((s) => (s.rapporteur == null) && SELF_FREETEXT_SOURCE_TYPES.has(s.source_type)) // self + même voie ; exclut le côte à côte
+    .filter((s) => s.correction_event_id !== input.correctionEventId)                        // ÉPARGNE les sources de CETTE correction
+    .map((s) => s.id);
+}
+
+/**
+ * Supersède les versions antérieures d'un champ corrigé par le pilote (3ᵉ forme), `superseded_by` = la source
+ * du VERBATIM DÉCLARÉ (`declaredSourceId`), jamais l'extraction (« ta nouvelle réponse » est une réponse ;
+ * « une inférence du modèle » n'en est pas une). Idempotent (n'écrase pas une supersession déjà posée).
+ */
+export async function supersedePriorVersions(
+  lookup: SourceLookupClient,
+  mark: SupersedeClient,
+  input: { ownerId: string; aboutKind: string; aboutId: string; questionCode: string; correctionEventId: string; declaredSourceId: string; timestamp: string },
+): Promise<void> {
+  const oldSourceIds = await oldSelfSourceIdsForCorrection(lookup, input);
+  await supersedeSources(mark, { oldSourceIds, newSourceId: input.declaredSourceId, timestamp: input.timestamp });
 }
 
 /** Tables restituables portant le marqueur (migration 95). Les trois sont marquées ensemble. */

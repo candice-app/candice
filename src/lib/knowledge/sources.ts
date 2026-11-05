@@ -240,6 +240,10 @@ export interface SourceRecord extends KnowledgeScope {
   readonly timestamp: string;
   /** Qui rapporte, uniquement pour reported_by_relative. */
   readonly rapporteur?: string;
+  /** Identité de l'ÉVÈNEMENT de correction (3ᵉ forme, ligne 4) : uuid tiré par le client et porté par les
+   *  DEUX sources d'une même correction (verbatim déclaré + extraction). La supersession épargne les sources
+   *  qui le portent. Absent quand l'écriture n'est pas une correction/réponse horodatée par un évènement. */
+  readonly correctionEventId?: string;
   /** Traçabilité source → evidences / FACT / connaissance ouverte produits (HSG §47). */
   readonly producedEvidenceIds?: string[];
   readonly producedFactIds?: string[];
@@ -257,6 +261,7 @@ export interface CreateSourceInput extends KnowledgeScope {
   branchId?: string;
   timestamp: string;
   rapporteur?: string;
+  correctionEventId?: string;
 }
 
 /**
@@ -278,6 +283,7 @@ export function createSourceRecord(input: CreateSourceInput): SourceRecord {
     branchId: input.branchId,
     timestamp: input.timestamp,
     rapporteur: input.rapporteur,
+    correctionEventId: input.correctionEventId,
     producedEvidenceIds: [],
     producedFactIds: [],
     producedOpenKnowledgeIds: [],
