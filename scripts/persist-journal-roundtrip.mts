@@ -15,7 +15,10 @@ for (const line of readFileSync(new URL("../.env.local", import.meta.url), "utf8
 const { createAdminClient } = await import("../src/utils/supabase/admin.ts");
 
 const EMAIL = "sophie.test.journal@candice.app";
-const PASSWORD = "Sophie-Test-Journal-2026!"; // test only, DANS le script (jamais dans la conversation)
+// Mot de passe du compte de test lu depuis l'ENV (jamais en dur dans le dépôt). Le mettre dans .env.local :
+//   SOPHIE_TEST_PASSWORD=...   (même valeur que sophie-garnish.mts utilise pour créer le compte)
+const PASSWORD = process.env.SOPHIE_TEST_PASSWORD;
+if (!PASSWORD) { console.error("SOPHIE_TEST_PASSWORD absent de .env.local — requis pour s'authentifier comme Sophie"); process.exit(1); }
 
 const anon = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!);
 const { data: auth, error: authErr } = await anon.auth.signInWithPassword({ email: EMAIL, password: PASSWORD });
