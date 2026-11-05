@@ -25,7 +25,8 @@ const { data: rows, error } = await admin.from("profile_analysis_sections")
 if (error) { console.error("ERR:", error.message); process.exit(1); }
 
 type Aff = { id: string; type: string; text: string; evidence_ids: string[] };
-let empty = 0, unionOk = 0;
+let empty = 0, unionOk = 0, propViol = 0;
+const violators: string[] = [];
 console.log(`# SECTIONS STOCKÉES — SOPHIE (${rows?.length} lignes, scope=self)\n`);
 for (const r of rows ?? []) {
   const affs: Aff[] = Array.isArray(r.affirmations) ? r.affirmations : [];
@@ -35,9 +36,13 @@ for (const r of rows ?? []) {
   const secUnion = [...(r.source_evidence_ids ?? [])].sort();
   const match = JSON.stringify(union) === JSON.stringify(secUnion);
   if (match) unionOk++;
-  console.log(`### ${r.section_key} [${r.tier}]${isEmpty ? " — VIDE" : ""}${r.depends_on_sections?.length ? ` ← ${r.depends_on_sections.join(",")}` : ""}`);
-  console.log(`   affirmations=${affs.length} · source_evidence_ids=${secUnion.length} · union-exacte=${match ? "OUI" : "NON ⚠"}`);
+  // §30.2 : jamais plus d'affirmations que d'evidences distinctes.
+  const prop = affs.length > secUnion.length;
+  if (prop) { propViol++; violators.push(`${r.section_key} (${affs.length}>${secUnion.length})`); }
+  console.log(`### ${r.section_key} [${r.tier}]${isEmpty ? " — VIDE" : ""}${prop ? " — PROPORTIONNALITÉ ⚠" : ""}${r.depends_on_sections?.length ? ` ← ${r.depends_on_sections.join(",")}` : ""}`);
+  console.log(`   affirmations=${affs.length} · source_evidence_ids=${secUnion.length} · union-exacte=${match ? "OUI" : "NON ⚠"} · proportionnalité=${prop ? "VIOLÉE ⚠" : "OK"}`);
   for (const a of affs) console.log(`   • (${a.type}) ev=[${(a.evidence_ids ?? []).length}] ${(a.evidence_ids ?? []).length === 0 ? "∅ ⚠" : ""} « ${a.text.slice(0, 90)}${a.text.length > 90 ? "…" : ""} »`);
   console.log("");
 }
 console.log(`## RÉCAP : ${rows?.length} sections · vides=${empty} · union-exacte OK=${unionOk}/${rows?.length} · affirmations sans evidence=${(rows ?? []).flatMap((r) => (Array.isArray(r.affirmations) ? r.affirmations : []) as Aff[]).filter((a) => (a.evidence_ids ?? []).length === 0).length}`);
+console.log(`## PROPORTIONNALITÉ (§30.2) : ${propViol} section(s) en violation${propViol ? " → " + violators.join(", ") : ""}`);

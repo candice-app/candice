@@ -1,6 +1,6 @@
 // Orchestration de la génération par section (ligne 4) — logique PURE, modèle factice, pas de réseau ni base.
 import { describe, expect, it, vi } from 'vitest';
-import { resolveAffirmations, assembleText, generateAllSections, type ModelAffirmation, type SectionModelCaller } from '../generate-sections';
+import { resolveAffirmations, assembleText, generateAllSections, proportionalityViolation, type ModelAffirmation, type SectionModelCaller } from '../generate-sections';
 import type { AttentionBreathTag, SocleFact } from '../../questionnaire/breath-tags';
 import type { MatterItem } from '../profile-sections';
 
@@ -81,5 +81,28 @@ describe('generateAllSections — détails puis synthèses, synthèse hérite de
     const tables = out.find((s) => s.key === 'monde_tables')!;
     expect(tables.text).toBe('');
     expect(tables.sourceEvidenceIds).toEqual([]);
+  });
+});
+
+describe('proportionnalité §30.2 — jamais plus d\'affirmations que d\'evidences distinctes', () => {
+  it('détecte la violation (N affirmations > M evidences distinctes) et l\'épargne au cas conforme', () => {
+    expect(proportionalityViolation(3, 1)).toBe(true);   // 3 affirmations, 1 preuve → inférences habillées
+    expect(proportionalityViolation(2, 2)).toBe(false);  // autant d'affirmations que de preuves → conforme
+    expect(proportionalityViolation(1, 3)).toBe(false);  // moins d'affirmations que de preuves → conforme
+    expect(proportionalityViolation(0, 0)).toBe(false);  // section vide → conforme
+  });
+
+  it('resolveAffirmations LOGUE la violation (3 affirmations adossées à 1 seule evidence)', () => {
+    const warnings: string[] = [];
+    const m = [matter('K', ['s1'])]; // une seule source distincte
+    const raw: ModelAffirmation[] = [
+      { id: 'a1', type: 'declaration', text: 'une', treatedKeys: ['K'] },
+      { id: 'a2', type: 'hypothese', text: 'deux', treatedKeys: ['K'] },
+      { id: 'a3', type: 'hypothese', text: 'trois', treatedKeys: ['K'] },
+    ];
+    const { affirmations, sourceEvidenceIds } = resolveAffirmations('univers_marques', m, raw, { warn: (w) => warnings.push(w) });
+    expect(affirmations.length).toBe(3);
+    expect(sourceEvidenceIds).toEqual(['s1']); // 1 evidence distincte
+    expect(warnings.some((w) => w.includes('PROPORTIONNALITÉ VIOLÉE'))).toBe(true);
   });
 });

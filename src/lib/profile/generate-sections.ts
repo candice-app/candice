@@ -58,6 +58,16 @@ export interface SectionModelCaller {
 export interface GenLogger { warn(msg: string): void; }
 const defaultLogger: GenLogger = { warn: (m) => console.warn(m) };
 
+/**
+ * CONTRÔLE DE PROPORTIONNALITÉ (§30.2.6 + décision Estelle 5 nov) : une section ne publie JAMAIS plus
+ * d'affirmations qu'elle n'a d'EVIDENCES DISTINCTES. Au-delà, des affirmations sont des inférences habillées
+ * en observations (« plusieurs reformulations d'une même réponse ne comptent pas comme preuves indépendantes »).
+ * Mécaniquement vérifiable, comme l'union exacte. Pur et testable.
+ */
+export function proportionalityViolation(affirmationCount: number, distinctEvidenceCount: number): boolean {
+  return affirmationCount > distinctEvidenceCount;
+}
+
 /** Dédoublonne en conservant l'ordre de première apparition (l'ordre n'importe pas pour la CHECK, qui trie). */
 function uniq(ids: readonly string[]): string[] {
   const seen = new Set<string>();
@@ -94,6 +104,11 @@ export function resolveAffirmations(
     kept.push({ id: a.id, type: a.type, text: a.text, evidence_ids: evidenceIds });
   }
   const sourceEvidenceIds = uniq(kept.flatMap((a) => a.evidence_ids));
+  // Détecteur BRUYANT, NON mutant ici : la stratégie de réduction (relance plafonnée / fusion / retrait des
+  // moins soutenues) est une décision produit — tant qu'elle n'est pas arrêtée, on SIGNALE sans trancher.
+  if (proportionalityViolation(kept.length, sourceEvidenceIds.length)) {
+    logger.warn(`[generate-sections] section "${sectionKey}" : PROPORTIONNALITÉ VIOLÉE (§30.2) — ${kept.length} affirmations pour ${sourceEvidenceIds.length} evidence(s) distincte(s) ; ${kept.length - sourceEvidenceIds.length} affirmation(s) sans preuve propre.`);
+  }
   return { affirmations: kept, sourceEvidenceIds };
 }
 
