@@ -120,11 +120,10 @@ Lecteurs infra-seule (lisent `my_profile` uniquement pour l'allowlist, et ne lis
 
 ## État réel des migrations (vérifié en base le 2026-11-02)
 
-**97 ÉCRITE, à appliquer par Estelle** (`supabase-migration-97-affirmations-scope.sql`) : `affirmations JSONB`
-+ `scope` sur `profile_analysis_sections`, index GIN inverse, CHECK union exacte. Tant qu'elle n'est pas
-appliquée, l'écriture des sections (`storeSelfSections`) échoue (colonnes absentes) → **la vérif Sophie attend 97**.
+**97 APPLIQUÉE** (Estelle, 5 nov ; `supabase-migration-97-affirmations-scope.sql`) : `affirmations JSONB`
++ `scope` sur `profile_analysis_sections`, index GIN inverse, CHECK union exacte. La vérif Sophie peut tourner.
 
-**Supersession 3ᵉ forme (5 nov) — LIVRÉ (primitives) :** migration **98** (à appliquer) ajoute
+**Supersession 3ᵉ forme (5 nov) — LIVRÉ (primitives) :** migration **98 APPLIQUÉE** (Estelle, 5 nov) ajoute
 `knowledge_sources.correction_event_id` + index partiel. `correctionEventId` threadé par `createSourceRecord`
 /`SourceRecord`/`sourceToRow` (et `extract-free-text` lib+route). Nouvelles primitives `oldSelfSourceIdsForCorrection`
 + `supersedePriorVersions` (`supersede.ts`) : supersède les sources vivantes self free-text de la question SAUF
@@ -144,6 +143,23 @@ classe « binaires » ; **`src/app/moi/questionnaire/QuestionnaireFlow.tsx` (le 
 (fermé ET verbatim) au journal. Seuls 2 fichiers src sont « binaires » (ce flux + un test) → le recensement
 des 38 lecteurs n'est pas affecté (QuestionnaireFlow est un écrivain, pas un lecteur de connaissance).
 
+**POURQUOI `QuestionnaireFlow.tsx` est classé « data » (5 nov).** Un octet **NUL (`0x00`)** à la ligne 747,
+inséré DÉLIBÉRÉMENT entre `${question_text}` et `${raw_text}` comme séparateur de clé composite (le test
+`field-extraction.test.ts` le documente : « séparateur null »). Ce n'est pas un octet parasite — c'est un
+sentinel voulu. Conséquence : `grep`, `file`, certains éditeurs et diffs le traitent en binaire. Les 2 seuls
+fichiers src « data » sont ce flux + ce test. **Décision de la suite = Estelle** (garder le NUL, ou le remplacer
+par un sentinel imprimable).
+
+**RE-JEU du recensement des lecteurs avec `-a` (5 nov) — PROUVÉ, pas déduit.** `grep -a` sur les 3 stores
+legacy (`my_profile|questionnaire_responses|profile_analysis`) ajoute **exactement 1** fichier au set vu par
+`grep` nu : `QuestionnaireFlow.tsx`, et il n'y touche que par `.upsert` (8 écritures, **zéro `.select`**) → c'est
+un ÉCRIVAIN de projection, pas un lecteur. L'autre fichier binaire (`field-extraction.test.ts`) ne cite aucun
+store legacy. **→ le compte des 38 lecteurs ne bouge pas : il reste 38.**
+
+**RÈGLE DE MÉTHODE PERMANENTE (5 nov).** Tout recensement futur utilise `grep -a` (ou une lecture directe),
+JAMAIS `grep` nu, et **annonce dans son résultat, en une ligne, le nombre de fichiers classés binaires** par
+`file`. Un `grep` nu saute les binaires en silence : tout recensement rendu par `grep` nu est suspect.
+
 | Voie | Point d'écriture (fichier:ligne) | Prod ? | Écrit | question_code | correction_event_id | provenance |
 |---|---|---|---|---|---|---|
 | Socle déclaré (fermé) — attention | `AttentionStep.tsx:251-254` (`produceSocleAnswer`) + legacy `AttentionStep.tsx:227` | **oui** (flag `true`) | journal **+** legacy my_profile | oui | non | declared (niv.1) |
@@ -154,7 +170,7 @@ des 38 lecteurs n'est pas affecté (QuestionnaireFlow est un écrivain, pas un l
 | Incognito (proche) | `IncognitoFlowCanonical.tsx:59` (`persistIncognitoAnswer`) + legacy `:78` | **oui** (flag `true`) | journal **+** legacy questionnaire_responses | oui (I-codes) | s.o. (voie tierce, hors scope supersession) | reported (rapporteur) |
 
 **Écritures SANS appelant de production (isolées) :**
-- **Côte-à-côte** (`declared_via_relative`, `MODE2_SOURCE_TYPE` `sources.ts:48`) : **défini, AUCUN écrivain** — non implémenté (l'UI proche dit « dès que X aura son profil »).
+- **Côte-à-côte** (`declared_via_relative`, `MODE2_SOURCE_TYPE` `sources.ts:48`) : **défini, AUCUN écrivain** — non implémenté (l'UI proche dit « dès que X aura son profil »). ⚠ Conséquence : le test côte-à-côte « cas Julie » (`supersession-correction.test.ts`) garde un cas INATTEIGNABLE en prod — il passe au vert en prouvant le filtre unitaire, pas une réalité. Renommé **`vide_jusqu_a_7bis`** ; **à REJOUER contre de vraies lignes côte-à-côte quand la voie sera câblée (7bis)**. (Un 2ᵉ test côte-à-côte Julie existe dans `supersession.test.ts`, mais il garde la primitive DÉPRÉCIÉE `liveSelfSourceIdsForQuestion` et meurt avec elle — lot dédié.)
 - **`writeDouble`** (`double-write.ts:32`) : **aucun appelant de prod** — la double-écriture est faite À LA MAIN dans `QuestionnaireFlow`/`AttentionStep` (legacy upsert PUIS journal, l'échec journal seulement loggué). ⚠ La garantie « journal d'abord, sinon pas de projection » (règle 1 de double-write) **n'est donc PAS en vigueur** : le legacy est écrit AVANT le journal, et un échec journal ne bloque pas le legacy. Divergence silencieuse possible. À remonter avant 7a.
 - **`IncognitoFlow.tsx`** (legacy, saveStage1/2/3 → questionnaire_responses) + Steps non montés via ce chemin : **code mort** (flag incognito `true` → `IncognitoFlowCanonical` seul monté). Meurt en 7a.
 

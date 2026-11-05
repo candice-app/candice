@@ -22,7 +22,11 @@ describe('oldSelfSourceIdsForCorrection — épargne les sources de la correctio
     expect(ids).not.toContain('new-extract');                   // ni l'extraction de la correction courante
   });
 
-  it('CÔTE À CÔTE : une source de tiers (rapporteur renseigné) n\'est jamais supersédée', async () => {
+  // vide_jusqu_a_7bis — AUCUN écrivain ne crée aujourd'hui de ligne côte-à-côte (voie declared_via_relative /
+  // reported_by_relative définie à sources.ts:48, sans producteur). Ce test garde donc un cas INATTEIGNABLE en
+  // prod : il passe au vert en prouvant le filtre unitaire, pas une réalité. À REJOUER contre de vraies lignes
+  // côte-à-côte quand la voie sera câblée (lot 7bis).
+  it('CÔTE À CÔTE (cas Julie) — vide_jusqu_a_7bis : une source de tiers (rapporteur renseigné) n\'est jamais supersédée', async () => {
     const rows = [
       { id: 'old', rapporteur: null, source_type: 'onboarding_open', correction_event_id: 'corr-old' },
       { id: 'julie', rapporteur: 'julie-id', source_type: 'reported_by_relative', correction_event_id: null },
