@@ -2605,6 +2605,8 @@ Cette clé sépare, au minimum :
 
 C'est une règle **sémantique de LECTURE**, pas une mutation. Rien n'est marqué `superseded` en base, **rien n'est supprimé** : le « superseded » est **dérivé** de l'horodatage. L'append reste intact ; l'historique complet est interrogeable.
 
+> **Corollaire d'écriture (dicté le 5 nov) — `DO NOTHING`, JAMAIS `DO UPDATE`.** Le journal est en **append seul**. Toute écriture idempotente dans la base (ex. l'`ON CONFLICT (id)` de `persist_journal`) se résout en `DO NOTHING` : une ligne déjà écrite ne se modifie jamais. Une correction crée une **nouvelle ligne** et supersède l'ancienne (par la récence ci-dessus) ; un `DO UPDATE` ferait du **dernier-arrivé-gagne** et violerait l'invariant central. Ce n'est pas un oubli : personne ne « corrige » un `DO NOTHING` en `DO UPDATE`.
+
 ## Édition d'une réponse
 
 Corriger une réponse = un **nouvel acte d'acquisition** (nouvelle source, `ts` postérieur, nouvelles evidences). L'ancienne evidence **reste**. La projection cesse de la retenir (récence), mais elle n'est ni marquée ni effacée.

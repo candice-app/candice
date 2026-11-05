@@ -14,6 +14,12 @@
 --   • ON CONFLICT (id) DO NOTHING sur les 4 inserts : les id sont générés CÔTE CLIENT → une collision = la
 --     MÊME écriture logique. Un retry (file locale qui repousse après un commit non confirmé) devient un no-op.
 --     C'est ce qui rend `RETURNS void` honnête : un appel réussi veut dire « c'est en base », écrit ou no-op.
+--     DO NOTHING et JAMAIS DO UPDATE : le journal est en APPEND SEUL. Une correction crée une NOUVELLE ligne et
+--     supersède l'ancienne ; un DO UPDATE ferait du dernier-arrivé-gagne et violerait l'invariant central. Ce
+--     n'est pas un oubli — ne le « corrige » pas.
+--   • GARDE D'IDENTITÉ DE SOURCE après l'insert : DO NOTHING étant silencieux, un id de source APPARTENANT À UN
+--     AUTRE détenteur passerait sans bruit et les evidences s'accrocheraient à une source invisible à l'appelant
+--     (provenance illisible = autorité corrompue). On vérifie donc que la source est à v_uid, sinon on lève.
 --   • Le MAPPING CANONIQUE reste en TypeScript : cette fonction n'est qu'un PERSISTEUR qui reçoit du JSONB.
 --   • created_at N'EST PAS inséré → DEFAULT now() (récence = horloge base). `ts` (horloge client) EST inséré.
 --     Les listes de colonnes = exactement ce que rows.ts écrit, created_at omis.
@@ -50,6 +56,13 @@ BEGIN
          branch_id, rapporteur, question_text, answer_text, raw_text, correction_event_id, ts
   FROM jsonb_populate_record(null::knowledge_sources, p_source)
   ON CONFLICT (id) DO NOTHING;
+
+  -- GARDE D'IDENTITÉ : la source doit exister ET appartenir à v_uid. Le RLS ne rend visibles que les siennes,
+  -- donc un id appartenant à autrui → NOT FOUND → on lève (jamais d'evidences accrochées à une source étrangère).
+  PERFORM 1 FROM knowledge_sources WHERE id = (p_source->>'id')::uuid AND user_id = v_uid;
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'persist_journal: source % absente ou appartenant a un autre detenteur', p_source->>'id';
+  END IF;
 
   -- 2. EVIDENCES (chacune référence source_id ; FK + CHECK par famille gérées par la base).
   INSERT INTO knowledge_evidences
