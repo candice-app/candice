@@ -192,3 +192,43 @@ test/Sophie » du 3 nov était FAUSSE — grep sautait QuestionnaireFlow « bina
 90→96 toutes **appliquées** (journal `applied_migrations` + sondes de colonnes ; 96 confirmée appliquée par
 Estelle le 2 nov). Détail et méthode : voir la mémoire `project_migration_journal`. (Rappel : ne jamais
 interroger la base par une route — script CLI qu'Estelle lance elle-même.)
+
+## Lot DOUBLE-ÉCRITURE — option C (décision Estelle 5 nov)
+
+**Cadre.** Ni A (ordre seul) ni B (transaction + rapatriement projection). **C = atomicité du JOURNAL seul.**
+Découverte déclencheuse : `persistKnowledge` fait **4 `.insert()` séparés** → une source peut atterrir sans ses
+evidences = **corruption de l'autorité** (le seul dégât qui survit à la 7b). La projection `my_profile` reste où
+elle est (hors transaction) : une projection se **reconstruit**, elle ne se perd pas.
+
+**Ordre (verrouillé) :** 1) RPC `persist_journal` (4 inserts → 1 commit) — *migration écrite, Estelle applique* ;
+2) `writeDouble` câblé par-dessus (journal d'abord, projection après, `DivergenceError` si projection KO) ;
+3) retry + message doux, **texte relu avant d'être posé** ; 4) *puis seulement* émission uuid à chaque écriture
++ invocation supersession.
+
+**Migration 99 ÉCRITE, à appliquer par Estelle** (`supabase-migration-99-persist-journal.sql`) :
+`CREATE FUNCTION public.persist_journal(p_source, p_evidences, p_facts, p_open jsonb)`, `SECURITY INVOKER`
+(RLS owner-only inchangé, zéro service_role, zéro route), mapping canonique **reste en TS** (fonction = pur
+perséiteur JSONB). `created_at` **non inséré** → DEFAULT now() ; `ts` inséré. Colonnes = exactement `rows.ts`.
+Additive : **rien ne l'appelle tant que `persistKnowledge` n'est pas recâblé** (migration-first : appliquer AVANT
+de déployer le câblage). **RESTE (gated sur apply) :** recâbler `persistKnowledge` (N inserts → `rpc`), étendre
+`WriteClient` (+`.rpc`) et les fakes, câbler `writeDouble`, retry+texte.
+
+**Proportionnalité §30.2 — DÉFAUT, pas ton (décision Estelle 5 nov).** Règle : *une section ne publie jamais
+plus d'affirmations que d'evidences DISTINCTES*. Détecteur `proportionalityViolation` (pur, testé) + log bruyant
+dans `resolveAffirmations` (**non mutant** : la stratégie de réduction — relance plafonnée / fusion / retrait
+des moins soutenues — est une décision produit EN ATTENTE). Mesuré sur Sophie : **4 / 17 en violation** —
+`deep_loved` (10>9), `deep_miss` (3>2), `univers_marques` (3>1), `univers_reves` (3>1). Pas encore de CHECK DB
+(elle casserait la génération sur ces 4 tant que l'enforcement n'existe pas).
+
+**NUL → jeton imprimable (fait).** Le séparateur de clé composite `\u0000` (ligne 747 + `doneKey`) est remplacé
+par `FIELD_KEY_SEP = '__CANDICE_KEYSEP__'` (source unique, exportée de `field-extraction.ts`). **Non persisté**
+(clé en mémoire, reconstruite de `question_text`/`raw_text` ; `ResumePrompt` ne stocke qu'un brouillon
+my_profile) → **aucune migration**. Effet : **0 fichier src classé binaire** (les 2 seuls le devaient à ce NUL)
+→ la règle méthode `grep -a` reste, mais le piège est retiré à la source.
+
+**resolve vs supersede — distinction à garder (facile à oublier).** Sophie : 76 evidences → 56 tags résolus par
+**préséance/récence** (chemin `resolve` PROUVÉ). Le chemin `supersede` n'est PAS encore exercé (aucun
+`correction_event_id` porté — gated derrière le chemin d'écriture, étape 4 de l'ordre).
+
+**2ᵉ test Julie marqué.** `supersession.test.ts` (primitive dépréciée `liveSelfSourceIdsForQuestion`) porte
+aussi `vide_jusqu_a_7bis` ; meurt avec sa primitive.
