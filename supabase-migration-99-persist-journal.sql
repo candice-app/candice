@@ -111,4 +111,11 @@ REVOKE ALL ON FUNCTION public.persist_journal(jsonb, jsonb, jsonb, jsonb) FROM P
 GRANT EXECUTE ON FUNCTION public.persist_journal(jsonb, jsonb, jsonb, jsonb) TO authenticated;
 
 -- Auto-enregistrement (convention applied_migrations, dès la 83 — dernière instruction).
-INSERT INTO applied_migrations (migration) VALUES ('99-persist-journal') ON CONFLICT DO NOTHING;
+-- CONVENTION (fixée 95→98) : colonne `filename`, NOM COMPLET du fichier, insert CONDITIONNEL (pas de
+-- ON CONFLICT : la PK de applied_migrations casserait si deux migrations partageaient une valeur).
+INSERT INTO applied_migrations (filename)
+SELECT 'supabase-migration-99-persist-journal.sql'
+WHERE NOT EXISTS (
+  SELECT 1 FROM applied_migrations
+  WHERE filename = 'supabase-migration-99-persist-journal.sql'
+);
