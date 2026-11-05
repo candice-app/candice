@@ -285,3 +285,50 @@ my_profile) → **aucune migration**. Effet : **0 fichier src classé binaire** 
 
 **2ᵉ test Julie marqué.** `supersession.test.ts` (primitive dépréciée `liveSelfSourceIdsForQuestion`) porte
 aussi `vide_jusqu_a_7bis` ; meurt avec sa primitive.
+
+---
+
+## LIGNE 5 — premier éclat (lecteur owner-only des sections du journal) + constat deux-moteurs (5 nov)
+
+**DEUX MOTEURS D'ANALYSE COEXISTENT, et c'est l'hérité qu'on lit.** Constat du diagnostic « fiche Sophie vide ».
+
+- **Moteur hérité** `generateProfileAnalysis.ts` → écrit `profile_analysis` (singulier). Matière = `my_profile`
+  (+ `memories`), JAMAIS le journal. **Zéro traçabilité** : la ligne porte du narratif (`summary`, `sections:{text,chips,more}`,
+  `modes`…), aucun `evidence_ids`, aucune affirmation adossée. **Tourne en PROD** : appelé fire-and-forget par
+  `/api/profile/generate` (après chaque partie du questionnaire), `/api/discovery/answer`, `/api/memories/situation`,
+  et déclenché au montage de `/moi` (`GenerateAnalysisOnMount` quand `attention_reception && !analysis`).
+- **Moteur journal** (ligne 4) `generate-sections.ts`/`storeSelfSections` → écrit `profile_analysis_sections` (pluriel).
+  Matière = `knowledge_*`. Porte la traçabilité à l'affirmation (`[{id,type,text,evidence_ids}]`), les 4 niveaux §30.1,
+  la proportionnalité, le zéro-evidence, l'exemption convergence. **Rien ne le rend** (0 lecteur applicatif avant ce lot).
+- **La fiche `/moi` lit le couple hérité** `my_profile` + `profile_analysis`. Tout ce qu'on affine depuis des semaines
+  s'applique au moteur que personne ne voit.
+- **CONSÉQUENCE SUR 7a** : ce n'est pas seulement « migrer 38 lecteurs », c'est **débrancher un moteur vivant** qui
+  produit aujourd'hui ce que les gens lisent. Périmètre élargi — à acter avant 7a.
+
+**Lecteur owner-only `/moi/sections` (fait — `src/app/moi/sections/page.tsx`).** Décision Estelle : ce n'est pas du
+debug, c'est le plus petit morceau utile du rendu de la ligne 5. Composant serveur, client RLS de l'appelant
+(`pas_owner`, migration 92 : `FOR ALL USING auth.uid()=user_id`), **zéro client admin, aucune route à droits élargis**.
+Rendu brut, aucun design (la maquette gelée viendra plus tard). Rend les **trois exigences** : (1) texte de chaque
+section ; (2) par affirmation, ses evidence ids + le verbatim derrière (résolu via `knowledge_sources`
+question_text/answer_text/raw_text, owner-only) ; (3) le niveau d'interprétation (déclaration/tendance/hypothèse/
+implication, libellés §30.1). Le niveau est le point jamais vérifié : les dumps prouvent qu'il est *posé*, pas qu'il se
+*lit* juste — seule Estelle peut le dire en lisant.
+**Vérif du chemin owner-only** (`scripts/sophie-sections-reader-check.mts`, authentifié COMME Sophie, env, lecture
+seule, rejoue les 2 requêtes de la page) : 17 sections · 72 affirmations · 23 evidences **toutes résolues avec
+verbatim** · 0 affirmation sans evidence · niveaux tendance 48 · declaration 12 · hypothese 10 · implication 2.
+
+**Convention `applied_migrations` — 99 corrigée.** Le fichier portait `INSERT (migration) VALUES ('99-persist-journal')
+ON CONFLICT`. Corrigé vers la convention 95→98 : colonne **`filename`**, **nom complet du fichier**
+(`supabase-migration-99-persist-journal.sql`), insert **conditionnel** (`WHERE NOT EXISTS`, pas de ON CONFLICT — la PK
+casserait). La 99 est déjà appliquée en base ; la correction du fichier est documentaire/idempotente.
+
+**Proxy Next 16.** Il n'y a pas de `middleware.ts` mais un `src/proxy.ts` (renommage Next 16) : refresh de session +
+redirections (`/login` si non authentifié, `/dashboard` si déjà connecté). **Aucun message d'erreur de connexion** :
+il ne fait que rediriger sur présence/absence d'auth.
+
+**Login — lot diagnosticabilité (DIFFÉRÉ, basse priorité, NON fait).** `src/app/login/page.tsx` écrase toutes les
+erreurs GoTrue (mdp faux, e-mail non confirmé, compte désactivé, rate-limit) en une seule chaîne « E-mail ou mot de
+passe incorrect. » → un utilisateur rate-limité change un mot de passe qui était bon. Aucune vérif applicative cachée
+en aval de l'auth (le handler redirige, point). Minimum quand on y touchera : distinguer les cas **qui ne sont pas des
+identifiants** (rate-limit, e-mail non confirmé, compte désactivé) ; garder un message générique pour les identifiants ;
+**ne JAMAIS dire** lequel de l'e-mail ou du mot de passe est faux (énumération de comptes).
