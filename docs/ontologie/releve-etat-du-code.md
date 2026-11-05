@@ -209,9 +209,33 @@ elle est (hors transaction) : une projection se **reconstruit**, elle ne se perd
 `CREATE FUNCTION public.persist_journal(p_source, p_evidences, p_facts, p_open jsonb)`, `SECURITY INVOKER`
 (RLS owner-only inchangé, zéro service_role, zéro route), mapping canonique **reste en TS** (fonction = pur
 perséiteur JSONB). `created_at` **non inséré** → DEFAULT now() ; `ts` inséré. Colonnes = exactement `rows.ts`.
+`GRANT EXECUTE` à **`authenticated` seul** (pas `service_role` : il contourne le RLS → chemin sans propriétaire).
 Additive : **rien ne l'appelle tant que `persistKnowledge` n'est pas recâblé** (migration-first : appliquer AVANT
 de déployer le câblage). **RESTE (gated sur apply) :** recâbler `persistKnowledge` (N inserts → `rpc`), étendre
 `WriteClient` (+`.rpc`) et les fakes, câbler `writeDouble`, retry+texte.
+
+**FK vers knowledge_sources — ÉTABLIE (pas déduite), confirme l'utilité de la 99.** `knowledge_evidences.source_id`
+→ `knowledge_sources(id)` NOT NULL ON DELETE CASCADE (82:57) **+** composite `(source_id, about_kind, about_id)`
+(83:96) ; `knowledge_facts.source` (82:120 + 83:103) ; `knowledge_open_knowledge.source` (82:154 + 83:106).
+**Aucun DROP** de ces FK dans les migrations (les seuls drops en 83 sont les `contact_id_fkey` du refactor
+about-ref). Donc une evidence au `source_id` erroné est refusée (about compris) → dans la transaction de la 99,
+rollback total. La 99 ferme « source manquante » ET « source ne correspond pas ». **Pas de migration FK à écrire.**
+
+**service_role sur persist_journal : conséquence à traiter au recâblage.** `sophie-garnish.mts` écrit le journal
+via le client ADMIN (service_role). Grant retiré → au recâblage, garnish devra s'authentifier COMME Sophie
+(`signInWithPassword`, rôle `authenticated`) pour appeler `persist_journal`. Lifecycle user (create/delete) reste
+admin. Noté, non bloquant (rien n'appelle la fonction aujourd'hui).
+
+**Proportionnalité §30.2 — DIAGNOSTIC DE CAUSE (5 nov, `scripts/sophie-prop-diagnose.mts`, lecture seule).** Le
+compteur mesure les SOURCES distinctes (`source_evidence_ids`) ; re-mesuré sur les EVIDENCES (constructs) :
+`deep_loved` 10 aff / **21 ev** et `deep_miss` 3 aff / **3 ev** → **conformes, faux positifs du compteur** (une
+réponse fermée produit légitimement plusieurs constructs : « simplicité authentique » → simplicité + authenticité ;
++ une affirmation de convergence §30.1). `univers_marques` et `univers_reves` : 3 aff / **0 ev** → **vraies
+violations**, cas « sous-découpage extraction » : source `onboarding_open` verbatim (3 items / 2 envies dans une
+ligne) ayant produit ZÉRO evidence ; les entités réelles existent sous des sources d'EXTRACTION non câblées dans
+la matière de ces sections. **Aucune sur-lecture du générateur.** Deux suites possibles EN ATTENTE du mot
+d'Estelle : (a) re-baser le dénominateur du compteur sur les constructs (clôt deep_*) ; (b) câbler les evidences
+extraites dans la matière des sections `univers_*` (amont — un plafond de génération les viderait à tort).
 
 **Proportionnalité §30.2 — DÉFAUT, pas ton (décision Estelle 5 nov).** Règle : *une section ne publie jamais
 plus d'affirmations que d'evidences DISTINCTES*. Détecteur `proportionalityViolation` (pur, testé) + log bruyant

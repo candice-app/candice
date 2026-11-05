@@ -79,9 +79,12 @@ BEGIN
 END;
 $$;
 
--- Exécutable par les utilisateurs authentifiés (RLS owner-only s'applique dans la fonction, INVOKER).
+-- Exécutable par les seuls utilisateurs authentifiés : RLS owner-only s'applique dans la fonction (INVOKER).
+-- PAS de service_role : il contourne le RLS → l'appeler ainsi ferait un chemin d'écriture SANS propriétaire.
+-- Rien ne doit appeler persist_journal en service_role (conséquence : les scripts de test qui écrivent le
+-- journal devront s'authentifier COMME l'utilisateur, pas via le client admin — cf. recâblage persistKnowledge).
 REVOKE ALL ON FUNCTION public.persist_journal(jsonb, jsonb, jsonb, jsonb) FROM PUBLIC;
-GRANT EXECUTE ON FUNCTION public.persist_journal(jsonb, jsonb, jsonb, jsonb) TO authenticated, service_role;
+GRANT EXECUTE ON FUNCTION public.persist_journal(jsonb, jsonb, jsonb, jsonb) TO authenticated;
 
 -- Auto-enregistrement (convention applied_migrations, dès la 83 — dernière instruction).
 INSERT INTO applied_migrations (migration) VALUES ('99-persist-journal') ON CONFLICT DO NOTHING;
