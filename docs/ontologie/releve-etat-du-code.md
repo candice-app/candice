@@ -210,9 +210,16 @@ elle est (hors transaction) : une projection se **reconstruit**, elle ne se perd
 (RLS owner-only inchangé, zéro service_role, zéro route), mapping canonique **reste en TS** (fonction = pur
 perséiteur JSONB). `created_at` **non inséré** → DEFAULT now() ; `ts` inséré. Colonnes = exactement `rows.ts`.
 `GRANT EXECUTE` à **`authenticated` seul** (pas `service_role` : il contourne le RLS → chemin sans propriétaire).
-Additive : **rien ne l'appelle tant que `persistKnowledge` n'est pas recâblé** (migration-first : appliquer AVANT
-de déployer le câblage). **RESTE (gated sur apply) :** recâbler `persistKnowledge` (N inserts → `rpc`), étendre
-`WriteClient` (+`.rpc`) et les fakes, câbler `writeDouble`, retry+texte.
+**ON CONFLICT (id) DO NOTHING** sur les 4 inserts (ids générés client → collision = même écriture logique →
+retry idempotent : une file locale qui repousse après un commit non confirmé devient un no-op, jamais un faux
+échec ; c'est ce qui rend `RETURNS void` honnête). **user_id FORCÉ à `auth.uid()`** (jamais le JSON) : user_id =
+AUTEUR (identity.ts « DÉTENTEUR »), `about` = sujet ; ceinture+bretelles au-dessus du RLS `WITH CHECK
+(user_id = auth.uid())` des 4 tables (migration 82), n'affecte pas l'incognito (qui fait varier `about`).
+`search_path = public` (sans `pg_temp`). Additive : **rien ne l'appelle tant que `persistKnowledge` n'est pas
+recâblé** (migration-first). **Garde-fou dérive TS→SQL : `scripts/persist-journal-roundtrip.mts`** (POST-APPLY,
+auth comme Sophie) clone de vrais jeux, les repousse par la fonction, relit et compare chaque colonne.
+**RESTE (gated sur apply) :** recâbler `persistKnowledge` (N inserts → **un seul** `rpc`), étendre `WriteClient`
+(+`.rpc`) et les fakes, câbler `writeDouble`, retry+texte.
 
 **FK vers knowledge_sources — ÉTABLIE (pas déduite), confirme l'utilité de la 99.** `knowledge_evidences.source_id`
 → `knowledge_sources(id)` NOT NULL ON DELETE CASCADE (82:57) **+** composite `(source_id, about_kind, about_id)`
@@ -233,9 +240,16 @@ réponse fermée produit légitimement plusieurs constructs : « simplicité aut
 + une affirmation de convergence §30.1). `univers_marques` et `univers_reves` : 3 aff / **0 ev** → **vraies
 violations**, cas « sous-découpage extraction » : source `onboarding_open` verbatim (3 items / 2 envies dans une
 ligne) ayant produit ZÉRO evidence ; les entités réelles existent sous des sources d'EXTRACTION non câblées dans
-la matière de ces sections. **Aucune sur-lecture du générateur.** Deux suites possibles EN ATTENTE du mot
-d'Estelle : (a) re-baser le dénominateur du compteur sur les constructs (clôt deep_*) ; (b) câbler les evidences
-extraites dans la matière des sections `univers_*` (amont — un plafond de génération les viderait à tort).
+la matière de ces sections. **Aucune sur-lecture du générateur.**
+
+**Re-base FAITE (5 nov) + contrôle ZÉRO EVIDENCE.** Dénominateur re-basé sur les **evidences distinctes de la
+matière** (`MatterItem.fromFact` marque les items verbatim ; dénominateur = items non-fact), + contrôle « section
+à zéro evidence résolue » (affirmations sur du verbatim non extrait → log bruyant, branche `else if`). Mesuré
+(déterministe, `sophie-sections-dump.mts`) sur les 17 : **proportionnalité re-basée = 1** (`deep_miss` 3>2 ;
+`deep_loved` passe au vert — faux positif disparu) ; **zéro evidence = 2** (`univers_marques`, `univers_reves`,
+3 aff / 0 ev). `deep_miss` 3>2 = une affirmation de **convergence** (§30.1, adossée aux 2 garde-fous) : à EXEMPTER
+si Estelle valide (traiter ≥2 clés n'est pas un « extra »). **EN ATTENTE :** (a) exemption convergence ;
+(b) câblage amont des `univers_*` (entités EXTRAITES dans la matière — « montre-moi avant de faire »).
 
 **Proportionnalité §30.2 — DÉFAUT, pas ton (décision Estelle 5 nov).** Règle : *une section ne publie jamais
 plus d'affirmations que d'evidences DISTINCTES*. Détecteur `proportionalityViolation` (pur, testé) + log bruyant

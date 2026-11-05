@@ -58,7 +58,7 @@ export const SECTION_SPECS: readonly SectionSpec[] = [
  *  et les `sourceIds` (knowledge_sources.id) qui l'étayent — c'est ce qui permet la traçabilité à l'AFFIRMATION :
  *  l'affirmation qui cite cette clé hérite de ces sourceIds (ligne 4, §30.2 bis). Un tag = 1 source (le gagnant de
  *  préséance) ; un fact = sa source (ou aucune si le fact n'en porte pas → la clé n'apporte aucun id). */
-export interface MatterItem { readonly key: string; readonly content: string; readonly confidence: string | null; readonly sourceIds: readonly string[]; }
+export interface MatterItem { readonly key: string; readonly content: string; readonly confidence: string | null; readonly sourceIds: readonly string[]; readonly fromFact?: boolean; }
 export interface SectionInput { readonly key: string; readonly tier: SectionTier; readonly items: readonly MatterItem[]; readonly freeTextOnly: boolean; }
 
 const STRENGTH_RANK: Record<string, number> = { strong: 3, moderate: 2, weak: 1 };
@@ -94,7 +94,7 @@ export function selectSectionInputs(tags: readonly AttentionBreathTag[], facts: 
     const seen = new Set<string>();
     for (const sel of spec.sources ?? []) {
       if (sel.kind === 'fact') {
-        for (const f of facts) if (sel.factTypes.includes(f.factType) && !seen.has(f.factType)) { items.push({ key: f.factType, content: f.value, confidence: null, sourceIds: f.sourceId ? [f.sourceId] : [] }); seen.add(f.factType); }
+        for (const f of facts) if (sel.factTypes.includes(f.factType) && !seen.has(f.factType)) { items.push({ key: f.factType, content: f.value, confidence: null, sourceIds: f.sourceId ? [f.sourceId] : [], fromFact: true }); seen.add(f.factType); }
       } else {
         for (const t of tags) if (matchTag(sel, t) && !seen.has(t.construct)) { items.push({ key: t.construct, content: t.construct, confidence: t.confidence, sourceIds: [t.sourceId] }); seen.add(t.construct); }
       }

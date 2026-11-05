@@ -92,17 +92,42 @@ describe('proportionnalité §30.2 — jamais plus d\'affirmations que d\'eviden
     expect(proportionalityViolation(0, 0)).toBe(false);  // section vide → conforme
   });
 
-  it('resolveAffirmations LOGUE la violation (3 affirmations adossées à 1 seule evidence)', () => {
+  it('PROPORTIONNALITÉ : 3 affirmations sur 2 evidences distinctes (matière étayée) → violation loguée', () => {
     const warnings: string[] = [];
-    const m = [matter('K', ['s1'])]; // une seule source distincte
+    const m = [matter('K1', ['s1']), matter('K2', ['s2'])]; // 2 evidences (2 items étayés)
     const raw: ModelAffirmation[] = [
-      { id: 'a1', type: 'declaration', text: 'une', treatedKeys: ['K'] },
-      { id: 'a2', type: 'hypothese', text: 'deux', treatedKeys: ['K'] },
-      { id: 'a3', type: 'hypothese', text: 'trois', treatedKeys: ['K'] },
+      { id: 'a1', type: 'declaration', text: 'une', treatedKeys: ['K1'] },
+      { id: 'a2', type: 'tendance', text: 'deux', treatedKeys: ['K2'] },
+      { id: 'a3', type: 'hypothese', text: 'trois', treatedKeys: ['K1'] },
     ];
-    const { affirmations, sourceEvidenceIds } = resolveAffirmations('univers_marques', m, raw, { warn: (w) => warnings.push(w) });
+    const { affirmations } = resolveAffirmations('x', m, raw, { warn: (w) => warnings.push(w) });
     expect(affirmations.length).toBe(3);
-    expect(sourceEvidenceIds).toEqual(['s1']); // 1 evidence distincte
     expect(warnings.some((w) => w.includes('PROPORTIONNALITÉ VIOLÉE'))).toBe(true);
+  });
+
+  it('DÉNOMINATEUR = evidences, pas sources : 2 affirmations sur 2 constructs d\'UNE source → conforme', () => {
+    const warnings: string[] = [];
+    // deep_loved : « simplicité authentique » → 2 constructs (2 items) mais 1 seule SOURCE partagée.
+    const m = [matter('SIMPLICITE', ['s1']), matter('AUTHENTICITE', ['s1'])]; // 2 evidences, 1 source
+    const raw: ModelAffirmation[] = [
+      { id: 'a1', type: 'tendance', text: 'simplicité', treatedKeys: ['SIMPLICITE'] },
+      { id: 'a2', type: 'tendance', text: 'authenticité', treatedKeys: ['AUTHENTICITE'] },
+    ];
+    const { affirmations, sourceEvidenceIds } = resolveAffirmations('deep_loved', m, raw, { warn: (w) => warnings.push(w) });
+    expect(affirmations.length).toBe(2);
+    expect(sourceEvidenceIds).toEqual(['s1']); // 1 source distincte — l'ancien compteur aurait crié à tort
+    expect(warnings.length).toBe(0);           // 2 affirmations / 2 evidences → conforme
+  });
+
+  it('ZÉRO evidence résolue : affirmations sur un fact verbatim (fromFact) → signalé bruyamment', () => {
+    const warnings: string[] = [];
+    const m: MatterItem[] = [{ key: 'singularity.marques_lieux', content: '…', confidence: null, sourceIds: ['sf'], fromFact: true }];
+    const raw: ModelAffirmation[] = [
+      { id: 'a1', type: 'declaration', text: 'une', treatedKeys: ['singularity.marques_lieux'] },
+      { id: 'a2', type: 'hypothese', text: 'deux', treatedKeys: ['singularity.marques_lieux'] },
+    ];
+    const { affirmations } = resolveAffirmations('univers_marques', m, raw, { warn: (w) => warnings.push(w) });
+    expect(affirmations.length).toBe(2);
+    expect(warnings.some((w) => w.includes('ZÉRO evidence résolue'))).toBe(true);
   });
 });

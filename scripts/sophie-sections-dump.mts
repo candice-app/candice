@@ -7,6 +7,8 @@ for (const line of readFileSync(new URL("../.env.local", import.meta.url), "utf8
   if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
 }
 const { createAdminClient } = await import("../src/utils/supabase/admin.ts");
+const { readSocleTags, readSocleFacts } = await import("../src/lib/questionnaire/breath-tags.ts");
+const { selectSectionInputs } = await import("../src/lib/profile/profile-sections.ts");
 const admin = createAdminClient();
 const EMAIL = "sophie.test.journal@candice.app";
 
@@ -19,14 +21,21 @@ for (;;) {
 }
 if (!userId) { console.error("Sophie introuvable"); process.exit(1); }
 
+// DÉNOMINATEUR RE-BASÉ (évidences distinctes de la matière, pas sources) — DÉTERMINISTE : recalcule la matière
+// de chaque section depuis le journal de Sophie (indépendant du modèle). evidenceBacked = items non-fact.
+const { tags } = await readSocleTags(admin as never, userId);
+const facts = await readSocleFacts(admin as never, userId);
+const inputs = selectSectionInputs(tags, facts);
+const evBackedByKey = new Map(inputs.map((i) => [i.key, i.items.filter((m: { fromFact?: boolean }) => !m.fromFact).length]));
+
 const { data: rows, error } = await admin.from("profile_analysis_sections")
   .select("section_key, tier, scope, text, affirmations, source_evidence_ids, depends_on_sections, generated_at")
   .eq("user_id", userId).is("contact_id", null).order("tier").order("section_key");
 if (error) { console.error("ERR:", error.message); process.exit(1); }
 
 type Aff = { id: string; type: string; text: string; evidence_ids: string[] };
-let empty = 0, unionOk = 0, propViol = 0;
-const violators: string[] = [];
+let empty = 0, unionOk = 0, propViol = 0, zeroEv = 0;
+const violators: string[] = [], zeroEvList: string[] = [];
 console.log(`# SECTIONS STOCKÉES — SOPHIE (${rows?.length} lignes, scope=self)\n`);
 for (const r of rows ?? []) {
   const affs: Aff[] = Array.isArray(r.affirmations) ? r.affirmations : [];
@@ -36,13 +45,18 @@ for (const r of rows ?? []) {
   const secUnion = [...(r.source_evidence_ids ?? [])].sort();
   const match = JSON.stringify(union) === JSON.stringify(secUnion);
   if (match) unionOk++;
-  // §30.2 : jamais plus d'affirmations que d'evidences distinctes.
-  const prop = affs.length > secUnion.length;
-  if (prop) { propViol++; violators.push(`${r.section_key} (${affs.length}>${secUnion.length})`); }
-  console.log(`### ${r.section_key} [${r.tier}]${isEmpty ? " — VIDE" : ""}${prop ? " — PROPORTIONNALITÉ ⚠" : ""}${r.depends_on_sections?.length ? ` ← ${r.depends_on_sections.join(",")}` : ""}`);
-  console.log(`   affirmations=${affs.length} · source_evidence_ids=${secUnion.length} · union-exacte=${match ? "OUI" : "NON ⚠"} · proportionnalité=${prop ? "VIOLÉE ⚠" : "OK"}`);
-  for (const a of affs) console.log(`   • (${a.type}) ev=[${(a.evidence_ids ?? []).length}] ${(a.evidence_ids ?? []).length === 0 ? "∅ ⚠" : ""} « ${a.text.slice(0, 90)}${a.text.length > 90 ? "…" : ""} »`);
+  // DÉNOMINATEUR RE-BASÉ : evidences distinctes de la matière (synthèses : union des détails → on retombe sur secUnion).
+  // Synthèses : évidences héritées des détails (union) → on prend secUnion ; détails : évidences de la matière.
+  const distinctEv = r.tier === "synthesis" ? secUnion.length : (evBackedByKey.get(r.section_key) ?? secUnion.length);
+  const zero = affs.length > 0 && distinctEv === 0;
+  const prop = !zero && affs.length > distinctEv;
+  if (zero) { zeroEv++; zeroEvList.push(`${r.section_key} (${affs.length} aff / 0 ev)`); }
+  if (prop) { propViol++; violators.push(`${r.section_key} (${affs.length}>${distinctEv})`); }
+  const flag = zero ? " — ZÉRO EVIDENCE ⚠" : prop ? " — PROPORTIONNALITÉ ⚠" : "";
+  console.log(`### ${r.section_key} [${r.tier}]${isEmpty ? " — VIDE" : ""}${flag}${r.depends_on_sections?.length ? ` ← ${r.depends_on_sections.join(",")}` : ""}`);
+  console.log(`   affirmations=${affs.length} · sources=${secUnion.length} · evidences(matière)=${distinctEv} · union-exacte=${match ? "OUI" : "NON ⚠"}`);
   console.log("");
 }
-console.log(`## RÉCAP : ${rows?.length} sections · vides=${empty} · union-exacte OK=${unionOk}/${rows?.length} · affirmations sans evidence=${(rows ?? []).flatMap((r) => (Array.isArray(r.affirmations) ? r.affirmations : []) as Aff[]).filter((a) => (a.evidence_ids ?? []).length === 0).length}`);
-console.log(`## PROPORTIONNALITÉ (§30.2) : ${propViol} section(s) en violation${propViol ? " → " + violators.join(", ") : ""}`);
+console.log(`## RÉCAP : ${rows?.length} sections · vides=${empty} · union-exacte OK=${unionOk}/${rows?.length}`);
+console.log(`## PROPORTIONNALITÉ re-basée (affirmations > evidences distinctes) : ${propViol}${propViol ? " → " + violators.join(", ") : ""}`);
+console.log(`## ZÉRO EVIDENCE (affirmations sur du verbatim non extrait) : ${zeroEv}${zeroEv ? " → " + zeroEvList.join(", ") : ""}`);

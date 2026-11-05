@@ -104,10 +104,18 @@ export function resolveAffirmations(
     kept.push({ id: a.id, type: a.type, text: a.text, evidence_ids: evidenceIds });
   }
   const sourceEvidenceIds = uniq(kept.flatMap((a) => a.evidence_ids));
-  // Détecteur BRUYANT, NON mutant ici : la stratégie de réduction (relance plafonnée / fusion / retrait des
-  // moins soutenues) est une décision produit — tant qu'elle n'est pas arrêtée, on SIGNALE sans trancher.
-  if (proportionalityViolation(kept.length, sourceEvidenceIds.length)) {
-    logger.warn(`[generate-sections] section "${sectionKey}" : PROPORTIONNALITÉ VIOLÉE (§30.2) — ${kept.length} affirmations pour ${sourceEvidenceIds.length} evidence(s) distincte(s) ; ${kept.length - sourceEvidenceIds.length} affirmation(s) sans preuve propre.`);
+  // DÉNOMINATEUR = evidences DISTINCTES de la matière (items étayés par une evidence), PAS les sources ni les
+  // facts verbatim (décision Estelle 5 nov : la source dit d'où ça vient, l'evidence dit ce que ça a produit —
+  // une source qui produit deux constructs justifie deux affirmations). Détecteur BRUYANT, NON mutant.
+  const distinctEvidences = matter.filter((m) => !m.fromFact).length;
+  if (kept.length > 0 && distinctEvidences === 0) {
+    // ZÉRO evidence résolue (§30.2) : affirmations bâties sur du verbatim non extrait. Pas interdit (ce sont
+    // les mots de la personne), mais c'est un trou d'extraction sur ce domaine — et un vert de traçabilité qui
+    // le cache (la source existe, l'union est exacte, mais aucune connaissance résolue dessous). On le crie.
+    logger.warn(`[generate-sections] section "${sectionKey}" : ZÉRO evidence résolue — ${kept.length} affirmation(s) sur du verbatim non extrait (trou d'extraction sur ce domaine).`);
+  } else if (proportionalityViolation(kept.length, distinctEvidences)) {
+    // La stratégie de réduction (relance plafonnée / fusion / retrait) reste une décision produit EN ATTENTE.
+    logger.warn(`[generate-sections] section "${sectionKey}" : PROPORTIONNALITÉ VIOLÉE (§30.2) — ${kept.length} affirmations pour ${distinctEvidences} evidence(s) distincte(s).`);
   }
   return { affirmations: kept, sourceEvidenceIds };
 }
