@@ -18,8 +18,14 @@
 
 export type FieldExtractionStatus = 'idle' | 'pending' | 'extracting' | 'done' | 'failed';
 
-/** Clé d'identité : (libellé du champ, valeur exacte). Séparateur \u0000 anti-collision. */
-const doneKey = (fieldContext: string, value: string) => `${fieldContext}\u0000${value}`;
+/** Séparateur de clé composite IMPRIMABLE (décision Estelle 5 nov) — remplace l'ancien octet NUL (0x00),
+ *  qui classait « binaires » les fichiers porteurs et faisait sauter grep/file/diffs en silence. JAMAIS
+ *  persisté : la clé ne vit qu'en mémoire, reconstruite des colonnes question_text/raw_text à la reprise.
+ *  Doit seulement être ABSENT des opérandes (libellé/valeur) — ce jeton l'est. Source unique du séparateur. */
+export const FIELD_KEY_SEP = '__CANDICE_KEYSEP__';
+
+/** Clé d'identité : (libellé du champ, valeur exacte). */
+const doneKey = (fieldContext: string, value: string) => `${fieldContext}${FIELD_KEY_SEP}${value}`;
 
 export interface FieldCommitDeps {
   /** VERBATIM (autorité) — écrit la réponse brute telle quelle. DOIT throw si échec → l'extraction ne part PAS. */

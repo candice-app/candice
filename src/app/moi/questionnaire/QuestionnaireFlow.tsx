@@ -12,6 +12,7 @@ import { socleCanonicalTemperament, socleCanonicalLifestyle, socleCanonicalSingu
 import { buildCanonicalTemperamentQuestion, legacyIdToRef } from "@/lib/questionnaire/canonical-temperament";
 import { buildCanonicalLifestyleQuestion, legacyIdToRef as lifestyleLegacyIdToRef } from "@/lib/questionnaire/canonical-lifestyle";
 import { produceSocleAnswer, produceSocleFact } from "@/lib/questionnaire/produce-socle";
+import { FIELD_KEY_SEP } from "@/lib/questionnaire/field-extraction";
 import { SINGULARITY_FACT_FIELDS, PRACTICAL_FACT_FIELDS, Q17_FACT_FIELD } from "@/lib/questionnaire/socle-facts-fields";
 import { readSocleTags, readSocleFacts, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
@@ -744,7 +745,7 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             .in("source_type", ["onboarding_open", "extraction_inferred"]);
           const committed: string[] = [], done: string[] = [];
           for (const r of data ?? []) {
-            const k = `${r.question_text ?? ""} ${r.raw_text ?? ""}`;
+            const k = `${r.question_text ?? ""}${FIELD_KEY_SEP}${r.raw_text ?? ""}`;
             if (r.source_type === "extraction_inferred") done.push(k); else committed.push(k);
           }
           return { committed, done };

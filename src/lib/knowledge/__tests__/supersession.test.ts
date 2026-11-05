@@ -9,7 +9,10 @@ import { readSocleFacts, type TagsReadClient } from '../../questionnaire/breath-
 describe('liveSelfSourceIdsForQuestion — portée de la supersession', () => {
   const lookup = (rows: unknown[]) => ({ from: () => ({ select: () => ({ match: async () => ({ data: rows, error: null }) }) }) });
 
-  it('⚠ CÔTE À CÔTE (cas Julie) : une correction du pilote ne supersède JAMAIS la source d\'un tiers', async () => {
+  // vide_jusqu_a_7bis — AUCUN écrivain ne crée de ligne côte-à-côte aujourd'hui (voie sans producteur,
+  // sources.ts:48) : ce vert prouve le filtre unitaire, pas une réalité de prod. De plus, cette primitive
+  // (liveSelfSourceIdsForQuestion) est DÉPRÉCIÉE et meurt avec son lot. À rejouer/retirer en 7bis.
+  it('⚠ CÔTE À CÔTE (cas Julie) — vide_jusqu_a_7bis : une correction du pilote ne supersède JAMAIS la source d\'un tiers', async () => {
     const rows = [
       { id: 'self-verbatim', rapporteur: null, source_type: 'onboarding_open' },      // pilote, texte libre
       { id: 'self-extract',  rapporteur: null, source_type: 'extraction_inferred' },  // pilote, inférence
