@@ -1,5 +1,12 @@
 -- RETOUR ARRIÈRE de la migration 101 — restaure l'état EXACT des grants d'avant fermeture.
 --
+-- ⚠️  AVERTISSEMENT — CE SCRIPT ROUVRE UN TROU DE SÉCURITÉ.
+--     Il RÉACCORDE `anon` (la clé publique) sur les SEPT fonctions. En particulier, il rouvre
+--     l'ÉNUMÉRATION par e-mail, par téléphone et par handle : n'importe qui, muni de la seule clé
+--     publique, pourra de nouveau tester si une adresse / un numéro / un @handle correspond à un compte
+--     Candice trouvable. Il rouvre aussi l'écriture anon sur les items réservables.
+--     À NE LANCER QUE pour annuler la 101 si elle casse quelque chose en production. JAMAIS par réflexe.
+--
 -- À NE LANCER QUE pour annuler la 101 (si la fermeture casse quelque chose). Ce fichier n'est PAS une
 -- migration forward : il ne s'enregistre pas dans applied_migrations, il en retire au contraire la ligne
 -- de la 101 pour que le journal reflète la réalité après annulation.
