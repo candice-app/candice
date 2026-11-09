@@ -24,6 +24,10 @@
 -- corps, aucune donnée touchée. Rejouable sans erreur : révoquer un droit déjà absent est un no-op
 -- silencieux en Postgres. On NE TOUCHE PAS aux 6 fonctions invoker (leur accès anon est inoffensif :
 -- la RLS s'applique) — passe d'hygiène séparée, plus tard.
+--
+-- RETOUR ARRIÈRE. La clé qui rouvre exactement ces 7 portes est dans le fichier voisin
+-- `supabase-migration-101-ROLLBACK-grants.sql` (grants restaurés à l'identique + retrait de la ligne 101
+-- du journal). À ne lancer que pour annuler cette migration.
 
 -- ─── Famille 1 : les 3 lookup_* — garder service_role + postgres ───────────────────────────────────
 REVOKE EXECUTE ON FUNCTION public.lookup_candice_user_by_email(text)  FROM PUBLIC;
