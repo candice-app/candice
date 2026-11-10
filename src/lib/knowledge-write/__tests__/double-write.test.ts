@@ -1,4 +1,5 @@
 // Orchestrateur de double-écriture : journal autorité d'abord, projection après, divergence signalée.
+// Recâblé lot RECÂBLAGE : persistKnowledge n'écrit plus que par la RPC persist_journal (un seul appel).
 
 import { describe, expect, it } from 'vitest';
 import { asContactId, asUserId, contactAbout, createSourceRecord, type KnowledgeScope } from '../../knowledge';
@@ -7,15 +8,16 @@ import { PersistError, type WriteClient } from '../persist';
 
 const scope: KnowledgeScope = { about: contactAbout(asContactId('c1')), ownerId: asUserId('u1') };
 const source = createSourceRecord({ ...scope, id: 'src1', sourceType: 'declared_via_relative', questionText: 'q', answerText: 'a', timestamp: '2026-10-13T00:00:00Z' });
-const okClient = (): WriteClient => ({ from: () => ({ insert: async () => ({ error: null }) }) });
-const failClient = (): WriteClient => ({ from: () => ({ insert: async () => ({ error: { message: 'db down' } }) }) });
+const WRITTEN = { sources: 1, evidences: 0, facts: 0, open: 0 };
+const okClient = (): WriteClient => ({ rpc: async () => ({ data: WRITTEN, error: null }) });
+const failClient = (): WriteClient => ({ rpc: async () => ({ data: null, error: { message: 'db down' } }) });
 
 describe('writeDouble — journal autorité, projection après', () => {
   it('journal OK puis projection OK : les deux écrits, dans l’ordre', async () => {
     const order: string[] = [];
-    const client: WriteClient = { from: (t) => ({ insert: async () => { order.push(`journal:${t}`); return { error: null }; } }) };
+    const client: WriteClient = { rpc: async () => { order.push('journal:persist_journal'); return { data: WRITTEN, error: null }; } };
     await writeDouble(client, { source }, async () => { order.push('flat'); });
-    expect(order[0]).toBe('journal:knowledge_sources');
+    expect(order[0]).toBe('journal:persist_journal'); // journal (RPC) d'abord
     expect(order[order.length - 1]).toBe('flat'); // projection APRÈS le journal
   });
 

@@ -12,10 +12,19 @@ import { ATTENTION_DIMS } from '../attention-dims';
 import { reconstructAttentionVectors, type AttentionJournalItem } from '../reconstruct-attention';
 import { scoreAttention, type AttentionDim } from '../../attention/scoring';
 
+// Capture depuis l'appel rpc(persist_journal, {p_source,p_evidences,p_facts,p_open}) et ré-expose par table,
+// pour garder l'interface `rows[table]` des assertions. Retour = décompte valide (évite le LÈVE de validation).
 function recordingClient() {
   const rows: Record<string, unknown[]> = {};
   const client: WriteClient = {
-    from: (t) => ({ insert: async (r) => { (rows[t] ||= []).push(...(Array.isArray(r) ? r : [r])); return { error: null }; } }),
+    rpc: async (_fn, args) => {
+      const a = args as { p_source: unknown; p_evidences: unknown[]; p_facts: unknown[]; p_open: unknown[] };
+      (rows['knowledge_sources'] ||= []).push(a.p_source);
+      (rows['knowledge_evidences'] ||= []).push(...a.p_evidences);
+      (rows['knowledge_facts'] ||= []).push(...a.p_facts);
+      (rows['knowledge_open_knowledge'] ||= []).push(...a.p_open);
+      return { data: { sources: 1, evidences: a.p_evidences.length, facts: a.p_facts.length, open: a.p_open.length }, error: null };
+    },
   };
   return { client, rows };
 }
