@@ -332,3 +332,41 @@ passe incorrect. » → un utilisateur rate-limité change un mot de passe qui �
 en aval de l'auth (le handler redirige, point). Minimum quand on y touchera : distinguer les cas **qui ne sont pas des
 identifiants** (rate-limit, e-mail non confirmé, compte désactivé) ; garder un message générique pour les identifiants ;
 **ne JAMAIS dire** lequel de l'e-mail ou du mot de passe est faux (énumération de comptes).
+
+---
+
+## Règle permanente (gravée 9 nov 2026) — toujours vers l'exigeant
+
+Aucune concession sur la qualité du produit et du système. Aucun risque pris, aucune faille tolérée — même
+connue et jugée peu exploitable. Si la bonne solution prend plus de temps, elle prend plus de temps. Quand on
+hésite entre le propre et le rapide : **proposer le propre, laisser Estelle décider, ne jamais trancher vers le
+raccourci.** Pas de « dégradation gracieuse » offerte par défaut. Un défaut repéré en passant devient un lot
+nommé et ordonnancé, pas un relevé « pour plus tard » vague.
+
+## Lot RECÂBLAGE persistKnowledge → persist_journal — arbitrages verrouillés (9 nov 2026)
+
+- **Isolation : (B) stricte, une seule porte.** `persist_journal` seul chemin qui CRÉE des lignes du journal ;
+  la supersession passe AUSSI par une RPC atomique (pas d'exception permanente dans l'invariant). Le test
+  interdit deux choses : (1) tout troisième écrivain sur les 4 tables ; (2) que `supersedeSources` déborde de
+  `superseded_at`/`superseded_by` (ni 3ᵉ colonne, ni `knowledge_sources`).
+- **Doublon humain : corrigé à la source**, par un **jeton d'idempotence porté par la soumission** (renvoyé tel
+  quel si le code réessaie, abandonné quand la personne revient répondre délibérément). Option « source_id
+  déterministe » écartée (absorberait une vraie correction) ; option « dédoublonnage au read » écartée
+  (pansement, laisse le bruit s'accumuler dans un journal non effaçable).
+- **No-op :** payload VIDE = bug d'appelant → LÈVE en pré-vol TS (avant l'appel réseau) ; payload PLEIN tous
+  compteurs à 0 = rejeu légitime → journalisé avec l'outcome, pas d'exception. `persist_journal` renvoie le
+  décompte des lignes réellement écrites (migration 103) pour permettre la distinction.
+- **Ordre de déploiement : strict.** Estelle applique la 103, vérifie en base, PUIS push de persist.ts. Aucune
+  dégradation gracieuse d'un retour indéterminé (l'ancien persist.ts n'appelle pas la RPC → appliquer en
+  avance ne casse rien).
+
+### Ordre des lots verrouillé (9 nov 2026)
+
+1. **Recâblage** persistKnowledge → persist_journal (en cours).
+2. **Supersession atomique** — `supersedeSources` fait 3 UPDATE sur 3 tables, même défaut d'atomicité que
+   l'ancien persistKnowledge (supersession interrompue = evidences marquées, facts non marqués). Lot ferme.
+3. **Jeton d'idempotence à la soumission** — AVANT l'import du référentiel Discovery (le site est en ligne, le
+   doublon peut déjà se produire aujourd'hui).
+4. **search_path** sur les 12 fonctions restantes (ex-103, devient lot 4 ; `persist_journal` est déjà durci par
+   la migration 103, `public, pg_temp`).
+Puis seulement : import du référentiel Discovery.
