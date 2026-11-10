@@ -3,9 +3,11 @@
 -- POURQUOI (décompte). RETURNS void masque le no-op : un ON CONFLICT qui absorbe tout le lot (rejeu), ou un
 -- payload sans contenu, réussissent SANS rien écrire — l'appelant ne peut pas le savoir. On renvoie donc le
 -- nombre de lignes RÉELLEMENT insérées par table (0 = conflit/no-op). persistKnowledge distinguera alors :
---   • au moins un compteur > 0        → ÉCRIT
---   • tous à 0, payload non vide       → REJOUÉ à l'identique (idempotent ; journalisé, pas d'erreur)
---   • payload vide                     → refusé EN PRÉ-VOL côté TS (bug d'appelant), n'atteint jamais la RPC.
+--   • au moins un compteur > 0                        → ÉCRIT
+--   • tous à 0, payload non vide                       → REJOUÉ à l'identique (idempotent ; journalisé, pas d'erreur)
+--   • source sans enfant (ex. extraction sans unité)  → LÉGITIME (décision (a) d'Estelle) : écrit la source
+--     (n_src=1), jamais un no-op silencieux. AUCUN LÈVE sur ce cas. Le pré-vol TS ne garde que la garde
+--     d'identité (evidence.source_id === source.id). Un « payload vraiment vide » est impossible : source obligatoire.
 --
 -- POURQUOI (DROP + CREATE). PostgreSQL INTERDIT à CREATE OR REPLACE de changer le type de retour
 -- (void → jsonb). Il faut DROP puis CREATE.
@@ -23,6 +25,11 @@
 --
 -- CORPS, GARDES, user_id FORCÉ, ON CONFLICT, LISTES DE COLONNES : identiques à la 99. Seuls ajouts : le type
 -- de retour, les GET DIAGNOSTICS après chaque insert, et le RETURN jsonb_build_object final.
+--
+-- ENVELOPPE TRANSACTIONNELLE : DROP + CREATE + reverrouillage + enregistrement = tout ou rien. Si une seule
+-- instruction échoue, rien n'est appliqué (jamais de fonction recréée mais non reverrouillée).
+
+BEGIN;
 
 DROP FUNCTION IF EXISTS public.persist_journal(jsonb, jsonb, jsonb, jsonb);
 
@@ -125,3 +132,5 @@ WHERE NOT EXISTS (
   SELECT 1 FROM applied_migrations
   WHERE filename = 'supabase-migration-103-persist-journal-returns-counts.sql'
 );
+
+COMMIT;
