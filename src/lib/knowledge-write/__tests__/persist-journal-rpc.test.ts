@@ -95,28 +95,66 @@ describe('T5 — erreur RPC → propagée, aucun repli', () => {
   });
 });
 
-describe('T6 — INVARIANT B, une seule porte (test, pas grep)', () => {
-  const TABLES = ['knowledge_sources', 'knowledge_evidences', 'knowledge_facts', 'knowledge_open_knowledge'];
+// GARANTIE restaurée (elle vivait dans rows.test.ts avant le recâblage) : une fille portant un about
+// DIVERGENT est réécrite à l'about de la SOURCE dans le payload rpc (le mapping le force, pas le client).
+describe('about indivergeable — la fille divergente est réécrite à l’about de la source', () => {
+  it('fact/open avec about « AUTRE » mais source=src1 → le payload rpc porte l’about de la source (c1)', async () => {
+    const { client, calls } = rpcClient(COUNTS({ sources: 1, facts: 1, open: 1 }));
+    const divergent = contactAbout(asContactId('AUTRE'));
+    const fact = createFact({ about: divergent, ownerId: asUserId('u1'), fact_id: 'f', fact_type: 'habit', value: 'v', source: 'src1', timestamp: base.timestamp, confidence: 'high', user_confirmed: false });
+    const ok = createOpenKnowledge({ about: divergent, ownerId: asUserId('u1'), open_knowledge_id: 'ok', type: 'support_modality', subject: asSubjectId('x'), subjectLabel: 'X', relation: 'appears_to_help', context: 'distress', source: 'src1', timestamp: base.timestamp, confidence: 'high', assertionStatus: 'explicit' });
+    await persistKnowledge(client, { source: srcOf(), facts: [fact], openKnowledge: [ok] });
+    const pf = (calls[0].args.p_facts as Array<{ about_id: string }>)[0];
+    const po = (calls[0].args.p_open as Array<{ about_id: string }>)[0];
+    expect(pf.about_id).toBe('c1'); // about de la SOURCE, jamais 'AUTRE'
+    expect(po.about_id).toBe('c1');
+  });
+});
+
+describe('T6 — INVARIANT B, une seule porte (test, pas grep ; src/ + scripts/, littéral ET dynamique)', () => {
   const stripComments = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '');
   function walk(dir: string): string[] {
     const out: string[] = [];
     for (const name of readdirSync(dir)) {
       const p = join(dir, name);
-      if (statSync(p).isDirectory()) { if (name !== '__tests__' && name !== 'node_modules') out.push(...walk(p)); }
-      else if (/\.(ts|tsx)$/.test(name)) out.push(p);
+      if (statSync(p).isDirectory()) { if (name !== '__tests__' && name !== 'node_modules' && name !== '.next') out.push(...walk(p)); }
+      else if (/\.(ts|tsx|mts|cts)$/.test(name)) out.push(p);
     }
     return out;
   }
-  it('aucune écriture PostgREST (.insert/.upsert/.update/.delete) sur les 4 tables, où que ce soit dans src/', () => {
+  // Tout le code EMBARQUÉ : routes, server actions (sous src/app), lib, ET scripts/.
+  const ROOTS = ['src', 'scripts'].map((r) => join(process.cwd(), r)).filter((d) => { try { return statSync(d).isDirectory(); } catch { return false; } });
+  const files = () => ROOTS.flatMap(walk);
+  const rel = (f: string) => f.replace(process.cwd() + '/', '');
+  // from('knowledge_<4>') … .write   (nom LITTÉRAL ; groupe 1 = méthode)
+  const reLiteral = /from\(\s*['"`]knowledge_(?:sources|evidences|facts|open_knowledge)['"`]\s*\)[\s\S]{0,160}?\.\s*(insert|upsert|update|delete)\s*\(/g;
+  // from(<identifiant unique>) … .write   (nom DYNAMIQUE : échappe au scan littéral — c'est le contournement)
+  const reDynamic = /from\(\s*[A-Za-z_$][\w$.]*\s*\)[\s\S]{0,160}?\.\s*(insert|upsert|update|delete)\s*\(/g;
+  // Exceptions sanctionnées (tout le reste = écrivain interdit) :
+  //  - supersede.ts/update : marqueur de supersession (passe en RPC atomique au lot 2) ;
+  //  - persist-journal-roundtrip.mts/delete : teardown du harnais d'aller-retour sur compte de test
+  //    (son écriture TESTÉE, elle, passe par la RPC authentifiée — jamais par l'admin).
+  const ALLOW: Array<{ file: string; method: string }> = [
+    { file: 'knowledge-write/supersede.ts', method: 'update' },
+    { file: 'scripts/persist-journal-roundtrip.mts', method: 'delete' },
+  ];
+  const allowed = (f: string, method: string) => ALLOW.some((a) => f.endsWith(a.file) && a.method === method);
+  function scan(re: RegExp): string[] {
     const offenders: string[] = [];
-    for (const f of walk(join(process.cwd(), 'src'))) {
+    for (const f of files()) {
       const code = stripComments(readFileSync(f, 'utf8'));
-      for (const t of TABLES) {
-        const re = new RegExp(`from\\(\\s*['"\`]${t}['"\`]\\s*\\)[\\s\\S]{0,160}?\\.\\s*(insert|upsert|update|delete)\\s*\\(`);
-        if (re.test(code)) offenders.push(`${f.replace(process.cwd() + '/', '')} → ${t}`);
-      }
+      const g = new RegExp(re.source, 'g');
+      let m: RegExpExecArray | null;
+      while ((m = g.exec(code))) { if (!allowed(f, m[1])) offenders.push(`${rel(f)} → .${m[1]}()`); }
     }
-    expect(offenders).toEqual([]);
+    return offenders;
+  }
+
+  it('aucune écriture sur les 4 tables par nom LITTÉRAL (src/ + scripts/), hors exceptions sanctionnées', () => {
+    expect(scan(reLiteral)).toEqual([]);
+  });
+  it('aucune écriture sur une table DYNAMIQUE (from(variable)) — le contournement « const t = … » est fermé', () => {
+    expect(scan(reDynamic)).toEqual([]);
   });
   it('persist.ts n’écrit QUE par rpc(persist_journal) — aucun insert/upsert/update/delete direct', () => {
     const code = stripComments(readFileSync(join(process.cwd(), 'src/lib/knowledge-write/persist.ts'), 'utf8'));

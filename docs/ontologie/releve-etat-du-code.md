@@ -370,3 +370,40 @@ nommé et ordonnancé, pas un relevé « pour plus tard » vague.
 4. **search_path** sur les 12 fonctions restantes (ex-103, devient lot 4 ; `persist_journal` est déjà durci par
    la migration 103, `public, pg_temp`).
 Puis seulement : import du référentiel Discovery.
+
+---
+
+## Lot 1 — durcissement (post-relecture Estelle, 9 nov 2026)
+
+- **T6 « une seule porte » renforcé** : scan `src/` + `scripts/`, attrape le nom de table LITTÉRAL **et**
+  DYNAMIQUE (`const t = 'knowledge_facts'; from(t).insert(...)` ne passe plus). Exceptions sanctionnées
+  explicites : `supersede.ts/update` (marqueur) et `persist-journal-roundtrip.mts/delete` (teardown du
+  harnais, qui écrit, lui, par la RPC authentifiée). Réarmé : le contournement dynamique passe le scan
+  littéral, échoue sur le dynamique.
+- **Garantie restaurée** : le test « about indivergeable » (fille divergente réécrite à l'about de la source)
+  avait été retiré de `rows.test.ts` sans équivalent au recâblage → réintroduit dans `persist-journal-rpc.test.ts`.
+- **FK composites déjà en base** (audit Estelle) : `kev_about_matches_source`, `kfacts_about_matches_source`,
+  `kok_about_matches_source` (`(source(_id), about_kind, about_id) → knowledge_sources`). L'existence et la
+  cohérence de sujet d'un enfant sont verrouillées en base ; depuis la 103 une violation annule la soumission.
+  0 orphelin, 0 enfant au user_id ≠ celui de sa source. Restent deux trous hors SQL → lot 1 bis / migration 104 :
+  (i) le rattachement n'est pas vérifié comme étant celui de CETTE soumission ; (ii) le user_id de l'enfant
+  n'est pas lié à celui de sa source (la FK ne passe pas par la RLS).
+
+## Chantier OBSERVABILITÉ — ouvert au relevé, NON démarré
+
+`console.info` du REJOUÉ n'est pas de l'observabilité, et `PersistOutcome` est un retour qu'aucun producteur
+ne lit aujourd'hui. À reprendre dans un chantier d'observabilité dédié (métrique de rejeu, remontée d'outcome).
+Ne pas y toucher hors de ce chantier.
+
+## Diagnostic QUALITÉ D'EXTRACTION (9 nov 2026) — constat, aucune correction
+
+- **D1 — l'extracteur rate-t-il la matière dispositionnelle ? OUI, par conception.** 15/15 textes introspectifs
+  (comportement, besoin, écart image/ressenti, sans objet concret) → **0 unité** ; 5/5 témoins nommant un objet
+  → 1-2 unités. Le prompt système porte une INTERDICTION ABSOLUE : « Ne JAMAIS inférer un trait psychologique
+  (personnalité, besoin, motivation) à partir d'un fait » et ne garde que INTEREST / ENTITY / OTHER (concret).
+  Le partage 0 vs ≥1 est total, pas marginal.
+- **D2 — ou n'a-t-il nulle part où la mettre ? AUCUN attribut du référentiel clos ne reçoit un écart image/
+  ressenti.** Le seul voisin, `NEED_REASSURANCE`, capte le doute, pas l'écart. « Paraît sûre mais doute » est
+  une TENSION (§6.2) = relation entre deux signaux, « ni une 11e famille ni un construct canonique » → pas un
+  attribut. **Lacune du contrat de sens, pas un défaut d'extracteur code.** La décision (toucher au code ou au
+  contrat) revient à Estelle.
