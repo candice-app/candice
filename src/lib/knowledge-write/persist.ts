@@ -65,6 +65,30 @@ export async function persistKnowledge(client: WriteClient, payload: KnowledgePa
     if (k.source !== sourceId) throw new PersistError(`openKnowledge ${k.open_knowledge_id} : source ${k.source} ≠ source ${sourceId}`);
   }
 
+  // INSTANT INDIVERGEABLE (arbitrage du 12/11) : `knowledge_sources.ts` est l'instant de
+  // référence de TOUTES les preuves de cette source. `Evidence.timestamp` n'a pas de colonne —
+  // il est DÉRIVÉ en mémoire et reconstruit depuis la source à la relecture. Une preuve dont
+  // l'instant diffère réellement de celui de sa source produirait donc des signaux différents
+  // avant écriture et après relecture : on refuse AVANT la RPC, jamais après.
+  // On compare les INSTANTS, pas les chaînes : deux écritures équivalentes du même horodatage
+  // (avec ou sans millisecondes, autre décalage) sont acceptées.
+  const instantSource = Date.parse(payload.source.timestamp);
+  if (Number.isNaN(instantSource)) {
+    throw new PersistError(`persist_journal: instant de source illisible (${payload.source.timestamp})`);
+  }
+  for (const e of payload.evidences ?? []) {
+    const instant = Date.parse(e.timestamp);
+    if (Number.isNaN(instant)) {
+      throw new PersistError(`evidence ${e.evidence_id} : instant illisible (${e.timestamp})`);
+    }
+    if (instant !== instantSource) {
+      throw new PersistError(
+        `evidence ${e.evidence_id} : instant ${e.timestamp} ≠ instant de sa source ${payload.source.timestamp} — ` +
+        `la base ne stocke que celui de la source, l'écart serait perdu à la relecture`,
+      );
+    }
+  }
+
   // UN SEUL APPEL. Toujours les 4 paramètres (tableaux vides si rien : jsonb_populate_recordset sur '[]' n'écrit rien).
   const { data, error } = await client.rpc('persist_journal', {
     p_source: sourceToRow(payload.source),

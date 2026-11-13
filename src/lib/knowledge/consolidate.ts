@@ -51,7 +51,7 @@ import type {
 } from './signal';
 import { constructIdentity, emptyBase } from './signal';
 import type { Fact } from './fact';
-import { isSelfDeclaredAct } from './sources';
+import { deriveAssertionStatus, isSelfDeclaredAct } from './sources';
 import { CONSOLIDATION_VERSION, VERSION_STAMP } from './version';
 import { DEFAULT_EXPOSABLE, effectiveExposure, mostRestrictive, type VisibilityPolicy } from './visibility';
 
@@ -115,6 +115,20 @@ function independentCount(evidences: readonly Evidence[]): number {
   return new Set(evidences.map(independentKey)).size;
 }
 
+/**
+ * Statut d'assertion RÉSOLU. `assertionStatus` est FACULTATIF sur l'evidence en mémoire,
+ * NOT NULL en base. On le résout depuis le sourceType quand il manque, et on ne suppose
+ * RIEN quand ni l'un ni l'autre n'est disponible : undefined, donc non compté.
+ */
+function resolvedAssertionStatus(e: Evidence): string | undefined {
+  if (e.assertionStatus !== undefined) return e.assertionStatus;
+  return e.source_type === undefined ? undefined : deriveAssertionStatus(e.source_type);
+}
+
+function explicitCount(evidences: readonly Evidence[]): number {
+  return evidences.filter((e) => resolvedAssertionStatus(e) === 'explicit').length;
+}
+
 function hasRole(evidences: readonly Evidence[], role: EvidenceRole): boolean {
   return evidences.some((e) => e.evidence_role === role);
 }
@@ -124,17 +138,55 @@ function distinctLocalContexts(evidences: readonly Evidence[]): string[] {
   return [...new Set(evidences.filter((e) => e.context !== 'GLOBAL').map((e) => e.context))];
 }
 
-function latestTimestamp(evidences: readonly Evidence[]): string | null {
-  let latest: string | null = null;
-  for (const e of evidences) {
-    if (latest === null || e.timestamp > latest) latest = e.timestamp;
+/**
+ * ORDRE TEMPOREL — on compare des INSTANTS, jamais des chaînes. Deux écritures du même
+ * instant (« …T09:30:00Z », « …T09:30:00.000Z », « …T10:30:00+01:00 ») sont équivalentes et
+ * la persistance les accepte ; comparées comme du texte, elles s'ordonnent à l'envers
+ * (« . » précède « Z », « 10:30 » suit « 09:30 »). L'ordre avant écriture et après relecture
+ * divergerait alors en silence — et « la plus récente supplante » désignerait l'autre.
+ * Un horodatage illisible LÈVE : il ne se range pas au hasard.
+ */
+function instant(ts: string, ou: string): number {
+  const n = Date.parse(ts);
+  if (Number.isNaN(n)) {
+    throw new Error(`[knowledge] horodatage illisible sur ${ou} : « ${ts} » — l'ordre temporel serait arbitraire.`);
   }
-  return latest;
+  return n;
+}
+
+/**
+ * Plus récente d'abord par instant ; à instant ÉGAL, par `evidence_id`. Le départage est
+ * nécessaire et doit être STABLE : avant écriture l'ordre du tableau est celui de la
+ * production, après relecture celui de `id`. Sans départage déterministe, deux preuves
+ * du même instant pourraient se succéder différemment des deux côtés.
+ */
+function plusRecente<T extends { timestamp: string; evidence_id: string }>(a: T, b: T): T {
+  const ia = instant(a.timestamp, a.evidence_id);
+  const ib = instant(b.timestamp, b.evidence_id);
+  if (ib !== ia) return ib > ia ? b : a;
+  return b.evidence_id > a.evidence_id ? b : a;
+}
+
+/**
+ * Valide TOUS les horodatages, y compris quand il n'y en a qu'un. `reduce` et `sort`
+ * n'appellent jamais leur comparateur sur un ensemble d'un seul élément : sans cette passe,
+ * une preuve isolée à l'horodatage illisible traverserait la consolidation en silence et
+ * ressortirait telle quelle dans `lastUpdated`.
+ */
+function validerInstants(evs: readonly { timestamp: string; evidence_id: string }[]): void {
+  for (const e of evs) instant(e.timestamp, e.evidence_id);
+}
+
+function latestTimestamp(evidences: readonly Evidence[]): string | null {
+  if (evidences.length === 0) return null;
+  validerInstants(evidences);
+  return evidences.reduce(plusRecente).timestamp;
 }
 
 /** Evidence la plus récente d'un ensemble non vide. */
-function mostRecent<T extends { timestamp: string }>(evs: readonly T[]): T {
-  return evs.reduce((a, b) => (b.timestamp > a.timestamp ? b : a));
+function mostRecent<T extends { timestamp: string; evidence_id: string }>(evs: readonly T[]): T {
+  validerInstants(evs);
+  return evs.reduce(plusRecente);
 }
 
 function strengthMagnitude(s: EvidenceStrength): 1 | 2 {
@@ -196,6 +248,7 @@ interface ScoreInputs {
   indep: number;
   indepPrimary: number;
   strongPrimary: boolean;
+  explicitCount: number;
   declaredStrongPrimary: boolean;
   onlySecondary: boolean;
   netContrary: boolean;
@@ -209,7 +262,7 @@ function computeScore(i: ScoreInputs): SignalScore {
   if (i.netContrary) return 'low';
   const high =
     !i.contradiction &&
-    (i.strongPrimary || i.indepPrimary >= CONSOLIDATION_RULES.score.independentPrimaryMinForHigh);
+    (i.declaredStrongPrimary || i.indepPrimary >= CONSOLIDATION_RULES.score.independentPrimaryMinForHigh);
   if (high) return 'high';
   return 'medium';
 }
@@ -223,7 +276,11 @@ function computeConfidence(i: ScoreInputs): SignalConfidence {
   if (i.evidenceCount >= h.minEvidences && i.indep >= h.minIndependentSources && i.distinctContexts >= h.minDistinctContexts) {
     return 'high';
   }
-  if (i.evidenceCount >= CONSOLIDATION_RULES.confidence.medium.minEvidences || i.declaredStrongPrimary) {
+  // §48bis : le NOMBRE ne compte que des preuves EXPLICITES. Une inférence ne fabrique
+  // jamais de confiance par accumulation, et un statut NON RÉSOLU ne compte pas non plus
+  // (absence n'est pas explicite) : le doute se tranche vers le bas.
+  if (i.explicitCount >= CONSOLIDATION_RULES.confidence.medium.minEvidences
+      || i.declaredStrongPrimary) {
     return 'medium';
   }
   return 'low';
@@ -304,6 +361,7 @@ function strengthInputs(forConstruct: readonly StrengthEvidence[]): ScoreInputs 
     indep: independentCount(forConstruct),
     indepPrimary: independentCount(primaries),
     strongPrimary: primaries.some((e) => strengthMagnitude(e.strength) >= 2),
+    explicitCount: explicitCount(forConstruct),
     declaredStrongPrimary: primaries.some(
       (e) => strengthMagnitude(e.strength) >= 2 && isSelfDeclaredAct(e.source_type),
     ),
@@ -338,6 +396,7 @@ function directionalInputs(forConstruct: readonly DirectionalEvidence[]): {
     indep: independentCount(forConstruct),
     indepPrimary: independentCount(primaries),
     strongPrimary: primaries.some((e) => Math.abs(e.value) >= 2),
+    explicitCount: explicitCount(forConstruct),
     declaredStrongPrimary: primaries.some(
       (e) => Math.abs(e.value) >= 2 && isSelfDeclaredAct(e.source_type),
     ),
@@ -528,7 +587,13 @@ function entityContradiction(evs: readonly EntityEvidence[]): boolean {
  */
 export function consolidateEntities(scope: KnowledgeScope, evidences: readonly EntityEvidence[], opts: ConsolidateOpts = {}): EntitySignal[] {
   return [...groupBy(evidences, (e) => e.target_construct as string).entries()].map(([entity, evs]) => {
-    const sorted = [...evs].sort((a, b) => (a.timestamp < b.timestamp ? -1 : a.timestamp > b.timestamp ? 1 : 0));
+    // Chronologie par INSTANT, départage stable par evidence_id : relationHistory et la
+    // « valence la plus récente » doivent être identiques avant écriture et après relecture.
+    validerInstants(evs);
+    const sorted = [...evs].sort((a, b) => {
+      const d = instant(a.timestamp, a.evidence_id) - instant(b.timestamp, b.evidence_id);
+      return d !== 0 ? d : (a.evidence_id < b.evidence_id ? -1 : a.evidence_id > b.evidence_id ? 1 : 0);
+    });
     const contradiction = entityContradiction(evs);
     let current: EntityEvidence;
     if (contradiction) {
