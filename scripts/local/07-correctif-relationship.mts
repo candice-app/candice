@@ -53,6 +53,19 @@ function sqlRefus(q: string): string | null {
   try { sql(q); return null; }
   catch (e) { return String((e as { stderr?: Buffer }).stderr ?? (e as Error).message); }
 }
+/** Les colonnes nommées existent-elles VRAIMENT ? Écrire une liste de colonnes de mémoire
+ *  est une faute qui ne se voit qu'à l'exécution, sous la forme d'une erreur psql brute.
+ *  Ici elle se voit AVANT, et elle nomme ce qui manque. */
+function verifierColonnes(table: string, colonnes: readonly string[]): void {
+  const reelles = new Set(sql(`SELECT column_name FROM information_schema.columns
+                               WHERE table_schema='public' AND table_name='${table}';`).map((l) => l[0]));
+  const absentes = colonnes.filter((c) => !reelles.has(c));
+  if (absentes.length) {
+    throw new Error(`${table} : colonne(s) inexistante(s) — ${absentes.join(', ')}. `
+      + `Colonnes réelles : ${[...reelles].sort().join(', ')}`);
+  }
+}
+
 function fichier(chemin: string): void {
   execFileSync('psql', [DB, '-X', '-v', 'ON_ERROR_STOP=1', '-f', chemin], { stdio: 'pipe' });
 }
@@ -84,15 +97,20 @@ function nettoyer() {
        DELETE FROM auth.users WHERE id = '${UID}';`);
 }
 
+const COLONNES_SOURCE = ['id','user_id','about_kind','about_id','source_type','question_text','raw_text','ts','assertion_status'] as const;
+const COLONNES_EVIDENCE = ['id','user_id','source_id','target_family','target_construct','evidence_role','context','confidence','stability','raw_information','assertion_status','ontology_version','hsg_version','strength','subject_id','subject_label','relationship','about_kind','about_id','assertion_basis'] as const;
+
 function semer() {
+  verifierColonnes('knowledge_sources', COLONNES_SOURCE);
+  verifierColonnes('knowledge_evidences', COLONNES_EVIDENCE);
   nettoyer();
   sql(`INSERT INTO auth.users (id, instance_id, aud, role, email, encrypted_password, email_confirmed_at, created_at, updated_at)
        VALUES ('${UID}', '00000000-0000-0000-0000-000000000000', 'authenticated', 'authenticated',
                'correctif-${Date.now()}@essai.local', '', now(), now(), now());`);
   CAS.forEach((c, i) => {
     const src = `00000000-0000-4000-8000-00000000d0${(i + 16).toString(16)}`;
-    sql(`INSERT INTO knowledge_sources (id, user_id, about_kind, about_id, source_type, question_text, raw_text, ts, ontology_version, hsg_version, assertion_status)
-         VALUES ('${src}', '${UID}', 'account', '${UID}', 'extraction_inferred', 'texte libre', ${q(c.verbatim)}, now(), '1', '1', 'inferred');
+    sql(`INSERT INTO knowledge_sources (id, user_id, about_kind, about_id, source_type, question_text, raw_text, ts, assertion_status)
+         VALUES ('${src}', '${UID}', 'account', '${UID}', 'extraction_inferred', 'texte libre', ${q(c.verbatim)}, now(), 'inferred');
          INSERT INTO knowledge_evidences (id, user_id, source_id, target_family, target_construct, evidence_role, context, confidence, stability, raw_information, assertion_status, ontology_version, hsg_version, strength, subject_id, subject_label, relationship, about_kind, about_id, assertion_basis)
          VALUES ('${c.id}', '${UID}', '${src}', 'INTEREST', ${q(c.sujet)}, 'primary', 'GLOBAL', 'low', 'contextual', ${q(c.verbatim)}, 'inferred', '1', '1', 'moderate', ${q(c.sujet)}, ${q(c.sujet)}, ${q(c.v)}, 'account', '${UID}', 'self_report');`);
   });
