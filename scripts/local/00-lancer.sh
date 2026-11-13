@@ -8,6 +8,8 @@
 #   bash scripts/local/00-lancer.sh sonde       # la sonde ev_interest_shape (§27.6)
 #   bash scripts/local/00-lancer.sh releve      # le relevé de schéma, lecture seule
 #   bash scripts/local/00-lancer.sh echange     # l'échange complet : conversation → écriture → moteur
+#   bash scripts/local/00-lancer.sh correctif  # les 6 lignes relationship : SIMULATION
+#   bash scripts/local/00-lancer.sh correctif! # idem, mais APPLIQUE (local seulement)
 #   bash scripts/local/00-lancer.sh etat        # juste l'état de la pile
 #   bash scripts/local/00-lancer.sh verif       # typechecks (les DEUX) + suite de tests
 #   bash scripts/local/00-lancer.sh tout        # tout ce qui précède, d'un seul coup
@@ -17,14 +19,22 @@ mkdir -p scripts/local/.resultats
 QUOI="${1:-etat}"
 SORTIE="scripts/local/.resultats/$QUOI.txt"
 
-# Variables tirées de la pile locale À L'EXÉCUTION — rien n'est lu dans un fichier
-# d'environnement, rien n'est écrit en clair ailleurs que dans la mémoire du processus.
-ETAT=$(supabase status -o json 2>/dev/null) || { echo "pile locale éteinte : lance 'supabase start'" | tee "$SORTIE"; exit 1; }
-lire() { printf '%s' "$ETAT" | python3 -c "import json,sys;print(json.load(sys.stdin)['$1'])"; }
-export SUPABASE_URL="$(lire API_URL)"
-export SUPABASE_SERVICE_ROLE_KEY="$(lire SERVICE_ROLE_KEY)"
-export SUPABASE_ANON_KEY="$(lire ANON_KEY)"
-export SUPABASE_DB_URL="$(lire DB_URL)"
+# Quelles cibles ont besoin d'une base ? `verif` n'en a AUCUN besoin : deux typechecks et
+# une suite de tests, zéro connexion. Exiger la pile pour eux rendait la vérification
+# indisponible juste au moment où elle sert le plus — avant d'avoir monté quoi que ce soit.
+case "$QUOI" in
+  verif) BESOIN_BASE=0 ;;
+  *)     BESOIN_BASE=1 ;;
+esac
+
+if [ "$BESOIN_BASE" = 1 ]; then
+  ETAT=$(supabase status -o json 2>/dev/null) || { echo "pile locale éteinte : lance 'supabase start' (ou 'verif', qui n'en a pas besoin)" | tee "$SORTIE"; exit 1; }
+  lire() { printf '%s' "$ETAT" | python3 -c "import json,sys;print(json.load(sys.stdin)['$1'])"; }
+  export SUPABASE_URL="$(lire API_URL)"
+  export SUPABASE_SERVICE_ROLE_KEY="$(lire SERVICE_ROLE_KEY)"
+  export SUPABASE_ANON_KEY="$(lire ANON_KEY)"
+  export SUPABASE_DB_URL="$(lire DB_URL)"
+fi
 
 {
   echo "=== $QUOI · $(date '+%Y-%m-%d %H:%M:%S') ==="
@@ -32,6 +42,8 @@ export SUPABASE_DB_URL="$(lire DB_URL)"
     journal) npx tsx scripts/local/02-journal-aller-retour.mts ;;
     sonde)   npx tsx scripts/local/04-sonde-interest-relationship.mts ;;
     echange) npx tsx scripts/local/06-approfondissement.mts ;;
+    correctif)  npx tsx scripts/local/07-correctif-relationship.mts ;;
+    correctif!) npx tsx scripts/local/07-correctif-relationship.mts --appliquer ;;
     verif)
       # Les deux typechecks : tsconfig.json EXCLUT "scripts", donc le premier ne voit
       # jamais scripts/local. Le second est là pour ça — ne jamais lancer que le premier.
@@ -57,7 +69,7 @@ export SUPABASE_DB_URL="$(lire DB_URL)"
       psql "$SUPABASE_DB_URL" -c "select count(*) as tables_journal from information_schema.tables where table_schema='public' and table_name like 'knowledge_%';"
       psql "$SUPABASE_DB_URL" -c "select to_regclass('public.erasure_manifests') as table_de_trace;"
       ;;
-    *) echo "usage : tout | journal | sonde | releve | echange | verif | cron | cron2 <id> | etat" ;;
+    *) echo "usage : tout | journal | sonde | releve | echange | correctif | correctif! | verif | cron | cron2 <id> | etat" ;;
   esac
   echo "=== code de sortie : $? ==="
 } > "$SORTIE" 2>&1
