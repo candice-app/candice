@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
-import { resend, FROM_EMAIL, APP_URL } from '@/lib/resend';
+import { APP_URL } from '@/lib/resend';
+import { envoyerCourriel } from '@/lib/mail/transport';
 
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const body = await req.json();
+  const body = await req.json().catch(() => ({})) as { password?: string };
   const { password } = body;
   if (!password) return NextResponse.json({ error: 'Mot de passe requis' }, { status: 400 });
 
@@ -21,11 +22,15 @@ export async function POST(req: Request) {
 
   const now = new Date();
   const deletionScheduledAt = new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString();
+  // Jeton OPAQUE du lien d'annulation (modèle « jeton stocké », migration 106). Consommé une seule fois par le
+  // handler GET /api/account/cancel-deletion, nullé à l'annulation ET à l'achèvement.
+  const cancelToken = crypto.randomUUID();
 
   const { error: updateError } = await supabase.from('my_profile').update({
     subscription_status: 'cancelled',
     cancelled_at: now.toISOString(),
     deletion_scheduled_at: deletionScheduledAt,
+    deletion_cancel_token: cancelToken,
   }).eq('user_id', user.id);
   if (updateError) {
     console.error('[account/delete] my_profile update', updateError.message);
@@ -45,6 +50,10 @@ export async function POST(req: Request) {
 
   // Confirmation email
   if (user.email) {
+    // Base d'URL depuis l'environnement (le harnais local pose APP_URL=http://localhost:3000) ; repli sur la
+    // constante de prod. Le lien d'annulation doit être local en essai, sinon il partirait vers candice.app.
+    const appBase = process.env.APP_URL ?? APP_URL;
+    const lienAnnulation = `${appBase}/api/account/cancel-deletion?t=${cancelToken}`;
     const html = `<!DOCTYPE html>
 <html lang="fr"><head><meta charset="UTF-8" /></head>
 <body style="background:#FAF7F2;font-family:'DM Sans',Helvetica,Arial,sans-serif;padding:48px 16px;">
@@ -56,11 +65,10 @@ export async function POST(req: Request) {
     <p style="font-size:14px;font-weight:300;color:#3D2A1E;line-height:1.7;margin:0 0 24px;">
       Tu peux annuler cette demande jusqu'à cette date depuis tes paramètres.
     </p>
-    <a href="${APP_URL}/parametres/abonnement" style="display:inline-block;background:#C47A4A;color:#fff;font-size:13px;padding:12px 24px;border-radius:8px;text-decoration:none;">Annuler la suppression →</a>
+    <a href="${lienAnnulation}" style="display:inline-block;background:#C47A4A;color:#fff;font-size:13px;padding:12px 24px;border-radius:8px;text-decoration:none;">Annuler la suppression →</a>
   </div>
 </body></html>`;
-    await resend.emails.send({
-      from: FROM_EMAIL,
+    await envoyerCourriel({
       to: user.email,
       subject: 'Suppression de compte programmée — Candice',
       html,
