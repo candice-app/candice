@@ -23,6 +23,31 @@ import { createOpenKnowledge } from '@/lib/knowledge/open-knowledge';
 import { asSubjectId } from '@/lib/knowledge/identity';
 import { normalizeLabel } from '@/lib/knowledge/normalize';
 import { JOURNAL_VERSION_STAMP } from '@/lib/knowledge/version';
+import { openKnowledgeId } from '@/lib/knowledge-write/ids';
+import { createHash } from 'node:crypto';
+
+/**
+ * Identifiant de source DÉTERMINISTE pour un tour de conversation.
+ *
+ * `ids.ts` refuse délibérément de dériver un source_id du contenu, et il a raison : une
+ * même question répondue deux fois est DEUX actes d'acquisition, deux sources qui
+ * coexistent. Mais un REJEU n'est pas un second acte — c'est le même, retenté après une
+ * panne. Sans identifiant stable, la reprise écrirait une deuxième source et une deuxième
+ * connaissance ouverte pour une phrase prononcée une seule fois : le journal compterait
+ * deux fois ce qui a été dit une fois, et la consolidation s'en trouverait faussée.
+ *
+ * La clé est (fil, rang du tour). Elle ne dépend PAS du texte — une reprise après une
+ * correction de frappe reste le même tour — ni de l'horodatage, qui changerait à chaque
+ * tentative et ferait échouer l'idempotence au moment précis où on en a besoin.
+ */
+function sourceIdDeTour(filId: string, rang: number): string {
+  const ns = Buffer.from('0b3b94f21d7a5e649c2a6f1d0ac0ffee', 'hex');
+  const h = createHash('sha1').update(Buffer.concat([ns, Buffer.from(`tour:${filId}:${rang}`, 'utf8')])).digest();
+  const b = Buffer.from(h.subarray(0, 16));
+  b[6] = (b[6] & 0x0f) | 0x50; b[8] = (b[8] & 0x3f) | 0x80;
+  const x = b.toString('hex');
+  return `${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20, 32)}`;
+}
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -101,9 +126,30 @@ export async function POST(req: NextRequest) {
     const personnes = [...(ligne.personnes as PersonneDuFil[])];
     for (const p of nouvelles) if (!personnes.some((q) => q.mention.toLowerCase() === p.mention.toLowerCase())) personnes.push(p);
     fil = { filId: ligne.id, about: { kind: 'account', id: user.id as never }, recitInitial: ligne.recit_initial, tours, personnes };
+
+    // ── ENREGISTRER AVANT DE COMPRENDRE. La réponse de la personne est écrite MAINTENANT,
+    //    avant tout appel au modèle. Elle n'était persistée qu'à la fin, après
+    //    planifierTour : un appel qui se bloque, un déploiement, un processus tué, et la
+    //    phrase qu'elle venait d'écrire n'avait jamais existé. Le récit initial, lui,
+    //    était déjà protégé — c'est la réponse à une relance qui ne l'était pas.
+    //    Deux écritures au lieu d'une : le prix d'une phrase qu'on ne perd pas.
+    const { error: eSauve } = await admin.from('conversation_threads').update({
+      tours, personnes, updated_at: new Date().toISOString(),
+    }).eq('id', fil.filId).eq('user_id', user.id);
+    if (eSauve) {
+      // La sauvegarde a échoué : on N'APPELLE PAS le modèle. Répondre ici reviendrait à
+      // dire « c'est noté » sur un message que rien ne retient — le pire des deux mondes.
+      console.error('[approfondir] sauvegarde du message impossible :', eSauve.message);
+      return NextResponse.json(
+        { error: 'message_non_sauvegarde', filId: fil.filId,
+          detail: 'Ton message n’a pas pu être enregistré. Garde-le, il n’est pas perdu de ton côté.' },
+        { status: 503 },
+      );
+    }
   }
 
-  // ── Le modèle propose : une relance, des pistes, des candidats.
+  // ── Le modèle propose : une relance, des pistes, des candidats. Le message, lui, est
+  //    déjà en base : une panne à partir d'ici ne peut plus faire disparaître la phrase.
   const sortie = await planifierTour(anthropic as never, fil);
 
   // ── La validation est le SEUL passage vers le journal.
@@ -115,7 +161,7 @@ export async function POST(req: NextRequest) {
   let incidentEcriture: string | null = null;
   if (verdict.retenus.length > 0) {
     const ts = new Date().toISOString();
-    const sourceId = crypto.randomUUID();
+    const sourceId = sourceIdDeTour(fil.filId, fil.tours.length);
     const about = { kind: 'account' as const, id: user.id };
     const source = createSourceRecord({
       about: about as never, ownerId: user.id as never, id: sourceId,
@@ -124,8 +170,11 @@ export async function POST(req: NextRequest) {
     });
     // Tout ce qui n'a pas de destination structurée sûre part en connaissance ouverte,
     // verbatim (§27.6) : le détail confirmé ne disparaît pas faute de case où le ranger.
+    // openKnowledgeId est déterministe (source + sujet) : deux rejeux du même tour
+    // produisent les MÊMES identifiants, donc un remplacement, jamais une accumulation.
     const ouvertes = verdict.retenus.map((c) => createOpenKnowledge({
-      about: about as never, ownerId: user.id as never, open_knowledge_id: crypto.randomUUID(),
+      about: about as never, ownerId: user.id as never,
+      open_knowledge_id: openKnowledgeId(sourceId, normalizeLabel(c.sujet)),
       type: 'descriptive', subject: asSubjectId(normalizeLabel(c.sujet)), subjectLabel: c.sujet,
       relation: c.portee, context: 'GLOBAL', source: sourceId, timestamp: ts,
       confidence: 'low', assertionStatus: c.provenance === 'narrateur_sur_lui' ? 'explicit' : 'inferred',
@@ -135,8 +184,17 @@ export async function POST(req: NextRequest) {
       await persistKnowledge(supabase as never, { source, evidences: [], facts: [], openKnowledge: ouvertes as never });
       ecrit = ouvertes.length;
     } catch (e) {
-      incidentEcriture = (e as Error).message;
-      console.error('[approfondir] écriture refusée :', incidentEcriture);
+      const m = (e as Error).message;
+      // Un rejeu du MÊME tour retombe sur les mêmes identifiants : la base refuse le
+      // doublon, et ce refus est le comportement VOULU — il prouve qu'on n'a pas écrit
+      // deux fois. On ne le compte donc pas comme un incident.
+      if (/duplicate key|already exists|23505/i.test(m)) {
+        ecrit = ouvertes.length;
+        console.info('[approfondir] tour déjà écrit, rejeu sans doublon');
+      } else {
+        incidentEcriture = m;
+        console.error('[approfondir] écriture refusée :', incidentEcriture);
+      }
     }
   }
 
@@ -158,6 +216,9 @@ export async function POST(req: NextRequest) {
     tours: fil.tours.length,
     // Ce qui a été retenu et ce qui a été refusé, avec le motif : la personne — et nous —
     // doit pouvoir voir POURQUOI quelque chose n'a pas été gardé.
+    // `messageEnregistre` dit ce qui s'est RÉELLEMENT passé, pas ce qu'on espère : la
+    //  phrase est en base dans tous les cas où l'on arrive ici, relance ou pas.
+    messageEnregistre: true,
     retenus: verdict.retenus.map((c) => ({ sujet: c.sujet, segment: c.segment, portee: c.portee, provenance: c.provenance, destination: c.destination })),
     refuses: verdict.refuses.map((r) => ({ sujet: r.candidat.sujet, motif: r.motif })),
     ecrit,
