@@ -67,7 +67,7 @@ function lot(userId: string, avecRelationship: boolean) {
     about, ownerId: userId, evidence_id: crypto.randomUUID(), source_id: sourceId,
     source_type: 'extraction_inferred', raw_information: 'pain au levain', confidence: 'low',
     context: 'GLOBAL', timestamp: ts, stability: 'contextual', evidence_role: 'primary',
-    assertionBasis: 'inference', assertionStatus: 'inferred', target_family: 'INTEREST',
+    assertionBasis: 'self_report', assertionStatus: 'inferred', target_family: 'INTEREST',
     subject: 'pain-au-levain', subjectLabel: 'pain au levain', target_construct: 'pain-au-levain',
     strength: 'moderate', version: { ontology_version: '1', hsg_version: '1' },
     ...(avecRelationship ? { relationship: 'passion' } : {}),
