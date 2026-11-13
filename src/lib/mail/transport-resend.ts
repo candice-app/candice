@@ -14,6 +14,9 @@ export function transportResend(): Transport {
         body: JSON.stringify({
           from: process.env.RESEND_FROM ?? 'Candice <bonjour@candice.app>',
           to: courriel.to, subject: courriel.subject, html: courriel.html,
+          ...(courriel.pieces?.length
+            ? { attachments: courriel.pieces.map((p) => ({ filename: p.nom, content: p.contenuBase64 })) }
+            : {}),
         }),
       });
       if (!r.ok) throw new Error(`Resend: HTTP ${r.status} ${await r.text()}`);

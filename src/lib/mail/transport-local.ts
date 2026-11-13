@@ -16,11 +16,18 @@ export function transportLocal(): Transport {
   return {
     nom: 'local',
     async envoyer(courriel: Courriel): Promise<void> {
+      // ⚠ LE CONTENU DES PIÈCES N'EST JAMAIS ÉCRIT. L'export RGPD porte l'intégralité
+      // des données d'une personne ; le journaliser sur le disque le ferait survivre à
+      // l'envoi, en clair, hors de tout effacement. On garde le nom et la taille, de quoi
+      // prouver qu'une pièce est bien partie — rien de ce qu'elle contient.
       const ligne = JSON.stringify({
         ts: new Date().toISOString(),
         to: courriel.to,
         subject: courriel.subject,
         liens: liensDe(courriel.html),
+        ...(courriel.pieces?.length
+          ? { pieces: courriel.pieces.map((p) => ({ nom: p.nom, octets: p.contenuBase64.length })) }
+          : {}),
       });
       mkdirSync(dirname(DOSSIER_COURRIEL_LOCAL), { recursive: true });
       appendFileSync(DOSSIER_COURRIEL_LOCAL, ligne + '\n', 'utf8');

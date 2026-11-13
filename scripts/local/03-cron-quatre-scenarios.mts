@@ -163,9 +163,14 @@ async function prealables() {
 async function scenario1() {
   console.log('\n═══ 1. demande arrivée à échéance → tout effacé ═══');
   const id = await compteFictif('echue');
-  const hier = new Date(Date.now() - 86400e3).toISOString();
+  // ÉTAT RÉALISTE, pas commode : /api/account/delete écrit cancelled_at = maintenant et
+  // deletion_scheduled_at = maintenant + 30 jours (route.ts:24,31-32). Les deux ne sont
+  // JAMAIS égaux. Une fixture qui les pose au même instant encode un état que la
+  // production ne peut pas produire — et pousse à relâcher la garde pour la faire passer.
+  const demande = new Date(Date.now() - 31 * 86400e3).toISOString(); // demandé il y a 31 jours
+  const hier    = new Date(Date.now() - 86400e3).toISOString();      // échue depuis hier
   const { error } = await admin.from('my_profile').update({
-    subscription_status: 'cancelled', cancelled_at: hier, deletion_scheduled_at: hier,
+    subscription_status: 'cancelled', cancelled_at: demande, deletion_scheduled_at: hier,
   }).eq('user_id', id);
   if (error) ko(`préparation : ${error.message}`);
   const avant = inventaire(id);
@@ -254,8 +259,14 @@ async function scenario3() {
   ok(`compte semé : ${Object.values(invAvant).reduce((a, b) => a + b, 0)} lignes, ${objets} objets`);
 
   // Demande de suppression PAR LA VRAIE ROUTE : c'est elle qui envoie le lien.
+  // Le corps porte le mot de passe, comme l'UI réelle (ConfidentialiteActions.tsx,
+  // AbonnementActions.tsx) : une suppression de compte se re-confirme. Le harnais
+  // l'omettait ; c'est LUI qui avait tort. On n'affaiblit pas un contrôle de sécurité
+  // pour faire passer un essai — un essai qui exige qu'on le retire ne prouve plus rien.
   const r = await fetch(`${appUrl.origin}/api/account/delete`, {
-    method: 'POST', headers: { Authorization: `Bearer ${await jeton(email, motDePasse)}` },
+    method: 'POST',
+    headers: { Authorization: `Bearer ${await jeton(email, motDePasse)}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: motDePasse }),
   });
   if (!r.ok) return ko(`route de suppression : HTTP ${r.status}`);
   ok('demande de suppression enregistrée par la route réelle');
@@ -385,9 +396,10 @@ async function scenario4(phase: 1 | 2, idRepris?: string) {
     const id = await compteFictif('partiel');
     const objets = await semer(id, 3);
     const invAvant = inventaire(id);
-    const hier = new Date(Date.now() - 86400e3).toISOString();
+    const demande = new Date(Date.now() - 31 * 86400e3).toISOString(); // cf. scénario 1
+    const hier    = new Date(Date.now() - 86400e3).toISOString();
     const { error } = await admin.from('my_profile').update({
-      subscription_status: 'cancelled', cancelled_at: hier, deletion_scheduled_at: hier,
+      subscription_status: 'cancelled', cancelled_at: demande, deletion_scheduled_at: hier,
     }).eq('user_id', id);
     if (error) return ko(`préparation : ${error.message}`);
     ok(`compte préparé : ${objets} objets, ${Object.values(invAvant).reduce((a, b) => a + b, 0)} lignes`);

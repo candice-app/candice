@@ -161,12 +161,16 @@ async function handler(req: Request) {
       // (l'échéance est posée AU MOMENT de la demande puis dans le futur ; une échéance antérieure à la demande, ou
       // une échéance sans demande, est un état qu'un chemin futur — Stripe, un outil d'admin — aurait laissé en
       // oubliant de nettoyer). Sinon : REFUS structuré dans cron_runs, AUCUNE tentative, AUCUNE ligne de manifeste.
-      // La garde échoue FERMÉ : dans le doute, elle refuse. Comparaison >= (et non >) : le harnais pose demande et
-      // échéance au même instant pour un compte dûment échu ; une égalité stricte le refuserait à tort.
+      // La garde échoue FERMÉ : dans le doute, elle refuse. Comparaison STRICTE (>), conformément à la convention
+      // arrêtée le 13 nov : « cancelled_at IS NULL OU deletion_scheduled_at <= cancelled_at → refus ». La route
+      // réelle écrit cancelled_at = maintenant et deletion_scheduled_at = maintenant + 30 jours (account/delete
+      // route.ts:24,31-32) : les deux ne sont JAMAIS égaux. Une échéance égale à sa demande signifie un délai de
+      // grâce nul — un état que la production ne produit pas, donc une dérive. Le harnais l'avait d'abord
+      // fabriqué par commodité ; c'est la fixture qui a été corrigée, pas la garde.
       if (status === 'cancelled' && p.deletion_scheduled_at && new Date(p.deletion_scheduled_at as string) <= now) {
         const cancelledAt = p.cancelled_at ? new Date(p.cancelled_at as string) : null;
         const echeance = new Date(p.deletion_scheduled_at as string);
-        const valide = cancelledAt !== null && echeance >= cancelledAt;
+        const valide = cancelledAt !== null && echeance > cancelledAt;
         if (!valide) {
           refusals.push({ subject_user_id: userId, reason: 'ORPHANED_DELETION_DEADLINE' });
         } else {

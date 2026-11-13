@@ -6,10 +6,20 @@
 //
 // MAIL_TRANSPORT=local → implémentation locale qui N'ÉMET RIEN et journalise les liens,
 // pour que les essais puissent suivre un lien d'annulation sans appeler Resend.
+/** Pièce jointe. `contenuBase64` est le contenu DÉJÀ encodé — jamais un chemin de
+ *  fichier : un transport ne lit pas le disque à la place de l'appelant. */
+export interface PieceJointe {
+  readonly nom: string;
+  readonly contenuBase64: string;
+}
+
 export interface Courriel {
   readonly to: string;
   readonly subject: string;
   readonly html: string;
+  /** Facultatif. Un transport qui ne les gère pas doit LEVER, jamais les laisser tomber :
+   *  un export RGPD envoyé sans son export est un courriel vide qui se croit délivré. */
+  readonly pieces?: readonly PieceJointe[];
 }
 
 export interface Transport {

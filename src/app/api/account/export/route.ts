@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
-import { resend, FROM_EMAIL } from '@/lib/resend';
+import { envoyerCourriel } from '@/lib/mail/transport';
 // ⚠ NON routé par envoyerCourriel : cet envoi porte une PIÈCE JOINTE (l'export RGPD), que l'interface Courriel du
 // transport ne prend pas en charge. Router ici dépublierait silencieusement la pièce jointe. À router quand le
 // transport saura porter une pièce jointe (décision d'Estelle sur l'interface Courriel).
@@ -52,8 +52,11 @@ export async function POST() {
 
   if (!user.email) return NextResponse.json({ error: 'Email non disponible' }, { status: 400 });
 
-  const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
+  // Passe par le transport unique, pièce jointe comprise. Le transport LOCAL ne
+  // journalise que le nom et la taille de la pièce, jamais son contenu : cet export
+  // porte l'intégralité des données de la personne.
+  try {
+    await envoyerCourriel({
     to: user.email,
     subject: 'Ton export de données Candice (RGPD)',
     html: `<!DOCTYPE html>
@@ -69,13 +72,14 @@ export async function POST() {
     </p>
   </div>
 </body></html>`,
-    attachments: [{
-      filename: `candice-export-${new Date().toISOString().slice(0, 10)}.json`,
-      content: encodedData,
+    pieces: [{
+      nom: `candice-export-${new Date().toISOString().slice(0, 10)}.json`,
+      contenuBase64: encodedData,
     }],
-  });
-
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    });
+  } catch (e) {
+    return NextResponse.json({ error: (e as Error).message }, { status: 500 });
+  }
 
   return NextResponse.json({ ok: true, message: 'Export envoyé par email.' });
 }
