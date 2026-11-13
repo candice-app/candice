@@ -7,6 +7,7 @@
 #   bash scripts/local/00-lancer.sh cron2 <id>  # la reprise du scénario 4
 #   bash scripts/local/00-lancer.sh sonde       # la sonde ev_interest_shape (§27.6)
 #   bash scripts/local/00-lancer.sh releve      # le relevé de schéma, lecture seule
+#   bash scripts/local/00-lancer.sh echange     # l'échange complet : conversation → écriture → moteur
 #   bash scripts/local/00-lancer.sh etat        # juste l'état de la pile
 #   bash scripts/local/00-lancer.sh verif       # typechecks (les DEUX) + suite de tests
 #   bash scripts/local/00-lancer.sh tout        # tout ce qui précède, d'un seul coup
@@ -30,6 +31,7 @@ export SUPABASE_DB_URL="$(lire DB_URL)"
   case "$QUOI" in
     journal) npx tsx scripts/local/02-journal-aller-retour.mts ;;
     sonde)   npx tsx scripts/local/04-sonde-interest-relationship.mts ;;
+    echange) npx tsx scripts/local/06-approfondissement.mts ;;
     verif)
       # Les deux typechecks : tsconfig.json EXCLUT "scripts", donc le premier ne voit
       # jamais scripts/local. Le second est là pour ça — ne jamais lancer que le premier.
@@ -55,7 +57,7 @@ export SUPABASE_DB_URL="$(lire DB_URL)"
       psql "$SUPABASE_DB_URL" -c "select count(*) as tables_journal from information_schema.tables where table_schema='public' and table_name like 'knowledge_%';"
       psql "$SUPABASE_DB_URL" -c "select to_regclass('public.erasure_manifests') as table_de_trace;"
       ;;
-    *) echo "usage : tout | journal | sonde | releve | verif | cron | cron2 <id> | etat" ;;
+    *) echo "usage : tout | journal | sonde | releve | echange | verif | cron | cron2 <id> | etat" ;;
   esac
   echo "=== code de sortie : $? ==="
 } > "$SORTIE" 2>&1
