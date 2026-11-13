@@ -44,7 +44,10 @@ describe('un veto vide n’écarte rien', () => {
   // Un veto vide passé à `includes` renvoyait TRUE sur tout texte : toutes les idées
   // écartées, silencieusement. La liste est filtrée en amont, mais la fonction doit
   // tenir seule : une protection qui dépend d'un filtrage ailleurs n'en est pas une.
-  it.each(['', '   ', '!!', '-'])('veto « %s »', (veto) => {
+  // Et une saisie faite UNIQUEMENT de ponctuation n'est pas un mot : la garder
+  // fabriquerait un motif reconnaissant de la ponctuation présente dans presque
+  // n'importe quelle idée — un veto involontaire, invisible, sans raison affichable.
+  it.each(['', '   ', '!!', '-', '...', '??!'])('veto « %s »', (veto) => {
     expect(motifVeto(veto)).toBeNull();
     expect(mentionne("N'importe quelle idée", veto)).toBe(false);
   });

@@ -31,7 +31,13 @@ const ECHAPPER = /[.*+?^${}()|[\]\\]/g;
  * dit rien ne doit RIEN écarter (sinon il écarterait tout).
  */
 export function motifVeto(veto: string): RegExp | null {
-  const mots = aplatir(veto).split(/\s+/).filter(Boolean);
+  // Un mot sans le moindre caractère alphanumérique n'est pas un mot : « !! », « - »,
+  // « ... » sont des saisies vides de sens. Les garder fabriquerait un motif qui peut
+  // reconnaître de la ponctuation présente dans presque n'importe quelle idée — un veto
+  // involontaire, invisible, qui écarterait des propositions sans que personne ne sache
+  // pourquoi. `filter(Boolean)` ne suffisait pas : il retire les chaînes vides, pas celles
+  // qui ne portent que de la ponctuation.
+  const mots = aplatir(veto).split(/\s+/).filter((m) => /[a-z0-9]/.test(m));
   if (mots.length === 0) return null;
   const morceaux = mots.map((m) => `${m.replace(ECHAPPER, '\\$&')}(?:s|x)?`);
   // Frontières explicites plutôt que \b : \b est faux dès qu'un veto commence ou finit
