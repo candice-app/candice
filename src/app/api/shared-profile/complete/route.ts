@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -48,8 +49,7 @@ export async function POST(request: NextRequest) {
         const { data: { user: sender } } = await admin.auth.admin.getUserById(shareLink.sender_id);
         if (sender?.email) {
           const ownerFirstName = shareLink.sender_name?.split(" ")[0] ?? "";
-          await resend.emails.send({
-            from: FROM_EMAIL,
+          await envoyerCourriel({
             to: sender.email,
             subject: "La fiche de ton proche est complète ✦",
             html: buildProfileCompleteHtml(ownerFirstName, null),

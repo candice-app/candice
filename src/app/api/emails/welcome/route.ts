@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(request: NextRequest) {
   // Session requise : le welcome ne part que vers l'adresse du compte connecté.
@@ -11,8 +12,7 @@ export async function POST(request: NextRequest) {
   const { firstName } = await request.json().catch(() => ({} as { firstName?: string }));
   const email = user.email; // destinataire = session, JAMAIS une adresse du corps
 
-  const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
+  const error = await envoyerCourriel({
     to: email,
     subject: "Candice est prête.",
     html: `<!DOCTYPE html>
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
   </table>
 </body>
 </html>`,
-  });
+  }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
   if (error) {
     console.error("[email/welcome]", error);

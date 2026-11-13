@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { resend, FROM_EMAIL, APP_URL } from '@/lib/resend';
+import { APP_URL } from '@/lib/resend';
+import { envoyerCourriel } from '@/lib/mail/transport';
 import { createAdminClient } from '@/utils/supabase/admin';
 
 // Internal service route — called by lifecycle-check cron only
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
 </body>
 </html>`;
 
-  const { error } = await resend.emails.send({ from: FROM_EMAIL, to: email, subject, html });
+  const error = await envoyerCourriel({ to: email, subject, html }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   const admin = createAdminClient();

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -25,12 +26,11 @@ export async function POST(request: NextRequest) {
     ? `Une invitation Candice de la part de ${piloteFirstName} ✦`
     : "Une invitation Candice ✦";
 
-  const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
+  const error = await envoyerCourriel({
     to: contactEmail,
     subject,
     html: buildInviteHtml(piloteFirstName, contactFirstName ?? null, profileUrl ?? APP_URL, piloteSexe),
-  });
+  }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
   if (error) {
     console.error("[email/questionnaire-invite]", error);

@@ -7,7 +7,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(
   _req: NextRequest,
@@ -101,8 +102,7 @@ async function notifyProche(
   const piloteFirstName = piloteFullName?.split(" ")[0] ?? "Quelqu'un";
   const procheFirstName = (proche.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "";
 
-  await resend.emails.send({
-    from: FROM_EMAIL,
+  await envoyerCourriel({
     to: proche.email,
     subject: `${piloteFirstName} veut partager une analyse avec toi ✦`,
     html: buildEmail(piloteFirstName, procheFirstName, contactFirstName, consentId),

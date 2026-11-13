@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { resend, FROM_EMAIL } from '@/lib/resend';
+// ⚠ NON routé par envoyerCourriel : cet envoi porte une PIÈCE JOINTE (l'export RGPD), que l'interface Courriel du
+// transport ne prend pas en charge. Router ici dépublierait silencieusement la pièce jointe. À router quand le
+// transport saura porter une pièce jointe (décision d'Estelle sur l'interface Courriel).
 
 export async function POST() {
   const supabase = await createClient();

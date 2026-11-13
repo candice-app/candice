@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(request: NextRequest) {
   const { ownerEmail, ownerFirstName, contactFirstName } = await request.json();
   if (!ownerEmail) return NextResponse.json({ error: "ownerEmail required" }, { status: 400 });
 
-  const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
+  const error = await envoyerCourriel({
     to: ownerEmail,
     subject: `Tout est prêt pour ${contactFirstName ?? "ton proche"}.`,
     html: `<!DOCTYPE html>
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
   </table>
 </body>
 </html>`,
-  });
+  }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
   if (error) {
     console.error("[email/profile-complete]", error);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(request: NextRequest) {
   // Session requise + le contact doit appartenir à l'utilisateur.
@@ -27,8 +28,7 @@ export async function POST(request: NextRequest) {
   const senderFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] || undefined;
   const profileUrl = `${APP_URL}/profil/${contactId}`;
 
-  const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
+  const error = await envoyerCourriel({
     to: contactEmail,
     subject: "Votre fiche est incomplète.",
     html: `<!DOCTYPE html>
@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
   </table>
 </body>
 </html>`,
-  });
+  }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
   if (error) {
     console.error("[email/reminder]", error);

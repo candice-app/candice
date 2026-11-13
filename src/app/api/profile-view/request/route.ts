@@ -9,7 +9,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 import { isQuestionnaireComplete, PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
 
 export async function POST(req: NextRequest) {
@@ -99,8 +100,7 @@ async function notifyTarget(
   const requesterFirstName = requesterFullName?.split(" ")[0] ?? "Quelqu'un";
   const targetFirstName = (target.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "";
 
-  await resend.emails.send({
-    from: FROM_EMAIL,
+  await envoyerCourriel({
     to: target.email,
     subject: `${requesterFirstName} veut voir ton profil`,
     html: buildEmail(requesterFirstName, targetFirstName, consentId),

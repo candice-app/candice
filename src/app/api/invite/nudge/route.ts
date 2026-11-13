@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { sendPushToUser } from "@/lib/notifications/push-sender";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -43,8 +44,7 @@ export async function POST(req: NextRequest) {
     if (!newLink) return NextResponse.json({ method: "none" });
     const inviteUrl = `${APP_URL}/invite/${newLink.token}`;
     const procheFirstName = contact.name.split(" ")[0];
-    await resend.emails.send({
-      from: FROM_EMAIL,
+    await envoyerCourriel({
       to: contact.email,
       subject: piloteFirstName
         ? `${piloteFirstName} t'invite sur Candice ✦`
@@ -94,8 +94,7 @@ export async function POST(req: NextRequest) {
 
   const procheFirstName = (procheUser.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null;
 
-  await resend.emails.send({
-    from: FROM_EMAIL,
+  await envoyerCourriel({
     to: procheUser.email,
     subject: piloteFirstName
       ? `${piloteFirstName} voudrait mieux prendre soin de toi ✦`

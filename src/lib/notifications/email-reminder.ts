@@ -1,4 +1,5 @@
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 import { createAdminClient } from "@/utils/supabase/admin";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
@@ -99,12 +100,11 @@ export async function sendReminderEmail(
   const subject = SUBJECT[suggestion.priority] ?? SUBJECT.normal;
   const html = buildHtml(suggestion);
 
-  const { error } = await resend.emails.send({
-    from: FROM_EMAIL,
+  const error = await envoyerCourriel({
     to: email,
     subject,
     html,
-  });
+  }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
   const { error: logErr } = await supabaseAdmin.from("notification_log").insert({
     user_id: userId,

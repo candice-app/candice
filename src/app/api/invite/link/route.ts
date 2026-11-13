@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { resend, FROM_EMAIL, APP_URL } from "@/lib/resend";
+import { APP_URL } from "@/lib/resend";
+import { envoyerCourriel } from "@/lib/mail/transport";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -63,8 +64,7 @@ async function notifyPilote(
   const piloteFirstName = piloteName?.split(" ")[0] ?? "";
   const procheFirstName = procheFullName?.split(" ")[0] ?? null;
 
-  await resend.emails.send({
-    from: FROM_EMAIL,
+  await envoyerCourriel({
     to: pilote.email,
     subject: `${procheFirstName ? `${procheFirstName} a` : "Ton proche a"} complété sa fiche ✦`,
     html: buildNotifHtml(piloteFirstName, procheFirstName),
