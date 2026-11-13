@@ -1,12 +1,20 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/utils/supabase/admin';
-import { resend, FROM_EMAIL, APP_URL } from '@/lib/resend';
-import { hardDeleteUser } from '@/lib/lifecycle/hard-delete';
+import { APP_URL } from '@/lib/resend';
+import { envoyerCourriel } from '@/lib/mail/transport';
+import { effacerCompte } from '@/lib/lifecycle/erasure/engine';
 
 const JOB_NAME = 'lifecycle-check';
 
 // Phase de test — réactiver quand Stripe est branché (Phase 7)
 const ENABLE_TRIAL_LOCKOUT = false;
+
+// Un refus structuré, pas une chaîne dans un message : le test compare le CHAMP, pas le texte sérialisé.
+// La forme fait partie de la spec (scripts/local/TRANSPORT-ET-INJECTION.md §3b) ; ne pas en inventer une autre.
+interface Refus {
+  subject_user_id: string;
+  reason: 'ORPHANED_DELETION_DEADLINE';
+}
 
 async function getUserEmail(userId: string, admin: ReturnType<typeof createAdminClient>): Promise<string | null> {
   try {
@@ -28,10 +36,10 @@ async function sendSimpleEmail(to: string, subject: string, body: string): Promi
     </p>
   </div>
 </body></html>`;
-  await resend.emails.send({ from: FROM_EMAIL, to, subject, html });
+  await envoyerCourriel({ to, subject, html });
 }
 
-export async function GET(req: Request) {
+async function handler(req: Request) {
   const auth = req.headers.get('authorization');
   if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -48,11 +56,12 @@ export async function GET(req: Request) {
   const cronRunId = cronRun?.id ?? null;
 
   const transitions: string[] = [];
+  const refusals: Refus[] = [];
 
   try {
     const { data: profiles } = await admin
       .from('my_profile')
-      .select('user_id, subscription_status, trial_started_at, lifetime_trial, subscription_paused_at, last_active_at, deletion_scheduled_at');
+      .select('user_id, subscription_status, trial_started_at, lifetime_trial, subscription_paused_at, last_active_at, cancelled_at, deletion_scheduled_at');
 
     for (const p of profiles ?? []) {
       const userId = p.user_id as string;
@@ -146,11 +155,27 @@ export async function GET(req: Request) {
         }
       }
 
-      // ── Deletion scheduled ────────────────────────────────────────────────
-      if (status === 'cancelled' && p.deletion_scheduled_at) {
-        if (new Date(p.deletion_scheduled_at) <= now) {
-          await hardDeleteUser(userId, admin);
-          transitions.push(`hard_deleted:${userId}`);
+      // ── Suppression échue ─────────────────────────────────────────────────
+      // GARDE DE VALIDITÉ (parade « échéance orpheline »), AVANT toute tentative. Une échéance échue ne vaut ordre
+      // de suppression QUE si elle est portée par une demande réelle : cancelled_at présent ET échéance >= cancelled_at
+      // (l'échéance est posée AU MOMENT de la demande puis dans le futur ; une échéance antérieure à la demande, ou
+      // une échéance sans demande, est un état qu'un chemin futur — Stripe, un outil d'admin — aurait laissé en
+      // oubliant de nettoyer). Sinon : REFUS structuré dans cron_runs, AUCUNE tentative, AUCUNE ligne de manifeste.
+      // La garde échoue FERMÉ : dans le doute, elle refuse. Comparaison >= (et non >) : le harnais pose demande et
+      // échéance au même instant pour un compte dûment échu ; une égalité stricte le refuserait à tort.
+      if (status === 'cancelled' && p.deletion_scheduled_at && new Date(p.deletion_scheduled_at as string) <= now) {
+        const cancelledAt = p.cancelled_at ? new Date(p.cancelled_at as string) : null;
+        const echeance = new Date(p.deletion_scheduled_at as string);
+        const valide = cancelledAt !== null && echeance >= cancelledAt;
+        if (!valide) {
+          refusals.push({ subject_user_id: userId, reason: 'ORPHANED_DELETION_DEADLINE' });
+        } else {
+          const res = await effacerCompte(admin, userId, {
+            runId: cronRunId,
+            requestedAt: p.cancelled_at as string,
+            scheduledFor: p.deletion_scheduled_at as string,
+          });
+          transitions.push(`${res.status === 'ACHEVEMENT_VERIFIE' ? 'hard_deleted' : 'erasure_partielle'}:${userId}`);
         }
       }
     }
@@ -158,20 +183,25 @@ export async function GET(req: Request) {
     if (cronRunId) {
       const { error: runUpdateError } = await admin.from('cron_runs').update({
         status: 'success', finished_at: now.toISOString(),
-        metadata: { transitions },
+        metadata: { transitions, refusals },
       }).eq('id', cronRunId);
       if (runUpdateError) console.error(`[CRON ${JOB_NAME}] cron_runs update`, runUpdateError.message);
     }
 
-    return NextResponse.json({ transitions });
+    return NextResponse.json({ transitions, refusals });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (cronRunId) {
       const { error: runUpdateError } = await admin.from('cron_runs').update({
         status: 'error', finished_at: now.toISOString(), error_message: msg,
+        metadata: { transitions, refusals },
       }).eq('id', cronRunId);
       if (runUpdateError) console.error(`[CRON ${JOB_NAME}] cron_runs update`, runUpdateError.message);
     }
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
+// Vercel Cron appelle en GET ; le harnais d'essai local appelle en POST. Même traitement.
+export const GET = handler;
+export const POST = handler;
