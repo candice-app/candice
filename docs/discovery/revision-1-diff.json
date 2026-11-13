@@ -1,0 +1,378 @@
+{
+  "source": "OFFICIEL.xlsx",
+  "source_sha256": "53b08fbc05ca1d9da300218a193aa4baabebdb0c5b3a142b401a086c6142649c",
+  "revision": "REVISION_1.xlsx",
+  "revision_sha256": "cfb63b66c888a1f34f2b2952d51cfaf7138c905c742c437458af2cfaa7edf2ee",
+  "onglet_touche": "17_DESTINATIONS_CONDITIONNELLES",
+  "cellules_modifiees": 46,
+  "diff": [
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N2",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N3",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N4",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N5",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N6",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N7",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N8",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N9",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N10",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N11",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N12",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N13",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N14",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N15",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "N16",
+      "colonne": "statut",
+      "avant": "EXECUTABLE",
+      "apres": "DEFINIE",
+      "decision": "DEFINIE décrit le contrat arrêté ; EXECUTABLE se gagne par la preuve applicative"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R1",
+      "colonne": "(en-tête)",
+      "avant": null,
+      "apres": "relationship",
+      "decision": "le degré d’engagement d’un INTEREST n’avait aucune colonne où s’écrire"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R2",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R3",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R4",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R5",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "NON_PRECISE",
+      "decision": "learning2.1459 : intérêt établi, degré inconnu → export null, stabilite contextual"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R6",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R7",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R8",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R9",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R10",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R11",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R12",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R13",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R14",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R15",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "R16",
+      "colonne": "relationship",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "destination non-INTEREST → champ sans objet, omis à l’export"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q2",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q3",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q4",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q5",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q6",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q7",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "voie FACT : un fait ne porte pas de rôle de preuve"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q8",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "voie FACT : un fait ne porte pas de rôle de preuve"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q9",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "voie FACT : un fait ne porte pas de rôle de preuve"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q10",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "voie FACT : un fait ne porte pas de rôle de preuve"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q11",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q12",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "voie FACT : un fait ne porte pas de rôle de preuve"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q13",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q14",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q15",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "secondary",
+      "decision": "9_CONTRATS_OUVERTS.condition_extraction_v2 — secondary si le segment démontre la valeur ET sa portée"
+    },
+    {
+      "onglet": "17_DESTINATIONS_CONDITIONNELLES",
+      "cellule": "Q16",
+      "colonne": "evidence_role",
+      "avant": null,
+      "apres": "SANS_OBJET",
+      "decision": "voie FACT : un fait ne porte pas de rôle de preuve"
+    }
+  ]
+}

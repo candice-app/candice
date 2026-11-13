@@ -1,0 +1,3820 @@
+{
+  "00_SYNTHESE": {
+    "lignes_non_vides": 47,
+    "colonnes": 2,
+    "detail": [
+      {
+        "colonne": "CANDICE — RÉFÉRENTIEL DISCOVERY FINALISÉ · V5",
+        "remplies": 47,
+        "taux": 1.0,
+        "distinctes_vues": 47,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Produit le",
+          "Dérivée de",
+          "Sources conservées intactes"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "(sans_titre_1)",
+        "remplies": 39,
+        "taux": 0.83,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "2026-11-10",
+          "Candice_Discovery_Referentiel_V4_CANONIQUE.xlsx",
+          "V1, V2, V3 et V4 ne sont pas écrasées"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "0_FICHE_CANONIQUE": {
+    "lignes_non_vides": 18607,
+    "colonnes": 28,
+    "detail": [
+      {
+        "colonne": "question_id",
+        "remplies": 2407,
+        "taux": 0.129,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "CRE-01",
+          "CRE-02",
+          "CRE-03"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "ligne",
+        "remplies": 18607,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "QUESTION",
+          "→ réponse"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rang",
+        "remplies": 15827,
+        "taux": 0.851,
+        "distinctes_vues": 32,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "1",
+          "2",
+          "3"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "ÉNONCÉ / RÉPONSE",
+        "remplies": 18234,
+        "taux": 0.98,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Une excellente idée",
+          "Autre",
+          "Avec un proche"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+        "remplies": 18583,
+        "taux": 0.999,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "1 réponses → 1×NO_EMISSION   ·   0 revues sur 1",
+          "recommander dans la bonne discipline — matériel, atelier, œuvre, livre — et choisir la question suivante",
+          "recommander un restaurant, une recette, un produit ou un atelier dans la bonne famille culinaire"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "voie",
+        "remplies": 16200,
+        "taux": 0.871,
+        "distinctes_vues": 6,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ACTION_PARAMETER",
+          "DISCOVERY_STATE",
+          "FACT",
+          "HSG_EVIDENCE",
+          "NO_EMISSION",
+          "OPEN_KNOWLEDGE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "famille HSG",
+        "remplies": 13123,
+        "taux": 0.705,
+        "distinctes_vues": 8,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "AFFECTION_LANGUAGE",
+          "BEHAVIOR",
+          "CONTEXT",
+          "DRIVER",
+          "ENTITY",
+          "GUARDRAIL",
+          "INTEREST",
+          "PREFERENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "domaine",
+        "remplies": 16172,
+        "taux": 0.869,
+        "distinctes_vues": 82,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "relation",
+          "travel",
+          "daily"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "attribut",
+        "remplies": 13859,
+        "taux": 0.745,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "value_sought",
+          "type_preference",
+          "gift_format"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "valeur",
+        "remplies": 15343,
+        "taux": 0.825,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "ne_pas_ponderer_ce_critere",
+          "ouvrir_la_saisie_libre",
+          "place=faible"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "sévérité",
+        "remplies": 1034,
+        "taux": 0.056,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "HARD",
+          "SOFT"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "sujet",
+        "remplies": 15857,
+        "taux": 0.852,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "animal",
+          "proche",
+          "tiers",
+          "utilisateur"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "portée",
+        "remplies": 18578,
+        "taux": 0.998,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Portée de stockage  usage, personne concernée si cadeau, période, source, confiance, timestamp. Les préférences d’achat ",
+          "contextual",
+          "couche transversale esthétique : vaut pour les univers visuels de l'utilisateur, tous domaines confondus"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "stabilité",
+        "remplies": 16075,
+        "taux": 0.864,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "contextual",
+          "evolving",
+          "stable",
+          "temporary"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "niveau de preuve",
+        "remplies": 15846,
+        "taux": 0.852,
+        "distinctes_vues": 116,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "declaration_explicite",
+          "declaratif_direct",
+          "declaratif_explicite"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "polarité",
+        "remplies": 14799,
+        "taux": 0.795,
+        "distinctes_vues": 6,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "absence_de_critere",
+          "condition",
+          "factuelle",
+          "inconnue",
+          "positive",
+          "rejet"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "condition d’émission",
+        "remplies": 18595,
+        "taux": 0.999,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "option cochée uniquement ; aucune émission pour les options non cochées",
+          "option cochee (MULTI) ; aucune emission si l'option n'est pas cochee",
+          "réponse unique sélectionnée (SINGLE)"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "INFÉRENCES INTERDITES",
+        "remplies": 18580,
+        "taux": 0.999,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "ne pas en déduire une couleur (FPL-08 porte color_preference), une forme de composition (FPL-07), un budget ni une saiso",
+          "attraction déclarée n'est pas pratique : ne pas déduire practice_frequency, expertise_level ni une possession de matérie",
+          "ne pas déduire une origine, une culture, une religion ni une appartenance de la personne à partir d'une cuisine aimée ; "
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "utilité",
+        "remplies": 18384,
+        "taux": 0.988,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "noter que la connaissance reste à acquérir, et ne pas reposer la question immédiatement",
+          "recommander dans la bonne discipline — matériel, atelier, œuvre, livre — et choisir la question suivante",
+          "recommander un restaurant, une recette, un produit ou un atelier dans la bonne famille culinaire"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "statut",
+        "remplies": 18607,
+        "taux": 1.0,
+        "distinctes_vues": 19,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ARBITRAGE EN ATTENTE — 1 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 12 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 13 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 2 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 3 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 4 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 5 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 6 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 7 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 8 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 9 réponse(s)",
+          "HORS_PARCOURS_ACTIF",
+          "RETIRÉE DU PARCOURS ACTIF → ",
+          "RETIRÉE DU PARCOURS ACTIF → THE-06A",
+          "RETIRÉE DU PARCOURS ACTIF → module de précision conditionnel JWL-TAILLE, cinq questions à déclencheur propre",
+          "RETIRÉE DU PARCOURS ACTIF → réutilisation du mécanisme du Carnet d’envies",
+          "RETIRÉE DU PARCOURS ACTIF → travel.0060A et travel.0060B",
+          "REVUE",
+          "SEMANTICALLY_REVIEWED"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "point à arbitrer",
+        "remplies": 268,
+        "taux": 0.014,
+        "distinctes_vues": 216,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "rétrogradée par la validation de second niveau : C10_modele : attribut « felt_emotion » hors des 32",
+          "rétrogradée par la validation de second niveau : C6_proportion : DRIVER alors que ni l’énoncé ne demande une raison ni l",
+          "rétrogradée par la validation de second niveau : C10_modele : famille posée hors de la voie HSG_EVIDENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "PREUVE DE JUSTESSE",
+        "remplies": 131,
+        "taux": 0.007,
+        "distinctes_vues": 131,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "La question demande une espèce nommée et sa signification : la réponse livrera une entité citée avec sa relation, ce que",
+          "Les options 1 à 9 nomment des modes de plaisir réellement recherchés dans la nourriture (découvrir, partager, cuisiner, ",
+          "La réponse nomme un jeu ou une console avec un attachement déclaré : entité citée et relation, donc known_references. « "
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "origine du contrat",
+        "remplies": 16200,
+        "taux": 0.871,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "requalification V4, option par option",
+          "requalification V5, option par option (lot 10)",
+          "requalification V5, option par option (lot 28)"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "corrections",
+        "remplies": 15502,
+        "taux": 0.833,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "P0 ORCHESTRATION — Clause d’ouverture réécrite : `GUARDRAIL.<domaine>.do_not_ask` devenait un garde-fou HSG là où la con",
+          "L'énoncé collecte un goût pour des catégories : les options nomment chacune une discipline réelle du domaine, donc de vr",
+          "L'énoncé collecte un goût pour des catégories et les options nomment de vraies cuisines, donc de vrais types du domaine "
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "affichage",
+        "remplies": 23,
+        "taux": 0.001,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "AFFICHÉE — formulation canonique",
+          "AFFICHÉE — option de plein droit ; l’alias posé par la V5 était faux",
+          "MASQUÉE — alias de l’option canonique, conservée pour la lecture et la migration",
+          "MASQUÉE — alias historique du rang 2",
+          "MASQUÉE — alias historique du rang 7"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "branche",
+        "remplies": 2407,
+        "taux": 0.129,
+        "distinctes_vues": 110,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "consumption2",
+          "travel2",
+          "fashion2"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "niveau",
+        "remplies": 2208,
+        "taux": 0.119,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "A",
+          "B",
+          "C"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "type",
+        "remplies": 2407,
+        "taux": 0.129,
+        "distinctes_vues": 7,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "MULTI · réponses multiples sans plafond arbitraire",
+          "OPEN · facultative",
+          "SINGLE · facultative",
+          "multi",
+          "open",
+          "ranked_multi",
+          "single"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "1_CONTRATS_PAR_REPONSE": {
+    "lignes_non_vides": 16200,
+    "colonnes": 71,
+    "detail": [
+      {
+        "colonne": "question_id",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "causes.1918",
+          "CRE-02",
+          "FOO-06"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "option_id",
+        "remplies": 15827,
+        "taux": 0.977,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "REFONTE:CEL-01:OPT_001",
+          "REFONTE:CEL-01:OPT_002",
+          "REFONTE:CEL-01:OPT_003"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rang",
+        "remplies": 15827,
+        "taux": 0.977,
+        "distinctes_vues": 32,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "1",
+          "2",
+          "3"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libelle",
+        "remplies": 15827,
+        "taux": 0.977,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Une excellente idée",
+          "Plusieurs petites attentions",
+          "Autre"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libelle_source_conserve",
+        "remplies": 8,
+        "taux": 0.0,
+        "distinctes_vues": 8,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Dans un lieu extérieur",
+          "Difficulté",
+          "Famille",
+          "Je préfère éviter",
+          "La recherche",
+          "L’anticipation",
+          "Physique",
+          "Variable"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "enonce",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Parmi ces causes, lesquelles te touchent particulièrement ?",
+          "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+          "Quel type de cuisine te ressemble le plus ?"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "branche",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 110,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "travel2",
+          "consumption2",
+          "fashion2"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "niveau",
+        "remplies": 14871,
+        "taux": 0.918,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "A",
+          "B",
+          "C"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "type_reponse",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 7,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "MULTI · réponses multiples sans plafond arbitraire",
+          "OPEN · facultative",
+          "SINGLE · facultative",
+          "multi",
+          "open",
+          "ranked_multi",
+          "single"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "statut_parcours",
+        "remplies": 822,
+        "taux": 0.051,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ACTIVE",
+          "OPTION DÉSACTIVÉE",
+          "RETIRÉE DU PARCOURS ACTIF"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "affichage",
+        "remplies": 23,
+        "taux": 0.001,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "AFFICHÉE — formulation canonique",
+          "AFFICHÉE — option de plein droit ; l’alias posé par la V5 était faux",
+          "MASQUÉE — alias de l’option canonique, conservée pour la lecture et la migration",
+          "MASQUÉE — alias historique du rang 2",
+          "MASQUÉE — alias historique du rang 7"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "option_canonique",
+        "remplies": 4,
+        "taux": 0.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "live.0478:r1",
+          "tech2.1318:r2",
+          "theatre2.1365:r2",
+          "theatre2.1365:r7"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "alias_de_cette_option",
+        "remplies": 2,
+        "taux": 0.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "live.0478:r9 live.0478:r9",
+          "tech2.1318:r9 tech2.1318:r9"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "requalifiee",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "non",
+          "oui"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "knowledge_lane",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 6,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ACTION_PARAMETER",
+          "DISCOVERY_STATE",
+          "FACT",
+          "HSG_EVIDENCE",
+          "NO_EMISSION",
+          "OPEN_KNOWLEDGE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "hsg_family",
+        "remplies": 13123,
+        "taux": 0.81,
+        "distinctes_vues": 8,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "AFFECTION_LANGUAGE",
+          "BEHAVIOR",
+          "CONTEXT",
+          "DRIVER",
+          "ENTITY",
+          "GUARDRAIL",
+          "INTEREST",
+          "PREFERENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "target_construct",
+        "remplies": 16172,
+        "taux": 0.998,
+        "distinctes_vues": 82,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "relation",
+          "travel",
+          "daily"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "target_attribute",
+        "remplies": 13859,
+        "taux": 0.855,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "value_sought",
+          "type_preference",
+          "gift_format"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "value",
+        "remplies": 15343,
+        "taux": 0.947,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "ne_pas_ponderer_ce_critere",
+          "ouvrir_la_saisie_libre",
+          "place=faible"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "severity",
+        "remplies": 1034,
+        "taux": 0.064,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "HARD",
+          "SOFT"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "subject",
+        "remplies": 15857,
+        "taux": 0.979,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "animal",
+          "proche",
+          "tiers",
+          "utilisateur"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "scope",
+        "remplies": 16181,
+        "taux": 0.999,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "couche transversale esthétique : vaut pour les univers visuels de l'utilisateur, tous domaines confondus",
+          "Portée de stockage  usage, personne concernée si cadeau, période, source, confiance, timestamp. Les préférences d’achat ",
+          "la recommandation en cours de préparation, et elle seule"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "stability",
+        "remplies": 16075,
+        "taux": 0.992,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "contextual",
+          "evolving",
+          "stable",
+          "temporary"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "evidence_level",
+        "remplies": 15846,
+        "taux": 0.978,
+        "distinctes_vues": 116,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "declaration_explicite",
+          "declaratif_direct",
+          "declaratif_explicite"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "polarity",
+        "remplies": 14799,
+        "taux": 0.914,
+        "distinctes_vues": 6,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "absence_de_critere",
+          "condition",
+          "factuelle",
+          "inconnue",
+          "positive",
+          "rejet"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "emission_condition",
+        "remplies": 16188,
+        "taux": 0.999,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "réponse unique sélectionnée (SINGLE)",
+          "option effectivement cochée dans le multi ; une option non cochée n'émet rien",
+          "option cochée uniquement ; aucune émission pour les options non cochées"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "emission_primaire",
+        "remplies": 176,
+        "taux": 0.011,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "OPEN_KNOWLEDGE — la connaissance primaire, toujours émise",
+          "OPEN_KNOWLEDGE — le verbatim est conservé tel quel, toujours"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "emission_secondaire",
+        "remplies": 176,
+        "taux": 0.011,
+        "distinctes_vues": 127,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "HSG_EVIDENCE / ENTITY — ENTITY_TOPIC avec une relation parmi LOVE/LIKE/CURIOUS/WANT_TO_TRY/WANT_TO_OWN/WANT_TO_VISIT, ém",
+          "HSG_EVIDENCE / ENTITY — ENTITY_TOPIC avec une relation parmi DISLIKE/AVOID, émise EN PLUS du verbatim et non à sa place,",
+          "HSG_EVIDENCE / ENTITY — , émise EN PLUS de la voie primaire et jamais à sa place, seulement si la condition est remplie."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "inferences_interdites",
+        "remplies": 16183,
+        "taux": 0.999,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "ne pas en déduire une couleur (FPL-08 porte color_preference), une forme de composition (FPL-07), un budget ni une saiso",
+          "donnée technique d’achat : ne jamais en déduire un trait de personnalité, un style ni un goût",
+          "attraction déclarée n'est pas pratique : ne pas déduire practice_frequency, expertise_level ni une possession de matérie"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "utilite",
+        "remplies": 16176,
+        "taux": 0.999,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "noter que la connaissance reste à acquérir, et ne pas reposer la question immédiatement",
+          "recommander dans la bonne discipline — matériel, atelier, œuvre, livre — et choisir la question suivante",
+          "recommander un restaurant, une recette, un produit ou un atelier dans la bonne famille culinaire"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "review_status",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "HORS_PARCOURS_ACTIF",
+          "SEMANTICALLY_REVIEWED"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "note_arbitrage",
+        "remplies": 264,
+        "taux": 0.016,
+        "distinctes_vues": 212,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "rétrogradée par la validation de second niveau : C10_modele : attribut « felt_emotion » hors des 32",
+          "rétrogradée par la validation de second niveau : C6_proportion : DRIVER alors que ni l’énoncé ne demande une raison ni l",
+          "rétrogradée par la validation de second niveau : C10_modele : famille posée hors de la voie HSG_EVIDENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "preuve_de_justesse",
+        "remplies": 131,
+        "taux": 0.008,
+        "distinctes_vues": 131,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Les options 1 à 9 nomment des modes de plaisir réellement recherchés dans la nourriture (découvrir, partager, cuisiner, ",
+          "La question demande une espèce nommée et sa signification : la réponse livrera une entité citée avec sa relation, ce que",
+          "La réponse nomme un jeu ou une console avec un attachement déclaré : entité citée et relation, donc known_references. « "
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "origine_du_contrat",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "requalification V4, option par option",
+          "requalification V5, option par option (lot 10)",
+          "requalification V5, option par option (lot 28)"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "correction_v4",
+        "remplies": 15502,
+        "taux": 0.957,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "P0 ORCHESTRATION — Clause d’ouverture réécrite : `GUARDRAIL.<domaine>.do_not_ask` devenait un garde-fou HSG là où la con",
+          "Déclencheur propre, posée une seule fois, jamais reposée si la réponse est connue.",
+          "L'énoncé collecte un goût pour des catégories : les options nomment chacune une discipline réelle du domaine, donc de vr"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "regle_de_migration",
+        "remplies": 784,
+        "taux": 0.048,
+        "distinctes_vues": 124,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Ne plus poser cette question : elle est portée par craft.0615, qui conserve les niveaux, la clause d’affichage et la fin",
+          "Ne plus poser cette question : elle est portée par food2.0863, qui conserve les niveaux, la clause d’affichage et la fin",
+          "Ne plus poser cette question : elle est portée par food2.0869, qui conserve les niveaux, la clause d’affichage et la fin"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "migre_vers",
+        "remplies": 35,
+        "taux": 0.002,
+        "distinctes_vues": 30,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "NON MIGRABLE",
+          "THE-06A r1",
+          "THE-06A r2"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "cible_migration",
+        "remplies": 799,
+        "taux": 0.049,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "BANQUE:shoes.0332:OPT_001",
+          "BANQUE:shoes.0332:OPT_002",
+          "BANQUE:shoes.0332:OPT_003"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "option_cible_migration",
+        "remplies": 790,
+        "taux": 0.049,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "shoes.0332:r1",
+          "shoes.0332:r2",
+          "shoes.0332:r3"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "motif_non_migrable",
+        "remplies": 36,
+        "taux": 0.002,
+        "distinctes_vues": 32,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Ancien intitulé de sous-question, pas une réponse utilisateur : aucune valeur de taille, longueur, modèle, piercing ni t",
+          "Le texte libre déjà saisi ici se rattache à shoes.0337, qui porte la même question sous forme fermée : conserver le verb",
+          "Le texte libre déjà saisi ici se rattache à shoes.0339, qui porte la même question sous forme fermée : conserver le verb"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question_canonique",
+        "remplies": 761,
+        "taux": 0.047,
+        "distinctes_vues": 110,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "craft.0615",
+          "food2.0863",
+          "food2.0869"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libelle_historique",
+        "remplies": 9,
+        "taux": 0.001,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Dans un lieu extérieur",
+          "Difficulté",
+          "Famille",
+          "La recherche",
+          "L’anticipation",
+          "Physique",
+          "Variable",
+          "Être surpris",
+          "Être ému"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "option_id_historique",
+        "remplies": 7,
+        "taux": 0.0,
+        "distinctes_vues": 7,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "BANQUE:causes.1937:OPT_007",
+          "BANQUE:celebav.2189:OPT_006",
+          "BANQUE:energy.1595:OPT_005",
+          "BANQUE:gaming.0204:OPT_002",
+          "BANQUE:hosting.2053:OPT_005",
+          "BANQUE:humor.0138:OPT_005",
+          "BANQUE:humor.0138:OPT_006"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "migration_depuis_libelle_historique",
+        "remplies": 7,
+        "taux": 0.0,
+        "distinctes_vues": 7,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "NON MIGRABLE. Une réponse enregistrée sous « Dans un lieu extérieur » (identifiant BANQUE:hosting.2053:OPT_005) ne devie",
+          "NON MIGRABLE. Une réponse enregistrée sous « Difficulté » (identifiant BANQUE:gaming.0204:OPT_002) ne devient PAS une ré",
+          "NON MIGRABLE. Une réponse enregistrée sous « Famille » (identifiant BANQUE:humor.0138:OPT_006) ne devient PAS une répons",
+          "NON MIGRABLE. Une réponse enregistrée sous « La recherche » (identifiant BANQUE:causes.1937:OPT_007) ne devient PAS une ",
+          "NON MIGRABLE. Une réponse enregistrée sous « L’anticipation » (identifiant BANQUE:celebav.2189:OPT_006) ne devient PAS u",
+          "NON MIGRABLE. Une réponse enregistrée sous « Physique » (identifiant BANQUE:humor.0138:OPT_005) ne devient PAS une répon",
+          "NON MIGRABLE. Une réponse enregistrée sous « Variable » (identifiant BANQUE:energy.1595:OPT_005) ne devient PAS une répo"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "voie_de_revue",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 34,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "correction ciblée",
+          "revue avant cette campagne (V4)",
+          "requalification par analyse (lot 10)"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "statut_question_deduit",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 13,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ARBITRAGE EN ATTENTE — 1 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 12 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 13 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 2 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 3 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 4 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 5 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 6 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 7 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 8 réponse(s)",
+          "ARBITRAGE EN ATTENTE — 9 réponse(s)",
+          "RETIRÉE DU PARCOURS ACTIF",
+          "REVUE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "peremption",
+        "remplies": 626,
+        "taux": 0.039,
+        "distinctes_vues": 161,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "avec l’attention en cours",
+          "USAGE UNIQUE — ouverture d’un champ de saisie : le réglage cesse à la validation ou à l’abandon de cette saisie. Le cont",
+          "NON RÉUTILISABLE — le contexte de validité ne peut pas être déterminé ; le RAW est conservé, aucune réutilisation automa"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "declencheur_externe",
+        "remplies": 231,
+        "taux": 0.014,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "INTEREST.celebration",
+          "INTEREST.resonance",
+          "INTEREST.sleep"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "declencheur_non_resoluble",
+        "remplies": 0,
+        "taux": 0.0,
+        "distinctes_vues": 0,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [],
+        "VIDE": true
+      },
+      {
+        "colonne": "manque_de_convention",
+        "remplies": 167,
+        "taux": 0.01,
+        "distinctes_vues": 15,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "G10 · adéquation entre un style et l’identité",
+          "G11 · divers à faible volume",
+          "G12 · support, canal d’accès et achèvement d’un contenu",
+          "G13 · préoccupation, étape ou posture du moment",
+          "G14 · disposition au risque et registre du regret",
+          "G15 · saisonnalité",
+          "G17 · domaine protégé, ce qu’une réussite ne doit jamais coûter",
+          "G18 · capacité, et non émotion",
+          "G19 · valence d’une anticipation",
+          "G2 · posture budgétaire et effort financier consenti  (M3)",
+          "G3 · hiérarchie et configuration des cercles familiaux",
+          "G4 · contenu d’un héritage reçu",
+          "G5 · état et qualification d’un lien",
+          "G7 · disposition au compromis ou au sacrifice",
+          "G9 · motif d’un vêtement"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "confidentialite",
+        "remplies": 8,
+        "taux": 0.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "DONNÉE CONCERNANT UN MINEUR. Confidentielle : jamais affichée hors de la fiche de ce proche, jamais transmise à un tiers",
+          "DONNÉE DE SANTÉ DÉCLARÉE. Confidentielle, self_only : jamais renseignée par un tiers, jamais affichée à un tiers, jamais"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libelle_defectueux_source",
+        "remplies": 1,
+        "taux": 0.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "« Règle » n’est pas interprétable dans l’axe de la question, qui porte sur le MODE de choix du matériel créatif. Deux le"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "enonce_partage",
+        "remplies": 0,
+        "taux": 0.0,
+        "distinctes_vues": 0,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [],
+        "VIDE": true
+      },
+      {
+        "colonne": "annotation_source",
+        "remplies": 0,
+        "taux": 0.0,
+        "distinctes_vues": 0,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [],
+        "VIDE": true
+      },
+      {
+        "colonne": "role_non_etabli",
+        "remplies": 2,
+        "taux": 0.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Rôle INCONNU. L’option nomme une occasion qui compte pour elle, rien de plus."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "option_id_refondu",
+        "remplies": 3,
+        "taux": 0.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "FOO-13:r8",
+          "THE-03:r2",
+          "THE-03:r7"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "entree_dans_la_banque",
+        "remplies": 552,
+        "taux": 0.034,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Question refondue sans équivalent dans la banque : elle entre dans sa branche. Champs de parcours manquants : niveau, fi"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "valeur_archivee",
+        "remplies": 762,
+        "taux": 0.047,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "recherche=detente",
+          "ne_pas_ponderer_ce_critere",
+          "couleur=blanc"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "contrat_archive_hsg_family",
+        "remplies": 8,
+        "taux": 0.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "PREFERENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "contrat_archive_polarity",
+        "remplies": 15,
+        "taux": 0.001,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "absence_de_critere",
+          "condition",
+          "positive",
+          "rejet"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "contrat_archive_severity",
+        "remplies": 0,
+        "taux": 0.0,
+        "distinctes_vues": 0,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [],
+        "VIDE": true
+      },
+      {
+        "colonne": "condition_emission_archivee",
+        "remplies": 7,
+        "taux": 0.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "l'option porte sur le MODE DE SELECTION du cadeau, pas sur l'objet : emission sur le vrai sujet, conformement a la regle",
+          "option cochée (MULTI) ; une option non sélectionnée n'émet rien",
+          "verifier l'appariement enonce/options avant toute emission"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "emission_neutralisee",
+        "remplies": 9,
+        "taux": 0.001,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "oui — alias historique, la connaissance vient du rang 2",
+          "oui — alias historique, la connaissance vient du rang 7",
+          "oui — ligne archivée, aucune écriture possible"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "formulation_canonique_proposee",
+        "remplies": 1,
+        "taux": 0.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Si l’énoncé est un jour confirmé comme portant sur ce qu’elle souhaite créer avec ses invités, la formulation « Créer de"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "contrat_archive_target_attribute",
+        "remplies": 8,
+        "taux": 0.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "disruptor",
+          "gift_antipattern",
+          "service_preference",
+          "value_sought"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "affection_direction",
+        "remplies": 83,
+        "taux": 0.005,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "give",
+          "receive"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "affection_modality",
+        "remplies": 67,
+        "taux": 0.004,
+        "distinctes_vues": 8,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "MICRO_ATTENTIONS",
+          "PERSONALIZED_GIFT",
+          "PHYSICAL_TOUCH",
+          "QUALITY_TIME",
+          "SERVICES",
+          "SURPRISE",
+          "SYMBOLIC_GIFT",
+          "WORDS"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "provenance",
+        "remplies": 16200,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque / ligne 1919",
+          "V5 — restructuration de jewelry.0304",
+          "Document definitif Discovery — 199 questions, 13 branches refondues / ligne 2852"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "do_not_reuse",
+        "remplies": 93,
+        "taux": 0.006,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "true"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rotation_proactive",
+        "remplies": 23,
+        "taux": 0.001,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "retiree"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "extraction_contract_ref",
+        "remplies": 56,
+        "taux": 0.003,
+        "distinctes_vues": 56,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "OPEN_V2:CHS-05",
+          "OPEN_V2:CHS-10",
+          "OPEN_V2:CRE-06"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "2_JOURNAL_V4_V5": {
+    "lignes_non_vides": 10392,
+    "colonnes": 9,
+    "detail": [
+      {
+        "colonne": "lot",
+        "remplies": 10392,
+        "taux": 1.0,
+        "distinctes_vues": 44,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "C1 navigation",
+          "requalification V5 (lot 10)",
+          "requalification V5 (lot 28)"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question_id",
+        "remplies": 10392,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "travel.0068",
+          "wellbeing.0225",
+          "watch.0314"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rang",
+        "remplies": 10073,
+        "taux": 0.969,
+        "distinctes_vues": 31,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "3",
+          "1",
+          "4"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libelle",
+        "remplies": 10073,
+        "taux": 0.969,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Autre",
+          "Peu importe",
+          "Je préfère ne pas répondre"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "AVANT",
+        "remplies": 10347,
+        "taux": 0.996,
+        "distinctes_vues": 225,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "décidé par l’analyse : HSG_EVIDENCE / PREFERENCE / value_sought",
+          "décidé par l’analyse : HSG_EVIDENCE / PREFERENCE / type_preference",
+          "décidé par l’analyse : HSG_EVIDENCE / PREFERENCE / gift_format"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "APRÈS",
+        "remplies": 10392,
+        "taux": 1.0,
+        "distinctes_vues": 351,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "HSG_EVIDENCE / PREFERENCE / value_sought",
+          "HSG_EVIDENCE / PREFERENCE / type_preference",
+          "HSG_EVIDENCE / PREFERENCE / gift_format"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "motif de la correction",
+        "remplies": 10392,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "une action de navigation n’est pas une connaissance (forme 7)",
+          "une action de navigation n’est pas une connaissance (forme 6)",
+          "option sélectionnable qui ne produisait rien"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "verdict",
+        "remplies": 9771,
+        "taux": 0.94,
+        "distinctes_vues": 6,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ATTRIBUT_FAUX",
+          "CONFORME",
+          "CONTRAT_A_CORRIGER",
+          "REPORTÉE",
+          "l’option reste sélectionnable et ne perd plus la réponse",
+          "ÉCARTÉE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "écart entre la décision et ce que porte le référentiel",
+        "remplies": 993,
+        "taux": 0.096,
+        "distinctes_vues": 263,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "DÉCISION DE STRUCTURE — cet identifiant est retiré du parcours actif et devient un alias de craft.0615. La décision de l",
+          "DÉCISION DE STRUCTURE — cet identifiant est retiré du parcours actif et devient un alias de food2.0863. La décision de l",
+          "DÉCISION DE STRUCTURE — cet identifiant est retiré du parcours actif et devient un alias de food2.0869. La décision de l"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "3_MATRICE_ATTRIBUTS": {
+    "lignes_non_vides": 39,
+    "colonnes": 10,
+    "detail": [
+      {
+        "colonne": "état",
+        "remplies": 39,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "33e ATTRIBUT — canonique de sa famille",
+          "CRÉÉ",
+          "HORS CONVENTION",
+          "convention"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "famille de la convention",
+        "remplies": 33,
+        "taux": 0.846,
+        "distinctes_vues": 13,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "AFFECTION_LANGUAGE",
+          "BEHAVIOR relationnel",
+          "Cadeau",
+          "Contexte",
+          "Contraintes",
+          "Entites",
+          "Gouts",
+          "Mecanique",
+          "Rapport au domaine",
+          "Service",
+          "fait sur un animal",
+          "frontière de divulgation",
+          "état d’un ensemble possédé"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "attribut",
+        "remplies": 39,
+        "taux": 1.0,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "gift_antipattern",
+          "gift_format",
+          "gift_openness"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "CE QU’IL CAPTE — définition canonique",
+        "remplies": 33,
+        "taux": 0.846,
+        "distinctes_vues": 33,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Ce qui raterait, ce qu'il faut eviter",
+          "Quelle forme d'attention la toucherait",
+          "Recevoir un cadeau dans ce domaine lui ferait-il plaisir"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "branches prévues",
+        "remplies": 33,
+        "taux": 0.846,
+        "distinctes_vues": 32,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "CHS",
+          "CEL CHS CRE FOO GAM HUM LEA MON THE",
+          "CEL CRE FOO FPL GAM HUM JDS REM SOM"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "domaines où il est RÉELLEMENT employé",
+        "remplies": 33,
+        "taux": 0.846,
+        "distinctes_vues": 33,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "aesthetic · animals · bags · beauty · board_game · causes · celebration · cinema · collection · comics · consumption · c",
+          "activities · animals · bags · beauty · board_game · causes · celebration · children · cinema · collection · comics · con",
+          "animals · bags · beauty · board_game · causes · celebration · cinema · collection · comics · consumption · consumption_p"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "lignes portées",
+        "remplies": 39,
+        "taux": 1.0,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "323",
+          "1075",
+          "388"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "dont revues",
+        "remplies": 39,
+        "taux": 1.0,
+        "distinctes_vues": 39,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "323",
+          "1075",
+          "388"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "créé au lot",
+        "remplies": 5,
+        "taux": 0.128,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "V4 · P0-A",
+          "V4 · P0-B",
+          "V4 · P0-C",
+          "attribut canonique d’AFFECTION_LANGUAGE dans le dictionnaire HSG. Son ABSENCE de la feuille des 28 est une omission de l"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "collision ou manque signalé",
+        "remplies": 15,
+        "taux": 0.385,
+        "distinctes_vues": 13,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Aucun horizon temporel pour un projet",
+          "Aucun registre émotionnel pour une attention en préparation",
+          "Aucun rôle social dans l’humour",
+          "Aucune appréciation affective d’une situation de vie",
+          "Aucune posture budgétaire côté donneur",
+          "La famille Cadeau n’existe qu’au rôle « recevoir »",
+          "M9 — l’écoute n’est pas une des huit modalités",
+          "reste à normaliser · statuts {'SEMANTICALLY_REVIEWED': 12}",
+          "reste à normaliser · statuts {'SEMANTICALLY_REVIEWED': 13}",
+          "reste à normaliser · statuts {'SEMANTICALLY_REVIEWED': 25}",
+          "reste à normaliser · statuts {'SEMANTICALLY_REVIEWED': 26}",
+          "reste à normaliser · statuts {'SEMANTICALLY_REVIEWED': 4}",
+          "reste à normaliser · statuts {'SEMANTICALLY_REVIEWED': 5}"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "4_ARBITRAGES_RESIDUELS": {
+    "lignes_non_vides": 9,
+    "colonnes": 8,
+    "detail": [
+      {
+        "colonne": "id",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "M1",
+          "M2",
+          "M3",
+          "M4",
+          "M5",
+          "M6",
+          "M7",
+          "M8",
+          "M9"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "nature",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "MANQUE DE LA CONVENTION"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "objet",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Aucun degré de structuration ou rythme de journée",
+          "Aucun horizon temporel pour un projet",
+          "Aucun registre émotionnel pour une attention en préparation",
+          "Aucun rôle social dans l’humour",
+          "Aucune appréciation affective d’une situation de vie",
+          "Aucune posture budgétaire côté donneur",
+          "La famille Cadeau n’existe qu’au rôle « recevoir »",
+          "L’écoute n’est pas une des huit modalités affectives",
+          "service_preference ne couvre que Candice, pas l’entourage"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "constat",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ce qu’elle est prête à mettre quand elle offre n’a aucun attribut. constraint est une contrainte physique ou pratique, p",
+          "faire rire, rebondir, rire, rester sérieux : exposure_preference est faux — on peut être drôle et détester être célébré.",
+          "gift_format est défini comme « quelle forme d’attention LA TOUCHERAIT ». Chaque fois qu’une question demande comment ELL",
+          "sa définition dit « comment elle veut que CANDICE l’accompagne », mais il est employé pour la façon dont un PROCHE procè",
+          "tendresse, admiration, émerveillement, gratitude ne sont ni une intensité (intensity_preference) ni une forme (gift_form",
+          "« dans les prochaines semaines », « cette année », « sans date précise » ne sont ni une durée (duration_preference) ni u",
+          "« exaltant », « libérateur », « fatigant », « angoissant », « douloureux » déclarent ce qu’une situation lui fait, pas c",
+          "« très organisée » contre « complètement improvisée », « lever tôt » contre « vie nocturne » : ni une intensité d’émotio",
+          "« Être écouté(e) » (joys.1893 r1) est l’une des choses qui lui font le plus de bien quand elle va moins bien, et c’est s"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "questions",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "REM-11",
+          "celebav.2169 · celebav.2179 · time.1565 · REM-15 · hosting.2052",
+          "change.1766 · philovie.1648 · mental.1845 · work2.1353",
+          "daily2.1143 · dreams.1999 · celebav.2155 · craft.0666 · daily2.1120",
+          "dreams.2002 · dreams.2014",
+          "humor2.1422",
+          "joys.1893 · bond.1669 · relation2.0773",
+          "money.1582",
+          "time.1549 · travel2.0897 · daily2.1113"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "ce qu’on perd si rien n’est décidé",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Candice ne peut pas calibrer le prix d’une recommandation sur ce que la personne a elle-même déclaré. C’est pourtant l’u",
+          "Candice ne sait pas QUAND une attention liée à ce projet aurait du sens. Proposer trop tôt ou trop tard est l’erreur que",
+          "la différence entre offrir sa présence et offrir son attention. Pour la recommandation, ce n’est pas rien : proposer « a",
+          "la manière de parler d’une période de vie. C’est le registre où une erreur de ton coûte le plus cher.",
+          "le rythme auquel une proposition doit se caler. Un programme dense proposé à qui improvise tout est une erreur évitable.",
+          "le ton d’une attention. Candice peut choisir le bon objet et se tromper entièrement de registre.",
+          "les manières d’offrir et les manières de recevoir se consolident dans le même pool, alors qu’elles ne disent pas la même",
+          "peu de chose : une seule question. Mentionné pour ne pas le masquer.",
+          "une consigne destinée à Candice et une attente envers un proche se mélangent. La première règle le produit, la seconde e"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "options de décision",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "(a) créer emotional_register ; (b) le traiter en paramètre d’action de la recommandation en cours, sans le stocker comme",
+          "(a) créer gift_budget_posture, borné au rôle offrir ; (b) le traiter en FACT daté plutôt qu’en préférence ; (c) ne rien ",
+          "(a) créer gift_format_given, symétrique de gift_format ; (b) ajouter un champ « rôle » (recevoir | offrir) à gift_format",
+          "(a) créer pace_preference ; (b) élargir intensity_preference à la densité et au rythme, sa définition disant déjà « nive",
+          "(a) créer project_horizon ; (b) élargir occasion_scope à « pour quelle occasion OU à quel horizon » ; (c) le traiter en ",
+          "(a) créer situational_affect, avec une confidentialité renforcée ; (b) le traiter en CONTEXT, famille déjà canonique, av",
+          "(a) créer un attribut ; (b) laisser la ligne non exécutable ; (c) la traiter en BEHAVIOR descriptif sans attribut canoni",
+          "(a) une neuvième modalité ACTIVE_LISTENING, versionnée comme PHYSICAL_TOUCH l’a été, avec ses propres interdits — une éc",
+          "(a) étendre explicitement la définition de service_preference à « Candice ou un proche », avec le destinataire dans la p"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "recommandation",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "(a) — l’action est la même, seul le destinataire change, et il est déjà exprimable dans la portée.",
+          "(b) ou (c). La création d’un attribut pour deux questions se justifie mal, sauf si l’horizon devient un mécanisme généra",
+          "(b) tant que PHYSICAL_TOUCH n’est pas activée. Ouvrir deux modalités de front ferait porter au dictionnaire HSG deux évo",
+          "(b) — CONTEXT existe et sert exactement à cela : un cadre de lecture, jamais un trait. Et la famille interdit déjà d’en ",
+          "(b) — c’est exactement le mécanisme que le dictionnaire emploie déjà pour les modalités affectives, et il n’ajoute aucun",
+          "(b) — c’est un paramètre de l’attention en préparation, pas un trait de la personne. Le stocker durablement serait une s",
+          "(b) — l’élargissement est petit et la consolidation y gagne.",
+          "(b) — un attribut pour une question ne se justifie pas. La ligne reste honnêtement non exécutable.",
+          "à trancher. Une donnée financière mérite une décision explicite de ta part sur ce qui est stocké et ce qui ne l’est pas."
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "5_QUESTIONS_RESTRUCTUREES": {
+    "lignes_non_vides": 71,
+    "colonnes": 8,
+    "detail": [
+      {
+        "colonne": "nature",
+        "remplies": 71,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "   → option",
+          "MIGRATION",
+          "NOUVELLE",
+          "RETIRÉE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question_id",
+        "remplies": 33,
+        "taux": 0.465,
+        "distinctes_vues": 33,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "THE-06",
+          "travel.0060",
+          "jewelry.0304"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "énoncé ou option",
+        "remplies": 48,
+        "taux": 0.676,
+        "distinctes_vues": 42,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "1. Le train",
+          "2. L’avion",
+          "3. La voiture"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "type",
+        "remplies": 10,
+        "taux": 0.141,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "multi",
+          "open",
+          "single"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "motif ou contrat",
+        "remplies": 71,
+        "taux": 1.0,
+        "distinctes_vues": 37,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "{\"voie\": \"HSG_EVIDENCE\", \"famille\": \"PREFERENCE\", \"domaine\": \"travel\", \"attribut\": \"type_preference\", \"valeur\": \"transpo",
+          "{\"voie\": \"HSG_EVIDENCE\", \"famille\": \"GUARDRAIL\", \"domaine\": \"travel\", \"attribut\": \"disruptor\", \"valeur\": \"transport_evit",
+          "NON MIGRABLE : l’option historique ne portait aucune polarité, on ne peut pas savoir si la personne l’avait cochée pour "
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "vers",
+        "remplies": 33,
+        "taux": 0.465,
+        "distinctes_vues": 21,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "JWL-TAILLE-01 r0",
+          "JWL-TAILLE-02 r0",
+          "JWL-TAILLE-03 r0",
+          "JWL-TAILLE-04 r0",
+          "JWL-TAILLE-05 r0",
+          "NON MIGRABLE",
+          "THE-06A",
+          "THE-06A r1",
+          "THE-06A r2",
+          "THE-06A r3",
+          "THE-06A r4",
+          "THE-06A r5",
+          "food2.0882A r0",
+          "issue de THE-06",
+          "issue de food2.0882",
+          "issue de jewelry.0304",
+          "issue de travel.0060",
+          "module de précision conditionnel JWL-TAILLE, cinq questions à déclencheur propre",
+          "réutilisation du mécanisme du Carnet d’envies",
+          "travel.0060A et travel.0060B",
+          "travel.0060A r0"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "ouverture",
+        "remplies": 11,
+        "taux": 0.155,
+        "distinctes_vues": 11,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "DÉCLENCHEUR : une recommandation de BAGUE est en préparation ET la taille n’est pas déjà connue",
+          "DÉCLENCHEUR : une recommandation de BOUCLES D’OREILLES est en préparation",
+          "DÉCLENCHEUR : une recommandation de BOUCLES D’OREILLES est en préparation ET l’information n’est pas connue",
+          "DÉCLENCHEUR : une recommandation de BRACELET est en préparation ET l’ajustement n’est pas connu",
+          "DÉCLENCHEUR : une recommandation de COLLIER est en préparation ET la longueur n’est pas connue",
+          "FACULTATIVE. Posée seulement si la connaissance est utile à une recommandation en cours et n’est pas déjà connue",
+          "INTEREST.live_performance positif, direct ou confirmé",
+          "Niveau C Food — et seulement si le Carnet d’envies ne contient pas déjà une entrée culinaire récente",
+          "POSÉE SEULEMENT si THE-06A vaut accord conditionnel ou faible, ET si l’information n’est pas déjà connue par une autre b",
+          "Voyage, week-end ou hôtellerie actifs",
+          "ouvre une micro-question sur le type, si le type n’est pas déjà connu"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "finalité",
+        "remplies": 10,
+        "taux": 0.141,
+        "distinctes_vues": 6,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Accord-cadeau sur le spectacle vivant : savoir si offrir une place est une bonne idée, et à quelle condition.",
+          "Alimenter le Carnet d’envies avec une envie concrète et actionnable, plutôt que de poser une nouvelle question redondant",
+          "Borner l’exclusion sans la supposer : la question n’est posée que si l’accord-cadeau a montré une réserve.",
+          "Borner une exclusion de trajet, sans la déduire d’un silence.",
+          "Information technique nécessaire à un achat concret. Ce n’est ni un trait de personnalité ni une préférence permanente :",
+          "Savoir quels trajets font partie du plaisir, pour les intégrer à une proposition."
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "6_ALIAS_OPTIONS": {
+    "lignes_non_vides": 4,
+    "colonnes": 7,
+    "detail": [
+      {
+        "colonne": "question_id",
+        "remplies": 4,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "live.0478",
+          "tech2.1318",
+          "theatre2.1365"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rang canonique",
+        "remplies": 4,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "1",
+          "2",
+          "7"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libellé canonique AFFICHÉ",
+        "remplies": 4,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Maison connectée",
+          "Trop de foule",
+          "Être surpris(e)",
+          "Être ému(e)"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rang alias",
+        "remplies": 4,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "11",
+          "12",
+          "9"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libellé alias MASQUÉ",
+        "remplies": 4,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Domotique",
+          "Trop de monde",
+          "Être surpris",
+          "Être ému"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "motif de la fusion",
+        "remplies": 4,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "concepts équivalents au lexique, reste des libellés identique",
+          "doublon à la parenthèse de genre près : « Être surpris » et « Être surpris(e) » sont la même réponse. Trouvé par relectu",
+          "doublon à la parenthèse de genre près : « Être ému » et « Être ému(e) » sont la même réponse. Trouvé par relecture, non "
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "règle de lecture",
+        "remplies": 4,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "l’alias reste sélectionnable dans les réponses historiques et produit EXACTEMENT la même connaissance que l’option canon"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "7_CONTROLE_SEMANTIQUE": {
+    "lignes_non_vides": 149,
+    "colonnes": 5,
+    "detail": [
+      {
+        "colonne": "nature du contrôle",
+        "remplies": 149,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "   preuve",
+          "ANALYSE RÉELLE",
+          "AUTOMATIQUE",
+          "PREUVES DE JUSTESSE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "contrôle",
+        "remplies": 149,
+        "taux": 1.0,
+        "distinctes_vues": 142,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "games.0971 r1",
+          "relation.0016 r1",
+          "time.1570 r1"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "ce qu’il vérifie",
+        "remplies": 148,
+        "taux": 0.993,
+        "distinctes_vues": 31,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "value_sought",
+          "service_preference",
+          "disruptor"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "échecs",
+        "remplies": 8,
+        "taux": 0.054,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "0",
+          "138",
+          "16"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "CE QU’IL PROUVE, ET CE QU’IL NE PROUVE PAS",
+        "remplies": 148,
+        "taux": 0.993,
+        "distinctes_vues": 143,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "mécanisable",
+          "partiellement — l’usage RÉEL ne se prouve qu’au moteur de reco",
+          "NON mécanisable — lecture : occasion_scope par moi (42 questions), 218 paires par huit relectures indépendantes, 1 512 q"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "8_QUALITE_QUESTIONNAIRE": {
+    "lignes_non_vides": 222,
+    "colonnes": 12,
+    "detail": [
+      {
+        "colonne": "mesure",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Q1 n’apprend rien",
+          "Q2 redondance",
+          "Q3 technique sans déclencheur",
+          "Q4 profondeur"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 222,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "watch.0323",
+          "watch.0324",
+          "shoes.0351"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "énoncé",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 150,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "22 questions",
+          "8 questions",
+          "30 questions"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "domaine ou branche",
+        "remplies": 220,
+        "taux": 0.991,
+        "distinctes_vues": 150,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "aesthetic",
+          "live_performance.companions",
+          "{\"A\": 6, \"B\": 12, \"C\": 4}"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "détail",
+        "remplies": 112,
+        "taux": 0.505,
+        "distinctes_vues": 18,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "100 % d’options communes",
+          "71 % d’options communes",
+          "73 % d’options communes",
+          "75 % d’options communes",
+          "77 % d’options communes",
+          "78 % d’options communes",
+          "80 % d’options communes",
+          "82 % d’options communes",
+          "83 % d’options communes",
+          "85 % d’options communes",
+          "88 % d’options communes",
+          "89 % d’options communes",
+          "90 % d’options communes",
+          "92 % d’options communes",
+          "ACTION_PARAMETER",
+          "ACTION_PARAMETER+DISCOVERY_STATE",
+          "Tags ENTRANTS — ouvrir si  `INTEREST.shoe=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_N",
+          "Tags ENTRANTS — ouvrir si  `INTEREST.shoe=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFER"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "verdict",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 10,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "PARAMÈTRE d’une attention en cours : il est juste qu’elle ne produise aucune connaissance durable, et sa péremption est ",
+          "apprend par EXTRACTION du texte saisi : 1 option(s) portent un contrat d’extraction. Ne pas retirer du parcours — une en",
+          "apprend par EXTRACTION du texte saisi : 3 option(s) portent un contrat d’extraction. Ne pas retirer du parcours — une en",
+          "apprend par EXTRACTION du texte saisi : 4 option(s) portent un contrat d’extraction. Ne pas retirer du parcours — une en",
+          "apprend par EXTRACTION du texte saisi : 5 option(s) portent un contrat d’extraction. Ne pas retirer du parcours — une en",
+          "apprend par EXTRACTION du texte saisi : 6 option(s) portent un contrat d’extraction. Ne pas retirer du parcours — une en",
+          "apprend par EXTRACTION du texte saisi : 7 option(s) portent un contrat d’extraction. Ne pas retirer du parcours — une en",
+          "les deux apprennent la même chose : à fusionner, ou à conditionner l’une à l’absence de réponse de l’autre. Vérifier d’a",
+          "réserve de questions, pas séquence obligatoire : le chiffre sert à poser un plafond par profil, pas à élaguer",
+          "À CONDITIONNER : information technique posée sans déclencheur d’achat. Elle ne doit pas devenir une question permanente "
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "decision_v2",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ARCHIVEE_NO_EMISSION",
+          "CONSERVER_LES_DEUX_SANS_ALIAS",
+          "CONSERVER_QUESTION_C_ACTION_SEULE",
+          "CONSERVER_RESERVE_SANS_ECREMAGE",
+          "GARDER_ACTION_PARAMETER_SANS_HSG_DURABLE",
+          "GARDER_CHAMP_OPEN_COMME_PARAMETRE_ACTION",
+          "GARDER_EXTRACTION_VOLONTAIRE",
+          "GARDER_LES_7_CHOIX_EXPLICITES_ACTION_PARAMETER",
+          "UNE_SEULE_QUESTION_PAR_INTENTION_ET_PORTEE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "statut_resolution_v2",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ALERTE_HISTORIQUE_CLOSE",
+          "CATALOGUE_CONDITIONNEL_CONFORME",
+          "CHEVAUCHEMENT_GERE",
+          "CORRECTION_DECLENCHEUR",
+          "FAUX_DOUBLON_SEMANTIQUE",
+          "FAUX_POSITIF_CORRIGE_PAR_CONTRAT",
+          "PARAMETRE_ACTION_LOCAL_CONFORME",
+          "PARAMETRE_FONCTIONNEL_CONFORME",
+          "SAISIE_DATE_LOCALE_CONFORME"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question_prioritaire_v2",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 206,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "AUCUN (intentions différentes)",
+          "watch.0323",
+          "watch.0324"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question_secondaire_v2",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 42,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "—",
+          "AUCUN",
+          "food2.0856"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "regle_canonique_v2",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 222,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "watch.0323 : conserver la question. Bouton/choix de mode ≠ réponse de connaissance. N’émettre une donnée durable qu’aprè",
+          "watch.0324 : conserver la question. Bouton/choix de mode ≠ réponse de connaissance. N’émettre une donnée durable qu’aprè",
+          "shoes.0351 : conserver la question. Bouton/choix de mode ≠ réponse de connaissance. N’émettre une donnée durable qu’aprè"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "version_qualite",
+        "remplies": 222,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "QUALITE_V2_2026_11"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "9_CONTRATS_OUVERTS": {
+    "lignes_non_vides": 58,
+    "colonnes": 21,
+    "detail": [
+      {
+        "colonne": "question_id",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 58,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "CHS-05",
+          "CHS-10",
+          "CRE-06"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "énoncé",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 58,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Quels détails de chaussures veux-tu éviter ?",
+          "Y a-t-il une matière que tu refuses ou supportes mal ?",
+          "Y a-t-il une technique, un style ou une matière que tu n’aimes vraiment pas ?"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "domaine",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 43,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "sensory",
+          "animals",
+          "fashion"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "polarité de l’énoncé",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "narrative",
+          "negative",
+          "positive"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "type d’entité",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ENTITY_ANIMAL",
+          "ENTITY_BRAND",
+          "ENTITY_DESTINATION",
+          "ENTITY_PERSON",
+          "ENTITY_PLACE",
+          "ENTITY_PRODUCT",
+          "ENTITY_SPORT",
+          "ENTITY_TOPIC",
+          "ENTITY_WORK"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "relations admissibles",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "DISLIKE / AVOID",
+          "LOVE / LIKE / CURIOUS / WANT_TO_TRY / WANT_TO_OWN / WANT_TO_VISIT",
+          "NEUTRAL"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "relations INTERDITES",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "LOVE / LIKE / CURIOUS / WANT_TO_TRY / WANT_TO_OWN / WANT_TO_VISIT / DISLIKE / AVOID",
+          "LOVE / LIKE / CURIOUS / WANT_TO_TRY / WANT_TO_OWN / WANT_TO_VISIT / NEUTRAL",
+          "NEUTRAL / DISLIKE / AVOID"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "émission primaire",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "OPEN_KNOWLEDGE — le verbatim est conservé tel quel, toujours"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "émission secondaire",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "HSG_EVIDENCE / ENTITY — émise EN PLUS du verbatim, jamais à sa place, et seulement si une entité est NOMMÉE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "interdits",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "aucune relation OWNS : une possession est un FACT rattaché à l’entité ; aucune extension de l’entité à toute sa gamme ou"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "statut_effectif_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+          "ARCHIVE_NON_EXECUTABLE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "polarite_canonique_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "NONE",
+          "narrative",
+          "negative",
+          "positive"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "type_entite_canonique_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 8,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ENTITY_BRAND",
+          "ENTITY_DESTINATION",
+          "ENTITY_PERSON",
+          "ENTITY_PLACE",
+          "ENTITY_PRODUCT",
+          "ENTITY_SPORT",
+          "ENTITY_WORK",
+          "NONE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "emission_primaire_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "NO_EMISSION",
+          "OPEN_KNOWLEDGE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "destination_secondaire_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 19,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ACTION_PARAMETER",
+          "ENTITY_BRAND:LIKE",
+          "ENTITY_PRODUCT:DISLIKE",
+          "ENTITY_PRODUCT:LIKE",
+          "ENTITY_WORK:LIKE",
+          "FACT:self_only",
+          "GUARDRAIL:constraint:SOFT",
+          "GUARDRAIL:disruptor:HARD",
+          "GUARDRAIL:disruptor:SOFT",
+          "GUARDRAIL:gift_antipattern:SOFT",
+          "NONE",
+          "PREFERENCE:aesthetic_universe",
+          "PREFERENCE:color_preference",
+          "PREFERENCE:desired_item",
+          "PREFERENCE:known_references",
+          "PREFERENCE:sensory_preference",
+          "PREFERENCE:type_preference",
+          "PREFERENCE:value_sought",
+          "RENVOI:17_DESTINATIONS_CONDITIONNELLES"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "schema_ecriture_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 57,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "AUCUNE",
+          "detail_chaussure_a_eviter=<segment explicite>",
+          "matiere_chaussure_refusee_ou_mal_supportee=<matiere>"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "scope_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 57,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "archive hors parcours",
+          "chaussures à recevoir/acheter",
+          "matières des chaussures"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "condition_extraction_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 56,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Ne jamais activer de parseur ni d’émission sur la ligne archivée. NO_EMISSION; aucun parseur",
+          "Conserver comme FACT narratif l'hébergement nommé uniquement après identification non ambiguë ; sinon conserver le verba",
+          "Un détail nommé comme à éviter crée seulement une exclusion sur ce détail. OPEN_KNOWLEDGE sur soumission explicite du ve"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "inferences_interdites_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 58,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Ne pas inférer rejet de toutes les chaussures ni contrainte médicale. Aucun PROFILE/NEED/DRIVER, aucun partage à un tier",
+          "Pas d’allergie ou de pathologie déduite; pas de généralisation hors chaussures. Aucun PROFILE/NEED/DRIVER, aucun partage",
+          "N’aime pas ne veut pas dire interdiction HARD ni dégoût de toute la créativité. Aucun PROFILE/NEED/DRIVER, aucun partage"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "permissions_v2",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "aucune",
+          "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "version_contrat_open",
+        "remplies": 58,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "OPEN_V2_2026_11"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "10_COUVERTURE": {
+    "lignes_non_vides": 2413,
+    "colonnes": 4,
+    "detail": [
+      {
+        "colonne": "élément",
+        "remplies": 2413,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "options sources de la V4",
+          "options présentes en V5",
+          "options sources ABSENTES de la V5"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "nombre",
+        "remplies": 2413,
+        "taux": 1.0,
+        "distinctes_vues": 33,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "1",
+          "5",
+          "6"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "détail",
+        "remplies": 2411,
+        "taux": 0.999,
+        "distinctes_vues": 46,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "1 SEMANTICALLY_REVIEWED",
+          "6 SEMANTICALLY_REVIEWED",
+          "5 SEMANTICALLY_REVIEWED"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "verdict",
+        "remplies": 2408,
+        "taux": 0.998,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "OK",
+          "entièrement revue",
+          "hors parcours actif",
+          "partiellement revue"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "11_TABLE_DE_MIGRATION": {
+    "lignes_non_vides": 806,
+    "colonnes": 10,
+    "detail": [
+      {
+        "colonne": "question d’origine",
+        "remplies": 806,
+        "taux": 1.0,
+        "distinctes_vues": 124,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "FOO-06",
+          "FOO-09",
+          "FOO-10"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rang",
+        "remplies": 779,
+        "taux": 0.967,
+        "distinctes_vues": 16,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "1",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libellé d’origine",
+        "remplies": 779,
+        "taux": 0.967,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Scandinave",
+          "Seul(e)",
+          "En couple"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "ANCIEN option_id",
+        "remplies": 779,
+        "taux": 0.967,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "BANQUE:travel.0060:OPT_007",
+          "BANQUE:travel.0060:OPT_008",
+          "BANQUE:cinema.0079:OPT_001"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "NOUVEL option_id",
+        "remplies": 806,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "NON MIGRABLE",
+          "BANQUE:cinema2.0985:OPT_001",
+          "BANQUE:cinema2.0985:OPT_002"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question et rang de destination",
+        "remplies": 795,
+        "taux": 0.986,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "BANQUE:cinema2.0985:OPT_001",
+          "BANQUE:cinema2.0985:OPT_002",
+          "BANQUE:cinema2.0985:OPT_003"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libellé de destination",
+        "remplies": 7,
+        "taux": 0.009,
+        "distinctes_vues": 7,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Ailleurs qu’à la maison, dans un lieu loué ou réservé",
+          "Devoir m’y prendre trop à l’avance",
+          "J’aime que mes journées varient",
+          "La recherche scientifique au service des animaux",
+          "L’humour familial, trop sage à mon goût",
+          "L’humour physique et burlesque",
+          "Un jeu trop difficile"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "option_id de destination",
+        "remplies": 7,
+        "taux": 0.009,
+        "distinctes_vues": 7,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "BANQUE:causes.1937:OPT_009",
+          "BANQUE:celebav.2189:OPT_010",
+          "BANQUE:energy.1595:OPT_007",
+          "BANQUE:gaming.0204:OPT_010",
+          "BANQUE:hosting.2053:OPT_007",
+          "BANQUE:humor.0138:OPT_011",
+          "BANQUE:humor.0138:OPT_012"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "nature de la migration",
+        "remplies": 806,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "DÉSACTIVATION_SANS_DESTINATION",
+          "ROUTAGE_QUESTION_SEUL_SANS_REPONSE",
+          "aucune correspondance : la réponse ne vit que sous son verbatim",
+          "identifiant retiré du parcours : la réponse se relit sur la question d’accueil",
+          "libellé reformulé : l’ancienne réponse reste ambiguë et ne porte ni polarité ni préférence. Reposer la question."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "règle",
+        "remplies": 781,
+        "taux": 0.969,
+        "distinctes_vues": 125,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Ne plus poser cette question : elle est portée par food2.0863, qui conserve les niveaux, la clause d’affichage et la fin",
+          "Ne plus poser cette question : elle est portée par food2.0869, qui conserve les niveaux, la clause d’affichage et la fin",
+          "Ne plus poser cette question : elle est portée par food2.0872, qui conserve les niveaux, la clause d’affichage et la fin"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "12_CONTRAT_DE_QUESTION": {
+    "lignes_non_vides": 100,
+    "colonnes": 10,
+    "detail": [
+      {
+        "colonne": "question_id",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 100,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "CEL-01",
+          "CEL-02",
+          "CEL-03"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "énoncé",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 100,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Quelles occasions aimes-tu particulièrement célébrer ?",
+          "Pour {occasion}, quelles façons de célébrer te feraient plaisir ?",
+          "Pour {occasion}, qu’aimerais-tu surtout ressentir ?"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "niveau canonique",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "A",
+          "B",
+          "C"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "finalité canonique",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 91,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Collecter uniquement la précision technique du bijou actuellement envisagé",
+          "Régler le ton, l’intimité ou le format d’une attention en cours",
+          "Distinguer explicitement transports appréciés et transports évités"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "condition d’ouverture canonique",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 90,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "bijou/type connu, achat ou recommandation en cours; non sondage général ; `!DO_NOT_PROBE` ; information non déjà suffisa",
+          "attention_id, occasion et destinataire connus; paramètre expirant; ne pas devenir trait durable ; `!DO_NOT_PROBE` ; info",
+          "intérêt humoristique explicite ; `!DO_NOT_PROBE` ; information non déjà suffisante"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "antiredondance",
+        "remplies": 2,
+        "taux": 0.02,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Ne pas ouvrir de branche « temps » pour poser cette question.",
+          "Une réponse déjà acquise à travel2.0888 qui couvre la même facette rend time.1555 non nécessaire."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "origine",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "dépendance T10",
+          "nouvelle",
+          "refonte"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "source_niveau",
+        "remplies": 0,
+        "taux": 0.0,
+        "distinctes_vues": 0,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [],
+        "VIDE": true
+      },
+      {
+        "colonne": "réponses",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 15,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "1",
+          "10",
+          "11",
+          "12",
+          "13",
+          "14",
+          "15",
+          "16",
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "source",
+        "remplies": 100,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ordre de clôture, annexe B",
+          "ordre de clôture, §5 ; condition canonique §5 ; condition canonique §5"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "13_COEXISTENCE_GENERATIONS": {
+    "lignes_non_vides": 82,
+    "colonnes": 9,
+    "detail": [
+      {
+        "colonne": "niveau",
+        "remplies": 82,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "BRANCHE",
+          "QUESTION"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "domaine",
+        "remplies": 82,
+        "taux": 1.0,
+        "distinctes_vues": 20,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "beauty",
+          "cinema",
+          "consumption",
+          "daily",
+          "fashion",
+          "food",
+          "fragrance",
+          "gaming",
+          "home",
+          "humor",
+          "learning",
+          "music",
+          "reading",
+          "relation",
+          "sensory",
+          "series",
+          "tech",
+          "theatre",
+          "travel",
+          "work"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "historique",
+        "remplies": 82,
+        "taux": 1.0,
+        "distinctes_vues": 82,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "beauty",
+          "cinema",
+          "consumption"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "prioritaire",
+        "remplies": 82,
+        "taux": 1.0,
+        "distinctes_vues": 81,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "food2.0863",
+          "beauty2",
+          "cinema2"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "questions historiques",
+        "remplies": 20,
+        "taux": 0.244,
+        "distinctes_vues": 8,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "10",
+          "11",
+          "12",
+          "16",
+          "20",
+          "30",
+          "7",
+          "8"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "questions 2",
+        "remplies": 20,
+        "taux": 0.244,
+        "distinctes_vues": 12,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "23",
+          "24",
+          "25",
+          "26",
+          "27",
+          "28",
+          "30",
+          "33",
+          "34",
+          "42",
+          "55",
+          "60"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "recoupement options",
+        "remplies": 62,
+        "taux": 0.756,
+        "distinctes_vues": 20,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "0.0",
+          "0.14",
+          "0.2",
+          "0.5",
+          "0.53",
+          "0.56",
+          "0.6",
+          "0.62",
+          "0.67",
+          "0.73",
+          "0.75",
+          "0.77",
+          "0.78",
+          "0.79",
+          "0.82",
+          "0.85",
+          "0.88",
+          "0.89",
+          "0.9",
+          "1.0"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "proximité énoncé",
+        "remplies": 62,
+        "taux": 0.756,
+        "distinctes_vues": 31,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "1.0",
+          "0.82",
+          "0.49"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "décision",
+        "remplies": 82,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ALIAS_OLD_TO_NEW — ALIAS_OLD_TO_NEW (sous-ensemble exact des options historiques, ancien retiré de la rotation ; alias s",
+          "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jama",
+          "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)",
+          "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; p"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "14_MATRICE_EXTENSIONS": {
+    "lignes_non_vides": 5,
+    "colonnes": 13,
+    "detail": [
+      {
+        "colonne": "code",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "gift_spending_posture",
+          "pace_preference",
+          "preferred_attention_source",
+          "protected_domain",
+          "tradeoff_willingness"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "famille",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "BEHAVIOR",
+          "GUARDRAIL",
+          "PREFERENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "définition",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Cadence, densité ou planification SOUHAITÉE pour un programme ou un séjour.",
+          "De qui une petite attention serait la plus touchante.",
+          "Domaine que la personne déclare vouloir protéger d’un sacrifice durable dans un projet de réussite.",
+          "Posture qualitative auto-déclarée LORSQU’ON OFFRE.",
+          "Volonté HYPOTHÉTIQUE de consentir un compromis pour une fin nommée."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "familles autorisées",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "BEHAVIOR uniquement",
+          "GUARDRAIL uniquement",
+          "PREFERENCE uniquement"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "portée",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "`severity=HARD` dans cette seule portée — le projet de réussite de success.1714.",
+          "le fait d’offrir ; jamais la consommation personnelle.",
+          "le programme ou le séjour nommé ; jamais le quotidien réellement vécu.",
+          "une catégorie de donneur, jamais une personne réelle.",
+          "valeur `compromis=<code>` ; le type de coût, le domaine et l’occasion font partie de la portée."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "restrictions",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Aucun budget monétaire inféré, aucune capacité financière.",
+          "Aucun diagnostic, aucun jugement global, aucune interdiction de domaine hors de ce projet.",
+          "Distinct de `intensity_preference` (intensité) et du FACT de rythme réel. Ne pas inférer un horaire de lever préféré dep",
+          "Jamais la preuve qu’une personne existe, ni qu’elle doit une attention.",
+          "N’implique jamais que le sacrifice a eu lieu. Aucun montant, revenu, patrimoine ni capacité financière déduits."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "exemple positif",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Une habitude déclarée de dépenser plus pour les proches.",
+          "« Départ tranquille sans horaire strict » en voyage.",
+          "« Dépenser sans hésiter » pour le bien-être de l’animal → disponibilité déclarée au compromis.",
+          "« D’un proche de longue date » comme catégorie.",
+          "« Ma santé » déclarée non sacrifiable dans un projet de réussite."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "exemple négatif",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "En déduire l’horaire de travail ou le sommeil.",
+          "En déduire que la personne a dépensé, ou qu’elle en a les moyens.",
+          "En faire une interdiction générale de parler de santé, ou un fait médical.",
+          "En tirer une fourchette de prix ou un revenu.",
+          "Résoudre la catégorie en une ENTITY nommée et lui attribuer un devoir."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "impact alias et import",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Aucune résolution d’entité automatique à l’import.",
+          "Cinquième extension, issue de M6 : elle porte sur des lignes déjà revues, pas sur les 213.",
+          "Distinct de l’ACTION_PARAMETER de budget d’un achat précis : les deux ne se consolident pas.",
+          "Lève l’impasse des douze lignes de garde-fou qui n’avaient aucun attribut porteur. L’import doit accepter HARD dans cett",
+          "Nouvelle clé : aucun alias existant ne pointe vers elle. L’import doit accepter l’attribut avant toute exécution."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "lignes portantes",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "12",
+          "13",
+          "25",
+          "4",
+          "5"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "questions portantes",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "animals.2138, celebav.2173, consumption2.1194, money.1581, success.1713, value.1524",
+          "joys.1896",
+          "money.1582",
+          "success.1714",
+          "time.1549, time.1555, travel2.0897"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "statut technique",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "contrat documentaire approuvé / code non raccordé"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "version",
+        "remplies": 5,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "matrice de convention v2 — ordre de clôture du 9 novembre 2026"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "15_REGISTRE_M1_M9": {
+    "lignes_non_vides": 9,
+    "colonnes": 6,
+    "detail": [
+      {
+        "colonne": "décision",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "M1",
+          "M2",
+          "M3",
+          "M4",
+          "M5",
+          "M6",
+          "M7",
+          "M8",
+          "M9"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "sujet",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "affect d’une situation",
+          "gift_format donneur/receveur",
+          "horizon d’un projet",
+          "posture financière",
+          "rythme souhaité",
+          "rôle dans l’humour",
+          "service_preference",
+          "tonalité émotionnelle d’une attention",
+          "écoute attentive"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "décision définitive",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "AFFECTION_LANGUAGE conservée avec sa direction et sa modalité, plus une nuance fermée attention_mode. Aucune neuvième mo",
+          "Définition étendue à la façon dont Candice OU un proche doit assister, avec actor=assistant|close|provider, bénéficiaire",
+          "FACT auto-déclaré contextualisé, pas PREFERENCE.value_sought. felt_emotion seulement si l’émotion appartient aux 21 état",
+          "FACT.project_horizon avec clé horizon=…, identifiant de projet, date de déclaration et statut. Ni occasion_scope fictif,",
+          "FACT.role_social_humour pour humor2.1422, ni exposure_preference, ni nouveau PROFILE.",
+          "REM-11 reste ACTION_PARAMETER emotional_register pour l’attention en cours. felt_emotion est réservé à une émotion éprou",
+          "gift_format conservé, avec role=give|receive comme dimension du scope et de la clé de consolidation. Aucun attribut gift",
+          "gift_spending_posture (BEHAVIOR) pour l’habitude auto-déclarée d’offrir ; ACTION_PARAMETER rattaché à l’action pour le b",
+          "pace_preference créé, distinct de intensity_preference et du FACT de rythme réel."
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "application réelle",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Appliquée par la décision nominative de l’annexe A.",
+          "Appliquée par les décisions nominatives de l’annexe A.",
+          "Aucune ligne requalifiée : la définition est étendue dans la matrice de convention. Les réglages de service jugés généra",
+          "REM-11 r1–r8 vérifiées sans changement.",
+          "celebav.2169 requalifiée en annexe A ; celebav.2179 r1–r4 passées en FACT ; time.1565 r1–r6 vérifiées sans changement ; ",
+          "dreams.2002 r1–r6 et les autres horizons de l’annexe A passés en FACT à clé.",
+          "joys.1893 r1 → active_listening ; bond.1669 r3 → availability_when_needed ; bond.1669 r8 → notice_distress.",
+          "philovie.1648 r1–r5 passées en FACT à clé ; r6 préservée ; change.1766, mental.1845 et work2.1353 traitées en annexe A.",
+          "time.1549 r1–r4 et travel2.0897 r1–r6 requalifiées ; travel2.0897 r7 préservée ; daily2.1113 reste FACT ; time.1555 r1–r"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "état",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "APPLIQUÉE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "version",
+        "remplies": 9,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "matrice de convention v2 — ordre de clôture du 9 novembre 2026"
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "16_POLITIQUE_PARAMETRES": {
+    "lignes_non_vides": 437,
+    "colonnes": 6,
+    "detail": [
+      {
+        "colonne": "catégorie",
+        "remplies": 437,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "action-local (saisie)",
+          "durable",
+          "faux positif",
+          "non réutilisable"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "alerte",
+        "remplies": 437,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "A",
+          "B"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "ligne",
+        "remplies": 437,
+        "taux": 1.0,
+        "distinctes_vues": 400,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "CRE-05:r13",
+          "FPL-04:r12",
+          "GAM-06:r10"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "question",
+        "remplies": 437,
+        "taux": 1.0,
+        "distinctes_vues": 191,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "relation2.0807",
+          "REM-15",
+          "aesthetic.1971"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "libellé",
+        "remplies": 437,
+        "taux": 1.0,
+        "distinctes_vues": 292,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [
+          "Autre",
+          "Lien",
+          "Je n’ai pas de préférence"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "politique appliquée",
+        "remplies": 437,
+        "taux": 1.0,
+        "distinctes_vues": 5,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "le contexte de validité ne peut pas être déterminé depuis la ligne : la réutilisation automatique est désactivée et le R",
+          "l’énoncé ne dit ni que le réglage vaut pour une action nommée, ni qu’il est général : le contexte de validité reste indé",
+          "l’énoncé nomme l’action ou l’occasion en cours : la péremption écrite est juste",
+          "l’énoncé porte sur la façon dont Candice travaille en général : une expiration de type commande y serait fausse ; supers",
+          "mode de saisie : événement d’orchestration, terminé à la clôture de cette saisie ; le contenu soumis peut devenir FACT, "
+        ],
+        "VIDE": false
+      }
+    ]
+  },
+  "17_DESTINATIONS_CONDITIONNELLES": {
+    "lignes_non_vides": 15,
+    "colonnes": 18,
+    "detail": [
+      {
+        "colonne": "question_id",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 9,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "CRE-06",
+          "comics.0422",
+          "drinks.2102",
+          "learning2.1459",
+          "pets.0403",
+          "podcast.0467",
+          "sensory2.1482",
+          "sensory2.1487",
+          "time.1566"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "rang_destination",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "1",
+          "2",
+          "3"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "declencheur",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 12,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "AUTEUR_MENTIONNE",
+          "ELEMENT_ESTHETIQUE",
+          "ELEMENT_SENSORIEL",
+          "OEUVRE_RESOLUE_APPRECIEE",
+          "PROJECTION_DECLAREE",
+          "REFERENT_RESOLU",
+          "RELATION_EXPLICITE_DISTINCTE",
+          "SEGMENT_MATIERE",
+          "SEGMENT_STYLE",
+          "SEGMENT_TECHNIQUE",
+          "SOUHAIT_AVEC_IDENTIFIANT",
+          "SUJET_DECLARE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "declencheur_signification",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 12,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "la réponse décrit une projection, déclarée comme telle",
+          "le segment mentionne un auteur ou un dessinateur",
+          "le segment nomme explicitement un style",
+          "le segment nomme explicitement un sujet d’intérêt",
+          "le segment nomme explicitement un élément esthétique",
+          "le segment nomme explicitement un élément sensoriel",
+          "le segment nomme explicitement une matière",
+          "le segment nomme explicitement une technique",
+          "l’objet nommé est résolu de façon unique et devient le référent du fait, sans relation",
+          "un SECOND segment, distinct de celui qui nomme l’objet, exprime explicitement une relation canonique envers cet objet ré",
+          "un souhait est exprimé ET l’identifiant requis est connu",
+          "une œuvre est résolue de façon unique ET le segment exprime explicitement son appréciation"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "voie",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "FACT",
+          "HSG_EVIDENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "famille",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 4,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ENTITY",
+          "INTEREST",
+          "NONE",
+          "PREFERENCE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "attribut_ou_cle",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 12,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "<identite_du_sujet_declare>",
+          "NONE",
+          "aesthetic_universe",
+          "auteur_ou_dessinateur_mentionne",
+          "episode_marquant",
+          "journee_ideale",
+          "lieu_de_bien_etre",
+          "material_preference",
+          "moment_ideal_boisson",
+          "sensory_preference",
+          "souhait_pour_animal",
+          "type_preference"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "type_entite",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "ENTITY_PLACE",
+          "ENTITY_WORK",
+          "NONE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "relation",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 3,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "<appreciation_parmi_les_neuf>",
+          "LIKE",
+          "NONE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "stabilite",
+        "remplies": 9,
+        "taux": 0.6,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "contextual",
+          "undetermined"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "identifiant_requis",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "NONE",
+          "pet_id"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "preuve_exigee",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 14,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "la matière rejetée est nommée dans le segment",
+          "la réponse décrit la journée, déclarée comme idéale",
+          "la réponse décrit le moment, déclaré comme idéal",
+          "la technique rejetée est nommée dans le segment",
+          "le lieu est résolu de façon unique ; il est référent, pas objet d’une relation",
+          "le style rejeté est nommé dans le segment",
+          "le sujet est nommé dans le segment ; « ponctuellement » fixe la stabilité",
+          "l’auteur ou le dessinateur est nommé dans le segment",
+          "l’élément esthétique est nommé dans le segment",
+          "l’élément sensoriel est nommé dans le segment",
+          "l’épisode est résolu de façon unique ; il est référent, pas objet d’une relation",
+          "résolution unique de l’œuvre ET appréciation explicite dans le segment",
+          "un SECOND segment, distinct de celui qui nomme l’objet, exprime explicitement une APPRÉCIATION de cet objet résolu. Un C",
+          "un souhait est exprimé ET pet_id est connu"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "si_declencheur_absent",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "rien",
+          "verbatim seul"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "statut",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "DEFINIE"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "inferences_interdites",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 10,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "Aucun HARD. Aucun LIKE ni LOVE. Un concept nommé ne suffit pas à produire une relation ENTITY DISLIKE. La polarité reste",
+          "Aucune préférence n’est émise depuis ce contrat, quelle que soit la formulation. Une fréquence dans une scène imaginée r",
+          "Aucune relation depuis un comportement : « je l’ai réécouté trois fois » décrit ce que la personne a fait, pas ce qu’ell",
+          "Aucune relation depuis un comportement ni depuis une sensation. Avoir ressenti du bien-être en un lieu n’établit ni envi",
+          "Aucune relation envers le créateur dérivée de l’appréciation de l’œuvre.",
+          "Avoir ressenti du bien-être en un lieu n’établit ni envie d’y retourner, ni relation. Ne pas inférer domicile, habitudes",
+          "Le contexte du lieu idéal hypothétique est conservé : aucune préférence n’est présentée comme un lieu réel ou possédé.",
+          "Ne pas écrire INTEREST:type_preference — le sujet EST le construct. L’expertise et la pratique restent indéterminées en ",
+          "Un produit nommé ne déclenche aucune relation, aucun achat et aucune possession. Sans pet_id, le souhait n’a pas de suje",
+          "« M’a marqué » ne démontre ni LIKE, ni DISLIKE, ni NEUTRAL. Aucun abonnement, aucune réécoute, aucun intérêt général pou"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "version_contrat_open",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 1,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "OPEN_V2_2026_11"
+        ],
+        "VIDE": false
+      },
+      {
+        "colonne": "evidence_role",
+        "remplies": 0,
+        "taux": 0.0,
+        "distinctes_vues": 0,
+        "vocabulaire_ferme_probable": false,
+        "valeurs": [],
+        "VIDE": true
+      },
+      {
+        "colonne": "relationship",
+        "remplies": 15,
+        "taux": 1.0,
+        "distinctes_vues": 2,
+        "vocabulaire_ferme_probable": true,
+        "valeurs": [
+          "NONE",
+          "undetermined"
+        ],
+        "VIDE": false
+      }
+    ]
+  }
+}
