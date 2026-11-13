@@ -370,3 +370,82 @@ nommé et ordonnancé, pas un relevé « pour plus tard » vague.
 4. **search_path** sur les 12 fonctions restantes (ex-103, devient lot 4 ; `persist_journal` est déjà durci par
    la migration 103, `public, pg_temp`).
 Puis seulement : import du référentiel Discovery.
+
+### Append-only du journal : discipline de code, PAS garantie de base (constaté 10 nov 2026)
+
+- **Politiques** (migration 82, aucune autre ensuite) : `ksources_owner`/`kev_owner`/`kfacts_owner`/`kok_owner`,
+  une seule par table, PERMISSIVE, `FOR ALL USING (user_id = auth.uid()) WITH CHECK (user_id = auth.uid())`.
+  Aucune restrictive, aucune cmd dédiée.
+- **Privilèges** (audit Estelle, défaut Supabase non resserré) : `anon`, `authenticated`, `service_role` ont tous
+  `DELETE, INSERT, REFERENCES, SELECT, TRIGGER, TRUNCATE, UPDATE` sur les 4 tables. Donc le propriétaire peut
+  SUPPRIMER et RÉÉCRIRE sur place ses lignes de journal. `TRUNCATE`/`TRIGGER`/`REFERENCES` accordés à anon+authenticated
+  sans usage légitime (`TRUNCATE` échappe à la RLS — doc PostgreSQL).
+- **Migration 104** (durcissement des privilèges, écrite plus tard) : révoquer `DELETE, TRUNCATE, TRIGGER, REFERENCES`
+  à anon+authenticated ; révoquer TOUT à anon (la RLS exige auth.uid(), anon n'en a pas) ; CONSERVER `SELECT`+`INSERT`
+  à authenticated (persist_journal est INVOKER, révoquer INSERT casserait la RPC) ; NE PAS toucher `UPDATE` authenticated
+  (la supersession le marque côté client — part au lot 2, en DEFINER).
+
+### Périmètre réel du journal : 7 tables, 3 catégories (constaté 10 nov 2026)
+
+- **Journal primaire append-only (4)** : `knowledge_sources`, `knowledge_evidences`, `knowledge_facts`,
+  `knowledge_open_knowledge`. Écrites UNIQUEMENT par `persist_journal`.
+- **Relevé d'actes append-only (1)** : `knowledge_extraction_records` — model, prompt_version, produced_*_ids, ts ;
+  une ligne par acte d'extraction, jamais mise à jour. Porte source_id + clé composite about. **Écrite par AUCUN
+  chemin actuel** (dormante).
+- **État dérivé recalculable (2)** : `knowledge_signals` (état consolidé courant, PK `signal_key`, UPSERT par
+  conception → PAS append-only) et `knowledge_signal_snapshots` (historique en ajout seul de l'état dérivé).
+  Ne référencent pas `knowledge_sources`. **Écrites par AUCUN chemin actuel** (dormantes). Recalculabilité PROUVÉE :
+  `src/lib/knowledge-write/consolidate-journal.ts` (« dérivé… entièrement recalculable », « ne mute jamais le
+  journal », exposée mais câblée nulle part).
+
+### `contacts` = porte latérale LIVE dans le journal (constaté 10 nov 2026)
+
+- Toutes les tables du journal : `contact_id → contacts(id) ON DELETE CASCADE` ET `user_id → auth.users(id) ON DELETE CASCADE`.
+- **Retrait d'un proche** : `src/app/api/contacts/delete/route.ts` — route serveur, client **authenticated** (pas
+  service_role), vérifie la propriété puis `.from('contacts').delete()`. Politique `users_own_contacts ON contacts
+  FOR ALL USING (auth.uid() = user_id)` → l'owner supprime son contact, **la cascade détruit tout le journal du proche**.
+  Révoquer DELETE sur les tables du journal ne ferme PAS ce chemin.
+- **Effacement de compte** : `src/lib/lifecycle/hard-delete.ts` (appelé par `src/app/api/cron/lifecycle-check/route.ts`),
+  client **service_role**, supprime les photos storage puis `auth.admin.deleteUser` → cascade via `auth.users`.
+  `user_id` en CASCADE → l'effacement de compte continue de fonctionner après la 104.
+- **Aucun autre chemin de suppression** du journal : zéro `.delete()`/`TRUNCATE` sur les 7 tables dans `src`/`scripts`
+  (hors les deletes admin du roundtrip, retirés en Décision 1) ; zéro `DELETE FROM knowledge_*` en migration/RPC.
+
+### CHANTIER « EFFACEMENT ET DROIT À L'OUBLI » — INSCRIT, NON OUVERT (10 nov 2026)
+
+À livrer le jour où le lot s'ouvre (décision d'Estelle, pas encore prise) :
+- une RPC d'effacement `SECURITY DEFINER` avec contrôle de propriété (aucun effacement depuis une session ordinaire,
+  ligne par ligne, sans trace — c'est précisément ce que la 104 ferme, et c'est voulu) ;
+- un journal de l'ACTE d'effacement tenu HORS du périmètre effacé (prouver l'effacement sans conserver la donnée) ;
+- l'arbitrage du sort des **fiches de proches** (jamais consenti, peuvent demander un effacement de leur côté) —
+  **point juridique, pas technique, en attente d'une réponse qui ne vient pas de l'assistant** ;
+- question produit ouverte (Estelle tranche) : **retrait d'un proche en ARCHIVAGE** plutôt qu'en suppression dure —
+  colonne d'archivage sur `contacts`, filtrage des lectures (**76 sites `.select` sur `contacts`, 43 fichiers** →
+  surface à couvrir par vue/RLS plutôt qu'à la main), cascade qui ne se déclenche plus (journal du proche préservé).
+  Tension RGPD inverse : l'archivage RETIENT la donnée d'un proche non consentant.
+
+**TRANCHÉ par Estelle (10 nov 2026) — la porte `contacts` se résout par QUI agit :**
+- **l'utilisateur retire un proche de sa liste = rangement → ARCHIVER** (défaut de la gestion de liste) ;
+- **le proche demande un effacement = obligation légale → DÉTRUIRE, et ça prime** ;
+- **l'utilisateur supprime son compte = il part → DÉTRUIRE TOUT** (la cascade actuelle via `auth.users`).
+L'archivage devient le défaut ; la destruction reste outillée pour répondre DÉLIBÉRÉMENT à une demande d'effacement,
+au lieu de détruire par accident. **Les 76 lectures passent par une politique RLS ou une vue filtrée, JAMAIS site par
+site** (une lecture oubliée ré-expose un proche retiré = défaut de CONFIDENTIALITÉ, pas d'affichage). La part juridique
+(sort des fiches de proches) attend la réponse d'Estelle, qui ne vient pas de l'assistant seul.
+
+### Cron de suppression dure `lifecycle-check` — relevé (constaté 10 nov 2026)
+
+- **Chemin** : `src/app/api/account/delete/route.ts` (utilisateur, re-auth mot de passe) pose `subscription_status='cancelled'`
+  + `deletion_scheduled_at = now + 30 j` ; annulable via `src/app/api/account/cancel-deletion/route.ts` jusqu'à la date.
+  Le cron `src/app/api/cron/lifecycle-check/route.ts` (vercel.json, `0 3 * * *`, quotidien, auth `Bearer CRON_SECRET`)
+  exécute `hardDeleteUser` quand `status==='cancelled' && deletion_scheduled_at <= now`. Branche NON gardée par
+  `ENABLE_TRIAL_LOCKOUT=false` (ce flag ne garde que trial→paused) → la branche de suppression est LIVE.
+- **Délai de grâce** : 30 j, réversible, posé en amont (pas dans le cron) ; e-mail de confirmation. Le cron n'a ni
+  dry-run ni confirmation propre : il fait confiance au timestamp.
+- **⚠ DÉFAUT GRAVE (constaté, NON corrigé)** : rien n'écrit CE QUI est supprimé (aucun manifeste contacts/journal).
+  Pire, `account_lifecycle_events.user_id → auth.users ON DELETE CASCADE` : l'évènement `deletion_requested` posé à la
+  demande est **détruit par la cascade de la suppression qu'il enregistrait**. Seule trace survivante = `cron_runs.metadata.transitions`
+  (`hard_deleted:<uid>`, `cron_runs` sans FK user) — mais écrite SEULEMENT sur run entièrement réussi (le chemin d'erreur
+  omet `metadata`). → Après un run réussi : on sait QUI (uid), jamais QUOI. Après un run en erreur : potentiellement
+  AUCUNE trace. C'est le « indétectable après coup » anticipé. À verser au chantier EFFACEMENT (journal de l'acte HORS
+  périmètre effacé).

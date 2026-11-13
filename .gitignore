@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+scripts/local/.resultats/
+
+# téléchargements de conversation — jamais versionnés
+Claude outputs/
