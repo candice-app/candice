@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { AttentionDim } from '@/lib/attention/scoring';
 import { vetoEnfreint } from './veto-text';
+import { candidateRejectedBy } from './rejection-match';
 import type {
   RecoInput, RecoIdea, BlindSpotInsight, ContactRecommendations,
   KadenceProfile, RecoCanal,
@@ -367,6 +368,18 @@ Respecte strictement les filtres durs. Ancre chaque idée sur un signal nommé. 
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]) as RecoIdea[];
       ideas = parsed.filter((idea) => passesVeto(idea, vetoList));
+
+      // CE QUE LE PROCHE A DÉCLARÉ LUI-MÊME l'emporte sur ce que le pilote rapporte.
+      // Le retrait a lieu ICI, APRÈS la génération : ses rejets ne sont jamais entrés
+      // dans le prompt, donc ils ne peuvent pas en ressortir — ni dans une idée, ni dans
+      // une justification, ni dans une relance. Ce n'est pas une discipline tenue par
+      // celui qui écrit le prompt, c'est une impossibilité de chemin.
+      // Et l'idée écartée disparaît SANS trace visible côté pilote : lui dire pourquoi
+      // reviendrait à lui confirmer ce que le proche a déclaré.
+      const rejets = input.rejetsDuProche ?? [];
+      if (rejets.length > 0) {
+        ideas = ideas.filter((idea) => candidateRejectedBy(`${idea.title} ${idea.justification}`, rejets) === null);
+      }
 
       if (blindSpot) {
         ideas = ideas.map((idea) => ({

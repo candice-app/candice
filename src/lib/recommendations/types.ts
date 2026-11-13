@@ -1,3 +1,4 @@
+import type { JournalRejection } from './rejection-match';
 import type { AttentionDim, FaceResult } from '@/lib/attention/scoring';
 import type { RelationalFilters } from '@/lib/lifestyle/scoring';
 import type { SingularityInput, VetosInput } from '@/lib/profile/synthesis';
@@ -54,6 +55,13 @@ export interface RecoInput {
 
   // Relationship register (pilote-only proximity signal)
   register: RelationshipRegister | null;
+
+  /** Rejets que le PROCHE a déclarés lui-même, lus côté serveur par un chemin autorisé
+   *  (declarations-proche.ts). N'entrent dans AUCUN prompt : ils servent uniquement à
+   *  retirer des idées APRÈS leur génération. Absent ou vide = aucun usage de ses
+   *  données ; la distinction entre « pas autorisé » et « rien déclaré » vit dans
+   *  LectureDeclarations.motif, pas ici — le moteur n'a pas à la connaître. */
+  rejetsDuProche?: readonly JournalRejection[];
 
   // Context
   importantDates: { label: string; date: string }[];

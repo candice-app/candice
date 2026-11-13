@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { generateRecommendations } from '@/lib/recommendations/engine';
+import { lireRejetsDuProche } from '@/lib/recommendations/declarations-proche';
 import { generateProactiveQuestion } from '@/lib/recommendations/questions';
 import type { RecoInput, FeedbackEntry } from '@/lib/recommendations/types';
 import type { FaceResult } from '@/lib/attention/scoring';
@@ -139,8 +140,16 @@ export async function POST(req: NextRequest) {
     .map((a) => `${a.question} → ${a.answer}`)
     .join('; ') || null;
 
+  // Ce que le PROCHE a déclaré lui-même, s'il a un compte relié ET consenti à cet usage.
+  // Lecture sous service_role — la RLS du proche interdit au pilote de lire ses lignes,
+  // ce qui est exactement voulu : le franchissement est concentré dans ce seul appel,
+  // et son résultat ne quitte jamais le serveur. Échoue FERMÉ : toute incertitude rend
+  // zéro rejet, et aucune donnée du proche n'est employée.
+  const declarations = await lireRejetsDuProche(admin as never, { piloteId: user.id, contactId });
+
   const input: RecoInput = {
     contactId,
+    rejetsDuProche: declarations.rejets,
     contactName: c.name,
     contactFirstName,
     relationship: c.relationship,
