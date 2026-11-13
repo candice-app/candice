@@ -47,9 +47,10 @@ fi
     verif)
       # Les deux typechecks : tsconfig.json EXCLUT "scripts", donc le premier ne voit
       # jamais scripts/local. Le second est là pour ça — ne jamais lancer que le premier.
-      echo "— typecheck application —"; npx tsc --noEmit --incremental false; echo "(app : $?)"
-      echo "— typecheck scripts/local —"; npx tsc -p tsconfig.scripts.json;    echo "(scripts : $?)"
-      echo "— suite de tests —";         npm test --silent;                    echo "(tests : $?)"
+      ECHECS=0
+      echo "— typecheck application —"; npx tsc --noEmit --incremental false; c=$?; echo "(app : $c)"; [ $c -ne 0 ] && ECHECS=1
+      echo "— typecheck scripts/local —"; npx tsc -p tsconfig.scripts.json;    c=$?; echo "(scripts : $c)"; [ $c -ne 0 ] && ECHECS=1
+      echo "— suite de tests —";         npm test --silent;                    c=$?; echo "(tests : $c)"; [ $c -ne 0 ] && ECHECS=1
       ;;
     releve)  bash scripts/local/05-releve-schema.sh ;;
     tout)
@@ -57,9 +58,10 @@ fi
       echo; echo "########## SONDE ##########";  npx tsx scripts/local/04-sonde-interest-relationship.mts; echo "(sonde : $?)"
       echo; bash scripts/local/05-releve-schema.sh
       echo; echo "########## VÉRIFICATIONS ##########"
-      echo "— typecheck application —"; npx tsc --noEmit --incremental false; echo "(app : $?)"
-      echo "— typecheck scripts/local —"; npx tsc -p tsconfig.scripts.json;    echo "(scripts : $?)"
-      echo "— suite de tests —";         npm test --silent;                    echo "(tests : $?)"
+      ECHECS=0
+      echo "— typecheck application —"; npx tsc --noEmit --incremental false; c=$?; echo "(app : $c)"; [ $c -ne 0 ] && ECHECS=1
+      echo "— typecheck scripts/local —"; npx tsc -p tsconfig.scripts.json;    c=$?; echo "(scripts : $c)"; [ $c -ne 0 ] && ECHECS=1
+      echo "— suite de tests —";         npm test --silent;                    c=$?; echo "(tests : $c)"; [ $c -ne 0 ] && ECHECS=1
       ;;
     cron)    npx tsx scripts/local/03-cron-quatre-scenarios.mts ;;
     cron2)   npx tsx scripts/local/03-cron-quatre-scenarios.mts --phase2 "${2:?identifiant du compte requis}" ;;
@@ -71,7 +73,7 @@ fi
       ;;
     *) echo "usage : tout | journal | sonde | releve | echange | correctif | correctif! | verif | cron | cron2 <id> | etat" ;;
   esac
-  echo "=== code de sortie : $? ==="
+  echo "=== code de sortie : ${ECHECS:-0} ==="
 } > "$SORTIE" 2>&1
 
 echo "Terminé. Résultat écrit dans $SORTIE — Claude peut le lire."
