@@ -16,6 +16,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { createSourceRecord } from '../knowledge/sources';
 import { createOpenKnowledge } from '../knowledge/open-knowledge';
 import { asSubjectId, asEntityId, type AboutRef, type UserId } from '../knowledge/identity';
+import { ENTITY_RELATIONS } from '../knowledge/vocabulary';
 import { normalizeLabel } from '../knowledge/normalize';
 import { persistKnowledge, type WriteClient } from './persist';
 import { evidenceId, openKnowledgeId } from './ids';
@@ -52,7 +53,7 @@ const TOOL = {
             parentDomain: { type: 'string', description: 'INTEREST : domaine parent (ex. photography, music, food_gastronomy)' },
             relationship: { type: 'string', enum: ['passion', 'appreciation', 'curiosity', 'aversion'], description: 'INTEREST : rapport au sujet (laisse vide si non évident)' },
             entityType: { type: 'string', enum: ['brand', 'place', 'restaurant', 'hotel', 'product', 'food', 'drink', 'book', 'film_series', 'music', 'artist', 'destination', 'event', 'person'], description: 'ENTITY : sous-type exact' },
-            relation: { type: 'string', enum: ['LOVE', 'LIKE', 'CURIOUS', 'WANT_TO_TRY', 'WANT_TO_OWN', 'WANT_TO_VISIT', 'NEUTRAL', 'DISLIKE', 'AVOID'], description: 'ENTITY : relation à la chose (DISLIKE/AVOID pour un rejet)' },
+            relation: { type: 'string', enum: [...ENTITY_RELATIONS], description: 'ENTITY : relation explicitement exprimée envers la chose ; laisse vide pour une simple mention' },
             relation_label: { type: 'string', description: 'OTHER : la nature du lien, en mots (ex. « passion », « collectionne »)' },
             sensitive: { type: 'boolean', description: 'true si l\'unité touche la SANTÉ, une allergie/intolérance, une situation/traitement MÉDICAL, une grossesse, ou une ADRESSE (même implicite). Dans le doute, true.' },
           },
@@ -126,10 +127,10 @@ export async function buildFromFreeText(
         target_family: 'INTEREST', subject: asSubjectId(normalizeLabel(label)), target_construct: asSubjectId(normalizeLabel(label)),
         subjectLabel: label, ...(u.parentDomain ? { parent_domain: normalizeLabel(u.parentDomain) } : {}),
         ...(u.relationship ? { relationship: normalizeLabel(u.relationship) } : {}), strength: 'moderate' } as Evidence);
-    } else if (u.family === 'ENTITY') {
+    } else if (u.family === 'ENTITY' && u.relation && ENTITY_RELATIONS.includes(u.relation)) {
       evidences.push({ ...common, evidence_id: evidenceId(sourceId, `ENTITY:${normalizeLabel(label)}`), raw_information: label,
         target_family: 'ENTITY', entity_id: asEntityId(normalizeLabel(label)), target_construct: asEntityId(normalizeLabel(label)),
-        entityLabel: label, entityType: normalizeLabel(u.entityType ?? 'unknown'), relation: (u.relation ?? 'LOVE'), strength: 'moderate' } as Evidence);
+        entityLabel: label, entityType: normalizeLabel(u.entityType ?? 'unknown'), relation: u.relation, strength: 'moderate' } as Evidence);
     } else {
       // §27.6 : conservé en connaissance ouverte, verbatim, jamais jeté.
       openKnowledge.push(createOpenKnowledge({

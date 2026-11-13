@@ -38,6 +38,10 @@ export function resolveJournalRows<R extends { target_construct: string; asserti
 // relève de la base — destructive sur les droits, décision + application d'Estelle (voir rapport).
 // (La lecture write-side par source_id dans persist.ts ne passe pas ici : elle compte, ne réduit pas par
 // construct, n'alimente aucun écran — ce n'est pas une surface de masquage.)
+// (La lecture de CONSOLIDATION dans read-journal.ts ne passe pas ici non plus, et pour la raison inverse :
+// la consolidation AGRÈGE — elle compte les preuves, mesure l'indépendance et les contextes, construit
+// relationHistory. Lui rendre du résolu donnerait evidenceCount: 1 partout. Elle n'alimente aucun écran ;
+// tout affichage passe toujours par ici.)
 
 const EVIDENCE_COLUMNS =
   'source_id, target_family, target_construct, direction, modality, strength, rank, assertion_basis, assertion_status, confidence, context, created_at, superseded_at';
