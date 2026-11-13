@@ -71,6 +71,32 @@ it('rejet : conservé en connaissance ouverte, jamais encodé dans l’échelle 
   expect(r.openKnowledge).toMatchObject([{ subjectLabel: 'faire du pain au levain', relation: 'a détesté' }]);
 });
 
+// ── LE CAS DÉTERMINANT (arbitrage du 13 nov) ────────────────────────────────────────
+// Le modèle renvoie « curiosity » — valeur de l'ANCIEN schéma, hors du vocabulaire qui
+// fait foi — alors que les propos établissent clairement un intérêt. Trois issues
+// possibles, une seule juste :
+//   · traduire curiosity → curious  : INVENTION. Les deux mots se ressemblent, les deux
+//     axes non : « curiosity » disait la nature du rapport, « curious » dit un degré
+//     d'engagement. Rien dans les propos ne permet de situer la personne sur l'échelle.
+//   · jeter l'evidence                : PERTE. L'intérêt, lui, EST établi par les propos.
+//   · garder l'intérêt, degré absent  : JUSTE. On enregistre ce qu'on sait, pas plus.
+it('curiosity + intérêt établi → l’intérêt est CONSERVÉ, le degré reste absent', async () => {
+  const r = await extraire(
+    'Je lis tout ce que je trouve sur le levain, j’en parle sans arrêt.',
+    interet('curiosity'),
+  );
+  expect(r.evidences).toHaveLength(1);
+  const ev = r.evidences[0] as unknown as Record<string, unknown>;
+  expect(ev.target_family).toBe('INTEREST');
+  expect(ev.subjectLabel).toBe('pain au levain');
+  // Ni traduit…
+  expect(ev.relationship).not.toBe('curious');
+  // …ni inventé : la clé n'existe pas.
+  expect(Object.prototype.hasOwnProperty.call(ev, 'relationship')).toBe(false);
+  // Et l'intérêt n'est pas rétrogradé en reliquat : il est bien dans le journal structuré.
+  expect(r.openKnowledge).toEqual([]);
+});
+
 // Le modèle ne respecte pas toujours l'énumération qu'on lui donne : la validation est
 // côté application, pas côté confiance.
 it.each([

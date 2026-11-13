@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { AttentionDim } from '@/lib/attention/scoring';
+import { vetoEnfreint } from './veto-text';
 import type {
   RecoInput, RecoIdea, BlindSpotInsight, ContactRecommendations,
   KadenceProfile, RecoCanal,
@@ -151,9 +152,12 @@ export function buildVetoList(input: RecoInput): string[] {
   return [...new Set(v.filter(Boolean))];
 }
 
+/** Une idée passe-t-elle les vetos ? Reconnaissance par MOT (veto-text.ts), pas par
+ *  sous-chaîne : `includes` écartait « vinyle », « Vincent » et « divin » sur un veto
+ *  « vin », et « copains » sur un veto « pain ». Le veto se retournait contre la personne
+ *  qu'il protège, sans laisser de trace. */
 function passesVeto(idea: RecoIdea, vetoList: string[]): boolean {
-  const text = `${idea.title} ${idea.justification}`.toLowerCase();
-  return !vetoList.some((v) => v && text.includes(v.toLowerCase()));
+  return vetoEnfreint(`${idea.title} ${idea.justification}`, vetoList) === null;
 }
 
 // ─── Deterministic fallback ───────────────────────────────────────────────────
