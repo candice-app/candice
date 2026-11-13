@@ -16,7 +16,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { createSourceRecord } from '../knowledge/sources';
 import { createOpenKnowledge } from '../knowledge/open-knowledge';
 import { asSubjectId, asEntityId, type AboutRef, type UserId } from '../knowledge/identity';
-import { ENTITY_RELATIONS } from '../knowledge/vocabulary';
+import { ENTITY_RELATIONS, INTEREST_RELATIONSHIPS, type InterestRelationship } from '../knowledge/vocabulary';
 import { normalizeLabel } from '../knowledge/normalize';
 import { persistKnowledge, type WriteClient } from './persist';
 import { evidenceId, openKnowledgeId } from './ids';
@@ -48,10 +48,10 @@ const TOOL = {
         items: {
           type: 'object',
           properties: {
-            family: { type: 'string', enum: ['INTEREST', 'ENTITY', 'OTHER'] },
+            family: { type: 'string', enum: ['INTEREST', 'ENTITY', 'OTHER'], description: "INTEREST : un intérêt ÉTABLI par les propos pour un sujet. ENTITY : une chose nommée (marque, lieu, œuvre, plat…). OTHER : tout le reste — dont un REJET ou un désintérêt (« j'ai détesté ») et une ACTION PONCTUELLE dont aucun intérêt durable ne ressort. Leur formulation part verbatim dans relation_label ; un rejet ne s'encode JAMAIS dans l'échelle d'engagement." },
             label: { type: 'string', description: 'formulation PRÉCISE, verbatim, jamais généralisée' },
             parentDomain: { type: 'string', description: 'INTEREST : domaine parent (ex. photography, music, food_gastronomy)' },
-            relationship: { type: 'string', enum: ['passion', 'appreciation', 'curiosity', 'aversion'], description: 'INTEREST : rapport au sujet (laisse vide si non évident)' },
+            relationship: { type: 'string', enum: [...INTEREST_RELATIONSHIPS], description: "INTEREST : DEGRÉ D'ENGAGEMENT, et seulement s'il est établi par les propos — casual (occasionnel), curious (curieux), enthusiast (passionné amateur), passion, expert. LAISSE VIDE si l'intérêt est établi mais pas son degré : l'absence est une information juste, jamais un degré faible." },
             entityType: { type: 'string', enum: ['brand', 'place', 'restaurant', 'hotel', 'product', 'food', 'drink', 'book', 'film_series', 'music', 'artist', 'destination', 'event', 'person'], description: 'ENTITY : sous-type exact' },
             relation: { type: 'string', enum: [...ENTITY_RELATIONS], description: 'ENTITY : relation explicitement exprimée envers la chose ; laisse vide pour une simple mention' },
             relation_label: { type: 'string', description: 'OTHER : la nature du lien, en mots (ex. « passion », « collectionne »)' },
@@ -65,7 +65,7 @@ const TOOL = {
   },
 };
 
-interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: string; entityType?: string; relation?: EntityRelation; relation_label?: string; sensitive?: boolean; }
+interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: InterestRelationship; entityType?: string; relation?: EntityRelation; relation_label?: string; sensitive?: boolean; }
 
 export interface ExtractResult { readonly evidences: readonly Evidence[]; readonly openKnowledge: readonly OpenKnowledge[] }
 export interface ExtractBuild extends ExtractResult { readonly source: ReturnType<typeof createSourceRecord> | null }
@@ -118,6 +118,17 @@ export async function buildFromFreeText(
     version: JOURNAL_VERSION_STAMP,
   };
 
+/** Degré d'engagement : vocabulaire FERMÉ (INTEREST_RELATIONSHIPS, arbitrage 13 nov).
+ *  Une valeur hors vocabulaire n'est JAMAIS convertie — « curiosity » ne devient pas
+ *  « curious », « appreciation » et « aversion » ne deviennent pas des degrés : ce sont
+ *  des axes différents. Elle est écartée, et l'absence de degré est enregistrée telle
+ *  quelle (relationship NULL), ce qui est juste ; une conversion serait une invention. */
+function degreCanonique(v: string | undefined): InterestRelationship | undefined {
+  if (v === undefined) return undefined;
+  const t = v.trim().toLowerCase();
+  return (INTEREST_RELATIONSHIPS as readonly string[]).includes(t) ? (t as InterestRelationship) : undefined;
+}
+
   const evidences: Evidence[] = [];
   const openKnowledge: OpenKnowledge[] = [];
   for (const u of units) {
@@ -126,7 +137,7 @@ export async function buildFromFreeText(
       evidences.push({ ...common, evidence_id: evidenceId(sourceId, `INTEREST:${normalizeLabel(label)}`), raw_information: label,
         target_family: 'INTEREST', subject: asSubjectId(normalizeLabel(label)), target_construct: asSubjectId(normalizeLabel(label)),
         subjectLabel: label, ...(u.parentDomain ? { parent_domain: normalizeLabel(u.parentDomain) } : {}),
-        ...(u.relationship ? { relationship: normalizeLabel(u.relationship) } : {}), strength: 'moderate' } as Evidence);
+        ...(degreCanonique(u.relationship) ? { relationship: degreCanonique(u.relationship) } : {}), strength: 'moderate' } as Evidence);
     } else if (u.family === 'ENTITY' && u.relation && ENTITY_RELATIONS.includes(u.relation)) {
       evidences.push({ ...common, evidence_id: evidenceId(sourceId, `ENTITY:${normalizeLabel(label)}`), raw_information: label,
         target_family: 'ENTITY', entity_id: asEntityId(normalizeLabel(label)), target_construct: asEntityId(normalizeLabel(label)),
