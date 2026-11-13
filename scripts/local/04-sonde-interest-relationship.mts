@@ -52,6 +52,8 @@ async function clientDeLaPersonne(email: string, motDePasse: string) {
 
 const ok = (m: string) => console.log(`  \x1b[32m✓\x1b[0m ${m}`);
 const ko = (m: string) => { console.error(`\n\x1b[31mÉCHEC DE LA SONDE — ${m}\x1b[0m`); process.exitCode = 1; };
+/** La sonde ne faisait que DÉCRIRE ce qu'elle voyait. Elle exige maintenant. */
+const exigerVrai = (c: boolean, m: string) => { if (c) ok(m); else ko(m); };
 
 // Un lot tel que l'extracteur texte libre le produit : une source, une evidence INTEREST,
 // une connaissance ouverte. Seul `relationship` varie d'un cas à l'autre.
@@ -97,6 +99,10 @@ async function main() {
   const personne = await clientDeLaPersonne(email, motDePasse);
   ok(`compte ${email} · ${userId}`);
 
+  const { data: cdef } = await admin.rpc('exec_sql_readonly' as never, {} as never).then(
+    () => ({ data: null }), () => ({ data: null }));
+  void cdef;
+
   // ── TÉMOIN — le même lot AVEC relationship doit passer. Sans ce témoin, un échec du
   //    cas suivant ne prouverait rien : il pourrait venir de n'importe quoi d'autre.
   console.log('\n═══ témoin : le lot AVEC relationship ═══');
@@ -120,9 +126,20 @@ async function main() {
     await persistKnowledge(personne as never, m.charge as never);
   } catch (e) { refus = (e as Error).message; }
 
+  // DANS QUEL MONDE TOURNE-T-ON ? La sonde lit la contrainte RÉELLE avant d'interpréter
+  // son propre résultat. Sans ça, elle gardait le message d'avant le correctif et
+  // invitait à soupçonner un problème là où il n'y en avait plus — une sonde qui ne
+  // suit pas le schéma qu'elle mesure finit par mentir dans la direction rassurante.
+  // DANS QUEL MONDE TOURNE-T-ON ? Le refus lui-même le dit : imputé à ev_interest_shape,
+  // il prouve que la contrainte exige encore le degré ; une acceptation prouve qu'elle ne
+  // l'exige plus. Sans cette distinction, la sonde gardait son message d'avant le
+  // correctif et invitait à soupçonner un problème là où il n'y en avait plus — une sonde
+  // qui ne suit pas le schéma qu'elle mesure finit par mentir, et dans la direction
+  // rassurante, qui est la pire.
   if (!refus) {
-    ok('ACCEPTÉ — la base ne l\'exige donc pas ici : contradiction NON reproduite');
-    console.log('    → vérifie ev_interest_shape dans le relevé (05) avant toute conclusion.');
+    ok('ACCEPTÉ — comportement ATTENDU une fois la migration 108 appliquée');
+    console.log('    ev_interest_shape n’exige plus de degré : un intérêt établi sans');
+    console.log('    engagement mesuré s’écrit désormais tel quel.');
   } else {
     console.log(`  \x1b[31m✗\x1b[0m REFUSÉ par la base : ${refus}`);
     if (!/ev_interest_shape/.test(refus)) {
@@ -133,6 +150,9 @@ async function main() {
 
   // ── LE POINT QUI COMPTE : qu'est-il advenu de la connaissance ouverte du MÊME lot ?
   console.log('\n═══ conséquence sur la connaissance ouverte du même lot (§27.6) ═══');
+  // Le contrôle qui compte, dans les DEUX mondes : avant le correctif, la connaissance
+  // ouverte partait avec le lot refusé ; après, elle doit survivre. C'est cette
+  // survie-là, pas l'acceptation de l'écriture, que le §27.6 garantit.
   const mSrc = await compter(personne, 'knowledge_sources', m.sourceId, 'id');
   const mEv = await compter(personne, 'knowledge_evidences', m.sourceId, 'source_id');
   const mOk = await compter(personne, 'knowledge_open_knowledge', m.sourceId, 'source');
@@ -144,6 +164,9 @@ async function main() {
     console.log('  portant sur une ligne VOISINE, dans la même transaction, défait cette garantie.');
     console.log('  Chemin vivant : /api/knowledge/extract-free-text ← QuestionnaireFlow.tsx:94, :733.');
     console.log('  Remontée à l\'utilisateur : aucune (route.ts:48, un compteur dans console.error).');
+  } else if (!refus) {
+    exigerVrai(mOk === 1 && mEv === 1 && mSrc === 1,
+      'le lot est écrit ENTIER : source, preuve et connaissance ouverte — le §27.6 est tenu');
   } else if (refus && mOk > 0) {
     ok('la connaissance ouverte SURVIT au refus — la transaction n\'est donc pas tout-ou-rien');
     console.log('    → à vérifier dans persist_journal : la garantie du §27.6 tient malgré le refus.');
