@@ -25,7 +25,15 @@ const DB = process.env.SUPABASE_DB_URL ?? '';
 const API = process.env.SUPABASE_URL ?? '';
 const KEY = process.env.SUPABASE_SERVICE_ROLE_KEY ?? '';
 if (!DB || !API || !KEY) throw new Error('SUPABASE_DB_URL, SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY requis');
-exigerLocal({ nom: 'base Supabase', url: DB.replace(/^postgres(ql)?:/, 'http:'), port: 54322 });
+// La garde refuse une URL portant des identifiants — et elle a raison. On ne lui donne
+// donc QUE l'hôte et le port, jamais la chaîne de connexion : celle-ci contient le mot de
+// passe Postgres, et une garde qui l'accepterait apprendrait à le laisser passer ailleurs.
+const hoteDB = (() => {
+  const m = /@([^/:]+):(\d+)/.exec(DB);
+  if (!m) throw new Error('SUPABASE_DB_URL illisible : hôte et port introuvables');
+  return `http://${m[1]}:${m[2]}`;
+})();
+exigerLocal({ nom: 'base Supabase', url: hoteDB, port: 54322 });
 exigerLocal({ nom: 'API Supabase', url: API, port: 54321 });
 
 const APPLIQUER = process.argv.includes('--appliquer');

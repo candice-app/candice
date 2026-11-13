@@ -39,11 +39,11 @@ fi
 {
   echo "=== $QUOI · $(date '+%Y-%m-%d %H:%M:%S') ==="
   case "$QUOI" in
-    journal) npx tsx scripts/local/02-journal-aller-retour.mts ;;
-    sonde)   npx tsx scripts/local/04-sonde-interest-relationship.mts ;;
-    echange) npx tsx scripts/local/06-approfondissement.mts ;;
-    correctif)  npx tsx scripts/local/07-correctif-relationship.mts ;;
-    correctif!) npx tsx scripts/local/07-correctif-relationship.mts --appliquer ;;
+    journal) npx tsx scripts/local/02-journal-aller-retour.mts; ECHECS=$?; ;;
+    sonde) npx tsx scripts/local/04-sonde-interest-relationship.mts; ECHECS=$?; ;;
+    echange) npx tsx scripts/local/06-approfondissement.mts; ECHECS=$?; ;;
+    correctif) npx tsx scripts/local/07-correctif-relationship.mts; ECHECS=$?; ;;
+    correctif!) npx tsx scripts/local/07-correctif-relationship.mts --appliquer; ECHECS=$?; ;;
     verif)
       # Les deux typechecks : tsconfig.json EXCLUT "scripts", donc le premier ne voit
       # jamais scripts/local. Le second est là pour ça — ne jamais lancer que le premier.
