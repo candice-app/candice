@@ -11,6 +11,9 @@ import {
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
+import { question as questionOpenV3 } from './open-v3/banque';
+import { cleOption as cleOptionV3 } from './open-v3/service';
+
 export interface QuestionOption { label: string; value: string; }
 
 export interface DiscoveryQuestion {
@@ -155,15 +158,38 @@ async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQ
   if (idx >= pendingKeys.length) return null;
 
   const currentKey = pendingKeys[idx];
-  const { data: q } = await supabase
-    .from('discovery_questions')
-    .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
-    .eq('question_key', currentKey)
-    .maybeSingle();
 
-  if (!q) return null;
-
-  const question = q as DiscoveryQuestion;
+  // ── LA BANQUE OPEN V3 D'ABORD. Elle vit dans le code, pas en base : aucune requête.
+  //    `discovery_questions` est l'ancienne table, et un identifiant OPEN V3 n'y existe
+  //    pas. Sans ce chemin, une session de six questions s'arrêtait après la première,
+  //    sans question suivante ni fin de session.
+  const qV3 = questionOpenV3(currentKey);
+  let question: DiscoveryQuestion;
+  if (qV3) {
+    const type = qV3.forme === 'open' ? 'text'
+      : qV3.forme === 'single' ? 'chips_single' : 'chips_multi';
+    question = {
+      id: qV3.id,
+      question_key: qV3.id,
+      dimension: qV3.branche,
+      subdimension: null,
+      question_text: qV3.enonce,
+      question_type: type,
+      options: type === 'text' ? null : qV3.options.map((o) => ({ label: o.libelle, value: cleOptionV3(o) })),
+      sort_order: 0,
+      locked_text: true, // texte du référentiel, revu — JAMAIS reformulé
+    };
+  } else {
+    // Sessions déjà EN COURS au moment du basculement : on ne les abandonne pas en
+    // silence, ce serait perdre le travail de quelqu'un en plein milieu.
+    const { data: q } = await supabase
+      .from('discovery_questions')
+      .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
+      .eq('question_key', currentKey)
+      .maybeSingle();
+    if (!q) return null;
+    question = q as DiscoveryQuestion;
+  }
   // Reformulation coupée : texte de banque mot pour mot. Si réactivée, le
   // texte pré-calculé (AUCUN appel LLM dans le rendu) est lu ici.
   let personalizedText = question.question_text;

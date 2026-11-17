@@ -3,6 +3,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { recordAnswer, createDiscoverySession, precomputePersonalizationsForKeys } from "@/lib/discovery/engine";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
+import { question as questionV3 } from "@/lib/discovery/open-v3/banque";
+import { enregistrerReponseFermee } from "@/lib/discovery/open-v3/service";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -38,6 +40,32 @@ export async function POST(req: Request) {
     );
     if (!sessionId) {
       return NextResponse.json({ error: "création de session impossible" }, { status: 500 });
+    }
+  }
+
+  // ── LE JOURNAL D'ABORD. Avant toute marque de progression.
+  //
+  //    Une question de la banque OPEN V3 écrit une preuve ; l'ancienne banque n'en écrivait
+  //    aucune. Si l'écriture échoue, on répond 503 et on ne marque RIEN : la question sera
+  //    reposée, ce qui se répare. L'inverse — progression marquée, réponse perdue — ne se
+  //    répare pas, et la personne n'a aucun moyen de s'en apercevoir.
+  const qV3 = questionV3(questionKey);
+  if (qV3 && !skip && qV3.forme !== "open") {
+    const cles = Array.isArray(answer) ? answer.map(String)
+      : typeof answer === "string" ? [answer] : [];
+    if (cles.length === 0) {
+      return NextResponse.json({ error: "aucune option reçue" }, { status: 400 });
+    }
+    try {
+      await enregistrerReponseFermee(supabase as never, {
+        userId: user.id, questionId: questionKey, clesOptions: cles,
+      });
+    } catch (e) {
+      console.error("[discovery/answer] écriture du journal impossible", questionKey, e);
+      return NextResponse.json(
+        { error: "la réponse n'a pas pu être enregistrée — elle te sera reposée" },
+        { status: 503 },
+      );
     }
   }
 
