@@ -12,6 +12,8 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { lirePortrait } from "@/lib/knowledge/portrait";
 import { entitesDuJournal, nbEntites } from "@/lib/profile/entites-du-journal";
 import { AFFECTION_MODALITIES } from "@/lib/knowledge/vocabulary";
+import { phrasesDuJournal, contraintesPratiquesDe, type PhrasesDuJournal } from "@/lib/profile/phrases-du-journal";
+import { readSocleFacts } from "@/lib/questionnaire/breath-tags";
 import { radarDuPortrait, attentionDuPortrait, ceQuiMarcheDuPortrait,
          type RadarJournal, type AttentionJournal } from "@/lib/profile/portrait-vers-synthese";
 
@@ -91,7 +93,6 @@ function genderInstruction(gender: Gender): string {
 // ── Build user message for Sonnet ─────────────────────────────────────────────
 
 function buildAnalysisPrompt(data: {
-  facts: ReturnType<typeof computeProfileSynthesis>;
   practicalInfo: Record<string, unknown> | null;
   singularity: Record<string, string> | null;
   discoveryAnswers: Record<string, unknown> | null;
@@ -101,9 +102,12 @@ function buildAnalysisPrompt(data: {
   /** Ossature dérivée du JOURNAL — jamais des axes de my_profile. */
   radar: RadarJournal;
   attention: AttentionJournal;
+  phrases: PhrasesDuJournal;
+  /** Verbatim q17, lu dans le journal (filtre de visibilité appliqué). */
+  verbatimAEviter: string | null;
   gender: Gender;
 }): string {
-  const { facts, practicalInfo, singularity, discoveryAnswers, recentMemories, entities, radar, attention, gender } = data;
+  const { practicalInfo, singularity, discoveryAnswers, recentMemories, entities, radar, attention, phrases, verbatimAEviter, gender } = data;
   const lines: string[] = ["=== DONNÉES PROFIL COMPLÈTES ===", ""];
 
   // Attention
@@ -115,56 +119,47 @@ function buildAnalysisPrompt(data: {
   lines.push(`Contraste réception/expression : ${attention.contraste === null ? "indéterminable (un côté manque)" : attention.contraste ? "oui" : "non"}`);
   lines.push("");
 
-  // Touch + avoid
-  if (facts.touchInsights.length > 0) {
-    lines.push("── CE QUI TOUCHE ──");
-    facts.touchInsights.forEach(t => lines.push(`• ${t}`));
+  // ── LES PHRASES VIENNENT DU JOURNAL.
+  //
+  //    Elles sortaient d'un répertoire déclenché par des seuils d'axes. Le défaut n'était
+  //    pas la source mais ce qu'elle affirmait : « équilibre entre proximité et autonomie »
+  //    s'écrivait dès que l'axe tombait entre -30 et +30, donc aussi quand il valait 0 parce
+  //    que RIEN n'avait été renseigné. Candice affirmait un équilibre chez quelqu'un dont
+  //    elle ne savait rien, et la phrase était indiscernable d'un équilibre constaté.
+  //
+  //    Une absence ne produit désormais AUCUNE ligne : la densité suit la connaissance
+  //    (règle 7b), elle ne la simule pas. Une fiche plus courte est honnête ; une fiche
+  //    complétée par comblement ne l'est pas.
+  const bloc = (titre: string, items: readonly string[]) => {
+    if (items.length === 0) return;
+    lines.push(titre);
+    items.forEach((x) => lines.push(`• ${x}`));
     lines.push("");
-  }
-  if (facts.avoidAlerts.length > 0) {
-    lines.push("── À ÉVITER ──");
-    facts.avoidAlerts.forEach(a => lines.push(`• ${a}`));
-    lines.push("");
-  }
-
-  // Relational + communication
-  if (facts.relationalFacts.length > 0) {
-    lines.push("── STYLE RELATIONNEL ──");
-    facts.relationalFacts.forEach(r => lines.push(`• ${r}`));
-    lines.push("");
-  }
-  if (facts.communicationFacts.length > 0) {
-    lines.push("── COMMUNICATION ──");
-    facts.communicationFacts.forEach(c => lines.push(`• ${c}`));
-    lines.push("");
-  }
-
-  // Ideal + avoid attentions
-  if (facts.idealAttentions.length > 0) {
-    lines.push("── ATTENTIONS IDÉALES ──");
-    facts.idealAttentions.forEach(a => lines.push(`• ${a}`));
-    lines.push("");
-  }
-  if (facts.avoidAttentions.length > 0) {
-    lines.push("── ATTENTIONS À ÉVITER ──");
-    facts.avoidAttentions.forEach(a => lines.push(`• ${a}`));
+  };
+  bloc("── CE QUI LA TOUCHE ──", phrases.touche);
+  bloc("── CE QU'IL VAUT MIEUX ÉVITER ──", phrases.eviter);
+  bloc("── STYLE RELATIONNEL ──", phrases.styleRelationnel);
+  bloc("── COMMUNICATION (comportements CONSTATÉS, à NOMMER sans interpréter) ──", phrases.communication);
+  bloc("── ATTENTIONS IDÉALES ──", phrases.attentionsIdeales);
+  bloc("── ATTENTIONS À ÉVITER ──", phrases.attentionsAEviter);
+  if (phrases.gouts.length > 0) {
+    lines.push("── GOÛTS ──");
+    lines.push(phrases.gouts.join(", "));
     lines.push("");
   }
 
-  // Lifestyle
-  if (facts.lifestyleHighlights.length > 0) {
-    lines.push("── LIFESTYLE ──");
-    lines.push(facts.lifestyleHighlights.join(", "));
+  // LES QUATRE LIBELLÉS DE NIVEAU ONT DISPARU — spontanéité, contrôle, sensibilité aux
+  // détails, besoin d'espace. Ils sortaient d'un seuil sur un axe et affirmaient un niveau
+  // même sans donnée : « spontanéité : modérée » chez quelqu'un qui n'en avait jamais parlé.
+  // Ce que le journal sait du rythme et de la structure est déjà dans le style relationnel,
+  // et seulement quand il le sait.
+
+  if (phrases.nbPreuves === 0) {
+    // LE DIRE, plutôt que de laisser le modèle écrire quelque chose avec rien.
+    lines.push("⚠ LE JOURNAL EST VIDE pour cette personne : Candice ne sait rien d'elle.");
+    lines.push("N'écris AUCUN trait, AUCUNE préférence, AUCUN conseil. Laisse les blocs vides.");
     lines.push("");
   }
-
-  // Level labels
-  lines.push("── NIVEAUX (usage interne) ──");
-  lines.push(`Spontanéité : ${facts.spontaneiteLabel}`);
-  lines.push(`Contrôle : ${facts.controleLabel}`);
-  lines.push(`Sensibilité aux détails : ${facts.sensibiliteDetailsLabel}`);
-  lines.push(`Besoin d'espace : ${facts.besoinEspaceLabel}`);
-  lines.push("");
 
   // Singularity
   if (singularity && Object.keys(singularity).length > 0) {
@@ -262,24 +257,24 @@ function buildAnalysisPrompt(data: {
     }
   }
 
-  // Q17 — texte libre "ce qu'il vaut mieux éviter avec moi"
-  // (les interdits extraits arrivent déjà via facts.avoidAlerts, mais le texte brut
-  //  préserve la nuance et le ton — indispensable pour la section "avoid" et "points_fixes")
-  if (facts.rawTexts.q17.length > 3) {
-    lines.push("── À ÉVITER (texte libre) ──");
-    lines.push(facts.rawTexts.q17);
+  // Q17 — « ce qu'il vaut mieux éviter avec moi », en VERBATIM : la nuance et le ton y sont,
+  // et c'est ce qui rend la section « à éviter » juste plutôt que générique.
+  //
+  //    Il vient du JOURNAL, où il est écrit comme FACT, et donc à travers le filtre de
+  //    visibilité (`visibility_derived`). L'ancien chemin le lisait dans `practical_info`
+  //    brut : une réponse marquée sensible à l'écriture — santé, allergie, adresse —
+  //    repassait par là, sur une fiche partageable.
+  if (verbatimAEviter && verbatimAEviter.length > 3) {
+    lines.push("── À ÉVITER (ses mots) ──");
+    lines.push(verbatimAEviter);
     lines.push("");
   }
 
   // Centres d'intérêt structurés (13 catégories × ranks × détails)
-  if (facts.interestsSummary.length > 0 || facts.rawTexts.interestsFreeText.length > 3) {
-    lines.push("── CENTRES D'INTÉRÊT ──");
-    facts.interestsSummary.forEach(s => lines.push(`• ${s}`));
-    if (facts.rawTexts.interestsFreeText) {
-      lines.push(`Autres (texte libre) : ${facts.rawTexts.interestsFreeText}`);
-    }
-    lines.push("");
-  }
+  // LES CENTRES D'INTÉRÊT VIENNENT DU JOURNAL (bloc « CE QU'ELLE AIME » plus bas, construit
+  // depuis `entitesDuJournal`). L'ancien bloc lisait `interestsSummary` et le texte libre
+  // BRUT, en contournant le filtre de visibilité — une réponse marquée sensible à l'écriture
+  // repassait par là.
 
   // STYLE ATTENTIONNEL — dérivé du JOURNAL (usage interne, jamais affiché tel quel).
   // Une dimension ABSENTE n'est PAS un zéro : elle n'est pas déterminée, et le modèle n'a
@@ -531,33 +526,56 @@ export async function generateProfileAnalysis(
 
   const profile = rawProfile as ProfileRow | null;
 
-  if (!profile?.attention_reception || !profile?.attention_expression) {
-    await logStep("generate_analysis", "skipped", Date.now() - t1, undefined, { reason: "insufficient_data" });
-    return { success: false, reason: "insufficient_data" };
+  // ── LA GARDE PORTE SUR LE JOURNAL, PAS SUR L'ANCIENNE PROJECTION.
+  //
+  //    Elle exigeait `attention_reception` et `attention_expression` dans `my_profile` :
+  //    une personne dont le JOURNAL était plein mais dont la projection legacy manquait
+  //    n'obtenait aucune analyse du tout. Depuis que la page lit le journal, cette garde
+  //    refusait l'accès au nom d'une matière qu'on n'utilise plus.
+  //
+  //    Ce qu'on exige maintenant, c'est que Candice sache quelque chose. Si elle ne sait
+  //    rien, elle n'écrit rien — et c'est la bonne réponse, pas un échec.
+  const t0Portrait = Date.now();
+  let portrait: Awaited<ReturnType<typeof lirePortrait>> | null = null;
+  try {
+    portrait = await lirePortrait(supabase as never, { userId });
+  } catch (e) {
+    console.error("[analyse] lecture du journal impossible", correlationId, e);
+    await logStep("generate_analysis", "error", Date.now() - t0Portrait,
+      e instanceof Error ? e.message : String(e), { reason: "journal_illisible" });
+    return { success: false, reason: "journal_illisible" };
+  }
+  if (portrait.nbPreuves === 0) {
+    await logStep("generate_analysis", "skipped", Date.now() - t1, undefined,
+      { reason: "journal_vide" });
+    return { success: false, reason: "journal_vide" };
   }
 
   // ── 2. Compute structured facts (dimension scoring) ───────────────────────
 
-  const facts = computeProfileSynthesis({
-    reception:         profile.attention_reception as FaceResult,
-    expression:        profile.attention_expression as FaceResult,
-    temperamentAxes:   (profile.temperament_axes as Record<string, { score: number; intensity: number }> | null) ?? null,
-    temperamentModes:  (profile.temperament_modes as Record<string, { label: string; intensity: number } | null> | null) ?? null,
-    lifestyleAxes:     (profile.lifestyle_axes as Record<string, { score: number; intensity: number }> | null) ?? null,
-    relationalFilters: (profile.relational_filters as RelationalFilters | null) ?? null,
-    practicalInfo:     (profile.practical_info as { vetos?: Record<string, unknown> } | null) ?? null,
-    singularity:       (profile.singularity_answers as Record<string, string> | null) ?? null,
-  });
+  // ── `computeProfileSynthesis` N'EST PLUS APPELÉ ICI.
+  //
+  //    Tout ce que la page écrit vient du journal : le radar, les dimensions d'attention,
+  //    « ce qui marche », les entités, les phrases. Il ne restait qu'une chose à en tirer —
+  //    les contraintes pratiques — et elles ne viennent pas des axes : elles viennent de
+  //    `practical_info.vetos`, structuré, qu'on lit directement.
+  //
+  //    Les garder par une synthèse d'axes aurait obligé à exiger `attention_reception` et
+  //    `attention_expression`, c'est-à-dire à refuser une analyse à quelqu'un dont le
+  //    journal est plein mais dont l'ancienne projection manque.
+  const contraintesPratiques = contraintesPratiquesDe(
+    (profile?.practical_info as { vetos?: Record<string, unknown>; alcool?: string } | null) ?? null,
+  );
 
   // ── 3. Determine gender ───────────────────────────────────────────────────
 
-  const pi = profile.practical_info as Record<string, string> | null;
-  const gender = resolveGender(profile.grammatical_gender, pi?.sexe);
+  const pi = profile?.practical_info as Record<string, string> | null;
+  const gender = resolveGender(profile?.grammatical_gender, pi?.sexe);
 
   // ── 4. Entités : LUES DANS LE JOURNAL, jamais ré-extraites ────────────────
 
   const t4 = Date.now();
-  const singularity = (profile.singularity_answers as Record<string, string> | null) ?? null;
+  const singularity = (profile?.singularity_answers as Record<string, string> | null) ?? null;
 
   let entities = { brands: [] as string[], places: [] as string[], hobbies: [] as string[],
                    events: [] as string[], autres: [] as string[], evites: [] as string[] };
@@ -567,12 +585,23 @@ export async function generateProfileAnalysis(
   let radar = radarDuPortrait(PORTRAIT_VIDE);
   let attention = attentionDuPortrait(PORTRAIT_VIDE);
   let ceQuiMarche: ReturnType<typeof ceQuiMarcheDuPortrait> | null = null;
+  // Journal illisible → des phrases VIDES, et le prompt le dira. Jamais un repli sur le
+  // répertoire d'axes : une fiche nourrie d'autre chose que le journal n'est pas une fiche
+  // plus complète, c'est une fiche dont on ne sait plus d'où elle vient.
+  let phrases: PhrasesDuJournal = phrasesDuJournal(PORTRAIT_VIDE);
+  let verbatimAEviter: string | null = null;
   try {
-    const portrait = await lirePortrait(supabase as never, { userId });
+    // Le portrait a déjà été lu pour la garde : on ne le relit pas. Deux lectures
+    // pourraient diverger, et la divergence se verrait à l'écran.
     entities = entitesDuJournal(portrait);
     radar = radarDuPortrait(portrait);
     attention = attentionDuPortrait(portrait);
     ceQuiMarche = ceQuiMarcheDuPortrait(portrait);
+    phrases = phrasesDuJournal(portrait);
+    // Les FACTs restituables passent par readSocleFacts, qui applique le filtre de
+    // visibilité mécaniquement : santé, mobilité et adresse n'en sortent jamais.
+    const faits = await readSocleFacts(supabase as never, userId);
+    verbatimAEviter = faits.find((x) => x.factType === 'relational.q17_register')?.value ?? null;
     entitiesStatus = "success";
     await logStep("entity_extraction", "success", Date.now() - t4, undefined,
       { count: nbEntites(entities), evites: entities.evites.length, preuves: portrait.nbPreuves });
@@ -619,14 +648,15 @@ export async function generateProfileAnalysis(
       (muettes.length > 0 ? `\nNON DÉTERMINÉS, à NE PAS mentionner : ${muettes.join(", ")}` : "")
     : "";
   const userMessage = buildAnalysisPrompt({
-    facts,
-    practicalInfo:     (profile.practical_info as Record<string, unknown> | null) ?? null,
+    practicalInfo:     (profile?.practical_info as Record<string, unknown> | null) ?? null,
     singularity,
-    discoveryAnswers:  (profile.discovery_answers as Record<string, unknown> | null) ?? null,
+    discoveryAnswers:  (profile?.discovery_answers as Record<string, unknown> | null) ?? null,
     recentMemories,
     entities,
     radar,
     attention,
+    phrases,
+    verbatimAEviter,
     gender,
   }) + worksLevelsLine;
 
@@ -655,26 +685,26 @@ export async function generateProfileAnalysis(
     aiStatus = "fallback";
     // Deterministic fallback — build from facts only.
     // Aucune fuite brute : les champs sans analyse restent vides (l'UI gère via CTA).
-    const conflitFromModes = ((profile.temperament_modes as Record<string, { label?: string } | null> | null)?.conflit)?.label ?? "";
+    const conflitFromModes = ((profile?.temperament_modes as Record<string, { label?: string } | null> | null)?.conflit)?.label ?? "";
     result = {
-      summary: facts.touchInsights.length > 0
-        ? `Tu sembles particulièrement sensible à ${facts.touchInsights[0]}.`
+      summary: phrases.touche.length > 0
+        ? `Tu sembles particulièrement sensible à ${phrases.touche[0]}.`
         : "Candice apprend à te connaître.",
-      summary_third_person: facts.touchInsights.length > 0
-        ? `Cette personne semble particulièrement sensible à ${facts.touchInsights[0]}.`
+      summary_third_person: phrases.touche.length > 0
+        ? `Cette personne semble particulièrement sensible à ${phrases.touche[0]}.`
         : "Candice apprend à la connaître.",
       summary_chips: attention.recues.slice(0, 4),
       insights: [
-        facts.touchInsights[0] ? `Tu es sensible à ${facts.touchInsights[0]}.` : "",
-        facts.avoidAlerts[0] ? `Tu préfères éviter ${facts.avoidAlerts[0]}.` : "",
-        facts.idealAttentions[0] ? `Tu apprécies ${facts.idealAttentions[0]}.` : "",
+        phrases.touche[0] ? `Tu es sensible à ${phrases.touche[0]}.` : "",
+        phrases.eviter[0] ? `Tu préfères éviter ${phrases.eviter[0]}.` : "",
+        phrases.attentionsIdeales[0] ? `Tu apprécies ${phrases.attentionsIdeales[0]}.` : "",
       ].filter(Boolean),
       sections: {
-        attention:    { text: facts.idealAttentions[0] ?? "", chips: attention.recues.slice(0, 3) },
-        what_touches: { text: facts.touchInsights[0] ?? "", chips: [] },
+        attention:    { text: phrases.attentionsIdeales[0] ?? "", chips: attention.recues.slice(0, 3) },
+        what_touches: { text: phrases.touche[0] ?? "", chips: [] },
         feels_loved:  { text: "", chips: [] },
         gifts:        { text: "", chips: [] },
-        avoid:        { text: facts.avoidAlerts[0] ?? "", chips: facts.avoidAlerts.slice(0, 3) },
+        avoid:        { text: phrases.eviter[0] ?? "", chips: phrases.eviter.slice(0, 3) },
         style:        { text: "", chips: [] },
         brands:       { text: "", chips: [] },
         restaurants:  { text: "", chips: [] },
@@ -682,7 +712,7 @@ export async function generateProfileAnalysis(
         hobbies:      { text: "", chips: [] },
         parfums:      { text: "", chips: [] },
         points_fixes: { text: "", chips: [] },
-        attention_dna:{ text: facts.idealAttentions.join(". "), chips: [] },
+        attention_dna:{ text: phrases.attentionsIdeales.join(". "), chips: [] },
       },
       modes: {
         conflit:  conflitFromModes || "",
@@ -690,8 +720,8 @@ export async function generateProfileAnalysis(
         decision: "",
         canal:    "",
       },
-      must_haves: facts.touchInsights.slice(0, 3),
-      deal_breakers: [...new Set([...entities.evites, ...facts.avoidAlerts])].slice(0, 3),
+      must_haves: phrases.touche.slice(0, 3),
+      deal_breakers: [...new Set([...entities.evites, ...phrases.eviter])].slice(0, 3),
       attention_dna: attention.recues.slice(0, 3).map((dim, i) => ({
         dimension: dim,
         intensity: i === 0 ? 80 : 50,
@@ -699,9 +729,12 @@ export async function generateProfileAnalysis(
       })),
       // STRUCTUREL, plus lexical : le filtre par mot-clé ratait « arachide », « lactose »,
       // « sans gluten » — tout ce qui ne contient pas littéralement « allergie ».
-      constraints: facts.contraintesPratiques,
+      constraints: contraintesPratiques,
       entities,
-      confidence: facts.hasTemperamentData && facts.hasSingularityData ? 0.6 : 0.3,
+      // La confiance suit le JOURNAL, pas la présence d'anciennes colonnes : annoncer 0.6
+      // parce que `temperament_axes` existe, alors que la fiche s'écrit depuis le journal,
+      // serait une confiance sur une matière qu'on n'utilise plus.
+      confidence: phrases.nbPreuves >= 20 ? 0.6 : phrases.nbPreuves > 0 ? 0.3 : 0,
       // V2 : le fallback ne fabrique jamais de narratif — champs vides, l'UI gère
       summary_long: "",
       podium_intro: "",
@@ -724,7 +757,7 @@ export async function generateProfileAnalysis(
 
   const sourceComponents: string[] = ["questionnaire"];
   if (recentMemories.length > 0) sourceComponents.push("memories");
-  const discoveryAnswersObj = profile.discovery_answers as Record<string, unknown> | null;
+  const discoveryAnswersObj = profile?.discovery_answers as Record<string, unknown> | null;
   if (discoveryAnswersObj && Object.keys(discoveryAnswersObj).length > 0) {
     sourceComponents.push("discovery");
   }
