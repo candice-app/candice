@@ -5,13 +5,15 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { precomputeUpcomingPersonalizations } from "@/lib/discovery/engine";
-import { computeWorksLevels, WORKS_LEVEL_LABELS, type WorksKey, type WorksLevel } from "./v2-metrics";
 import { computeProfileSynthesis } from "./synthesis";
 import type { FaceResult } from "@/lib/attention/scoring";
 import type { RelationalFilters } from "@/lib/lifestyle/scoring";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { lirePortrait } from "@/lib/knowledge/portrait";
 import { entitesDuJournal, nbEntites } from "@/lib/profile/entites-du-journal";
+import { AFFECTION_MODALITIES } from "@/lib/knowledge/vocabulary";
+import { radarDuPortrait, attentionDuPortrait, ceQuiMarcheDuPortrait,
+         type RadarJournal, type AttentionJournal } from "@/lib/profile/portrait-vers-synthese";
 
 const anthropic = new Anthropic();
 
@@ -96,16 +98,21 @@ function buildAnalysisPrompt(data: {
   recentMemories: string[];
   /** Entités LUES DANS LE JOURNAL (avec leur polarité). */
   entities: { brands: string[]; places: string[]; hobbies: string[]; events: string[]; autres: string[]; evites: string[] };
+  /** Ossature dérivée du JOURNAL — jamais des axes de my_profile. */
+  radar: RadarJournal;
+  attention: AttentionJournal;
   gender: Gender;
 }): string {
-  const { facts, practicalInfo, singularity, discoveryAnswers, recentMemories, entities, gender } = data;
+  const { facts, practicalInfo, singularity, discoveryAnswers, recentMemories, entities, radar, attention, gender } = data;
   const lines: string[] = ["=== DONNÉES PROFIL COMPLÈTES ===", ""];
 
   // Attention
-  lines.push("── ATTENTION ──");
-  lines.push(`Réception dominante : ${facts.topReceptionDims.join(", ") || "non déterminée"}`);
-  lines.push(`Expression naturelle : ${facts.topExpressionDims.join(", ") || "non déterminée"}`);
-  lines.push(`Contraste réception/expression : ${facts.hasReceptionExpressionContrast ? "oui" : "non"}`);
+  lines.push("── ATTENTION (journal) ──");
+  lines.push(`Réception dominante : ${attention.recues.join(", ") || "non déterminée"}`);
+  lines.push(`Expression naturelle : ${attention.donnees.join(", ") || "non déterminée"}`);
+  // `null` = un des deux côtés manque. Répondre « non » affirmerait une congruence qu'on
+  // n'a PAS constatée : l'absence de contraste et le contraste absent ne sont pas la même chose.
+  lines.push(`Contraste réception/expression : ${attention.contraste === null ? "indéterminable (un côté manque)" : attention.contraste ? "oui" : "non"}`);
   lines.push("");
 
   // Touch + avoid
@@ -278,10 +285,23 @@ function buildAnalysisPrompt(data: {
     lines.push("");
   }
 
-  // Style radar (usage interne — informe Claude de la forme du profil sans qu'il l'affiche)
-  const r = facts.styleRadar;
-  lines.push("── STYLE ATTENTIONNEL (radar 7 axes, usage interne) ──");
-  lines.push(`Précision ${r.precision} · Émotion ${r.emotion} · Surprise ${r.surprise} · Esthétique ${r.esthetique} · Utilité ${r.utilite} · Temps ${r.temps} · Discrétion ${r.discretion}`);
+  // STYLE ATTENTIONNEL — dérivé du JOURNAL (usage interne, jamais affiché tel quel).
+  // Une dimension ABSENTE n'est PAS un zéro : elle n'est pas déterminée, et le modèle n'a
+  // pas le droit d'en parler. C'est la règle 7a appliquée à un nombre plutôt qu'à un mot.
+  const etiquettes: Array<[keyof RadarJournal, string]> = [
+    ["precision", "Précision"], ["emotion", "Émotion"], ["surprise", "Surprise"],
+    ["esthetique", "Esthétique"], ["utilite", "Utilité"], ["temps", "Temps"],
+    ["discretion", "Discrétion"],
+  ];
+  const connues = etiquettes
+    .filter(([k]) => radar[k] !== null)
+    .map(([k, nom]) => `${nom} ${radar[k]} (${radar.fondeSur[k as keyof typeof radar.fondeSur]} preuve(s))`);
+  const inconnues = etiquettes.filter(([k]) => radar[k] === null).map(([, nom]) => nom);
+  lines.push("── STYLE ATTENTIONNEL (dérivé du journal, usage interne) ──");
+  lines.push(connues.length > 0 ? connues.join(" · ") : "Aucune dimension déterminée.");
+  if (inconnues.length > 0) {
+    lines.push(`NON DÉTERMINÉES, donc INTERDITES de commentaire (ne rien en dire, ni en bien ni en mal) : ${inconnues.join(", ")}`);
+  }
   lines.push("");
 
   // Recent memories (signal enrichment)
@@ -421,6 +441,20 @@ Retourne UNIQUEMENT ce JSON valide (aucun markdown, aucune explication) :
 Règles confidence : 0.3 = peu de données, 0.6 = questionnaire de base, 0.85 = questionnaire + singularité, 1.0 = tout + mémoires.`;
 }
 
+// Portrait VIDE nommé : l'état d'un journal qu'on n'a pas pu lire. Il rend un radar dont
+// toutes les dimensions valent `null` — donc un écran qui se tait, pas un écran qui affirme
+// que tout est à zéro. Il n'est JAMAIS un repli sur autre chose que le journal.
+const PORTRAIT_VIDE = {
+  scope: { about: { kind: "account", id: "" }, ownerId: "" },
+  nbPreuves: 0,
+  profile: [], interests: [], entities: [], preferences: [], behaviors: [],
+  guardrails: [], needs: [], drivers: [], contexts: [],
+  affection: {
+    receive: Object.fromEntries(AFFECTION_MODALITIES.map((m) => [m, { score: "unknown", evidenceCount: 0, confidence: "none" }])),
+    give:    Object.fromEntries(AFFECTION_MODALITIES.map((m) => [m, { score: "unknown", evidenceCount: 0, confidence: "none" }])),
+  },
+} as never;
+
 // ── Main export ────────────────────────────────────────────────────────────────
 
 export async function generateProfileAnalysis(
@@ -523,9 +557,17 @@ export async function generateProfileAnalysis(
   let entities = { brands: [] as string[], places: [] as string[], hobbies: [] as string[],
                    events: [] as string[], autres: [] as string[], evites: [] as string[] };
   let entitiesStatus: "success" | "fallback" = "fallback";
+  // Une SEULE lecture du portrait pour toute la page : entités, radar, attention, « ce qui
+  // marche ». Deux lectures pourraient diverger, et la divergence se verrait à l'écran.
+  let radar = radarDuPortrait(PORTRAIT_VIDE);
+  let attention = attentionDuPortrait(PORTRAIT_VIDE);
+  let ceQuiMarche: ReturnType<typeof ceQuiMarcheDuPortrait> | null = null;
   try {
     const portrait = await lirePortrait(supabase as never, { userId });
     entities = entitesDuJournal(portrait);
+    radar = radarDuPortrait(portrait);
+    attention = attentionDuPortrait(portrait);
+    ceQuiMarche = ceQuiMarcheDuPortrait(portrait);
     entitiesStatus = "success";
     await logStep("entity_extraction", "success", Date.now() - t4, undefined,
       { count: nbEntites(entities), evites: entities.evites.length, preuves: portrait.nbPreuves });
@@ -557,14 +599,19 @@ export async function generateProfileAnalysis(
   const systemPrompt = buildSystemPrompt(gender);
   // V2 : niveaux « Ce qui marche » calculés DÉTERMINISTES (arbitrage 9) —
   // injectés au prompt pour que les phrases collent aux niveaux, jamais l'inverse.
-  const worksLevels = computeWorksLevels(
-    facts.styleRadar,
-    (profile.temperament_axes as Record<string, { score: number; intensity: number }> | null) ?? null,
-  );
-  const worksLevelsLine = worksLevels
-    ? `\nNIVEAUX « CE QUI MARCHE » (calculés, à respecter tels quels) : ${
-        (Object.entries(worksLevels) as Array<[WorksKey, WorksLevel]>)
-          .map(([k, v]) => `${k}=${WORKS_LEVEL_LABELS[v]}`).join(" · ")}`
+  // NIVEAUX « CE QUI MARCHE » — dérivés du journal. Une clé que rien ne fonde est ABSENTE
+  // de la ligne : écrire « faible » pour « on ne sait pas » est précisément la confusion que
+  // tout ce lot corrige.
+  const etablis = ceQuiMarche
+    ? Object.entries(ceQuiMarche).filter(([, v]) => v !== null)
+    : [];
+  const muettes = ceQuiMarche
+    ? Object.entries(ceQuiMarche).filter(([, v]) => v === null).map(([k]) => k)
+    : [];
+  const worksLevelsLine = etablis.length > 0
+    ? `\nNIVEAUX « CE QUI MARCHE » (dérivés du journal, à respecter tels quels) : ${
+        etablis.map(([k, v]) => `${k}=${v}`).join(" · ")}` +
+      (muettes.length > 0 ? `\nNON DÉTERMINÉS, à NE PAS mentionner : ${muettes.join(", ")}` : "")
     : "";
   const userMessage = buildAnalysisPrompt({
     facts,
@@ -573,6 +620,8 @@ export async function generateProfileAnalysis(
     discoveryAnswers:  (profile.discovery_answers as Record<string, unknown> | null) ?? null,
     recentMemories,
     entities,
+    radar,
+    attention,
     gender,
   }) + worksLevelsLine;
 
@@ -609,14 +658,14 @@ export async function generateProfileAnalysis(
       summary_third_person: facts.touchInsights.length > 0
         ? `Cette personne semble particulièrement sensible à ${facts.touchInsights[0]}.`
         : "Candice apprend à la connaître.",
-      summary_chips: facts.topReceptionDims.slice(0, 4),
+      summary_chips: attention.recues.slice(0, 4),
       insights: [
         facts.touchInsights[0] ? `Tu es sensible à ${facts.touchInsights[0]}.` : "",
         facts.avoidAlerts[0] ? `Tu préfères éviter ${facts.avoidAlerts[0]}.` : "",
         facts.idealAttentions[0] ? `Tu apprécies ${facts.idealAttentions[0]}.` : "",
       ].filter(Boolean),
       sections: {
-        attention:    { text: facts.idealAttentions[0] ?? "", chips: facts.topReceptionDims.slice(0, 3) },
+        attention:    { text: facts.idealAttentions[0] ?? "", chips: attention.recues.slice(0, 3) },
         what_touches: { text: facts.touchInsights[0] ?? "", chips: [] },
         feels_loved:  { text: "", chips: [] },
         gifts:        { text: "", chips: [] },
@@ -638,7 +687,7 @@ export async function generateProfileAnalysis(
       },
       must_haves: facts.touchInsights.slice(0, 3),
       deal_breakers: [...new Set([...entities.evites, ...facts.avoidAlerts])].slice(0, 3),
-      attention_dna: facts.topReceptionDims.slice(0, 3).map((dim, i) => ({
+      attention_dna: attention.recues.slice(0, 3).map((dim, i) => ({
         dimension: dim,
         intensity: i === 0 ? 80 : 50,
         note: "",
@@ -678,9 +727,10 @@ export async function generateProfileAnalysis(
 
   // ── 8. Dimension scores (internal, never displayed) ───────────────────────
 
+  // Jauges de la page « Nous » : le classement vient du JOURNAL. Une modalité absente n'y
+  // figure pas du tout — elle n'y figure pas à 0, qui se lirait « ça ne lui parle pas ».
   const dimensionScores: Record<string, number> = {};
-  const topDims = [...facts.topReceptionDims, ...facts.topExpressionDims];
-  topDims.forEach((dim, i) => {
+  [...attention.recues, ...attention.donnees].forEach((dim, i) => {
     dimensionScores[dim] = Math.max(0, 80 - i * 15);
   });
 
@@ -695,7 +745,7 @@ export async function generateProfileAnalysis(
     insights:         (result.insights ?? []).filter(s => s && s.trim().length > 0),
     sections:         result.sections ?? null,
     modes:            result.modes ?? null,
-    style_radar:      facts.styleRadar,
+    style_radar:      radar,
     dimension_scores: dimensionScores,
     must_haves:       result.must_haves ?? null,
     deal_breakers:    result.deal_breakers ?? null,
