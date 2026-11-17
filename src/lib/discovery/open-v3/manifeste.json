@@ -1,0 +1,1253 @@
+{
+ "genere_par": "importer-open-v3 / 1",
+ "genere_le": "2026-11-17T16:04:22+00:00",
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_1.xlsx",
+ "sha256_classeur": "cfb63b66c888a1f34f2b2952d51cfaf7138c905c742c437458af2cfaa7edf2ee",
+ "questions_actives": 2224,
+ "questions_en_arbitrage": 69,
+ "questions_retirees": 114,
+ "options_totales": 16200,
+ "normalisations": {
+  "SINGLE · facultative": 78,
+  "MULTI · réponses multiples sans plafond arbitraire": 73,
+  "OPEN · facultative": 48
+ },
+ "attributs_multi_familles": {
+  "desired_item": [
+   "ENTITY",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "domain_importance": [
+   "BEHAVIOR",
+   "INTEREST",
+   "PREFERENCE"
+  ],
+  "practice_frequency": [
+   "BEHAVIOR",
+   "PREFERENCE"
+  ],
+  "gift_openness": [
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "gift_format": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "gift_antipattern": [
+   "CONTEXT",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "companions": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "facilitator": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "DRIVER",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "usage_context": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "PREFERENCE"
+  ],
+  "occasion_scope": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "type_preference": [
+   "BEHAVIOR",
+   "GUARDRAIL",
+   "INTEREST",
+   "PREFERENCE"
+  ],
+  "value_sought": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "DRIVER",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "service_preference": [
+   "BEHAVIOR",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "exposure_preference": [
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "secondhand_acceptance": [
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "disruptor": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "aesthetic_universe": [
+   "BEHAVIOR",
+   "INTEREST",
+   "PREFERENCE"
+  ],
+  "sensory_preference": [
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "intensity_preference": [
+   "BEHAVIOR",
+   "PREFERENCE"
+  ],
+  "duration_preference": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "PREFERENCE"
+  ],
+  "ritual": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "PREFERENCE"
+  ],
+  "material_preference": [
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "color_preference": [
+   "BEHAVIOR",
+   "PREFERENCE"
+  ],
+  "owned_item": [
+   "BEHAVIOR",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "constraint": [
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "fit_preference": [
+   "BEHAVIOR",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "modality": [
+   "AFFECTION_LANGUAGE",
+   "GUARDRAIL"
+  ],
+  "support_mode": [
+   "BEHAVIOR",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "sharing_boundary": [
+   "BEHAVIOR",
+   "CONTEXT",
+   "GUARDRAIL",
+   "PREFERENCE"
+  ],
+  "expertise_level": [
+   "BEHAVIOR",
+   "PREFERENCE"
+  ]
+ },
+ "valeurs_mixtes": [
+  {
+   "question": "CEL-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "CEL-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "CEL-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "CEL-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "CEL-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "HUM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "JDS-01",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-11",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-12",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-13",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-13",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-13",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-13",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "REM-15",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "THE-16",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "THE-16",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "THE-16",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "beauty2.1290",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "beauty2.1298",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1669",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1669",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1669",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1669",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1669",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1669",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1669",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1676",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1676",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1676",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1687",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1687",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1687",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "bond.1687",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebav.2163",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebav.2163",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebav.2163",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebav.2170",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebav.2170",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebav.2173",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebration.0832",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebration.0832",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "celebration.0832",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "cinema.0076",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "cinema2.0980",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2026",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2026",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2026",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2026",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2026",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2026",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2026",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2036",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "collection.2037",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "comics.0419",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "comics.0430",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "comics.0435",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "comics.0435",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "comics.0437",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption.0249",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1174",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1175",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1176",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1195",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1200",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1200",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1201",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1214",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1214",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1224",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "consumption2.1230",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "craft.0637",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "craft.0644",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily.0257",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily.0257",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily.0257",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily.0257",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily.0257",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily.0257",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily.0257",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1130",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1130",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1130",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1131",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "daily2.1141",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "dreams.1999",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "dreams.2006",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "dreams.2013",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "drinks.2098",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "drinks.2101",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "energy.1606",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "energy.1609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "energy.1610",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "family.1829",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "family.1840",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "family.1841",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "fashion2.1077",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "fashion2.1097",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "flowers.2108",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "flowers.2121",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "food.0029",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "food.0048",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "food.0050",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "food2.0871",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "fragrance2.1166",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "games.0972",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "garden.0559",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "garden.0563",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "garden.0569",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "garden.0575",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home.0176",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home.0179",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home.0182",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home2.1259",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home2.1260",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home2.1260",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home2.1261",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home2.1261",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home2.1262",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "home2.1264",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "humor2.1425",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "humor2.1425",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "humor2.1425",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1888",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1889",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1893",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1893",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1893",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "joys.1893",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "live.0478",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "museum.0702",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "photo.0672",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "photo.0679",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "place.0275",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "podcast.0453",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "podcast.0472",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "reading.0110",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "reading.0113",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "reading.0114",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "reading2.1248",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "reading2.1249",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "remembrance.1982",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "remembrance.1987",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "remembrance.1993",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sensory.0267",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sensory2.1492",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1045",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1045",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1048",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1054",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1054",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1054",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1054",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "series2.1054",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0336",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0341",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0349",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0353",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0357",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0358",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0358",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0358",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0358",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0358",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "shoes.0358",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0596",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0604",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0609",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0613",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0613",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0613",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0613",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sleep.0613",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0730",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0741",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0741",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0744",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0744",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0744",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0745",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0747",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0747",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "spirit.0747",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0509",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0514",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0514",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0514",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0514",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0514",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0514",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0530",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0530",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0530",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0530",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0530",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportp.0530",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportw.0555",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportw.0555",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportw.0555",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportw.0555",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportw.0555",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "sportw.0555",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "success.1742",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "success.1747",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "success.1749",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "success.1750",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "success.1753",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "tech.0200",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "tech2.1331",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "tech2.1331",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "tech2.1332",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "tech2.1334",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "theatre.0105",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "theatre2.1378",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "theatre2.1379",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "travel2.0923",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "watch.0313",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "work2.1341",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  },
+  {
+   "question": "work2.1361",
+   "detail": "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+  }
+ ],
+ "options_hsg_sans_famille": [],
+ "options_sans_voie": 0,
+ "ouvertes_sans_barriere": [
+  {
+   "id": "food2.0882A",
+   "enonce": "As-tu une envie culinaire précise en ce moment ? Tu peux la décrire, coller un lien ou ajouter une photo.",
+   "branche": "food2"
+  }
+ ]
+}
