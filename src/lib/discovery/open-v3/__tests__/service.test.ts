@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { enregistrerReponseFermee, cleOption, ReponseInvalideError } from '../service';
+import { enregistrerReponseFermee, enregistrerReponseOuverte, cleOption, ReponseInvalideError } from '../service';
 import { BANQUE } from '../banque';
 import { produireDepuisOption } from '../produire';
 
@@ -159,5 +159,35 @@ describe('l’identité d’une option ne dépend pas de l’ordre du tableau', 
     }
     // Le test porte sur la banque entière, pas sur un échantillon.
     expect(verifiees).toBeGreaterThan(1000);
+  });
+});
+
+describe('une réponse ouverte : le verbatim d’abord, l’extraction ensuite', () => {
+  // L'ordre n'est pas interchangeable. Une extraction écrite sans son verbatim est une
+  // inférence ORPHELINE : elle affirme quelque chose sans que la phrase dont elle est tirée
+  // existe quelque part.
+  it('refuse une question ouverte sans inférences interdites', async () => {
+    const { client } = faux();
+    const ouverteSansBarriere = BANQUE.find((q) => q.forme === 'open' && !q.inferences_interdites
+      && !q.options.some((o) => o.inferences_interdites));
+    // La banque les écarte à l'import : il ne doit y en avoir AUCUNE.
+    expect(ouverteSansBarriere, 'une question ouverte sans barrière est dans la banque').toBeUndefined();
+    // Et le service refuserait quand même, si une passait un jour.
+    await expect(enregistrerReponseOuverte(client, {
+      userId: '00000000-0000-4000-8000-000000000001',
+      questionId: 'question-inexistante', texte: 'quelque chose',
+    })).rejects.toThrow(ReponseInvalideError);
+  });
+
+  it('refuse une réponse vide, et une question fermée', async () => {
+    const ouverte = BANQUE.find((q) => q.forme === 'open')!;
+    const fermee = questionFermeeProductive();
+    const { client } = faux();
+    await expect(enregistrerReponseOuverte(client, {
+      userId: '00000000-0000-4000-8000-000000000001', questionId: ouverte.id, texte: '   ',
+    })).rejects.toThrow(ReponseInvalideError);
+    await expect(enregistrerReponseOuverte(client, {
+      userId: '00000000-0000-4000-8000-000000000001', questionId: fermee.id, texte: 'du texte',
+    })).rejects.toThrow(ReponseInvalideError);
   });
 });

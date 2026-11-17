@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { recordAnswer, createDiscoverySession, precomputePersonalizationsForKeys } from "@/lib/discovery/engine";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
 import { question as questionV3 } from "@/lib/discovery/open-v3/banque";
-import { enregistrerReponseFermee } from "@/lib/discovery/open-v3/service";
+import { enregistrerReponseFermee, enregistrerReponseOuverte } from "@/lib/discovery/open-v3/service";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -50,16 +50,32 @@ export async function POST(req: Request) {
   //    reposée, ce qui se répare. L'inverse — progression marquée, réponse perdue — ne se
   //    répare pas, et la personne n'a aucun moyen de s'en apercevoir.
   const qV3 = questionV3(questionKey);
-  if (qV3 && !skip && qV3.forme !== "open") {
-    const cles = Array.isArray(answer) ? answer.map(String)
-      : typeof answer === "string" ? [answer] : [];
-    if (cles.length === 0) {
-      return NextResponse.json({ error: "aucune option reçue" }, { status: 400 });
-    }
+  if (qV3 && !skip) {
     try {
-      await enregistrerReponseFermee(supabase as never, {
-        userId: user.id, questionId: questionKey, clesOptions: cles,
-      });
+      if (qV3.forme === "open") {
+        // ── QUESTION OUVERTE : le VERBATIM d'abord, l'extraction ensuite.
+        //
+        //    L'ordre n'est pas interchangeable. Une extraction écrite sans son verbatim est
+        //    une inférence orpheline : elle affirme quelque chose sans que la phrase dont
+        //    elle est tirée existe quelque part. Si le verbatim échoue, l'extraction n'est
+        //    pas tentée — mieux vaut ne rien savoir que savoir sans pouvoir le justifier.
+        const texte = typeof answer === "string" ? answer.trim() : "";
+        if (texte.length === 0) {
+          return NextResponse.json({ error: "réponse vide" }, { status: 400 });
+        }
+        await enregistrerReponseOuverte(supabase as never, {
+          userId: user.id, questionId: questionKey, texte,
+        });
+      } else {
+        const cles = Array.isArray(answer) ? answer.map(String)
+          : typeof answer === "string" ? [answer] : [];
+        if (cles.length === 0) {
+          return NextResponse.json({ error: "aucune option reçue" }, { status: 400 });
+        }
+        await enregistrerReponseFermee(supabase as never, {
+          userId: user.id, questionId: questionKey, clesOptions: cles,
+        });
+      }
     } catch (e) {
       console.error("[discovery/answer] écriture du journal impossible", questionKey, e);
       return NextResponse.json(

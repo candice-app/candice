@@ -182,3 +182,74 @@ export async function enregistrerReponseFermee(
   }
   return { sourceId, preuvesEcrites: evidences.length, sansEmission };
 }
+
+/**
+ * Enregistre une réponse OUVERTE : le verbatim, puis l'extraction.
+ *
+ * L'ORDRE N'EST PAS INTERCHANGEABLE. Le verbatim est l'AUTORITÉ : c'est la phrase que la
+ * personne a écrite. L'extraction est une lecture de cette phrase par un modèle. Écrire
+ * l'extraction d'abord, c'est risquer une inférence ORPHELINE — une affirmation sur la
+ * personne sans que la phrase dont elle est tirée existe quelque part. Si le verbatim
+ * échoue, l'extraction n'est pas tentée : mieux vaut ne rien savoir que savoir sans pouvoir
+ * le justifier.
+ *
+ * LA BARRIÈRE DE LA QUESTION VOYAGE JUSQU'AU MODÈLE. `inferences_interdites` est la seule
+ * chose qui l'empêche de conclure au-delà des mots — la banque refuse d'ailleurs toute
+ * question ouverte qui n'en porte pas. Elle est donc jointe au contexte du champ, et pas
+ * laissée dans le classeur.
+ */
+export async function enregistrerReponseOuverte(
+  client: WriteClient,
+  input: {
+    readonly userId: string;
+    readonly questionId: string;
+    readonly texte: string;
+    readonly timestamp?: string;
+  },
+): Promise<{ readonly verbatimEcrit: boolean; readonly preuvesExtraites: number }> {
+  const q = questionParId(input.questionId);
+  if (!q) throw new ReponseInvalideError(`question « ${input.questionId} » absente de la banque active`);
+  if (q.forme !== 'open') throw new ReponseInvalideError(`« ${q.id} » n'est pas une question ouverte`);
+  const texte = input.texte.trim();
+  if (texte.length === 0) throw new ReponseInvalideError('réponse vide');
+
+  const barriere = q.inferences_interdites
+    ?? q.options.find((o) => o.inferences_interdites)?.inferences_interdites;
+  if (!barriere) {
+    // La banque ne devrait pas contenir une telle question — elle les écarte à l'import.
+    // Si l'une passe quand même, on ne l'extrait pas : une extraction sans barrière peut
+    // transformer une phrase sur ce qu'on aime manger en allergie ou en régime religieux.
+    throw new ReponseInvalideError(
+      `« ${q.id} » n'a pas d'inférences interdites : extraire sans barrière est refusé`);
+  }
+
+  const timestamp = input.timestamp ?? new Date().toISOString();
+
+  // ── 1. LE VERBATIM, écrit comme FACT. C'est lui qui fait autorité.
+  const { produceSocleFact } = await import('@/lib/questionnaire/produce-socle');
+  await produceSocleFact(client, {
+    userId: input.userId,
+    entries: [{ spec: { factType: `discovery.${q.id}`, questionText: q.enonce }, value: texte }],
+    timestamp,
+  });
+
+  // ── 2. L'EXTRACTION, et seulement maintenant. Son échec ne retire pas le verbatim : la
+  //       phrase reste, et c'est le minimum qu'on devait à la personne qui l'a écrite.
+  const { extractFreeText } = await import('@/lib/knowledge-write/extract-free-text');
+  let preuvesExtraites = 0;
+  try {
+    const r = await extractFreeText(client, {
+      about: accountAbout(asUserId(input.userId)),
+      ownerId: asUserId(input.userId),
+      rawText: texte,
+      // La barrière accompagne la question : le modèle lit les deux ensemble.
+      fieldContext: `${q.enonce}\n\nINFÉRENCES INTERDITES : ${barriere}`,
+      questionCode: `discovery.${q.id}`,
+      timestamp,
+    });
+    preuvesExtraites = r.evidences.length;
+  } catch (e) {
+    console.error('[discovery] extraction impossible, le verbatim est conservé', q.id, e);
+  }
+  return { verbatimEcrit: true, preuvesExtraites };
+}
