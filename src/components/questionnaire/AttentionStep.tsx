@@ -268,12 +268,8 @@ export default function AttentionStep({ userId, onDone, onBack, onExit }: Props)
         // vient du scoring legacy, et retomber dessus réintroduirait la mauvaise source en silence.
         // Mieux vaut un écran sans respiration qu'une respiration sans provenance.
         try {
-          const input = await readAttentionTags(supabase as unknown as TagsReadClient, userId);
-          const res = await fetch("/api/socle/attention-breath", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(input),
-          });
+          // Le JOURNAL est lu côté SERVEUR : plus aucun tag ne transite par le client.
+          const res = await fetch("/api/socle/attention-breath", { method: "POST" });
           const data = await res.json() as { text: string };
           breathText = data.text ?? ""; // vide si le modèle n'a rien produit — pas de repli legacy
         } catch {

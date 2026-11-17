@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import type { AttentionBreathTag, AttentionRelation } from "@/lib/questionnaire/breath-tags";
+import { createClient } from "@/utils/supabase/server";
+import { readAttentionTags, type AttentionBreathTag, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -40,11 +41,26 @@ function buildUserMessage(tags: readonly AttentionBreathTag[]): string {
     .join("\n");
 }
 
-export async function POST(request: NextRequest) {
-  const { tags, tagCount, relation, receiveTop, giveTop } = (await request.json()) as {
-    tags: AttentionBreathTag[]; tagCount: number; relation: AttentionRelation; receiveTop?: string; giveTop?: string;
-  };
-  if (!tags || tags.length === 0) {
+export async function POST() {
+  // ⚠ LE JOURNAL EST LU ICI, CÔTÉ SERVEUR. Il l'était auparavant dans le navigateur, et le
+  // résultat voyageait dans le corps de la requête : un client modifié pouvait faire affirmer
+  // à Candice n'importe quoi de la personne, avec le ton de quelqu'un qui sait. Ce que Candice
+  // affirme ne peut venir que de ce qu'elle a elle-même écrit dans le journal.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  let tags, relation, receiveTop, giveTop;
+  try {
+    ({ tags, relation, receiveTop, giveTop } =
+      await readAttentionTags(supabase as unknown as TagsReadClient, user.id));
+  } catch (e) {
+    // `readAttentionTags` lève exprès plutôt que de rendre zéro tag en silence : on garde le cri
+    // dans les logs, et l'écran se passe de respiration plutôt que d'en inventer une.
+    console.error("[socle/attention-breath] lecture du journal impossible :", e);
+    return NextResponse.json({ text: "" });
+  }
+  if (tags.length === 0) {
     return NextResponse.json({ text: "" }); // 7b : rien à dire → rien (pas de comblement)
   }
   const relationLine = `relation (DÉFINIE par le HSG, la seule autorisée) : ${relation}` +

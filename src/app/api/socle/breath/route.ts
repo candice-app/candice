@@ -1,11 +1,26 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
-import type { AttentionBreathTag, AttentionRelation } from "@/lib/questionnaire/breath-tags";
+import { createClient } from "@/utils/supabase/server";
+import {
+  readSocleTags, readSocleFacts, readContactTags, readContactFacts,
+  type AttentionBreathTag, type AttentionRelation, type SocleFact,
+  type TagsReadClient, type ContactTagsReadClient,
+} from "@/lib/questionnaire/breath-tags";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // Respiration CUMULATIVE du socle — alimentée par LE JOURNAL (tous domaines jusqu'ici), jamais les
 // réponses brutes ni les axes. Reformule les TAGS produits (AFFECTION/DRIVER/PROFILE/BEHAVIOR…).
+//
+// ⚠ LA LECTURE DU JOURNAL SE FAIT ICI, CÔTÉ SERVEUR. Elle se faisait auparavant dans le navigateur,
+// et le résultat voyageait dans le corps de la requête. Le journal était donc bien lu — mais un
+// client modifié pouvait envoyer n'importe quels tags, et Candice affirmait n'importe quoi de la
+// personne, avec le ton de quelqu'un qui sait. C'est la même faille que le fil de conversation, où
+// le récit venait du client et vidait de son sens la vérification des segments. Ce que Candice
+// affirme d'une personne ne peut venir que de ce qu'elle a elle-même écrit dans le journal.
+//
+// Le corps de la requête ne porte plus que le CADRAGE : de qui on parle, et sous quelle forme.
+// Aucune donnée de connaissance n'y transite, dans aucun sens.
 const SYSTEM_PROMPT = `Tu es Candice. Tu écris une courte réflexion en français (tutoiement) sur cette personne, à partir de ce que Candice a déjà compris d'elle.
 
 RÈGLE 7a — AUCUN ATTRIBUT SANS PROVENANCE. Tu reformules UNIQUEMENT les tags fournis. Tu ne déduis RIEN des réponses brutes, tu n'ajoutes aucun trait absent des tags. Chaque tag porte sa base (self_report = la personne l'a dit d'elle-même).
@@ -49,17 +64,62 @@ const MODE3_PROMPT = `\n\nTU PARLES D'UN TIERS, PAS DU PILOTE (règle 7d). Ce so
 // Mêmes règles 7a–7d ; aucune ligne pour une famille sans tag ; aucun code brut.
 const LINES_FORMAT = `\n\nFORMAT : au lieu d'un paragraphe, écris de COURTES LIGNES thématiques, une par thème présent, sous la forme « Thème — reformulation courte des tags ». Exemples de thèmes selon les tags : ce qui la touche, comment elle fonctionne, ce qui compte dans ses choix, ses besoins, sous stress, à éviter, ses préférences, ses centres d'intérêt. Une ligne par thème qui a des tags, jamais de thème vide, jamais de code. Reformule, n'énumère pas les libellés d'options.`;
 
+/** Cadrage reçu du client. AUCUNE connaissance : de qui on parle, et sous quelle forme. */
+interface CorpsCadrage {
+  readonly subject?: 'self' | 'other';
+  readonly contactId?: string;
+  readonly format?: 'narrative' | 'lines';
+}
+
 export async function POST(request: NextRequest) {
-  const { tags, tagCount, relation, receiveTop, giveTop, facts, subject, format } = (await request.json()) as {
-    tags: AttentionBreathTag[]; tagCount: number; relation: AttentionRelation; receiveTop?: string; giveTop?: string;
-    facts?: { factType: string; value: string }[]; subject?: 'self' | 'other'; format?: 'narrative' | 'lines';
-  };
-  const factList = facts ?? [];
-  if ((!tags || tags.length === 0) && factList.length === 0) return NextResponse.json({ text: "" });
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  let cadrage: CorpsCadrage = {};
+  try { cadrage = (await request.json()) as CorpsCadrage; } catch { cadrage = {}; }
+  const { subject, contactId, format } = cadrage;
+
+  // MODE 3 exige un proche NOMMÉ : sans lui, on lirait le journal du pilote en le présentant comme
+  // celui d'un tiers — une confusion d'identité, pas une donnée manquante.
+  if (subject === 'other' && !contactId) {
+    return NextResponse.json({ error: "contactId requis pour subject=other" }, { status: 400 });
+  }
+
+  // ── LECTURE DU JOURNAL, CÔTÉ SERVEUR, SOUS L'IDENTITÉ DE LA SESSION.
+  //    `readContactTags` filtre sur user_id = session ET about_id = contactId : un contactId
+  //    étranger ne renvoie rien plutôt que le journal de quelqu'un d'autre. Le filtre `about` est
+  //    obligatoire — sans lui, les traits du pilote et du proche se mélangeraient sous le même user_id.
+  let tags: readonly AttentionBreathTag[];
+  let relation: AttentionRelation;
+  let receiveTop: string | undefined;
+  let giveTop: string | undefined;
+  let factList: readonly SocleFact[];
+  try {
+    if (subject === 'other' && contactId) {
+      const input = await readContactTags(supabase as unknown as ContactTagsReadClient, user.id, contactId);
+      ({ tags, relation, receiveTop, giveTop } = input);
+      factList = await readContactFacts(supabase as unknown as ContactTagsReadClient, user.id, contactId);
+    } else {
+      const input = await readSocleTags(supabase as unknown as TagsReadClient, user.id);
+      ({ tags, relation, receiveTop, giveTop } = input);
+      factList = await readSocleFacts(supabase as unknown as TagsReadClient, user.id);
+    }
+  } catch (e) {
+    // Journal illisible → pas de respiration. JAMAIS de repli sur les réponses brutes ou les axes :
+    // un écran sans respiration est honnête, un écran nourri d'autre chose que le journal ne l'est pas.
+    // L'erreur est BRUYANTE dans les logs : `readSocleFacts`/`readSocleTags` lèvent exprès plutôt que
+    // de rendre zéro ligne, et avaler ce cri en silence reviendrait à rendre le défaut invisible.
+    console.error("[socle/breath] lecture du journal impossible :", e);
+    return NextResponse.json({ text: "" });
+  }
+
+  if (tags.length === 0 && factList.length === 0) return NextResponse.json({ text: "" });
+
   const systemPrompt = (subject === 'other' ? SYSTEM_PROMPT + MODE3_PROMPT : SYSTEM_PROMPT) + (format === 'lines' ? LINES_FORMAT : "");
   const relationLine = `relation attention (DÉFINIE par le HSG, la seule autorisée) : ${relation}` +
     (relation === "ecart" ? ` · receiveTop=${receiveTop} · giveTop=${giveTop}` : "");
-  // FAITS : déclaration brute, à NOMMER sans interpréter (filtre de visibilité déjà appliqué à la lecture).
+  // FAITS : déclaration brute, à NOMMER sans interpréter (filtre de visibilité appliqué à la lecture).
   const factsBlock = factList.length > 0
     ? "\n\nFAITS (déclaration brute, à nommer SANS interpréter) :\n" + factList.map((f) => `- ${f.value}`).join("\n")
     : "";
@@ -72,7 +132,7 @@ export async function POST(request: NextRequest) {
       // une réflexion naturelle, donc ne tronque jamais la conclusion.
       max_tokens: 4096,
       system: systemPrompt,
-      messages: [{ role: "user", content: buildUserMessage(tags ?? []) + "\n\n" + relationLine + factsBlock }],
+      messages: [{ role: "user", content: buildUserMessage(tags) + "\n\n" + relationLine + factsBlock }],
     });
     const text = message.content[0].type === "text" ? message.content[0].text.trim() : "";
     return NextResponse.json({ text });

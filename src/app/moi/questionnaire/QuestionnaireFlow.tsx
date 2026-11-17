@@ -14,7 +14,6 @@ import { buildCanonicalLifestyleQuestion, legacyIdToRef as lifestyleLegacyIdToRe
 import { produceSocleAnswer, produceSocleFact } from "@/lib/questionnaire/produce-socle";
 import { FIELD_KEY_SEP } from "@/lib/questionnaire/field-extraction";
 import { SINGULARITY_FACT_FIELDS, PRACTICAL_FACT_FIELDS, Q17_FACT_FIELD } from "@/lib/questionnaire/socle-facts-fields";
-import { readSocleTags, readSocleFacts, type TagsReadClient } from "@/lib/questionnaire/breath-tags";
 import type { WriteClient } from "@/lib/knowledge-write/persist";
 import { scoreLifestyle, mergeTemperamentSupplements } from "@/lib/lifestyle/scoring";
 import { computeLifestyleBreathFacts } from "@/lib/lifestyle/breathFacts";
@@ -59,8 +58,8 @@ async function temperamentJournalAndBreath(
     console.error("[QuestionnaireFlow] produceSocleAnswer (tempérament) a échoué :", e);
   }
   try {
-    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // cumulatif
-    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    // Le JOURNAL est lu côté SERVEUR : le corps ne porte que le cadrage.
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: "self" }) });
     const data = (await res.json()) as { text: string };
     return data.text ?? "";
   } catch {
@@ -102,10 +101,8 @@ async function singularityFactsAndBreath(
     }
   }
   try {
-    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId);
-    // FACTs restituables (filtre de visibilité mécanique dans readSocleFacts) → nommés, jamais interprétés.
-    const facts = await readSocleFacts(supabase as unknown as TagsReadClient, userId);
-    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...input, facts }) });
+    // Tags ET faits lus côté SERVEUR (filtre de visibilité mécanique appliqué là-bas).
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: "self" }) });
     const data = (await res.json()) as { text: string };
     return data.text ?? "";
   } catch {
@@ -131,8 +128,8 @@ async function lifestyleJournalAndBreath(
     console.error("[QuestionnaireFlow] produceSocleAnswer (lifestyle) a échoué :", e);
   }
   try {
-    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // cumulatif
-    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input) });
+    // Le JOURNAL est lu côté SERVEUR : le corps ne porte que le cadrage.
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: "self" }) });
     const data = (await res.json()) as { text: string };
     return data.text ?? "";
   } catch {
@@ -147,9 +144,8 @@ async function finalConclusionFromJournal(
   userId: string,
 ): Promise<string> {
   try {
-    const input = await readSocleTags(supabase as unknown as TagsReadClient, userId); // tout le journal, cumulatif
-    const facts = await readSocleFacts(supabase as unknown as TagsReadClient, userId); // FACTs restituables (filtre visibilité)
-    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...input, facts, subject: "self" }) });
+    // Tout le journal self (5 domaines) + les FACTs restituables, lus côté SERVEUR.
+    const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: "self" }) });
     const data = (await res.json()) as { text: string };
     return data.text ?? "";
   } catch {

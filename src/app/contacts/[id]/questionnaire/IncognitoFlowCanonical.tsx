@@ -81,10 +81,9 @@ export default function IncognitoFlowCanonical({ contactId, contactName, contact
     // Point 3 : texte vide → on SAUTE l'écran de respiration et on va à la fiche (jamais un cadre sans prose).
     let text = "";
     try {
-      const { readContactTags, readContactFacts } = await import("@/lib/questionnaire/breath-tags");
-      const input = await readContactTags(supabase as never, ownerId, contactId);
-      const facts = await readContactFacts(supabase as never, ownerId, contactId);
-      const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...input, facts, subject: "other" }) });
+      // Le journal du PROCHE est lu côté SERVEUR, sous l'identité de la session et avec le
+      // filtre about_id obligatoire. Le corps ne porte que l'identité du proche.
+      const res = await fetch("/api/socle/breath", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ subject: "other", contactId }) });
       const data = (await res.json()) as { text: string };
       text = data.text ?? "";
     } catch { text = ""; }
