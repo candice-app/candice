@@ -74,7 +74,12 @@ export interface ProfileSynthesisFacts {
   hasReceptionExpressionContrast: boolean;
 
   touchInsights: string[];
+  /** Évitements RELATIONNELS — peuvent être racontés. */
   avoidAlerts: string[];
+  /** Contraintes PRATIQUES (régime, alcool, mobilité, allergies). JAMAIS dans un
+   *  texte narratif : la fiche est partageable, et ces lignes touchent à la santé.
+   *  Candice les connaît pour AGIR (écarter un restaurant), jamais pour en parler. */
+  contraintesPratiques: string[];
   relationalFacts: string[];
   communicationFacts: string[];
   idealAttentions: string[];
@@ -407,13 +412,18 @@ export function computeProfileSynthesis(input: ProfileInput): ProfileSynthesisFa
   if (relationalFilters?.q17Interdits && relationalFilters.q17Interdits.length > 0) {
     avoidAlerts.push(...relationalFilters.q17Interdits.slice(0, 2));
   }
-  if (practicalInfo?.vetos?.no_alcohol) avoidAlerts.push("les lieux ou sorties centrés sur l'alcool");
+  // CONTRAINTES PRATIQUES — séparées À LA SOURCE, pas retrouvées après coup par mot-clé.
+  // Un filtre lexical sur « allergie » rate « arachide » et « lactose » : la séparation doit
+  // être structurelle, sinon elle ne tient qu'au vocabulaire employé.
+  const contraintesPratiques: string[] = [];
+  if (practicalInfo?.vetos?.no_alcohol) contraintesPratiques.push("les lieux ou sorties centrés sur l'alcool");
   if (practicalInfo?.vetos?.halal || practicalInfo?.vetos?.casher) {
-    avoidAlerts.push("les restaurants sans options adaptées au régime alimentaire");
+    contraintesPratiques.push("les restaurants sans options adaptées au régime alimentaire");
   }
   if (practicalInfo?.vetos?.allergies && practicalInfo.vetos.allergies.length > 0) {
-    avoidAlerts.push(`les aliments contenant : ${practicalInfo.vetos.allergies.join(", ")}`);
+    contraintesPratiques.push(`les aliments contenant : ${practicalInfo.vetos.allergies.join(", ")}`);
   }
+  if (practicalInfo?.vetos?.mobility_constraints) contraintesPratiques.push("les lieux peu accessibles");
   if (singularity?.cadeaux_non && singularity.cadeaux_non.trim().length > 3) {
     avoidAlerts.push(`à éviter comme cadeaux : ${singularity.cadeaux_non.trim().slice(0, 60)}`);
   }
@@ -556,6 +566,7 @@ export function computeProfileSynthesis(input: ProfileInput): ProfileSynthesisFa
     hasReceptionExpressionContrast,
     touchInsights: touchInsights.slice(0, 5),
     avoidAlerts: avoidAlerts.slice(0, 5),
+    contraintesPratiques,
     relationalFacts: relationalFacts.slice(0, 4),
     communicationFacts: communicationFacts.slice(0, 4),
     idealAttentions: idealAttentions.slice(0, 5),

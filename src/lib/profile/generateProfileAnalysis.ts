@@ -229,10 +229,9 @@ function buildAnalysisPrompt(data: {
       if (v.no_alcohol) parts.push("sans alcool");
       if (v.vegetarian) parts.push("végétarien·ne");
       if (v.vegan) parts.push("vegan");
-      if (v.mobility_constraints) parts.push("contrainte mobilité");
-      if (Array.isArray(v.allergies) && v.allergies.length > 0) {
-        parts.push(`allergies : ${(v.allergies as string[]).join(", ")}`);
-      }
+      // NI ALLERGIES NI MOBILITÉ ICI. La fiche est PARTAGEABLE, et ce bloc nourrit le
+      // texte. Ces contraintes vivent dans `constraints`, qui n'est pas dans le select
+      // partagé : Candice les connaît pour agir, jamais pour les raconter.
     }
     if (parts.length > 0) {
       lines.push("── INFO PRATIQUE ──");
@@ -240,12 +239,9 @@ function buildAnalysisPrompt(data: {
       lines.push("");
     }
 
-    // Mobilité / santé — texte libre (nuance émotionnelle)
-    if (typeof pi.mobilite_sante === "string" && pi.mobilite_sante.trim().length > 3) {
-      lines.push("── MOBILITÉ / SANTÉ (texte libre) ──");
-      lines.push(pi.mobilite_sante.trim().slice(0, 200));
-      lines.push("");
-    }
+    // LE TEXTE LIBRE MOBILITÉ / SANTÉ N'ENTRE PAS DANS LE PROMPT. Il était transmis avec
+    // la consigne de le « fondre dans les sections pertinentes » — donc dans `summary`,
+    // qui part avec la fiche dès qu'elle est partagée.
 
     // Parfums (préférences olfactives)
     const parfumsList = Array.isArray(pi.parfums) ? (pi.parfums as string[]) : [];
@@ -354,6 +350,15 @@ RÈGLES D'ÉCRITURE ABSOLUES :
 - JAMAIS de troncature « … » : chaque phrase est complète
 - Candice ne juge jamais. Candice traduit.
 
+INFORMATION SENSIBLE — INTERDICTION ABSOLUE DE LA NOMMER : santé, maladie, allergie,
+intolérance, régime imposé, situation ou traitement médical, grossesse, contrainte de
+mobilité, adresse. Même si une telle information t'était fournie, tu ne l'écris JAMAIS, ni
+en clair, ni paraphrasée, ni par allusion. Cette fiche peut être PARTAGÉE avec un proche.
+Candice connaît ces informations pour AGIR — écarter un restaurant, choisir un lieu
+accessible — et ne les DIT jamais dans un texte : elles ne vivent que dans le bloc d'infos
+pratiques, sous cadenas. (Elles sont normalement déjà filtrées en amont ; cette règle est
+une sécurité de plus, parce qu'une seule couche ne suffit jamais.)
+
 RÈGLES SUR LES SECTIONS :
 - Analyse GLOBALE et transversale — JAMAIS dimension par dimension
 - Si deux sections proches disent la même chose (ex: attention ≈ feels_loved), FUSIONNE-les en une lecture commune plus forte, et laisse l'autre vide ("text": "", "chips": [])
@@ -376,7 +381,7 @@ RÈGLES SUR LES CHIPS :
 RÈGLES SPÉCIFIQUES POUR L'ENRICHISSEMENT :
 - ANALYSER = ENRICHIR, jamais résumer. Rends la fiche la plus riche et la plus vivante possible sans jamais citer verbatim les réponses ouvertes.
 - CONTEXTE DE CALIBRAGE : le bloc CONTEXTE (âge, profession, rôle familial) sert à CALIBRER le ton, l'univers, les occasions pertinentes et le niveau des suggestions — on ne contente pas un dirigeant comme un artisan, être père ou beau-père change quelles fêtes comptent, l'âge calibre tout. INTERDIT de le citer maladroitement dans les textes ("en tant que CEO de 45 ans tu…") : il informe l'analyse sans jamais y apparaître tel quel.
-- Les réponses libres (adore_faire, evite_deteste, peu_savent, detail_compris, plus_beau_cadeau, cadeaux_non, envies_reves, remarquer, sentir_special, sujets_stimulants, marques_lieux, q17, couleurs_matieres, odeurs_detestees, mobilité/santé) doivent être PARAPHRASÉES et FONDUES dans les sections pertinentes — jamais copiées. Une seule citation italique paraphrasée courte est tolérée dans "points_fixes".
+- Les réponses libres (adore_faire, evite_deteste, peu_savent, detail_compris, plus_beau_cadeau, cadeaux_non, envies_reves, remarquer, sentir_special, sujets_stimulants, marques_lieux, q17, couleurs_matieres, odeurs_detestees) doivent être PARAPHRASÉES et FONDUES dans les sections pertinentes — jamais copiées. Une seule citation italique paraphrasée courte est tolérée dans "points_fixes".
 - Chaque chip est court (2-5 mots max), informatif, distinct. Pas de fragment de phrase brut, pas de mot répété entre sections.
 - "insights" (3 phrases) = "Ce que Candice a compris" — 3 phrases courtes, actionables, qui donnent un angle non-évident. Format : "Tu es touchée par…", "Tu n'aimes pas…", "Tu préfères…".
 - "modes" : 4 modes de tempérament, chacun 1-3 mots doux. Si "conflit" est déjà donné dans le prompt (via 'facts'), reprends-le en le reformulant en 1-3 mots. Pour stress/décision/canal : DÉDUIS-les qualitativement des axes tempérament + facts. Ne laisse JAMAIS un mode vide — propose la nuance la plus probable.
@@ -692,9 +697,9 @@ export async function generateProfileAnalysis(
         intensity: i === 0 ? 80 : 50,
         note: "",
       })),
-      constraints: facts.avoidAlerts.filter(a =>
-        a.includes("alcool") || a.includes("halal") || a.includes("allergie") || a.includes("mobilité")
-      ),
+      // STRUCTUREL, plus lexical : le filtre par mot-clé ratait « arachide », « lactose »,
+      // « sans gluten » — tout ce qui ne contient pas littéralement « allergie ».
+      constraints: facts.contraintesPratiques,
       entities,
       confidence: facts.hasTemperamentData && facts.hasSingularityData ? 0.6 : 0.3,
       // V2 : le fallback ne fabrique jamais de narratif — champs vides, l'UI gère
