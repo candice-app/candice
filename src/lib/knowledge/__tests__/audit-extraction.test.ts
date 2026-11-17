@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { examiner, type Ligne, type SourceAuditee } from '../../../../scripts/local/08-audit-extraction.mts';
+import { examiner, type Ligne, type SourceAuditee } from '../audit-extraction';
 
 // LES RÈGLES DE L'AUDIT, ÉPROUVÉES SUR LE RELEVÉ RÉEL DU COMPTE DE TEST.
 //
