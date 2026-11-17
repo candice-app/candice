@@ -10,6 +10,8 @@ import { computeProfileSynthesis } from "./synthesis";
 import type { FaceResult } from "@/lib/attention/scoring";
 import type { RelationalFilters } from "@/lib/lifestyle/scoring";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { lirePortrait } from "@/lib/knowledge/portrait";
+import { entitesDuJournal, nbEntites } from "@/lib/profile/entites-du-journal";
 
 const anthropic = new Anthropic();
 
@@ -78,53 +80,11 @@ function genderInstruction(gender: Gender): string {
   return "Le genre n'est pas déterminé : reformule SANS accord (ex: 'une personne qui', 'quelqu'un qui'). INTERDIT absolument : point médian « · », tiret-genre, parenthèses d'accord « (-ve) ». Utilise la 3e personne neutre ou des tournures impersonnelles.";
 }
 
-// ── Entity extraction via Haiku ───────────────────────────────────────────────
-
-async function extractEntities(
-  textFields: string[],
-  correlationId: string,
-): Promise<{
-  entities: {
-    brands: string[]; places: string[]; hobbies: string[]; events: string[];
-    brands_categorized?: Array<{ name: string; category: string }>;
-  };
-  status: "success" | "fallback";
-}> {
-  const combined = textFields.filter(Boolean).join("\n");
-  if (combined.trim().length < 10) {
-    return { entities: { brands: [], places: [], hobbies: [], events: [] }, status: "fallback" };
-  }
-
-  let cleaned = "";
-  try {
-    const msg = await anthropic.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 2000,
-      system: `Extrais les entités nommées du texte. Retourne uniquement du JSON valide :
-{"brands":["..."],"places":["..."],"hobbies":["..."],"events":["..."],"brands_categorized":[{"name":"...","category":"..."}]}
-- brands : marques, enseignes, créateurs
-- places : restaurants, villes, lieux nommés
-- hobbies : activités, passions nommées
-- events : occasions, fêtes, événements nommés
-- brands_categorized : chaque marque de "brands" avec sa catégorie parmi EXACTEMENT :
-  Mode, Beauté, Soin, Bijoux, Maison, Accessoires, Design, Autre
-Ne génère que le JSON, sans explication.`,
-      messages: [{ role: "user", content: combined.slice(0, 800) }],
-    });
-
-    const raw = msg.content[0].type === "text" ? msg.content[0].text : "{}";
-    cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    return { entities: JSON.parse(cleaned), status: "success" };
-  } catch (err) {
-    console.error("[analyse][entity_extraction] échec parsing/appel Haiku", {
-      correlationId,
-      model: "claude-haiku-4-5-20251001",
-      message: err instanceof Error ? err.message : String(err),
-      snippet: cleaned.slice(0, 300),
-    });
-    return { entities: { brands: [], places: [], hobbies: [], events: [] }, status: "fallback" };
-  }
-}
+// L'EXTRACTION HAIKU A ÉTÉ SUPPRIMÉE. Elle relisait les champs de singularité que
+// l'extraction du journal avait déjà lus — deux modèles, deux schémas, un seul écran. Elle
+// tronquait à 800 caractères sans le dire, et nommait les entités sans leur relation : une
+// chose refusée pouvait s'afficher parmi les goûts. Les entités viennent désormais du
+// journal (src/lib/profile/entites-du-journal.ts), avec leur polarité.
 
 // ── Build user message for Sonnet ─────────────────────────────────────────────
 
@@ -134,9 +94,11 @@ function buildAnalysisPrompt(data: {
   singularity: Record<string, string> | null;
   discoveryAnswers: Record<string, unknown> | null;
   recentMemories: string[];
+  /** Entités LUES DANS LE JOURNAL (avec leur polarité). */
+  entities: { brands: string[]; places: string[]; hobbies: string[]; events: string[]; autres: string[]; evites: string[] };
   gender: Gender;
 }): string {
-  const { facts, practicalInfo, singularity, discoveryAnswers, recentMemories, gender } = data;
+  const { facts, practicalInfo, singularity, discoveryAnswers, recentMemories, entities, gender } = data;
   const lines: string[] = ["=== DONNÉES PROFIL COMPLÈTES ===", ""];
 
   // Attention
@@ -326,6 +288,26 @@ function buildAnalysisPrompt(data: {
   if (recentMemories.length > 0) {
     lines.push("── MÉMOIRES RÉCENTES (contexte vivant) ──");
     recentMemories.slice(0, 5).forEach(m => lines.push(`• ${m}`));
+    lines.push("");
+  }
+
+  // ENTITÉS DU JOURNAL — nommées telles quelles, jamais interprétées (règle 7a), et les
+  // REFUS en premier : une fiche qui oublie un refus fait recommander ce que la personne fuit.
+  if (entities.evites.length > 0) {
+    lines.push("── CE QU'ELLE REFUSE (déclaré, à ne JAMAIS proposer ni présenter comme un goût) ──");
+    entities.evites.forEach((e) => lines.push(`• ${e}`));
+    lines.push("");
+  }
+  const aimees: Array<[string, string[]]> = [
+    ["Marques / maisons", entities.brands],
+    ["Lieux", entities.places],
+    ["Centres d'intérêt", entities.hobbies],
+    ["Occasions", entities.events],
+    ["Autres (livres, films, musiques, produits…)", entities.autres],
+  ].filter(([, v]) => (v as string[]).length > 0) as Array<[string, string[]]>;
+  if (aimees.length > 0) {
+    lines.push("── CE QU'ELLE AIME (journal — NOMMER tel quel, ne RIEN en déduire) ──");
+    aimees.forEach(([titre, vals]) => lines.push(`${titre} : ${vals.join(", ")}`));
     lines.push("");
   }
 
@@ -533,21 +515,27 @@ export async function generateProfileAnalysis(
   const pi = profile.practical_info as Record<string, string> | null;
   const gender = resolveGender(profile.grammatical_gender, pi?.sexe);
 
-  // ── 4. Extract entities (Haiku, non-blocking) ─────────────────────────────
+  // ── 4. Entités : LUES DANS LE JOURNAL, jamais ré-extraites ────────────────
 
   const t4 = Date.now();
   const singularity = (profile.singularity_answers as Record<string, string> | null) ?? null;
-  const textFields = singularity
-    ? [
-        singularity.marques_lieux ?? "",
-        singularity.adore_faire ?? "",
-        singularity.sujets_stimulants ?? "",
-        singularity.envies_reves ?? "",
-      ]
-    : [];
 
-  const { entities, status: entitiesStatus } = await extractEntities(textFields, correlationId);
-  await logStep("entity_extraction", "success", Date.now() - t4, undefined, { count: Object.values(entities).flat().length });
+  let entities = { brands: [] as string[], places: [] as string[], hobbies: [] as string[],
+                   events: [] as string[], autres: [] as string[], evites: [] as string[] };
+  let entitiesStatus: "success" | "fallback" = "fallback";
+  try {
+    const portrait = await lirePortrait(supabase as never, { userId });
+    entities = entitesDuJournal(portrait);
+    entitiesStatus = "success";
+    await logStep("entity_extraction", "success", Date.now() - t4, undefined,
+      { count: nbEntites(entities), evites: entities.evites.length, preuves: portrait.nbPreuves });
+  } catch (e) {
+    // Journal illisible → aucune entité, et on le DIT. Jamais de repli sur une seconde
+    // extraction : une fiche sans puces est honnête, une fiche nourrie d'ailleurs ne l'est pas.
+    console.error("[analyse] lecture du journal impossible", correlationId, e);
+    await logStep("entity_extraction", "error", Date.now() - t4,
+      e instanceof Error ? e.message : String(e));
+  }
 
   // ── 5. Fetch recent memories (signal context) ─────────────────────────────
 
@@ -584,6 +572,7 @@ export async function generateProfileAnalysis(
     singularity,
     discoveryAnswers:  (profile.discovery_answers as Record<string, unknown> | null) ?? null,
     recentMemories,
+    entities,
     gender,
   }) + worksLevelsLine;
 
@@ -648,7 +637,7 @@ export async function generateProfileAnalysis(
         canal:    "",
       },
       must_haves: facts.touchInsights.slice(0, 3),
-      deal_breakers: facts.avoidAlerts.slice(0, 3),
+      deal_breakers: [...new Set([...entities.evites, ...facts.avoidAlerts])].slice(0, 3),
       attention_dna: facts.topReceptionDims.slice(0, 3).map((dim, i) => ({
         dimension: dim,
         intensity: i === 0 ? 80 : 50,
@@ -719,7 +708,7 @@ export async function generateProfileAnalysis(
     generated_at:     new Date().toISOString(),
     engine_version:   "2.2",
     generation_meta: {
-      entity_extraction: { status: entitiesStatus, model: "claude-haiku-4-5-20251001" },
+      entity_extraction: { status: entitiesStatus, source: "journal", model: null },
       narrative:         { status: aiStatus, model: "claude-sonnet-4-6" },
       generated_at:      new Date().toISOString(),
     },
