@@ -1346,7 +1346,11 @@
     "domaine": "celebration",
     "attribut": "modality",
     "valeur": {
-     "__mixte__": "direction=give; modality=PERSONALIZED_GIFT; fabrique_ou_personnalise"
+     "direction": "give",
+     "modality": "PERSONALIZED_GIFT",
+     "__libres__": [
+      "fabrique_ou_personnalise"
+     ]
     },
     "polarite": "positive",
     "stabilite": "evolving",

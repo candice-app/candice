@@ -61,19 +61,30 @@ TYPES = {
 
 
 def lire_valeur(brut: str):
-    """`valeur` est soit un scalaire, soit une suite `clé=valeur` séparée par ';'.
-    Les deux formes sont légitimes. Une forme MIXTE est une anomalie : on la signale
-    plutôt que de choisir à sa place quelle moitié compte."""
+    """`valeur` prend trois formes, toutes légitimes :
+      · un SCALAIRE — « technique_sans_interet » ;
+      · une suite `clé=valeur` séparée par « ; » ;
+      · les deux à la fois — « direction=receive ; modality=WORDS ; parole_honnete ».
+
+    La troisième n'est PAS une anomalie, contrairement à ce que cet import a d'abord cru :
+    le fragment sans « = » est un QUALIFICATIF — la nuance que l'option ajoute au contrat.
+    Le traiter comme une erreur faisait perdre, pour les langages d'affection, la direction
+    et la modalité qui se trouvaient juste à côté dans la même cellule.
+
+    Les fragments libres sont conservés sous `__libres__`, jamais fondus dans une clé :
+    deviner à quelle clé ils se rattachent serait inventer le contrat."""
     brut = (brut or "").strip()
     if not brut:
         return None, None
     parts = [p.strip() for p in brut.split(";") if p.strip()]
     avec = [p for p in parts if "=" in p]
     sans = [p for p in parts if "=" not in p]
+    table = {p.split("=", 1)[0].strip(): p.split("=", 1)[1].strip() for p in avec}
     if avec and sans:
-        return {"__mixte__": brut}, "valeur mixte (scalaire ET clé=valeur dans la même cellule)"
+        table["__libres__"] = sans
+        return table, None
     if avec:
-        return {p.split("=", 1)[0].strip(): p.split("=", 1)[1].strip() for p in avec}, None
+        return table, None
     return {"__scalaire__": parts[0] if len(parts) == 1 else parts}, None
 
 
