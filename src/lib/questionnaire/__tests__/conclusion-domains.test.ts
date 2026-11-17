@@ -5,27 +5,26 @@
 // portée par le prompt. Faux client en mémoire, pas de base, pas de modèle.
 
 import { describe, expect, it } from 'vitest';
+import { fauxClientLecture } from '../../knowledge/__tests__/faux-client';
 import { readSocleTags, readSocleFacts, type TagsReadClient } from '../breath-tags';
 
 // journal fixture : 5 domaines
 const EVIDENCES = [
-  { target_family: 'AFFECTION_LANGUAGE', target_construct: 'AFFECTION_RECEIVE_WORDS', direction: 'receive', modality: 'WORDS', strength: 'strong', rank: 1, assertion_basis: 'self_report', context: 'attention_received', created_at: '2026-10-23T00:00:01Z' }, // attention
-  { target_family: 'PROFILE', target_construct: 'SOCIAL_ENERGY', strength: 'moderate', rank: null, assertion_basis: 'self_report', context: 'general', created_at: '2026-10-23T00:00:02Z' }, // tempérament
-  { target_family: 'BEHAVIOR', target_construct: 'stress_response:internalize', strength: 'strong', rank: null, assertion_basis: 'self_report', context: 'stress', created_at: '2026-10-23T00:00:03Z' }, // tempérament
-  { target_family: 'PREFERENCE', target_construct: 'PREFERENCE.gift.value_basis', strength: 'strong', rank: null, assertion_basis: 'self_report', context: 'gift', created_at: '2026-10-23T00:00:04Z' }, // lifestyle
+  { user_id: 'u', about_id: 'u', target_family: 'AFFECTION_LANGUAGE', target_construct: 'AFFECTION_RECEIVE_WORDS', direction: 'receive', modality: 'WORDS', strength: 'strong', rank: 1, assertion_basis: 'self_report', context: 'attention_received', created_at: '2026-10-23T00:00:01Z' }, // attention
+  { user_id: 'u', about_id: 'u', target_family: 'PROFILE', target_construct: 'SOCIAL_ENERGY', strength: 'moderate', rank: null, assertion_basis: 'self_report', context: 'general', created_at: '2026-10-23T00:00:02Z' }, // tempérament
+  { user_id: 'u', about_id: 'u', target_family: 'BEHAVIOR', target_construct: 'stress_response:internalize', strength: 'strong', rank: null, assertion_basis: 'self_report', context: 'stress', created_at: '2026-10-23T00:00:03Z' }, // tempérament
+  { user_id: 'u', about_id: 'u', target_family: 'PREFERENCE', target_construct: 'PREFERENCE.gift.value_basis', strength: 'strong', rank: null, assertion_basis: 'self_report', context: 'gift', created_at: '2026-10-23T00:00:04Z' }, // lifestyle
 ];
 const FACTS = [
-  { fact_type: 'singularity.adore_faire', value: 'la poterie', visibility_derived: 'exposable' }, // singularité
-  { fact_type: 'practical.animaux', value: 'un chat', visibility_derived: 'exposable' },           // pratique
-  { fact_type: 'practical.allergies', value: 'gluten', visibility_derived: 'internal_only' },      // sensible → filtré
+  { user_id: 'u', about_id: 'u', fact_type: 'singularity.adore_faire', value: 'la poterie', visibility_derived: 'exposable' }, // singularité
+  { user_id: 'u', about_id: 'u', fact_type: 'practical.animaux', value: 'un chat', visibility_derived: 'exposable' },           // pratique
+  { user_id: 'u', about_id: 'u', fact_type: 'practical.allergies', value: 'gluten', visibility_derived: 'internal_only' },      // sensible → filtré
 ];
 
 function fakeClient(): TagsReadClient {
-  return {
-    from(table: string) {
-      return { select() { return { eq() { return Promise.resolve({ data: table === 'knowledge_facts' ? FACTS : EVIDENCES, error: null }); } }; } };
-    },
-  } as unknown as TagsReadClient;
+  // Faux client partagé, qui applique vraiment les filtres : les fixtures portent donc la
+  // double identité (détenteur + personne décrite), comme en base.
+  return fauxClientLecture({ knowledge_facts: FACTS, knowledge_evidences: EVIDENCES }) as unknown as TagsReadClient;
 }
 
 describe('règle 7e — les 5 domaines atteignent l\'entrée de la conclusion (fixtures)', () => {

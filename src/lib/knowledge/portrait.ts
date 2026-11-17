@@ -84,7 +84,25 @@ export async function lirePortrait(
   client: ClientLecture,
   opts: { userId: string; aboutId?: string },
 ): Promise<Portrait> {
-  const evidences = await readJournalEvidences(client, opts);
+  // ⚠ LE FILTRE `about` EST OBLIGATOIRE, ET IL MANQUAIT.
+  //
+  //    `knowledge_evidences` porte le DÉTENTEUR (`user_id`) et la PERSONNE DÉCRITE
+  //    (`about_id`). Les preuves d'un proche ont le MÊME `user_id` que celles du pilote —
+  //    c'est le pilote qui les détient — et un `about_id` différent. Lire sur le seul
+  //    `user_id` rendait donc le journal du pilote ET de tous ses proches, mélangés.
+  //
+  //    Conséquences, toutes silencieuses : une entité que le PROCHE évite pouvait apparaître
+  //    sur la fiche du pilote, les traits d'un proche déplaçaient le radar du pilote, et une
+  //    question Discovery pouvait s'ouvrir parce qu'un proche s'intéresse à la céramique.
+  //
+  //    `readJournalEvidences` n'applique le filtre que si `aboutId` est fourni. On le fournit
+  //    TOUJOURS : absent, c'est le compte de la personne elle-même, dont l'`about_id` vaut
+  //    son userId (accountAbout). Le scope annonçait déjà « account » — il annonçait juste
+  //    autre chose que ce que la lecture rendait.
+  const evidences = await readJournalEvidences(client, {
+    userId: opts.userId,
+    aboutId: opts.aboutId ?? opts.userId,
+  });
   const about = { kind: opts.aboutId ? 'contact' : 'account', id: opts.aboutId ?? opts.userId };
   const scope = { about, ownerId: opts.userId } as unknown as KnowledgeScope;
 

@@ -16,15 +16,11 @@
 import { describe, expect, it } from 'vitest';
 import { readSocleTags, readContactTags, readAttentionTags } from '../../questionnaire/breath-tags';
 import { readContactTraitRows } from '../../contacts/traits-from-journal';
+import { fauxClientLecture } from './faux-client';
 
-// Un client supabase-like à UN `.eq` renvoyant `rows`.
-const oneEq = (rows: unknown[]) => ({
-  from: () => ({ select: () => ({ eq: () => Promise.resolve({ data: rows, error: null }) }) }),
-});
-// Un client supabase-like à DEUX `.eq` (filtre about_id) renvoyant `rows`.
-const twoEq = (rows: unknown[]) => ({
-  from: () => ({ select: () => ({ eq: () => ({ eq: () => Promise.resolve({ data: rows, error: null }) }) }) }),
-});
+// Faux client PARTAGÉ, qui applique vraiment les filtres : un faux client qui les ignore ne
+// peut pas voir qu'un filtre manque. Les fixtures portent donc la double identité, comme en base.
+const journal = (rows: unknown[]) => fauxClientLecture({ knowledge_evidences: rows });
 
 // Construit une paire (déclaration ancienne forte, extraction récente faible) sur le MÊME construct.
 // `declaredSource`/`declaredBasis` varient selon pilote (déclaration de soi, niv.1) ou proche (observation, niv.3) —
@@ -33,6 +29,9 @@ function pair(over: Partial<Record<string, unknown>>, declaredStatus: string, de
   const base = {
     target_family: 'AFFECTION_LANGUAGE', target_construct: 'AFFECTION_RECEIVE',
     direction: 'receive', context: 'attention_received',
+    // La double identité : le DÉTENTEUR et la PERSONNE DÉCRITE. Par défaut le pilote ;
+    // les lecteurs de proche la remplacent via `over`.
+    user_id: 'u', about_id: 'u',
   };
   // assertion_status/assertion_basis = les SEULES colonnes de provenance d'une evidence (pas source_type).
   const declared = { ...base, ...over, modality: 'WORDS', strength: 'strong', rank: 1, confidence: 'high',
@@ -47,7 +46,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readSocleTags (respiration socle, pilote)',
     declaredWon: async () => {
-      const r = await readSocleTags(oneEq(pair({}, 'declared', 'self_report')) as never, 'u');
+      const r = await readSocleTags(journal(pair({}, 'declared', 'self_report')) as never, 'u');
       const t = r.tags.find((x) => x.construct === 'AFFECTION_RECEIVE');
       return t?.confidence === 'high' && t?.modality === 'WORDS';
     },
@@ -55,7 +54,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readAttentionTags (respiration attention, pilote)',
     declaredWon: async () => {
-      const r = await readAttentionTags(oneEq(pair({}, 'declared', 'self_report')) as never, 'u');
+      const r = await readAttentionTags(journal(pair({}, 'declared', 'self_report')) as never, 'u');
       const t = r.tags.find((x) => x.construct === 'AFFECTION_RECEIVE');
       return t?.confidence === 'high' && t?.modality === 'WORDS';
     },
@@ -63,7 +62,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readContactTags (respiration, proche)',
     declaredWon: async () => {
-      const r = await readContactTags(twoEq(pair({}, 'observed', 'observed')) as never, 'u', 'c');
+      const r = await readContactTags(journal(pair({ about_id: 'c' }, 'observed', 'observed')) as never, 'u', 'c');
       const t = r.tags.find((x) => x.construct === 'AFFECTION_RECEIVE');
       return t?.confidence === 'high' && t?.modality === 'WORDS';
     },
@@ -71,7 +70,7 @@ const READERS: { name: string; declaredWon: () => Promise<boolean> }[] = [
   {
     name: 'readContactTraitRows (bloc traits de la fiche proche)',
     declaredWon: async () => {
-      const rows = await readContactTraitRows(twoEq(pair({}, 'observed', 'observed')) as never, 'u', 'c');
+      const rows = await readContactTraitRows(journal(pair({ about_id: 'c' }, 'observed', 'observed')) as never, 'u', 'c');
       const trait = rows.find((x) => x.label === 'Ce qui la touche');
       return trait?.value === 'Les mots'; // modality WORDS (déclarée), pas 'Les gestes…' (extraite)
     },

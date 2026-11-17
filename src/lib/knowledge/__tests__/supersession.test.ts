@@ -1,6 +1,7 @@
 // SUPERSESSION (décision 27 oct) — marqueur explicite : une ligne corrigée est REMPLACÉE, exclue de TOUTE
 // restitution (préséance, FACTs, et HISTORIQUE — fate b des trois sorts : corrigé = nulle part).
 import { describe, expect, it, vi } from 'vitest';
+import { fauxClientLecture } from './faux-client';
 import { supersedeSources, liveSelfSourceIdsForQuestion } from '../../knowledge-write/supersede';
 import { readResolvedEvidences } from '../preseance';
 import { readSocleFacts, type TagsReadClient } from '../../questionnaire/breath-tags';
@@ -98,13 +99,14 @@ describe('supersedeSources (écriture du marqueur)', () => {
 });
 
 // ── Lecture : une ligne supersédée n'est JAMAIS restituée (evidences + FACTs) ──
-const oneEq = (rows: unknown[]) => ({ from: () => ({ select: () => ({ eq: () => Promise.resolve({ data: rows, error: null }) }) }) });
+// Faux client partagé : il applique les filtres, donc les fixtures portent la double identité.
+const oneEq = (rows: unknown[]) => fauxClientLecture({ knowledge_facts: rows, knowledge_evidences: rows });
 
 describe('les lecteurs excluent les lignes supersédées', () => {
   it('readResolvedEvidences : une evidence supersédée est exclue, même seule sur son construct', async () => {
     const rows = [
-      { target_family: 'VALUES', target_construct: 'C', strength: 'strong', rank: 1, assertion_basis: 'self_report', assertion_status: 'declared', confidence: 'high', context: 'v', created_at: '2026-01-01T00:00:00Z', superseded_at: '2026-10-27T00:00:00Z' },
-      { target_family: 'VALUES', target_construct: 'D', strength: 'weak', rank: 2, assertion_basis: 'self_report', assertion_status: 'declared', confidence: 'low', context: 'v', created_at: '2026-01-02T00:00:00Z', superseded_at: null },
+      { user_id: 'u', about_id: 'u', target_family: 'VALUES', target_construct: 'C', strength: 'strong', rank: 1, assertion_basis: 'self_report', assertion_status: 'declared', confidence: 'high', context: 'v', created_at: '2026-01-01T00:00:00Z', superseded_at: '2026-10-27T00:00:00Z' },
+      { user_id: 'u', about_id: 'u', target_family: 'VALUES', target_construct: 'D', strength: 'weak', rank: 2, assertion_basis: 'self_report', assertion_status: 'declared', confidence: 'low', context: 'v', created_at: '2026-01-02T00:00:00Z', superseded_at: null },
     ];
     const out = await readResolvedEvidences(oneEq(rows) as never, { userId: 'u' });
     expect(out.map((r) => r.target_construct)).toEqual(['D']); // C (supersédée) absente
@@ -112,8 +114,8 @@ describe('les lecteurs excluent les lignes supersédées', () => {
 
   it('readSocleFacts : un FACT supersédé est exclu de la prose', async () => {
     const rows = [
-      { fact_type: 'singularity.adore_faire', value: 'ANCIEN', visibility_derived: 'exposable', assertion_status: 'explicit', superseded_at: '2026-10-27T00:00:00Z' },
-      { fact_type: 'singularity.adore_faire', value: 'NOUVEAU', visibility_derived: 'exposable', assertion_status: 'explicit', superseded_at: null },
+      { user_id: 'u', about_id: 'u', fact_type: 'singularity.adore_faire', value: 'ANCIEN', visibility_derived: 'exposable', assertion_status: 'explicit', superseded_at: '2026-10-27T00:00:00Z' },
+      { user_id: 'u', about_id: 'u', fact_type: 'singularity.adore_faire', value: 'NOUVEAU', visibility_derived: 'exposable', assertion_status: 'explicit', superseded_at: null },
     ];
     const facts = await readSocleFacts(oneEq(rows) as unknown as TagsReadClient, 'u');
     expect(facts.map((f) => f.value)).toEqual(['NOUVEAU']); // l'ancien corrigé n'apparaît pas
@@ -125,7 +127,7 @@ describe('les lecteurs excluent les lignes supersédées', () => {
 // ci-dessus prouvent qu'une supersédée n'en sort pas. On fige la règle noir sur blanc :
 describe('règle HISTORIQUE (fate b)', () => {
   it('une ligne supersédée n\'est rendue par AUCUNE restitution (donc pas dans l\'historique)', async () => {
-    const superseded = [{ target_family: 'VALUES', target_construct: 'X', strength: 'strong', rank: 1, assertion_basis: 'self_report', assertion_status: 'declared', confidence: 'high', context: 'v', created_at: '2026-01-01T00:00:00Z', superseded_at: '2026-10-27T00:00:00Z' }];
+    const superseded = [{ user_id: 'u', about_id: 'u', target_family: 'VALUES', target_construct: 'X', strength: 'strong', rank: 1, assertion_basis: 'self_report', assertion_status: 'declared', confidence: 'high', context: 'v', created_at: '2026-01-01T00:00:00Z', superseded_at: '2026-10-27T00:00:00Z' }];
     const out = await readResolvedEvidences(oneEq(superseded) as never, { userId: 'u' });
     expect(out).toHaveLength(0); // corrigé = remplacé = nulle part, historique compris
   });

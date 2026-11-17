@@ -50,7 +50,14 @@ export interface SocleBreathInput {
  * connaissance — §47bis / §47quater). Préséance par construct (resolveJournalRows).
  */
 export async function readSocleTags(client: TagsReadClient, userId: string): Promise<SocleBreathInput> {
-  const rows = await readResolvedEvidences(client as unknown as JournalEvidenceClient, { userId });
+  // ⚠ FILTRE `about` OBLIGATOIRE. Les preuves d'un proche portent le MÊME `user_id` que
+  //    celles du pilote — c'est lui qui les détient — et un `about_id` différent. Sans ce
+  //    filtre, la respiration du pilote reformulait aussi les traits de ses proches, et rien
+  //    ne le signalait : le texte parlait de lui avec ce qu'il avait dit d'eux. Le commentaire
+  //    d'en-tête l'exigeait déjà pour la lecture d'un proche ; il manquait ici, dans le sens
+  //    où personne ne le cherchait.
+  const rows = await readResolvedEvidences(client as unknown as JournalEvidenceClient,
+    { userId, aboutId: userId });
   const tags: AttentionBreathTag[] = rows.map((r) => ({
     family: r.target_family,
     construct: r.target_construct,
@@ -115,12 +122,21 @@ export function deriveAttentionRelation(tags: readonly AttentionBreathTag[]): Pi
 }
 
 /** Client de lecture minimal (supabase-compatible). */
+/**
+ * Client de lecture CHAÎNABLE — deux `.eq` au moins.
+ *
+ * Le type n'en autorisait qu'un seul, et c'est en partie pourquoi le filtre sur la personne
+ * décrite n'avait jamais été ajouté : l'écrire n'aurait pas compilé. Un type trop étroit ne
+ * protège pas, il cache le manque — ici, il a rendu invisible le fait que les preuves d'un
+ * proche entraient dans la prose du pilote.
+ */
 export interface TagsReadClient {
   from(table: string): {
-    select(cols: string): {
-      eq(col: string, val: string): Promise<{ data: unknown[] | null; error: { message: string } | null }>;
-    };
+    select(cols: string): Chainable;
   };
+}
+interface Chainable extends Promise<{ data: unknown[] | null; error: { message: string } | null }> {
+  eq(col: string, val: string): Chainable;
 }
 
 export class BreathReadError extends Error {}
@@ -149,7 +165,10 @@ export async function readSocleFacts(client: TagsReadClient, userId: string): Pr
   const { data, error } = await client
     .from('knowledge_facts')
     .select('fact_type, value, visibility_derived, assertion_status, superseded_at, source')
-    .eq('user_id', userId);
+    .eq('user_id', userId)
+    // Les FACTs portent la même double identité : détenteur et personne décrite. Sans ce
+    // filtre, un fait d'un proche serait nommé dans la prose du pilote.
+    .eq('about_id', userId);
   if (error) throw new BreathReadError(`knowledge_facts read: ${error.message}`);
   type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null; source?: string | null };
   // superseded_at non null = FACT corrigé (remplacé) → exclu de la prose, comme les evidences (§48septies).
@@ -167,7 +186,8 @@ export async function readAttentionTags(client: TagsReadClient, userId: string):
   // périmètre attention, pas à travers tout le journal. L'erreur reste bruyante (JournalReadError), jamais
   // de 0 tag silencieux.
   const rows = await readResolvedEvidences(client as unknown as JournalEvidenceClient, {
-    userId, contexts: ['attention_received', 'affection_given'],
+    // Même raison que dans readSocleTags : sans `aboutId`, les proches entrent.
+    userId, aboutId: userId, contexts: ['attention_received', 'affection_given'],
   });
   const tags: AttentionBreathTag[] = rows.map((r) => ({
     family: r.target_family,
