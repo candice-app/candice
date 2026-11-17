@@ -104,9 +104,9 @@ export default function ProfileV2({
   const hasMondes = mondeDefs.some(d => (show(d.key).shown && sec[d.a]?.text?.trim()) || show(d.key).notShared);
   const universShown = show("univers").shown
     && (data.brandsCategorized.length > 0 || data.universe || (sec.points_fixes?.chips?.length ?? 0) > 0);
-  const factsAny = ["facts_tailles", "facts_alimentaire", "facts_parfums", "facts_adresse", "facts_animaux", "facts_dates", "facts_mobilite", "art9"]
+  const factsAny = ["facts_tailles", "facts_allergies", "facts_regime", "facts_alcool", "facts_parfums", "facts_adresse", "facts_animaux", "facts_dates", "facts_mobilite", "art9"]
     .some(k => show(k as SectionKey).shown);
-  const factsNotShared = ["facts_tailles", "facts_alimentaire", "facts_parfums", "facts_animaux", "facts_dates", "facts_mobilite"]
+  const factsNotShared = ["facts_tailles", "facts_allergies", "facts_regime", "facts_alcool", "facts_parfums", "facts_animaux", "facts_dates", "facts_mobilite"]
     .some(k => show(k as SectionKey).notShared);
 
   return (
@@ -290,7 +290,10 @@ function FactsTiers({
   data, notShared, notSharedBody,
 }: { data: ProfileV2Data; notShared: boolean; notSharedBody: () => React.ReactNode }) {
   const f = data.facts;
-  const alimentation = [f.regimeAlcool, f.allergies ? `allergies : ${f.allergies}` : null].filter(Boolean).join(" · ");
+  // Composé de ce qui est EFFECTIVEMENT partagé : régime, alcool et allergies
+  // passent par trois portes distinctes, donc la ligne peut n'en porter qu'une.
+  const alimentation = [f.regime, f.alcool, f.allergies ? `allergies : ${f.allergies}` : null]
+    .filter(Boolean).join(" · ");
   const rows: Array<[string, string, string?]> = [];
   if (f.tailles) rows.push(["Tailles", f.tailles]);
   if (alimentation) rows.push(["Alimentation", alimentation]);

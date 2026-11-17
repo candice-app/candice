@@ -55,7 +55,9 @@ export default function FactsV2({ data }: { data: ProfileV2Data }) {
   const [editor, setEditor] = useState<FactEditorKind | null>(null);
   const f = data.facts;
 
-  const alimentation = [f.regimeAlcool, f.allergies ? `allergies : ${f.allergies}` : null]
+  // Composé de ce qui est EFFECTIVEMENT partagé : régime, alcool et allergies
+  // passent par trois portes distinctes, donc la ligne peut n'en porter qu'une.
+  const alimentation = [f.regime, f.alcool, f.allergies ? `allergies : ${f.allergies}` : null]
     .filter(Boolean).join(" · ");
 
   const rows: React.ReactNode[] = [];

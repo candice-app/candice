@@ -44,7 +44,12 @@ export const SHARE_GROUPS: ShareGroup[] = [
     title: "Infos pratiques",
     items: [
       { keys: ["facts_tailles"],     label: "Tailles (vêtements / chaussures)" },
-      { keys: ["facts_alimentaire"], label: "Allergies · régime · alcool" },
+      // TROIS CASES, PAS UNE. Une allergie est une donnée de santé ; un régime peut
+      // dire une conviction ; l'alcool ne dit ni l'un ni l'autre. Les regrouper
+      // forçait à partager les trois pour en partager une seule.
+      { keys: ["facts_allergies"], label: "Allergies" },
+      { keys: ["facts_regime"],    label: "Régime alimentaire" },
+      { keys: ["facts_alcool"],    label: "Rapport à l'alcool" },
       { keys: ["facts_parfums"],     label: "Parfums aimés / détestés" },
       { keys: ["facts_animaux"],     label: "Animaux" },
       { keys: ["facts_dates"],       label: "Dates clés" },

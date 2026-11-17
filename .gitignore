@@ -43,3 +43,6 @@ scripts/local/.resultats/
 
 # téléchargements de conversation — jamais versionnés
 Claude outputs/
+
+# copies de vérification (jamais versionnées)
+.candice-*.tgz

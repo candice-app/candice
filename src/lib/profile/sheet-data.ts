@@ -14,7 +14,10 @@ export interface AnalysisSection { text?: string; chips?: string[] }
 export interface PracticalFacts {
   tailles?: string;
   allergies?: string;
-  regimeAlcool?: string;
+  /** SÉPARÉS, parce qu'ils se partagent séparément. Une chaîne unique obligerait
+   *  à montrer les deux ou aucun des deux. */
+  regime?: string;
+  alcool?: string;
   parfums?: string;
   adresseRenseignee?: boolean;
   animaux?: string;
@@ -146,10 +149,8 @@ export function buildFacts(pi: ProfileRow["practical_info"]): PracticalFacts {
   if (!pi) return {};
   const tailles = [pi.taille_vetements, pi.taille_chaussures].filter(Boolean).join(" · ");
   const allergies = (pi.allergies ?? []).filter(a => a !== "aucune").map(a => ALLERGIE_FR[a] ?? a).join(", ");
-  const regimeAlcool = [
-    pi.regime ? (REGIME_FR[pi.regime] ?? pi.regime) : null,
-    pi.alcool ? (ALCOOL_FR[pi.alcool] ?? pi.alcool) : null,
-  ].filter(Boolean).join(" · ");
+  const regime = pi.regime ? (REGIME_FR[pi.regime] ?? pi.regime) : undefined;
+  const alcool = pi.alcool ? (ALCOOL_FR[pi.alcool] ?? pi.alcool) : undefined;
   const parfumsAimes = cap((pi.parfums ?? []).map(p => PARFUM_FR[p] ?? p).join(", "));
   const odeurs = pi.odeurs_detestees?.trim();
   const parfums = [
@@ -177,7 +178,8 @@ export function buildFacts(pi: ProfileRow["practical_info"]): PracticalFacts {
   return {
     tailles: tailles || undefined,
     allergies: allergiesFull || undefined,
-    regimeAlcool: regimeAlcool || undefined,
+    regime,
+    alcool,
     parfums: parfums || undefined,
     adresseRenseignee: !!pi.adresse_livraison?.trim(),
     animaux: pi.animaux?.trim() || undefined,

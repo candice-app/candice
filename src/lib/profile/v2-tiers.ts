@@ -111,8 +111,11 @@ export function stripProfileV2Data(
     brandsCategorized: shown("univers") ? data.brandsCategorized : [],
     facts: {
       tailles: shown("facts_tailles") ? data.facts.tailles : undefined,
-      allergies: shown("facts_alimentaire") ? data.facts.allergies : undefined,
-      regimeAlcool: shown("facts_alimentaire") ? data.facts.regimeAlcool : undefined,
+      // UNE PORTE PAR FAIT. Partager une allergie n'ouvre plus le régime, et
+      // inversement : ce sont trois décisions, elles passent par trois clés.
+      allergies: shown("facts_allergies") ? data.facts.allergies : undefined,
+      regime: shown("facts_regime") ? data.facts.regime : undefined,
+      alcool: shown("facts_alcool") ? data.facts.alcool : undefined,
       parfums: shown("facts_parfums") ? data.facts.parfums : undefined,
       adresseRenseignee: shown("facts_adresse") ? data.facts.adresseRenseignee : undefined,
       animaux: shown("facts_animaux") ? data.facts.animaux : undefined,

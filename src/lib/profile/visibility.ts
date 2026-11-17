@@ -58,7 +58,9 @@ export type SectionKey =
   | "wishlist"          // MA wishlist — visible pilote seulement (jamais partagée aux tiers)
   // Faits pratiques
   | "facts_tailles"
-  | "facts_alimentaire"
+  | "facts_allergies"    // santé — jamais regroupée avec autre chose
+  | "facts_regime"       // peut dire une conviction religieuse ou philosophique
+  | "facts_alcool"       // un choix de vie, qui ne dit ni l'une ni l'autre
   | "facts_parfums"
   | "facts_adresse"     // existence seulement côté pilote — JAMAIS côté tiers
   | "facts_animaux"
@@ -77,7 +79,7 @@ export const ALL_SECTION_KEYS: SectionKey[] = [
   "understood", "deep_touch", "deep_loved", "deep_pleasure", "deep_miss", "works",
   "monde_tables", "monde_voyages", "monde_passions", "monde_gouts",
   "territoire", "univers", "wishlist",
-  "facts_tailles", "facts_alimentaire", "facts_parfums", "facts_adresse",
+  "facts_tailles", "facts_allergies", "facts_regime", "facts_alcool", "facts_parfums", "facts_adresse",
   "facts_animaux", "facts_dates", "facts_mobilite", "art9", "constraints_row",
   "viser", "bottom_ctas", "blind_message",
 ];
@@ -91,7 +93,8 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     monde_tables: "visible", monde_voyages: "visible", monde_passions: "visible", monde_gouts: "visible",
     territoire: "visible", univers: "visible",
     wishlist: "hidden",           // vit sur son propre écran (/moi/wishlist)
-    facts_tailles: "visible", facts_alimentaire: "visible", facts_parfums: "visible",
+    facts_tailles: "visible", facts_allergies: "visible", facts_regime: "visible",
+    facts_alcool: "visible", facts_parfums: "visible",
     facts_adresse: "visible",     // « renseignée » seulement — jamais le contenu
     facts_animaux: "visible", facts_dates: "visible", facts_mobilite: "visible",
     art9: "visible", constraints_row: "hidden",
@@ -112,7 +115,10 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     monde_passions: "filtered_on", monde_gouts: "filtered_on",
     territoire: "filtered_on", univers: "filtered_on",
     wishlist: "never",            // jamais partagée — ne ressort que fondue dans les idées
-    facts_tailles: "filtered_off", facts_alimentaire: "filtered_off",
+        // Non cochées par défaut, toutes les trois : pour ce genre d'information,
+    // le défaut est de NE PAS partager, et la personne décide case par case.
+    facts_tailles: "filtered_off", facts_allergies: "filtered_off",
+    facts_regime: "filtered_off", facts_alcool: "filtered_off",
     facts_parfums: "filtered_off", facts_adresse: "never",
     facts_animaux: "filtered_off", facts_dates: "filtered_off", facts_mobilite: "filtered_off",
     art9: "never", constraints_row: "hidden",
@@ -131,7 +137,8 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     monde_passions: "third_person", monde_gouts: "third_person",
     territoire: "third_person", univers: "third_person",
     wishlist: "never",            // la wishlist du proche ne ressort que fondue dans les idées
-    facts_tailles: "hidden", facts_alimentaire: "hidden", facts_parfums: "hidden",
+    facts_tailles: "hidden", facts_allergies: "hidden", facts_regime: "hidden",
+    facts_alcool: "hidden", facts_parfums: "hidden",
     facts_adresse: "never", facts_animaux: "hidden", facts_dates: "hidden", facts_mobilite: "hidden",
     art9: "never",
     constraints_row: "visible",   // sécurité : allergies + régime + mobilité
@@ -146,7 +153,8 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     deep_pleasure: "never", deep_miss: "never", works: "never",
     monde_tables: "never", monde_voyages: "never", monde_passions: "never", monde_gouts: "never",
     territoire: "never", univers: "never", wishlist: "never",
-    facts_tailles: "never", facts_alimentaire: "never", facts_parfums: "never",
+    facts_tailles: "never", facts_allergies: "never", facts_regime: "never",
+    facts_alcool: "never", facts_parfums: "never",
     facts_adresse: "never", facts_animaux: "never", facts_dates: "never", facts_mobilite: "never",
     art9: "never", constraints_row: "never",
     viser: "never", bottom_ctas: "never",
@@ -166,7 +174,8 @@ export const VISIBILITY_MATRIX: Record<ProfileView, Record<SectionKey, Visibilit
     monde_tables: "third_person", monde_voyages: "third_person", monde_passions: "third_person", monde_gouts: "third_person",
     territoire: "third_person", univers: "third_person",
     wishlist: "never",
-    facts_tailles: "visible", facts_alimentaire: "visible", facts_parfums: "visible",
+    facts_tailles: "visible", facts_allergies: "visible", facts_regime: "visible",
+    facts_alcool: "visible", facts_parfums: "visible",
     facts_adresse: "visible", facts_animaux: "visible", facts_dates: "visible", facts_mobilite: "visible",
     art9: "visible", constraints_row: "hidden",
     viser: "hidden", bottom_ctas: "hidden", blind_message: "hidden",
