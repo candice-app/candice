@@ -1,3 +1,4 @@
+import { poolDe } from '../coexistence';
 import { describe, it, expect } from 'vitest';
 import { BANQUE } from '../banque';
 import { analyserCondition, evaluerCondition, type EtatDiscovery } from '../conditions';
@@ -21,6 +22,8 @@ const toutOuvert = (sujetsChoisis: string[] = []): EtatDiscovery => {
     niveauParBranche: new Map([...noms].map((n) => [n, 'C'] as const)),
     dejaPosees: new Set(), attributsConnus: new Set(), sansAlcool: false,
     contextesConnus: new Set(), contextesActifs: new Set(),
+    // Un projet en cours partout : ce test porte sur la SENSIBILITÉ, pas sur le niveau C.
+    projets: new Map([...new Set(BANQUE.map((q) => poolDe(q.branche)))].map((p) => [p, new Set(['achat' as const, 'sejour' as const])] as const)),
     sujetsChoisis: new Set(sujetsChoisis), aliasBranches: ALIAS_BRANCHES,
   };
 };
@@ -38,14 +41,14 @@ describe('les 32 questions de sensibilité moyenne', () => {
 
   it('AUCUNE ne s’ouvre sur le terrain seul, même le plus favorable', () => {
     const e = toutOuvert();
-    const ouvertes = moyennes.filter((q) => evaluerCondition(analyserCondition(q.condition_emission), e, { branche: q.branche, attributs: ['x.y'], attributsPartages: true }) === 'ouvrir');
+    const ouvertes = moyennes.filter((q) => evaluerCondition(analyserCondition(q.condition_emission), e, { branche: q.branche, pool: poolDe(q.branche), attributs: ['x.y'], attributsPartages: true }) === 'ouvrir');
     expect(ouvertes.map((q) => q.id)).toEqual([]);
   });
 
   it('la démarche pour une AUTRE branche n’en ouvre aucune', () => {
     const ouvertes = moyennes.filter((q) => {
       const autre = q.branche === 'travel2' ? 'food2' : 'travel2';
-      return evaluerCondition(analyserCondition(q.condition_emission), toutOuvert([autre]), { branche: q.branche, attributs: ['x.y'], attributsPartages: true }) === 'ouvrir';
+      return evaluerCondition(analyserCondition(q.condition_emission), toutOuvert([autre]), { branche: q.branche, pool: poolDe(q.branche), attributs: ['x.y'], attributsPartages: true }) === 'ouvrir';
     });
     expect(ouvertes.map((q) => q.id)).toEqual([]);
   });
@@ -53,7 +56,7 @@ describe('les 32 questions de sensibilité moyenne', () => {
   it('la démarche pour SA branche ouvre chaque question dont la condition d’origine est lisible', () => {
     const resultat = moyennes.map((q) => {
       const c = analyserCondition(q.condition_emission);
-      const v = evaluerCondition(c, toutOuvert([q.branche]), { branche: q.branche, attributs: ['x.y'], attributsPartages: true });
+      const v = evaluerCondition(c, toutOuvert([q.branche]), { branche: q.branche, pool: poolDe(q.branche), attributs: ['x.y'], attributsPartages: true });
       return { id: q.id, v, lisible: c.lisible };
     });
     const ouvertes = resultat.filter((r) => r.v === 'ouvrir');

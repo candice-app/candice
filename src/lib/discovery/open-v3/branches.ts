@@ -108,3 +108,44 @@ export function tableDesAlias(): { nom: string; branches: string[]; emplois: Rec
     nom, branches: [...(D.alias.get(nom) ?? [])].sort(), emplois: Object.fromEntries(m), retenu: D.alias.has(nom),
   })).sort((a, b) => (a.nom < b.nom ? -1 : 1));
 }
+
+
+/**
+ * LE NOM D'UNE BRANCHE, TEL QUE LA PERSONNE LE LIT. L'écran affichait l'identifiant technique
+ * (« travel2 », « sportp », « craft ») au-dessus de la question. Le référentiel nomme lui-même
+ * ses branches dans ses conditions (« Branche Sport pratiqué ouverte », « Intérêt lecture
+ * sélectionné ou détecté ») : on prend ce nom-là, le plus fréquent dans la branche. Une
+ * branche que le référentiel ne nomme nulle part n'a PAS de libellé — l'écran n'affiche alors
+ * rien, plutôt qu'un identifiant.
+ */
+const NOMME = [/^(?:Ouverture\s+)?[Bb]ranche\s+(.+?)\s+(?:ouverte|\(voir)/, /^Niveau\s+[ABC]\s+([^—:(;,]+?)\s*(?:$|[—:(;])/, /^Int[ée]r[êe]t\s+(.+?)\s+s[ée]lectionn/];
+function deriverLibelles(banque: readonly QuestionV3[]) {
+  // Le nom d'OUVERTURE de la branche d'abord (« Branche Voyage ouverte ») ; à défaut celui de
+  // ses niveaux, puis celui de son intérêt. Dans chaque rang, le plus fréquent.
+  const votes = NOMME.map(() => new Map<string, Map<string, number>>());
+  for (const q of banque) NOMME.forEach((re, rang) => {
+    const m = q.condition_emission.match(re);
+    if (!m) return;
+    const nom = m[1].trim(); const v = votes[rang].get(q.branche) ?? new Map<string, number>();
+    v.set(nom, (v.get(nom) ?? 0) + 1); votes[rang].set(q.branche, v);
+  });
+  const libelles = new Map<string, string>();
+  for (const q of banque) {
+    if (libelles.has(q.branche)) continue;
+    const v = votes.map((r) => r.get(q.branche)).find((x) => x && x.size > 0);
+    if (v) {
+      const nom = [...v].sort((x, y) => y[1] - x[1] || (x[0] < y[0] ? -1 : 1))[0][0];
+      libelles.set(q.branche, nom.charAt(0).toUpperCase() + nom.slice(1));
+    } else if (/^[A-ZÀ-Ý][^0-9]*$/.test(q.branche)) {
+      libelles.set(q.branche, q.branche);                 // l'identifiant EST déjà un nom (« Fleurs & Plantes »)
+    }
+  }
+  return libelles;
+}
+const LIBELLES = deriverLibelles(BANQUE);
+/** Le nom lisible d'une branche, ou `null` si le référentiel ne lui en donne pas. */
+export const libelleBranche = (branche: string): string | null => LIBELLES.get(branche) ?? null;
+/** Toutes les branches nommées, pour un choix de sujets. */
+export function branchesNommees(): { branche: string; libelle: string }[] {
+  return [...LIBELLES].map(([branche, libelle]) => ({ branche, libelle })).sort((a, b) => a.libelle.localeCompare(b.libelle, 'fr'));
+}

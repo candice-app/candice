@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { branchesSurDemarche, declarerSujet, ReponseInvalideError } from "@/lib/discovery/open-v3/service";
+import { declarerSujet, ReponseInvalideError } from "@/lib/discovery/open-v3/service";
 
 // « JE VEUX EXPLORER CE SUJET » — et son retrait.
 //
@@ -21,9 +21,6 @@ export async function POST(req: Request) {
   try { body = await req.json(); } catch { return NextResponse.json({ error: "corps illisible" }, { status: 400 }); }
   if (typeof body.branche !== "string" || typeof body.choisi !== "boolean") {
     return NextResponse.json({ error: "branche (texte) et choisi (vrai/faux) requis" }, { status: 400 });
-  }
-  if (!branchesSurDemarche().includes(body.branche)) {
-    return NextResponse.json({ error: "ce sujet ne s'ouvre pas sur démarche" }, { status: 400 });
   }
   try {
     const r = await declarerSujet(supabase as never, { userId: user.id, branche: body.branche, choisi: body.choisi });

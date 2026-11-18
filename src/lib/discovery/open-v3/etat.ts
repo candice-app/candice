@@ -10,6 +10,7 @@
 import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
 import { clef, type EtatDiscovery } from './conditions';
 import { SELECTEURS } from './dependances';
+import { poolDe } from './coexistence';
 import { ALIAS_BRANCHES, BRANCHES_DU_DOMAINE, branchesDuDomaineJournal } from './branches';
 import { BANQUE } from './banque';
 
@@ -33,6 +34,24 @@ export const SEUILS_PROFONDEUR = { B: 3, C: 8 } as const;
 export const FAIT_SUJET_CHOISI = 'discovery.sujet_choisi';
 /** La personne a parlé de ce sujet d'elle-même, dans un texte libre. `value` = la branche. */
 export const FAIT_SUJET_ABORDE = 'discovery.sujet_aborde';
+/**
+ * Un PROJET en cours : un achat ou un séjour que la personne a saisi ou choisi (décision n° 4
+ * du 18 nov.). Sa valeur est un JSON `{ id, type, branche, objet, debut, fin? }`. Il cesse
+ * d'être en cours quand il est supersédé (terminé, annulé) ou que sa date de fin est passée.
+ */
+export const FAIT_PROJET = 'discovery.projet';
+const BRANCHES_BANQUE = new Set(BANQUE.map((q) => q.branche));
+export interface Projet { readonly id: string; readonly type: 'achat' | 'sejour'; readonly branche: string; readonly objet: string; readonly debut: string; readonly fin?: string }
+/** Lit la valeur d'un fait de projet. `null` si elle n'en est pas une : rien n'est deviné. */
+export function lireProjet(valeur: string): Projet | null {
+  try {
+    const p = JSON.parse(valeur) as Partial<Projet>;
+    if (typeof p.id !== 'string' || (p.type !== 'achat' && p.type !== 'sejour') || typeof p.branche !== 'string'
+      || typeof p.objet !== 'string' || !p.objet.trim() || typeof p.debut !== 'string') return null;
+    if (p.fin !== undefined && typeof p.fin !== 'string') return null;
+    return p as Projet;
+  } catch { return null; }
+}
 
 function profondeur(reponses: number): 'A' | 'B' | 'C' {
   if (reponses >= SEUILS_PROFONDEUR.C) return 'C';
@@ -210,6 +229,11 @@ export async function lireEtat(
   //       Un lien reçu dans une notification, un score, une réponse à une question fermée
   //       n'y figurent pas — et une lecture qui échoue laisse l'ensemble VIDE, donc fermé.
   const sujetsChoisis = new Set<string>();
+  // Les projets en cours. `undefined` tant que la lecture n'a pas réussi : « on ne sait pas »
+  // n'est pas « il n'y en a pas », et les conditions qui en dépendent restent non résolues.
+  let projetsLus: Map<string, Set<'achat' | 'sejour'>> | undefined;
+  const projets = new Map<string, Set<'achat' | 'sejour'>>();
+  const maintenant = new Date().toISOString();
   try {
     const { data, error } = await (client as never as {
       from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null): Promise<{ data: unknown[] | null; error: { message: string } | null }> } } };
@@ -217,11 +241,25 @@ export async function lireEtat(
     if (error) throw new Error(error.message);
     for (const f of (data ?? []) as { fact_type: string; value: string; about_id: string }[]) {
       if (f.about_id !== opts.userId) continue;             // le compte lui-même, pas un proche
-      if (f.fact_type === FAIT_SUJET_CHOISI || f.fact_type === FAIT_SUJET_ABORDE) sujetsChoisis.add(clef(f.value));
+      if (f.fact_type === FAIT_SUJET_CHOISI || f.fact_type === FAIT_SUJET_ABORDE) {
+        sujetsChoisis.add(clef(f.value));
+        // Un sujet vaut pour son DOMAINE : choisir « Voyage » ouvre les deux générations de
+        // la branche, et l'identifiant est gardé tel que la banque l'écrit.
+        for (const b of BRANCHES_BANQUE) if (b === f.value || poolDe(b) === poolDe(f.value)) sujetsChoisis.add(b);
+      }
+      if (f.fact_type === FAIT_PROJET) {
+        const p = lireProjet(f.value);
+        // Un séjour terminé n'ouvre plus ses questions : la date de fin passée suffit, sans
+        // attendre que quelqu'un le déclare clos.
+        if (!p || (p.fin && p.fin < maintenant)) continue;
+        const pool = poolDe(p.branche);
+        projets.set(pool, new Set([...(projets.get(pool) ?? []), p.type]));
+      }
     }
     // Choisir d'explorer un sujet, c'est OUVRIR sa branche : aucune ouverture n'est plus
     // nette que celle-là. Les questions ordinaires de la branche en bénéficient aussi.
     for (const b of sujetsChoisis) branchesOuvertes.add(b);
+    projetsLus = projets;
   } catch (e) {
     manques.push(`sujets choisis illisibles (${e instanceof Error ? e.message : String(e)}) — les questions sensibles restent fermées`);
   }
@@ -259,7 +297,7 @@ export async function lireEtat(
       // restent indécidables, donc fermées. Les remplir sans savoir ce qu'ils désignent
       // ouvrirait des questions sur une supposition.
       contextesConnus: new Set(), contextesActifs: new Set(),
-      sujetsChoisis, optionsChoisies, ...(dernierePosee ? { dernierePosee } : {}),
+      sujetsChoisis, optionsChoisies, ...(projetsLus ? { projets: projetsLus } : {}), ...(dernierePosee ? { dernierePosee } : {}),
       aliasBranches: ALIAS_BRANCHES,
     },
     manques,

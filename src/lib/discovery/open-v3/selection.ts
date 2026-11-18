@@ -69,7 +69,7 @@ export interface Resultat {
 export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyMap<string, number> = PARTAGE_BANQUE): Verdict {
   const vise = informationVisee(q, partage);
   const propre = evaluerCondition(analyserCondition(q.condition_emission), etat,
-    { branche: q.branche, attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(q.id) });
+    { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(q.id) });
   if (propre === 'fermer') return 'fermer';
   const idTete = TETES_DE_SOUS_PARTIE.get(q.id);
   const tete = idTete ? PAR_ID.get(idTete) : undefined;
@@ -77,7 +77,7 @@ export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyM
   // La condition de tête est évaluée pour ce qu'elle exige de la PERSONNE ; « information
   // manquante » et le reste de ce qui tient à la question elle-même restent jugés ci-dessus.
   const heritee = evaluerCondition(analyserCondition(tete.condition_emission), etat,
-    { branche: tete.branche, attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(tete.id) });
+    { branche: tete.branche, pool: poolDe(tete.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(tete.id) });
   if (heritee === 'fermer') return 'fermer';
   return propre === 'indecidable' || heritee === 'indecidable' ? 'indecidable' : 'ouvrir';
 }

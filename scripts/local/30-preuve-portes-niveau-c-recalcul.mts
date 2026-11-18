@@ -1,0 +1,146 @@
+// LES PORTES QUE LA PERSONNE OUVRE, LE NIVEAU C, ET LE RECALCUL APRÈS CHAQUE RÉPONSE — vraies
+// routes HTTP, pile locale, comptes de test séparés.
+//   1. Niveau C : fermé sans projet ; un séjour déclaré l'ouvre pour SON domaine seulement ;
+//      « achat concret » reste fermé ; le projet clos ou échu referme tout.
+//   2. Explorer un sujet : quelqu'un à qui le moteur n'a rien à demander en choisit un ; les
+//      questions arrivent ; aucune connaissance n'est créée par le choix ; le retrait referme.
+//   3. Recalcul : « Très peu de place » pour le sport, en cours de session — la question de
+//      sport suivante n'est pas servie, et n'est pas marquée posée.
+//   4. Contre-exemples : rien de coché ; question hors banque ; compte d'un autre.
+import { compteLocal, verificateur } from './_compte-local.mts';
+import { cookiesDe, poster } from './_session-http.mts';
+import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-interests.ts';
+import { lireEtat } from '../../src/lib/discovery/open-v3/etat.ts';
+import { BANQUE, question } from '../../src/lib/discovery/open-v3/banque.ts';
+import { verdictDe, prochainesQuestions } from '../../src/lib/discovery/open-v3/selection.ts';
+import { ouvrirProjet } from '../../src/lib/discovery/open-v3/service.ts';
+import { poolDe } from '../../src/lib/discovery/open-v3/coexistence.ts';
+import { analyserCondition } from '../../src/lib/discovery/open-v3/conditions.ts';
+
+const v = verificateur();
+type C = Awaited<ReturnType<typeof compteLocal>>;
+const etatDe = async (c: C) => (await lireEtat(c.client as never, { userId: c.userId })).etat;
+const admissibles = async (c: C) => { const e = await etatDe(c); return prochainesQuestions(e, { combien: BANQUE.length, parBranche: BANQUE.length }).choix.map((x) => x.question); };
+const niveauC = (qs: readonly { id: string; niveau?: string; branche: string }[], pool?: string) => qs.filter((q) => q.niveau === 'C' && (!pool || poolDe(q.branche) === pool));
+const preuves = async (c: C) => ((await c.client.from('knowledge_evidences').select('id').eq('user_id', c.userId)).data ?? []).length;
+const ts = () => new Date().toISOString();
+
+// ── 1. NIVEAU C ET PROJETS
+console.log('\n══ 1. Niveau C : un projet, sinon rien');
+{
+  const c = await compteLocal('portes-voyageuse'); const cookie = await cookiesDe(c.email, c.motDePasse);
+  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'voyage', label: 'Voyage' }, { id: 'cuisine', label: 'Cuisine & gastronomie' }], timestamp: ts() });
+  let a = await admissibles(c);
+  v.verifier(a.length > 0 && niveauC(a).length === 0, `intérêt pour le voyage et la cuisine : ${a.length} questions admissibles, aucune de niveau C`, niveauC(a).map((q) => q.id).join(','));
+  const e0 = await etatDe(c);
+  v.verifier(verdictDe(question('travel2.0937')!, e0) === 'fermer', '« Niveau C, séjour concret » (travel2.0937) : fermée — aimer le voyage ne crée pas un séjour', `${verdictDe(question('travel2.0937')!, e0)} · ${question('travel2.0937')!.condition_emission}`);
+
+  const r = await poster('/api/discovery/projet', cookie, { action: 'ouvrir', type: 'sejour', branche: 'travel2', objet: 'Cinq jours à Lisbonne en mars' });
+  const projetId = (r.json as { projet?: { id: string } }).projet?.id ?? '';
+  v.verifier(r.status === 200 && !!projetId, 'un séjour est déclaré par la route, sous la session de la personne', JSON.stringify(r.json));
+  a = await admissibles(c);
+  const cVoyage = niveauC(a, 'travel'), cAilleurs = niveauC(a).filter((q) => poolDe(q.branche) !== 'travel');
+  v.verifier(cVoyage.length > 0, `le séjour ouvre ${cVoyage.length} question(s) de niveau C du voyage`, cVoyage.map((q) => q.id).join(','));
+  v.verifier(cAilleurs.length === 0, 'il n’ouvre AUCUNE question de niveau C d’un autre domaine (la cuisine reste fermée)', cAilleurs.map((q) => q.id).join(','));
+  const achats = BANQUE.filter((q) => poolDe(q.branche) === 'travel' && /achat concret/i.test(q.condition_emission));
+  const e1 = await etatDe(c);
+  v.verifier(achats.every((q) => verdictDe(q, e1) !== 'ouvrir'), `un séjour n’est pas un achat : les ${achats.length} question(s) « achat concret » du domaine restent fermées`);
+  v.verifier(cVoyage.every((q) => !analyserCondition(q.condition_emission).sensible), 'aucune des questions ouvertes par le projet n’est sensible');
+  const liste = await poster('/api/discovery/projet', cookie, null, 'GET');
+  v.verifier(liste.status === 200 && ((liste.json as { projets: unknown[] }).projets ?? []).length === 1, 'la personne retrouve son projet en cours');
+
+  const clos = await poster('/api/discovery/projet', cookie, { action: 'clore', projetId, motif: 'annule' });
+  a = await admissibles(c);
+  v.verifier(clos.status === 200 && niveauC(a).length === 0, 'séjour annulé : plus aucune question de niveau C', niveauC(a).map((q) => q.id).join(','));
+  const faits = (await c.client.from('knowledge_facts').select('fact_type, superseded_at').eq('user_id', c.userId).eq('fact_type', 'discovery.projet')).data ?? [];
+  v.verifier(faits.length === 1 && faits[0].superseded_at !== null, 'le projet n’est pas effacé : il est conservé, marqué clos');
+
+  // Échu : déclaré il y a un mois, pour une semaine. Écrit par le producteur, sous l'identité du compte.
+  const ilYaUnMois = new Date(Date.now() - 30 * 864e5).toISOString(), finPassee = new Date(Date.now() - 23 * 864e5).toISOString();
+  await ouvrirProjet(c.client as never, { userId: c.userId, type: 'sejour', branche: 'travel2', objet: 'Week-end passé', fin: finPassee, timestamp: ilYaUnMois });
+  a = await admissibles(c);
+  v.verifier(niveauC(a).length === 0, 'un séjour dont la date de fin est passée n’ouvre plus rien, sans que personne ait à le clore');
+
+  const refus = [
+    await poster('/api/discovery/projet', cookie, { action: 'ouvrir', type: 'sejour', branche: 'travel2', objet: '   ' }),
+    await poster('/api/discovery/projet', cookie, { action: 'ouvrir', type: 'sejour', branche: 'pas-une-branche', objet: 'x' }),
+    await poster('/api/discovery/projet', cookie, { action: 'ouvrir', type: 'loisir', branche: 'travel2', objet: 'x' }),
+    await poster('/api/discovery/projet', cookie, { action: 'ouvrir', type: 'sejour', branche: 'travel2', objet: 'x', fin: '2001-01-01T00:00:00.000Z' }),
+  ];
+  v.verifier(refus.every((x) => x.status === 400), 'objet vide, branche inconnue, type inconnu, date passée : refusés (400), rien d’écrit', refus.map((x) => x.status).join(','));
+  const anonyme = await poster('/api/discovery/projet', null, { action: 'ouvrir', type: 'sejour', branche: 'travel2', objet: 'x' });
+  v.verifier(anonyme.status === 401, 'sans session : 401');
+}
+
+// ── 2. EXPLORER UN SUJET
+console.log('\n══ 2. Explorer un sujet');
+{
+  const c = await compteLocal('portes-discrete'); const cookie = await cookiesDe(c.email, c.motDePasse);
+  let a = await admissibles(c);
+  v.verifier(a.length === 0, 'domaine non renseigné : rien de coché, rien à demander', String(a.length));
+  const page = await poster('/moi/discovery?mode=full', cookie, null, 'GET');
+  v.verifier(page.status === 200 && page.texte.includes('Explorer un sujet') && page.texte.includes('Un achat ou un séjour en préparation'), 'la page /moi/discovery offre les deux portes');
+  const avant = await preuves(c);
+  const r = await poster('/api/discovery/sujet', cookie, { branche: 'home2', choisi: true });
+  a = await admissibles(c);
+  v.verifier(r.status === 200 && a.length > 0 && a.every((q) => poolDe(q.branche) === 'home'), `elle choisit « Maison » : ${a.length} question(s) admissible(s), toutes de ce domaine`, JSON.stringify(r.json) + ' ' + [...new Set(a.map((q) => q.branche))].join(','));
+  v.verifier(await preuves(c) === avant, 'choisir un sujet n’écrit aucune connaissance sur elle (ni intérêt, ni préférence)', `${avant} → ${await preuves(c)}`);
+  v.verifier(a.every((q) => !analyserCondition(q.condition_emission).sensible || analyserCondition(q.condition_emission).ouvertureSurDemarche), 'aucune question sensible sans mode d’ouverture écrit ne s’ouvre');
+  const page2 = await poster('/moi/discovery?mode=full', cookie, null, 'GET');
+  const premiere = prochainesQuestions(await etatDe(c), { combien: 1 }).choix[0]?.question;
+  v.verifier(!!premiere && page2.texte.includes(premiere.enonce.slice(0, 25).replace(/’/g, '&#x27;')) || page2.texte.includes(premiere!.enonce.slice(0, 25)), 'la page affiche maintenant la question que le moteur choisit', premiere?.enonce);
+  v.verifier(!/>(home2|travel2|food2|sportp)</.test(page2.texte), 'aucun identifiant technique de branche n’est affiché');
+  const retrait = await poster('/api/discovery/sujet', cookie, { branche: 'home2', choisi: false });
+  a = await admissibles(c);
+  v.verifier(retrait.status === 200 && a.length === 0, 'elle revient sur son choix : les questions se referment', String(a.length));
+  const inconnu = await poster('/api/discovery/sujet', cookie, { branche: 'pas-un-sujet', choisi: true });
+  v.verifier(inconnu.status === 400, 'un sujet inconnu est refusé (400)');
+}
+
+// ── 3. RECALCUL APRÈS CHAQUE RÉPONSE
+console.log('\n══ 3. Après chaque réponse, recalculer');
+{
+  const c = await compteLocal('portes-sportive'); const cookie = await cookiesDe(c.email, c.motDePasse);
+  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'nature', label: 'Nature & jardinage' }, { id: 'lecture', label: 'Lecture' }], timestamp: ts() });
+  const avant = (await admissibles(c)).filter((q) => q.branche === 'nature').map((q) => q.id);
+  v.verifier(avant.includes('nature.0210') && avant.includes('nature.0211'), `« Nature » cochée : ${avant.length} questions de nature admissibles`);
+  // Une session de trois questions : nature, nature, lecture — dans cet ordre.
+  const lot = ['nature.0210', 'nature.0211', 'reading2.1233'];
+  const r5 = question('nature.0210')!.options.find((o) => o.libelle === 'Très peu de place')!;
+  const r = await poster('/api/discovery/answer', cookie, { sessionId: null, pendingKeys: lot, currentIndex: 0, mode: 'full', questionKey: 'nature.0210', answer: `r${r5.rang}` });
+  const suivante = (r.json as { next?: { question?: { question_key?: string } } }).next?.question?.question_key;
+  v.verifier(r.status === 200 && suivante === 'reading2.1233', 'elle répond « Très peu de place » : la question de nature suivante n’est PAS servie, la lecture l’est', `suivante = ${suivante}`);
+  const e = await etatDe(c);
+  v.verifier(!e.dejaPosees.has('nature.0211'), 'la question sautée n’est pas marquée posée : non montrée n’est pas refusée');
+  const apres = (await admissibles(c)).filter((q) => q.branche === 'nature');
+  v.verifier(apres.length === 0, 'plus aucune question de nature n’est proposée d’initiative', apres.map((q) => q.id).join(','));
+  const pref = (await c.client.from('knowledge_evidences').select('target_family, target_construct, polarity').eq('user_id', c.userId).eq('target_construct', 'PREFERENCE.nature.domain_importance')).data ?? [];
+  v.verifier(pref.length === 1 && pref[0].polarity === 'rejet', 'sa réponse est au journal, avec sa polarité de rejet — la case cochée à l’inscription y reste aussi', JSON.stringify(pref));
+  const interet = (await c.client.from('knowledge_evidences').select('target_construct').eq('user_id', c.userId).eq('target_family', 'INTEREST')).data ?? [];
+  v.verifier(interet.some((x) => x.target_construct === 'nature'), 'réponse contradictoire : les deux déclarations sont conservées, aucune n’est réécrite');
+  // Sa propre démarche rouvre le sujet.
+  await poster('/api/discovery/sujet', cookie, { branche: 'nature', choisi: true });
+  v.verifier((await admissibles(c)).some((q) => q.branche === 'nature'), 'elle choisit d’explorer la nature : ses questions redeviennent admissibles');
+  // Non-réponse : passer une question ne l'ouvre pas à nouveau, et n'écrit rien.
+  const n0 = await preuves(c);
+  const passe = await poster('/api/discovery/answer', cookie, { sessionId: null, pendingKeys: ['reading2.1235'], currentIndex: 0, mode: 'full', questionKey: 'reading2.1235', answer: null, skip: true });
+  v.verifier(passe.status === 200 && await preuves(c) === n0 && (await etatDe(c)).dejaPosees.has('reading2.1235'), 'non-réponse : la question passée n’écrit rien et ne revient pas');
+  // Question hors de la banque active (archivée) : refusée, rien n'est écrit.
+  const archivee = await poster('/api/discovery/answer', cookie, { sessionId: null, pendingKeys: ['series.0094'], currentIndex: 0, mode: 'full', questionKey: 'series.0094', answer: ['r1'] });
+  v.verifier(question('series.0094') === undefined && await preuves(c) === n0, 'question retirée de la banque : absente du moteur, aucune preuve écrite', `HTTP ${archivee.status}`);
+}
+
+// ── 4. DONNÉE INACCESSIBLE : le compte d'un autre
+console.log('\n══ 4. Donnée inaccessible');
+{
+  const a = await compteLocal('portes-alpha'), b = await compteLocal('portes-beta');
+  await produireInteretsOnboarding(a.client as never, { userId: a.userId, categories: [{ id: 'voyage', label: 'Voyage' }], timestamp: ts() });
+  await ouvrirProjet(a.client as never, { userId: a.userId, type: 'sejour', branche: 'travel2', objet: 'Séjour d’alpha' });
+  const { etat, manques } = await lireEtat(b.client as never, { userId: a.userId });   // beta lit « l'état d'alpha » avec SA session
+  v.verifier(etat.branchesOuvertes.size === 0 && (etat.projets?.size ?? 0) === 0, 'avec la session d’un autre compte, l’état lu est vide : ni intérêt, ni projet', JSON.stringify({ branches: [...etat.branchesOuvertes], manques }));
+  v.verifier(prochainesQuestions(etat, { combien: 50 }).choix.length === 0, 'et aucune question ne s’ouvre sur ce qu’on ne peut pas lire');
+  const cb = await cookiesDe(b.email, b.motDePasse);
+  const liste = await poster('/api/discovery/projet', cb, null, 'GET');
+  v.verifier(((liste.json as { projets: unknown[] }).projets ?? []).length === 0, 'la route des projets ne rend que ceux de l’appelant');
+}
+v.bilan();

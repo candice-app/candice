@@ -59,6 +59,14 @@ export interface EtatDiscovery {
    * entrée pour une question = pas de réponse connue.
    */
   readonly optionsChoisies?: ReadonlyMap<string, ReadonlySet<string>>;
+  /**
+   * LES PROJETS EN COURS, par domaine (décision d'Estelle du 18 nov., n° 4) : un achat ou un
+   * séjour que la personne a elle-même saisi ou choisi, avec un début et une fin. C'est le
+   * seul « objet, action ou occasion nommés » que le moteur connaisse. ABSENT = le moteur ne
+   * sait pas lire les projets : les conditions qui en dépendent sont non résolues. Présent et
+   * vide = aucun projet en cours : elles sont fausses.
+   */
+  readonly projets?: ReadonlyMap<string, ReadonlySet<'achat' | 'sejour'>>;
   /** La dernière question à laquelle la personne a répondu (ou qu'elle a passée). Sert à ne
    *  pas enchaîner une question historique juste après celle qui la remplace. */
   readonly dernierePosee?: string;
@@ -225,6 +233,12 @@ const MOTIFS: ReadonlyArray<{ re: RegExp; lire: (m: RegExpMatchArray) => Clause 
     re: /^achat concret$/i,
     lire: () => ({ type: 'contexte', libelle: 'achat concret' }),
   },
+  // « Niveau C, séjour concret » : le niveau C exigeant déjà un projet, la phrase demande
+  // que ce projet soit un séjour.
+  {
+    re: /^(?:niveau c,\s*)?s[ée]jour concret$/i,
+    lire: () => ({ type: 'contexte', libelle: 'sejour concret' }),
+  },
 ];
 
 /** Lit UN fragment. `null` = non reconnu. */
@@ -309,6 +323,8 @@ export interface ContexteQuestion {
   /** Une de ces informations est aussi écrite par une autre question : la savoir renseignée
    *  ne prouve pas que CETTE question a eu sa réponse. */
   readonly attributsPartages?: boolean;
+  /** Le domaine commun aux générations de la branche (`poolDe`) : un projet vaut pour lui. */
+  readonly pool?: string;
   /** La réponse dont cette question dépend, quand le référentiel en écrit une (`dependances.ts`). */
   readonly dependance?: { readonly selecteur: string; readonly cles: readonly string[]; readonly resolu: boolean };
 }
@@ -424,6 +440,19 @@ function evaluerClause(
       return etat.aliasBranches && !etat.aliasBranches.has(c.branche) ? 'indecidable' : 'fermer';
     }
     case 'niveau': {
+      // LE NIVEAU C N'EST PAS UNE PROFONDEUR. « Niveau C : exige un objet, une action ou une
+      // occasion nommés » (politique de saturation du référentiel, 00_SYNTHESE et onglet 8 :
+      // « C = action_id/occasion_id/item_id explicite »). La première version l'ouvrait après
+      // huit réponses dans la branche : 202 questions du type « pour cet achat, tu préfères… »
+      // pouvaient se poser sans qu'aucun achat n'existe. Il faut un projet en cours dans le
+      // domaine ; sans lecture des projets, on ne sait pas.
+      if (c.niveau === 'C') {
+        // Le nom qui suit doit rester compris : « Niveau C Boissons — question CONTEXTUELLE »
+        // porte un fragment qu'on n'a pas lu, et un projet en cours ne le rend pas lisible.
+        if (etat.aliasBranches && !etat.aliasBranches.has(c.branche)) return 'indecidable';
+        if (!etat.projets) return 'indecidable';
+        return (etat.projets.get(contexte.pool ?? contexte.branche)?.size ?? 0) > 0 ? 'ouvrir' : 'fermer';
+      }
       const ordre = { A: 1, B: 2, C: 3 } as const;
       const ids = designe(c.branche, etat);
       // Le nom peut désigner deux générations de la même branche (« Cinéma » → cinema,
@@ -448,12 +477,20 @@ function evaluerClause(
       return 'ouvrir';
     case 'pas_si_sans_alcool':
       return etat.sansAlcool ? 'fermer' : 'ouvrir';
-    case 'contexte':
+    case 'contexte': {
+      // « Achat concret », « séjour concret » : un projet de ce type, en cours, dans le domaine
+      // de la question. L'intérêt pour le voyage ne crée pas un séjour.
+      const type = c.libelle === 'achat concret' ? 'achat' : c.libelle === 'sejour concret' ? 'sejour' : null;
+      if (type) {
+        if (!etat.projets) return 'indecidable';
+        return etat.projets.get(contexte.pool ?? contexte.branche)?.has(type) ? 'ouvrir' : 'fermer';
+      }
       // Un contexte que le moteur ne connaît pas ne vaut PAS « inactif » : on ne ferme
       // pas une question au motif d'une condition qu'on n'a pas comprise, et on ne
       // l'ouvre pas non plus. Indécidable, donc non posée, et comptée comme telle.
       if (!etat.contextesConnus.has(c.libelle)) return 'indecidable';
       return etat.contextesActifs.has(c.libelle) ? 'ouvrir' : 'fermer';
+    }
   }
 }
 

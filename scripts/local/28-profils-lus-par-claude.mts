@@ -26,6 +26,9 @@ import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-
 import { prochainesQuestionsPour } from '../../src/lib/discovery/open-v3/service.ts';
 import { lireEtat } from '../../src/lib/discovery/open-v3/etat.ts';
 import { lirePortrait } from '../../src/lib/knowledge/portrait.ts';
+import { BANQUE } from '../../src/lib/discovery/open-v3/banque.ts';
+import { verdictDe } from '../../src/lib/discovery/open-v3/selection.ts';
+import { coexistence } from '../../src/lib/discovery/open-v3/coexistence.ts';
 
 const ICI = new URL('./profils/', import.meta.url).pathname;
 const lireJson = <T,>(f: string): T => JSON.parse(readFileSync(ICI + f, 'utf8')) as T;
@@ -83,12 +86,19 @@ if (etape === 'questions') {
   for (const voix of VOIX) {
     const s = await session(voix.prenom);
     const { etat } = await lireEtat(s.client as never, { userId: s.userId });
-    const total = (await prochainesQuestionsPour(s.client as never, { userId: s.userId, combien: 5000 })).questions.length;
+    // ADMISSIBLES (la condition est vraie) ≠ PRÉSENTÉES (le lot que la sélection retient).
+    const bilan: Record<string, number> = {};
+    for (const q of BANQUE) {
+      let v: string = etat.dejaPosees.has(q.id) ? 'deja_posee' : verdictDe(q, etat);
+      if (v === 'ouvrir') { const c = coexistence(q.id, etat, true); if (!c.poser) v = `coexistence_${c.motif}`; }
+      bilan[v] = (bilan[v] ?? 0) + 1;
+    }
+    const total = bilan.ouvrir ?? 0;
     const qs = (await prochainesQuestionsPour(s.client as never, { userId: s.userId, combien: n })).questions;
-    tour[voix.prenom] = { ouvertes: total, branches: [...etat.branchesOuvertes], questions: qs.map((q) => ({ cle: q.question_key, type: q.question_type, texte: q.question_text, options: (q.options ?? []).map((o) => `${o.value}=${o.label}`) })) };
-    console.log(`${voix.prenom.padEnd(8)} ${total} question(s) ouverte(s) · branches : ${[...etat.branchesOuvertes].join(', ') || '—'}`);
+    tour[voix.prenom] = { admissibles: total, bilan, branches: [...etat.branchesOuvertes], questions: qs.map((q) => ({ cle: q.question_key, type: q.question_type, texte: q.question_text, options: (q.options ?? []).map((o) => `${o.value}=${o.label}`) })) };
+    console.log(`${voix.prenom.padEnd(8)} ${total} admissible(s) ${JSON.stringify(bilan)} · présentées : ${qs.map((q) => q.question_key).join(' ')} · branches : ${[...etat.branchesOuvertes].join(', ') || '—'}`);
   }
-  writeFileSync(ICI + 'tour.json', JSON.stringify(tour, null, 1));
+  writeFileSync(ICI + (arg('sortie') ?? 'tour.json'), JSON.stringify(tour, null, 1));
 }
 
 if (etape === 'repondre') {

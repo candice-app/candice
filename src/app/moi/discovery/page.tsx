@@ -3,7 +3,8 @@ import { createClient } from "@/utils/supabase/server";
 import { getAuthClaims } from "@/utils/supabase/claims";
 import DashboardShell from "@/components/layout/DashboardShell";
 import DiscoveryFlow from "./DiscoveryFlow";
-import { prochainesQuestionsPour } from "@/lib/discovery/open-v3/service";
+import DiscoveryPortes from "./DiscoveryPortes";
+import { prochainesQuestionsPour, sujetsExplorables, sujetsChoisisPar, projetsEnCours } from "@/lib/discovery/open-v3/service";
 import type { NextQuestionResult } from "@/lib/discovery/engine";
 
 export default async function DiscoveryPage({
@@ -59,15 +60,32 @@ export default async function DiscoveryPage({
     pendingKeys: retenues.map((q) => q.question_key),
     currentIndex: 0,
     mode,
-    sectionLabel: retenues[0].dimension,
+    // Le nom lisible de la branche — jamais son identifiant (« travel2 ») : sans nom, rien.
+    sectionLabel: retenues[0].libelle ?? "",
     progress: mode === "full" ? { current: 1, total: retenues.length } : null,
   };
+
+  // ── LES DEUX PORTES QUE LA PERSONNE OUVRE ELLE-MÊME : explorer un sujet, déclarer un achat
+  //    ou un séjour en préparation. Une lecture qui échoue n'affiche pas un état supposé : les
+  //    portes ne sont alors pas rendues, et l'erreur est tracée.
+  let portes: { sujets: { branche: string; libelle: string; choisi: boolean }[]; projets: Awaited<ReturnType<typeof projetsEnCours>> } | null = null;
+  try {
+    const [choisis, projets] = await Promise.all([
+      sujetsChoisisPar(supabase as never, { userId }), projetsEnCours(supabase as never, { userId }),
+    ]);
+    portes = { sujets: sujetsExplorables().map((s) => ({ ...s, choisi: choisis.includes(s.branche) })), projets };
+  } catch (e) {
+    console.error("[discovery] portes illisibles", e);
+  }
 
   return (
     <DashboardShell>
       <div className="content-col" data-page-ready="discovery">
         {/* C4 : une section ciblée (nudge, CTA) ouvre DIRECTEMENT sa question */}
-        <DiscoveryFlow initial={initial} mode={mode} skipIntro={!!sectionKey} />
+        {/* `key` : après un choix de sujet ou de projet, la page est relue et le parcours repart
+            de la question que le moteur choisit maintenant. */}
+        <DiscoveryFlow key={initial?.question.question_key ?? "aucune"} initial={initial} mode={mode} skipIntro={!!sectionKey} />
+        {portes && !sectionKey && <DiscoveryPortes sujets={portes.sujets} projets={[...portes.projets]} />}
       </div>
     </DashboardShell>
   );

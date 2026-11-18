@@ -13,7 +13,8 @@ import {
 // ── Types ────────────────────────────────────────────────────────────────────
 
 import { question as questionOpenV3 } from './open-v3/banque';
-import { cleOption as cleOptionV3 } from './open-v3/service';
+import { cleOption as cleOptionV3, encoreAdmissibles } from './open-v3/service';
+import { libelleBranche } from './open-v3/branches';
 
 export interface QuestionOption { label: string; value: string; }
 
@@ -209,7 +210,9 @@ async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQ
   return {
     question: { ...question, question_text: personalizedText },
     sessionId: session.id as string,
-    sectionLabel: DIMENSION_LABELS[question.dimension] ?? question.dimension,
+    // Une question de la banque porte le nom que le référentiel donne à sa branche, ou rien —
+    // jamais son identifiant technique (« travel2 »).
+    sectionLabel: qV3 ? (libelleBranche(qV3.branche) ?? '') : (DIMENSION_LABELS[question.dimension] ?? question.dimension),
     progress: { current: idx + 1, total: pendingKeys.length },
   };
 }
@@ -268,7 +271,24 @@ export async function recordAnswer(
   if (!session) return { next: null, done: true };
 
   const pendingKeys: string[] = session.pending_keys ?? [];
-  const nextIndex = (session.current_index as number) + 1;
+  let nextIndex = (session.current_index as number) + 1;
+
+  // ── APRÈS CHAQUE RÉPONSE, RECALCULER (référentiel, onglet 8). Le lot a été choisi au début
+  //    de la session ; ce que la personne vient de répondre peut avoir fermé une question à
+  //    venir. On saute celles qui ne sont plus admissibles — sans les marquer posées : une
+  //    question non montrée n'est pas une question refusée.
+  const aVenirV3 = pendingKeys.slice(nextIndex).filter((k) => questionOpenV3(k));
+  if (aVenirV3.length > 0) {
+    try {
+      const admissibles = await encoreAdmissibles(supabase as never, { userId, ids: aVenirV3 });
+      while (nextIndex < pendingKeys.length && questionOpenV3(pendingKeys[nextIndex]) && !admissibles.has(pendingKeys[nextIndex])) nextIndex++;
+    } catch (e) {
+      // Sans l'état relu on ne sait pas ce qui reste admissible : on arrête la session plutôt
+      // que de poser une question que sa réponse précédente a peut-être fermée.
+      console.error('[discovery/engine] recalcul impossible, session arrêtée', e);
+      nextIndex = pendingKeys.length;
+    }
+  }
 
   if (nextIndex >= pendingKeys.length) {
     // Session complete

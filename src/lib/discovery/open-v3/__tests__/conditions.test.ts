@@ -87,6 +87,28 @@ describe('les portes mécaniques', () => {
     expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['hotellerie', 'C']]) }), ctx)).toBe('ouvrir');
   });
 
+  it('le niveau C n’est pas une profondeur : il exige un projet en cours dans le domaine', () => {
+    const c = analyserCondition('Niveau C Hôtellerie');
+    const profond = { niveauParBranche: new Map([['hotellerie', 'C' as const]]) };
+    // Le moteur ne sait pas lire les projets : on ne sait pas.
+    expect(evaluerCondition(c, etat(profond), { branche: 'travel2', pool: 'travel' })).toBe('indecidable');
+    // Il sait les lire, et il n'y en a pas : la profondeur seule ne suffit pas.
+    expect(evaluerCondition(c, etat({ ...profond, projets: new Map() }), { branche: 'travel2', pool: 'travel' })).toBe('fermer');
+    // Un projet dans un AUTRE domaine n'ouvre pas celui-ci.
+    expect(evaluerCondition(c, etat({ projets: new Map([['food', new Set(['achat' as const])]]) }), { branche: 'travel2', pool: 'travel' })).toBe('fermer');
+    // Un séjour en cours dans le domaine : le niveau C s'ouvre, sans condition de profondeur.
+    expect(evaluerCondition(c, etat({ projets: new Map([['travel', new Set(['sejour' as const])]]) }), { branche: 'travel2', pool: 'travel' })).toBe('ouvrir');
+  });
+
+  it('« Achat concret » et « séjour concret » demandent un projet de CE type', () => {
+    const achat = analyserCondition('Achat concret'), sejour = analyserCondition('Niveau C, séjour concret');
+    expect(sejour.lisible).toBe(true);
+    const unSejour = etat({ projets: new Map([['travel', new Set(['sejour' as const])]]) });
+    expect(evaluerCondition(sejour, unSejour, { branche: 'travel2', pool: 'travel' })).toBe('ouvrir');
+    expect(evaluerCondition(achat, unSejour, { branche: 'travel2', pool: 'travel' })).toBe('fermer');
+    expect(evaluerCondition(achat, etat({}), { branche: 'travel2', pool: 'travel' })).toBe('indecidable');
+  });
+
   it('« AXE 1 — … — niveau B » est la même porte, écrite dans l’autre sens', () => {
     const c = analyserCondition('AXE 2 — Comment j’aime célébrer les autres — niveau B');
     expect(c.lisible).toBe(true);
@@ -121,10 +143,10 @@ describe('un contexte inconnu n’est pas un contexte inactif', () => {
   });
 
   it('connu et inactif ferme ; connu et actif ouvre', () => {
+    // « Achat concret » se lit désormais dans les PROJETS de la personne (décision n° 4).
     const c = analyserCondition('Achat concret');
-    const connus = new Set(['achat concret']);
-    expect(evaluerCondition(c, etat({ contextesConnus: connus }), ctx)).toBe('fermer');
-    expect(evaluerCondition(c, etat({ contextesConnus: connus, contextesActifs: connus }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etat({ projets: new Map() }), ctx)).toBe('fermer');
+    expect(evaluerCondition(c, etat({ projets: new Map([[ctx.branche, new Set(['achat' as const])]]) }), ctx)).toBe('ouvrir');
   });
 });
 
@@ -243,8 +265,9 @@ describe('les trois niveaux de sensibilité du référentiel', () => {
     });
   }
   it('la même condition SANS marque s’ouvre : c’est bien la marque qui ferme', () => {
-    const c = analyserCondition('Niveau C Changement');
+    const c = analyserCondition('Niveau B Changement');
     expect(evaluerCondition(c, tout, { branche: 'changement' })).toBe('ouvrir');
+    expect(evaluerCondition(analyserCondition('Niveau B Changement — sensitivity: HIGH'), tout, { branche: 'changement' })).toBe('fermer');
   });
 });
 

@@ -13,7 +13,7 @@ import { randomUUID } from 'node:crypto';
 import { question as questionParId, type OptionV3, type QuestionV3 } from './banque';
 import { prochainesQuestions, type Choix } from './selection';
 import { produireDepuisOption } from './produire';
-import { lireEtat, FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE } from './etat';
+import { lireEtat, FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE, FAIT_PROJET, lireProjet, type Projet } from './etat';
 import { analyserCondition } from './conditions';
 import { BANQUE } from './banque';
 import { createFact } from '@/lib/knowledge/fact';
@@ -35,11 +35,21 @@ import type { Evidence } from '@/lib/knowledge/evidence';
  * ──────────────────────────────────────────────────────────────────────────── */
 export { cleOption } from './cle-option';
 import { cleOption } from './cle-option';
+import { libelleBranche } from './branches';
+import { poolDe, estPrioritaire } from './coexistence';
+
+const libelleDuPool = (branche: string): string | null => {
+  const pool = poolDe(branche);
+  for (const b of new Set(BANQUE.map((q) => q.branche))) if (b !== branche && poolDe(b) === pool && libelleBranche(b)) return libelleBranche(b);
+  return null;
+};
 
 /** Forme attendue par l'écran. Le type de question suit la forme du référentiel. */
 export interface QuestionAServir {
   readonly question_key: string;
   readonly dimension: string;
+  /** Nom lisible de la branche, ou `null` : l'écran n'affiche alors rien. */
+  readonly libelle: string | null;
   readonly question_text: string;
   readonly question_type: 'chips_single' | 'chips_multi' | 'text';
   readonly options: readonly { readonly label: string; readonly value: string }[] | null;
@@ -56,6 +66,9 @@ function aServir(c: Choix): QuestionAServir {
   return {
     question_key: q.id,
     dimension: q.branche,
+    // Le nom que la personne lit : celui du référentiel, ou celui de l'autre génération du
+    // même domaine. Jamais l'identifiant technique.
+    libelle: libelleBranche(q.branche) ?? libelleDuPool(q.branche),
     question_text: q.enonce,
     question_type: type,
     options: type === 'text' ? null : q.options.map((o) => ({ label: o.libelle, value: cleOption(o) })),
@@ -448,8 +461,8 @@ export async function declarerSujet(
   input: { readonly userId: string; readonly branche: string; readonly choisi: boolean;
            readonly origine?: 'choix' | 'texte_libre'; readonly timestamp?: string },
 ): Promise<{ readonly etat: 'choisi' | 'retire' | 'inchange' }> {
-  if (!branchesSurDemarche().includes(input.branche)) {
-    throw new ReponseInvalideError(`« ${input.branche} » n'est pas un sujet qui s'ouvre sur démarche`);
+  if (!branchesSurDemarche().includes(input.branche) && !sujetsExplorables().some((x) => x.branche === input.branche)) {
+    throw new ReponseInvalideError(`« ${input.branche} » n'est pas un sujet que l'on peut choisir d'explorer`);
   }
   const timestamp = input.timestamp ?? new Date().toISOString();
   const about = accountAbout(asUserId(input.userId));
@@ -498,4 +511,129 @@ export async function declarerSujet(
     oldSourceIds: [...new Set(vivants.map((f) => f.source))], newSourceId: sourceId, timestamp,
   });
   return { etat: 'retire' };
+}
+
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * LES PROJETS : « achat concret », « séjour concret » (décision n° 4 du 18 nov.).
+ *
+ * Un contexte explicite, avec un début et une fin, qui vient d'un projet que la personne a
+ * saisi ou choisi. L'intérêt pour le voyage ou pour un objet ne le crée pas. Il ouvre les
+ * questions de niveau C de son domaine ; terminé ou annulé, il ne les ouvre plus.
+ * ──────────────────────────────────────────────────────────────────────────── */
+const BRANCHES_CONNUES = new Set(BANQUE.map((q) => q.branche));
+
+/** Ouvre un projet. Refuse une branche inconnue de la banque et un objet vide. */
+export async function ouvrirProjet(
+  client: ClientSujets,
+  input: { readonly userId: string; readonly type: 'achat' | 'sejour'; readonly branche: string; readonly objet: string;
+           readonly fin?: string; readonly timestamp?: string },
+): Promise<{ readonly projet: Projet }> {
+  if (!BRANCHES_CONNUES.has(input.branche)) throw new ReponseInvalideError(`« ${input.branche} » n'est pas une branche de la banque`);
+  const objet = input.objet.trim();
+  if (!objet) throw new ReponseInvalideError('un projet porte un objet nommé : un achat ou un séjour précis');
+  if (objet.length > 200) throw new ReponseInvalideError('objet trop long (200 caractères au plus)');
+  const timestamp = input.timestamp ?? new Date().toISOString();
+  if (input.fin !== undefined && (Number.isNaN(Date.parse(input.fin)) || input.fin < timestamp)) {
+    throw new ReponseInvalideError('la date de fin doit être une date à venir');
+  }
+  const about = accountAbout(asUserId(input.userId));
+  const sourceId = randomUUID();
+  const projet: Projet = { id: sourceId, type: input.type, branche: input.branche, objet, debut: timestamp, ...(input.fin ? { fin: input.fin } : {}) };
+  const valeur = JSON.stringify(projet);
+  const source = createSourceRecord({
+    about, ownerId: asUserId(input.userId), id: sourceId, sourceType: 'user_declaration',
+    questionCode: FAIT_PROJET,
+    questionText: input.type === 'achat' ? 'Achat que la personne prépare' : 'Séjour que la personne prépare',
+    answerText: objet, timestamp,
+  });
+  const fact = createFact({
+    about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, FAIT_PROJET, valeur),
+    fact_type: FAIT_PROJET, value: valeur, source: sourceId, timestamp,
+    confidence: 'high', user_confirmed: true, assertionStatus: 'explicit',
+  });
+  await persistKnowledge(client, { source, facts: [fact] });
+  return { projet };
+}
+
+/** Les projets en cours de la personne (ni supersédés, ni échus). */
+export async function projetsEnCours(client: ClientSujets, input: { readonly userId: string }): Promise<readonly Projet[]> {
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { fact_type: string; value: string; about_id: string }[] | null; error: { message: string } | null }> } } };
+  };
+  const { data, error } = await lecture.from('knowledge_facts').select('fact_type, value, about_id').eq('user_id', input.userId).is('superseded_at', null);
+  if (error) throw new Error(`lecture des projets impossible : ${error.message}`);
+  const maintenant = new Date().toISOString();
+  return (data ?? []).filter((f) => f.about_id === input.userId && f.fact_type === FAIT_PROJET)
+    .map((f) => lireProjet(f.value)).filter((p): p is Projet => p !== null && !(p.fin && p.fin < maintenant));
+}
+
+/** Clôt un projet (terminé ou annulé) : ses questions ne s'ouvrent plus. Ce qui a été répondu reste. */
+export async function cloreProjet(
+  client: ClientSujets,
+  input: { readonly userId: string; readonly projetId: string; readonly motif: 'termine' | 'annule'; readonly timestamp?: string },
+): Promise<{ readonly etat: 'clos' | 'inchange' }> {
+  const enCours = await projetsEnCours(client, { userId: input.userId });
+  if (!enCours.some((p) => p.id === input.projetId)) return { etat: 'inchange' };
+  const timestamp = input.timestamp ?? new Date().toISOString();
+  const sourceId = randomUUID();
+  const source = createSourceRecord({
+    about: accountAbout(asUserId(input.userId)), ownerId: asUserId(input.userId), id: sourceId,
+    sourceType: 'user_declaration', questionCode: `${FAIT_PROJET}.${input.motif}`,
+    questionText: input.motif === 'termine' ? 'Projet terminé' : 'Projet annulé', answerText: input.projetId, timestamp,
+  });
+  await persistKnowledge(client, { source });
+  await supersedeSources(client as never, { oldSourceIds: [input.projetId], newSourceId: sourceId, timestamp });
+  return { etat: 'clos' };
+}
+
+
+/**
+ * « APRÈS CHAQUE RÉPONSE, RECALCULER » (onglet 8 du référentiel). Une session est un lot de
+ * questions choisi au départ ; la réponse à la première peut fermer la troisième — la personne
+ * vient de dire que le sport tient « très peu de place », ou que la céramique ne l'attire pas.
+ * Parmi les questions encore à venir, rend celles qui restent admissibles AVEC l'état relu.
+ * Une question hors de la banque active n'est jamais admissible ici.
+ */
+export async function encoreAdmissibles(
+  client: ServiceClient, input: { readonly userId: string; readonly ids: readonly string[] },
+): Promise<ReadonlySet<string>> {
+  const { etat } = await lireEtat(client as never, { userId: input.userId });
+  const tout = new Set(prochainesQuestions(etat, { combien: BANQUE.length, parBranche: BANQUE.length }).choix.map((c) => c.question.id));
+  return new Set(input.ids.filter((id) => tout.has(id)));
+}
+
+
+/**
+ * LES SUJETS QUE LA PERSONNE PEUT CHOISIR D'EXPLORER (décision n° 7 du 18 nov.) : l'entrée
+ * explicite de `/moi/discovery`. Un sujet par domaine — la génération que le référentiel dit
+ * prioritaire — et seulement s'il porte un nom lisible et au moins une question que ce choix
+ * peut ouvrir : une branche dont toutes les questions sont sensibles SANS mode d'ouverture
+ * écrit n'est pas proposée, la choisir ne mènerait nulle part.
+ * Choisir un sujet ouvre sa branche ; cela ne crée aucune connaissance sur la personne.
+ */
+export function sujetsExplorables(): readonly { readonly branche: string; readonly libelle: string }[] {
+  const parPool = new Map<string, { branche: string; libelle: string }>();
+  for (const branche of new Set(BANQUE.map((q) => q.branche))) {
+    const libelle = libelleBranche(branche);
+    if (!libelle) continue;
+    const ouvrable = BANQUE.some((q) => { if (q.branche !== branche) return false; const a = analyserCondition(q.condition_emission); return !a.sensible || a.ouvertureSurDemarche; });
+    if (!ouvrable) continue;
+    const pool = poolDe(branche);
+    const deja = parPool.get(pool);
+    if (!deja || (estPrioritaire(branche) && !estPrioritaire(deja.branche))) parPool.set(pool, { branche, libelle });
+  }
+  return [...parPool.values()].sort((a, b) => a.libelle.localeCompare(b.libelle, 'fr'));
+}
+
+/** Les sujets que la personne a choisis (vivants), par identifiant de branche. */
+export async function sujetsChoisisPar(client: ClientSujets, input: { readonly userId: string }): Promise<readonly string[]> {
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { fact_type: string; value: string; about_id: string }[] | null; error: { message: string } | null }> } } };
+  };
+  const { data, error } = await lecture.from('knowledge_facts').select('fact_type, value, about_id').eq('user_id', input.userId).is('superseded_at', null);
+  if (error) throw new Error(`lecture des sujets choisis impossible : ${error.message}`);
+  return [...new Set((data ?? []).filter((f) => f.about_id === input.userId && f.fact_type === FAIT_SUJET_CHOISI).map((f) => f.value))];
 }

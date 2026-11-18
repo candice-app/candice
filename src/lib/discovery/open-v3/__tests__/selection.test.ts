@@ -79,7 +79,7 @@ describe('du peu profond vers le profond', () => {
       id: `N-${n}`, niveau: n,
       condition_emission: `Niveau ${n} b`,
     }));
-    const e = etat({ branchesOuvertes: new Set(['b']), niveauParBranche: new Map([['b', 'C']]), parBranche: undefined } as Partial<EtatDiscovery>);
+    const e = etat({ branchesOuvertes: new Set(['b']), niveauParBranche: new Map([['b', 'C']]), projets: new Map([['b', new Set(['achat' as const])]]) });
     const r = prochainesQuestions(e, { combien: 3, parBranche: 9 }, qs);
     expect(r.choix.map((c) => c.question.id)).toEqual(['N-A', 'N-B', 'N-C']);
   });
