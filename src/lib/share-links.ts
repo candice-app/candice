@@ -102,6 +102,10 @@ async function ensureConsent(
       scope,
       responded_at:   now,
       consented_at:   now,
+      // LA PREUVE : le propriétaire a créé ce lien lui-même, avec cette portée (route
+      // authentifiée) ; la base refuse une ligne active qui ne nomme pas son titulaire.
+      granted_by:     ownerId,
+      granted_at:     now,
     })
     .select("id")
     .single();

@@ -51,6 +51,11 @@ BEGIN
   ELSIF NEW.proche_user_id IS DISTINCT FROM OLD.proche_user_id THEN
     -- Le compte désigné change : la confirmation de l'ancien ne vaut pas pour le nouveau.
     NEW.proche_lien_confirme_par := NULL; NEW.proche_lien_confirme_le := NULL;
+  ELSIF NEW.proche_lien_confirme_par IS NULL THEN
+    -- Effacer la confirmation reste toujours possible : cela ne fait que FERMER des accès. C'est
+    -- aussi ce que fait la base quand le compte confirmé est supprimé (ON DELETE SET NULL) :
+    -- restaurer l'ancienne valeur ici laisserait une référence vers un compte qui n'existe plus.
+    NEW.proche_lien_confirme_le := NULL;
   ELSE
     NEW.proche_lien_confirme_par := OLD.proche_lien_confirme_par;
     NEW.proche_lien_confirme_le  := OLD.proche_lien_confirme_le;

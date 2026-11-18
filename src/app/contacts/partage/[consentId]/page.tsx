@@ -55,6 +55,7 @@ export default async function VueRestreintePage({
     .from("contact_consents")
     .select("id, pilote_id, contact_id, proche_user_id, status, scope, consented_at")
     .eq("id", consentId)
+    .eq("kind", "contact_analysis")
     .maybeSingle();
 
   // Si le consent n'existe pas ou n'est pas adressé à ce user → 404 sans fuite

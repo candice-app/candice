@@ -111,7 +111,7 @@ export async function lireRejetsDuProche(
   const { data: consent, error: eConsent } = await admin
     .from('contact_consents').select('scope, granted_by')
     .eq('pilote_id', piloteId).eq('contact_id', contactId).eq('proche_user_id', procheUserId)
-    .eq('kind', 'contact_analysis').eq('status', 'active').maybeSingle();
+    .eq('kind', 'profile_usage').eq('status', 'active').maybeSingle();
   if (eConsent) return REFUS('lecture_impossible');
   if (!consent) return REFUS('aucun_consentement');
   // L'accord doit avoir été donné par le proche LUI-MÊME, pour CE compte : la preuve est

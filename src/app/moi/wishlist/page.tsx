@@ -4,6 +4,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { estDansLEspaceDe } from "@/lib/storage/chemins";
 import { getAuthClaims } from "@/utils/supabase/claims";
 import V4Shell from "@/components/layout/V4Shell";
 import WishlistV2Client, { type WishlistItemV2, type ContactLite } from "./WishlistV2Client";
@@ -32,7 +33,7 @@ export default async function WishlistPage() {
       let signed: string | null = null;
       if (photo) {
         if (/^https?:\/\//i.test(photo)) signed = photo;
-        else signed = (await admin.storage.from("contact-photos").createSignedUrl(photo, 3600)).data?.signedUrl ?? null;
+        else if (estDansLEspaceDe(photo, userId)) signed = (await admin.storage.from("contact-photos").createSignedUrl(photo, 3600)).data?.signedUrl ?? null;
       }
       return {
         id: r.id as string,

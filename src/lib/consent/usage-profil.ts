@@ -80,6 +80,10 @@ export function filtrerSelonPortee(
   };
 }
 
+/** Le type de ligne qui porte ce que le proche autorise. Distinct du partage d'analyse, qui va
+ *  dans l'autre sens (migration 116) : le pilote ne lit ni n'écrit ces lignes. */
+export const TYPE_USAGE = 'profile_usage';
+
 interface ClientPrivilegie { from(table: string): any } // eslint-disable-line @typescript-eslint/no-explicit-any
 
 /**
@@ -95,7 +99,7 @@ export async function chargerProfilAutorise(
     const { data: accord, error } = await admin.from('contact_consents')
       .select('scope, granted_by, granted_via')
       .eq('pilote_id', input.piloteId).eq('contact_id', input.contactId)
-      .eq('proche_user_id', input.procheUserId).eq('kind', 'contact_analysis').eq('status', 'active')
+      .eq('proche_user_id', input.procheUserId).eq('kind', TYPE_USAGE).eq('status', 'active')
       .maybeSingle();
     if (error) return VIDE('lecture_impossible');
     if (!accord) return VIDE('aucun_consentement');

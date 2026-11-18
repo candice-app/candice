@@ -18,6 +18,7 @@ import { buildProfileV2Data, ANALYSIS_ROW_V2_SELECT, type AnalysisRowV2 } from "
 import { stripProfileV2Data, thirdPersonV2 } from "@/lib/profile/v2-tiers";
 import { getSignedAvatarUrl } from "@/lib/profile/avatar-url";
 import { sanitizeScope, SCOPE_BLIND } from "@/lib/profile/share-sections";
+import { partageEtabli } from "@/lib/consent/fiche-partagee";
 
 export default async function FichePartageePage({
   params,
@@ -32,13 +33,14 @@ export default async function FichePartageePage({
 
   const { data: consent } = await supabase
     .from("contact_consents")
-    .select("id, status, pilote_id, scope")
+    .select("id, status, pilote_id, scope, granted_by")
     .eq("id", consentId)
     .eq("kind", "profile_view")
     .eq("proche_user_id", user.id)
     .maybeSingle();
 
-  if (!consent || consent.status !== "active") {
+  // Active ET accordée par son titulaire : un partage sans preuve n'ouvre rien.
+  if (!consent || !partageEtabli(consent)) {
     return (
       <V4Shell active="people">
         <div style={{ maxWidth: 400, margin: "0 auto", padding: "64px 24px", textAlign: "center" }}>
@@ -128,7 +130,7 @@ export default async function FichePartageePage({
   const [{ data: analysisRaw }, avatarUrl] = await Promise.all([
     admin.from("profile_analysis").select(ANALYSIS_ROW_V2_SELECT)
       .eq("user_id", consent.pilote_id).is("contact_id", null).maybeSingle(),
-    getSignedAvatarUrl(sharerProfile.avatar_path),
+    getSignedAvatarUrl(sharerProfile.avatar_path, consent.pilote_id),
   ]);
 
   const full = buildProfileV2Data({

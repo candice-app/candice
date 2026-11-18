@@ -9,6 +9,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 
 export async function POST(
   _req: NextRequest,
@@ -23,7 +24,7 @@ export async function POST(
   // Vérifier que le contact appartient au Pilote A et que B a un compte
   const { data: contact } = await supabase
     .from("contacts")
-    .select("id, name, proche_user_id")
+    .select("id, name, proche_user_id, proche_lien_confirme_par")
     .eq("id", contactId)
     .eq("user_id", user.id)
     .single();
@@ -31,6 +32,11 @@ export async function POST(
   if (!contact) return NextResponse.json({ error: "Contact introuvable" }, { status: 404 });
   if (!contact.proche_user_id) {
     return NextResponse.json({ error: "Ce proche n'a pas encore créé son compte" }, { status: 422 });
+  }
+  // Désigner un compte n'est pas être lié à lui : on n'écrit à une personne, au nom de Candice,
+  // que si elle a elle-même accepté le lien avec cette fiche.
+  if (contact.proche_lien_confirme_par !== contact.proche_user_id) {
+    return NextResponse.json({ error: "Ce proche n'a pas encore accepté ton invitation" }, { status: 422 });
   }
 
   // Vérifier qu'une analyse existe pour ce contact
@@ -49,6 +55,7 @@ export async function POST(
   const { data: existing } = await supabase
     .from("contact_consents")
     .select("id, status")
+    .eq("kind", "contact_analysis")
     .eq("pilote_id", user.id)
     .eq("contact_id", contactId)
     .in("status", ["active", "pending"])
@@ -68,6 +75,7 @@ export async function POST(
       pilote_id:      user.id,
       contact_id:     contactId,
       proche_user_id: contact.proche_user_id,
+      kind:           "contact_analysis",
       status:         "pending",
       scope:          ["analysis"],
     })
@@ -82,7 +90,7 @@ export async function POST(
   notifyProche(
     contact.proche_user_id,
     user.user_metadata?.full_name as string | undefined,
-    contact.name.split(" ")[0],
+    prenomSur(contact.name) ?? "toi",
     consent.id
   ).catch(console.error);
 
@@ -99,8 +107,8 @@ async function notifyProche(
   const { data: { user: proche } } = await admin.auth.admin.getUserById(procheUserId);
   if (!proche?.email) return;
 
-  const piloteFirstName = piloteFullName?.split(" ")[0] ?? "Quelqu'un";
-  const procheFirstName = (proche.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "";
+  const piloteFirstName = prenomSur(piloteFullName) ?? "Quelqu'un";
+  const procheFirstName = prenomSur(proche.user_metadata?.full_name as string | undefined) ?? "";
 
   await envoyerCourriel({
     to: proche.email,

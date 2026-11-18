@@ -2,6 +2,8 @@ import { redirect, notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { analysePartagee } from "@/lib/consent/fiche-partagee";
+import { estDansLEspaceDe } from "@/lib/storage/chemins";
 import { readContactTraitRows } from "@/lib/contacts/traits-from-journal";
 import DashboardShell from "@/components/layout/DashboardShell";
 import { Contact, QuestionnaireResponse, ProfileNote, CadenceLevel } from "@/types";
@@ -213,6 +215,7 @@ export default async function ContactPage({
     supabase
       .from("contact_consents")
       .select("id, status")
+      .eq("kind", "contact_analysis")
       .eq("pilote_id", user.id)
       .eq("contact_id", id)
       .in("status", ["pending", "active"])
@@ -250,16 +253,10 @@ export default async function ContactPage({
   let incomingConsentData: { id: string; status: string } | null = null;
   if (procheUserId) {
     const [{ data: procheAnalysisRow }, { data: procheProfile }, { data: incomingConsentRaw }] = await Promise.all([
-      // Auto-analyse du proche : lecture par la SESSION (pas le service-role) → la policy
-      // viewer_read_shared_self_analysis (migration 49) impose un contact_consents profile_view
-      // ACTIF et non-blind. Sans consentement, data=null et le bloc « selon Candice » ne rend rien.
-      // (Faille corrigée : l'ancien `admin` contournait la RLS et exposait l'analyse sans consentement.)
-      supabase
-        .from("profile_analysis")
-        .select("summary, sections, gender, confidence")
-        .eq("user_id", procheUserId)
-        .is("contact_id", null)
-        .maybeSingle(),
+      // Auto-analyse du proche : lue côté serveur, réduite à ce qu'il a choisi de partager.
+      // (Jusqu'au 18 nov., une politique de base ouvrait toute l'analyse dès qu'un partage était
+      // actif, et cette page en affichait le résumé et trois sections sans regarder la portée.)
+      analysePartagee(admin, { lecteurId: user.id, titulaireId: procheUserId }).then((data) => ({ data })),
       // ⚠ FAILLE n°2 ISOLÉE (décision requise) : lecture service-role du my_profile BRUT du proche
       // (practical_info = prénom/adresse/dates) réduite au booléen procheComplete, NON affichée.
       // Fuite client nulle mais lecture de données perso sans consentement. Corriger proprement
@@ -276,6 +273,7 @@ export default async function ContactPage({
       supabase
         .from("contact_consents")
         .select("id, status")
+        .eq("kind", "profile_view")
         .eq("pilote_id", procheUserId)
         .eq("proche_user_id", user.id)
         .in("status", ["pending", "active", "revoked"])
@@ -306,7 +304,9 @@ export default async function ContactPage({
       let signed: string | null = null;
       if (photo) signed = /^https?:\/\//i.test(photo)
         ? photo
-        : ((await admin.storage.from("contact-photos").createSignedUrl(photo, 3600)).data?.signedUrl ?? null);
+        : estDansLEspaceDe(photo, user.id)
+          ? ((await admin.storage.from("contact-photos").createSignedUrl(photo, 3600)).data?.signedUrl ?? null)
+          : null;
       return {
         id: r.id as string,
         description: r.description as string,
@@ -383,10 +383,10 @@ export default async function ContactPage({
     : pct >= 65 ? "var(--champ)" : "rgba(244,241,232,.5)";
 
   let photoSignedUrl: string | null = null;
-  if (typedContact.photo_url) {
+  if (estDansLEspaceDe(typedContact.photo_url, user.id)) {
     const { data } = await admin.storage
       .from("contact-photos")
-      .createSignedUrl(typedContact.photo_url, 3600);
+      .createSignedUrl(typedContact.photo_url as string, 3600);
     photoSignedUrl = data?.signedUrl ?? null;
   }
 

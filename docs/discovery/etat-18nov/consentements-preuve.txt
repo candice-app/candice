@@ -1,61 +1,128 @@
 
-══ A. APPELS DIRECTS À LA BASE — consentement « contact_analysis » (titulaire : le proche B)
-  le demandeur insère directement un consentement ACTIF → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
-  ✓ A1 : le demandeur ne peut pas créer un consentement actif
-  le demandeur crée une DEMANDE (pending), en glissant une fausse preuve → ACCEPTÉ
-  ✓ A2 : la demande est créée, la fausse preuve est effacée par la base
-  le demandeur passe sa demande à ACTIVE → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
+══ A. APPELS DIRECTS — « contact_analysis » : le pilote propose, le proche accepte
+  le pilote insère directement un partage ACTIF → refusé (contact_consents : seule la personne concernée peut accorder ou élargir ce con)
+  ✓ A1 : le pilote ne peut pas créer un partage déjà actif
+  le pilote crée une DEMANDE, en glissant une fausse preuve et un faux demandeur → ACCEPTÉ
+  ✓ A2 : demande créée ; fausse preuve effacée, demandeur réécrit par la base
+  le pilote passe sa demande à ACTIVE → refusé (contact_consents : seule la personne concernée peut accorder ou élargir ce con)
   ✓ A3 : changement de STATUT par le demandeur refusé
   un TIERS active la demande → sans effet (aucune ligne)
   ✓ A4 : un tiers ne peut rien
-  le demandeur change le COMPTE LIÉ (se désigne lui-même titulaire) → refusé (contact_consents : le type et les parties d'un consentement ne se modi)
+  le pilote change le COMPTE LIÉ (se désigne lui-même) → refusé (contact_consents : le type et les parties d'un consentement ne se modifient pa)
   ✓ A5 : changement de compte lié refusé
-  ✓ A6 : changement de contact refusé
-  le demandeur change le TYPE (contact_analysis → profile_view, dont il serait titulaire) et active → refusé (contact_consents : le type et les parties d'un consentement ne se modi)
+  ✓ A6 : changement de fiche refusé
+  le pilote change le TYPE (→ profile_view, dont il serait titulaire) et active → refusé (contact_consents : un partage de fiche ne porte ni « analysis » ni portée d'us)
   ✓ A7 : changement de TYPE refusé
-  P partage SA PROPRE fiche avec X (profile_view actif, il en est le titulaire) → ACCEPTÉ
+  P partage SA PROPRE fiche avec X (il en est le titulaire) → ACCEPTÉ
   ✓ A8 : partager sa propre fiche reste permis
-  …puis tente d’en faire un contact_analysis actif au nom de X → refusé (contact_consents : le type et les parties d'un consentement ne se modi)
-  ✓ A9 : un partage de fiche ne peut pas être requalifié en consentement d’un autre
+  …puis tente d’en faire un consentement au nom de X → refusé (contact_consents : un partage d'analyse ne porte que la portée « analysis »)
+  ✓ A9 : un partage de fiche ne se requalifie pas
+  ✓ A9 bis : une portée d’usage ne se glisse pas dans un partage de fiche
+  le pilote ajoute des portées d’USAGE à sa demande d’analyse → refusé (contact_consents : un partage d'analyse ne porte que la portée « analysis »)
+  ✓ A10 : une demande d’analyse ne peut porter aucun usage des données du proche
   le PROCHE accepte → ACCEPTÉ · preuve écrite par la base : { granted_by: 'le proche', granted_via: 'titulaire' }
-  ✓ A10 : le proche accorde ; la base enregistre QUI a accordé
-  le demandeur ÉLARGIT la portée d’un consentement actif → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
-  ✓ A11 : élargissement de PORTÉE par le demandeur refusé
-  ✓ A12 : le demandeur ne peut pas réécrire la preuve
-  ✓ A13 : le demandeur peut toujours RÉVOQUER
-  le demandeur RÉACTIVE un consentement révoqué → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
-  ✓ A14 : réactivation par le demandeur refusée
+  ✓ A11 : le proche accepte ; la base enregistre QUI a accordé
+  ✓ A12 : le pilote ne peut pas réécrire la preuve
+  ✓ A13 : le pilote peut RETIRER la portée « analysis »
+  le PROCHE remet lui-même la portée « analysis » que le pilote a retirée → refusé (contact_consents : un partage d'analyse ne s'élargit pas, il se redemande)
+  ✓ A14 : le proche ne peut pas se rouvrir l’analyse du pilote
+  ✓ A15 : le pilote peut RÉVOQUER
+  ✓ A16 : réactivation par le pilote refusée
+  le PROCHE réactive un partage que le pilote a révoqué → refusé (contact_consents : un consentement refusé ou retiré ne se réactive pas, il se )
+  ✓ A17 : le proche ne peut pas réactiver un partage retiré
 
-══ A bis. « profile_view » (titulaire : le propriétaire de la fiche) — les usages légitimes tiennent
+══ A bis. « profile_view » (titulaire : le propriétaire de la fiche)
   X DEMANDE à voir la fiche de B → ACCEPTÉ
-  ✓ A15 : demander à voir une fiche reste possible
-  ✓ A16 : le demandeur ne peut pas s’ouvrir lui-même la fiche d’un autre
+  ✓ A18 : demander à voir une fiche reste possible
+  ✓ A19 : le demandeur ne peut pas s’ouvrir lui-même la fiche d’un autre
   B accepte et choisit ce qu’il montre → ACCEPTÉ
-  ✓ A17 : le propriétaire de la fiche accorde, la preuve est écrite
-  ✓ A18 : le propriétaire peut élargir ce qu’il montre
+  ✓ A20 : le propriétaire accorde, la preuve est écrite
+  ✓ A21 : le propriétaire peut élargir ce qu’il montre
+  ✓ A22 : le lecteur ne peut pas élargir ce qu’on lui montre
+  ✓ A23 : le lecteur ne peut pas réactiver un partage retiré
+
+══ A ter. « profile_usage » : ce que le proche autorise — invisible et intouchable pour le pilote
+  le pilote DEMANDE une autorisation d’usage (pending) → refusé (contact_consents : seule la personne concernée ouvre une autorisation d'usage)
+  ✓ A24 : le pilote ne peut pas créer, même en attente, une autorisation d’usage
+  ✓ A25 : ni active
+  ✓ A26 : la portée « analysis » ne se glisse pas dans une autorisation d’usage
 
 ══ B. LA PORTÉE, DONNÉE PAR DONNÉE — ce qui part au modèle de recommandation
-  aucun consentement actif → []
-  ✓ B1 : sans consentement, rien du profil de B ne part au modèle
-  consentement actif SANS preuve d’accord (granted_by vide) → [] {
-  id: '23317192-2d2e-492a-8878-b8694439a2ef',
-  granted_by: null,
-  granted_via: 'serveur'
-}
-  ✓ B2 : un consentement actif dont l’accord n’est pas établi n’ouvre RIEN
+  aucune autorisation → []
+  ✓ B1 : sans autorisation, rien du profil de B ne part au modèle
+  ✓ B1 bis : le modèle lit « ce qui n’est pas écrit n’est pas connu » — jamais « aucune allergie »
+  le modèle répond « sans risque / aucune allergie » → affiché : non · l’autre idée : présente
+  ✓ B1 ter : une idée qui affirme l’absence d’allergie n’est pas affichée
+  ligne ancienne, active, SANS preuve d’accord → []
+  ✓ B2 : une autorisation active dont l’accord n’est pas établi n’ouvre RIEN
   le PILOTE appelle la route de réglage pour s’accorder l’allergie → HTTP 404
   ✓ B3 : le pilote ne peut pas utiliser la route du proche (404)
   ✓ B4 : un tiers non plus
+  ✓ B4 bis : sans session, 401
   ✓ B5 : une portée inconnue est refusée
+  ✓ B5 bis : « analysis » n’est pas une portée que le proche peut s’accorder
   B autorise UNE allergie (arachide) → HTTP 200 · au modèle : [ 'arachide' ]
-  ✓ B6 : consentement PARTIEL — l’arachide part, ni le gluten, ni le régime, ni l’alcool, ni les réponses libres
+  ✓ B6 : l’arachide part ; ni le gluten, ni le régime, ni l’alcool, ni les réponses libres
+  le pilote lit directement les consentements de cette fiche → [ 'contact_analysis:' ]
+  ✓ B6 bis : le pilote ne VOIT PAS ce que le proche a réglé
+  ✓ B6 ter : le pilote ne peut pas élargir l’autorisation du proche
+  ✓ B6 quater : ni la supprimer
+  le proche modifie sa ligne EN DIRECT, hors de la route → sans effet (aucune ligne)
+  ✓ B6 quinquies : l’autorisation ne se règle que par la route, qui vérifie l’identité et la portée
   B autorise aussi son régime → au modèle : [ 'arachide', 'porc', 'jambon', 'alcool' ]
   ✓ B7 : le régime s’ajoute ; gluten et réponses libres toujours absents
   B RETIRE l’allergie → au modèle : [ 'porc', 'jambon', 'alcool' ]
   ✓ B8 : retrait de l’allergie — elle ne part plus, le régime reste
   B retire son régime → au modèle : []
   ✓ B9 : tout retiré — plus rien du profil de B ne part au modèle
-  le pilote repointe son contact vers le compte de X → au modèle : []
-  ✓ B10 : changer le compte lié du contact n’ouvre pas le profil du nouveau compte
+  le pilote repointe sa fiche vers le compte de X → au modèle : []
+  ✓ B10 : repointer la fiche ne transfère aucun droit — ni ceux de B, ni sur X
+  X, désormais désigné, règle à son tour → HTTP 200 · sa ligne : [ [ 'reco:regime' ] ] · celle de B : [ [ 'reco:regime' ] ] · au modèle : [ 'porc', 'jambon', 'alcool' ]
+  ✓ B11 : X règle SA propre autorisation, sans rien reprendre de celle de B ni la toucher
+  ✓ B12 : seul ce que X a autorisé (son régime) part — pas son allergie, et rien de B
 
-28 vérifications passées, 0 en échec.
+══ C. LA PORTÉE PRÉSENTÉE EST LA PORTÉE ACCEPTÉE — et le serveur n’accorde rien sans titulaire
+  demande affichée [ 'analysis' ] → le demandeur élargit pendant la consultation → refusé (contact_consents : un partage d'analyse ne porte que la portée « analysis »)
+  ✓ C1 : le demandeur ne peut pas élargir une demande EN ATTENTE
+  ✓ C2 : un tiers ne peut pas accepter à la place du proche
+  ✓ C3 : le demandeur ne peut pas accepter sa propre demande
+  ✓ C3 bis : sans session, 401
+  le proche accepte par la route → HTTP 200 · portée active : [ 'analysis' ] · accordé par : le proche
+  ✓ C4 : la portée acceptée est exactement celle qui était affichée
+  ✓ C5 : accepter de VOIR une analyse n’ouvre aucune donnée du proche à la recommandation
+  demande remplacée ; le proche accepte l’ANCIENNE → HTTP 404 · nouvelle demande : pending
+  ✓ C6 : accepter l’ancienne demande n’active pas la nouvelle
+  le serveur écrit une autorisation ACTIVE sans nommer qui accorde → refusé (contact_consents : le serveur n'accorde ni n'élargit sans attester l'accord du)
+  ✓ C7 : le serveur ne peut pas écrire un consentement actif sans titulaire nommé
+  ✓ C8 : ni en nommant quelqu’un d’autre que le titulaire (ici le pilote)
+  ✓ C8 bis : un partage de fiche « accordé » par le lecteur est refusé
+  ✓ C8 ter : le serveur ne fabrique pas un partage d’analyse à la place du pilote
+  le serveur élargit une autorisation active sans attester → refusé (contact_consents : un élargissement exige une attestation nouvelle) · portée : [ 'reco:regime' ]
+  ✓ C9 : le serveur n’élargit pas sans attestation nouvelle du titulaire
+  ✓ C9 bis : reprendre l’ANCIENNE attestation pour une portée nouvelle ne suffit pas
+  ✓ C9 ter : même le serveur ne change pas le type d’une ligne
+  ✓ C10 : une ligne historique sans preuve n’ouvre rien
+  le proche autorise son RÉGIME sur cette ligne → HTTP 200 · portée : [ 'reco:regime' ] · au modèle : [ 'porc', 'jambon', 'alcool' ]
+  ✓ C11 : son accord pour le régime ne valide PAS la portée historique qu’il n’a jamais accordée
+
+══ D. CE QU’UN CONSENTEMENT OUVRE À LA LECTURE DIRECTE (requêtes du navigateur, hors application)
+  K a seulement autorisé l’usage de son régime → il lit l’analyse privée du pilote ? non
+  ✓ D1 : autoriser l’usage de ses données n’ouvre PAS l’analyse que le pilote tient sur soi
+  ✓ D2 : partage proposé, pas encore accepté → rien
+  le pilote a proposé, K accepte → K lit : [ 'ANALYSE-PRIVEE-DU-PILOTE' ]
+  ✓ D3 : proposé par le pilote ET accepté par le proche → l’analyse s’ouvre
+  ✓ D4 : un tiers ne lit rien
+  ✓ D5 : le pilote révoque → la lecture se ferme aussitôt
+  ✓ D6 : et le proche ne peut pas la rouvrir
+  ✓ D7 : une ligne ancienne, active, sans preuve → rien, tant qu’elle n’est pas redemandée et réacceptée
+  Q partage UNE section de sa fiche à T → T lit toute l’auto-analyse par requête directe ? non
+  ✓ D8 : un partage de fiche n’ouvre plus l’analyse entière au navigateur — seul le serveur la lit, et la filtre
+  ✓ D9 : ni les états déclarés par la personne
+
+══ E. EFFACER UN COMPTE — par le vrai service d’authentification, pilote encore présent
+  K était partie de 5 consentement(s) ( contact_analysis, profile_usage ) → effacement : réussi · lignes restantes : 0
+  ✓ E1 : effacer un compte réussit et emporte les consentements dont il était partie
+  ✓ E2 : la fiche du pilote n’est plus rattachée à aucun compte
+  ✓ E3 : la recommandation du pilote fonctionne toujours, sans rien de K
+
+75 vérifications passées, 0 en échec.

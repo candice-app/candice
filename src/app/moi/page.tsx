@@ -88,7 +88,7 @@ export default async function MoiPage() {
   // les écritures de rétro-alimentation partent APRÈS la réponse (after).
   const [{ availableSections, nudges, flushStatusWrites }, avatarUrl] = await Promise.all([
     getDiscoveryOverview(userId, supabase, analysisSnapshot, overviewSources),
-    getSignedAvatarUrl(profile.avatar_path),
+    getSignedAvatarUrl(profile.avatar_path, userId),
   ]);
   after(() => flushStatusWrites().catch(() => {}));
 

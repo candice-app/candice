@@ -16,6 +16,7 @@ import {
   type ProfileRow,
 } from "@/lib/profile/sheet-data";
 import { SCOPE_BLIND } from "@/lib/profile/share-sections";
+import { partageEtabli } from "@/lib/consent/fiche-partagee";
 
 interface ConsentRow {
   id: string;
@@ -23,6 +24,7 @@ interface ConsentRow {
   status: string;
   scope: string[] | null;
   requested_at: string;
+  granted_by?: string | null;
 }
 
 export default async function RecherchePage() {
@@ -40,7 +42,7 @@ export default async function RecherchePage() {
   // Mes demandes envoyées (pending) + fiches partagées avec moi (active)
   const { data: consentsRaw } = await supabase
     .from("contact_consents")
-    .select("id, pilote_id, status, scope, requested_at")
+    .select("id, pilote_id, status, scope, requested_at, granted_by")
     .eq("kind", "profile_view")
     .eq("proche_user_id", user.id)
     .in("status", ["pending", "active"])
@@ -48,7 +50,7 @@ export default async function RecherchePage() {
 
   const consents = (consentsRaw ?? []) as ConsentRow[];
   const pending = consents.filter(c => c.status === "pending");
-  const active = consents.filter(c => c.status === "active");
+  const active = consents.filter(c => partageEtabli(c));
 
   // Prénom des partageurs ACTIFS uniquement (ils ont accepté — jamais pour un pending)
   const admin = createAdminClient();

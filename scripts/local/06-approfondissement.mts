@@ -215,7 +215,10 @@ async function main() {
   // 4b — avec consentement portant la bonne portée
   const { error: eK } = await admin.from('contact_consents').insert({
     pilote_id: pilote.id, contact_id: contact.id, proche_user_id: thibaud.id,
-    status: 'active', scope: ['analysis', PORTEE_EXCLUSIONS_RECO], consented_at: new Date().toISOString(),
+    // Depuis la migration 116 : une autorisation d'usage est un type à part, et le serveur ne
+    // l'écrit qu'en nommant celui qui accorde (ici Thibaud, le titulaire).
+    kind: 'profile_usage', granted_by: thibaud.id,
+    status: 'active', scope: [PORTEE_EXCLUSIONS_RECO], consented_at: new Date().toISOString(),
   });
   if (eK) { non(`consentement : ${eK.message}`); echecs++; }
   const avec = await lireRejetsDuProche(admin as never, { piloteId: pilote.id, contactId: contact.id });

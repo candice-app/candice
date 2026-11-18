@@ -27,7 +27,11 @@ export async function compteLocal(nom: string): Promise<CompteLocal> {
   const email = `${nom}@${DOMAINE_TEST}`;
   const { data: liste } = await admin.auth.admin.listUsers({ perPage: 1000 });
   for (const u of liste?.users ?? []) {
-    if (u.email === email) await admin.auth.admin.deleteUser(u.id);
+    if (u.email === email) {
+      // Un effacement qui échoue n'est pas un détail : il est dit, pas avalé.
+      const { error: eSup } = await admin.auth.admin.deleteUser(u.id);
+      if (eSup) throw new Error(`suppression de ${email} impossible — ${eSup.message}`);
+    }
   }
   const motDePasse = `T!${globalThis.crypto.randomUUID()}`;
   const { data, error } = await admin.auth.admin.createUser({

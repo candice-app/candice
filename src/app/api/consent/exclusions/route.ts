@@ -12,7 +12,7 @@ import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { accorder, retirer, type EtatConsentement } from '@/lib/consent/portees';
 import { PORTEE_EXCLUSIONS_RECO } from '@/lib/recommendations/declarations-proche';
-import { estUsageValide } from '@/lib/consent/usage-profil';
+import { estUsageValide, TYPE_USAGE } from '@/lib/consent/usage-profil';
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -45,7 +45,8 @@ export async function POST(req: NextRequest) {
   const piloteId = contact.user_id as string;
   const { data: existante, error: eK } = await admin
     .from('contact_consents').select('id, scope, status, granted_by')
-    .eq('pilote_id', piloteId).eq('contact_id', contactId).eq('status', 'active').maybeSingle();
+    .eq('pilote_id', piloteId).eq('contact_id', contactId).eq('proche_user_id', user.id)
+    .eq('kind', TYPE_USAGE).eq('status', 'active').maybeSingle();
   if (eK) return NextResponse.json({ error: 'lecture impossible' }, { status: 500 });
 
   // ON N'HÉRITE PAS D'UNE PORTÉE DONT L'ACCORD N'EST PAS ÉTABLI. Si la ligne existante n'a pas
@@ -54,7 +55,7 @@ export async function POST(req: NextRequest) {
   // doit pas en couvrir d'autres que la personne n'a jamais validées.
   const accordEtabli = existante?.granted_by === user.id;
   const porteesReprises = ((existante?.scope as string[] | undefined) ?? [])
-    .filter((p) => accordEtabli || (p !== PORTEE_EXCLUSIONS_RECO && !estUsageValide(p)));
+    .filter((p) => accordEtabli && (p === PORTEE_EXCLUSIONS_RECO || estUsageValide(p)));
   const avant: EtatConsentement | null = existante
     ? { scope: porteesReprises, status: existante.status as EtatConsentement['status'] }
     : null;
@@ -76,6 +77,7 @@ export async function POST(req: NextRequest) {
   } else if (action === 'autoriser') {
     const { error } = await admin.from('contact_consents').insert({
       pilote_id: piloteId, contact_id: contactId, proche_user_id: user.id,
+      kind: TYPE_USAGE, requested_by: user.id,
       status: 'active', scope: apres.scope,
       responded_at: new Date().toISOString(), consented_at: new Date().toISOString(),
       granted_by: user.id,
