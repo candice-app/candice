@@ -1,0 +1,399 @@
+{
+ "source": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_2.xlsx",
+ "source_sha256": "7a843e8b13f034008334a78da65cc08f626d85c87325d84427e7a122bd1f0a2c",
+ "revision": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_3.xlsx",
+ "revision_sha256": "1b326ff4ea28d83cc8880e8451d30acff7d31a93962f8c73d3a738fdc5093425",
+ "cellules_modifiees": 35,
+ "par_bloc": {
+  "D": 34,
+  "E": 1
+ },
+ "questions_bloc_D": [
+  "animals.2135",
+  "animals.2140",
+  "bond.1702",
+  "celebav.2182",
+  "change.1757",
+  "change.1767",
+  "change.1769",
+  "change.1774",
+  "change.1793",
+  "change.1798",
+  "children.2066",
+  "collection.2037",
+  "dreams.2000",
+  "dreams.2007",
+  "drinks.2088",
+  "drinks.2106",
+  "energy.1610",
+  "family.1807",
+  "family.1810",
+  "family.1819",
+  "family.1822",
+  "family.1832",
+  "family.1833",
+  "flowers.2116",
+  "joys.1893",
+  "legacy.1509",
+  "mental.1855",
+  "philovie.1639",
+  "remembrance.1983",
+  "remembrance.1989",
+  "rituals.1876",
+  "rituals.1881",
+  "success.1753",
+  "values.1903"
+ ],
+ "diff": [
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q2017",
+   "question_id": "animals.2135",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Animaux philosophie — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Animaux philosophie — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q2056",
+   "question_id": "animals.2140",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Animaux philosophie — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Animaux philosophie — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3118",
+   "question_id": "bond.1702",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Rapport au lien — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Rapport au lien — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3665",
+   "question_id": "celebav.2182",
+   "colonne": "condition d’émission",
+   "avant": "AXE 2 — Comment j’aime célébrer les autres (offert) — niveau B — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ AXE 2 — Comment j’aime célébrer les autres (offert) — niveau B — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3984",
+   "question_id": "change.1757",
+   "colonne": "condition d’émission",
+   "avant": "Branche Changement ouverte — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Branche Changement ouverte — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q4096",
+   "question_id": "change.1767",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Changement — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Changement — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q4113",
+   "question_id": "change.1769",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Changement — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Changement — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q4153",
+   "question_id": "change.1774",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Changement — sensitivity: MOYENNE (rôles : salarié, dirigeant, parent d’un bébé, aidant, conjoint, sportif, propriétaire d’un lieu, membre d’une équipe)",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Changement — sensitivity: MOYENNE (rôles : salarié, dirigeant, parent d’un bébé, aidant, conjoint, sportif, propriétaire d’un lieu, membre d’une équipe)",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q4335",
+   "question_id": "change.1793",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Changement — FACULTATIVE — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Changement — FACULTATIVE — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q4350",
+   "question_id": "change.1798",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Changement — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Changement — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q4393",
+   "question_id": "children.2066",
+   "colonne": "condition d’émission",
+   "avant": "Branche Les enfants ouverte — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Branche Les enfants ouverte — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q5108",
+   "question_id": "collection.2037",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Collection — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Collection — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7177",
+   "question_id": "dreams.2000",
+   "colonne": "condition d’émission",
+   "avant": "Branche Rêves ouverte — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Branche Rêves ouverte — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7258",
+   "question_id": "dreams.2007",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Rêves — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Rêves — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7415",
+   "question_id": "drinks.2088",
+   "colonne": "condition d’émission",
+   "avant": "Branche Boissons ouverte — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Branche Boissons ouverte — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7548",
+   "question_id": "drinks.2106",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Boissons — question CONTEXTUELLE, sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Boissons — question CONTEXTUELLE, sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7707",
+   "question_id": "energy.1610",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Énergie — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Énergie — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7820",
+   "question_id": "family.1807",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Famille — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Famille — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7855",
+   "question_id": "family.1810",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Famille — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Famille — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7935",
+   "question_id": "family.1819",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Famille — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Famille — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q7959",
+   "question_id": "family.1822",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Famille — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Famille — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q8054",
+   "question_id": "family.1832",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Famille — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Famille — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q8062",
+   "question_id": "family.1833",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Famille — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Famille — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q8889",
+   "question_id": "flowers.2116",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Fleurs — sensitivity: MOYENNE (deuil)",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Fleurs — sensitivity: MOYENNE (deuil)",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q11627",
+   "question_id": "joys.1893",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Petites joies — question préparatoire (preparatory) — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Petites joies — question préparatoire (preparatory) — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q12093",
+   "question_id": "legacy.1509",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Transmission — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Transmission — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q12677",
+   "question_id": "mental.1855",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Charge mentale — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Charge mentale — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q14015",
+   "question_id": "philovie.1639",
+   "colonne": "condition d’émission",
+   "avant": "Branche Philosophie de vie ouverte — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Branche Philosophie de vie ouverte — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q15808",
+   "question_id": "remembrance.1983",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Souvenirs — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Souvenirs — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q15847",
+   "question_id": "remembrance.1989",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Souvenirs — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Souvenirs — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q16367",
+   "question_id": "rituals.1876",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Rituels — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Rituels — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q16408",
+   "question_id": "rituals.1881",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Rituels — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Rituels — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q18771",
+   "question_id": "success.1753",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Réussite — sensitivity: MOYENNE",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Réussite — sensitivity: MOYENNE",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "D",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q20353",
+   "question_id": "values.1903",
+   "colonne": "condition d’émission",
+   "avant": "Branche Les valeurs ouverte — sensitivity: MOYENNE — croise philovie.1639",
+   "apres": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Branche Les valeurs ouverte — sensitivity: MOYENNE — croise philovie.1639",
+   "decision": "Décision du 18 nov. : règle d'ouverture des questions de sensibilité MOYENNE."
+  },
+  {
+   "bloc": "E",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q9522",
+   "question_id": "food2.0882A",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Food — et seulement si le Carnet d’envies ne contient pas déjà une entrée culinaire récente",
+   "apres": "Niveau C Food",
+   "decision": "Décision du 18 nov. : food2.0882A peut être active dès que son contrat est implémenté et testé ; l'ajout au Carnet d'envies demande une demande ou une confirmation de la personne et ne conditionne plus l'ouverture de la question."
+  }
+ ]
+}

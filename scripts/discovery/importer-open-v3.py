@@ -25,11 +25,11 @@ Sans --ecrire : analyse et rapport seulement, aucun fichier touché.
 from __future__ import annotations
 import argparse, collections, hashlib, json, pathlib, re, sys, datetime
 
-VERSION = "importer-open-v3 / 2"
+VERSION = "importer-open-v3 / 3"
 RACINE = pathlib.Path(__file__).resolve().parents[2]
-CLASSEUR = RACINE / "docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_2.xlsx"
+CLASSEUR = RACINE / "docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_3.xlsx"
 SORTIE = RACINE / "src/lib/discovery/open-v3"
-SHA_ATTENDU = "7a843e8b13f034008334a78da65cc08f626d85c87325d84427e7a122bd1f0a2c"
+SHA_ATTENDU = "1b326ff4ea28d83cc8880e8451d30acff7d31a93962f8c73d3a738fdc5093425"
 
 # ── Vocabulaires du JOURNAL. Lus dans le code, jamais recopiés à la main : une copie
 #    diverge, et la divergence ne se verrait qu'en production.

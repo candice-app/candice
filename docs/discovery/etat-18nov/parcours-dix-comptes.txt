@@ -1,8 +1,8 @@
 
 ══ Sophie  (panne du modèle pendant ses réponses libres)
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 36b09043-1086-564e-99ca-6fe78818ae08
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source e3025838-6515-560a-a334-a56681b0a2f0
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source b0350b46-a58c-5e88-9d0f-9d4aa658ddc9
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source a4b3ba72-9982-5853-b561-02d341a4b0f6
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source a4d4e02b-b6bb-5da4-ba74-ea5813cc3a0f
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 2057d2e0-5052-5946-965a-43028da53061
   ✓ Sophie · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : lecture, cuisine, sport
   ✓ Sophie · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.adore_faire)
@@ -39,9 +39,9 @@
   ✓ Sophie · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Camille
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 8c28504c-3301-5e18-ac44-b6a47f0721db
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source a85def38-ab9f-5efb-998b-5a39d8b6f9e4
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 686a6330-966a-5e61-94bd-f50f6d80a462
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 965afa8d-3e28-5689-bb81-5a4e08f5cc43
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source a3a24f42-7390-58ff-8019-d01a039b0056
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 0f0fe51d-92db-5f1a-831f-5659b3659b1b
   ✓ Camille · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : musique, cinema, art
   ✓ Camille · lecture : une source de lecture (singularity.adore_faire)
@@ -73,9 +73,9 @@
   ✓ Camille · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Inès  (panne du modèle pendant ses réponses libres)
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source fa505b32-0b0b-58f9-884d-675e9297767c
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 3ba21689-b5d8-5759-ad89-3307dbaa19b0
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 1fefe584-bafa-5bcf-a4e7-0fab7493dd35
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source f04f9c7c-58ef-5612-ad6b-bae132b5efdb
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source c6abc5ef-ac8f-5973-b558-9194a2fba375
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source c77f1637-0185-57d3-adc9-1d91ff994fd2
   ✓ Inès · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : voyage, mode, tech
   ✓ Inès · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.marques_lieux)
@@ -109,9 +109,9 @@
   ✓ Inès · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Léa
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source c9a3260a-89e4-5ea0-98ab-29947746c01c
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 6bfe07a1-7600-583b-a1b0-080a177c308a
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 3b64959b-c35d-587c-8e19-94606733bd47
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source b6478846-5d15-5794-b164-0bffe62e4819
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 25d402a7-94b4-5e05-8057-b77fe1e5acf2
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 1b72b7b7-a2b4-547e-b31d-b74a89af92cd
   ✓ Léa · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : nature, bienetre, deco
   ✓ Léa · lecture : une source de lecture (singularity.envies_reves)
@@ -143,9 +143,9 @@
   ✓ Léa · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Manon  (panne du modèle pendant ses réponses libres)
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 9020ed9a-3a9b-50b6-9081-326d23d65750
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source edf158f0-5680-5452-9cb0-22bb8b734bbe
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 05881271-ffa7-5860-aa1c-e1830f5a1d0d
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 3020c698-ca52-5621-afea-f78caf04c43d
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source f1a4377d-ae5c-5a78-affd-3586199bc95e
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source ea8b77fb-157a-50f4-b342-83d8bb7c4592
   ✓ Manon · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : vin, lecture, cuisine
   ✓ Manon · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.adore_faire)
@@ -179,9 +179,9 @@
   ✓ Manon · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Clara
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source ae084b10-d2a5-50f2-825f-e2929476b971
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source c53ef669-3a97-5a55-bc99-7e9ae2d9fda9
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source e2045ed3-d5fb-53b2-bac2-c4a768145276
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 55fa114f-c409-5c7d-847b-ed30106658bc
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 37c486d5-15cd-52bf-b760-44079ce2060d
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 49abfc8d-6cc3-51d1-b0e2-ba4f64832fc5
   ✓ Clara · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : sport, musique, cinema
   ✓ Clara · lecture : une source de lecture (singularity.sujets_stimulants)
@@ -213,9 +213,9 @@
   ✓ Clara · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Nour  (panne du modèle pendant ses réponses libres)
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 94afb802-67ca-5b3d-8d1a-1e06bcb3d9da
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 17a1f334-7176-5287-9cb3-3c4b2b2b2135
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 51f09d36-5cb5-5433-9189-8451087b579a
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source bd2a3240-4c2e-5e91-93c0-97669457b38c
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 929dc6d2-3c78-50fe-a4aa-352476dd3c8d
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 1f97b634-7da7-5014-a55d-bf0ae96cf6c4
   ✓ Nour · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : art, voyage, mode
   ✓ Nour · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.evite_deteste)
@@ -249,9 +249,9 @@
   ✓ Nour · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Alice
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source d3079467-3aad-54e7-8186-c70c8f32cbc1
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source fb02f662-c5bf-52e7-8a5e-d86521d51100
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 8a56b2b8-feef-5989-ab40-79d884ea81a3
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 066995b1-baf8-5e74-9b2a-59aac7a8470a
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source b132def1-a607-5839-8436-ceabcb80dc58
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source a6c37fb2-6c99-5e35-9433-3daa87f57c4c
   ✓ Alice · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : tech, nature, bienetre
   ✓ Alice · lecture : une source de lecture (singularity.adore_faire)
@@ -281,9 +281,9 @@
   ✓ Alice · le Discovery n’a écrit ni moteur, ni besoin, ni trait
 
 ══ Jeanne  (panne du modèle pendant ses réponses libres)
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 18e6cc88-1b9d-543f-85eb-c05252537acc
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 90b49959-8ca2-5168-99e1-9ff18f99a6df
-[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 377d671b-4f2c-5bd2-b258-79d75244261d
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 5a6636da-b7ca-553e-a849-062391abc2ae
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 75107f3e-8ba5-5883-8123-5d770b16c637
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 8737362a-b540-5f0e-b48f-7a394654dcb9
   ✓ Jeanne · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
    centres d’intérêt cochés : deco, vin, lecture
   ✓ Jeanne · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.plus_beau_cadeau)

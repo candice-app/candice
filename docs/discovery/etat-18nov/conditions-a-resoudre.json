@@ -1,12 +1,11 @@
 {
  "comptes": {
-  "ouvrable": 1421,
+  "ouvrable": 1422,
   "fragment_illisible": 229,
-  "nom_de_branche_non_resolu": 280,
-  "sensible_moyenne": 32,
+  "nom_de_branche_non_resolu": 281,
+  "ouvrable_sur_demarche": 48,
   "contexte_de_vie_inconnu_du_moteur": 132,
   "sensible_high": 103,
-  "ouvrable_sur_demarche": 18,
   "sensible_maximale": 9,
   "sensible_consigne": 1
  },
@@ -278,20 +277,6 @@
    "condition": "Ouverture branche Les animaux — philosophie (voir onglet Branches) — NOUVELLE BRANCHE. ⚠ RECOUVREMENT avec la branche Animaux (animals.0391-0413) — merge final. Celle-ci porte sur le RAPPORT aux animaux, pas sur l’animal possédé."
   },
   {
-   "id": "animals.2135",
-   "branche": "animals",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Animaux philosophie — sensitivity: MOYENNE"
-  },
-  {
-   "id": "animals.2140",
-   "branche": "animals",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Animaux philosophie — sensitivity: MOYENNE"
-  },
-  {
    "id": "animals.2147",
    "branche": "animals",
    "categorie": "nom_de_branche_non_resolu",
@@ -537,13 +522,6 @@
    "condition": "Niveau C Rapport au lien : part d’EXPÉRIENCES CONCRÈTES, car les personnes idéalisent souvent leur manière d’être en relation"
   },
   {
-   "id": "bond.1702",
-   "branche": "bond",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Rapport au lien — sensitivity: MOYENNE"
-  },
-  {
    "id": "bond.1704",
    "branche": "bond",
    "categorie": "sensible_high",
@@ -677,13 +655,6 @@
    "condition": "Ouverture branche Célébration avancée — AXE 1 — Comment j’aime être célébré (reçu) (voir onglet Branches). ⚠ REFONTE/EXTENSION de Célébration (celebration.0811-0832) — merge final."
   },
   {
-   "id": "celebav.2182",
-   "branche": "celebav",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "AXE 2 — Comment j’aime célébrer les autres (offert) — niveau B — sensitivity: MOYENNE"
-  },
-  {
    "id": "celebav.2193",
    "branche": "celebav",
    "categorie": "nom_de_branche_non_resolu",
@@ -731,34 +702,6 @@
    "categorie": "fragment_illisible",
    "motif": "Ouverture branche Rapport au changement",
    "condition": "Ouverture branche Rapport au changement (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐, niveau 4."
-  },
-  {
-   "id": "change.1757",
-   "branche": "change",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Branche Changement ouverte — sensitivity: MOYENNE"
-  },
-  {
-   "id": "change.1767",
-   "branche": "change",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Changement — sensitivity: MOYENNE"
-  },
-  {
-   "id": "change.1769",
-   "branche": "change",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Changement — sensitivity: MOYENNE"
-  },
-  {
-   "id": "change.1774",
-   "branche": "change",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Changement — sensitivity: MOYENNE (rôles : salarié, dirigeant, parent d’un bébé, aidant, conjoint, sportif, propriétaire d’un lieu, membre d’une équipe)"
   },
   {
    "id": "change.1778",
@@ -852,13 +795,6 @@
    "condition": "Niveau C Changement — conversationnel et largement optionnel"
   },
   {
-   "id": "change.1793",
-   "branche": "change",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Changement — FACULTATIVE — sensitivity: MOYENNE"
-  },
-  {
    "id": "change.1796",
    "branche": "change",
    "categorie": "sensible_high",
@@ -873,25 +809,11 @@
    "condition": "Niveau C Changement — TRÈS OPTIONNELLE — sensitivity: MAXIMALE"
   },
   {
-   "id": "change.1798",
-   "branche": "change",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Changement — sensitivity: MOYENNE"
-  },
-  {
    "id": "children.2063",
    "branche": "children",
    "categorie": "fragment_illisible",
    "motif": "Ouverture branche Les enfants",
    "condition": "Ouverture branche Les enfants (voir onglet Branches) — NOUVELLE BRANCHE."
-  },
-  {
-   "id": "children.2066",
-   "branche": "children",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Branche Les enfants ouverte — sensitivity: MOYENNE"
   },
   {
    "id": "cinema2.0976",
@@ -976,13 +898,6 @@
    "categorie": "nom_de_branche_non_resolu",
    "motif": "collection : achat concret ou collection experte",
    "condition": "Niveau C Collection : achat concret ou collection experte"
-  },
-  {
-   "id": "collection.2037",
-   "branche": "collection",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Collection — sensitivity: MOYENNE"
   },
   {
    "id": "comics.0414",
@@ -1510,20 +1425,6 @@
    "condition": "Ouverture branche Rêves & projets (voir onglet Branches) — NOUVELLE BRANCHE."
   },
   {
-   "id": "dreams.2000",
-   "branche": "dreams",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Branche Rêves ouverte — sensitivity: MOYENNE"
-  },
-  {
-   "id": "dreams.2007",
-   "branche": "dreams",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Rêves — sensitivity: MOYENNE"
-  },
-  {
    "id": "dreams.2011",
    "branche": "dreams",
    "categorie": "sensible_high",
@@ -1566,13 +1467,6 @@
    "condition": "Ouverture branche Boissons (voir onglet Branches) — NOUVELLE BRANCHE. ⚠ RECOUVREMENT avec food2.0872-0873 — merge final."
   },
   {
-   "id": "drinks.2088",
-   "branche": "drinks",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Branche Boissons ouverte — sensitivity: MOYENNE"
-  },
-  {
    "id": "drinks.2091",
    "branche": "drinks",
    "categorie": "nom_de_branche_non_resolu",
@@ -1610,9 +1504,9 @@
   {
    "id": "drinks.2106",
    "branche": "drinks",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Boissons — question CONTEXTUELLE, sensitivity: MOYENNE"
+   "categorie": "nom_de_branche_non_resolu",
+   "motif": "boissons — question contextuelle, sensitivity: moyenne",
+   "condition": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Boissons — question CONTEXTUELLE, sensitivity: MOYENNE"
   },
   {
    "id": "energy.1592",
@@ -1629,25 +1523,11 @@
    "condition": "Niveau C Énergie : le niveau C passe par des RÉCITS"
   },
   {
-   "id": "energy.1610",
-   "branche": "energy",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Énergie — sensitivity: MOYENNE"
-  },
-  {
    "id": "family.1799",
    "branche": "family",
    "categorie": "fragment_illisible",
    "motif": "Ouverture branche Rapport à la famille",
    "condition": "Ouverture branche Rapport à la famille (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐, niveau 4."
-  },
-  {
-   "id": "family.1807",
-   "branche": "family",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Famille — sensitivity: MOYENNE"
   },
   {
    "id": "family.1815",
@@ -1662,13 +1542,6 @@
    "categorie": "sensible_high",
    "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
    "condition": "Niveau B Famille — sensitivity: HIGH"
-  },
-  {
-   "id": "family.1819",
-   "branche": "family",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Famille — sensitivity: MOYENNE"
   },
   {
    "id": "family.1820",
@@ -1690,20 +1563,6 @@
    "categorie": "sensible_high",
    "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
    "condition": "Niveau B Famille — FACULTATIVE — sensitivity: HIGH — JAMAIS exposée à un proche"
-  },
-  {
-   "id": "family.1832",
-   "branche": "family",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Famille — sensitivity: MOYENNE"
-  },
-  {
-   "id": "family.1833",
-   "branche": "family",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Famille — sensitivity: MOYENNE"
   },
   {
    "id": "family.1836",
@@ -1921,13 +1780,6 @@
    "categorie": "fragment_illisible",
    "motif": "Ouverture branche Fleurs & Plantes",
    "condition": "Ouverture branche Fleurs & Plantes (voir onglet Branches) — NOUVELLE BRANCHE."
-  },
-  {
-   "id": "flowers.2116",
-   "branche": "flowers",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Fleurs — sensitivity: MOYENNE (deuil)"
   },
   {
    "id": "flowers.2125",
@@ -2208,13 +2060,6 @@
    "categorie": "nom_de_branche_non_resolu",
    "motif": "food : seulement si pertinent",
    "condition": "Niveau C Food : seulement si pertinent"
-  },
-  {
-   "id": "food2.0882A",
-   "branche": "food2",
-   "categorie": "nom_de_branche_non_resolu",
-   "motif": "food — et seulement si le carnet d’envies ne contient pas deja une entree culinaire recente",
-   "condition": "Niveau C Food — et seulement si le Carnet d’envies ne contient pas déjà une entrée culinaire récente"
   },
   {
    "id": "fragrance2.1147",
@@ -2744,9 +2589,9 @@
   {
    "id": "joys.1893",
    "branche": "joys",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Petites joies — question préparatoire (preparatory) — sensitivity: MOYENNE"
+   "categorie": "nom_de_branche_non_resolu",
+   "motif": "petites joies — question preparatoire",
+   "condition": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Petites joies — question préparatoire (preparatory) — sensitivity: MOYENNE"
   },
   {
    "id": "joys.1894",
@@ -2880,13 +2725,6 @@
    "categorie": "fragment_illisible",
    "motif": "Ouverture branche Transmission",
    "condition": "Ouverture branche Transmission (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐. Ne JAMAIS en faire une sous-partie de Famille, Enfants ou Learning."
-  },
-  {
-   "id": "legacy.1509",
-   "branche": "legacy",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Transmission — sensitivity: MOYENNE"
   },
   {
    "id": "legacy.1511",
@@ -3097,13 +2935,6 @@
    "categorie": "nom_de_branche_non_resolu",
    "motif": "charge mentale : seulement si charge elevee",
    "condition": "Niveau B Charge mentale : seulement si charge élevée"
-  },
-  {
-   "id": "mental.1855",
-   "branche": "mental",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Charge mentale — sensitivity: MOYENNE"
   },
   {
    "id": "mental.1859",
@@ -3496,13 +3327,6 @@
    "categorie": "fragment_illisible",
    "motif": "Ouverture branche Philosophie de vie",
    "condition": "Ouverture branche Philosophie de vie (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐⭐, niveau 4 « moteurs profonds ». ⚠ Ne doit JAMAIS arriver trop tôt avec une question massive. Mauvaise entrée : « quel est le sens de ta vie ? ». Bonne entrée : « quand tu imagines une vie vraiment réussie, qu’est-ce qui doit absolument en faire partie ? »"
-  },
-  {
-   "id": "philovie.1639",
-   "branche": "philovie",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Branche Philosophie de vie ouverte — sensitivity: MOYENNE"
   },
   {
    "id": "philovie.1648",
@@ -3988,20 +3812,6 @@
    "condition": "Ouverture branche Rapport aux souvenirs (voir onglet Branches) — NOUVELLE BRANCHE. ⚠ RECOUVREMENT avec la branche Nostalgie & souvenirs (memory.0748-0768) — merge final. Celle-ci est plus large et centrée sur la CONSERVATION."
   },
   {
-   "id": "remembrance.1983",
-   "branche": "remembrance",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Souvenirs — sensitivity: MOYENNE"
-  },
-  {
-   "id": "remembrance.1989",
-   "branche": "remembrance",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Souvenirs — sensitivity: MOYENNE"
-  },
-  {
    "id": "remembrance.1994",
    "branche": "remembrance",
    "categorie": "nom_de_branche_non_resolu",
@@ -4254,25 +4064,11 @@
    "condition": "Ouverture branche Rituels (voir onglet Branches) — NOUVELLE BRANCHE."
   },
   {
-   "id": "rituals.1876",
-   "branche": "rituals",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau B Rituels — sensitivity: MOYENNE"
-  },
-  {
    "id": "rituals.1879",
    "branche": "rituals",
    "categorie": "nom_de_branche_non_resolu",
    "motif": "rituels : contexte concret",
    "condition": "Niveau C Rituels : contexte concret"
-  },
-  {
-   "id": "rituals.1881",
-   "branche": "rituals",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Rituels — sensitivity: MOYENNE"
   },
   {
    "id": "sensory.0261",
@@ -4975,13 +4771,6 @@
    "condition": "Niveau C Réussite — sensitivity: HIGH — FACULTATIVE"
   },
   {
-   "id": "success.1753",
-   "branche": "success",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Niveau C Réussite — sensitivity: MOYENNE"
-  },
-  {
    "id": "tech2.1313",
    "branche": "tech2",
    "categorie": "fragment_illisible",
@@ -5407,13 +5196,6 @@
    "categorie": "fragment_illisible",
    "motif": "Ouverture branche Les valeurs",
    "condition": "Ouverture branche Les valeurs (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐⭐. ⚠ NE PAS CONFONDRE avec « Signature de valeur » (value.*) qui porte sur les critères d’achat."
-  },
-  {
-   "id": "values.1903",
-   "branche": "values",
-   "categorie": "sensible_moyenne",
-   "motif": "marque de sensibilité du référentiel, sans mode d’ouverture écrit",
-   "condition": "Branche Les valeurs ouverte — sensitivity: MOYENNE — croise philovie.1639"
   },
   {
    "id": "values.1906",
@@ -7306,20 +7088,12 @@
     "food2"
    ],
    "emplois": {
-    "food2": 9
+    "food2": 10
    },
    "retenu": true
   },
   {
    "nom": "food : seulement si pertinent",
-   "branches": [],
-   "emplois": {
-    "food2": 1
-   },
-   "retenu": false
-  },
-  {
-   "nom": "food — et seulement si le carnet d’envies ne contient pas deja une entree culinaire recente",
    "branches": [],
    "emplois": {
     "food2": 1

@@ -28,7 +28,7 @@ const ouvertes = async () => {
 };
 
 console.log('branches à ouverture sur démarche :', branchesSurDemarche());
-v.verifier(JSON.stringify(branchesSurDemarche()) === '["causes"]', 'seule la branche « causes » attend une démarche');
+v.verifier(branchesSurDemarche().includes('causes') && !branchesSurDemarche().includes('travel'), '« causes » attend une démarche ; une branche ordinaire comme « travel », non');
 
 // ── 1. DU TERRAIN, SANS DÉMARCHE : un intérêt pour les causes, déclaré dans une réponse fermée.
 const ts = new Date().toISOString(); const sid = globalThis.crypto.randomUUID();
