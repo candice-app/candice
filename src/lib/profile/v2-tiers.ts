@@ -5,6 +5,8 @@
 // 2) thirdPersonV2 : conversion 3e personne de tous les textes (le pilote
 //    lit « tu », le tiers lit « elle/il »).
 
+import { allergiesPartagees } from './partage-elements';
+import { VISIBILITY_MATRIX } from './visibility';
 import { resolveVisibility, type ProfileView, type SectionKey } from "./visibility";
 import type { ProfileV2Data, SectionV2 } from "./v2-data";
 
@@ -77,6 +79,18 @@ const SECTION_TO_ANALYSIS: Partial<Record<SectionKey, string>> = {
   monde_gouts: "style",
 };
 
+/** Les allergies à rendre pour une vue : la chaîne affichée et la liste, cohérentes entre elles. */
+function allergiesPourVue(data: ProfileV2Data, view: ProfileView, sharedSections?: SectionKey[]) {
+  const regle = VISIBILITY_MATRIX[view].facts_allergies;
+  const tous = data.facts.allergiesElements ?? [];
+  if (regle === "visible") return { allergies: data.facts.allergies, allergiesElements: tous };
+  if (regle !== "filtered_on" && regle !== "filtered_off") return { allergies: undefined, allergiesElements: undefined };
+  const vus = allergiesPartagees(tous, (sharedSections ?? []) as string[]);
+  if (vus.length === 0) return { allergies: undefined, allergiesElements: undefined };
+  const texte = vus.map((x) => x.libelle).join(", ");
+  return { allergies: texte.charAt(0).toUpperCase() + texte.slice(1), allergiesElements: vus };
+}
+
 export function stripProfileV2Data(
   data: ProfileV2Data,
   view: ProfileView,
@@ -113,7 +127,10 @@ export function stripProfileV2Data(
       tailles: shown("facts_tailles") ? data.facts.tailles : undefined,
       // UNE PORTE PAR FAIT. Partager une allergie n'ouvre plus le régime, et
       // inversement : ce sont trois décisions, elles passent par trois clés.
-      allergies: shown("facts_allergies") ? data.facts.allergies : undefined,
+      // UNE ALLERGIE À LA FOIS. Pour une vue où ce fait se choisit (fiche partagée), on ne
+      // rend que les allergies dont la clé a été accordée ; les autres ne quittent pas le
+      // serveur. Pour le pilote sur sa propre fiche, toutes.
+      ...allergiesPourVue(data, view, sharedSections),
       regime: shown("facts_regime") ? data.facts.regime : undefined,
       alcool: shown("facts_alcool") ? data.facts.alcool : undefined,
       parfums: shown("facts_parfums") ? data.facts.parfums : undefined,

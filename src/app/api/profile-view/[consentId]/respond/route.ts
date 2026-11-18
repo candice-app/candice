@@ -5,6 +5,7 @@
 // cochables de la matrice (jamais d'élargissement possible).
 // L'update passe par le client UTILISATEUR (policy pilote_manage_consents).
 
+import { elementsAllergies } from "@/lib/profile/partage-elements";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { scopeForSelection } from "@/lib/profile/share-sections";
@@ -41,13 +42,17 @@ export async function POST(
     return NextResponse.json({ error: "Cette demande a déjà reçu une réponse" }, { status: 409 });
   }
 
+  // Les allergies que JE peux partager aujourd'hui : une clé d'allergie que je n'ai pas est écartée.
+  const { data: moi } = await supabase.from("my_profile").select("practical_info").eq("user_id", user.id).maybeSingle();
+  const mesAllergies = elementsAllergies((moi?.practical_info ?? null) as never).map((e) => e.cle);
+
   const now = new Date().toISOString();
   // Source unique du scope (harmonisation Estelle) : même geste, même
   // comportement que le lien sortant — zéro case cochée → ['socle'].
   const update: Record<string, unknown> =
     action === "reject"
       ? { status: "rejected", responded_at: now }
-      : { status: "active", scope: scopeForSelection(action, body.sections), responded_at: now, consented_at: now };
+      : { status: "active", scope: scopeForSelection(action, body.sections, mesAllergies), responded_at: now, consented_at: now };
 
   const { error } = await supabase
     .from("contact_consents")

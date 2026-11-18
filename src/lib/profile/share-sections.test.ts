@@ -58,6 +58,17 @@ describe("sanitizeScope / scopeForSelection — intersection stricte", () => {
     }
     expect(scopeForSelection("sections", [])).toEqual([SCOPE_SOCLE]);
     expect(scopeForSelection("blind")).toEqual([SCOPE_BLIND]);
-    expect(scopeForSelection("all").sort()).toEqual(checkableSections("invite_filtre").sort());
+    // « Tout partager » ne comprend AUCUNE allergie : chacune se choisit (décision du 18 nov.).
+    expect(scopeForSelection("all").sort()).toEqual(checkableSections("invite_filtre").filter((k) => k !== "facts_allergies").sort());
+  });
+});
+
+describe("allergies : une clé par allergie, validée contre ce que la personne a réellement", () => {
+  it("une clé d'allergie que la personne n'a pas est écartée du consentement", () => {
+    expect(scopeForSelection("sections", ["facts_allergies:gluten", "facts_allergies:inventee", "facts_regime"], ["facts_allergies:gluten"]))
+      .toEqual(["facts_allergies:gluten", "facts_regime"]);
+  });
+  it("la clé de section seule ne vaut plus rien", () => {
+    expect(scopeForSelection("sections", ["facts_allergies"], ["facts_allergies:gluten"])).toEqual([SCOPE_SOCLE]);
   });
 });

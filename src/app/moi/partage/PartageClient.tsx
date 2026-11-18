@@ -32,7 +32,7 @@ function Ic({ name }: { name: string }) {
   );
 }
 
-export default function PartageClient() {
+export default function PartageClient({ allergies = [] }: { allergies?: { cle: string; libelle: string }[] }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(null);
   const [checked, setChecked] = useState<Set<SectionKey>>(new Set(defaultCheckedKeys()));
@@ -168,7 +168,7 @@ export default function PartageClient() {
 
       {mode === "sections" && (
         <>
-          <SectionPicker checked={checked} onToggle={toggle} />
+          <SectionPicker checked={checked} onToggle={toggle} allergies={allergies} />
           {/* Zéro case cochée : état explicite, jamais ambigu (A.1 validé) */}
           {checked.size === 0 && (
             <p style={{

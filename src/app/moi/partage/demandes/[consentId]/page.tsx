@@ -2,6 +2,7 @@
 // 1) tout · 2) sections choisies (socle verrouillé) · 3) rien de visible
 // mais Candice peut aider (aveugle) · refuser.
 
+import { elementsAllergies } from "@/lib/profile/partage-elements";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
@@ -60,9 +61,13 @@ export default async function DemandePage({
     );
   }
 
+  // Mes allergies, pour proposer UNE case par allergie (elles ne se partagent pas en bloc).
+  const { data: moi } = await supabase.from("my_profile").select("practical_info").eq("user_id", user.id).maybeSingle();
+  const mesAllergies = elementsAllergies((moi?.practical_info ?? null) as never);
+
   return (
     <V4Shell active="profile">
-      <DemandeClient consentId={consent.id} requesterFirstName={requesterFirstName} />
+      <DemandeClient consentId={consent.id} requesterFirstName={requesterFirstName} allergies={mesAllergies} />
     </V4Shell>
   );
 }

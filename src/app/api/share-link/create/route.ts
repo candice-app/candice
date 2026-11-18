@@ -4,6 +4,7 @@
 // cochées, socle toujours inclus) · blind (aveugle). Le scope est figé dans
 // le lien (snapshot, comme en Phase 6). Participation : questionnaire 5/5.
 
+import { elementsAllergies } from "@/lib/profile/partage-elements";
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
@@ -34,7 +35,8 @@ export async function POST(req: NextRequest) {
 
   // Source unique du scope (harmonisation Estelle) : zéro case cochée
   // → ['socle'], le CHECK scope ≥ 1 reste satisfait.
-  const scope = scopeForSelection(mode, body.sections);
+  const mesAllergies = elementsAllergies(((myProfile as { practical_info?: unknown } | null)?.practical_info ?? null) as never).map((e) => e.cle);
+  const scope = scopeForSelection(mode, body.sections, mesAllergies);
 
   // Le token brut n'existe qu'ici et dans l'URL retournée — seule son
   // empreinte SHA-256 est stockée (expiration : 30 jours, DEFAULT en base).

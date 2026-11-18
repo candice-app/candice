@@ -20,9 +20,12 @@ const CHECK = <><path d="M5 12l5 5 9-10" /></>;
 export default function SectionPicker({
   checked,
   onToggle,
+  allergies = [],
 }: {
   checked: Set<SectionKey>;
   onToggle: (keys: SectionKey[]) => void;
+  /** Les allergies de la personne, une case chacune. Vide : aucune case « allergie ». */
+  allergies?: { cle: string; libelle: string }[];
 }) {
   return (
     <div style={{ background: "#fff", border: `1px solid ${T.line}`, borderRadius: 16, padding: "13px 16px", marginBottom: 10, boxShadow: T.shadow }}>
@@ -44,7 +47,10 @@ export default function SectionPicker({
           <p style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: "uppercase", color: T.ink3, margin: "14px 0 2px" }}>
             {group.title}
           </p>
-          {group.items.map(item => {
+          {group.items.flatMap(item => item.parElement
+            // UNE CASE PAR ALLERGIE : cocher « gluten » ne partage pas « fruits à coque ».
+            ? allergies.map(a => ({ keys: [a.cle as SectionKey], label: `Allergie : ${a.libelle}` }))
+            : [item]).map(item => {
             const isOn = item.keys.every(k => checked.has(k));
             return (
               <label key={item.label} style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, cursor: "pointer" }}>

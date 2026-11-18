@@ -6,10 +6,13 @@ import {
   checkableSections,
   type SectionKey,
 } from "./visibility";
+import { estCleAllergie } from "./partage-elements";
 
 export interface ShareItem {
   keys: SectionKey[];
   label: string;
+  /** Remplacé à l'écran par une case par élément (voir SectionPicker). */
+  parElement?: boolean;
 }
 
 export interface ShareGroup {
@@ -47,7 +50,8 @@ export const SHARE_GROUPS: ShareGroup[] = [
       // TROIS CASES, PAS UNE. Une allergie est une donnée de santé ; un régime peut
       // dire une conviction ; l'alcool ne dit ni l'un ni l'autre. Les regrouper
       // forçait à partager les trois pour en partager une seule.
-      { keys: ["facts_allergies"], label: "Allergies" },
+      // « Allergies » n'est plus UNE case : le sélecteur affiche une case par allergie déclarée.
+      { keys: ["facts_allergies"], label: "Allergies", parElement: true },
       { keys: ["facts_regime"],    label: "Régime alimentaire" },
       { keys: ["facts_alcool"],    label: "Rapport à l'alcool" },
       { keys: ["facts_parfums"],     label: "Parfums aimés / détestés" },
@@ -82,7 +86,10 @@ export const SCOPE_SOCLE = "socle";
 /** Nettoie un scope stocké → sections cochables valides uniquement. */
 export function sanitizeScope(scope: string[] | null | undefined): SectionKey[] {
   const checkable = new Set<string>(checkableSections("invite_filtre"));
-  return (scope ?? []).filter((s): s is SectionKey => checkable.has(s));
+  // Les allergies se partagent PAR ÉLÉMENT (`facts_allergies:<allergie>`). La clé de section
+  // seule, héritée d'un ancien partage, ne vaut plus rien : elle est écartée ici.
+  checkable.delete("facts_allergies");
+  return (scope ?? []).filter((s): s is SectionKey => checkable.has(s) || estCleAllergie(s));
 }
 
 export type ShareMode = "all" | "sections" | "blind";
@@ -91,9 +98,16 @@ export type ShareMode = "all" | "sections" | "blind";
  * Scope stocké pour un choix de partage — SOURCE UNIQUE pour les deux
  * gestes (réponse à une demande ET lien sortant).
  */
-export function scopeForSelection(mode: ShareMode, sections?: string[]): string[] {
-  if (mode === "all") return checkableSections("invite_filtre");
+export function scopeForSelection(
+  mode: ShareMode, sections?: string[],
+  /** Les clés d'allergie que CETTE personne peut partager aujourd'hui. Une clé d'allergie
+   *  absente de cette liste est écartée : on ne consent pas à partager ce qu'on n'a pas. */
+  allergiesDisponibles?: readonly string[],
+): string[] {
+  // « Tout partager » ne comprend AUCUNE allergie : chacune se choisit, une par une.
+  if (mode === "all") return checkableSections("invite_filtre").filter((k) => k !== "facts_allergies");
   if (mode === "blind") return [SCOPE_BLIND];
-  const checked = sanitizeScope(sections);
+  const connues = allergiesDisponibles ? new Set(allergiesDisponibles) : null;
+  const checked = sanitizeScope(sections).filter((k) => !estCleAllergie(k) || !connues || connues.has(k));
   return checked.length > 0 ? checked : [SCOPE_SOCLE];
 }

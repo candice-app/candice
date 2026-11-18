@@ -218,9 +218,13 @@ export function resolveVisibility(
       return { shown: true, thirdPerson: true, notShared: false };
     case "filtered_on":
     case "filtered_off": {
-      const chosen = sharedSections
-        ? sharedSections.includes(section)
-        : v === "filtered_on";
+      // Les allergies se partagent PAR ÉLÉMENT : la section est « choisie » dès qu'une
+      // allergie précise l'est, et la clé de section seule ne partage plus rien.
+      const chosen = section === "facts_allergies"
+        ? (sharedSections ?? []).some((k) => String(k).startsWith("facts_allergies:"))
+        : sharedSections
+          ? sharedSections.includes(section)
+          : v === "filtered_on";
       return { shown: chosen, thirdPerson: true, notShared: !chosen };
     }
     case "hidden":

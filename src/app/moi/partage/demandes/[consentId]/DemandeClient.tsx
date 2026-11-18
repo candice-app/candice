@@ -35,9 +35,11 @@ function Ic({ name, color }: { name: string; color: string }) {
 export default function DemandeClient({
   consentId,
   requesterFirstName,
+  allergies = [],
 }: {
   consentId: string;
   requesterFirstName: string;
+  allergies?: { cle: string; libelle: string }[];
 }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(null);
@@ -140,7 +142,7 @@ export default function DemandeClient({
       {/* Cases à cocher (mode sections) */}
       {mode === "sections" && (
         <>
-          <SectionPicker checked={checked} onToggle={toggle} />
+          <SectionPicker checked={checked} onToggle={toggle} allergies={allergies} />
           {/* Zéro case cochée : état explicite, identique au lien sortant */}
           {checked.size === 0 && (
             <p style={{

@@ -17,6 +17,10 @@ const base = {
   facts: {
     tailles: '38 · 39',
     allergies: 'Arachides — réaction forte',
+    allergiesElements: [
+      { cle: 'facts_allergies:arachides', libelle: 'arachides' },
+      { cle: 'facts_allergies:gluten', libelle: 'gluten' },
+    ],
     regime: 'Halal',
     alcool: 'Ne boit pas',
     parfums: undefined,
@@ -37,8 +41,8 @@ const partage = (portees: string[]) =>
 
 describe('partage des infos sensibles — une porte par information', () => {
   it('partager les ALLERGIES ne révèle ni le régime ni l’alcool', () => {
-    const f = partage(['facts_allergies']);
-    expect(f.allergies).toBe('Arachides — réaction forte');
+    const f = partage(['facts_allergies:arachides', 'facts_allergies:gluten']);
+    expect(f.allergies).toBe('Arachides, gluten');
     expect(f.regime).toBeUndefined();
     expect(f.alcool).toBeUndefined();
   });
@@ -65,7 +69,7 @@ describe('partage des infos sensibles — une porte par information', () => {
   });
 
   it('les trois ensemble se partagent bien ensemble quand c’est voulu', () => {
-    const f = partage(['facts_allergies', 'facts_regime', 'facts_alcool']);
+    const f = partage(['facts_allergies:arachides', 'facts_regime', 'facts_alcool']);
     expect(f.allergies).toBeTruthy();
     expect(f.regime).toBe('Halal');
     expect(f.alcool).toBe('Ne boit pas');
@@ -105,5 +109,37 @@ describe('l’écran de partage propose bien trois cases distinctes', () => {
       const dedans = item.keys.filter((k) => sensibles.has(k as string));
       expect(dedans.length, `« ${item.label} » en regroupe ${dedans.length}`).toBeLessThanOrEqual(1);
     }
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 18 NOV. — UNE ALLERGIE À LA FOIS. « Trois cases ne suffisent pas si une seule case partage
+// toutes les allergies. »
+// ─────────────────────────────────────────────────────────────────────────────
+describe('deux allergies, une seule autorisée', () => {
+  it('seule l’allergie autorisée sort ; l’autre ne quitte pas le serveur', () => {
+    const f = partage(['facts_allergies:arachides']);
+    expect(f.allergies).toBe('Arachides');
+    expect(f.allergiesElements).toEqual([{ cle: 'facts_allergies:arachides', libelle: 'arachides' }]);
+    expect(JSON.stringify(f)).not.toMatch(/gluten/i);
+  });
+  it('retrait de l’autorisation : plus aucune allergie, et rien qui dise qu’il n’y en a pas', () => {
+    const f = partage(['facts_regime']);
+    expect(f.allergies).toBeUndefined();
+    expect(f.allergiesElements).toBeUndefined();
+    expect(JSON.stringify(f)).not.toMatch(/arachide|gluten|aucune allergie|pas d.allergie/i);
+  });
+  it('l’ancienne clé « toutes les allergies » ne partage plus rien', () => {
+    expect(sanitizeScope(['facts_allergies'])).toEqual([]);
+    expect(partage(['facts_allergies']).allergies).toBeUndefined();
+  });
+  it('une allergie autorisée n’ouvre ni le régime ni l’alcool', () => {
+    const f = partage(['facts_allergies:gluten']);
+    expect(f.regime).toBeUndefined();
+    expect(f.alcool).toBeUndefined();
+  });
+  it('le pilote, sur sa propre fiche, voit toutes ses allergies', () => {
+    const f = stripProfileV2Data(base, 'pilote').facts;
+    expect(f.allergiesElements).toHaveLength(2);
   });
 });

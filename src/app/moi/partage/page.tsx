@@ -3,6 +3,7 @@
 // non décochable) · aveugle. Puis gestion : partages accordés (révoquer),
 // liens en attente (annuler), demandes reçues (répondre).
 
+import { elementsAllergies } from "@/lib/profile/partage-elements";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
@@ -100,7 +101,7 @@ export default async function PartagePage() {
         </p>
 
         {questionnaireComplete ? (
-          <PartageClient />
+          <PartageClient allergies={elementsAllergies(((profileRaw as { practical_info?: unknown } | null)?.practical_info ?? null) as never)} />
         ) : (
           <div style={{
             background: "#fff", border: "1px solid rgba(23,62,49,.11)", borderRadius: 16,

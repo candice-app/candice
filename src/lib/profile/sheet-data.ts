@@ -6,6 +6,7 @@
 // non partagées sont vidées AVANT d'atteindre ProfileSheet, la matrice de
 // visibilité restant la garde de rendu.
 
+import { elementsAllergies, type ElementPartageable } from './partage-elements';
 import type { StyleRadar } from "./synthesis";
 
 export interface AnalysisSection { text?: string; chips?: string[] }
@@ -14,6 +15,9 @@ export interface AnalysisSection { text?: string; chips?: string[] }
 export interface PracticalFacts {
   tailles?: string;
   allergies?: string;
+  /** Les allergies UNE PAR UNE, chacune avec sa clé de partage. C'est depuis cette liste que
+   *  le partage est décidé ; la chaîne `allergies` n'en est que l'affichage. */
+  allergiesElements?: ElementPartageable[];
   /** SÉPARÉS, parce qu'ils se partagent séparément. Une chaîne unique obligerait
    *  à montrer les deux ou aucun des deux. */
   regime?: string;
@@ -178,6 +182,7 @@ export function buildFacts(pi: ProfileRow["practical_info"]): PracticalFacts {
   return {
     tailles: tailles || undefined,
     allergies: allergiesFull || undefined,
+    allergiesElements: elementsAllergies(pi),
     regime,
     alcool,
     parfums: parfums || undefined,
