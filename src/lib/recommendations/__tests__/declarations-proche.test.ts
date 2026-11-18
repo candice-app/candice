@@ -56,7 +56,7 @@ function client(monde: Monde) {
           }
           const k = monde.consent ?? null;
           const ok = k && f.pilote_id === PILOTE && f.contact_id === CONTACT && f.status === k.status;
-          return { data: ok ? { scope: k!.scope } : null, error: null };
+          return { data: ok ? { scope: k!.scope, granted_by: 'granted_by' in k! ? (k as { granted_by?: string | null }).granted_by : THIBAUD } : null, error: null };
         },
       };
       return api as never;
@@ -134,6 +134,9 @@ describe('sans autorisation, mon témoignage seul ne déclenche rien', () => {
     ['aucun consentement',   { contact: contactRelie, consent: null },              'aucun_consentement'],
     ['consentement RETIRÉ',  { contact: contactRelie, consent: { scope: [PORTEE_EXCLUSIONS_RECO], status: 'revoked' } }, 'aucun_consentement'],
     ['portée absente',       { contact: contactRelie, consent: { scope: ['analysis'], status: 'active' } }, 'portee_absente'],
+    // Un consentement actif que le proche n'a pas accordé lui-même (preuve absente, ou d'un autre).
+    ['accord sans preuve',   { contact: contactRelie, consent: { scope: ['analysis', PORTEE_EXCLUSIONS_RECO], status: 'active', granted_by: null } as never }, 'aucun_consentement'],
+    ['accord d’un autre',    { contact: contactRelie, consent: { scope: ['analysis', PORTEE_EXCLUSIONS_RECO], status: 'active', granted_by: PILOTE } as never }, 'aucun_consentement'],
     ['contact inexistant',   { contact: null, consent: consentOk },                 'aucun_compte'],
   ])('%s → refus, motif « %s »', async (_, monde, motif) => {
     const r = await lire({ ...(monde as Monde), sources: SOURCES, journal: [rejet('s-declaree', 'explicit')] });

@@ -12,16 +12,24 @@ import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { accorder, retirer, type EtatConsentement } from '@/lib/consent/portees';
 import { PORTEE_EXCLUSIONS_RECO } from '@/lib/recommendations/declarations-proche';
+import { estUsageValide } from '@/lib/consent/usage-profil';
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { contactId, action } = await req.json().catch(() => ({})) as
-    { contactId?: string; action?: 'autoriser' | 'retirer' };
+  const { contactId, action, portee: porteeDemandee } = await req.json().catch(() => ({})) as
+    { contactId?: string; action?: 'autoriser' | 'retirer'; portee?: string };
   if (!contactId || (action !== 'autoriser' && action !== 'retirer')) {
     return NextResponse.json({ error: 'contactId et action requis' }, { status: 400 });
+  }
+  // La portée réglée : par défaut « écarter certaines idées » ; sinon UN usage de données par
+  // la recommandation (une allergie précise, le régime…). Une portée inconnue est refusée :
+  // on n'écrit pas dans un consentement un mot que personne ne sait lire.
+  const portee = porteeDemandee ?? PORTEE_EXCLUSIONS_RECO;
+  if (portee !== PORTEE_EXCLUSIONS_RECO && !estUsageValide(portee)) {
+    return NextResponse.json({ error: 'portée inconnue' }, { status: 400 });
   }
 
   const admin = createAdminClient();
@@ -46,14 +54,16 @@ export async function POST(req: NextRequest) {
   // Le retrait porte sur CETTE portée seulement : si la même ligne couvre d'autres usages,
   // ils sont préservés (voir portees.ts).
   const apres = action === 'autoriser'
-    ? accorder(avant, PORTEE_EXCLUSIONS_RECO)
-    : retirer(avant, PORTEE_EXCLUSIONS_RECO);
+    ? accorder(avant, portee)
+    : retirer(avant, portee);
 
   if (existante) {
     const { error } = await admin.from('contact_consents').update({
       scope: apres.scope, status: apres.status,
       responded_at: new Date().toISOString(),
       ...(action === 'autoriser' ? { consented_at: new Date().toISOString() } : {}),
+      // LA PREUVE : c'est CETTE personne, dont l'identité vient d'être vérifiée, qui accorde.
+      granted_by: user.id, granted_at: new Date().toISOString(),
     }).eq('id', existante.id);
     if (error) return NextResponse.json({ error: 'enregistrement impossible' }, { status: 500 });
   } else if (action === 'autoriser') {
@@ -61,11 +71,12 @@ export async function POST(req: NextRequest) {
       pilote_id: piloteId, contact_id: contactId, proche_user_id: user.id,
       status: 'active', scope: apres.scope,
       responded_at: new Date().toISOString(), consented_at: new Date().toISOString(),
+      granted_by: user.id,
     });
     if (error) return NextResponse.json({ error: 'enregistrement impossible' }, { status: 500 });
   }
   // Retrait sans ligne existante : rien à faire, et surtout pas une ligne « revoked »
   // fabriquée pour l'occasion, qui laisserait croire qu'un accord a existé.
 
-  return NextResponse.json({ actif: apres.scope.includes(PORTEE_EXCLUSIONS_RECO) });
+  return NextResponse.json({ actif: apres.scope.includes(portee) });
 }

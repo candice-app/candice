@@ -1,0 +1,61 @@
+
+══ A. APPELS DIRECTS À LA BASE — consentement « contact_analysis » (titulaire : le proche B)
+  le demandeur insère directement un consentement ACTIF → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
+  ✓ A1 : le demandeur ne peut pas créer un consentement actif
+  le demandeur crée une DEMANDE (pending), en glissant une fausse preuve → ACCEPTÉ
+  ✓ A2 : la demande est créée, la fausse preuve est effacée par la base
+  le demandeur passe sa demande à ACTIVE → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
+  ✓ A3 : changement de STATUT par le demandeur refusé
+  un TIERS active la demande → sans effet (aucune ligne)
+  ✓ A4 : un tiers ne peut rien
+  le demandeur change le COMPTE LIÉ (se désigne lui-même titulaire) → refusé (contact_consents : le type et les parties d'un consentement ne se modi)
+  ✓ A5 : changement de compte lié refusé
+  ✓ A6 : changement de contact refusé
+  le demandeur change le TYPE (contact_analysis → profile_view, dont il serait titulaire) et active → refusé (contact_consents : le type et les parties d'un consentement ne se modi)
+  ✓ A7 : changement de TYPE refusé
+  P partage SA PROPRE fiche avec X (profile_view actif, il en est le titulaire) → ACCEPTÉ
+  ✓ A8 : partager sa propre fiche reste permis
+  …puis tente d’en faire un contact_analysis actif au nom de X → refusé (contact_consents : le type et les parties d'un consentement ne se modi)
+  ✓ A9 : un partage de fiche ne peut pas être requalifié en consentement d’un autre
+  le PROCHE accepte → ACCEPTÉ · preuve écrite par la base : { granted_by: 'le proche', granted_via: 'titulaire' }
+  ✓ A10 : le proche accorde ; la base enregistre QUI a accordé
+  le demandeur ÉLARGIT la portée d’un consentement actif → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
+  ✓ A11 : élargissement de PORTÉE par le demandeur refusé
+  ✓ A12 : le demandeur ne peut pas réécrire la preuve
+  ✓ A13 : le demandeur peut toujours RÉVOQUER
+  le demandeur RÉACTIVE un consentement révoqué → refusé (contact_consents : seule la personne concernée peut accorder ou élargi)
+  ✓ A14 : réactivation par le demandeur refusée
+
+══ A bis. « profile_view » (titulaire : le propriétaire de la fiche) — les usages légitimes tiennent
+  X DEMANDE à voir la fiche de B → ACCEPTÉ
+  ✓ A15 : demander à voir une fiche reste possible
+  ✓ A16 : le demandeur ne peut pas s’ouvrir lui-même la fiche d’un autre
+  B accepte et choisit ce qu’il montre → ACCEPTÉ
+  ✓ A17 : le propriétaire de la fiche accorde, la preuve est écrite
+  ✓ A18 : le propriétaire peut élargir ce qu’il montre
+
+══ B. LA PORTÉE, DONNÉE PAR DONNÉE — ce qui part au modèle de recommandation
+  aucun consentement actif → []
+  ✓ B1 : sans consentement, rien du profil de B ne part au modèle
+  consentement actif SANS preuve d’accord (granted_by vide) → [] {
+  id: '23317192-2d2e-492a-8878-b8694439a2ef',
+  granted_by: null,
+  granted_via: 'serveur'
+}
+  ✓ B2 : un consentement actif dont l’accord n’est pas établi n’ouvre RIEN
+  le PILOTE appelle la route de réglage pour s’accorder l’allergie → HTTP 404
+  ✓ B3 : le pilote ne peut pas utiliser la route du proche (404)
+  ✓ B4 : un tiers non plus
+  ✓ B5 : une portée inconnue est refusée
+  B autorise UNE allergie (arachide) → HTTP 200 · au modèle : [ 'arachide' ]
+  ✓ B6 : consentement PARTIEL — l’arachide part, ni le gluten, ni le régime, ni l’alcool, ni les réponses libres
+  B autorise aussi son régime → au modèle : [ 'arachide', 'porc', 'jambon', 'alcool' ]
+  ✓ B7 : le régime s’ajoute ; gluten et réponses libres toujours absents
+  B RETIRE l’allergie → au modèle : [ 'porc', 'jambon', 'alcool' ]
+  ✓ B8 : retrait de l’allergie — elle ne part plus, le régime reste
+  B retire son régime → au modèle : []
+  ✓ B9 : tout retiré — plus rien du profil de B ne part au modèle
+  le pilote repointe son contact vers le compte de X → au modèle : []
+  ✓ B10 : changer le compte lié du contact n’ouvre pas le profil du nouveau compte
+
+28 vérifications passées, 0 en échec.

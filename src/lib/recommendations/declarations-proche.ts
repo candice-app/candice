@@ -109,10 +109,14 @@ export async function lireRejetsDuProche(
 
   // 2 ── Un consentement ACTIF, et portant CET usage.
   const { data: consent, error: eConsent } = await admin
-    .from('contact_consents').select('scope')
-    .eq('pilote_id', piloteId).eq('contact_id', contactId).eq('status', 'active').maybeSingle();
+    .from('contact_consents').select('scope, granted_by')
+    .eq('pilote_id', piloteId).eq('contact_id', contactId).eq('proche_user_id', procheUserId)
+    .eq('kind', 'contact_analysis').eq('status', 'active').maybeSingle();
   if (eConsent) return REFUS('lecture_impossible');
   if (!consent) return REFUS('aucun_consentement');
+  // L'accord doit avoir été donné par le proche LUI-MÊME, pour CE compte : la preuve est
+  // écrite par la base (migration 112). Le demandeur pouvait jusque-là se l'accorder.
+  if (consent.granted_by !== procheUserId) return REFUS('aucun_consentement');
   const portees = (consent.scope as string[] | null) ?? [];
   if (!portees.includes(PORTEE_EXCLUSIONS_RECO)) return REFUS('portee_absente');
 

@@ -50,14 +50,6 @@ console.log('   mots du profil de V retrouvés dans ce qui part au modèle :', f
 console.log('   ligne des filtres :', (x.envoye.match(/FILTRES DURS[^\n]*/) ?? ['(aucune)'])[0]);
 if (APRES) {
   v.verifier(fuites(x.envoye).length === 0, 'sans consentement, rien du profil de V ne part au modèle', fuites(x.envoye).join(', '));
-  // Avec un consentement ACTIF de V pour ce pilote et ce contact, l'usage redevient possible.
-  const { error: eC } = await admin.from('contact_consents').insert({ pilote_id: P.userId, contact_id: k!.id, proche_user_id: V.userId, status: 'active', kind: 'contact_analysis', scope: ['analysis'] });
-  if (eC) throw eC;
-  const y = await reco();
-  console.log('   avec consentement actif :', (y.envoye.match(/FILTRES DURS[^\n]*/) ?? ['(aucune)'])[0]);
-  v.verifier(fuites(y.envoye).includes('arachide'), 'avec un consentement actif, les contraintes de V protègent de nouveau les propositions');
-  await admin.from('contact_consents').update({ status: 'revoked' }).eq('pilote_id', P.userId).eq('contact_id', k!.id);
-  const z = await reco();
-  v.verifier(fuites(z.envoye).length === 0, 'consentement retiré : plus rien du profil de V ne part au modèle', fuites(z.envoye).join(', '));
+  // La suite — consentement partiel, retrait, preuve d'accord — est dans 18-preuve-consentements.
   v.bilan();
 }

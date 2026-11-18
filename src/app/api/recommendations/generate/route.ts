@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { situationsPourReco } from '@/lib/memories/situations';
+import { chargerProfilAutorise } from '@/lib/consent/usage-profil';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { generateRecommendations } from '@/lib/recommendations/engine';
 import { lireRejetsDuProche } from '@/lib/recommendations/declarations-proche';
@@ -101,41 +102,21 @@ export async function POST(req: NextRequest) {
   let procheVetos: VetosInput | null = null;
   let procheSingularity: SingularityInput | null = null;
 
-  // ── LE PROFIL DU PROCHE N'EST LU QUE S'IL Y A CONSENTI.
+  // ── LE PROFIL DU PROCHE : seulement ce qu'il a autorisé, DONNÉE PAR DONNÉE.
   //    `contacts.proche_user_id` est écrit par le PILOTE : il dit qui le pilote désigne, pas
   //    que cette personne a accepté quoi que ce soit. La route lisait pourtant, sur ce seul
-  //    identifiant et avec le client privilégié, les allergies, le régime et les réponses
-  //    libres du compte désigné, et les envoyait au modèle. Essai du 18 nov. sur la pile
-  //    locale : un compte sans aucun lien voyait ses allergies et son régime partir dans la
-  //    recommandation d'un inconnu (scripts/local/17).
-  //    Il faut désormais un consentement ACTIF, pour CE pilote, CE contact et CE compte —
-  //    accordé par le proche lui-même (migration 112). Toute incertitude vaut refus.
-  let procheAConsenti = false;
-  if (c.proche_user_id) {
-    const { data: accord, error: eAccord } = await admin
-      .from('contact_consents').select('id')
-      .eq('pilote_id', user.id).eq('contact_id', contactId)
-      .eq('proche_user_id', c.proche_user_id).eq('kind', 'contact_analysis').eq('status', 'active')
-      .maybeSingle();
-    procheAConsenti = !eAccord && !!accord;
-  }
-
-  if (c.proche_user_id && procheAConsenti) {
-    const { data: pp } = await admin
-      .from('my_profile')
-      .select('attention_reception, attention_expression, temperament_axes, relational_filters, practical_info, singularity_answers')
-      .eq('user_id', c.proche_user_id)
-      .maybeSingle();
-
-    if (pp) {
-      procheReception    = (pp.attention_reception as FaceResult | null) ?? null;
-      procheExpression   = (pp.attention_expression as FaceResult | null) ?? null;
-      procheTemperamentAxes = (pp.temperament_axes as Record<string, { score: number; intensity: number }> | null) ?? null;
-      procheRelFilters   = (pp.relational_filters as RelationalFilters | null) ?? null;
-      procheVetos        = (pp.practical_info as { vetos?: VetosInput } | null)?.vetos ?? null;
-      procheSingularity  = (pp.singularity_answers as SingularityInput | null) ?? null;
-    }
-  }
+  //    identifiant, les allergies, le régime et les réponses libres du compte désigné, et les
+  //    envoyait au modèle (constaté le 18 nov., scripts/local/17).
+  //    Tout le contrôle est dans `chargerProfilAutorise` : consentement actif pour ce pilote,
+  //    ce contact et ce compte ; accordé par le proche lui-même (preuve écrite par la base) ;
+  //    portée nommant chaque usage. Toute incertitude rend un profil vide.
+  const autorise = await chargerProfilAutorise(admin, { piloteId: user.id, contactId, procheUserId: c.proche_user_id });
+  procheReception    = (autorise.attention_reception as FaceResult | null) ?? null;
+  procheExpression   = (autorise.attention_expression as FaceResult | null) ?? null;
+  procheTemperamentAxes = (autorise.temperament_axes as Record<string, { score: number; intensity: number }> | null) ?? null;
+  procheRelFilters   = (autorise.relational_filters as RelationalFilters | null) ?? null;
+  procheVetos        = (autorise.vetos as VetosInput | null) ?? null;
+  procheSingularity  = (autorise.singularity_answers as SingularityInput | null) ?? null;
 
   // Fallback: use incognito-filled attention_reception when proche has no account
   if (!procheReception && classicProfile?.attention_reception) {
