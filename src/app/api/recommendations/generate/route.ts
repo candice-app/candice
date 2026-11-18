@@ -99,7 +99,16 @@ export async function POST(req: NextRequest) {
   let procheVetos: VetosInput | null = null;
   let procheSingularity: SingularityInput | null = null;
 
-  if (c.proche_user_id) {
+  // ── LECTURE DU PROFIL LIÉ : DÉSACTIVÉE (correctif de sécurité du 18 nov.).
+  //    `contacts.proche_user_id` est écrit par le PILOTE lui-même. Sur ce seul identifiant, et
+  //    avec le client privilégié, cette route lisait les allergies, le régime et les réponses
+  //    libres du compte désigné, puis les envoyait au modèle — sans consulter aucun
+  //    consentement. N'importe quel compte pouvait ainsi désigner n'importe quel autre.
+  //    La lecture reviendra avec un contrôle complet (consentement accordé par le proche,
+  //    portée donnée par donnée). D'ici là, la recommandation s'appuie sur ce que le pilote
+  //    a lui-même renseigné sur son contact.
+  const LECTURE_PROFIL_LIE_ACTIVE = false as boolean;
+  if (LECTURE_PROFIL_LIE_ACTIVE && c.proche_user_id) {
     const { data: pp } = await admin
       .from('my_profile')
       .select('attention_reception, attention_expression, temperament_axes, relational_filters, practical_info, singularity_answers')
