@@ -194,11 +194,13 @@ export default async function ContactPage({
       .limit(20),
     supabase
       .from("memories")
-      .select("id, reformulated_text, category, tonality, emotional_intensity, probable_needs, created_at")
+      .select("id, reformulated_text, sanitized_summary, category, tonality, emotional_intensity, probable_needs, status, source_reliability, revalidation_date, created_at")
       .eq("contact_id", id)
       .eq("pilot_id", user.id)
       .eq("type", "situation")
-      .eq("status", "active")
+      // Statuts V26 sous lesquels une situation est vivante. La requête cherchait « active »,
+      // que la base n'a jamais accepté : la carte ne pouvait rien afficher.
+      .in("status", ["actif", "sensible", "confirmé", "incertain", "à_revalider"])
       .order("created_at", { ascending: false })
       .limit(5),
     supabase

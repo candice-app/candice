@@ -11,6 +11,12 @@ export interface SituationRow {
   emotional_intensity: string | null;
   probable_needs: string[] | null;
   created_at: string;
+  /** Résumé de repli, présent même quand la reformulation n'a pas encore abouti. */
+  sanitized_summary?: string | null;
+  status?: string | null;
+  /** « faible » : une impression ou un propos rapporté — présenté comme tel. */
+  source_reliability?: string | null;
+  revalidation_date?: string | null;
 }
 
 const TONALITY_CHIP: Record<string, string> = {
@@ -31,7 +37,7 @@ const CATEGORY_FR: Record<string, string> = {
   autre:    "Contexte",
 };
 
-const INTENSITY_ORDER: Record<string, number> = { high: 3, medium: 2, low: 1 };
+const INTENSITY_ORDER: Record<string, number> = { très_élevé: 4, élevé: 3, moyen: 2, faible: 1, high: 3, medium: 2, low: 1 };
 
 interface Props {
   situations: SituationRow[];
@@ -41,8 +47,8 @@ interface Props {
 
 export default function SituationCard({ situations, contactId, contactFirstName }: Props) {
   const sorted = [...situations].sort((a, b) =>
-    (INTENSITY_ORDER[b.emotional_intensity ?? "low"] ?? 1) -
-    (INTENSITY_ORDER[a.emotional_intensity ?? "low"] ?? 1)
+    (INTENSITY_ORDER[b.emotional_intensity ?? "faible"] ?? 1) -
+    (INTENSITY_ORDER[a.emotional_intensity ?? "faible"] ?? 1)
   );
 
   const visible = sorted.slice(0, 2);
@@ -51,14 +57,14 @@ export default function SituationCard({ situations, contactId, contactFirstName 
   const [resolved, setResolved] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState<Record<string, boolean>>({});
 
-  async function doAction(id: string, action: "revalidate" | "resolve") {
+  async function doAction(id: string, action: "toujours_actuelle" | "terminee" | "erreur") {
     setLoading(prev => ({ ...prev, [id]: true }));
     await fetch("/api/memories/situation/action", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, action }),
     });
-    if (action === "resolve") {
+    if (action !== "toujours_actuelle") {
       setResolved(prev => new Set([...prev, id]));
     }
     setLoading(prev => ({ ...prev, [id]: false }));
@@ -102,8 +108,19 @@ export default function SituationCard({ situations, contactId, contactFirstName 
               fontSize: 14, fontWeight: 300, color: "var(--ink-2)",
               lineHeight: 1.65, marginBottom: chips.length ? 10 : 14,
             }}>
-              {sit.reformulated_text}
+              {sit.reformulated_text ?? sit.sanitized_summary}
             </p>
+            {/* Une impression ou un propos rapporté reste présenté comme tel. */}
+            {(sit.status === "incertain" || sit.source_reliability === "faible") && (
+              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", marginBottom: 10 }}>
+                D’après ce que tu as perçu — à confirmer.
+              </p>
+            )}
+            {sit.revalidation_date && new Date(sit.revalidation_date).getTime() < Date.now() && (
+              <p style={{ fontSize: 12, fontWeight: 300, color: "var(--ink-3)", marginBottom: 10 }}>
+                Est-ce toujours d’actualité ?
+              </p>
+            )}
 
             {chips.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 5, marginBottom: 14 }}>
@@ -124,7 +141,7 @@ export default function SituationCard({ situations, contactId, contactFirstName 
             {/* CTAs */}
             <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
               <button
-                onClick={() => doAction(sit.id, "revalidate")}
+                onClick={() => doAction(sit.id, "toujours_actuelle")}
                 disabled={loading[sit.id]}
                 style={{
                   padding: "7px 12px", borderRadius: 8,
@@ -137,7 +154,7 @@ export default function SituationCard({ situations, contactId, contactFirstName 
                 Toujours d'actualité
               </button>
               <button
-                onClick={() => doAction(sit.id, "resolve")}
+                onClick={() => doAction(sit.id, "terminee")}
                 disabled={loading[sit.id]}
                 style={{
                   padding: "7px 12px", borderRadius: 8,
@@ -147,7 +164,20 @@ export default function SituationCard({ situations, contactId, contactFirstName 
                   cursor: "pointer",
                 }}
               >
-                Ce n'est plus valable
+                Ce n’est plus d’actualité
+              </button>
+              <button
+                onClick={() => doAction(sit.id, "erreur")}
+                disabled={loading[sit.id]}
+                style={{
+                  padding: "7px 12px", borderRadius: 8,
+                  border: "0.5px solid var(--line)",
+                  background: "none",
+                  fontSize: 11, fontWeight: 300, color: "var(--ink-3)",
+                  cursor: "pointer",
+                }}
+              >
+                C’était une erreur
               </button>
               <Link
                 href={`/parler-a-candice?contact=${contactId}&intention=attention`}

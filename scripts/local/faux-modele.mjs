@@ -27,10 +27,17 @@ createServer(async (req, res) => {
     appels++;
     const demande = JSON.parse(corps);
     const outil = demande.tool_choice?.name ?? demande.tools?.[0]?.name;
-    recus.push({ outil, texte: String(demande.messages?.at(-1)?.content ?? '').slice(0, 300) });
+    // Ce que l'application a RÉELLEMENT envoyé : consigne système et message, en entier.
+    recus.push({ outil, systeme: typeof demande.system === 'string' ? demande.system : JSON.stringify(demande.system ?? ''), texte: String(demande.messages?.at(-1)?.content ?? '') });
     // APPELS SANS OUTIL (texte libre) : réponse fixe, reconnaissable. Sert aux routes qui
     // demandent une prose ou un JSON ; un essai n'en tire aucune conclusion sur la qualité.
     if (!outil) {
+      // Une prose dictée par l'essai ({ __texte }) passe avant la réponse fixe.
+      if (file[0] && typeof file[0].__texte === 'string') {
+        const texte = file.shift().__texte;
+        return json(res, 200, { id: `msg_faux_${appels}`, type: 'message', role: 'assistant', model: demande.model,
+          content: [{ type: 'text', text: texte }], stop_reason: 'end_turn', stop_sequence: null, usage: { input_tokens: 1, output_tokens: 1 } });
+      }
       const systeme = typeof demande.system === 'string' ? demande.system : JSON.stringify(demande.system ?? '');
       const texte = /JSON valide/i.test(systeme)
         ? JSON.stringify({ category: 'autre', subcategory: null, tonality: 'neutre', emotional_intensity: 'low', probable_needs: [] })

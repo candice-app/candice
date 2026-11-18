@@ -1,4 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
+import { nommeUnDetailConfidentiel } from '@/lib/memories/situations';
 import type { AttentionDim } from '@/lib/attention/scoring';
 import { vetoEnfreint } from './veto-text';
 import { candidateRejectedBy } from './rejection-match';
@@ -199,7 +200,7 @@ const REGISTER_CONTEXT: Record<string, string> = {
   'je_ne_sais_pas':         'Registre incertain — commencer doucement, pas d\'intimité supposée, cadence basse, ton neutre et doux.',
 };
 
-function buildContextString(input: RecoInput): string {
+export function buildContextString(input: RecoInput): string {
   const lines: string[] = [];
   const { contactFirstName, relationship, reception, relationalFilters, singularity, classicProfile, vetos } = input;
 
@@ -284,6 +285,19 @@ function buildContextString(input: RecoInput): string {
   if (input.recentContext)
     lines.push(`CONTEXTE RÉCENT : ${input.recentContext}`);
 
+  // ── LA SITUATION ACTUELLE DU PROCHE (décision du 18 nov.). Elle sert à choisir
+  //    l'attention, le moment et la manière — pas à deviner un goût : traverser un deuil ne
+  //    dit pas qu'on veut des fleurs, de la visite, ou en parler. Les goûts et les refus
+  //    déclarés plus haut continuent de primer.
+  const situations = input.situations ?? [];
+  if (situations.length > 0) {
+    lines.push(`SITUATION ACTUELLE (pour choisir l'attention, le moment et la manière de la proposer) : ${situations.map((s) => s.consigne).join(' ; ')}`);
+    lines.push("Cette situation ne dit RIEN des goûts de la personne : n'en déduis aucune envie (fleurs, visite, conversation). Les goûts, refus et filtres ci-dessus priment.");
+    if (situations.some((s) => s.confidentielle)) {
+      lines.push("CONFIDENTIALITÉ : ne nomme jamais la cause de cette période, ni dans le titre ni dans la justification. Reste général (« une période difficile », « à son rythme »).");
+    }
+  }
+
   // Feedback history — per-contact learning signal (Part 2)
   if (input.feedbackHistory.length > 0) {
     const aCoté = input.feedbackHistory.filter(f => f.feedback === 'a_cote');
@@ -308,8 +322,13 @@ function buildContextString(input: RecoInput): string {
     }
   }
 
-  if (input.recentlyProposed.length > 0)
-    lines.push(`DÉJÀ PROPOSÉ RÉCEMMENT (ne pas répéter) : ${input.recentlyProposed.join(', ')}`);
+  // Un titre proposé AVANT que la situation soit connue peut nommer ce qui est devenu
+  // confidentiel. Il ne repart pas vers le modèle : constaté sur la pile locale, où une
+  // ancienne idée ramenait « le décès de sa mère » dans le prompt par cette seule ligne.
+  const confidentiellesIci = (input.situations ?? []).filter((x) => x.confidentielle);
+  const dejaProposes = input.recentlyProposed.filter((t) => !nommeUnDetailConfidentiel(t, confidentiellesIci));
+  if (dejaProposes.length > 0)
+    lines.push(`DÉJÀ PROPOSÉ RÉCEMMENT (ne pas répéter) : ${dejaProposes.join(', ')}`);
 
   return lines.join('\n');
 }
@@ -376,6 +395,14 @@ Respecte strictement les filtres durs. Ancre chaque idée sur un signal nommé. 
       // celui qui écrit le prompt, c'est une impossibilité de chemin.
       // Et l'idée écartée disparaît SANS trace visible côté pilote : lui dire pourquoi
       // reviendrait à lui confirmer ce que le proche a déclaré.
+      // UNE SUGGESTION NE NOMME PAS UN DÉTAIL CONFIDENTIEL. Le détail n'est pas dans le
+      // prompt ; ce filtre couvre le cas où le modèle le devinerait ou le formulerait quand
+      // même. L'idée fautive est retirée — elle n'est pas « corrigée » par une réécriture.
+      const confidentielles = (input.situations ?? []).filter((s) => s.confidentielle);
+      if (confidentielles.length > 0) {
+        ideas = ideas.filter((idea) => !nommeUnDetailConfidentiel(`${idea.title} ${idea.justification} ${idea.declencheur ?? ''}`, confidentielles));
+      }
+
       const rejets = input.rejetsDuProche ?? [];
       if (rejets.length > 0) {
         ideas = ideas.filter((idea) => candidateRejectedBy(`${idea.title} ${idea.justification}`, rejets) === null);

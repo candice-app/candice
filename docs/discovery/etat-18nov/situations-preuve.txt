@@ -1,0 +1,61 @@
+
+0. recommandation sans situation → HTTP 200
+  ✓ 0 : sans situation, rien n’est transmis au modèle à ce sujet
+
+1. autre compte → HTTP 404 {"error":"Not found"}
+  ✓ 1 : un autre compte reçoit 404 ; aucun appel au modèle, aucune écriture
+  ✓ 1 : sans session, 401
+
+2. panne du modèle → HTTP 200 {"success":true,"id":"d3ee5047-31b4-442b-976e-735d37691f85","enrichie":false} · en base : [
+  {
+    status: 'sensible',
+    resume: 'Julie traverse une situation que tu as notée.'
+  }
+]
+  ✓ 2 : pendant la panne, la note est enregistrée et la route le dit (enrichie : false)
+  ✓ 2 : non lue, elle est protégée (« sensible ») et son résumé ne reprend pas la note
+
+3. utilisateur autorisé → HTTP 200 {"success":true,"id":"039cf153-9ab5-4f21-b5b9-6d4e1bfa6921","enrichie":true} 
+   relu en base : [
+  {
+    status: 'sensible',
+    intensite: 'élevé',
+    sensibilite: 4,
+    categorie: 'deuil',
+    resume: 'Julie traverse un deuil. À prendre en compte dans tes prochaines attentions.'
+  }
+]
+  ✓ 3 : la note est enregistrée, sous l’identité du pilote
+  ✓ 3 : statut « sensible », intensité « élevé » (vocabulaire V26)
+  ✓ 3 : la note brute est conservée, la reformulation écrite
+  ✓ 3 : l’identifiant de compte glissé dans la requête ne provoque rien sur ce compte
+
+4. fiche privée → HTTP 200
+  ✓ 4 : la carte « Situation actuelle » affiche la reformulation, y compris pour une situation sensible
+  ✓ 4 : la note brute n’est pas dans la page envoyée au navigateur
+  ✓ 4 : un autre compte ne voit pas cette fiche
+
+5. recommandation avec situation sensible → HTTP 200
+   transmis au modèle : SITUATION ACTUELLE (pour choisir l'attention, le moment et la manière de la proposer) : période difficile, privilégier une proposition sans pression
+   affiché            : {"recommendations":{"ideas":[{"title":"Lui proposer une balade, à son rythme","justification":"Julie traverse une période difficile : un moment simple, sans pression.","dim":"EXP","canal":"message","intensite":"legere","declencheur":"période difficile"}],"blindSpot":null,"kadence":"moyenne","generatedAt":"2026-11-18T11:17:56.973Z"}}
+  ✓ 5 : la consigne générale est transmise au modèle
+  ✓ 5 : aucun détail (deuil, décès, mère) dans ce qui part au modèle
+  ✓ 5 : la proposition adaptée est rendue
+  ✓ 5 : l’idée qui nommait le décès est retirée de ce qui s’affiche
+  ✓ 5 : ni dans ce qui est conservé en base
+  ✓ 6 : un autre compte ne peut ni archiver ni modifier (404, statut inchangé)
+
+7. archivée → statut archivé
+  ✓ 7 : statut « archivé », historique conservé
+  ✓ 7 : une situation archivée n’influence plus la recommandation
+  ✓ 7 : elle a quitté la carte « Situation actuelle »
+
+8. impression → statut incertain · fiabilité faible 
+   transmis : SITUATION ACTUELLE (pour choisir l'attention, le moment et la manière de la proposer) : d'après une impression non confirmée — période tendue, privilégier la simplicité et la discrétion (contexte : humeur) ; ne rien tenir pour acquis
+  ✓ 8 : une impression garde son niveau de certitude (« incertain », fiabilité « faible »)
+  ✓ 8 : elle est transmise au modèle comme une impression
+  ✓ 8 : la fiche reçoit la situation avec son niveau de certitude (la carte l’affiche « à confirmer »)
+  ✓ 9 : « c’était une erreur » → statut « invalidé »
+  ✓ 9 : une situation invalidée n’influence plus rien
+
+26 vérifications passées, 0 en échec.

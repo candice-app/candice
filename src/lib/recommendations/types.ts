@@ -67,6 +67,12 @@ export interface RecoInput {
   importantDates: { label: string; date: string }[];
   recentContext: string | null;
   recentlyProposed: string[];
+  /**
+   * Les situations ACTUELLES du proche, déjà réduites au minimum nécessaire par le serveur
+   * (`situationsPourReco`). Pour une situation sensible, la consigne est générale : le détail
+   * n'entre jamais dans le prompt, et ne peut donc pas en ressortir.
+   */
+  situations?: readonly import('@/lib/memories/situations').SituationPourReco[];
 
   // Complicated-register pilot context (Part 1)
   complicatedContext: string | null;

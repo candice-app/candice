@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
+import { situationsPourReco } from '@/lib/memories/situations';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { generateRecommendations } from '@/lib/recommendations/engine';
 import { lireRejetsDuProche } from '@/lib/recommendations/declarations-proche';
@@ -147,8 +148,13 @@ export async function POST(req: NextRequest) {
   // zéro rejet, et aucune donnée du proche n'est employée.
   const declarations = await lireRejetsDuProche(admin as never, { piloteId: user.id, contactId });
 
+  // La situation actuelle du proche, réduite au minimum nécessaire. Lue avec le client de
+  // l'UTILISATEUR (ses propres notes, sous la RLS) — pas avec le client privilégié.
+  const situations = await situationsPourReco(supabase, { userId: user.id, contactId });
+
   const input: RecoInput = {
     contactId,
+    situations,
     rejetsDuProche: declarations.rejets,
     contactName: c.name,
     contactFirstName,

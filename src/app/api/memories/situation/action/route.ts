@@ -1,41 +1,34 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { agirSurSituation, type ActionSituation } from "@/lib/memories/situations";
+
+// FAIRE ÉVOLUER UNE SITUATION. Trois gestes, trois sens distincts (décision du 18 nov.) :
+//   toujours_actuelle → reste vivante, revalidation dans 30 jours
+//   terminee          → archivé : quitte la fiche et les recommandations, historique conservé
+//   erreur            → invalidé : l'information était fausse
+// Les anciens noms (`revalidate`, `resolve`) sont acceptés pour un écran pas encore rechargé.
+const ACTIONS: Record<string, ActionSituation> = {
+  toujours_actuelle: "toujours_actuelle", terminee: "terminee", erreur: "erreur",
+  revalidate: "toujours_actuelle", resolve: "terminee",
+};
 
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as { id: string; action: "revalidate" | "resolve" };
-  const { id, action } = body;
-
-  if (!id || !["revalidate", "resolve"].includes(action)) {
+  let body: { id?: unknown; action?: unknown };
+  try { body = await req.json(); } catch { return NextResponse.json({ error: "corps illisible" }, { status: 400 }); }
+  const action = typeof body.action === "string" ? ACTIONS[body.action] : undefined;
+  if (typeof body.id !== "string" || !action) {
     return NextResponse.json({ error: "id et action requis" }, { status: 400 });
   }
-
-  const { data: mem } = await supabase
-    .from("memories")
-    .select("id")
-    .eq("id", id)
-    .eq("pilot_id", user.id)
-    .maybeSingle();
-
-  if (!mem) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  if (action === "revalidate") {
-    const newRevalidate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-    const { error } = await supabase.from("memories").update({
-      revalidate_at: newRevalidate,
-      updated_at: new Date().toISOString(),
-    }).eq("id", id);
-    if (error) console.error("[memories/situation/action] memories update revalidate", error.message);
-  } else {
-    const { error } = await supabase.from("memories").update({
-      status: "resolved",
-      updated_at: new Date().toISOString(),
-    }).eq("id", id);
-    if (error) console.error("[memories/situation/action] memories update resolve", error.message);
+  try {
+    const ok = await agirSurSituation(supabase, { userId: user.id, id: body.id, action });
+    if (!ok) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    return NextResponse.json({ success: true });
+  } catch (e) {
+    console.error("[memories/situation/action] échec", e);
+    return NextResponse.json({ error: "la mise à jour n'a pas pu être enregistrée" }, { status: 503 });
   }
-
-  return NextResponse.json({ success: true });
 }
