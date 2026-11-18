@@ -54,6 +54,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ method: "email", reason: "reinvite" });
   }
 
+  // ── RELANCE D'UN COMPTE LIÉ : DÉSACTIVÉE (correctif de sécurité du 18 nov.).
+  //    `contacts.proche_user_id` est écrit par le PILOTE lui-même : cette route envoyait donc,
+  //    en son nom, une notification ou un courriel à n'importe quel compte qu'il désignait.
+  //    Elle reviendra quand le lien sera attesté par le compte désigné (migration 113).
+  const RELANCE_COMPTE_LIE_ACTIVE = false as boolean;
+  if (!RELANCE_COMPTE_LIE_ACTIVE) return NextResponse.json({ method: "none", reason: "relance_suspendue" });
+
   const procheUserId = contact.proche_user_id as string;
 
   const { data: procheProfile } = await admin
