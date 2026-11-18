@@ -17,7 +17,7 @@ import { createHash } from 'node:crypto';
 import { createSourceRecord } from '../knowledge/sources';
 import { createOpenKnowledge } from '../knowledge/open-knowledge';
 import { asSubjectId, asEntityId, type AboutRef, type UserId } from '../knowledge/identity';
-import { ENTITY_RELATIONS, INTEREST_RELATIONSHIPS, type InterestRelationship } from '../knowledge/vocabulary';
+import { ENTITY_RELATIONS, INTEREST_PARENT_DOMAINS, INTEREST_RELATIONSHIPS, type InterestRelationship } from '../knowledge/vocabulary';
 import { normalizeLabel } from '../knowledge/normalize';
 import { persistKnowledge, type WriteClient } from './persist';
 import { evidenceId, openKnowledgeId } from './ids';
@@ -51,7 +51,7 @@ const TOOL = {
           properties: {
             family: { type: 'string', enum: ['INTEREST', 'ENTITY', 'OTHER'], description: "INTEREST : un intérêt ÉTABLI par les propos pour un sujet. ENTITY : une chose nommée (marque, lieu, œuvre, plat…). OTHER : tout le reste — dont un REJET ou un désintérêt (« j'ai détesté ») et une ACTION PONCTUELLE dont aucun intérêt durable ne ressort. Leur formulation part verbatim dans relation_label ; un rejet ne s'encode JAMAIS dans l'échelle d'engagement." },
             label: { type: 'string', description: 'formulation PRÉCISE, verbatim, jamais généralisée' },
-            parentDomain: { type: 'string', description: 'INTEREST : domaine parent (ex. photography, music, food_gastronomy)' },
+            parentDomain: { type: 'string', description: `INTEREST : domaine parent. Prends-le dans cette liste dès qu'un terme convient : ${INTEREST_PARENT_DOMAINS.seed.join(', ')}. Si aucun ne convient, laisse vide plutôt que de forcer un domaine voisin.` },
             relationship: { type: 'string', enum: [...INTEREST_RELATIONSHIPS], description: "INTEREST : DEGRÉ D'ENGAGEMENT, et seulement s'il est établi par les propos — casual (occasionnel), curious (curieux), enthusiast (passionné amateur), passion, expert. LAISSE VIDE si l'intérêt est établi mais pas son degré : l'absence est une information juste, jamais un degré faible." },
             entityType: { type: 'string', enum: ['brand', 'place', 'restaurant', 'hotel', 'product', 'food', 'drink', 'book', 'film_series', 'music', 'artist', 'destination', 'event', 'person'], description: 'ENTITY : sous-type exact' },
             relation: { type: 'string', enum: [...ENTITY_RELATIONS], description: 'ENTITY : relation explicitement exprimée envers la chose ; laisse vide pour une simple mention' },

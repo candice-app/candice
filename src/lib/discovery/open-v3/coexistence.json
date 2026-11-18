@@ -1,0 +1,501 @@
+{
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_3.xlsx",
+ "sha256_classeur": "1b326ff4ea28d83cc8880e8451d30acff7d31a93962f8c73d3a738fdc5093425",
+ "onglet": "13_COEXISTENCE_GENERATIONS",
+ "branches": [
+  {
+   "domaine": "beauty",
+   "historique": "beauty",
+   "prioritaire": "beauty2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "cinema",
+   "historique": "cinema",
+   "prioritaire": "cinema2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "consumption",
+   "historique": "consumption",
+   "prioritaire": "consumption2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "daily",
+   "historique": "daily",
+   "prioritaire": "daily2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "fashion",
+   "historique": "fashion",
+   "prioritaire": "fashion2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "food",
+   "historique": "food",
+   "prioritaire": "food2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "fragrance",
+   "historique": "fragrance",
+   "prioritaire": "fragrance2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "gaming",
+   "historique": "gaming",
+   "prioritaire": "gaming2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "home",
+   "historique": "home",
+   "prioritaire": "home2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "humor",
+   "historique": "humor",
+   "prioritaire": "humor2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "learning",
+   "historique": "learning",
+   "prioritaire": "learning2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "music",
+   "historique": "music",
+   "prioritaire": "music2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "reading",
+   "historique": "reading",
+   "prioritaire": "reading2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "relation",
+   "historique": "relation",
+   "prioritaire": "relation2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "sensory",
+   "historique": "sensory",
+   "prioritaire": "sensory2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "series",
+   "historique": "series",
+   "prioritaire": "series2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "tech",
+   "historique": "tech",
+   "prioritaire": "tech2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "theatre",
+   "historique": "theatre",
+   "prioritaire": "theatre2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "travel",
+   "historique": "travel",
+   "prioritaire": "travel2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  },
+  {
+   "domaine": "work",
+   "historique": "work",
+   "prioritaire": "work2",
+   "regle": "Un seul pool visible ; `2` prioritaire sur intention équivalente, l’historique seulement pour précision unique utile ; pas de fusion brute"
+  }
+ ],
+ "questions": [
+  {
+   "ancienne": "cinema.0071",
+   "nouvelle": "cinema2.0977",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "cinema.0079",
+   "nouvelle": "cinema2.0985",
+   "decision": "ALIAS_OLD_TO_NEW",
+   "regle": "ALIAS_OLD_TO_NEW — ALIAS_OLD_TO_NEW (sous-ensemble exact des options historiques, ancien retiré de la rotation ; alias sur chaque libellé commun)"
+  },
+  {
+   "ancienne": "cinema.0082",
+   "nouvelle": "cinema2.0979",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "cinema.0083",
+   "nouvelle": "cinema2.0987",
+   "decision": "ALIAS_OLD_TO_NEW",
+   "regle": "ALIAS_OLD_TO_NEW — ALIAS_OLD_TO_NEW (sous-ensemble exact des options historiques, ancien retiré de la rotation ; alias sur chaque libellé commun)"
+  },
+  {
+   "ancienne": "cinema.0077",
+   "nouvelle": "cinema2.0982",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "cinema.0070",
+   "nouvelle": "cinema2.0976",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "cinema.0078",
+   "nouvelle": "cinema2.0983",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "cinema.0080",
+   "nouvelle": "cinema2.0986",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "cinema.0081",
+   "nouvelle": "cinema2.0984",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "cinema.0075",
+   "nouvelle": "cinema2.0978",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "cinema.0084",
+   "nouvelle": "cinema2.0999",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "daily.0254",
+   "nouvelle": "daily2.1134",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "fashion.0151",
+   "nouvelle": "fashion2.1070",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "fashion.0144",
+   "nouvelle": "fashion2.1062",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "fashion.0150",
+   "nouvelle": "fashion2.1059",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "fashion.0148",
+   "nouvelle": "fashion2.1061",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "food.0049",
+   "nouvelle": "food2.0875",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "food.0032",
+   "nouvelle": "food2.0867",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "food.0029",
+   "nouvelle": "food2.0863",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "food.0028",
+   "nouvelle": "food2.0863",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "food.0037",
+   "nouvelle": "food2.0868",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "food.0046",
+   "nouvelle": "food2.0872",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "fragrance.0170",
+   "nouvelle": "fragrance2.1155",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "fragrance.0169",
+   "nouvelle": "fragrance2.1151",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "fragrance.0163",
+   "nouvelle": "fragrance2.1147",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "fragrance.0164",
+   "nouvelle": "fragrance2.1150",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "gaming.0209",
+   "nouvelle": "gaming2.1395",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "gaming.0207",
+   "nouvelle": "gaming2.1410",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "home.0178",
+   "nouvelle": "home2.1263",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "humor.0141",
+   "nouvelle": "humor2.1415",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "music.0121",
+   "nouvelle": "music2.1005",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "music.0122",
+   "nouvelle": "music2.1009",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "music.0123",
+   "nouvelle": "music2.1010",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "music.0124",
+   "nouvelle": "music2.1011",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "music.0116",
+   "nouvelle": "music2.1003",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "reading.0106",
+   "nouvelle": "reading2.1232",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "reading.0107",
+   "nouvelle": "reading2.1236",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "sensory.0263",
+   "nouvelle": "sensory2.1473",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "sensory.0266",
+   "nouvelle": "sensory2.1471",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "series.0091",
+   "nouvelle": "series2.1032",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "series.0093",
+   "nouvelle": "series2.1037",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "series.0094",
+   "nouvelle": "series2.1035",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "series.0095",
+   "nouvelle": "series2.1039",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "series.0096",
+   "nouvelle": "series2.1040",
+   "decision": "ALIAS_OLD_TO_NEW",
+   "regle": "ALIAS_OLD_TO_NEW — ALIAS_OLD_TO_NEW (sous-ensemble exact des options historiques, ancien retiré de la rotation ; alias sur chaque libellé commun)"
+  },
+  {
+   "ancienne": "series.0097",
+   "nouvelle": "series2.1043",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "series.0086",
+   "nouvelle": "series2.1031",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "theatre.0105",
+   "nouvelle": "theatre2.1378",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "theatre.0103",
+   "nouvelle": "theatre2.1364",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "theatre.0099",
+   "nouvelle": "theatre2.1365",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "travel.0056",
+   "nouvelle": "travel2.0905",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0066",
+   "nouvelle": "travel2.0922",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0064",
+   "nouvelle": "travel2.0919",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0069",
+   "nouvelle": "travel2.0935",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0058",
+   "nouvelle": "travel2.0891",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0063",
+   "nouvelle": "travel2.0917",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0067",
+   "nouvelle": "travel2.0927",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0053",
+   "nouvelle": "travel2.0888",
+   "decision": "NEW_PRIMARY",
+   "regle": "NEW_PRIMARY — NEW_PRIMARY ; OLD_OFF_PROACTIVE ; PAS_DE_MIGRATION_AUTOMATIQUE (options/nuances non prouvées identiques)"
+  },
+  {
+   "ancienne": "travel.0061",
+   "nouvelle": "travel2.0893",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "travel.0057",
+   "nouvelle": "travel2.0906",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "travel.0051",
+   "nouvelle": "travel2.0886",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "travel.0055",
+   "nouvelle": "travel2.0890",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  },
+  {
+   "ancienne": "travel.0062",
+   "nouvelle": "travel2.0916",
+   "decision": "KEEP_DISTINCT_CONDITIONED",
+   "regle": "KEEP_DISTINCT_CONDITIONED — KEEP_DISTINCT_CONDITIONED ; demander l’ancienne seulement si facette inconnue et utile, jamais à la suite par défaut"
+  }
+ ]
+}

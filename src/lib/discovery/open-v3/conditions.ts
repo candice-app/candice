@@ -53,18 +53,28 @@ export interface EtatDiscovery {
    * Un nom ABSENT d'ici et inconnu de l'état n'est pas « fermé » : il est indécidable.
    */
   readonly aliasBranches?: ReadonlyMap<string, ReadonlySet<string>>;
+  /**
+   * Ce que la personne a RÉPONDU aux questions qui font le tri d'une sous-partie : question →
+   * identités des options choisies (`cleOption`). Relu dans la progression, jamais supposé. Absent ou sans
+   * entrée pour une question = pas de réponse connue.
+   */
+  readonly optionsChoisies?: ReadonlyMap<string, ReadonlySet<string>>;
+  /** La dernière question à laquelle la personne a répondu (ou qu'elle a passée). Sert à ne
+   *  pas enchaîner une question historique juste après celle qui la remplace. */
+  readonly dernierePosee?: string;
 }
 
 export type Clause =
   | { readonly type: 'tag'; readonly chemin: string; readonly operateur: '=' | '!='; readonly valeur: string }
   | { readonly type: 'ne_pas_creuser'; readonly domaine: string }
   | { readonly type: 'interet'; readonly domaine: string }
-  | { readonly type: 'branche_ouverte'; readonly branche: string }
+  | { readonly type: 'branche_ouverte'; readonly branche: string; readonly sousPartie?: boolean }
   | { readonly type: 'niveau'; readonly niveau: 'A' | 'B' | 'C'; readonly branche: string }
   | { readonly type: 'information_manquante' }
   | { readonly type: 'score_suffisant' }
   | { readonly type: 'pas_si_sans_alcool' }
   | { readonly type: 'contexte'; readonly libelle: string }
+  | { readonly type: 'domaines_actifs'; readonly noms: readonly string[] }
   | { readonly type: 'prose'; readonly texte: string };
 
 /** LES MARQUES DE SENSIBILITÉ DU RÉFÉRENTIEL. Il en écrit TROIS niveaux — « sensitivity:
@@ -197,16 +207,19 @@ const MOTIFS: ReadonlyArray<{ re: RegExp; lire: (m: RegExpMatchArray) => Clause 
   // entière. Même mécanique, autre granularité — on garde le libellé tel quel.
   {
     re: /^(?:sous-branche|axe)\s+(.+)$/i,
-    lire: (m) => ({ type: 'branche_ouverte', branche: clef(m[1]) }),
+    lire: (m) => ({ type: 'branche_ouverte', branche: clef(m[1]), sousPartie: true }),
   },
-  // « Achat concret », « Cuisine/gastronomie active », « Voyage, week-end ou hôtellerie
-  // actifs » : un CONTEXTE de vie doit être en cours. Le libellé est conservé tel quel et
-  // c'est le moteur qui dit s'il connaît ce contexte — un contexte INCONNU rend
-  // `indecidable`, jamais « inactif » : affirmer qu'un contexte n'est pas en cours alors
-  // qu'on ne sait pas ce qu'il désigne fermerait la question pour une mauvaise raison.
+  // « Cuisine/gastronomie active », « Voyage, week-end ou hôtellerie actifs » : une LISTE DE
+  // DOMAINES dont l'un au moins doit être actif — c'est-à-dire choisi ou détecté chez la
+  // personne, comme « Intérêt lecture sélectionné ou détecté ». La première version rangeait
+  // ces phrases avec « Achat concret », parmi les contextes de vie inconnus du moteur : les
+  // 30 questions de cuisine et les 19 de voyage restaient fermées pour quelqu'un qui avait
+  // coché « Cuisine » et « Voyage » (relevé le 18 nov. en faisant tourner dix profils).
+  // Un contexte de vie a un début et une fin (un achat, un séjour) ; un domaine actif n'en a
+  // pas. Ce ne sont pas la même chose, et seul « Achat concret » reste un contexte.
   {
     re: /^(.+?)\s+(?:actif|active|actifs|actives)$/i,
-    lire: (m) => ({ type: 'contexte', libelle: clef(m[1]) }),
+    lire: (m) => ({ type: 'domaines_actifs', noms: m[1].split(/\s*,\s*|\s+ou\s+|\s*\/\s*/i).map(clef).filter(Boolean) }),
   },
   {
     re: /^achat concret$/i,
@@ -296,6 +309,8 @@ export interface ContexteQuestion {
   /** Une de ces informations est aussi écrite par une autre question : la savoir renseignée
    *  ne prouve pas que CETTE question a eu sa réponse. */
   readonly attributsPartages?: boolean;
+  /** La réponse dont cette question dépend, quand le référentiel en écrit une (`dependances.ts`). */
+  readonly dependance?: { readonly selecteur: string; readonly cles: readonly string[]; readonly resolu: boolean };
 }
 
 /**
@@ -372,8 +387,36 @@ function evaluerClause(
     case 'interet':
       // Un intérêt doit être POSITIF et écrit. Son absence n'est pas un « non » :
       // c'est l'absence de terrain, et on ne pose pas une question sans terrain.
-      return etat.tags.get(`INTEREST.${c.domaine}`) === 'positive' ? 'ouvrir' : 'fermer';
+      //
+      // Le NOM qu'écrit la condition (« art, musées et expositions ») n'est pas celui sous
+      // lequel l'intérêt est écrit au journal (« art ») : comparés tels quels, ils ne se
+      // retrouvaient que par chance (« lecture »). Le nom désigne une branche — celle des
+      // questions qui l'emploient — et un intérêt choisi ou détecté OUVRE cette branche :
+      // c'est exactement ce que la clause demande.
+      if (etat.tags.get(`INTEREST.${c.domaine}`) === 'positive') return 'ouvrir';
+      return designe(c.domaine, etat).some((b) => etat.branchesOuvertes.has(b)) ? 'ouvrir' : 'fermer';
+    case 'domaines_actifs': {
+      // UN des domaines nommés suffit. Un nom que rien ne permet de rattacher à une branche
+      // ne vaut pas « inactif » : s'il en reste un et qu'aucun autre n'ouvre, on ne sait pas.
+      let inconnu = false;
+      for (const nom of c.noms) {
+        if (etat.tags.get(`INTEREST.${nom}`) === 'positive') return 'ouvrir';
+        if (designe(nom, etat).some((b) => etat.branchesOuvertes.has(b))) return 'ouvrir';
+        if (!etat.aliasBranches?.has(nom)) inconnu = true;
+      }
+      return inconnu ? 'indecidable' : 'fermer';
+    }
     case 'branche_ouverte': {
+      // UNE SOUS-PARTIE QUI DÉPEND D'UNE RÉPONSE ne s'ouvre que sur cette réponse. Sans
+      // rapprochement entre le nom et une option, on ne sait pas : non résolu. Sans réponse
+      // à la question qui fait le tri, la condition est connue et fausse.
+      if (c.sousPartie && contexte.dependance) {
+        const d = contexte.dependance;
+        if (!d.resolu) return 'indecidable';
+        const choisies = etat.optionsChoisies?.get(d.selecteur);
+        if (!choisies) return 'fermer';
+        return d.cles.some((o) => choisies.has(o)) ? 'ouvrir' : 'fermer';
+      }
       const ids = designe(c.branche, etat);
       if (ids.some((b) => etat.branchesOuvertes.has(b))) return 'ouvrir';
       // Un nom que ni la banque ni l'état ne connaissent : on ne sait pas de quelle branche

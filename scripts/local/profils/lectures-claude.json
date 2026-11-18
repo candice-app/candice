@@ -1,0 +1,58 @@
+{
+  "_note": "Lectures des réponses libres écrites par Claude (session Claude Code du 18-19 nov.), sous la consigne et le schéma d'outil exacts de extract-free-text.ts. Ce n'est PAS une sortie de l'API de production : même famille de modèle, mais ni le même modèle ni un appel d'API.",
+  "Sophie|singularity.adore_faire": [
+    {"family":"INTEREST","label":"lire au lit le dimanche matin","parentDomain":"books_literature"},
+    {"family":"INTEREST","label":"cuisiner des plats qui mijotent","parentDomain":"food_gastronomy"},
+    {"family":"INTEREST","label":"marcher seule en ville avec un podcast"}],
+  "Sophie|singularity.cadeaux_non": [
+    {"family":"OTHER","label":"fleurs coupées","relation_label":"surtout pas — ça la déprime de les regarder faner"},
+    {"family":"OTHER","label":"bijoux","relation_label":"très peu pour moi"}],
+  "Sophie|singularity.plus_beau_cadeau": [
+    {"family":"OTHER","label":"week-end surprise organisé par Thomas dans le Jura","relation_label":"plus beau cadeau — il avait absolument tout prévu, elle n'a rien eu à décider"},
+    {"family":"ENTITY","label":"Jura","entityType":"destination"},
+    {"family":"ENTITY","label":"Thomas","entityType":"person"}],
+  "Camille|singularity.adore_faire": [
+    {"family":"INTEREST","label":"trail en montagne","parentDomain":"sport_fitness","relationship":"passion"},
+    {"family":"OTHER","label":"prépare un 50 km","relation_label":"objectif en cours — court trois fois par semaine"},
+    {"family":"INTEREST","label":"bricolage","relationship":"casual"}],
+  "Camille|singularity.cadeaux_non": [
+    {"family":"OTHER","label":"matériel de sport choisi sans me demander","relation_label":"ne veut pas recevoir — la taille, la marque, le modèle : ça ne marche jamais"}],
+  "Inès|singularity.marques_lieux": [
+    {"family":"INTEREST","label":"librairies de quartier","parentDomain":"books_literature"},
+    {"family":"ENTITY","label":"thé en vrac, pas en sachet","entityType":"drink","relation":"LIKE"},
+    {"family":"OTHER","label":"rien de clinquant","relation_label":"orientation de goût — rejette le clinquant"}],
+  "Inès|singularity.evite_deteste": [
+    {"family":"OTHER","label":"restaurants où il faut crier pour s'entendre","relation_label":"évite ou déteste — le bruit, pas les restaurants"}],
+  "Léa|singularity.envies_reves": [
+    {"family":"INTEREST","label":"reliure","parentDomain":"craftsmanship","relationship":"curious"},
+    {"family":"ENTITY","label":"Kyoto","entityType":"destination","relation":"WANT_TO_VISIT"},
+    {"family":"OTHER","label":"retourner à Kyoto hors saison","relation_label":"condition — y est déjà allée, veut y retourner hors saison cette fois"}],
+  "Léa|singularity.detail_compris": [
+    {"family":"OTHER","label":"qu'on remarque quand je suis fatiguée sans que j'aie à le dire","relation_label":"détail qui la ferait se sentir comprise"}],
+  "Manon|singularity.adore_faire": [
+    {"family":"INTEREST","label":"brocantes"},
+    {"family":"OTHER","label":"fouiller sans rien chercher de précis","relation_label":"ce qu'elle aime dans les brocantes"}],
+  "Manon|singularity.cadeaux_non": [
+    {"family":"OTHER","label":"tout ce qui prend de la place","relation_label":"ne veut pas recevoir — son appartement est petit"}],
+  "Clara|singularity.sujets_stimulants": [
+    {"family":"INTEREST","label":"histoire de l'art, surtout le XIXᵉ","parentDomain":"art","relationship":"expert"},
+    {"family":"OTHER","label":"l'histoire de l'art était mon métier","relation_label":"ancien métier — se dit incollable"}],
+  "Clara|singularity.marques_lieux": [
+    {"family":"ENTITY","label":"musée d'Orsay","entityType":"place","relation":"LIKE"},
+    {"family":"INTEREST","label":"papeteries"},
+    {"family":"OTHER","label":"une bonne encre","relation_label":"aime"}],
+  "Nour|singularity.evite_deteste": [
+    {"family":"OTHER","label":"dîners qui s'éternisent","relation_label":"évite ou déteste — pas les dîners eux-mêmes, ceux qui s'éternisent"}],
+  "Nour|singularity.remarquer": [
+    {"family":"OTHER","label":"je dis souvent oui alors que je pense non","relation_label":"aimerait qu'on le remarque"}],
+  "Alice|singularity.adore_faire": [
+    {"family":"OTHER","label":"assez casanière","relation_label":"se décrit ainsi — « rien de spécial »"}],
+  "Jeanne|singularity.plus_beau_cadeau": [
+    {"family":"OTHER","label":"une lettre de quatre pages","relation_label":"plus beau cadeau reçu — elle l'a encore"}],
+  "Jeanne|singularity.cadeaux_non": [
+    {"family":"OTHER","label":"bon d'achat","relation_label":"ne veut pas recevoir — c'est gentil mais ça veut dire qu'on n'a pas cherché"}],
+  "Yasmina|singularity.sentir_special": [
+    {"family":"OTHER","label":"qu'on se souvienne d'un détail que j'ai dit une seule fois, il y a longtemps","relation_label":"ce qui la fait se sentir spéciale"}],
+  "Yasmina|singularity.envies_reves": [
+    {"family":"OTHER","label":"que mes parents voyagent un peu","relation_label":"souhait pour ses parents, pas pour elle — « rien pour moi »"}]
+}

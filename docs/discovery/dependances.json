@@ -1,0 +1,1247 @@
+{
+ "total": 107,
+ "resolues": 75,
+ "non_resolues": 32,
+ "lignes": [
+  {
+   "question": "beauty2.1295",
+   "enonce": "Quel type de massage te ferait vraiment plaisir ?",
+   "condition": "Sous-branche Massage : si massage apprécié (1288)",
+   "selecteur": "beauty2.1288",
+   "enonce_selecteur": "Parmi ces moments, lesquels te procurent vraiment une sensation de bien-être ?",
+   "options_retenues": [
+    "un massage"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "beauty2.1296",
+   "enonce": "Dans un spa, qu’apprécies-tu le plus ?",
+   "condition": "Sous-branche Spa : si spa apprécié (1288)",
+   "selecteur": "beauty2.1288",
+   "enonce_selecteur": "Parmi ces moments, lesquels te procurent vraiment une sensation de bien-être ?",
+   "options_retenues": [
+    "un spa"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "beauty2.1305",
+   "enonce": "Pour les soins du visage, tu recherches surtout…",
+   "condition": "Sous-branche Soins visage — SEULEMENT si pertinent (1290) — sensitivity: HIGH",
+   "selecteur": "beauty2.1290",
+   "enonce_selecteur": "Quelles catégories apprécies-tu réellement ?",
+   "options_retenues": [
+    "soins visage"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "beauty2.1306",
+   "enonce": "Pour le corps, tu apprécies…",
+   "condition": "Sous-branche Soins corps : si catégorie choisie (1290)",
+   "selecteur": "beauty2.1290",
+   "enonce_selecteur": "Quelles catégories apprécies-tu réellement ?",
+   "options_retenues": [
+    "soins corps"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "beauty2.1307",
+   "enonce": "Pour tes cheveux, qu’est-ce qui compte le plus ?",
+   "condition": "Sous-branche Cheveux : si catégorie choisie (1290)",
+   "selecteur": "beauty2.1290",
+   "enonce_selecteur": "Quelles catégories apprécies-tu réellement ?",
+   "options_retenues": [
+    "cheveux"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "cinema2.0994",
+   "enonce": "Dans un film d’horreur ou à suspense, tu préfères…",
+   "condition": "Sous-branche : horreur/tension appréciée (0978)",
+   "selecteur": "cinema2.0978",
+   "enonce_selecteur": "Quels genres de films te plaisent vraiment ?",
+   "options_retenues": [
+    "horreur"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "cinema2.0995",
+   "enonce": "Quel type d’humour te plaît le plus au cinéma ?",
+   "condition": "Sous-branche : comédie appréciée (0978)",
+   "selecteur": "cinema2.0978",
+   "enonce_selecteur": "Quels genres de films te plaisent vraiment ?",
+   "options_retenues": [
+    "comedie",
+    "comedie romantique"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "cinema2.0996",
+   "enonce": "Dans un documentaire, tu recherches surtout…",
+   "condition": "Sous-branche : documentaire apprécié (0978)",
+   "selecteur": "cinema2.0978",
+   "enonce_selecteur": "Quels genres de films te plaisent vraiment ?",
+   "options_retenues": [
+    "documentaire"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "cinema2.0997",
+   "enonce": "Dans l’animation, tu apprécies surtout…",
+   "condition": "Sous-branche : animation appréciée (0978)",
+   "selecteur": "cinema2.0978",
+   "enonce_selecteur": "Quels genres de films te plaisent vraiment ?",
+   "options_retenues": [
+    "animation"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "comics.0430",
+   "enonce": "Quels univers de manga te plaisent le plus ?",
+   "condition": "Sous-branche : manga apprécié (0415)",
+   "selecteur": "comics.0415",
+   "enonce_selecteur": "Quels formats te plaisent vraiment ?",
+   "options_retenues": [
+    "manga"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "comics.0431",
+   "enonce": "Dans les comics, qu’est-ce qui t’attire le plus ?",
+   "condition": "Sous-branche : comics apprécié (0415)",
+   "selecteur": "comics.0415",
+   "enonce_selecteur": "Quels formats te plaisent vraiment ?",
+   "options_retenues": [
+    "comics"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "comics.0432",
+   "enonce": "Dans la BD franco-belge, tu préfères…",
+   "condition": "Sous-branche : BD franco-belge appréciée (0415)",
+   "selecteur": "comics.0415",
+   "enonce_selecteur": "Quels formats te plaisent vraiment ?",
+   "options_retenues": [
+    "bd franco-belge"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "comics.0433",
+   "enonce": "Dans un roman graphique, tu recherches surtout…",
+   "condition": "Sous-branche : roman graphique apprécié (0415)",
+   "selecteur": "comics.0415",
+   "enonce_selecteur": "Quels formats te plaisent vraiment ?",
+   "options_retenues": [
+    "roman graphique"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "comics.0434",
+   "enonce": "Pour les webtoons, tu préfères…",
+   "condition": "Sous-branche : webtoon apprécié (0415)",
+   "selecteur": "comics.0415",
+   "enonce_selecteur": "Quels formats te plaisent vraiment ?",
+   "options_retenues": [
+    "webtoon"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "consumption2.1202",
+   "enonce": "Quels abonnements pourraient réellement te faire plaisir ?",
+   "condition": "Sous-branche Abonnements : si le principe est accepté (1201)",
+   "selecteur": "consumption2.1201",
+   "enonce_selecteur": "Recevoir un abonnement en cadeau…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "craft.0619",
+   "enonce": "Quelles activités pratiques-tu réellement aujourd’hui ?",
+   "condition": "Axe Pratiquant (0614)",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "craft.0629",
+   "enonce": "Qu’est-ce que tu photographies le plus volontiers ?",
+   "condition": "Sous-branche : photographie pratiquée (0615)",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "photographie"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "craft.0634",
+   "enonce": "Quels médiums utilises-tu ou aimerais-tu utiliser ?",
+   "condition": "Sous-branche : peinture/dessin/illustration pratiqué (0615)",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "peinture",
+    "dessin ou illustration"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "craft.0638",
+   "enonce": "Dans la céramique, qu’est-ce qui t’attire le plus ?",
+   "condition": "Sous-branche : céramique/poterie pratiquée ou désirée (0615)",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "ceramique ou poterie"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "craft.0642",
+   "enonce": "Quels arts textiles pratiques-tu ou aimerais-tu pratiquer ?",
+   "condition": "Sous-branche : arts textiles pratiqués ou désirés (0615)",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "arts textiles"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "craft.0648",
+   "enonce": "Qu’aimes-tu réellement acheter ou garder dans cet univers ?",
+   "condition": "Axe Fan/acheteur (0614)",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "drinks.2091",
+   "enonce": "Qu’apprécies-tu le plus ?",
+   "condition": "Sous-branche Café : si café sélectionné (2085)",
+   "selecteur": "drinks.2085",
+   "enonce_selecteur": "Parmi ces boissons, lesquelles occupent une vraie place dans ton quotidien ou tes plaisirs ?",
+   "options_retenues": [
+    "cafe"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "drinks.2092",
+   "enonce": "Quels thés apprécies-tu ?",
+   "condition": "Sous-branche Thé : si thé sélectionné (2085)",
+   "selecteur": "drinks.2085",
+   "enonce_selecteur": "Parmi ces boissons, lesquelles occupent une vraie place dans ton quotidien ou tes plaisirs ?",
+   "options_retenues": [
+    "the"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "drinks.2093",
+   "enonce": "Tu apprécies surtout…",
+   "condition": "Sous-branche Vin : si vin sélectionné (2085)",
+   "selecteur": "drinks.2085",
+   "enonce_selecteur": "Parmi ces boissons, lesquelles occupent une vraie place dans ton quotidien ou tes plaisirs ?",
+   "options_retenues": [
+    "vin"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "drinks.2094",
+   "enonce": "Tu préfères…",
+   "condition": "Sous-branche Cocktails : si cocktails sélectionnés (2085)",
+   "selecteur": "drinks.2085",
+   "enonce_selecteur": "Parmi ces boissons, lesquelles occupent une vraie place dans ton quotidien ou tes plaisirs ?",
+   "options_retenues": [
+    "cocktails"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "food2.0873",
+   "enonce": "Autour du café ou du thé, qu’est-ce qui compte le plus ?",
+   "condition": "Sous-branche Boissons : si café/thé apprécié (0872)",
+   "selecteur": "food2.0872",
+   "enonce_selecteur": "Parmi ces boissons, lesquelles apprécies-tu vraiment ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "food2.0875",
+   "enonce": "Quand tu reçois, qu’est-ce qui te fait le plus plaisir ?",
+   "condition": "Sous-branche Recevoir : si la personne aime recevoir (0874)",
+   "selecteur": "food2.0874",
+   "enonce_selecteur": "Tu aimes recevoir chez toi ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "games.0963",
+   "enonce": "Dans un jeu d’ambiance, tu préfères…",
+   "condition": "Sous-branche : jeux d’ambiance appréciés (0947)",
+   "selecteur": "games.0947",
+   "enonce_selecteur": "Quels types de jeux te plaisent vraiment ?",
+   "options_retenues": [
+    "jeux d’ambiance et de rire"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "games.0964",
+   "enonce": "Pour une enquête, tu préfères…",
+   "condition": "Sous-branche : enquête/déduction appréciée (0947)",
+   "selecteur": "games.0947",
+   "enonce_selecteur": "Quels types de jeux te plaisent vraiment ?",
+   "options_retenues": [
+    "jeux d’enquete ou de deduction"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "games.0965",
+   "enonce": "Dans un jeu de stratégie, tu aimes surtout…",
+   "condition": "Sous-branche : stratégie appréciée (0947)",
+   "selecteur": "games.0947",
+   "enonce_selecteur": "Quels types de jeux te plaisent vraiment ?",
+   "options_retenues": [
+    "jeux de strategie"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "games.0966",
+   "enonce": "Pour jouer en famille, tu recherches surtout…",
+   "condition": "Sous-branche : jeux familiaux appréciés (0947)",
+   "selecteur": "games.0947",
+   "enonce_selecteur": "Quels types de jeux te plaisent vraiment ?",
+   "options_retenues": [
+    "jeux familiaux"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "games.0967",
+   "enonce": "À deux, tu préfères…",
+   "condition": "Sous-branche : jeux à deux appréciés (0947)",
+   "selecteur": "games.0947",
+   "enonce_selecteur": "Quels types de jeux te plaisent vraiment ?",
+   "options_retenues": [
+    "jeux a deux"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "gaming2.1406",
+   "enonce": "Dans les licences Nintendo, lesquelles comptent pour toi ?",
+   "condition": "Sous-branche Nintendo : si Nintendo utilisé (1394) ou univers cité",
+   "selecteur": "gaming2.1394",
+   "enonce_selecteur": "Tu joues principalement sur…",
+   "options_retenues": [
+    "nintendo"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "gaming2.1407",
+   "enonce": "Sur PC, tu es plutôt attiré(e) par…",
+   "condition": "Sous-branche PC : si PC utilisé (1394)",
+   "selecteur": "gaming2.1394",
+   "enonce_selecteur": "Tu joues principalement sur…",
+   "options_retenues": [
+    "pc"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "garden.0574",
+   "enonce": "Pour une plante d’intérieur, tu préférerais…",
+   "condition": "Sous-branche : plantes d’intérieur appréciées (0560)",
+   "selecteur": "garden.0560",
+   "enonce_selecteur": "Qu’est-ce qui te plaît le plus dans cet univers ?",
+   "options_retenues": [
+    "les plantes vertes d’interieur"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "garden.0576",
+   "enonce": "Qu’aimerais-tu surtout faire pousser ?",
+   "condition": "Sous-branche : potager/aromatiques appréciés (0560)",
+   "selecteur": "garden.0560",
+   "enonce_selecteur": "Qu’est-ce qui te plaît le plus dans cet univers ?",
+   "options_retenues": [
+    "les plantes aromatiques",
+    "le potager"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "garden.0578",
+   "enonce": "Les cactus et succulentes, pour toi…",
+   "condition": "Sous-branche : cactus/succulentes (0560)",
+   "selecteur": "garden.0560",
+   "enonce_selecteur": "Qu’est-ce qui te plaît le plus dans cet univers ?",
+   "options_retenues": [
+    "les cactus et succulentes"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "home2.1277",
+   "enonce": "Pour le linge de maison, qu’est-ce qui compte le plus ?",
+   "condition": "Sous-branche Linge de maison : si catégorie choisie (1262)",
+   "selecteur": "home2.1262",
+   "enonce_selecteur": "Quelles catégories apprécies-tu vraiment ?",
+   "options_retenues": [
+    "linge de maison"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "home2.1279",
+   "enonce": "Pour l’éclairage, tu préfères…",
+   "condition": "Sous-branche Éclairage : si catégorie choisie (1262)",
+   "selecteur": "home2.1262",
+   "enonce_selecteur": "Quelles catégories apprécies-tu vraiment ?",
+   "options_retenues": [
+    "eclairage"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "live.0491",
+   "enonce": "Quel type d’artiste écoutes-tu surtout en live ?",
+   "condition": "Sous-branche : concerts appréciés (0475)",
+   "selecteur": "live.0475",
+   "enonce_selecteur": "Quels types d’événements te font vraiment envie ?",
+   "options_retenues": [
+    "concert",
+    "concert classique"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "museum.0715",
+   "enonce": "Dans les beaux-arts, tu es plus attiré(e) par…",
+   "condition": "Sous-branche : beaux-arts appréciés (0699)",
+   "selecteur": "museum.0699",
+   "enonce_selecteur": "Quels univers t’attirent le plus ?",
+   "options_retenues": [
+    "beaux-arts et peinture"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "museum.0716",
+   "enonce": "Dans l’art contemporain, tu aimes…",
+   "condition": "Sous-branche : art contemporain apprécié (0699)",
+   "selecteur": "museum.0699",
+   "enonce_selecteur": "Quels univers t’attirent le plus ?",
+   "options_retenues": [
+    "art contemporain"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "museum.0717",
+   "enonce": "Dans les musées de sciences ou d’histoire, tu préfères…",
+   "condition": "Sous-branche : sciences/histoire appréciées (0699)",
+   "selecteur": "museum.0699",
+   "enonce_selecteur": "Quels univers t’attirent le plus ?",
+   "options_retenues": [
+    "histoire",
+    "sciences et techniques"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "museum.0718",
+   "enonce": "Les expositions immersives (projections, son, expériences)…",
+   "condition": "Sous-branche : immersif (0699)",
+   "selecteur": "museum.0699",
+   "enonce_selecteur": "Quels univers t’attirent le plus ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "music2.1021",
+   "enonce": "Dans la musique classique ou l’opéra, tu es surtout attiré(e) par…",
+   "condition": "Sous-branche : classique/opéra apprécié (1005)",
+   "selecteur": "music2.1005",
+   "enonce_selecteur": "Quels univers musicaux te ressemblent le plus ?",
+   "options_retenues": [
+    "classique",
+    "opera"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "music2.1022",
+   "enonce": "Dans les musiques électroniques, tu préfères…",
+   "condition": "Sous-branche : électro appréciée (1005)",
+   "selecteur": "music2.1005",
+   "enonce_selecteur": "Quels univers musicaux te ressemblent le plus ?",
+   "options_retenues": [
+    "electro"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "music2.1023",
+   "enonce": "Dans le jazz, tu apprécies surtout…",
+   "condition": "Sous-branche : jazz apprécié (1005)",
+   "selecteur": "music2.1005",
+   "enonce_selecteur": "Quels univers musicaux te ressemblent le plus ?",
+   "options_retenues": [
+    "jazz"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "music2.1024",
+   "enonce": "Dans le rap ou le hip-hop, qu’est-ce qui compte le plus ?",
+   "condition": "Sous-branche : rap/hip-hop apprécié (1005)",
+   "selecteur": "music2.1005",
+   "enonce_selecteur": "Quels univers musicaux te ressemblent le plus ?",
+   "options_retenues": [
+    "rap",
+    "hip-hop"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "photo.0684",
+   "enonce": "Tu utilises l’argentique parce que…",
+   "condition": "Sous-branche : argentique pratiqué ou désiré (0673)",
+   "selecteur": "photo.0673",
+   "enonce_selecteur": "Tu photographies surtout avec…",
+   "options_retenues": [
+    "un appareil argentique"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "photo.0685",
+   "enonce": "Pour tes photos au smartphone, qu’est-ce qui t’aiderait le plus ?",
+   "condition": "Sous-branche : photo smartphone dominante (0673)",
+   "selecteur": "photo.0673",
+   "enonce_selecteur": "Tu photographies surtout avec…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "photo.0686",
+   "enonce": "Des photos imprimées, chez toi, tu en as…",
+   "condition": "Sous-branche : impression & albums (0677)",
+   "selecteur": "photo.0677",
+   "enonce_selecteur": "Que deviennent tes photos une fois prises ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "podcast.0460",
+   "enonce": "Dans une interview, qu’est-ce qui compte le plus ?",
+   "condition": "Sous-branche : format interview/conversation apprécié (0446)",
+   "selecteur": "podcast.0446",
+   "enonce_selecteur": "Quel type de podcast te donne le plus envie d’écouter jusqu’au bout ?",
+   "options_retenues": [
+    "une conversation ou une interview",
+    "une longue conversation approfondie"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "podcast.0461",
+   "enonce": "Pour l’actualité, tu préfères…",
+   "condition": "Sous-branche : sujet actualité/politique apprécié (0445)",
+   "selecteur": "podcast.0445",
+   "enonce_selecteur": "Quels sujets écoutes-tu vraiment avec plaisir ?",
+   "options_retenues": [
+    "politique"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "podcast.0462",
+   "enonce": "Dans les podcasts de psychologie ou de développement personnel, tu recherches surtout…",
+   "condition": "Sous-branche : sujet psychologie/développement personnel apprécié (0445)",
+   "selecteur": "podcast.0445",
+   "enonce_selecteur": "Quels sujets écoutes-tu vraiment avec plaisir ?",
+   "options_retenues": [
+    "developpement personnel"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "reading2.1250",
+   "enonce": "Dans les romans, quelles sont tes préférences ?",
+   "condition": "Sous-branche Romans : si roman lu (1238)",
+   "selecteur": "reading2.1238",
+   "enonce_selecteur": "Quels genres lis-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "roman contemporain",
+    "roman historique"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "reading2.1251",
+   "enonce": "Dans les essais, tu recherches surtout…",
+   "condition": "Sous-branche Essais : si essai lu (1238)",
+   "selecteur": "reading2.1238",
+   "enonce_selecteur": "Quels genres lis-tu réellement aujourd’hui ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "reading2.1252",
+   "enonce": "Pour les livres audio, qu’est-ce qui compte le plus ?",
+   "condition": "Sous-branche Livres audio : si audio utilisé (1234)",
+   "selecteur": "reading2.1234",
+   "enonce_selecteur": null,
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "reading2.1253",
+   "enonce": "La poésie, pour toi…",
+   "condition": "Sous-branche Poésie — TRÈS NICHE : ne s’ouvre qu’en cas d’intérêt explicite (1238)",
+   "selecteur": "reading2.1238",
+   "enonce_selecteur": "Quels genres lis-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "poesie"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "series2.1049",
+   "enonce": "Dans une série policière ou thriller, tu préfères…",
+   "condition": "Sous-branche : policier/thriller apprécié (1032)",
+   "selecteur": "series2.1032",
+   "enonce_selecteur": "Quels types de séries te captivent le plus ?",
+   "options_retenues": [
+    "thriller",
+    "policier"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "series2.1050",
+   "enonce": "Dans une série historique, tu apprécies surtout…",
+   "condition": "Sous-branche : historique apprécié (1032)",
+   "selecteur": "series2.1032",
+   "enonce_selecteur": "Quels types de séries te captivent le plus ?",
+   "options_retenues": [
+    "historique"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "series2.1051",
+   "enonce": "Dans une série comique, tu préfères…",
+   "condition": "Sous-branche : comédie/sitcom appréciée (1032)",
+   "selecteur": "series2.1032",
+   "enonce_selecteur": "Quels types de séries te captivent le plus ?",
+   "options_retenues": [
+    "comedie",
+    "sitcom"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "series2.1052",
+   "enonce": "Dans une série documentaire, tu recherches surtout…",
+   "condition": "Sous-branche : documentaire/true crime apprécié (1032)",
+   "selecteur": "series2.1032",
+   "enonce_selecteur": "Quels types de séries te captivent le plus ?",
+   "options_retenues": [
+    "documentaire",
+    "true crime"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportp.0519",
+   "enonce": "Dans la course ou le trail, tu recherches surtout…",
+   "condition": "Sous-branche : course/trail pratiqué (0504)",
+   "selecteur": "sportp.0504",
+   "enonce_selecteur": "Quels sports pratiques-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "course a pied",
+    "trail"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportp.0520",
+   "enonce": "Pour une randonnée idéale, tu préfères…",
+   "condition": "Sous-branche : randonnée pratiquée (0504)",
+   "selecteur": "sportp.0504",
+   "enonce_selecteur": "Quels sports pratiques-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "randonnee"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportp.0521",
+   "enonce": "Dans cette pratique, tu privilégies…",
+   "condition": "Sous-branche : fitness/musculation/CrossFit pratiqué (0504)",
+   "selecteur": "sportp.0504",
+   "enonce_selecteur": "Quels sports pratiques-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "fitness",
+    "musculation",
+    "crossfit"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportp.0522",
+   "enonce": "Dans cette pratique, tu recherches surtout…",
+   "condition": "Sous-branche : yoga/Pilates pratiqué (0504)",
+   "selecteur": "sportp.0504",
+   "enonce_selecteur": "Quels sports pratiques-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "yoga",
+    "pilates"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportp.0523",
+   "enonce": "Quel type de vélo pratiques-tu surtout ?",
+   "condition": "Sous-branche : vélo pratiqué (0504)",
+   "selecteur": "sportp.0504",
+   "enonce_selecteur": "Quels sports pratiques-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "velo"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportp.0524",
+   "enonce": "Dans un sport collectif, ce que tu aimes le plus, c’est…",
+   "condition": "Sous-branche : sport collectif pratiqué (0504)",
+   "selecteur": "sportp.0504",
+   "enonce_selecteur": "Quels sports pratiques-tu réellement aujourd’hui ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportp.0525",
+   "enonce": "À la montagne, tu privilégies…",
+   "condition": "Sous-branche : ski/sports d’hiver pratiqués (0504)",
+   "selecteur": "sportp.0504",
+   "enonce_selecteur": "Quels sports pratiques-tu réellement aujourd’hui ?",
+   "options_retenues": [
+    "ski"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportw.0547",
+   "enonce": "Dans le football, tu suis surtout…",
+   "condition": "Sous-branche : football suivi (0532)",
+   "selecteur": "sportw.0532",
+   "enonce_selecteur": "Quels sports aimes-tu réellement regarder ?",
+   "options_retenues": [
+    "football"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportw.0548",
+   "enonce": "Dans le tennis, tu suis surtout…",
+   "condition": "Sous-branche : tennis suivi (0532)",
+   "selecteur": "sportw.0532",
+   "enonce_selecteur": "Quels sports aimes-tu réellement regarder ?",
+   "options_retenues": [
+    "tennis"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportw.0549",
+   "enonce": "Dans les sports mécaniques, tu suis surtout…",
+   "condition": "Sous-branche : F1/sports mécaniques suivis (0532)",
+   "selecteur": "sportw.0532",
+   "enonce_selecteur": "Quels sports aimes-tu réellement regarder ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "ecrite"
+  },
+  {
+   "question": "sportw.0550",
+   "enonce": "Dans le rugby, tu suis surtout…",
+   "condition": "Sous-branche : rugby suivi (0532)",
+   "selecteur": "sportw.0532",
+   "enonce_selecteur": "Quels sports aimes-tu réellement regarder ?",
+   "options_retenues": [
+    "rugby"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "theatre2.1381",
+   "enonce": "Dans l’improvisation, ce qui te plaît c’est…",
+   "condition": "Sous-branche Improvisation : si impro appréciée (1364)",
+   "selecteur": "theatre2.1364",
+   "enonce_selecteur": "Quels spectacles te donnent vraiment envie ?",
+   "options_retenues": [
+    "improvisation"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "theatre2.1382",
+   "enonce": "Pour l’opéra ou le ballet, qu’est-ce qui compte le plus ?",
+   "condition": "Sous-branche Opéra / Ballet — UNIQUEMENT si intérêt détecté (1364) — croise Musique (music2.1021)",
+   "selecteur": "theatre2.1364",
+   "enonce_selecteur": "Quels spectacles te donnent vraiment envie ?",
+   "options_retenues": [
+    "opera",
+    "ballet"
+   ],
+   "resolu": true,
+   "origine": "ecrite"
+  },
+  {
+   "question": "consumption2.1203",
+   "enonce": "Les box ou sélections surprises…",
+   "condition": "Sous-branche Abonnements",
+   "selecteur": "consumption2.1201",
+   "enonce_selecteur": "Recevoir un abonnement en cadeau…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "consumption2.1204",
+   "enonce": "Pour un service récurrent, tu préfères…",
+   "condition": "Sous-branche Abonnements",
+   "selecteur": "consumption2.1201",
+   "enonce_selecteur": "Recevoir un abonnement en cadeau…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0621",
+   "enonce": "Dans cette pratique, tu te considères plutôt…",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0622",
+   "enonce": "Quand tu pratiques {activité}, qu’est-ce qui compte le plus ?",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0623",
+   "enonce": "Tu préfères pratiquer…",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0624",
+   "enonce": "Qu’est-ce qui t’aiderait le plus à avancer dans cette pratique ?",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0625",
+   "enonce": "Pour du matériel créatif, tu préfères…",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0626",
+   "enonce": "Y a-t-il des marques, outils ou matériaux que tu utilises déjà avec confiance ?",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0627",
+   "enonce": "Que fais-tu généralement de ce que tu crées ?",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0628",
+   "enonce": "Quand quelqu’un découvre ce que tu crées, tu préfères…",
+   "condition": "Axe Pratiquant",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0630",
+   "enonce": "Tu photographies surtout avec…",
+   "condition": "Sous-branche photographie",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "photographie"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0631",
+   "enonce": "Dans une photo réussie, qu’est-ce qui compte le plus pour toi ?",
+   "condition": "Sous-branche photographie",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "photographie"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0632",
+   "enonce": "Que fais-tu généralement de tes photos ?",
+   "condition": "Sous-branche photographie",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "photographie"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0633",
+   "enonce": "Autour de la photographie, qu’est-ce qui te ferait le plus plaisir ?",
+   "condition": "Sous-branche photographie",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "photographie"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0635",
+   "enonce": "Qu’aimes-tu surtout représenter ?",
+   "condition": "Sous-branche peinture/dessin",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "peinture",
+    "dessin ou illustration"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0636",
+   "enonce": "Tu préfères…",
+   "condition": "Sous-branche peinture/dessin",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "peinture",
+    "dessin ou illustration"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0637",
+   "enonce": "Pour cette pratique, quel type de cadeau serait réellement utile ?",
+   "condition": "Sous-branche peinture/dessin",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "peinture",
+    "dessin ou illustration"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0639",
+   "enonce": "Qu’aimes-tu ou aimerais-tu créer ?",
+   "condition": "Sous-branche céramique",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "ceramique ou poterie"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0640",
+   "enonce": "Tu préfères pratiquer la céramique…",
+   "condition": "Sous-branche céramique",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "ceramique ou poterie"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0641",
+   "enonce": "Autour de la céramique, qu’est-ce qui te ferait le plus plaisir ?",
+   "condition": "Sous-branche céramique",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "ceramique ou poterie"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0643",
+   "enonce": "Ce qui te plaît le plus dans cette pratique, c’est…",
+   "condition": "Sous-branche textiles",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "arts textiles"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0644",
+   "enonce": "Quelles matières aimes-tu travailler ?",
+   "condition": "Sous-branche textiles",
+   "selecteur": "craft.0615",
+   "enonce_selecteur": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+   "options_retenues": [
+    "arts textiles"
+   ],
+   "resolu": true,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0649",
+   "enonce": "Quel type d’œuvres ou d’objets t’attire le plus ?",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0650",
+   "enonce": "Qu’est-ce qui donne le plus de valeur à une œuvre ou un objet artisanal pour toi ?",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0651",
+   "enonce": "Tu serais le plus touché(e) par…",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0652",
+   "enonce": "Recevoir une œuvre ou un objet artisanal choisi par quelqu’un d’autre…",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0653",
+   "enonce": "Aujourd’hui, chez toi, tu as plutôt…",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0654",
+   "enonce": "Y a-t-il des artistes, illustrateurs, photographes, céramistes ou artisans que tu aimes particulièrement ?",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0655",
+   "enonce": "Pour une œuvre ou un objet artisanal, tu préfères…",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0656",
+   "enonce": "Tu es davantage attiré(e) par…",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "craft.0657",
+   "enonce": "Pour ce type d’objet, tu préfères…",
+   "condition": "Axe Fan/acheteur",
+   "selecteur": "craft.0614",
+   "enonce_selecteur": "Dans cet univers, tu te reconnais plutôt comme…",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  },
+  {
+   "question": "photo.0687",
+   "enonce": "Pour un album ou un livre photo, tu préférerais…",
+   "condition": "Sous-branche impression & albums",
+   "selecteur": "photo.0677",
+   "enonce_selecteur": "Que deviennent tes photos une fois prises ?",
+   "options_retenues": [],
+   "resolu": false,
+   "origine": "heritee"
+  }
+ ]
+}

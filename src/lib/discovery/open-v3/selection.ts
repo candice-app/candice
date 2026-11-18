@@ -28,8 +28,12 @@
 // même état doit donner deux fois la même question, sinon aucun test ne vaut rien et aucun
 // parcours n'est reproductible.
 // ─────────────────────────────────────────────────────────────────────────────────────
+import { DEPENDANCES, TETES_DE_SOUS_PARTIE } from './dependances';
+import { coexistence, estPrioritaire, poolDe } from './coexistence';
 import { BANQUE, type QuestionV3 } from './banque';
-import { analyserCondition, evaluerCondition, type EtatDiscovery } from './conditions';
+import { analyserCondition, evaluerCondition, type EtatDiscovery, type Verdict } from './conditions';
+
+const PAR_ID = new Map(BANQUE.map((q) => [q.id, q] as const));
 import { produireDepuisOption } from './produire';
 
 export interface Choix {
@@ -45,6 +49,8 @@ export interface Diagnostic {
   readonly fermees: number;
   readonly indecidables: number;
   readonly steriles: number;
+  /** Questions historiques écartées par la règle de coexistence des générations. */
+  readonly remplacees: number;
   readonly plafonnees: number;
   readonly retenues: number;
 }
@@ -54,6 +60,26 @@ export interface Resultat {
   readonly choix: readonly Choix[];
   /** Ce qui a été écarté et pourquoi. Un « rien à demander » doit être explicable. */
   readonly diagnostic: Diagnostic;
+}
+
+/**
+ * LE VERDICT D'UNE QUESTION : sa propre condition, ET celle de la question qui ouvre sa
+ * sous-partie quand elle n'en porte que le nom. « Fermer » l'emporte, puis « non résolu ».
+ */
+export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyMap<string, number> = PARTAGE_BANQUE): Verdict {
+  const vise = informationVisee(q, partage);
+  const propre = evaluerCondition(analyserCondition(q.condition_emission), etat,
+    { branche: q.branche, attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(q.id) });
+  if (propre === 'fermer') return 'fermer';
+  const idTete = TETES_DE_SOUS_PARTIE.get(q.id);
+  const tete = idTete ? PAR_ID.get(idTete) : undefined;
+  if (!tete) return propre;
+  // La condition de tête est évaluée pour ce qu'elle exige de la PERSONNE ; « information
+  // manquante » et le reste de ce qui tient à la question elle-même restent jugés ci-dessus.
+  const heritee = evaluerCondition(analyserCondition(tete.condition_emission), etat,
+    { branche: tete.branche, attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(tete.id) });
+  if (heritee === 'fermer') return 'fermer';
+  return propre === 'indecidable' || heritee === 'indecidable' ? 'indecidable' : 'ouvrir';
 }
 
 const ORDRE_NIVEAU = { A: 0, B: 1, C: 2 } as const;
@@ -119,21 +145,30 @@ export function prochainesQuestions(
   const combien = reglages.combien ?? 1;
   const parBranche = reglages.parBranche ?? 2;
 
-  let dejaPosees = 0, fermees = 0, indecidables = 0, steriles = 0;
+  let dejaPosees = 0, fermees = 0, indecidables = 0, steriles = 0, remplacees = 0;
   const partage = banque === BANQUE ? PARTAGE_BANQUE : compterPartage(banque);
   const eligibles: Choix[] = [];
 
   for (const q of banque) {
     if (etat.dejaPosees.has(q.id)) { dejaPosees++; continue; }
     if (sterile(q)) { steriles++; continue; }
+    // UN DOMAINE QUE LA PERSONNE A ÉCARTÉ n'est plus proposé d'initiative. Sa propre démarche
+    // (« explorer ce sujet ») est la seule chose qui passe outre.
+    if (etat.nePasCreuser.has(q.branche) && !etat.sujetsChoisis?.has(q.branche)) { fermees++; continue; }
 
-    const verdict = evaluerCondition(
-      analyserCondition(q.condition_emission),
-      etat,
-      { branche: q.branche, attributs: informationVisee(q, partage).cles, attributsPartages: informationVisee(q, partage).partages },
-    );
+    const verdict = verdictDe(q, etat, partage);
     if (verdict === 'fermer') { fermees++; continue; }
     if (verdict === 'indecidable') { indecidables++; continue; }
+
+    // ── COEXISTENCE DES GÉNÉRATIONS (onglet 13). Une question historique que le référentiel
+    //    a remplacée n'est plus proposée d'initiative ; celle qu'il garde « distincte et
+    //    conditionnée » attend que la nouvelle ait été posée, qu'une information manque
+    //    encore, et ne vient jamais juste après elle.
+    {
+      const v = informationVisee(q, partage);
+      const facette = v.cles.length === 0 ? null : v.cles.some((k) => !etat.attributsConnus.has(k));
+      if (!coexistence(q.id, etat, facette).poser) { remplacees++; continue; }
+    }
 
     // ── SCORE. Il n'ordonne que des questions DÉJÀ autorisées : il ne peut pas ouvrir ce
     //    qu'une condition a fermé. Il décide seulement de l'ordre, et son rôle s'arrête là.
@@ -144,6 +179,9 @@ export function prochainesQuestions(
     const vise = informationVisee(q, partage);
     if (vise.cles.length > 0 && vise.cles.some((k) => !etat.attributsConnus.has(k))) { score += 10; motifs.push('information absente'); }
     if (q.facultative) { score -= 5; motifs.push('facultative'); }
+    // « `2` prioritaire sur intention équivalente » : à score égal, la génération qui reprend
+    // la branche passe devant l'historique.
+    if (estPrioritaire(q.branche)) { score += 5; motifs.push('génération prioritaire'); }
 
     eligibles.push({ question: q, score, motif: motifs.join(' · ') });
   }
@@ -156,9 +194,11 @@ export function prochainesQuestions(
   let plafonnees = 0;
   for (const c of eligibles) {
     if (retenues.length >= combien) break;
-    const n = parBrancheCompte.get(c.question.branche) ?? 0;
+    // « Un seul pool visible » : les deux générations d'un domaine comptent pour une branche.
+    const pool = poolDe(c.question.branche);
+    const n = parBrancheCompte.get(pool) ?? 0;
     if (n >= parBranche) { plafonnees++; continue; }
-    parBrancheCompte.set(c.question.branche, n + 1);
+    parBrancheCompte.set(pool, n + 1);
     retenues.push(c);
   }
 
@@ -166,7 +206,7 @@ export function prochainesQuestions(
     choix: retenues,
     diagnostic: {
       examinees: banque.length,
-      dejaPosees, fermees, indecidables, steriles, plafonnees,
+      dejaPosees, fermees, indecidables, steriles, remplacees, plafonnees,
       retenues: retenues.length,
     },
   };

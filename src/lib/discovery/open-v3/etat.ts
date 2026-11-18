@@ -9,7 +9,8 @@
 // On ne remplit donc aucun champ « par défaut optimiste ».
 import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
 import { clef, type EtatDiscovery } from './conditions';
-import { ALIAS_BRANCHES, BRANCHES_DU_DOMAINE } from './branches';
+import { SELECTEURS } from './dependances';
+import { ALIAS_BRANCHES, BRANCHES_DU_DOMAINE, branchesDuDomaineJournal } from './branches';
 import { BANQUE } from './banque';
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -93,6 +94,7 @@ export async function lireEtat(
   const tags = new Map<string, string>();
   const attributsConnus = new Set<string>();
   const branchesOuvertes = new Set<string>();
+  const nePasCreuser = new Set<string>();
 
   if (portrait) {
     // Un INTÉRÊT consolidé ouvre son sujet ET sa branche. C'est le terrain dont une
@@ -115,8 +117,9 @@ export async function lireEtat(
       }
       if (parent) {
         branchesOuvertes.add(parent);
-        for (const b of ALIAS_BRANCHES.get(parent) ?? []) branchesOuvertes.add(b);
-        for (const b of BRANCHES_DU_DOMAINE.get(parent) ?? []) branchesOuvertes.add(b);
+        // Le domaine parent vient du vocabulaire du JOURNAL ; le pont le traduit vers les
+        // branches de la banque (`books_literature` → reading, reading2).
+        for (const b of branchesDuDomaineJournal(parent)) branchesOuvertes.add(b);
       }
     }
     for (const c of portrait.contexts) {
@@ -140,6 +143,19 @@ export async function lireEtat(
       // « `PREFERENCE.x.y.present=true` » : une préférence existe sur ce chemin.
       tags.set(`${String(p.path)}.present`, 'true');
     }
+    // ── LE DERNIER MOT SUR UN DOMAINE. Quelqu'un coche « Sport » à l'inscription, puis répond
+    //    « Très peu » à « Quelle place le sport occupe-t-il dans ta vie ? ». La case cochée
+    //    reste au journal — elle a été dite — mais la réponse la plus récente sur la PLACE du
+    //    domaine est un rejet : on cesse de proposer d'initiative les questions de ce domaine.
+    //    Seule sa propre démarche (« explorer ce sujet ») les rouvre.
+    for (const p of portrait.preferences) {
+      const segments = String(p.path).split('.');
+      if (segments.length !== 3 || segments[2] !== 'domain_importance') continue;
+      const detail = p.valuesDetail ?? [];
+      if (detail.find((d) => d.value === p.value)?.polarity !== 'rejet') continue;
+      nePasCreuser.add(clef(segments[1]));
+      for (const br of BRANCHES_DU_DOMAINE.get(clef(segments[1])) ?? []) nePasCreuser.add(br);
+    }
     for (const g of portrait.guardrails) {
       const segments = String(g.code).split('.');           // <domaine>.<attribut>.<valeur>
       if (segments.length > 1) attributsConnus.add(`${segments[0]}.${segments[1]}`);
@@ -151,16 +167,26 @@ export async function lireEtat(
   // ── 2. LES QUESTIONS DÉJÀ POSÉES. Posées, pas seulement répondues : une question
   //       écartée par la personne ne revient pas lui être resservie.
   const dejaPosees = new Set<string>();
+  const optionsChoisies = new Map<string, Set<string>>();
+  let dernierePosee: string | undefined; let dernierMoment = '';
   const reponsesParBranche = new Map<string, number>();
   try {
     const { data, error } = await client
       .from('profile_completion')
-      .select('question_key, is_filled, last_asked_at')
+      .select('question_key, is_filled, last_asked_at, answer_data')
       .eq('user_id', opts.userId)
       .is('contact_id', null);
     if (error) throw new Error(error.message);
-    for (const l of (data ?? []) as { question_key: string; is_filled?: boolean; last_asked_at?: string | null }[]) {
+    for (const l of (data ?? []) as { question_key: string; is_filled?: boolean; last_asked_at?: string | null; answer_data?: unknown }[]) {
       if (!l.question_key) continue;
+      if (l.last_asked_at && l.last_asked_at > dernierMoment) { dernierMoment = l.last_asked_at; dernierePosee = l.question_key; }
+      // Ce que la personne a répondu aux questions qui font le tri d'une sous-partie
+      // (« Sous-branche : manga apprécié (0415) ») : l'identité des options, telle que la
+      // progression la conserve. Une réponse passée ou vide ne désigne rien.
+      if (l.is_filled && SELECTEURS.has(l.question_key) && l.answer_data != null) {
+        const v = l.answer_data;
+        optionsChoisies.set(l.question_key, new Set((Array.isArray(v) ? v : [v]).filter((x): x is string => typeof x === 'string')));
+      }
       if (l.is_filled || l.last_asked_at) dejaPosees.add(l.question_key);
       if (l.is_filled) {
         const b = BRANCHE_PAR_QUESTION.get(l.question_key);
@@ -227,13 +253,13 @@ export async function lireEtat(
 
   return {
     etat: {
-      tags, nePasCreuser: new Set(), branchesOuvertes, niveauParBranche,
+      tags, nePasCreuser, branchesOuvertes, niveauParBranche,
       dejaPosees, attributsConnus, sansAlcool,
       // Aucun contexte de vie connu pour l'instant : les conditions qui en dépendent
       // restent indécidables, donc fermées. Les remplir sans savoir ce qu'ils désignent
       // ouvrirait des questions sur une supposition.
       contextesConnus: new Set(), contextesActifs: new Set(),
-      sujetsChoisis,
+      sujetsChoisis, optionsChoisies, ...(dernierePosee ? { dernierePosee } : {}),
       aliasBranches: ALIAS_BRANCHES,
     },
     manques,

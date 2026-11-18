@@ -33,11 +33,8 @@ import type { Evidence } from '@/lib/knowledge/evidence';
  * une réponse enregistrée hier se rattacherait alors à une autre option. On prend le rang
  * quand le référentiel en donne un, sinon le libellé normalisé — ce que la personne a lu.
  * ──────────────────────────────────────────────────────────────────────────── */
-export function cleOption(o: OptionV3): string {
-  if (o.rang && o.rang.trim()) return `r${o.rang.trim()}`;
-  return `l${o.libelle.normalize('NFD').replace(/[̀-ͯ]/g, '')
-    .toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '')}`;
-}
+export { cleOption } from './cle-option';
+import { cleOption } from './cle-option';
 
 /** Forme attendue par l'écran. Le type de question suit la forme du référentiel. */
 export interface QuestionAServir {

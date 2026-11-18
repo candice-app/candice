@@ -28,10 +28,14 @@ function deriver(banque: readonly QuestionV3[]) {
   const domaines = new Map<string, Map<string, number>>();          // branche → domaine → n
   for (const q of banque) {
     for (const c of analyserCondition(q.condition_emission).clauses) {
-      if (c.type !== 'niveau' && c.type !== 'branche_ouverte') continue;
-      const m = emplois.get(c.branche) ?? new Map<string, number>();
+      // « Intérêt art, musées et expositions sélectionné ou détecté » nomme une branche au
+      // même titre que « Branche Arts & créatif ouverte » : le nom est celui du référentiel,
+      // la branche est celle des questions qui l'emploient.
+      const nom = c.type === 'niveau' || c.type === 'branche_ouverte' ? c.branche : c.type === 'interet' ? c.domaine : null;
+      if (nom === null) continue;
+      const m = emplois.get(nom) ?? new Map<string, number>();
       m.set(q.branche, (m.get(q.branche) ?? 0) + 1);
-      emplois.set(c.branche, m);
+      emplois.set(nom, m);
     }
     for (const o of q.options) {
       if (!o.domaine) continue;
@@ -63,6 +67,35 @@ function deriver(banque: readonly QuestionV3[]) {
 }
 
 const D = deriver(BANQUE);
+
+/**
+ * LE PONT ENTRE DEUX VOCABULAIRES. Un intérêt lu dans une réponse libre porte un domaine
+ * parent du JOURNAL (`books_literature`, `food_gastronomy` — dictionnaire HSG). Les
+ * questions, elles, écrivent un domaine de la BANQUE (`reading`, `food`). Rien ne reliait
+ * les deux : quelqu'un qui écrit « je lis au lit le dimanche matin » avait un intérêt lu,
+ * rangé sous `books_literature`, et aucune question de lecture ne s'ouvrait.
+ *
+ * Seules les correspondances SANS AMBIGUÏTÉ sont écrites. Un domaine du journal absent
+ * d'ici n'ouvre rien (architecture, cars_mobility, culture_history, science,
+ * business_entrepreneurship, personal_development) ; `family_parenting` est laissé dehors
+ * volontairement : la branche « enfants » parle des enfants de la personne, et un intérêt
+ * pour la parentalité ne dit pas qu'elle en a.
+ */
+export const PONT_DOMAINES_JOURNAL: ReadonlyMap<string, readonly string[]> = new Map([
+  ['food_gastronomy', ['food']], ['cooking', ['food']], ['wine_spirits', ['drinks']], ['travel', ['travel']],
+  ['fashion', ['fashion']], ['beauty_skincare', ['beauty']], ['jewelry_watches', ['jewelry', 'watch']],
+  ['design_decor', ['home']], ['art', ['art', 'museum']], ['photography', ['photography']], ['music', ['music']],
+  ['cinema_series', ['cinema', 'series']], ['books_literature', ['reading']], ['sport_fitness', ['sport_practice']],
+  ['outdoor_nature', ['nature']], ['tech', ['tech']], ['gaming', ['gaming']], ['craftsmanship', ['creativity']],
+  ['wellbeing', ['wellbeing']], ['gardening', ['gardening']], ['animals', ['animals']], ['collecting', ['collection']],
+]);
+/** Les branches qu'ouvre un domaine parent du journal : par le pont, puis par les tables de la banque. */
+export function branchesDuDomaineJournal(domaine: string): string[] {
+  const k = clef(domaine);
+  // Le journal normalise ses libellés (« books literature ») ; le vocabulaire les écrit avec un tiret bas.
+  const noms = [k, ...(PONT_DOMAINES_JOURNAL.get(k) ?? PONT_DOMAINES_JOURNAL.get(k.replace(/ /g, '_')) ?? [])];
+  return [...new Set(noms.flatMap((n) => [...(D.alias.get(n) ?? []), ...(D.parDomaine.get(n) ?? [])]))];
+}
 
 /** Nom écrit par une condition → identifiants de branche désignés. */
 export const ALIAS_BRANCHES: ReadonlyMap<string, ReadonlySet<string>> = D.alias;
