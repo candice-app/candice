@@ -100,7 +100,7 @@ describe("chemins ②/③ — moteur Discovery (garde complète)", () => {
       writes: [],
     };
     await engine.getAvailableDiscoverySections("u1", makeDb(state), null);
-    const retro = state.writes.find(w => w.table === "profile_completion" && w.op === "upsert"
+    const retro = state.writes.find(w => w.table === "profile_completion" && w.op === "insert"   // mise à jour d'abord, insertion si rien n'existait (voir completion.ts)
       && (w.payload as { question_key?: string; status?: string }).question_key === "fragrance.families");
     expect((retro?.payload as { status?: string })?.status).toBe("answered");
   });

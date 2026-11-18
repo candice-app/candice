@@ -25,6 +25,8 @@ import TemperamentStep from "@/components/questionnaire/TemperamentStep";
 import TemperamentBreath from "@/components/questionnaire/TemperamentBreath";
 import LifestyleStep from "@/components/questionnaire/LifestyleStep";
 import AvoidStep from "@/components/questionnaire/AvoidStep";
+import { INTEREST_LABELS } from "@/components/questionnaire/InterestsQuestion";
+import { produireInteretsOnboarding } from "@/lib/questionnaire/produce-interests";
 import SingularityStep from "@/components/questionnaire/SingularityStep";
 import PracticalStep from "@/components/questionnaire/PracticalStep";
 import ClosingMoment from "@/components/questionnaire/ClosingMoment";
@@ -759,6 +761,20 @@ export default function QuestionnaireFlow({ userId, initial, piloteFirstName }: 
             { user_id: userId, singularity_answers: answers, updated_at: new Date().toISOString() },
             { onConflict: "user_id" }
           ).then(({ error }) => { if (error) console.error("[QuestionnaireFlow] my_profile upsert (singularity onDone)", error.message); triggerSynthesis(); });
+
+          // Les centres d'intérêt cochés entrent dans le JOURNAL (ils n'allaient jusqu'ici que
+          // dans my_profile, et le Discovery — qui lit le journal — n'en voyait aucun).
+          // Idempotent : repasser par l'écran ne réécrit rien. Un échec est tracé, il ne
+          // bloque pas la suite du questionnaire.
+          if (socleCanonicalSingularity) {
+            const cochees = (answers.interests?.items ?? [])
+              .map((it) => ({ id: it.id, label: INTEREST_LABELS[it.id] ?? "" }))
+              .filter((c) => c.label);
+            if (cochees.length > 0) {
+              produireInteretsOnboarding(supabase as unknown as WriteClient, { userId, categories: cochees, timestamp: new Date().toISOString() })
+                .catch((e) => console.error("[QuestionnaireFlow] centres d'intérêt non écrits au journal", e));
+            }
+          }
 
           if (editMode === "single") { navigate("practical7Closing"); return; }
 

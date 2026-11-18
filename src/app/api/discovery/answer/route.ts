@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { recordAnswer, createDiscoverySession, precomputePersonalizationsForKeys } from "@/lib/discovery/engine";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
 import { question as questionV3 } from "@/lib/discovery/open-v3/banque";
-import { enregistrerReponseFermee, enregistrerReponseOuverte } from "@/lib/discovery/open-v3/service";
+import { enregistrerReponseFermee, enregistrerReponseOuverte, rejouerLecturesEnAttente } from "@/lib/discovery/open-v3/service";
 
 export async function POST(req: Request) {
   const supabase = await createClient();
@@ -63,9 +63,12 @@ export async function POST(req: Request) {
         if (texte.length === 0) {
           return NextResponse.json({ error: "réponse vide" }, { status: 400 });
         }
-        await enregistrerReponseOuverte(supabase as never, {
+        const ecrit = await enregistrerReponseOuverte(supabase as never, {
           userId: user.id, questionId: questionKey, texte,
         });
+        // Le modèle n'a pas répondu : la phrase est sauvegardée, sa lecture reste à faire.
+        // On le trace ici ; le rejeu ci-dessous la reprendra à la prochaine réponse.
+        if (ecrit.extractionEnAttente) console.warn("[discovery/answer] lecture en attente", questionKey);
       } else {
         const cles = Array.isArray(answer) ? answer.map(String)
           : typeof answer === "string" ? [answer] : [];
@@ -88,6 +91,14 @@ export async function POST(req: Request) {
   const result = await recordAnswer(
     user.id, sessionId, questionKey, answer, skip, supabase,
   );
+
+  // ── LES LECTURES RESTÉES EN ATTENTE (panne du modèle lors d'une réponse précédente) sont
+  //    rejouées APRÈS la réponse, hors du chemin de la personne. Sans doublon : une lecture
+  //    déjà faite n'est jamais refaite (voir rejouerLecturesEnAttente).
+  after(async () => {
+    try { await rejouerLecturesEnAttente(supabase as never, { userId: user.id, max: 3 }); }
+    catch (e) { console.error("[discovery/answer] rejeu des lectures impossible", e); }
+  });
 
   // Chantier 3.2 — répercuter les réponses structurées dans practical_info
   // (source de vérité des faits affichés en fiche + moteur de vetos).

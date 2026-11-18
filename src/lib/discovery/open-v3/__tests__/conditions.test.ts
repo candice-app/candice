@@ -60,7 +60,7 @@ describe('les questions sensibles ne s’ouvrent jamais sur un score', () => {
 
   it('une condition sensible ferme même quand tout le reste est satisfait', () => {
     const c = analyserCondition('`INTEREST.resonance=positive` ; ET sensitivity: HIGH');
-    const e = etat({ tags: new Map([['INTEREST.resonance', 'positive']]) });
+    const e = etat({ tags: new Map([['interest.resonance', 'positive']]) });
     expect(evaluerCondition(c, e, ctx)).toBe('fermer');
   });
 });
@@ -70,7 +70,7 @@ describe('les portes mécaniques', () => {
     const c = analyserCondition('Intérêt céramique sélectionné ou détecté');
     expect(c.lisible).toBe(true);
     expect(evaluerCondition(c, etatVide, ctx)).toBe('fermer');
-    expect(evaluerCondition(c, etat({ tags: new Map([['INTEREST.céramique', 'positive']]) }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etat({ tags: new Map([['INTEREST.ceramique', 'positive']]) }), ctx)).toBe('ouvrir');
   });
 
   it('un refus de creuser ferme le domaine', () => {
@@ -82,15 +82,15 @@ describe('les portes mécaniques', () => {
   it('un niveau non atteint ferme ; atteint ou dépassé, ouvre', () => {
     const c = analyserCondition('Niveau B Hôtellerie');
     expect(evaluerCondition(c, etatVide, ctx)).toBe('fermer');
-    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['hôtellerie', 'A']]) }), ctx)).toBe('fermer');
-    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['hôtellerie', 'B']]) }), ctx)).toBe('ouvrir');
-    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['hôtellerie', 'C']]) }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['hotellerie', 'A']]) }), ctx)).toBe('fermer');
+    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['hotellerie', 'B']]) }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['hotellerie', 'C']]) }), ctx)).toBe('ouvrir');
   });
 
   it('« AXE 1 — … — niveau B » est la même porte, écrite dans l’autre sens', () => {
     const c = analyserCondition('AXE 2 — Comment j’aime célébrer les autres — niveau B');
     expect(c.lisible).toBe(true);
-    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['axe 2 — comment j’aime célébrer les autres', 'B']]) }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etat({ niveauParBranche: new Map([['axe 2 — comment j’aime celebrer les autres', 'B']]) }), ctx)).toBe('ouvrir');
   });
 
   it('une question alcool ne se pose jamais à quelqu’un qui ne boit pas', () => {
@@ -129,17 +129,150 @@ describe('un contexte inconnu n’est pas un contexte inactif', () => {
 });
 
 describe('la lecture est plus stricte que le texte, jamais plus permissive', () => {
-  it('un « OU » est lu comme un ET, et signalé', () => {
+  it('un « OU » est évalué comme un OU : une seule alternative suffit', () => {
+    // Décision du 18 nov. La première version exigeait les deux, « par prudence » : la
+    // question ne s'ouvrait à peu près jamais. Ce test tenait l'ancien comportement.
     const c = analyserCondition('`INTEREST.a=positive` OU `INTEREST.b=positive`');
     expect(c.contientDisjonction).toBe(true);
-    // Un seul des deux suffirait au texte ; il ne suffit pas ici. Moins de questions
-    // posées, jamais plus.
-    expect(evaluerCondition(c, etat({ tags: new Map([['INTEREST.a', 'positive']]) }), ctx)).toBe('fermer');
+    expect(evaluerCondition(c, etat({ tags: new Map([['INTEREST.a', 'positive']]) }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etat({ tags: new Map([['INTEREST.b', 'positive']]) }), ctx)).toBe('ouvrir');
     expect(evaluerCondition(c, etat({ tags: new Map([['INTEREST.a', 'positive'], ['INTEREST.b', 'positive']]) }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etatVide, ctx)).toBe('fermer');
   });
 
   it('un paramètre entre accolades n’est pas comparé à une constante', () => {
     const c = analyserCondition('`CONTEXT.celebration.current_occasion={occasion}`');
     expect(c.lisible).toBe(false); // on ne fait pas semblant de savoir ce que vaut {occasion}
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 18 NOV. — LE SENS EXACT DES EXPRESSIONS. Un cas qui ouvre et un cas qui ferme pour
+// chaque forme, pris sur des conditions RÉELLES du référentiel.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('alternatives : la forme réelle du référentiel', () => {
+  const REELLE = 'Tags ENTRANTS — ouvrir si  `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.creativity.practice_frequency.present=true` — produit par CRE-08 ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant';
+  const c = analyserCondition(REELLE);
+  const ctxA = { branche: 'creativity', attribut: 'ceramics_goal' };
+
+  it('elle est entièrement lisible : la note « — produit par CRE-08 » n’est pas une clause', () => {
+    expect(c.inconnues).toEqual([]);
+    expect(c.lisible).toBe(true);
+    expect(c.groupes.length).toBe(4);
+    expect(c.groupes[0].length).toBe(2);          // deux alternatives
+  });
+  it('première alternative vraie → ouvre', () => {
+    expect(evaluerCondition(c, etat({ tags: new Map([['INTEREST.creativity', 'positive']]) }), ctxA)).toBe('ouvrir');
+  });
+  it('seconde alternative vraie, la première fausse → ouvre aussi', () => {
+    expect(evaluerCondition(c, etat({ tags: new Map([['PREFERENCE.creativity.practice_frequency.present', 'true']]) }), ctxA)).toBe('ouvrir');
+  });
+  it('aucune alternative vraie → ferme', () => {
+    expect(evaluerCondition(c, etatVide, ctxA)).toBe('fermer');
+  });
+  it('une alternative vraie ne dispense PAS des conditions qui suivent le point-virgule', () => {
+    const e = etat({ tags: new Map([['INTEREST.creativity', 'positive']]), nePasCreuser: new Set(['creativity']) });
+    expect(evaluerCondition(c, e, ctxA)).toBe('fermer');
+    const e2 = etat({ tags: new Map([['INTEREST.creativity', 'positive']]), attributsConnus: new Set(['ceramics_goal']) });
+    expect(evaluerCondition(c, e2, ctxA)).toBe('fermer');
+  });
+  it('le « OU » d’un commentaire entre parenthèses n’est pas une alternative', () => {
+    const k = analyserCondition('`INTEREST.shoe=positive` (signal issu de l’onboarding OU d’une microquestion) ; ET `DO_NOT_PROBE.shoe!=true`');
+    expect(k.contientDisjonction).toBe(false);
+    expect(k.groupes.every((g) => g.length === 1)).toBe(true);
+  });
+});
+
+describe('dans une alternative, le ET lie plus fort que le OU', () => {
+  // « A OU B ET C » = A OU (B ET C)
+  const c = analyserCondition('`INTEREST.food=positive` OU `CONTEXT.x.present=true` ET connaissance correspondante manquante');
+  const ctxA = { branche: 'food', attribut: 'food_pleasures' };
+  it('A seul ouvre, même si C est faux', () => {
+    const e = etat({ tags: new Map([['INTEREST.food', 'positive']]), attributsConnus: new Set(['food_pleasures']) });
+    expect(evaluerCondition(c, e, ctxA)).toBe('ouvrir');
+  });
+  it('B sans C ne suffit pas', () => {
+    const e = etat({ tags: new Map([['CONTEXT.x.present', 'true']]), attributsConnus: new Set(['food_pleasures']) });
+    expect(evaluerCondition(c, e, ctxA)).toBe('fermer');
+  });
+  it('B et C ensemble ouvrent', () => {
+    expect(evaluerCondition(c, etat({ tags: new Map([['CONTEXT.x.present', 'true']]) }), ctxA)).toBe('ouvrir');
+  });
+});
+
+describe('une alternative illisible ferme toute la condition', () => {
+  it('même quand l’autre alternative est vraie', () => {
+    const c = analyserCondition('`INTEREST.celebration.ritual=positive` OU `CONTEXT.celebration.current_occasion={occasion}` ET recherche de tradition');
+    expect(c.lisible).toBe(false);
+    const e = etat({ tags: new Map([['INTEREST.celebration.ritual', 'positive']]) });
+    expect(evaluerCondition(c, e, ctx)).toBe('indecidable');
+    expect(peutPoser(c, e, ctx)).toBe(false);
+  });
+});
+
+describe('opérateur « != » : un cas qui ouvre, un cas qui ferme', () => {
+  const c = analyserCondition('`PREFERENCE.gift.openness!=closed`');
+  it('valeur différente ou absente → ouvre', () => {
+    expect(evaluerCondition(c, etatVide, ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etat({ tags: new Map([['PREFERENCE.gift.openness', 'open']]) }), ctx)).toBe('ouvrir');
+  });
+  it('valeur égale → ferme', () => {
+    expect(evaluerCondition(c, etat({ tags: new Map([['PREFERENCE.gift.openness', 'closed']]) }), ctx)).toBe('fermer');
+  });
+});
+
+describe('branche ouverte : un cas qui ouvre, un cas qui ferme', () => {
+  const c = analyserCondition('Branche Animaux philosophie ouverte');
+  it('ouverte → ouvre ; absente → ferme', () => {
+    expect(evaluerCondition(c, etat({ branchesOuvertes: new Set(['animaux philosophie']) }), ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, etatVide, ctx)).toBe('fermer');
+  });
+});
+
+describe('les trois niveaux de sensibilité du référentiel', () => {
+  const tout = etat({
+    branchesOuvertes: new Set(['changement']), niveauParBranche: new Map([['changement', 'C']]),
+    tags: new Map([['INTEREST.changement', 'positive']]),
+  });
+  for (const niveau of ['MOYENNE', 'HIGH', 'MAXIMALE'] as const) {
+    it(`« sensitivity: ${niveau} » ne s’ouvre pas sur un score, même tout satisfait`, () => {
+      const c = analyserCondition(`Niveau C Changement — sensitivity: ${niveau}`);
+      expect(c.sensible).toBe(true);
+      expect(c.niveauSensibilite).toBe(niveau.toLowerCase());
+      expect(evaluerCondition(c, tout, { branche: 'changement' })).toBe('fermer');
+    });
+  }
+  it('la même condition SANS marque s’ouvre : c’est bien la marque qui ferme', () => {
+    const c = analyserCondition('Niveau C Changement');
+    expect(evaluerCondition(c, tout, { branche: 'changement' })).toBe('ouvrir');
+  });
+});
+
+describe('branche « causes » : ouverture sur démarche explicite', () => {
+  const MARQUE = "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ ";
+  const c = analyserCondition(MARQUE + 'Branche Causes ouverte');
+  const terrain = etat({ branchesOuvertes: new Set(['causes']), tags: new Map([['INTEREST.causes', 'positive']]) });
+  const ctxC = { branche: 'causes' };
+
+  it('elle est sensible, et porte un mode d’ouverture', () => {
+    expect(c.sensible).toBe(true);
+    expect(c.ouvertureSurDemarche).toBe(true);
+    expect(c.inconnues).toEqual([]);      // la marque n'est pas lue comme une clause
+  });
+  it('le terrain seul (intérêt, branche ouverte, score) NE l’ouvre PAS', () => {
+    expect(evaluerCondition(c, terrain, ctxC)).toBe('fermer');
+  });
+  it('la démarche de la personne pour CETTE branche l’ouvre', () => {
+    expect(evaluerCondition(c, { ...terrain, sujetsChoisis: new Set(['causes']) }, ctxC)).toBe('ouvrir');
+  });
+  it('une démarche pour une AUTRE branche ne l’ouvre pas', () => {
+    expect(evaluerCondition(c, { ...terrain, sujetsChoisis: new Set(['voyage']) }, ctxC)).toBe('fermer');
+  });
+  it('la démarche ne dispense pas de la condition d’origine', () => {
+    expect(evaluerCondition(c, etat({ sujetsChoisis: new Set(['causes']) }), ctxC)).toBe('fermer');
+  });
+  it('une question sensible SANS mode d’ouverture reste fermée, démarche ou non', () => {
+    const k = analyserCondition('Territoire La santé : si recherche/santé coché — sensitivity: MAXIMALE');
+    expect(evaluerCondition(k, { ...terrain, sujetsChoisis: new Set(['causes']) }, ctxC)).toBe('fermer');
   });
 });

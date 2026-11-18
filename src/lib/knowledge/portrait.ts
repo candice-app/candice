@@ -165,7 +165,18 @@ export function tagsDuPortrait(p: Portrait): TagPortrait[] {
   }
   for (const s of p.interests) pousser(`INTEREST:${s.subject}`, s, s.subjectLabel, s.relationship);
   for (const s of p.entities) pousser(`ENTITY:${s.entity}`, s, s.entityLabel, s.relation);
-  for (const s of p.preferences) pousser(`PREFERENCE:${s.path}`, s, s.value);
+  // Une préférence peut porter PLUSIEURS valeurs (réponse multiple) : un tag par valeur.
+  // Un REJET n'est pas présenté comme un goût : le libellé le dit en toutes lettres, pour
+  // qu'aucun lecteur (texte généré, respiration) ne puisse le prendre pour une préférence.
+  const PREFIXE_POLARITE: Record<string, string> = {
+    rejet: 'écarté : ', condition: 'sous condition : ', absence_de_critere: 'sans préférence : ',
+  };
+  for (const s of p.preferences) {
+    const details = s.valuesDetail?.length ? s.valuesDetail : [{ value: s.value }];
+    for (const d of details) {
+      pousser(`PREFERENCE:${s.path}`, s, `${PREFIXE_POLARITE[(d as { polarity?: string }).polarity ?? ''] ?? ''}${d.value}`);
+    }
+  }
   for (const s of p.behaviors) pousser(`BEHAVIOR:${s.behaviorContext}`, s, s.pattern);
   for (const s of p.guardrails) pousser(`GUARDRAIL:${s.code}`, s, undefined, s.severity);
   for (const s of p.needs) pousser(`NEED:${s.construct}`, s);

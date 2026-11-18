@@ -8,7 +8,8 @@
 // sens de marche : une lecture qui échoue doit faire poser MOINS de questions, jamais plus.
 // On ne remplit donc aucun champ « par défaut optimiste ».
 import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
-import type { EtatDiscovery } from './conditions';
+import { clef, type EtatDiscovery } from './conditions';
+import { ALIAS_BRANCHES, BRANCHES_DU_DOMAINE } from './branches';
 import { BANQUE } from './banque';
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -27,15 +28,17 @@ import { BANQUE } from './banque';
  * ──────────────────────────────────────────────────────────────────────────── */
 export const SEUILS_PROFONDEUR = { B: 3, C: 8 } as const;
 
+/** La personne a demandé à explorer ce sujet. `value` = la branche. */
+export const FAIT_SUJET_CHOISI = 'discovery.sujet_choisi';
+/** La personne a parlé de ce sujet d'elle-même, dans un texte libre. `value` = la branche. */
+export const FAIT_SUJET_ABORDE = 'discovery.sujet_aborde';
+
 function profondeur(reponses: number): 'A' | 'B' | 'C' {
   if (reponses >= SEUILS_PROFONDEUR.C) return 'C';
   if (reponses >= SEUILS_PROFONDEUR.B) return 'B';
   return 'A';
 }
 
-/** Normalisation partagée : les branches du référentiel s'écrivent en slug ET en français. */
-const clef = (s: string) =>
-  s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
 
 /** Index : pour chaque question, sa branche — sous ses deux écritures possibles. */
 const BRANCHE_PAR_QUESTION = new Map(BANQUE.map((q) => [q.id, q.branche] as const));
@@ -95,22 +98,51 @@ export async function lireEtat(
     // Un INTÉRÊT consolidé ouvre son sujet ET sa branche. C'est le terrain dont une
     // question Discovery a besoin pour ne pas sortir de nulle part.
     for (const i of portrait.interests) {
-      tags.set(`INTEREST.${clef(String(i.subject))}`, 'positive');
-      tags.set(`INTEREST.${clef(i.subjectLabel)}`, 'positive');
-      branchesOuvertes.add(clef(String(i.subject)));
-      branchesOuvertes.add(clef(i.subjectLabel));
+      const parent = i.parent_domain ? clef(String(i.parent_domain)) : null;
+      for (const k of [clef(String(i.subject)), clef(i.subjectLabel)]) {
+        tags.set(`INTEREST.${k}`, 'positive');
+        // ⚠ LA PORTÉE D'UN INTÉRÊT RATTACHÉ. « Les enfants », coché parmi les CAUSES qui
+        //    touchent la personne, est un intérêt pour cette cause — pas pour la branche
+        //    « Enfants », qui parle de ses propres enfants. Un intérêt qui porte un domaine
+        //    parent n'ouvre donc que ce domaine ; son sujet reste un tag, rien de plus.
+        if (parent) continue;
+        branchesOuvertes.add(k);
+        // Le sujet d'un intérêt est un DOMAINE ou un LIBELLÉ ; les questions, elles, sont
+        // rangées par identifiant de branche. On ouvre donc aussi les branches que ce nom
+        // désigne (table dérivée de la banque) et celles dont c'est le domaine principal.
+        for (const b of ALIAS_BRANCHES.get(k) ?? []) branchesOuvertes.add(b);
+        for (const b of BRANCHES_DU_DOMAINE.get(k) ?? []) branchesOuvertes.add(b);
+      }
+      if (parent) {
+        branchesOuvertes.add(parent);
+        for (const b of ALIAS_BRANCHES.get(parent) ?? []) branchesOuvertes.add(b);
+        for (const b of BRANCHES_DU_DOMAINE.get(parent) ?? []) branchesOuvertes.add(b);
+      }
     }
-    for (const c of portrait.contexts) tags.set(`CONTEXT.${clef(String(c.construct))}`, 'positive');
+    for (const c of portrait.contexts) {
+      tags.set(`CONTEXT.${clef(String(c.construct))}`, 'positive');
+      // « `CONTEXT.x.present=true` » : la présence d'un signal, quelle que soit sa valeur.
+      tags.set(`CONTEXT.${String(c.construct)}.present`, 'true');
+    }
+    for (const i of portrait.interests) tags.set(`INTEREST.${String(i.subject)}.present`, 'true');
     // Les attributs DÉJÀ renseignés : ce qu'on ne redemande pas. On prend le dernier
     // segment du construct, qui est l'attribut au sens du référentiel
     // (`PREFERENCE.<domaine>.<attribut>`).
+    //
+    // ⚠ PAR DOMAINE, PAS GLOBALEMENT. La première version ne gardait que le nom de
+    //    l'attribut : dès qu'une personne avait dit ce qu'elle recherche chez les animaux
+    //    (`value_sought`), toutes les questions `value_sought` de tous les domaines — voyage,
+    //    travail, sport — passaient pour « déjà renseignées » et se fermaient. On garde donc
+    //    « <domaine>.<attribut> », et la sélection compare la même forme.
     for (const p of portrait.preferences) {
-      const segments = String(p.path).split('.');
-      attributsConnus.add(segments[segments.length - 1]);
+      const segments = String(p.path).split('.');           // PREFERENCE.<domaine>.<attribut>
+      if (segments.length >= 3) attributsConnus.add(`${segments[1]}.${segments[2]}`);
+      // « `PREFERENCE.x.y.present=true` » : une préférence existe sur ce chemin.
+      tags.set(`${String(p.path)}.present`, 'true');
     }
     for (const g of portrait.guardrails) {
-      const segments = String(g.code).split('.');
-      if (segments.length > 1) attributsConnus.add(segments[1]);
+      const segments = String(g.code).split('.');           // <domaine>.<attribut>.<valeur>
+      if (segments.length > 1) attributsConnus.add(`${segments[0]}.${segments[1]}`);
     }
     // Une branche où un garde-fou existe est une branche dont on a parlé.
     for (const g of portrait.guardrails) branchesOuvertes.add(clef(String(g.code).split('.')[0]));
@@ -140,6 +172,32 @@ export async function lireEtat(
     // questions déjà vues. On le signale, et l'appelant doit s'abstenir plutôt que risquer
     // de resservir la même question à quelqu'un.
     manques.push(`progression illisible (${e instanceof Error ? e.message : String(e)}) — risque de reposer une question déjà vue`);
+  }
+
+  // ── 3 bis. LES SUJETS QUE LA PERSONNE A CHOISI D'EXPLORER, ou abordés d'elle-même.
+  //       Seule clé des questions sensibles à « ouverture sur démarche explicite » (branche
+  //       « causes »). Deux preuves possibles, toutes deux ÉCRITES par un acte de la personne :
+  //         · un FAIT `discovery.sujet_choisi`, posé quand elle demande à explorer le sujet,
+  //           et retiré (supersédé) quand elle revient dessus ;
+  //         · un FAIT `discovery.sujet_aborde`, posé quand un de ses textes libres a parlé
+  //           du sujet.
+  //       Un lien reçu dans une notification, un score, une réponse à une question fermée
+  //       n'y figurent pas — et une lecture qui échoue laisse l'ensemble VIDE, donc fermé.
+  const sujetsChoisis = new Set<string>();
+  try {
+    const { data, error } = await (client as never as {
+      from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null): Promise<{ data: unknown[] | null; error: { message: string } | null }> } } };
+    }).from('knowledge_facts').select('fact_type, value, about_id').eq('user_id', opts.userId).is('superseded_at', null);
+    if (error) throw new Error(error.message);
+    for (const f of (data ?? []) as { fact_type: string; value: string; about_id: string }[]) {
+      if (f.about_id !== opts.userId) continue;             // le compte lui-même, pas un proche
+      if (f.fact_type === FAIT_SUJET_CHOISI || f.fact_type === FAIT_SUJET_ABORDE) sujetsChoisis.add(clef(f.value));
+    }
+    // Choisir d'explorer un sujet, c'est OUVRIR sa branche : aucune ouverture n'est plus
+    // nette que celle-là. Les questions ordinaires de la branche en bénéficient aussi.
+    for (const b of sujetsChoisis) branchesOuvertes.add(b);
+  } catch (e) {
+    manques.push(`sujets choisis illisibles (${e instanceof Error ? e.message : String(e)}) — les questions sensibles restent fermées`);
   }
 
   // ── 3. LA PROFONDEUR ATTEINTE, branche par branche. Une branche jamais ouverte n'a
@@ -175,6 +233,8 @@ export async function lireEtat(
       // restent indécidables, donc fermées. Les remplir sans savoir ce qu'ils désignent
       // ouvrirait des questions sur une supposition.
       contextesConnus: new Set(), contextesActifs: new Set(),
+      sujetsChoisis,
+      aliasBranches: ALIAS_BRANCHES,
     },
     manques,
   };

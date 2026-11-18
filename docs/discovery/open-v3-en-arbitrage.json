@@ -952,7 +952,7 @@
     "rang": "1",
     "libelle": "À mon histoire personnelle",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -968,7 +968,7 @@
     "rang": "2",
     "libelle": "À une personne que j’aime",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -984,7 +984,7 @@
     "rang": "3",
     "libelle": "À mes valeurs",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -1000,7 +1000,7 @@
     "rang": "4",
     "libelle": "À une injustice qui me révolte",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -1016,7 +1016,7 @@
     "rang": "5",
     "libelle": "À une peur ou une inquiétude",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -1032,7 +1032,7 @@
     "rang": "6",
     "libelle": "À mon attachement au vivant",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -1048,7 +1048,7 @@
     "rang": "7",
     "libelle": "À ce que j’aimerais transmettre",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -1064,7 +1064,7 @@
     "rang": "8",
     "libelle": "À une expérience que j’ai vécue",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -1080,7 +1080,7 @@
     "rang": "9",
     "libelle": "À une admiration pour celles et ceux qui agissent",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "causes",
     "attribut": "value_sought",
     "valeur": {
@@ -3625,31 +3625,6 @@
   ]
  },
  {
-  "id": "food2.0882A",
-  "enonce": "As-tu une envie culinaire précise en ce moment ? Tu peux la décrire, coller un lien ou ajouter une photo.",
-  "forme": "open",
-  "branche": "food2",
-  "niveau": null,
-  "statut": "REVUE",
-  "etat": "en_arbitrage",
-  "condition_emission": "Niveau C Food — et seulement si le Carnet d’envies ne contient pas déjà une entrée culinaire récente",
-  "inferences_interdites": "",
-  "portee": "",
-  "utilite": "Alimenter le Carnet d’envies avec une envie concrète et actionnable, plutôt que de poser une nouvelle question redondante.",
-  "options": [
-   {
-    "rang": "0",
-    "libelle": "(réponse libre : texte, lien ou photo)",
-    "voie": "OPEN_KNOWLEDGE",
-    "domaine": "food",
-    "niveau_preuve": "",
-    "condition_emission": "ENTITY_PRODUCT ou ENTITY_PLACE + WANT_TO_TRY ou WANT_TO_OWN si une entité est nommée ; sinon PREFERENCE.food.desired_item sur le verbatim ; le verbatim est conservé dans tous les cas",
-    "inferences_interdites": ""
-   }
-  ],
-  "motif_arbitrage": "question ouverte sans inférences interdites : un modèle lirait la réponse sans barrière. Contrat d'extraction à écrire."
- },
- {
   "id": "fragrance2.1164",
   "enonce": "Pour un parfum important, tu préfères…",
   "forme": "single",
@@ -5567,7 +5542,7 @@
     "rang": "1",
     "libelle": "Apprendre",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "reading",
     "attribut": "value_sought",
     "valeur": {
@@ -5583,7 +5558,7 @@
     "rang": "2",
     "libelle": "Plaisir",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "reading",
     "attribut": "value_sought",
     "valeur": {
@@ -5599,7 +5574,7 @@
     "rang": "3",
     "libelle": "Collection",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "reading",
     "attribut": "value_sought",
     "valeur": {
@@ -5629,7 +5604,7 @@
     "rang": "5",
     "libelle": "Référence",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "reading",
     "attribut": "value_sought",
     "valeur": {
@@ -5645,7 +5620,7 @@
     "rang": "6",
     "libelle": "Auteur",
     "voie": "HSG_EVIDENCE",
-    "famille": "DRIVER",
+    "famille": "PREFERENCE",
     "domaine": "reading",
     "attribut": "value_sought",
     "valeur": {

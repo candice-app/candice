@@ -91,6 +91,7 @@ export interface KnowledgeEvidenceRow {
   behavior_context: string | null;
   pattern: string | null;
   facet: string | null;
+  polarity: string | null;
 }
 
 /** assertion_status : porté par l'evidence si présent (ex. extraction → 'inferred'),
@@ -143,6 +144,7 @@ export function evidenceToRow(e: Evidence, about: AboutRef): KnowledgeEvidenceRo
     behavior_context: null as string | null,
     pattern: null as string | null,
     facet: null as string | null,
+    polarity: e.polarity ?? null, // migration 111 — NULL = non déclarée, jamais « positive » par défaut
   };
   switch (e.target_family) {
     case 'PROFILE':

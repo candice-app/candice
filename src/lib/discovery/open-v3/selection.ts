@@ -68,14 +68,34 @@ function sterile(q: QuestionV3): boolean {
 }
 
 /**
- * L'attribut que la question vise, quand elle n'en vise qu'un. Il sert à la clause
- * « information manquante » : sans lui, cette clause est indécidable, et on préfère ne
- * pas poser plutôt que de supposer que l'information manque.
+ * CE QUE LA QUESTION CHERCHE À SAVOIR, pour la clause « information manquante ».
+ *
+ * Les clés sont « <domaine>.<attribut> » — la forme sous laquelle l'état les connaît. Sans
+ * le domaine, savoir ce qu'une personne recherche chez les animaux faisait passer pour
+ * connu ce qu'elle recherche en voyage.
+ *
+ * `partages` : au moins une de ces clés est aussi écrite par une AUTRE question de la
+ * banque (313 chemins sur 554 le sont, jusqu'à 29 questions pour un même chemin). Qu'un
+ * tel chemin soit renseigné ne dit donc pas que CETTE question a eu sa réponse : seule sa
+ * propre trace (« déjà posée ») le dit. La clause ne ferme alors pas la question.
  */
-function attributVise(q: QuestionV3): string | undefined {
-  const attrs = new Set(q.options.map((o) => o.attribut).filter((a): a is string => !!a));
-  return attrs.size === 1 ? [...attrs][0] : undefined;
+function informationVisee(q: QuestionV3, partage: ReadonlyMap<string, number>): { cles: string[]; partages: boolean } {
+  const cles = [...new Set(q.options
+    .filter((o) => o.attribut)
+    .map((o) => `${o.domaine ?? q.branche}.${o.attribut}`))];
+  return { cles, partages: cles.some((k) => (partage.get(k) ?? 0) > 1) };
 }
+
+/** Pour chaque « <domaine>.<attribut> », le nombre de questions de la banque qui l'écrivent. */
+function compterPartage(banque: readonly QuestionV3[]): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const q of banque) {
+    const cles = new Set(q.options.filter((o) => o.attribut).map((o) => `${o.domaine ?? q.branche}.${o.attribut}`));
+    for (const k of cles) m.set(k, (m.get(k) ?? 0) + 1);
+  }
+  return m;
+}
+const PARTAGE_BANQUE = compterPartage(BANQUE);
 
 export interface Reglages {
   /** Combien de questions rendre. 1 pour une micro-question, davantage pour une session. */
@@ -100,6 +120,7 @@ export function prochainesQuestions(
   const parBranche = reglages.parBranche ?? 2;
 
   let dejaPosees = 0, fermees = 0, indecidables = 0, steriles = 0;
+  const partage = banque === BANQUE ? PARTAGE_BANQUE : compterPartage(banque);
   const eligibles: Choix[] = [];
 
   for (const q of banque) {
@@ -109,7 +130,7 @@ export function prochainesQuestions(
     const verdict = evaluerCondition(
       analyserCondition(q.condition_emission),
       etat,
-      { branche: q.branche, attribut: attributVise(q) },
+      { branche: q.branche, attributs: informationVisee(q, partage).cles, attributsPartages: informationVisee(q, partage).partages },
     );
     if (verdict === 'fermer') { fermees++; continue; }
     if (verdict === 'indecidable') { indecidables++; continue; }
@@ -120,8 +141,8 @@ export function prochainesQuestions(
     let score = 100 - niveau * 30;                      // le peu profond d'abord
     const motifs: string[] = [`niveau ${q.niveau ?? '—'}`];
     if (etat.branchesOuvertes.has(q.branche)) { score += 15; motifs.push('branche déjà ouverte'); }
-    const attribut = attributVise(q);
-    if (attribut && !etat.attributsConnus.has(attribut)) { score += 10; motifs.push('information absente'); }
+    const vise = informationVisee(q, partage);
+    if (vise.cles.length > 0 && vise.cles.some((k) => !etat.attributsConnus.has(k))) { score += 10; motifs.push('information absente'); }
     if (q.facultative) { score -= 5; motifs.push('facultative'); }
 
     eligibles.push({ question: q, score, motif: motifs.join(' · ') });

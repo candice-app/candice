@@ -66,7 +66,7 @@ export const JOURNAL_EVIDENCE_COLUMNS =
   'assertion_status, assertion_basis, ontology_version, hsg_version, dims, rank, ' +
   'value, strength, direction, modality, relation, relationship, severity, ' +
   'guardrail_scope, subject_id, subject_label, entity_id, entity_label, entity_type, ' +
-  'parent_domain, preference_path, preference_value, behavior_context, pattern, facet, ' +
+  'parent_domain, preference_path, preference_value, behavior_context, pattern, facet, polarity, ' +
   'superseded_at';
 
 interface Row { [k: string]: unknown }
@@ -119,6 +119,7 @@ function rowToEvidence(r: Row, sourceType: SourceType, ts: string): Evidence {
     ['entity_type', 'entityType'], ['parent_domain', 'parent_domain'],
     ['preference_path', 'preference_path'], ['preference_value', 'preferenceValue'],
     ['behavior_context', 'behaviorContext'], ['pattern', 'pattern'], ['facet', 'facet'],
+    ['polarity', 'polarity'],
   ];
   for (const [col, champ] of SEM) if (r[col] != null) e[champ] = r[col];
   return e as unknown as Evidence;

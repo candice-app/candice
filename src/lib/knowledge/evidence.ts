@@ -58,6 +58,10 @@ export type EvidenceContext = 'GLOBAL' | (string & {});
 
 /** Champs communs à toutes les evidences. Porte les deux colonnes d'identité
  *  (about + ownerId), comme questionnaire_responses(contact_id, user_id). */
+/** Ce que la personne a fait de la proposition : l'a-t-elle voulue, écartée, conditionnée ? */
+export const EVIDENCE_POLARITIES = ['positive', 'rejet', 'condition', 'absence_de_critere', 'factuelle'] as const;
+export type EvidencePolarity = (typeof EVIDENCE_POLARITIES)[number];
+
 interface EvidenceBase extends KnowledgeScope {
   readonly evidence_id: string;
   readonly source_id: string;
@@ -76,6 +80,11 @@ interface EvidenceBase extends KnowledgeScope {
    * question par question. N'entre ni dans evidence_id ni signalKey.
    */
   readonly assertionBasis: AssertionBasis;
+  /**
+   * POLARITÉ déclarée par la source (migration 111). Absente = non déclarée — jamais
+   * déduite, jamais « positive par défaut » : une preuve sans polarité ne dit pas oui.
+   */
+  readonly polarity?: EvidencePolarity;
   readonly notes?: string;
   /**
    * SÉMANTIQUE du domaine attention (migration 88) — le passage option → dimensions affectives.

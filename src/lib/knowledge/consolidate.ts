@@ -628,13 +628,36 @@ export function hasActiveAvoidance(signal: EntitySignal): boolean {
   return signal.relationHistory.some((r) => r.relation === 'AVOID');
 }
 
-/** PREFERENCE — conserve la valeur (la plus récente supplante). */
+/** Valeurs distinctes d'un chemin, la plus récente d'abord ; départage stable par evidence_id. */
+function valeursDistinctes(evs: readonly PreferenceEvidence[]): string[] {
+  const tri = [...evs].sort((a, b) => {
+    const d = Date.parse(b.timestamp) - Date.parse(a.timestamp);
+    return d !== 0 ? d : (a.evidence_id < b.evidence_id ? -1 : a.evidence_id > b.evidence_id ? 1 : 0);
+  });
+  return [...new Set(tri.map((e) => e.preferenceValue))];
+}
+
+/**
+ * PREFERENCE — `value` reste la plus récente ; `values` les conserve toutes.
+ * Aucune valeur n'est retirée parce qu'une autre est arrivée après : le journal ne sait pas
+ * distinguer « je préfère maintenant B » de « j'aime aussi B », et choisir à sa place
+ * effaçait ce que la personne avait dit.
+ */
 export function consolidatePreferences(scope: KnowledgeScope, evidences: readonly PreferenceEvidence[], opts: ConsolidateOpts = {}): PreferenceSignal[] {
   return [...groupBy(evidences, (e) => e.target_construct).entries()].map(([path, evs]) => ({
     ...baseFrom(scope, evs, strengthInputs(evs), { supportingFacts: opts.supportingFacts }),
     family: 'PREFERENCE',
     path: path as PreferencePath,
     value: mostRecent(evs).preferenceValue,
+    // `value` est TOUJOURS en tête de `values` : deux lectures du même signal ne doivent
+    // pas désigner deux « plus récentes » différentes quand les instants sont égaux.
+    values: [...new Set([mostRecent(evs).preferenceValue, ...valeursDistinctes(evs)])],
+    valuesDetail: [...new Set([mostRecent(evs).preferenceValue, ...valeursDistinctes(evs)])].map((v) => {
+      // La polarité d'une valeur est celle de sa preuve la plus récente : si la personne a
+      // d'abord écarté puis choisi la même chose, c'est le dernier mot qui compte.
+      const derniere = mostRecent(evs.filter((e) => e.preferenceValue === v));
+      return { value: v, ...(derniere.polarity ? { polarity: derniere.polarity } : {}) };
+    }),
   }));
 }
 

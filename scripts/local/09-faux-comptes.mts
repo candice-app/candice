@@ -29,8 +29,8 @@
  *    mot « non ».
  *
  * Usage, dans ton terminal :
- *   node --experimental-strip-types scripts/local/09-faux-comptes.mts            # crée et remplit
- *   node --experimental-strip-types scripts/local/09-faux-comptes.mts --nettoyer # supprime les dix
+ *   npx tsx scripts/local/09-faux-comptes.mts            # crée et remplit
+ *   npx tsx scripts/local/09-faux-comptes.mts --nettoyer # supprime les dix
  *
  * Variables : NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY, et ANTHROPIC_API_KEY
  * pour l'extraction des réponses libres.
@@ -55,7 +55,7 @@ interface Voix {
   readonly attendu: readonly string[];
 }
 
-const VOIX: readonly Voix[] = [
+export const VOIX: readonly Voix[] = [
   {
     prenom: 'Sophie',
     libres: [
@@ -210,7 +210,7 @@ function optionsParQuestion(): Map<string, string[]> {
  * active est cochée par au moins un compte. Un tirage au hasard laisserait des mappings
  * jamais exercés, et c'est précisément ce qu'on cherche à éprouver.
  */
-function repartir(): string[][] {
+export function repartir(): string[][] {
   const parQuestion = optionsParQuestion();
   const comptes: string[][] = Array.from({ length: NB }, () => []);
   // UN DÉCALAGE GLOBAL, pas un compteur par question. En repartant de zéro à chaque
@@ -344,10 +344,10 @@ async function main() {
   }
   console.log('\nPuis, compte par compte :');
   for (const r of resultats) {
-    console.log(`  node --experimental-strip-types scripts/local/08-audit-extraction.mts ${r.id}`);
+    console.log(`  npx tsx scripts/local/08-audit-extraction.mts ${r.id}`);
   }
   console.log('\nPour tout supprimer ensuite :');
-  console.log('  node --experimental-strip-types scripts/local/09-faux-comptes.mts --nettoyer');
+  console.log('  npx tsx scripts/local/09-faux-comptes.mts --nettoyer');
 }
 
 // Ne s'exécute que lancé directement : importer ce module ne doit créer aucun compte.

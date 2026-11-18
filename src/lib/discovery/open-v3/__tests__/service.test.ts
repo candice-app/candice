@@ -191,3 +191,48 @@ describe('une réponse ouverte : le verbatim d’abord, l’extraction ensuite',
     })).rejects.toThrow(ReponseInvalideError);
   });
 });
+
+// ── AJOUT DU 18 NOV. — une preuve par OPTION, et plus aucun DRIVER dans la banque.
+import { BANQUE as BANQUE_R2, question as questionR2 } from '../banque';
+import { produireDepuisOption as produireR2 } from '../produire';
+import { cleOption as cleR2 } from '../service';
+import { evidenceId as evidenceIdR2 } from '@/lib/knowledge-write/ids';
+
+describe('révision 2 — valeurs recherchées', () => {
+  const toutes = ((BANQUE_R2 as unknown as { questions?: unknown[] }).questions ?? BANQUE_R2) as
+    { id: string; forme: string; options: { famille?: string }[] }[];
+
+  it('la banque active ne contient plus aucune option DRIVER ni NEED', () => {
+    const n = toutes.flatMap((q) => q.options).filter((o) => o.famille === 'DRIVER' || o.famille === 'NEED').length;
+    expect(n).toBe(0);
+  });
+
+  it('« leur fidélité » chez les animaux est une préférence de contexte, avec sa valeur', () => {
+    const q = questionR2('animals.2131')!;
+    const o = q.options.find((x) => x.libelle === 'Leur fidélité')!;
+    const p = produireR2(q, o);
+    expect(p.type).toBe('evidence');
+    if (p.type !== 'evidence') return;
+    expect(p.evidence.target_family).toBe('PREFERENCE');
+    expect(p.evidence.target_construct).toBe('PREFERENCE.animals.value_sought');
+    expect((p.evidence as { preferenceValue?: string }).preferenceValue).toBe('leur_fidelite');
+  });
+
+  it('dans TOUTE la banque, deux options d’une même question n’ont jamais le même identifiant de preuve', () => {
+    // Le défaut mesuré le 18 nov. : l'identifiant ne dépendait que de la cible, et 5 390
+    // options de 643 questions multiples s'écrasaient entre elles à l'écriture.
+    let collisions = 0;
+    for (const q of toutes) {
+      if (q.forme === 'open') continue;
+      const ids = new Set<string>(); let n = 0;
+      for (const o of (q as never as { options: never[] }).options) {
+        const p = produireR2(q as never, o);
+        if (p.type !== 'evidence') continue;
+        n++;
+        ids.add(evidenceIdR2('s', `${p.evidence.target_family}:${p.evidence.target_construct}:${cleR2(o)}`));
+      }
+      if (ids.size !== n) collisions++;
+    }
+    expect(collisions).toBe(0);
+  });
+});

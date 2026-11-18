@@ -124,7 +124,7 @@ describe('la valeur écrite est celle du contrat, en entier et de façon stable'
       { direction: 'receive', modality: 'WORDS — canal=lettre manuscrite' },
       { direction: 'receive', __libres__: ['WORDS'] },
     ]) {
-      const p = produireDepuisOption(q(), o({ famille: 'AFFECTION_LANGUAGE', valeur }));
+      const p = produireDepuisOption(q(), o({ famille: 'AFFECTION_LANGUAGE', polarite: 'positive', valeur }));
       expect(p.type, JSON.stringify(valeur)).toBe('evidence');
       if (p.type === 'evidence') {
         expect(p.evidence.modality).toBe('WORDS');
@@ -169,5 +169,94 @@ describe('sur la banque entière', () => {
         expect(p.evidence.severity, `${qq.id} / ${oo.libelle}`).toMatch(/^(SOFT|HARD)$/);
       }
     }
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 18 NOV. — LA POLARITÉ. Ce que la personne a écarté ne s'écrit pas comme ce qu'elle aime.
+// ─────────────────────────────────────────────────────────────────────────────
+describe('la polarité du référentiel voyage avec la preuve', () => {
+  it('une préférence garde la polarité déclarée', () => {
+    const p = produireDepuisOption(q(), o({ famille: 'PREFERENCE', domaine: 'values', attribut: 'value_sought', polarite: 'rejet', valeur: { sacrifiable_en_premier: 'le_prestige' } }));
+    expect(p.type).toBe('evidence');
+    if (p.type === 'evidence') expect(p.evidence.polarity).toBe('rejet');
+  });
+  it('une polarité absente ou inconnue n’est pas remplacée par « positive »', () => {
+    for (const polarite of [undefined, 'inconnue']) {
+      const p = produireDepuisOption(q(), o({ famille: 'PREFERENCE', domaine: 'x', attribut: 'y', polarite, valeur: { __scalaire__: 'z' } }));
+      if (p.type === 'evidence') expect(p.evidence.polarity).toBeUndefined();
+    }
+  });
+});
+
+describe('langage d’affection : seul un « oui » s’écrit', () => {
+  const valeur = { direction: 'receive', modality: 'MICRO_ATTENTIONS' };
+  it('« je n’y attache pas beaucoup d’importance » (rejet) n’écrit PAS la modalité', () => {
+    const p = produireDepuisOption(q(), o({ famille: 'AFFECTION_LANGUAGE', polarite: 'rejet', libelle: 'Je n’y attache pas beaucoup d’importance', valeur }));
+    expect(p.type).toBe('rien');
+    if (p.type === 'rien') expect(p.motif).toBe('polarite_non_portee');
+  });
+  it('une modalité sous condition n’est pas écrite comme inconditionnelle', () => {
+    const p = produireDepuisOption(q(), o({ famille: 'AFFECTION_LANGUAGE', polarite: 'condition', valeur }));
+    expect(p.type).toBe('rien');
+  });
+  it('la même option, positive, l’écrit', () => {
+    const p = produireDepuisOption(q(), o({ famille: 'AFFECTION_LANGUAGE', polarite: 'positive', valeur }));
+    expect(p.type).toBe('evidence');
+  });
+  it('dans la banque réelle, relation.0001 « je n’y attache pas… » ne produit aucune preuve d’affection', () => {
+    const question = BANQUE.find((x) => x.id === 'relation.0001')!;
+    const option = question.options.find((x) => x.polarite === 'rejet')!;
+    expect(produireDepuisOption(question, option).type).toBe('rien');
+  });
+});
+
+describe('un intérêt n’est écrit que si la personne en déclare un', () => {
+  const place = (polarite: string, valeur: Record<string, unknown>) =>
+    produireDepuisOption(q({ branche: 'gaming' }), o({ famille: 'INTEREST', domaine: 'gaming', attribut: 'domain_importance', polarite, libelle: 'x', valeur }));
+
+  it('« une place importante » : intérêt pour le DOMAINE, et le niveau déclaré à côté', () => {
+    const p = place('positive', { place: 'importante' });
+    expect(p.type).toBe('evidence');
+    if (p.type !== 'evidence') return;
+    expect(p.evidence.target_family).toBe('INTEREST');
+    expect(p.evidence.subject).toBe('gaming');                 // le domaine — pas « domain_importance »
+    expect(p.autres?.[0].target_construct).toBe('PREFERENCE.gaming.domain_importance');
+    expect(p.autres?.[0].preferenceValue).toBe('place=importante');
+  });
+  it('« très peu de place » : AUCUN intérêt ; le niveau est gardé, avec sa polarité', () => {
+    const p = place('rejet', { place: 'tres_faible' });
+    expect(p.type).toBe('evidence');
+    if (p.type !== 'evidence') return;
+    expect(p.evidence.target_family).toBe('PREFERENCE');
+    expect(p.evidence.preferenceValue).toBe('place=tres_faible');
+    expect(p.evidence.polarity).toBe('rejet');
+    expect(p.autres).toBeUndefined();
+  });
+  it('un intérêt conditionnel ou sans critère n’ouvre rien non plus', () => {
+    for (const pol of ['condition', 'absence_de_critere']) {
+      const p = place(pol, { __scalaire__: 'selon_les_moments' });
+      expect(p.type === 'evidence' && p.evidence.target_family).toBe('PREFERENCE');
+    }
+  });
+  it('un sujet nommé (« Peinture ») est le sujet de l’intérêt, rattaché à son domaine', () => {
+    const p = produireDepuisOption(q(), o({ famille: 'INTEREST', domaine: 'creativity', attribut: 'type_preference', polarite: 'positive', libelle: 'Peinture', valeur: { __scalaire__: 'peinture' } }));
+    expect(p.type === 'evidence' && p.evidence.subject).toBe('peinture');
+    expect(p.type === 'evidence' && p.evidence.parent_domain).toBe('creativity');
+  });
+  it('quand le contrat ne nomme pas le sujet, aucun intérêt n’est deviné', () => {
+    const p = produireDepuisOption(q(), o({ famille: 'INTEREST', domaine: 'tech', attribut: 'type_preference', polarite: 'positive', libelle: 'Je m’y intéresse', valeur: { ia: 'interet_reel' } }));
+    expect(p.type === 'evidence' && p.evidence.target_family).toBe('PREFERENCE');
+  });
+  it('DANS TOUTE LA BANQUE : aucun intérêt dont le sujet est un nom d’attribut ou un niveau', () => {
+    const suspects: string[] = [];
+    for (const question of BANQUE) for (const option of question.options) {
+      if (option.famille !== 'INTEREST') continue;
+      const p = produireDepuisOption(question, option);
+      if (p.type !== 'evidence' || p.evidence.target_family !== 'INTEREST') continue;
+      if (option.polarite !== 'positive') suspects.push(`${question.id} non positive`);
+      if (/^(domain_importance|type_preference|aesthetic_universe|faible|marginale|moderee|low|high)$/.test(p.evidence.subject ?? '')) suspects.push(`${question.id} → ${p.evidence.subject}`);
+    }
+    expect(suspects).toEqual([]);
   });
 });

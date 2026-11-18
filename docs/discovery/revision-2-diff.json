@@ -1,0 +1,3344 @@
+{
+ "source": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_1.xlsx",
+ "source_sha256": "cfb63b66c888a1f34f2b2952d51cfaf7138c905c742c437458af2cfaa7edf2ee",
+ "revision": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_2.xlsx",
+ "revision_sha256": "7a843e8b13f034008334a78da65cc08f626d85c87325d84427e7a122bd1f0a2c",
+ "cellules_modifiees": 370,
+ "par_bloc": {
+  "A": 345,
+  "B": 22,
+  "C": 3
+ },
+ "diff": [
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1980",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1981",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1982",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1983",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1984",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1985",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1986",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1987",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G1988",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3179",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3180",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3181",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3182",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3183",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3184",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3185",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3186",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G3187",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5698",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5699",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5700",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5701",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5702",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5703",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5704",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5765",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5766",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5767",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5768",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G5769",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7228",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7229",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7230",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7231",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7232",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7233",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7234",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7235",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7236",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7237",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7238",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7393",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7394",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7395",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7396",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7397",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7398",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7399",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7400",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G7401",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11122",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11123",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11124",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11125",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11126",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11716",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11717",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11718",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11719",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11720",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11721",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11722",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11723",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11724",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11725",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11726",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11727",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11841",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11864",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11865",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11866",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11867",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11868",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11869",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11870",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11871",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11872",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11873",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G11874",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13808",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13811",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13812",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13813",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13814",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13977",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13978",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13979",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13980",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13981",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13982",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13983",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13984",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13985",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13986",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13987",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G13988",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14268",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14269",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14270",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14271",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14272",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14273",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14274",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14275",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14276",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14277",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14399",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14400",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14401",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14402",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14403",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G14802",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15114",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15115",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15116",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15118",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15119",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15776",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15777",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15778",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G15779",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G17791",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G17792",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G17793",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G17794",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G17795",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G17796",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G17797",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20268",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20269",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20270",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20271",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20272",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20273",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20274",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20275",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20276",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20277",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20395",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20396",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20397",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20398",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20399",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20400",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20401",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20402",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20785",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20786",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20787",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20788",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20789",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20790",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20791",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20792",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20793",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20794",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20795",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20796",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20797",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20798",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20799",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "G20800",
+   "colonne": "famille HSG",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E1979",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "9 réponses → 9×DRIVER   ·   9 revues sur 9",
+   "apres": "9 réponses → 9×PREFERENCE   ·   9 revues sur 9",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E3178",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "10 réponses → 9×DRIVER · 1×DISCOVERY_STATE   ·   10 revues sur 10",
+   "apres": "10 réponses → 9×PREFERENCE · 1×DISCOVERY_STATE   ·   10 revues sur 10",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E5697",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "8 réponses → 7×DRIVER · 1×PREFERENCE   ·   8 revues sur 8",
+   "apres": "8 réponses → 8×PREFERENCE   ·   8 revues sur 8",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E5764",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "7 réponses → 5×DRIVER · 2×PREFERENCE   ·   7 revues sur 7",
+   "apres": "7 réponses → 7×PREFERENCE   ·   7 revues sur 7",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E7227",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "12 réponses → 11×DRIVER · 1×ACTION_PARAMETER   ·   12 revues sur 12",
+   "apres": "12 réponses → 11×PREFERENCE · 1×ACTION_PARAMETER   ·   12 revues sur 12",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E7392",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "9 réponses → 9×DRIVER   ·   9 revues sur 9",
+   "apres": "9 réponses → 9×PREFERENCE   ·   9 revues sur 9",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E11121",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "5 réponses → 5×DRIVER   ·   5 revues sur 5",
+   "apres": "5 réponses → 5×PREFERENCE   ·   5 revues sur 5",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E11715",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "12 réponses → 12×DRIVER   ·   12 revues sur 12",
+   "apres": "12 réponses → 12×PREFERENCE   ·   12 revues sur 12",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E11838",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "7 réponses → 6×CONTEXT · 1×DRIVER   ·   7 revues sur 7",
+   "apres": "7 réponses → 6×CONTEXT · 1×PREFERENCE   ·   7 revues sur 7",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E11863",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "11 réponses → 11×DRIVER   ·   11 revues sur 11",
+   "apres": "11 réponses → 11×PREFERENCE   ·   11 revues sur 11",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E13807",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "10 réponses → 5×DRIVER · 5×PREFERENCE   ·   10 revues sur 10",
+   "apres": "10 réponses → 10×PREFERENCE   ·   10 revues sur 10",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E13976",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "12 réponses → 12×DRIVER   ·   12 revues sur 12",
+   "apres": "12 réponses → 12×PREFERENCE   ·   12 revues sur 12",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E14267",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "10 réponses → 10×DRIVER   ·   10 revues sur 10",
+   "apres": "10 réponses → 10×PREFERENCE   ·   10 revues sur 10",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E14398",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "7 réponses → 5×DRIVER · 1×FACT · 1×BEHAVIOR   ·   7 revues sur 7",
+   "apres": "7 réponses → 5×PREFERENCE · 1×FACT · 1×BEHAVIOR   ·   7 revues sur 7",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E14798",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "7 réponses → 5×PREFERENCE · 1×DRIVER · 1×GUARDRAIL   ·   7 revues sur 7",
+   "apres": "7 réponses → 6×PREFERENCE · 1×GUARDRAIL   ·   7 revues sur 7",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E15113",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "6 réponses → 5×DRIVER · 1×ACTION_PARAMETER   ·   6 revues sur 6",
+   "apres": "6 réponses → 5×PREFERENCE · 1×ACTION_PARAMETER   ·   6 revues sur 6",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E15775",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "7 réponses → 4×DRIVER · 1×FACT · 1×BEHAVIOR · 1×DISCOVERY_STATE   ·   7 revues sur 7",
+   "apres": "7 réponses → 4×PREFERENCE · 1×FACT · 1×BEHAVIOR · 1×DISCOVERY_STATE   ·   7 revues sur 7",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E17790",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "7 réponses → 7×DRIVER   ·   7 revues sur 7",
+   "apres": "7 réponses → 7×PREFERENCE   ·   7 revues sur 7",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E20267",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "10 réponses → 10×DRIVER   ·   10 revues sur 10",
+   "apres": "10 réponses → 10×PREFERENCE   ·   10 revues sur 10",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E20394",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "8 réponses → 8×DRIVER   ·   8 revues sur 8",
+   "apres": "8 réponses → 8×PREFERENCE   ·   8 revues sur 8",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "E20784",
+   "colonne": "CE QUE ÇA DIT DE LA PERSONNE",
+   "avant": "16 réponses → 16×DRIVER   ·   16 revues sur 16",
+   "apres": "16 réponses → 16×PREFERENCE   ·   16 revues sur 16",
+   "decision": "synthèse dérivée des options, recalculée après le reclassement"
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1525",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1526",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1527",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1528",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1529",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1530",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1531",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1532",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P1533",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2444",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2445",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2446",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2447",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2448",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2449",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2450",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2451",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P2452",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4385",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4386",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4387",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4388",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4389",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4390",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4391",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4440",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4441",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4442",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4443",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P4444",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5607",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5608",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5609",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5610",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5611",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5612",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5613",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5614",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5615",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5616",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5617",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5740",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5741",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5742",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5743",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5744",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5745",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5746",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5747",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P5748",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P8623",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P8624",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P8625",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P8626",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P8627",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9045",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9046",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9047",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9048",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9049",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9050",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9051",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9052",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9053",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9054",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9055",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9056",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9146",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9159",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9160",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9161",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9162",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9163",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9164",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9165",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9166",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9167",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9168",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P9169",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10631",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10634",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10635",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10636",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10637",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10760",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10761",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10762",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10763",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10764",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10765",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10766",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10767",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10768",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10769",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10770",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10771",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10983",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10984",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10985",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10986",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10987",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10988",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10989",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10990",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10991",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P10992",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11086",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11087",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11088",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11089",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11090",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11397",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11637",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11638",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11639",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11641",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P11642",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P12163",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P12164",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P12165",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P12166",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P13714",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P13715",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P13716",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P13717",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P13718",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P13719",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P13720",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15633",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15634",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15635",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15636",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15637",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15638",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15639",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15640",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15641",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15642",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15730",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15731",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15732",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15733",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15734",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15735",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15736",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P15737",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16020",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16021",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16022",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16023",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16024",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16025",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16026",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16027",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16028",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16029",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16030",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16031",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16032",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16033",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16034",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "A",
+   "onglet": "1_CONTRATS_PAR_REPONSE",
+   "cellule": "P16035",
+   "colonne": "hsg_family",
+   "avant": "DRIVER",
+   "apres": "PREFERENCE",
+   "decision": "Décision du 18 nov. : une valeur recherchée dans un contexte est une PREFERENCE rangée dans ce contexte (PREFERENCE.<domaine>.<attribut>). DRIVER est un vocabulaire fermé de moteurs d'attention (DRV_…) ; aucune de ces lignes n'en porte. Ni DRIVER, ni trait de personnalité, ni NEED."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3190",
+   "colonne": "condition d’émission",
+   "avant": "Branche Causes ouverte",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Branche Causes ouverte",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3203",
+   "colonne": "condition d’émission",
+   "avant": "Branche Causes ouverte",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Branche Causes ouverte",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3216",
+   "colonne": "condition d’émission",
+   "avant": "Branche Causes ouverte",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Branche Causes ouverte",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3224",
+   "colonne": "condition d’émission",
+   "avant": "Branche Causes ouverte",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Branche Causes ouverte",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3234",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes — PONT DIRECT avec Résonance émotionnelle",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes — PONT DIRECT avec Résonance émotionnelle",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3246",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3255",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes — pont Signature de valeur",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes — pont Signature de valeur",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3267",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3274",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3282",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3291",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3304",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3314",
+   "colonne": "condition d’émission",
+   "avant": "Niveau B Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau B Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3332",
+   "colonne": "condition d’émission",
+   "avant": "Territoire Le vivant : si océans/biodiversité coché (1918)",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Territoire Le vivant : si océans/biodiversité coché (1918)",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3342",
+   "colonne": "condition d’émission",
+   "avant": "Territoire Le vivant : si animaux coché — PONT avec la branche Animaux",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Territoire Le vivant : si animaux coché — PONT avec la branche Animaux",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3382",
+   "colonne": "condition d’émission",
+   "avant": "Territoire Le patrimoine : si patrimoine/savoir-faire coché — ponts Transmission, Esthétique, Rapport aux souvenirs",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Territoire Le patrimoine : si patrimoine/savoir-faire coché — ponts Transmission, Esthétique, Rapport aux souvenirs",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3392",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Causes — recommandation contextuelle. RÈGLE : ne JAMAIS partir directement de la cause, valider d’abord LE RÔLE qu’elle doit jouer.",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau C Causes — recommandation contextuelle. RÈGLE : ne JAMAIS partir directement de la cause, valider d’abord LE RÔLE qu’elle doit jouer.",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3398",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau C Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3408",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau C Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3415",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau C Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3421",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau C Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "B",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q3427",
+   "colonne": "condition d’émission",
+   "avant": "Niveau C Causes",
+   "apres": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau C Causes",
+   "decision": "Décision du 18 nov. : la branche « causes » rejoint les questions sensibles (22 questions non marquées sur 30)."
+  },
+  {
+   "bloc": "C",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "R9522",
+   "colonne": "INFÉRENCES INTERDITES",
+   "avant": null,
+   "apres": "Une envie de plat ne prouve aucune allergie, aucun régime, aucune conviction, aucune pratique régulière ni préférence durable. Aucune préférence durable, aucun veto et aucune relation ENTITY à partir de cette seule envie. Une réponse vide, un refus ou « aucune envie particulière » ne crée aucune envie.",
+   "decision": "Décision du 18 nov. : contrat d'extraction de food2.0882A, tel que dicté par Estelle."
+  },
+  {
+   "bloc": "C",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "Q9523",
+   "colonne": "condition d’émission",
+   "avant": "ENTITY_PRODUCT ou ENTITY_PLACE + WANT_TO_TRY ou WANT_TO_OWN si une entité est nommée ; sinon PREFERENCE.food.desired_item sur le verbatim ; le verbatim est conservé dans tous les cas",
+   "apres": "Conserver le verbatim soumis. Enregistrer un FAIT d'envie culinaire ACTUELLE si la réponse l'exprime, avec les détails et la période effectivement mentionnés (stabilité : temporaire). Si la personne déclare séparément une allergie ou une contrainte alimentaire, ce segment suit le chemin déjà autorisé pour cette information, avec ses permissions. Aucune ENTITY, aucune PREFERENCE, aucun GUARDRAIL.",
+   "decision": "Décision du 18 nov. : contrat d'extraction de food2.0882A, tel que dicté par Estelle."
+  },
+  {
+   "bloc": "C",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "R9523",
+   "colonne": "INFÉRENCES INTERDITES",
+   "avant": null,
+   "apres": "Une envie de plat ne prouve aucune allergie, aucun régime, aucune conviction, aucune pratique régulière ni préférence durable. Aucune préférence durable, aucun veto et aucune relation ENTITY à partir de cette seule envie. Une réponse vide, un refus ou « aucune envie particulière » ne crée aucune envie.",
+   "decision": "Décision du 18 nov. : contrat d'extraction de food2.0882A, tel que dicté par Estelle."
+  }
+ ]
+}

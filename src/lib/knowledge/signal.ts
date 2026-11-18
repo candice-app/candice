@@ -14,7 +14,7 @@
 // persistée (point d'arrêt 1 tranché). La clé de signal, elle, est scopée sur
 // `about` SEUL (signalKey).
 
-import type { EvidenceContext } from './evidence';
+import type { EvidenceContext, EvidencePolarity } from './evidence';
 import type { KnowledgeScope, EntityId, SubjectId, AboutRef } from './identity';
 import type {
   AffectionCadence,
@@ -109,7 +109,22 @@ export interface EntitySignal extends SignalBase {
 export interface PreferenceSignal extends SignalBase {
   readonly family: 'PREFERENCE';
   readonly path: PreferencePath;
+  /** La valeur la plus récente. Conservée telle quelle pour les chemins à valeur unique. */
   readonly value: string;
+  /**
+   * TOUTES les valeurs déclarées sur ce chemin, la plus récente d'abord, sans doublon.
+   * Un chemin peut porter plusieurs valeurs à la fois : une réponse multiple en coche
+   * plusieurs, et plusieurs questions écrivent sur le même chemin. Ne lire que `value`
+   * faisait disparaître toutes les autres à la relecture.
+   */
+  readonly values: readonly string[];
+  /**
+   * Les mêmes valeurs, avec la POLARITÉ que la source a déclarée pour chacune (migration
+   * 111). Une valeur de polarité `rejet` est ce que la personne a ÉCARTÉ : tout lecteur qui
+   * présente une préférence doit passer par ici, pas par `values`, pour ne pas présenter un
+   * rejet comme un goût. `polarity` absente = non déclarée par la source.
+   */
+  readonly valuesDetail: readonly { readonly value: string; readonly polarity?: EvidencePolarity }[];
 }
 
 export interface BehaviorSignal extends SignalBase {

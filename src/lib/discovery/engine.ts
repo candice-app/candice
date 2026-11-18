@@ -2,6 +2,7 @@
 // Two modes: drip (1 triggered question) and full (guided session by section).
 // JSON validated + deterministic fallback. Never re-asks answered questions.
 
+import { marquerProgression } from './completion';
 import Anthropic from '@anthropic-ai/sdk';
 import { questionDataPresent, type ProfileDataSnapshot } from './dataPresence';
 import {
@@ -228,18 +229,14 @@ export async function recordAnswer(
   const now = new Date().toISOString();
 
   // Update profile_completion — status = source unique de la re-proposition
-  const { error: pcErr } = await supabase
-    .from('profile_completion')
-    .upsert({
-      user_id: userId,
-      question_key: questionKey,
-      is_filled: !skip,
-      answer_data: skip ? null : (Array.isArray(answer) ? answer : answer),
-      answered_at: skip ? null : now,
-      last_asked_at: now,
-      skipped_count: skip ? 1 : 0,
-      status: skip ? 'skipped' : 'answered',
-    }, { onConflict: 'user_id,question_key' });
+  const { error: pcErr } = await marquerProgression(supabase, userId, questionKey, {
+    is_filled: !skip,
+    answer_data: skip ? null : (Array.isArray(answer) ? answer : answer),
+    answered_at: skip ? null : now,
+    last_asked_at: now,
+    skipped_count: skip ? 1 : 0,
+    status: skip ? 'skipped' : 'answered',
+  });
   if (pcErr) console.error('[discovery/engine] profile_completion upsert', pcErr.message);
 
   // If answered (not skipped): save into my_profile.discovery_answers
@@ -518,12 +515,7 @@ export async function createDiscoverySession(
   if (!session) return null;
   const currentKey = pendingKeys[currentIndex];
   if (currentKey) {
-    const { error: askErr } = await supabase
-      .from('profile_completion')
-      .upsert(
-        { user_id: userId, question_key: currentKey, last_asked_at: new Date().toISOString() },
-        { onConflict: 'user_id,question_key' },
-      );
+    const { error: askErr } = await marquerProgression(supabase, userId, currentKey, { last_asked_at: new Date().toISOString() });
     if (askErr) console.error('[discovery/engine] profile_completion upsert (last_asked_at)', askErr.message);
   }
   return session.id as string;
@@ -567,12 +559,7 @@ export async function precomputePersonalizationsForKeys(
     );
     await Promise.all(targets.map(async q => {
       const text = await personalizeQuestion(q, '');
-      const { error } = await supabase
-        .from('profile_completion')
-        .upsert(
-          { user_id: userId, question_key: q.question_key, personalized_text: text },
-          { onConflict: 'user_id,question_key' },
-        );
+      const { error } = await marquerProgression(supabase, userId, q.question_key, { personalized_text: text });
       if (error) console.error('[discovery/engine] profile_completion upsert (personalized)', error.message);
     }));
   } catch { /* tâche de fond — jamais bloquante, le rendu retombe sur la banque */ }

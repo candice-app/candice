@@ -36,7 +36,9 @@ export class SupersedeError extends Error {}
 //      source_type reported_by_relative / declared_via_relative) est EXCLUE. Les faits du pilote sont
 //      toujours conservés+reportés, c'est la PRÉSÉANCE qui décide ce qui s'affiche — jamais une supersession.
 
-const SELF_FREETEXT_SOURCE_TYPES = new Set(['onboarding_open', 'extraction_inferred']);
+// `discovery_open` : le verbatim d'une réponse ouverte du Discovery est un texte libre de soi,
+// au même titre que celui de l'onboarding.
+const SELF_FREETEXT_SOURCE_TYPES = new Set(['onboarding_open', 'discovery_open', 'extraction_inferred']);
 
 interface SourceRow { id: string; rapporteur: string | null; source_type: string; correction_event_id?: string | null }
 export interface SourceLookupClient {
@@ -112,7 +114,17 @@ export async function supersedePriorVersions(
 }
 
 /** Tables restituables portant le marqueur (migration 95). Les trois sont marquées ensemble. */
-const SUPERSEDABLE_TABLES = ['knowledge_evidences', 'knowledge_facts', 'knowledge_open_knowledge'] as const;
+// ⚠ LA COLONNE DE LA SOURCE NE PORTE PAS LE MÊME NOM PARTOUT : `source_id` sur les preuves,
+//    `source` sur les faits et la connaissance ouverte. La première version filtrait les trois
+//    sur `source_id` : la base refusait dès la deuxième table (« column knowledge_facts.source_id
+//    does not exist »), APRÈS avoir marqué les preuves — une correction à moitié appliquée, et
+//    l'ancien verbatim toujours vivant. Aucun chemin de production n'appelait encore cette
+//    fonction ; constaté le 18 nov. sur la pile locale (scripts/local/11-preuve-supersession).
+const SUPERSEDABLE_TABLES = [
+  { table: 'knowledge_evidences', colonne: 'source_id' },
+  { table: 'knowledge_facts', colonne: 'source' },
+  { table: 'knowledge_open_knowledge', colonne: 'source' },
+] as const;
 
 /**
  * Marque comme SUPERSÉDÉES (remplacées) toutes les lignes restituables dérivées de `oldSourceIds`, par la
@@ -126,8 +138,8 @@ export async function supersedeSources(
   const ids = input.oldSourceIds.filter((id) => id && id !== input.newSourceId);
   if (ids.length === 0) return; // rien à superséder (première version d'un champ)
   const values = { superseded_at: input.timestamp, superseded_by: input.newSourceId };
-  for (const table of SUPERSEDABLE_TABLES) {
-    const { error } = await client.from(table).update(values).in('source_id', ids).is('superseded_at', null);
+  for (const { table, colonne } of SUPERSEDABLE_TABLES) {
+    const { error } = await client.from(table).update(values).in(colonne, ids).is('superseded_at', null);
     if (error) throw new SupersedeError(`${table} supersede: ${error.message}`);
   }
 }

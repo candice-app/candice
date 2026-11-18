@@ -7,6 +7,7 @@
 // La présence d'une donnée en fiche RÉTRO-ALIMENTE answered : une donnée
 // saisie au questionnaire vaut réponse, sans repasser par Discovery.
 
+import { marquerProgression } from "./completion";
 import { questionDataPresent, GUARDED_QUESTION_KEYS, type ProfileDataSnapshot } from "./dataPresence";
 
 export type QuestionStatus =
@@ -68,12 +69,7 @@ export async function writeSyncedStatuses(
   if (toSync.length === 0) return;
   const now = new Date().toISOString();
   await Promise.all(toSync.map(key =>
-    supabase
-      .from("profile_completion")
-      .upsert(
-        { user_id: userId, question_key: key, status: "answered", answered_at: now },
-        { onConflict: "user_id,question_key" },
-      )
+    marquerProgression(supabase, userId, key, { status: "answered", answered_at: now })
       .then(({ error }: { error: { message: string } | null }) => {
         if (error) console.error("[discovery/status] profile_completion upsert", error.message);
       }),

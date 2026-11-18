@@ -13,12 +13,14 @@
 // « DRV:value_sought » comme d'un moteur de la personne.
 //
 // Le référentiel et le journal ne parlent pas tout à fait la même langue :
-//   · DRIVER    — 148 options, 0 portant un code du journal. Le référentiel y range
-//                 « leur affection », « leur intelligence » sous l'attribut `value_sought` :
-//                 ce que la personne apprécie CHEZ QUELQU'UN. Ce ne sont pas les moteurs
-//                 d'attention que DRIVER désigne (DRV_PERSONALIZATION, DRV_ATTENTIVENESS…).
-//                 Les écrire comme des DRIVER inventerait 143 moteurs que rien ne comprend.
-//                 → REFUSÉES, comptées, en attente d'arbitrage.
+//   · DRIVER    — PLUS AUCUNE OPTION depuis la révision 2 du référentiel (18 nov.). Les 162
+//                 lignes que le référentiel rangeait sous DRIVER (148 dans la banque active)
+//                 exprimaient ce que la personne RECHERCHE dans un contexte donné — « leur
+//                 affection » chez les animaux, « comprendre » dans l'apprentissage — et non
+//                 un moteur d'attention (DRV_PERSONALIZATION…). Décision d'Estelle : elles
+//                 sont des PREFERENCE.<contexte>.value_sought, avec la valeur choisie.
+//                 Le refus reste en place : une ligne DRIVER qui reviendrait par un réimport
+//                 ne s'écrirait pas — ni moteur, ni trait, ni besoin déduit d'un goût.
 //   · GUARDRAIL — 1 010 options, 5 portant un code du journal. Mais GUARDRAIL admet par
 //                 conception des CHEMINS VERTICAUX libres sous préfixes connus (« ce ne sont
 //                 PAS des codes fermés », vocabulary.ts). On écrit donc
@@ -30,7 +32,10 @@ import type { OptionV3, QuestionV3 } from './banque';
 
 /** Ce qu'une option produit, ou la raison pour laquelle elle ne produit rien. */
 export type Production =
-  | { readonly type: 'evidence'; readonly evidence: EvidenceBrute }
+  | { readonly type: 'evidence'; readonly evidence: EvidenceBrute;
+      /** Une option peut dire DEUX choses distinctes (« une place importante » : un intérêt
+       *  pour le domaine, ET le niveau déclaré). Les preuves supplémentaires sont ici. */
+      readonly autres?: readonly EvidenceBrute[] }
   | { readonly type: 'rien'; readonly motif: MotifNonEcriture; readonly detail: string };
 
 export type MotifNonEcriture =
@@ -45,7 +50,10 @@ export type MotifNonEcriture =
   /** Le contrat ne dit pas assez pour écrire sans deviner. */
   | 'contrat_incomplet'
   /** La famille du référentiel ne se traduit pas dans le vocabulaire du journal. */
-  | 'vocabulaire_incompatible';
+  | 'vocabulaire_incompatible'
+  /** La famille visée ne sait dire que « oui », et l'option dit autre chose (un rejet, une
+   *  condition). L'écrire quand même affirmerait le contraire de ce que la personne a dit. */
+  | 'polarite_non_portee';
 
 /** Forme intermédiaire : tout ce que le contrat détermine, avant la provenance. */
 export interface EvidenceBrute {
@@ -68,6 +76,27 @@ export interface EvidenceBrute {
   readonly pattern?: string;
   readonly direction?: 'receive' | 'give';
   readonly modality?: string;
+  readonly parent_domain?: string;
+  /** Polarité déclarée par le référentiel pour cette option. Absente = non déclarée. */
+  readonly polarity?: 'positive' | 'rejet' | 'condition' | 'absence_de_critere' | 'factuelle';
+}
+
+const POLARITES = new Set(['positive', 'rejet', 'condition', 'absence_de_critere', 'factuelle']);
+
+/**
+ * LE SUJET D'UN INTÉRÊT, quand le contrat le nomme sans ambiguïté.
+ * Le référentiel écrit la valeur de trois manières : un scalaire (« peinture »), une clé
+ * connue (`univers`, `sport`, `objet`), ou une clé qui DÉCRIT ce que la valeur est (« sujet
+ * de curiosité actuel » → « Technologie »). Dans les autres tables (`ia`, `poésie`), c'est
+ * la clé qui est le sujet et la valeur une attitude : on ne tranche pas, on rend undefined.
+ */
+function sujetInteret(v: Record<string, unknown> | undefined): string | undefined {
+  const s = scalaire(v);
+  if (s) return s;
+  for (const cle of ['univers', 'sport', 'objet']) { const x = champ(v, cle); if (x) return x; }
+  const descriptives = Object.keys(v ?? {}).filter((k) => /^sujet\b/i.test(k));
+  if (descriptives.length === 1) return champ(v, descriptives[0]);
+  return undefined;
 }
 
 const ENTITY_RELATIONS = new Set([
@@ -154,7 +183,11 @@ export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
     context: domaine,
     raw_information: o.libelle,
     stability: (o.stabilite as EvidenceBrute['stability']) ?? 'evolving',
+    // LA POLARITÉ VOYAGE AVEC LA PREUVE. Sans elle, « je n'y attache pas beaucoup
+    // d'importance » et « j'y tiens beaucoup » s'écrivaient de la même manière.
+    ...(o.polarite && POLARITES.has(o.polarite) ? { polarity: o.polarite as EvidenceBrute['polarity'] } : {}),
   };
+  const positive = o.polarite === 'positive';
 
   switch (fam) {
     case 'DRIVER':
@@ -208,19 +241,52 @@ export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
     }
 
     case 'INTEREST': {
-      const sujet = scalaire(o.valeur) ?? champ(o.valeur, 'objet') ?? o.attribut;
-      if (!sujet || estParametre(sujet)) return rien('contrat_incomplet', `intérêt sans sujet lisible (${o.libelle})`);
-      return {
-        type: 'evidence',
-        evidence: {
-          ...base,
-          target_construct: assainir(sujet),
-          subject: assainir(sujet),
-          subjectLabel: o.libelle,
-          // AUCUN `relationship` : le référentiel ne gradue pas, et l'absence de degré est
-          // une information juste. En poser un (« casual ») serait inventer une tiédeur.
-        },
-      };
+      // ── CE QUE LE RÉFÉRENTIEL RANGE SOUS « INTEREST » N'EST PAS TOUJOURS UN INTÉRÊT.
+      //    « Quelle place le jeu occupe-t-il ? — Très peu » est rangé INTEREST avec la
+      //    polarité `rejet`. La première version en faisait un intérêt, dont le sujet était
+      //    le NOM DE L'ATTRIBUT (`domain_importance`) ou la valeur (`marginale`) : Candice
+      //    retenait un intérêt pour « marginale », et la branche du jeu ne s'ouvrait pas.
+      //    Relevé le 18 nov. sur les 500 options de la famille.
+      //
+      //    La règle, par le SENS et la POLARITÉ (principe d'Estelle : une aversion peut
+      //    être une préférence négative) :
+      //      · le NIVEAU déclaré s'écrit toujours, tel quel, en PREFERENCE.<domaine>.<attribut>
+      //        avec sa polarité — c'est ce que la personne a dit ;
+      //      · un INTÉRÊT n'est écrit que si l'option est POSITIVE, et son sujet est le
+      //        DOMAINE (pour `domain_importance`) ou le sujet nommé par le contrat.
+      //    Un intérêt faible, conditionnel ou absent n'ouvre donc aucune branche.
+      if (!o.attribut) return rien('contrat_incomplet', `intérêt sans attribut (${o.libelle})`);
+      const valeur = valeurCanonique(o.valeur);
+      if (estParametre(valeur)) return rien('contrat_incomplet', `intérêt à paramètre non résolu (${o.libelle})`);
+      const niveau: EvidenceBrute | undefined = valeur ? {
+        ...base, target_family: 'PREFERENCE',
+        target_construct: `PREFERENCE.${assainir(domaine)}.${assainir(o.attribut)}`,
+        preferenceValue: valeur,
+      } : undefined;
+
+      const estDomaine = o.attribut === 'domain_importance';
+      const sujet = estDomaine ? domaine : sujetInteret(o.valeur);
+      const interet: EvidenceBrute | undefined = positive && sujet ? {
+        ...base,
+        target_construct: assainir(sujet),
+        subject: assainir(sujet),
+        // Pour un domaine, le libellé de l'option (« Une place importante ») n'est pas le
+        // nom du sujet : on garde le domaine. Pour un sujet nommé, le libellé EST le sujet.
+        subjectLabel: estDomaine ? domaine : o.libelle,
+        ...(estDomaine ? {} : { parent_domain: assainir(domaine) }),
+        // AUCUN `relationship` : le référentiel ne gradue pas, et l'absence de degré est
+        // une information juste. En poser un (« casual ») serait inventer une tiédeur.
+      } : undefined;
+
+      if (interet) {
+        // Le niveau accompagne l'intérêt quand il dit quelque chose de plus que le sujet
+        // (toujours pour un domaine ; pour un sujet nommé, seulement si la valeur est une
+        // table — intensité, modalité — et pas le sujet répété).
+        const niveauUtile = niveau && (estDomaine || scalaire(o.valeur) === undefined);
+        return { type: 'evidence', evidence: interet, ...(niveauUtile ? { autres: [niveau!] } : {}) };
+      }
+      if (niveau) return { type: 'evidence', evidence: niveau };
+      return rien('contrat_incomplet', `intérêt sans sujet ni valeur lisible (${o.libelle})`);
     }
 
     case 'ENTITY': {
@@ -276,6 +342,13 @@ export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
       // manuscrite »), et parfois comme qualificatif libre à côté de la direction. On prend
       // le CODE, qui est toujours le premier mot, et on laisse le commentaire de côté — il
       // nuance la modalité, il ne la remplace pas.
+      // Le vecteur d'affection ne sait dire que « cette modalité compte ». Une option qui la
+      // REJETTE (« je n'y attache pas beaucoup d'importance ») ou la CONDITIONNE (« oui, avec
+      // la bonne personne ») n'est donc pas écrite : elle y entrerait comme un oui.
+      if (!positive) {
+        return rien('polarite_non_portee',
+          `langage d'affection de polarité « ${o.polarite ?? 'non déclarée'} » (${o.libelle})`);
+      }
       const libres = o.valeur?.__libres__;
       const candidat = champ(o.valeur, 'modality')
         ?? (Array.isArray(libres) ? String(libres[0] ?? '') : undefined)

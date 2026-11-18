@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { createAdminClient } from "@/utils/supabase/admin";
 import Anthropic from "@anthropic-ai/sdk";
-import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
 
 const anthropic = new Anthropic();
 
@@ -60,24 +58,53 @@ Retourne uniquement la reformulation (pas de JSON, pas d'explication).`,
 }
 
 // ── Route ─────────────────────────────────────────────────────────────────────
+//
+// QUI PEUT PROVOQUER QUOI (correction du 18 nov.).
+//   · L'appelant est la personne connectée ; la note est écrite SOUS SON IDENTITÉ, par le
+//     client utilisateur, donc sous la RLS (`pilot_id = auth.uid()`).
+//   · Le contact visé doit lui APPARTENIR : vérifié en base avant tout appel au modèle. Un
+//     identifiant de contact qui n'est pas le sien est traité comme inexistant (404).
+//   · La route n'agit sur AUCUN autre compte. Elle acceptait un `contactUserId` venu du
+//     navigateur et relançait, avec le client privilégié, la génération de l'analyse de ce
+//     compte — sans vérifier le moindre lien. Cette opération est retirée, et pas seulement
+//     gardée : la note d'un pilote n'entre pas dans l'analyse que le proche a de lui-même
+//     (celle-ci ne lit que les notes dont le proche est l'auteur), elle ne servait donc à
+//     rien pour l'utilisateur autorisé. `contactUserId` est ignoré s'il est encore envoyé.
+//   · Plus aucun client privilégié dans ce fichier.
+
+/** Borne de la note : au-delà, c'est autre chose qu'une note — et un coût de modèle ouvert. */
+const LONGUEUR_MAX = 2000;
 
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as {
-    contactId: string;
-    contactFirstName: string;
-    rawText: string;
-    contactUserId?: string;
-  };
+  let body: { contactId?: unknown; contactFirstName?: unknown; rawText?: unknown };
+  try { body = await req.json(); } catch { return NextResponse.json({ error: "corps illisible" }, { status: 400 }); }
 
-  const { contactId, contactFirstName, rawText, contactUserId } = body;
-
-  if (!contactId || !rawText?.trim()) {
+  const contactId = typeof body.contactId === "string" ? body.contactId : "";
+  const rawText = typeof body.rawText === "string" ? body.rawText.trim() : "";
+  if (!contactId || !rawText) {
     return NextResponse.json({ error: "contactId et rawText requis" }, { status: 400 });
   }
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(contactId)) {
+    return NextResponse.json({ error: "contactId invalide" }, { status: 400 });
+  }
+  if (rawText.length > LONGUEUR_MAX) {
+    return NextResponse.json({ error: `note trop longue (${LONGUEUR_MAX} caractères au plus)` }, { status: 400 });
+  }
+
+  // ── LE LIEN AVEC LA PERSONNE CONCERNÉE, vérifié côté serveur AVANT tout le reste.
+  //    Le contact doit appartenir à l'appelant. Le prénom vient de la base, pas du navigateur.
+  const { data: contact, error: eContact } = await supabase
+    .from("contacts").select("id, name").eq("id", contactId).eq("user_id", user.id).maybeSingle();
+  if (eContact) {
+    console.error("[memories/situation] lecture du contact impossible", eContact.message);
+    return NextResponse.json({ error: "vérification impossible" }, { status: 503 });
+  }
+  if (!contact) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const contactFirstName = String(contact.name ?? "").trim().split(/\s+/)[0] ?? "";
 
   // Extract (once) then reformulate
   const extraction = await extractSituation(rawText);
@@ -116,16 +143,6 @@ export async function POST(req: Request) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  // Regenerate profile_analysis for this contact if they have a Candice account.
-  // Uses admin client: reading another user's my_profile requires bypassing RLS
-  // (public_read_my_profile was removed in migration 45).
-  if (contactUserId) {
-    const adminClient = createAdminClient();
-    generateProfileAnalysis(contactUserId, null, adminClient).catch((err: unknown) => {
-      console.error("[memories/situation] generateProfileAnalysis failed for contact", contactUserId, err);
-    });
   }
 
   return NextResponse.json({ success: true, id: inserted?.id });

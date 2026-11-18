@@ -13,6 +13,7 @@
 //    est un raffinement futur, pas un prérequis — comme I7).
 
 import Anthropic from '@anthropic-ai/sdk';
+import { createHash } from 'node:crypto';
 import { createSourceRecord } from '../knowledge/sources';
 import { createOpenKnowledge } from '../knowledge/open-knowledge';
 import { asSubjectId, asEntityId, type AboutRef, type UserId } from '../knowledge/identity';
@@ -67,8 +68,56 @@ const TOOL = {
 
 interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: InterestRelationship; entityType?: string; relation?: EntityRelation; relation_label?: string; sensitive?: boolean; }
 
-export interface ExtractResult { readonly evidences: readonly Evidence[]; readonly openKnowledge: readonly OpenKnowledge[] }
+export interface ExtractResult {
+  readonly evidences: readonly Evidence[];
+  readonly openKnowledge: readonly OpenKnowledge[];
+  /** L'extraction de CETTE réponse existait déjà : rien n'a été rappelé ni réécrit. */
+  readonly dejaFaite?: boolean;
+}
+
+/**
+ * LE MODÈLE N'A PAS RÉPONDU. Ce n'est PAS « rien à extraire ».
+ *
+ * La première version rendait une liste vide dans les deux cas : une panne passait pour une
+ * réponse sans contenu, la route la comptait « extraite », l'écran l'affichait terminée. Le
+ * verbatim était bien sauvegardé (il est écrit AVANT, ailleurs), mais rien ne signalait que
+ * sa lecture restait à faire. Une panne LÈVE donc cette erreur : la route la compte en échec,
+ * l'écran marque le champ « à rejouer », et aucune source d'extraction n'est écrite — c'est
+ * l'absence de cette source qui dit, à la relance, qu'il faut recommencer.
+ */
+export class ExtractionIndisponibleError extends Error {
+  constructor(cause: unknown) {
+    super(`extraction indisponible : ${cause instanceof Error ? cause.message : String(cause)}`);
+    this.name = 'ExtractionIndisponibleError';
+  }
+}
+
+type EntreeExtraction = {
+  about: AboutRef; ownerId: UserId; rawText: string; fieldContext: string; timestamp: string;
+  questionCode?: string; correctionEventId?: string;
+  /** La source du VERBATIM dont cette extraction est la lecture, quand l'appelant la connaît. */
+  verbatimSourceId?: string;
+};
+
+/**
+ * L'IDENTITÉ D'UNE EXTRACTION EST CELLE DE CE QU'ELLE LIT. Même personne, même question, même
+ * texte, même évènement de correction → même identifiant de source. Rejouer après une panne,
+ * ou deux fois de suite, ne peut donc pas créer une seconde lecture de la même phrase.
+ * Sans identifiant stable de question, l'identité reste aléatoire (comportement antérieur).
+ */
+export function extractionSourceId(input: EntreeExtraction): string {
+  if (!input.questionCode?.trim()) return globalThis.crypto.randomUUID();
+  const texte = createHash('sha256').update(input.rawText.trim()).digest('hex');
+  return evidenceId('extraction', [
+    input.ownerId, input.about.kind, input.about.id, input.questionCode,
+    input.verbatimSourceId ?? '', input.correctionEventId ?? '', texte,
+  ].join(':'));
+}
 export interface ExtractBuild extends ExtractResult { readonly source: ReturnType<typeof createSourceRecord> | null }
+
+interface LectureSources {
+  from(t: string): { select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: unknown; error: { message: string } | null }> } } };
+}
 
 /**
  * Extrait une réponse libre et PERSISTE le résultat (source niveau 5 + evidences canoniques + OpenKnowledge).
@@ -76,8 +125,18 @@ export interface ExtractBuild extends ExtractResult { readonly source: ReturnTyp
  */
 export async function extractFreeText(
   client: WriteClient,
-  input: { about: AboutRef; ownerId: UserId; rawText: string; fieldContext: string; timestamp: string; questionCode?: string; correctionEventId?: string },
+  input: EntreeExtraction,
 ): Promise<ExtractResult> {
+  // ── DÉJÀ LUE ? On regarde AVANT d'appeler le modèle : une relance après une panne, un
+  //    double envoi, deux onglets — aucun ne doit produire une seconde lecture.
+  if (input.questionCode?.trim() && input.rawText.trim()) {
+    const id = extractionSourceId(input);
+    try {
+      const { data } = await (client as unknown as LectureSources)
+        .from('knowledge_sources').select('id').eq('id', id).maybeSingle();
+      if (data) return { evidences: [], openKnowledge: [], dejaFaite: true };
+    } catch { /* lecture impossible : on continue, l'identifiant stable empêche le doublon de source */ }
+  }
   const built = await buildFromFreeText(input);
   if (built.source) await persistKnowledge(client, { source: built.source, evidences: [...built.evidences], facts: [], openKnowledge: [...built.openKnowledge] });
   return { evidences: built.evidences, openKnowledge: built.openKnowledge };
@@ -88,7 +147,7 @@ export async function extractFreeText(
  * §27 étapes 1-2-4-5-6. Renvoie aussi la source (null si rien à extraire).
  */
 export async function buildFromFreeText(
-  input: { about: AboutRef; ownerId: UserId; rawText: string; fieldContext: string; timestamp: string; questionCode?: string; correctionEventId?: string },
+  input: EntreeExtraction,
 ): Promise<ExtractBuild> {
   const text = input.rawText.trim();
   if (!text) return { source: null, evidences: [], openKnowledge: [] }; // rien à extraire → zéro
@@ -102,9 +161,9 @@ export async function buildFromFreeText(
     });
     const block = msg.content.find((b) => b.type === 'tool_use');
     if (block && block.type === 'tool_use') units = ((block.input as { units?: Unit[] }).units ?? []).filter((u) => u.label?.trim());
-  } catch { return { source: null, evidences: [], openKnowledge: [] }; } // échec modèle → zéro, jamais d'invention
+  } catch (e) { throw new ExtractionIndisponibleError(e); } // échec modèle → ERREUR : jamais d'invention, et jamais « rien à extraire »
 
-  const sourceId = globalThis.crypto.randomUUID();
+  const sourceId = extractionSourceId(input);
   const source = createSourceRecord({
     about: input.about, ownerId: input.ownerId, id: sourceId,
     sourceType: 'extraction_inferred', questionText: input.fieldContext, rawText: text, timestamp: input.timestamp,
