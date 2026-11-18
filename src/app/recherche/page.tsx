@@ -75,7 +75,7 @@ export default async function RecherchePage() {
           Trouver quelqu&apos;un
         </h1>
         <p style={{ fontSize: 13.5, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.6, marginBottom: 20 }}>
-          Saisis l&apos;identifiant exact ou l&apos;email exact que la personne t&apos;a donné.
+          Saisis l&apos;identifiant exact que la personne t&apos;a donné.
           Rien n&apos;est visible sans son accord explicite.
         </p>
 

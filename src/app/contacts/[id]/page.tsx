@@ -165,7 +165,7 @@ export default async function ContactPage({
       .limit(5),
     supabase
       .from("contact_recommendations")
-      .select("ideas, blind_spot, kadence, generated_at")
+      .select("*")
       .eq("contact_id", id)
       .eq("user_id", user.id)
       .maybeSingle(),
@@ -325,7 +325,10 @@ export default async function ContactPage({
   );
 
   // Recommendations — pre-loaded from contact_recommendations table
-  const initialRecommendations: ContactRecommendations | null = recoData
+  // Une recommandation vidée par un retrait d'autorisation n'est pas « une recommandation sans
+  // idée » : elle est indisponible, et l'écran la recalcule.
+  const recoARecalculer = !!(recoData as { a_recalculer?: boolean } | null)?.a_recalculer;
+  const initialRecommendations: ContactRecommendations | null = recoData && !recoARecalculer
     ? {
         ideas: (recoData.ideas ?? []) as ContactRecommendations["ideas"],
         blindSpot: (recoData.blind_spot ?? null) as ContactRecommendations["blindSpot"],
@@ -797,6 +800,7 @@ export default async function ContactPage({
                   contactId={id}
                   contactFirstName={contactFirstName}
                   initialRecommendations={initialRecommendations}
+                  aRecalculer={recoARecalculer}
                 />
               </>
             )}

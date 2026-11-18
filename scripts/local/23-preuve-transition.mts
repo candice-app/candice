@@ -7,17 +7,17 @@
 //
 //   npx tsx scripts/local/23-preuve-transition.mts --code A --schema 112
 //     code   : A = version en ligne (680f896) · B = branche
-//     schema : dernier numéro de migration appliqué (112, 115, 113, 114, 116, 117)
+//     schema : dernière migration appliquée, dans l'ordre réel (112, 115, 113, 114, 116, 118, 117)
 import { createClient } from '@supabase/supabase-js';
 import { pileLocale, verificateur, DOMAINE_TEST, type CompteLocal } from './_compte-local.mts';
 import { cookiesDe, poster } from './_session-http.mts';
 
 const arg = (n: string) => process.argv[process.argv.indexOf(`--${n}`) + 1];
 const CODE = arg('code') as 'A' | 'B', SCHEMA = Number(arg('schema'));
-// L'ordre réel d'application : 112 → 115 → 113 → 114 → 116 → 117.
-const RANG = [112, 115, 113, 114, 116, 117].indexOf(SCHEMA);
-if (!['A', 'B'].includes(CODE) || RANG < 0) throw new Error('usage : --code A|B --schema 112|115|113|114|116|117');
-const a = (n: number) => RANG >= [112, 115, 113, 114, 116, 117].indexOf(n); // « la migration n est appliquée »
+// L'ordre réel d'application : 112 → 115 → 113 → 114 → 116 → 118 → [déploiement] → 117.
+const RANG = [112, 115, 113, 114, 116, 118, 117].indexOf(SCHEMA);
+if (!['A', 'B'].includes(CODE) || RANG < 0) throw new Error('usage : --code A|B --schema 112|115|113|114|116|118|117');
+const a = (n: number) => RANG >= [112, 115, 113, 114, 116, 118, 117].indexOf(n); // « la migration n est appliquée »
 
 const { url, anon, admin } = pileLocale();
 const v = verificateur();
@@ -99,6 +99,7 @@ const reco = async (cookie: string, contactId: string) => {
 };
 let x = await reco(cP, kp!.id);
 obs.recoSansAutorisation = x.vus.join(',') || 'rien';
+obs.recoEnregistree = ((await P.client.from('contact_recommendations').select('id').eq('contact_id', kp!.id)).data ?? []).length === 1;
 
 // 5 ── Autorisation d'usage par le proche (route de la branche)
 r = await poster('/api/consent/exclusions', cB, { contactId: kp!.id, action: 'autoriser', portee: 'reco:regime' });
@@ -144,6 +145,8 @@ const att = {
   // Régler un usage : route absente de la version en ligne ; la branche a besoin du type créé par la 116.
   // Sans la 113, l'invitation de la branche n'a rattaché aucun compte : la route ne trouve pas de fiche (404).
   usageHttp: CODE === 'A' ? 404 : a(116) ? 200 : a(113) ? 500 : 404,
+  // Enregistrer une recommandation : la branche écrit sa provenance, il lui faut les colonnes de la 118.
+  recoEnregistree: CODE === 'A' || a(118),
   // Effacer un compte partie d'un consentement : corrigé par la 115.
   effacement: a(115),
 };
@@ -156,5 +159,6 @@ v.verifier(obs.invitation === att.invitation, `invitation acceptée : ${att.invi
 v.verifier(obs.propositionHttp === att.propositionHttp, `proposer son analyse : HTTP ${att.propositionHttp}${att.propositionHttp === 200 ? '' : ' (SUSPENDU)'}`, String(obs.propositionHttp));
 if (att.propositionHttp === 200) v.verifier(obs.analyseApresAcceptation === true, 'analyse proposée puis acceptée : le proche la lit');
 v.verifier(obs.usageHttp === att.usageHttp, `régler un usage : HTTP ${att.usageHttp}${att.usageHttp === 200 ? '' : CODE === 'A' ? ' (route absente de cette version)' : ' (SUSPENDU, refusé fermé)'}`, String(obs.usageHttp));
+v.verifier(obs.recoEnregistree === att.recoEnregistree, `recommandation enregistrée : ${att.recoEnregistree ? 'oui' : 'NON (SUSPENDU : la branche attend la 118)'}`, String(obs.recoEnregistree));
 v.verifier(obs.effacement === att.effacement, `effacer un compte partie d’un consentement : ${att.effacement ? 'réussit' : 'ÉCHOUE (défaut de la 112, corrigé par la 115)'}`, String(obs.effacement));
 v.bilan();

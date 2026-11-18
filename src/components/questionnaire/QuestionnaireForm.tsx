@@ -310,27 +310,8 @@ export default function QuestionnaireForm({
     setError("");
 
     // Lookup only if email or phone is provided and we haven't already shown the dedup banner
-    if ((email.trim() || phone.trim()) && dedupState === "idle") {
-      setDedupState("checking");
-      try {
-        const res = await fetch("/api/contacts/lookup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            ...(email.trim() ? { email: email.trim() } : {}),
-            ...(phone.trim() ? { phone: phone.trim() } : {}),
-          }),
-        });
-        const json = await res.json() as { found: boolean; userId?: string };
-        if (json.found && json.userId) {
-          setDedupFoundUserId(json.userId);
-          setDedupState("found");
-          return;
-        }
-      } catch { /* ignore network errors */ }
-      setDedupState("idle");
-    }
-
+    // On ne cherche plus si cette adresse ou ce numéro a déjà un compte : la réponse le révélait.
+    // La personne se rattache elle-même, en acceptant l'invitation.
     setStep(1);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

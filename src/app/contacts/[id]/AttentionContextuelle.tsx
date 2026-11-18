@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Thread, { ThreadItem } from "@/components/presence/Thread";
 import type { ContactRecommendations, RecoIdea } from "@/lib/recommendations/types";
 
@@ -18,9 +18,11 @@ interface Props {
   contactId: string;
   contactFirstName: string;
   initialRecommendations: ContactRecommendations | null;
+  /** La recommandation enregistrée a été rendue indisponible (autorisation retirée) : on la recalcule. */
+  aRecalculer?: boolean;
 }
 
-export default function AttentionContextuelle({ contactId, contactFirstName, initialRecommendations }: Props) {
+export default function AttentionContextuelle({ contactId, contactFirstName, initialRecommendations, aRecalculer }: Props) {
   const [reco, setReco] = useState<ContactRecommendations | null>(initialRecommendations);
   const [loading, setLoading] = useState(false);
   const [doneSet, setDoneSet] = useState<Set<string>>(new Set());
@@ -32,11 +34,15 @@ export default function AttentionContextuelle({ contactId, contactFirstName, ini
   async function generate() {
     setLoading(true);
     try {
-      const res = await fetch("/api/recommendations/generate", {
+      const demander = () => fetch("/api/recommendations/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ contactId }),
       });
+      let res = await demander();
+      // 409 : ce qui pouvait servir a changé pendant le calcul ; le résultat a été jeté côté
+      // serveur. On relance une fois : le recalcul part de ce qui reste autorisé.
+      if (res.status === 409) res = await demander();
       const data = await res.json() as { recommendations?: ContactRecommendations };
       if (data.recommendations) {
         setReco(data.recommendations);
@@ -48,6 +54,13 @@ export default function AttentionContextuelle({ contactId, contactFirstName, ini
       setLoading(false);
     }
   }
+
+  // Recalcul automatique, une seule fois, quand la recommandation a été rendue indisponible.
+  const recalculLance = useRef(false);
+  useEffect(() => {
+    if (aRecalculer && !recalculLance.current) { recalculLance.current = true; void generate(); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [aRecalculer]);
 
   async function markDone(idea: RecoIdea) {
     setDoneSet((prev) => new Set([...prev, idea.title]));

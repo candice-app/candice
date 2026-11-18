@@ -31,25 +31,21 @@ export async function POST(req: NextRequest) {
   if (!raw) return NextResponse.json({ found: false });
 
   // Détection : un « @ » en cours de chaîne = email ; sinon @identifiant
-  const isEmail = raw.indexOf("@") > 0;
+  // PAR IDENTIFIANT SEULEMENT. Une adresse de courriel ne se cherche plus : la réponse révélait
+  // si elle avait un compte. Une adresse saisie reçoit exactement la réponse d'un identifiant
+  // inconnu, sans aucune lecture. (Un « @ » en tête est la façon d'écrire un identifiant.)
+  if (raw.replace(/^@/, "").includes("@")) return NextResponse.json({ found: false });
+  const handle = normalizeHandle(raw);
+  if (!HANDLE_RE.test(handle)) return NextResponse.json({ found: false });
   const admin = createAdminClient();
+  const { data: rows } = await admin.rpc("lookup_candice_user_by_handle", { p_handle: handle });
+  const targetId = (rows as Array<{ proche_user_id: string }> | null)?.[0]?.proche_user_id ?? null;
 
-  let targetId: string | null = null;
-  if (isEmail) {
-    const { data: rows } = await admin.rpc("lookup_candice_user_by_email", { p_email: raw.toLowerCase() });
-    targetId = (rows as Array<{ proche_user_id: string }> | null)?.[0]?.proche_user_id ?? null;
-  } else {
-    const handle = normalizeHandle(raw);
-    if (!HANDLE_RE.test(handle)) return NextResponse.json({ found: false });
-    const { data: rows } = await admin.rpc("lookup_candice_user_by_handle", { p_handle: handle });
-    targetId = (rows as Array<{ proche_user_id: string }> | null)?.[0]?.proche_user_id ?? null;
-  }
+  // Toutes les réponses « rien » sont identiques à l'octet près : format invalide, identifiant
+  // inconnu, personne qui ne veut pas être trouvée, adresse de courriel.
+  if (!targetId) return NextResponse.json({ found: false });
+  if (targetId === user.id) return NextResponse.json({ found: false, self: true });
 
-  if (!targetId || targetId === user.id) {
-    return NextResponse.json({ found: false, self: targetId === user.id });
-  }
-
-  // Relation existante (lisible via RLS : proche_read_own_consents)
   const { data: existing } = await supabase
     .from("contact_consents")
     .select("id, status")

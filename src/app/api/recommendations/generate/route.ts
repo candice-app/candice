@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { situationsPourReco } from '@/lib/memories/situations';
-import { chargerProfilAutorise } from '@/lib/consent/usage-profil';
+import { chargerProfilAutorise, provenanceActuelle, encoreCouverte, type Provenance } from '@/lib/consent/usage-profil';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { generateRecommendations } from '@/lib/recommendations/engine';
-import { lireRejetsDuProche } from '@/lib/recommendations/declarations-proche';
+import { lireRejetsDuProche, PORTEE_EXCLUSIONS_RECO } from '@/lib/recommendations/declarations-proche';
 import { generateProactiveQuestion } from '@/lib/recommendations/questions';
 import type { RecoInput, FeedbackEntry } from '@/lib/recommendations/types';
 import type { FaceResult } from '@/lib/attention/scoring';
@@ -180,9 +180,26 @@ export async function POST(req: NextRequest) {
     feedbackHistory,
   };
 
+  // PROVENANCE : ce qui, du proche, a servi à cette génération. Vide si rien n'a servi.
+  const provenance: Provenance = {
+    compte: c.proche_user_id,
+    portees: [...new Set([...autorise.portees, ...(declarations.autorise ? [PORTEE_EXCLUSIONS_RECO] : [])])],
+  };
+  const sourceProche = provenance.portees.length > 0;
+
   const recommendations = await generateRecommendations(input);
 
-  // Persist recommendations
+  // UNE RÉPONSE LANCÉE AVANT UN RETRAIT NE PUBLIE PAS CE QUI A ÉTÉ RETIRÉ. Le modèle a pu mettre
+  // plusieurs secondes : on relit ce qui est autorisé MAINTENANT. Si une portée utilisée n'est
+  // plus couverte — retrait, compte changé, compte effacé — le résultat est jeté : ni
+  // enregistré, ni renvoyé. L'écran relance, et le recalcul part de ce qui reste autorisé.
+  const jeter = () => NextResponse.json({ error: 'autorisation_modifiee', reessayer: true }, { status: 409 });
+  if (sourceProche) {
+    const maintenant = await provenanceActuelle(admin, { piloteId: user.id, contactId });
+    if (!maintenant.lisible || !encoreCouverte(provenance, maintenant)) return jeter();
+  }
+
+  // Persist recommendations — avec leur provenance (migration 118).
   const { error: recoUpsertError } = await admin.from('contact_recommendations').upsert(
     {
       user_id: user.id,
@@ -191,23 +208,49 @@ export async function POST(req: NextRequest) {
       blind_spot: recommendations.blindSpot,
       kadence: recommendations.kadence,
       generated_at: recommendations.generatedAt,
+      portees_proche: sourceProche ? provenance.portees : [],
+      proche_compte: sourceProche ? provenance.compte : null,
+      a_recalculer: false,
     },
     { onConflict: 'user_id,contact_id' }
   );
-  if (recoUpsertError) console.error('[recommendations/generate] contact_recommendations upsert', recoUpsertError.message);
+  if (recoUpsertError) {
+    console.error('[recommendations/generate] contact_recommendations upsert', recoUpsertError.message);
+    // Sans provenance enregistrée, un retrait ultérieur ne saurait pas quoi invalider : on ne
+    // publie pas un contenu issu des données du proche qu'on n'a pas pu tracer.
+    if (sourceProche) return NextResponse.json({ error: 'enregistrement impossible' }, { status: 500 });
+  }
 
   // Log proposed attentions (for future deduplication)
+  let journalIds: string[] = [];
   if (recommendations.ideas.length > 0) {
-    const { error: logInsertError } = await admin.from('attention_log').insert(
+    const { data: journal, error: logInsertError } = await admin.from('attention_log').insert(
       recommendations.ideas.map((idea) => ({
         user_id: user.id,
         contact_id: contactId,
         attention_title: idea.title,
         attention_type: idea.dim,
         status: 'proposed',
+        portees_proche: sourceProche ? provenance.portees : [],
+        proche_compte: sourceProche ? provenance.compte : null,
       }))
-    );
+    ).select('id');
     if (logInsertError) console.error('[recommendations/generate] attention_log insert', logInsertError.message);
+    journalIds = ((journal ?? []) as { id: string }[]).map((l) => l.id);
+  }
+
+  // DERNIER CONTRÔLE, APRÈS L'ÉCRITURE. Un retrait survenu entre la relecture et l'écriture a
+  // déjà fait passer la purge de la base — avant que nos lignes existent. On relit donc une
+  // dernière fois : si la provenance n'est plus couverte, on retire ce qu'on vient d'écrire.
+  if (sourceProche) {
+    const maintenant = await provenanceActuelle(admin, { piloteId: user.id, contactId });
+    if (!maintenant.lisible || !encoreCouverte(provenance, maintenant)) {
+      await admin.from('contact_recommendations')
+        .update({ ideas: [], blind_spot: null, portees_proche: [], proche_compte: null, a_recalculer: true })
+        .eq('user_id', user.id).eq('contact_id', contactId);
+      if (journalIds.length > 0) await admin.from('attention_log').delete().in('id', journalIds);
+      return jeter();
+    }
   }
 
   // Seed a proactive question if none pending in last 7 days

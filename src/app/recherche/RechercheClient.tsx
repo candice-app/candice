@@ -1,7 +1,7 @@
 "use client";
 
 // B.2 Phase 6 — moteur de recherche exact (Sens 1), côté client.
-// Un seul champ : @identifiant OU email exact. Résultat anonyme (jamais de
+// Un seul champ : l'@identifiant exact (plus de recherche par courriel : elle révélait l'existence d'un compte). Résultat anonyme (jamais de
 // PII avant accord) → bouton « Demander à voir sa fiche ».
 
 import { useState } from "react";
@@ -78,7 +78,7 @@ export default function RechercheClient() {
           type="text"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setResult({ state: "idle" }); }}
-          placeholder="@identifiant ou email exact"
+          placeholder="@identifiant"
           autoCapitalize="none"
           autoComplete="off"
           spellCheck={false}
@@ -106,8 +106,8 @@ export default function RechercheClient() {
       {result.state === "not_found" && (
         <div style={card}>
           <p style={{ fontSize: 13.5, color: "var(--ink-2)", lineHeight: 1.6 }}>
-            Personne ne correspond à cette saisie exacte. Vérifie l&apos;identifiant ou
-            l&apos;email — ou demande à la personne de te les redonner.
+            Aucun identifiant ne correspond à cette saisie exacte. Vérifie-le, ou demande
+            à la personne de te le redonner.
           </p>
         </div>
       )}

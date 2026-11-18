@@ -7,24 +7,28 @@
 //
 //   POST /__script   { reponses: [ {…entrée d'outil…}, … ] }   file d'attente des réponses
 //   POST /__panne    { active: true|false }                     toutes les requêtes échouent (529)
+//   POST /__attente  { ms }                                     chaque réponse attend ms millisecondes
 //   GET  /__etat                                                 { appels, pannes, restantes }
 // Sans réponse dictée, il échoue (500) : un essai ne passe jamais « par chance ».
 import { createServer } from 'node:http';
 
 const PORT = Number(process.env.FAUX_MODELE_PORT ?? 8787);
-let file = []; let panne = false; let appels = 0; let pannes = 0; const recus = [];
+let file = []; let attente = 0; let panne = false; let appels = 0; let pannes = 0; const recus = [];
 const lire = (req) => new Promise((ok) => { let b = ''; req.on('data', (c) => { b += c; }); req.on('end', () => ok(b)); });
 const json = (res, code, corps) => { res.writeHead(code, { 'content-type': 'application/json' }); res.end(JSON.stringify(corps)); };
 
 createServer(async (req, res) => {
   const corps = req.method === 'POST' ? await lire(req) : '';
   if (req.url === '/__script') { file = JSON.parse(corps).reponses ?? []; return json(res, 200, { restantes: file.length }); }
+  if (req.url === '/__attente') { attente = Number(JSON.parse(corps).ms ?? 0); return json(res, 200, { attente }); }
   if (req.url === '/__panne') { panne = !!JSON.parse(corps).active; return json(res, 200, { panne }); }
   if (req.url === '/__etat') return json(res, 200, { appels, pannes, restantes: file.length, panne, recus });
-  if (req.url === '/__raz') { file = []; panne = false; appels = 0; pannes = 0; recus.length = 0; return json(res, 200, {}); }
+  if (req.url === '/__raz') { file = []; attente = 0; panne = false; appels = 0; pannes = 0; recus.length = 0; return json(res, 200, {}); }
   if (req.method === 'POST' && req.url?.startsWith('/v1/messages')) {
     if (panne) { pannes++; return json(res, 529, { type: 'error', error: { type: 'overloaded_error', message: 'panne simulée' } }); }
     appels++;
+    // Réponse retardée à la demande d'un essai : sert à placer un événement PENDANT une génération.
+    if (attente > 0) await new Promise((ok) => setTimeout(ok, attente));
     const demande = JSON.parse(corps);
     const outil = demande.tool_choice?.name ?? demande.tools?.[0]?.name;
     // Ce que l'application a RÉELLEMENT envoyé : consigne système et message, en entier.

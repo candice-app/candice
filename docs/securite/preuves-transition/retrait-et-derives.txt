@@ -1,0 +1,47 @@
+
+══ 1. AVANT TOUTE AUTORISATION — une recommandation faite des seules données du pilote
+  ✓ 1.1 : enregistrée SANS provenance du proche
+
+══ 2. LE PROCHE AUTORISE SON RÉGIME ET UNE ALLERGIE — la recommandation en dépend
+  provenance enregistrée : [ 'reco:regime', 'reco:allergie:arachide' ] · compte du proche : true
+  ✓ 2.1 : la provenance note le compte et les deux autorisations utilisées
+  ✓ 2.2 : (contrôle) le modèle a bien reçu les deux données autorisées
+  ✓ 2.3 : journal du pilote : 1 idée ancienne, 1 réalisée, 1 seulement proposée
+
+══ 3. LE PROCHE RETIRE SON ALLERGIE (le régime reste autorisé)
+  recommandation enregistrée → { idees: 0, a_recalculer: true, provenance: [] }
+  journal → [
+  'proposed: Un livre choisi pour lui',
+  'done: Une attention (détail retiré)'
+]
+  ✓ 3.1 : la recommandation est rendue INDISPONIBLE (elle mêlait les deux données : on ne sait pas en retirer une part)
+  ✓ 3.2 : plus aucun intitulé du journal ne porte une donnée retirée
+  ✓ 3.3 : l’attention RÉALISÉE est conservée (date, statut) — seul son intitulé est remplacé
+  ✓ 3.4 : l’idée seulement proposée, issue de ces données, est retirée
+  ✓ 3.5 : l’idée d’avant l’autorisation, faite des données du pilote, est intacte
+  ✓ 3.6 : ce que le pilote a fourni lui-même n’est pas touché
+  ✓ 3.7 : la recommandation de l’AUTRE pilote, dont l’autorisation n’a pas bougé, est intacte
+  ✓ 3.8 : la page de la fiche n’affiche plus les idées retirées
+  recalcul → provenance : [ 'reco:regime' ] · « arachide » envoyé au modèle : false · « porc » (régime, toujours autorisé) : true
+  ✓ 3.9 : le recalcul n’emploie plus l’allergie ; le régime, toujours autorisé, sert encore
+  ✓ 3.10 : les anciennes idées ne reviennent pas par « déjà proposé »
+  ✓ 3.11 : nouvelle recommandation enregistrée, provenance à jour
+
+══ 4. LES AUTRES CHEMINS DE RETRAIT
+  ✓ 4.1 : retrait de la dernière autorisation → indisponible
+  ✓ 4.2 : le pilote rattache la fiche à un AUTRE compte → ce qui venait du premier est retiré
+  ✓ 4.3 : (contrôle) de retour sur le bon compte, l’autorisation toujours active sert de nouveau
+  ✓ 4.4 : personne ne peut appeler la purge de l’extérieur pour vider les recommandations d’un autre
+
+══ 5. RETRAIT PENDANT UNE GÉNÉRATION
+  génération lancée, retrait 1,5 s après (HTTP 200 ) → réponse HTTP 409 · idée issue du proche dans la réponse : false
+  ✓ 5.1 : la réponse partie avant le retrait n’est PAS publiée (409, sans contenu)
+  ✓ 5.2 : rien de cette génération n’est enregistré, ni dans la recommandation ni dans le journal
+  ✓ 5.3 : la relance (ce que fait l’écran) recalcule sans rien du proche
+
+══ 6. EFFACEMENT DU COMPTE DU PROCHE
+  ✓ 6.0 : (contrôle) une recommandation dépend de nouveau du proche
+  ✓ 6.1 : le compte effacé, ce qui avait été calculé avec ses données est retiré — chez les deux pilotes
+  ✓ 6.2 : l’attention réalisée par le pilote existe toujours
+
+25 vérifications passées, 0 en échec.

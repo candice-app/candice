@@ -220,4 +220,26 @@ console.log('\n══ 8. LIEN DE PARTAGE, RETRAIT, ANNULATION — chaque route, 
   q = await poster(`/api/profile-view/${dd!.id}/cancel`, cT, {});
   v.verifier(q.status === 200, '8.10 : son auteur l’annule');
 }
+
+console.log('\n══ 9. UNE ADRESSE OU UN NUMÉRO NE RÉVÈLE PLUS L’EXISTENCE D’UN COMPTE');
+{
+  await admin.from('my_profile').update({ handle: `olga_${Date.now().toString(36)}`, phone: '06 11 22 33 44' }).eq('user_id', O.userId);
+  const identifiant = (await admin.from('my_profile').select('handle').eq('user_id', O.userId).single()).data!.handle as string;
+  const inconnu = 'personne-inexistante@test.candice.invalid';
+  const a1 = await poster('/api/contacts/lookup', cA2, { email: O.email }), a2 = await poster('/api/contacts/lookup', cA2, { email: inconnu });
+  const a3 = await poster('/api/contacts/lookup', cA2, { phone: '0611223344' }), a4 = await poster('/api/contacts/lookup', cA2, { phone: '0700000000' });
+  console.log('  ajout d’un proche — adresse d’un compte existant :', a1.texte, '· adresse inconnue :', a2.texte, '· numéro existant :', a3.texte);
+  v.verifier(a1.status === 200 && a1.texte === a2.texte && a3.texte === a4.texte && a1.texte === a3.texte && !a1.texte.includes(O.userId), '9.1 : ajouter un proche — même réponse, à l’octet près, que l’adresse ou le numéro ait un compte ou non');
+  const b1 = await poster('/api/profile-view/lookup', cA2, { query: O.email }), b2 = await poster('/api/profile-view/lookup', cA2, { query: inconnu }), b3 = await poster('/api/profile-view/lookup', cA2, { query: 'identifiant-qui-n-existe-pas' });
+  console.log('  recherche d’une fiche — adresse existante :', b1.texte, '· adresse inconnue :', b2.texte, '· identifiant inconnu :', b3.texte);
+  v.verifier(b1.status === 200 && b1.texte === b2.texte && b1.texte === b3.texte && !b1.texte.includes(O.userId), '9.2 : chercher une fiche par adresse — même réponse qu’une adresse inconnue et qu’un identifiant inconnu');
+  const b4 = await poster('/api/profile-view/lookup', cA2, { query: `@${identifiant}` });
+  v.verifier((b4.json as { found?: boolean }).found === true, '9.3 : (contrôle) l’identifiant que la personne a choisi et donné permet toujours de lui adresser une demande');
+  await admin.from('my_profile').update({ is_findable: false }).eq('user_id', O.userId);
+  const b5 = await poster('/api/profile-view/lookup', cA2, { query: `@${identifiant}` });
+  const b6 = await poster('/api/profile-view/lookup', cA2, { query: 'identifiant_inconnu_valide' });
+  v.verifier(b5.texte === b3.texte && b6.texte === b3.texte, '9.4 : une personne qui ne veut pas être trouvée, un identifiant inconnu, un format invalide : la même réponse');
+  const d1 = await A.client.rpc('lookup_candice_user_by_email', { p_email: O.email }), d2 = await A.client.rpc('lookup_candice_user_by_phone', { p_phone: '0611223344' });
+  v.verifier(!!d1.error && !!d2.error, '9.5 : les fonctions de recherche de la base ne s’appellent pas directement depuis un compte', `${d1.error?.message ?? 'OUVERTE'} · ${d2.error?.message ?? 'OUVERTE'}`);
+}
 v.bilan();

@@ -115,3 +115,41 @@ export async function chargerProfilAutorise(
     return filtrerSelonPortee(profil, portees);
   } catch { return VIDE('lecture_impossible'); }
 }
+
+/** Portée « écarter certaines idées » : la même chaîne que dans declarations-proche (pas d'import croisé). */
+const PORTEE_EXCLUSIONS = 'reco_exclusions';
+
+export interface Provenance { readonly compte: string | null; readonly portees: readonly string[] }
+
+/**
+ * Ce que le proche autorise À CET INSTANT pour cette fiche : le compte rattaché et ses portées
+ * actives et prouvées. Lecture légère (aucune donnée de profil) — elle sert à vérifier, au moment
+ * de publier une recommandation, que rien n'a été retiré pendant qu'elle se calculait.
+ */
+export async function provenanceActuelle(
+  admin: ClientPrivilegie,
+  input: { piloteId: string; contactId: string },
+): Promise<Provenance & { lisible: boolean }> {
+  try {
+    const { data: fiche, error: eF } = await admin.from('contacts').select('proche_user_id')
+      .eq('id', input.contactId).eq('user_id', input.piloteId).maybeSingle();
+    if (eF) return { compte: null, portees: [], lisible: false };
+    const compte = (fiche?.proche_user_id as string | null | undefined) ?? null;
+    if (!compte) return { compte: null, portees: [], lisible: true };
+    const { data: accord, error } = await admin.from('contact_consents').select('scope, granted_by')
+      .eq('pilote_id', input.piloteId).eq('contact_id', input.contactId).eq('proche_user_id', compte)
+      .eq('kind', TYPE_USAGE).eq('status', 'active').maybeSingle();
+    if (error) return { compte, portees: [], lisible: false };
+    if (!accord || accord.granted_by !== compte) return { compte, portees: [], lisible: true };
+    const portees = ((accord.scope as string[] | null) ?? []).filter((x) => x === PORTEE_EXCLUSIONS || estUsageValide(x));
+    return { compte, portees, lisible: true };
+  } catch { return { compte: null, portees: [], lisible: false }; }
+}
+
+/** La provenance d'un contenu est-elle encore entièrement couverte par ce qui est autorisé maintenant ? */
+export function encoreCouverte(utilisee: Provenance, actuelle: Provenance): boolean {
+  if (utilisee.portees.length === 0) return true; // rien du proche n'a servi
+  if (utilisee.compte !== actuelle.compte) return false;
+  const ok = new Set(actuelle.portees);
+  return utilisee.portees.every((x) => ok.has(x));
+}
