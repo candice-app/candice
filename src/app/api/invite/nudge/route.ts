@@ -4,6 +4,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { sendPushToUser } from "@/lib/notifications/push-sender";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -110,12 +111,7 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ method: "email" });
 }
 
-/** Un prénom vient des métadonnées du compte, que chacun écrit librement : il n'entre jamais
- *  tel quel dans le HTML d'un courriel envoyé à quelqu'un d'autre. */
-function texteSur(s: string | null): string | null {
-  if (s == null) return null;
-  return s.replace(/[<>&"'`]/g, "").replace(/\s+/g, " ").trim().slice(0, 40) || null;
-}
+const texteSur = (v: string | null | undefined) => prenomSur(v);
 
 function buildNudgeEmailHtml(piloteBrut: string | null, procheBrut: string | null): string {
   const piloteFirstName = texteSur(piloteBrut), procheFirstName = texteSur(procheBrut);

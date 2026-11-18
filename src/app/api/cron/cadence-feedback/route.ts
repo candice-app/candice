@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import { createAdminClient } from '@/utils/supabase/admin';
+import { estAppelPlanifie } from '@/lib/cron/auth';
 
 export async function GET(req: Request) {
-  const auth = req.headers.get('authorization');
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!estAppelPlanifie(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

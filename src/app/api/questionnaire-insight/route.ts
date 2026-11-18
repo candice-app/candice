@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from "@/utils/supabase/server";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -25,6 +26,11 @@ function humanize(field: string, value: string): string {
 }
 
 export async function POST(request: NextRequest) {
+  // Session requise : cette route appelle le modèle. Ouverte, elle laissait n'importe qui
+  // le faire travailler aux frais de Candice.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { answers, persona, contactName } = await request.json() as {
     answers: Record<string, string>;
     persona: "self" | "contact";

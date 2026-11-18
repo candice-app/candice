@@ -4,6 +4,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { detectSignalsForUser } from "@/lib/signals/detector";
 import { generateSuggestionForSignal } from "@/lib/signals/generator";
 import type { ContextualSignal } from "@/types";
+import { estAppelPlanifie } from '@/lib/cron/auth';
 
 const JOB_NAME = "detect-and-generate";
 const MAX_SIGNALS_PER_RUN = 50;
@@ -14,9 +15,7 @@ const shortId = (id: string) => createHash("sha256").update(id).digest("hex").sl
 
 export async function GET(request: NextRequest) {
   // Auth
-  const authHeader = request.headers.get("Authorization");
-  const secret = process.env.CRON_SECRET;
-  if (!secret || authHeader !== `Bearer ${secret}`) {
+  if (!estAppelPlanifie(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

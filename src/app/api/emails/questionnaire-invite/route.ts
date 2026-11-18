@@ -2,17 +2,39 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { contactEmail, contactFirstName, profileUrl } = await request.json();
-  if (!contactEmail) return NextResponse.json({ error: "contactEmail required" }, { status: 400 });
+  // RIEN DU COURRIEL NE VIENT DU NAVIGATEUR hormis la fiche visée (et, le cas échéant, le jeton
+  // de SON invitation). Le destinataire, le prénom et le lien étaient lus dans la requête :
+  // n'importe quel compte pouvait faire envoyer par Candice, à n'importe qui, un bouton menant
+  // n'importe où.
+  const { contactId, token } = await request.json().catch(() => ({})) as { contactId?: string; token?: string };
+  if (!contactId) return NextResponse.json({ error: "contactId required" }, { status: 400 });
+  const { data: fiche } = await supabase
+    .from("contacts").select("id, name, email")
+    .eq("id", contactId).eq("user_id", user.id).maybeSingle();
+  if (!fiche) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const contactEmail = (fiche.email as string | null)?.trim() || null;
+  if (!contactEmail) return NextResponse.json({ error: "contact sans email" }, { status: 422 });
+  const contactFirstName = prenomSur(fiche.name as string | null);
 
-  // Authoritative pilote name from auth metadata
-  const piloteFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null;
+  // Le lien : l'invitation de CE pilote pour CETTE fiche si le jeton la désigne, sinon la page
+  // de la fiche. Toujours sur le domaine de Candice.
+  let profileUrl = `${APP_URL}/profil/${fiche.id}`;
+  if (token) {
+    const { data: invitation } = await supabase
+      .from("invite_links").select("token")
+      .eq("token", token).eq("pilote_id", user.id).eq("contact_id", fiche.id).maybeSingle();
+    if (!invitation) return NextResponse.json({ error: "invitation inconnue" }, { status: 404 });
+    profileUrl = `${APP_URL}/invite/${encodeURIComponent(invitation.token as string)}`;
+  }
+
+  const piloteFirstName = prenomSur(user.user_metadata?.full_name as string | undefined);
 
   // Pilote gender from my_profile.practical_info.sexe
   const { data: piloteProfile } = await supabase
@@ -29,7 +51,7 @@ export async function POST(request: NextRequest) {
   const error = await envoyerCourriel({
     to: contactEmail,
     subject,
-    html: buildInviteHtml(piloteFirstName, contactFirstName ?? null, profileUrl ?? APP_URL, piloteSexe),
+    html: buildInviteHtml(piloteFirstName, contactFirstName, profileUrl, piloteSexe),
   }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
   if (error) {

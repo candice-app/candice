@@ -14,6 +14,15 @@ export async function POST(req: NextRequest) {
     user.email?.split("@")[0] ??
     "Quelqu'un";
 
+  // La fiche visée doit être CELLE DE LA PERSONNE QUI INVITE. Sans ce contrôle, une invitation
+  // pouvait viser la fiche d'un autre pilote : en l'acceptant, on rattachait son propre compte
+  // à cette fiche.
+  if (body.contactId) {
+    const { data: fiche } = await supabase
+      .from("contacts").select("id").eq("id", body.contactId).eq("user_id", user.id).maybeSingle();
+    if (!fiche) return NextResponse.json({ error: "Fiche introuvable" }, { status: 404 });
+  }
+
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("invite_links")

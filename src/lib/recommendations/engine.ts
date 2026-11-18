@@ -123,6 +123,22 @@ export function detectBlindSpot(input: RecoInput): BlindSpotInsight | null {
 
 // ─── Hard filters / veto list ─────────────────────────────────────────────────
 
+/**
+ * Le texte affirme-t-il qu'il n'existe ni allergie ni contrainte, ou qu'une idée est sûre ?
+ * Candice ne lit que ce qu'on l'autorise à lire : elle ne peut jamais le garantir.
+ */
+export function affirmeUneAbsence(texte: string): boolean {
+  const t = texte.normalize('NFC').toLowerCase().replace(/[’`]/g, "'");
+  return /\bsans (aucun |le moindre )?(risque|danger|allerg[eè]nes?)\b/.test(t)
+    || /\b(aucune?|pas d'|ni d'|n'a pas d')\s*(allergies?|intol[eé]rances?|restrictions? alimentaires?|contraintes? alimentaires?|r[eé]gime particulier)\b/.test(t)
+    || /\bcompatible avec (son|ses|sa) (r[eé]gime|allergies?|restrictions?|contraintes?)\b/.test(t)
+    || /\b(garanti|certifi[eé])e?s? sans\b/.test(t);
+}
+
+/** Rappel constant au modèle : ce que la fiche ne dit pas n'est pas établi. */
+export const LIGNE_INCONNU_NON_ABSENT =
+  "CE QUI N'EST PAS ÉCRIT CI-DESSUS N'EST PAS CONNU : l'absence d'allergie, de régime ou de contrainte dans cette fiche ne signifie pas qu'il n'y en a pas. N'affirme jamais qu'une idée est « sans risque », « compatible » ou « sans allergène ».";
+
 export function buildVetoList(input: RecoInput): string[] {
   const v: string[] = [];
   const { vetos, relationalFilters, classicProfile, singularity } = input;
@@ -276,6 +292,11 @@ export function buildContextString(input: RecoInput): string {
   const vetoList = buildVetoList(input);
   if (vetoList.length > 0)
     lines.push(`FILTRES DURS — VETO ABSOLU (ne jamais mentionner) : ${vetoList.join(', ')}`);
+  // CE QUI N'EST PAS ÉCRIT N'EST PAS CONNU. Une allergie ou un régime peuvent exister sans que
+  // Candice ait le droit de les lire : le silence de cette fiche n'est pas une absence. La ligne
+  // est CONSTANTE — présente que le proche ait autorisé une donnée ou non — pour que la
+  // recommandation ne trahisse pas ce qu'il a réglé.
+  lines.push(LIGNE_INCONNU_NON_ABSENT);
 
   if (input.importantDates.length > 0) {
     const upcoming = input.importantDates.slice(0, 2).map((d) => `${d.label} (${d.date})`).join(', ');
@@ -386,7 +407,8 @@ Respecte strictement les filtres durs. Ancre chaque idée sur un signal nommé. 
     const jsonMatch = text.match(/\[[\s\S]*\]/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]) as RecoIdea[];
-      ideas = parsed.filter((idea) => passesVeto(idea, vetoList));
+      // Une idée qui GARANTIT l'absence de risque est écartée : Candice ne sait jamais tout.
+      ideas = parsed.filter((idea) => passesVeto(idea, vetoList) && !affirmeUneAbsence(`${idea.title} ${idea.justification}`));
 
       // CE QUE LE PROCHE A DÉCLARÉ LUI-MÊME l'emporte sur ce que le pilote rapporte.
       // Le retrait a lieu ICI, APRÈS la génération : ses rejets ne sont jamais entrés

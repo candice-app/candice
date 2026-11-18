@@ -3,6 +3,7 @@ import { createAdminClient } from '@/utils/supabase/admin';
 import { APP_URL } from '@/lib/resend';
 import { envoyerCourriel } from '@/lib/mail/transport';
 import { effacerCompte } from '@/lib/lifecycle/erasure/engine';
+import { estAppelPlanifie } from '@/lib/cron/auth';
 
 const JOB_NAME = 'lifecycle-check';
 
@@ -40,8 +41,7 @@ async function sendSimpleEmail(to: string, subject: string, body: string): Promi
 }
 
 async function handler(req: Request) {
-  const auth = req.headers.get('authorization');
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!estAppelPlanifie(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

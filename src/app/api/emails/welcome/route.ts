@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 
 export async function POST(request: NextRequest) {
   // Session requise : le welcome ne part que vers l'adresse du compte connecté.
@@ -9,7 +10,8 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user?.email) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { firstName } = await request.json().catch(() => ({} as { firstName?: string }));
+  const { firstName: prenomBrut } = await request.json().catch(() => ({} as { firstName?: string }));
+  const firstName = prenomSur(prenomBrut);
   const email = user.email; // destinataire = session, JAMAIS une adresse du corps
 
   const error = await envoyerCourriel({

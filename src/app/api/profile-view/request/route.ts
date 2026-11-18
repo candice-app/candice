@@ -11,6 +11,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 import { isQuestionnaireComplete, PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
 
 export async function POST(req: NextRequest) {
@@ -97,8 +98,8 @@ async function notifyTarget(
   const { data: { user: target } } = await admin.auth.admin.getUserById(targetUserId);
   if (!target?.email) return;
 
-  const requesterFirstName = requesterFullName?.split(" ")[0] ?? "Quelqu'un";
-  const targetFirstName = (target.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "";
+  const requesterFirstName = prenomSur(requesterFullName) ?? "Quelqu'un";
+  const targetFirstName = prenomSur(target.user_metadata?.full_name as string | undefined) ?? "";
 
   await envoyerCourriel({
     to: target.email,

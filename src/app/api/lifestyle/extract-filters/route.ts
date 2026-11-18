@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from "@/utils/supabase/server";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -12,6 +13,11 @@ Règles :
 - Réponds UNIQUEMENT avec un tableau JSON valide, sans texte autour. Exemple : ["les surprises publiques", "les annulations tardives"]`;
 
 export async function POST(request: NextRequest) {
+  // Session requise : cette route appelle le modèle. Ouverte, elle laissait n'importe qui
+  // le faire travailler aux frais de Candice.
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { text } = await request.json() as { text: string };
 
   if (!text || text.trim().length < 5) {

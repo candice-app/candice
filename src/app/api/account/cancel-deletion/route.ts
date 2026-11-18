@@ -30,10 +30,37 @@ function pageNeutre(): Response {
 // motif en croyant suivre un précédent.
 //
 // Le jeton est consommé UNE SEULE FOIS : nullé dans la MÊME écriture que l'annulation (pas après).
+function pageDeConfirmation(t: string): Response {
+  // `t` a déjà la forme d'un identifiant (lettres hexadécimales et tirets) : rien à échapper.
+  const html = `<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Candice</title></head>
+<body style="background:#FAF7F2;font-family:'DM Sans',Helvetica,Arial,sans-serif;padding:48px 16px;text-align:center;">
+  <div style="max-width:480px;margin:0 auto;background:#FFFCF8;border-radius:12px;border:1px solid #E8DFD4;padding:40px;">
+    <p style="font-family:'Playfair Display',Georgia,serif;font-size:24px;color:#2C1A0E;margin:0 0 20px;">Candice</p>
+    <p style="font-size:15px;font-weight:300;color:#3D2A1E;line-height:1.7;margin:0 0 24px;">
+      Tu veux garder ton compte ? Confirme, et la suppression programmée est annulée.
+    </p>
+    <form method="POST" action="/api/account/cancel-deletion">
+      <input type="hidden" name="t" value="${t}" />
+      <button type="submit" style="background:#C47A4A;color:#fff;font-size:14px;padding:14px 28px;border:0;border-radius:8px;cursor:pointer;">Garder mon compte</button>
+    </form>
+  </div>
+</body></html>`;
+  return new Response(html, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' } });
+}
+
+// OUVRIR LE LIEN NE FAIT RIEN. Une messagerie ou un antivirus qui précharge les liens d'un
+// courriel aurait sinon annulé, à l'insu de la personne, la suppression qu'elle venait de
+// demander. L'annulation n'a lieu qu'au geste : le bouton, qui envoie le jeton en POST.
 export async function GET(req: Request) {
   const t = new URL(req.url).searchParams.get('t') ?? '';
-  if (!UUID.test(t)) return pageNeutre(); // jeton absent ou malformé : même réponse, aucune écriture
+  if (!UUID.test(t)) return pageNeutre();
+  return pageDeConfirmation(t);
+}
 
+async function annulerParJeton(t: string): Promise<Response> {
+  if (!UUID.test(t)) return pageNeutre(); // jeton absent ou malformé : même réponse, aucune écriture
   const admin = createAdminClient();
   // Une seule écriture : annulation + consommation du jeton. Ne matche qu'une demande en cours portant CE jeton.
   const { data: annules, error } = await admin
@@ -64,7 +91,12 @@ export async function GET(req: Request) {
   return pageNeutre();
 }
 
-export async function POST() {
+export async function POST(req: Request) {
+  // Le bouton de la page de confirmation : un formulaire portant le jeton, sans session.
+  if ((req.headers.get('content-type') ?? '').includes('application/x-www-form-urlencoded')) {
+    const corps = await req.formData().catch(() => null);
+    return annulerParJeton(String(corps?.get('t') ?? ''));
+  }
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

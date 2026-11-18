@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { estDansLEspaceDe } from "@/lib/storage/chemins";
 
 const anthropic = new Anthropic();
 
@@ -14,12 +15,12 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { path } = await req.json() as { path?: string };
-  if (!path || !path.startsWith(`${user.id}/`))
+  if (!estDansLEspaceDe(path, user.id))
     return NextResponse.json({ error: "path invalide" }, { status: 400 });
 
   try {
     const admin = createAdminClient();
-    const dl = await admin.storage.from("contact-photos").download(path);
+    const dl = await admin.storage.from("contact-photos").download(path as string);
     if (dl.error || !dl.data) return NextResponse.json({ brand: null, product: null });
     const buf = Buffer.from(await dl.data.arrayBuffer());
     const media = (dl.data.type || "image/jpeg") as "image/jpeg" | "image/png" | "image/webp" | "image/gif";

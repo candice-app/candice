@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
+import { estIdentifiant, extensionImage, TAILLE_MAX_IMAGE } from "@/lib/storage/chemins";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -25,7 +26,10 @@ export async function POST(request: NextRequest) {
 
   if (!contact) return NextResponse.json({ error: "Contact not found" }, { status: 404 });
 
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const ext = extensionImage(file.type);
+  if (!ext) return NextResponse.json({ error: "Format non pris en charge (JPEG, PNG ou WebP)" }, { status: 415 });
+  if (file.size > TAILLE_MAX_IMAGE) return NextResponse.json({ error: "Image trop lourde (5 Mo max)" }, { status: 413 });
+  if (!estIdentifiant(contactId)) return NextResponse.json({ error: "contactId invalide" }, { status: 400 });
   const path = `${user.id}/${contactId}/avatar.${ext}`;
   const bytes = await file.arrayBuffer();
 

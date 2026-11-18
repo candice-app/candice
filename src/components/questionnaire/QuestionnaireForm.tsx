@@ -384,15 +384,11 @@ export default function QuestionnaireForm({
 
     // Send invite email if contact has an email — non-blocking
     if (email) {
-      const shareUrl = token ? `${origin}/invite/${token}` : `${origin}/profil/${contact.id}`;
+      // Le serveur relit lui-même l'adresse, le prénom et le lien : on ne lui passe que la fiche.
       fetch("/api/emails/questionnaire-invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contactEmail: email,
-          contactFirstName: name.trim(),
-          profileUrl: shareUrl,
-        }),
+        body: JSON.stringify({ contactId: contact.id, ...(token ? { token } : {}) }),
       }).catch(() => {});
     }
   };

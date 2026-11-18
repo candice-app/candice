@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { sendReminderEmail } from "@/lib/notifications/email-reminder";
+import { estAppelPlanifie } from '@/lib/cron/auth';
 
 // Internal endpoint — called by the cron or manually with service-role context.
 export async function POST(request: NextRequest) {
-  const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!estAppelPlanifie(request)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 

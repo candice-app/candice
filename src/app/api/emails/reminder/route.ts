@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 
 export async function POST(request: NextRequest) {
   // Session requise + le contact doit appartenir à l'utilisateur.
@@ -24,8 +25,8 @@ export async function POST(request: NextRequest) {
 
   // Tout reconstruit côté serveur — rien du corps hormis contactId.
   const contactEmail = contact.email as string;
-  const contactFirstName = (contact.name as string | null)?.split(" ")[0] ?? "";
-  const senderFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] || undefined;
+  const contactFirstName = prenomSur(contact.name as string | null) ?? "";
+  const senderFirstName = prenomSur(user.user_metadata?.full_name as string | undefined) ?? undefined;
   const profileUrl = `${APP_URL}/profil/${contactId}`;
 
   const error = await envoyerCourriel({

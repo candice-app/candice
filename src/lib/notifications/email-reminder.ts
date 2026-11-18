@@ -2,6 +2,7 @@ import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { createAdminClient } from "@/utils/supabase/admin";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { echapperHtml } from "@/lib/mail/texte-sur";
 
 interface SuggestionForReminder {
   id: string;
@@ -39,10 +40,10 @@ function buildHtml(suggestion: SuggestionForReminder): string {
         <tr>
           <td style="background:#FFFFFF;border:1px solid #E8C4A0;border-radius:12px;padding:40px 36px;">
             <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#2C1A0E;line-height:1.25;letter-spacing:-0.3px;margin:0 0 20px;">
-              ${suggestion.title}
+              ${echapperHtml(suggestion.title)}
             </h1>
             <p style="font-size:15px;font-weight:300;color:#2C1A0E;line-height:1.75;margin:0 0 32px;">
-              ${suggestion.description}
+              ${echapperHtml(suggestion.description)}
             </p>
             <table cellpadding="0" cellspacing="0">
               <tr>

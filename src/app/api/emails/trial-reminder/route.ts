@@ -2,11 +2,11 @@ import { NextResponse } from 'next/server';
 import { APP_URL } from '@/lib/resend';
 import { envoyerCourriel } from '@/lib/mail/transport';
 import { createAdminClient } from '@/utils/supabase/admin';
+import { estAppelPlanifie } from '@/lib/cron/auth';
 
 // Internal service route — called by lifecycle-check cron only
 export async function POST(req: Request) {
-  const auth = req.headers.get('authorization');
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!estAppelPlanifie(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

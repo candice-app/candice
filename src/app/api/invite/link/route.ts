@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -26,24 +27,56 @@ export async function POST(req: NextRequest) {
   }
 
   // Idempotent: mark used only if not already set
-  const { error: usedError } = await admin
+  // On n'accepte pas sa propre invitation : ce serait se déclarer proche de soi-même.
+  if (invite.pilote_id === user.id) {
+    return NextResponse.json({ error: "C'est ta propre invitation" }, { status: 409 });
+  }
+
+  // USAGE UNIQUE, décidé par la base : une seule requête peut faire passer `used_at` de vide
+  // à une date. Un lien transmis ou intercepté ne rattache pas un second compte.
+  const { data: prise, error: usedError } = await admin
     .from("invite_links")
     .update({ used_at: new Date().toISOString() })
     .eq("id", invite.id)
-    .is("used_at", null);
-  if (usedError) console.error("[invite/link] invite_links update used_at", usedError.message);
+    .is("used_at", null)
+    .select("id")
+    .maybeSingle();
+  if (usedError) {
+    console.error("[invite/link] invite_links update used_at", usedError.message);
+    return NextResponse.json({ error: "Enregistrement impossible" }, { status: 500 });
+  }
+  if (!prise) return NextResponse.json({ error: "Invitation déjà utilisée" }, { status: 410 });
 
-  // Link proche_user_id to contact
   if (invite.contact_id) {
-    const { error: linkError } = await admin
+    // La fiche doit appartenir AU PILOTE QUI A INVITÉ, et ne pas être déjà rattachée, par son
+    // propre accord, à un autre compte : accepter une invitation ne déplace pas un lien existant.
+    const { data: ficheVisee, error: eFiche } = await admin
+      .from("contacts").select("id, proche_lien_confirme_par")
+      .eq("id", invite.contact_id).eq("user_id", invite.pilote_id).maybeSingle();
+    if (eFiche) {
+      console.error("[invite/link] contacts select", eFiche.message);
+      return NextResponse.json({ error: "Enregistrement impossible" }, { status: 500 });
+    }
+    const dejaConfirmePar = (ficheVisee?.proche_lien_confirme_par as string | null | undefined) ?? null;
+    if (!ficheVisee || (dejaConfirmePar && dejaConfirmePar !== user.id)) {
+      return NextResponse.json({ error: "Cette fiche ne peut pas être rattachée" }, { status: 409 });
+    }
+    // L'écriture répète la condition lue : si un autre compte confirme entre-temps, elle ne
+    // touche aucune ligne.
+    let ecriture = admin
       .from("contacts")
-      // Le compte connecté accepte l'invitation : c'est LUI qui établit le lien (migration 113).
       .update({ proche_user_id: user.id, proche_lien_confirme_par: user.id })
-      .eq("id", invite.contact_id);
-    if (linkError) console.error("[invite/link] contacts update proche_user_id", linkError.message);
+      .eq("id", invite.contact_id)
+      .eq("user_id", invite.pilote_id);
+    ecriture = dejaConfirmePar ? ecriture.eq("proche_lien_confirme_par", user.id) : ecriture.is("proche_lien_confirme_par", null);
+    const { data: liee, error: linkError } = await ecriture.select("id").maybeSingle();
+    if (linkError) {
+      console.error("[invite/link] contacts update proche_user_id", linkError.message);
+      return NextResponse.json({ error: "Enregistrement impossible" }, { status: 500 });
+    }
+    if (!liee) return NextResponse.json({ error: "Cette fiche ne peut pas être rattachée" }, { status: 409 });
   }
 
-  // Non-blocking: notify Pilote
   notifyPilote(
     invite.pilote_id,
     invite.pilote_name,
@@ -62,8 +95,8 @@ async function notifyPilote(
   const { data: { user: pilote } } = await admin.auth.admin.getUserById(piloteId);
   if (!pilote?.email) return;
 
-  const piloteFirstName = piloteName?.split(" ")[0] ?? "";
-  const procheFirstName = procheFullName?.split(" ")[0] ?? null;
+  const piloteFirstName = prenomSur(piloteName) ?? "";
+  const procheFirstName = prenomSur(procheFullName);
 
   await envoyerCourriel({
     to: pilote.email,

@@ -3,6 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
+import { prenomSur } from "@/lib/mail/texte-sur";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -48,7 +49,7 @@ export async function POST(request: NextRequest) {
       if (shareLink) {
         const { data: { user: sender } } = await admin.auth.admin.getUserById(shareLink.sender_id);
         if (sender?.email) {
-          const ownerFirstName = shareLink.sender_name?.split(" ")[0] ?? "";
+          const ownerFirstName = prenomSur(shareLink.sender_name as string | null) ?? "";
           await envoyerCourriel({
             to: sender.email,
             subject: "La fiche de ton proche est complète ✦",
