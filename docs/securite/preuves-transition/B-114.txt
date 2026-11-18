@@ -1,0 +1,24 @@
+
+══ CODE B × SCHÉMA 114 ══
+{ "lien": true, "lienProuve": true, "ficheParLien": true, "ficheDeborde": false, "demande": true, "analyseEntiereDirecte": true, "etatsDirects": true, "tiersLitFiche": false, "invitation": true, "lienConfirme": "oui", "analyseAvantProposition": false, "propositionHttp": 200, "analyseApresAcceptation": true, "tiersLitAnalyse": false, "recoSansAutorisation": "rien", "usageHttp": 500, "recoApresAutorisation": "rien", "usageSeulOuvreAnalyse": false, "effacement": true, "autresIntacts": true }
+  — jamais, quel que soit l’état —
+  ✓ un tiers ne lit ni une fiche, ni une analyse
+  ✓ le proche ne lit pas l’analyse du pilote avant qu’elle lui soit proposée et qu’il l’accepte
+  ✓ sans autorisation, rien du profil du proche ne part au modèle
+  ✓ autoriser un usage n’ouvre pas l’analyse privée du pilote
+  ✓ version en ligne : la lecture du profil lié reste désactivée
+  ✓ ce qui part au modèle après le réglage = exactement ce qui a été autorisé (le régime, pas l’allergie) — ou rien si le réglage a échoué
+  ✓ la fiche servie par l’application ne déborde pas de la section partagée
+  — attendu pour cet état —
+  ✓ lien de partage de fiche : fonctionne
+  ✓ la fiche ouverte par ce lien s’affiche
+  ✓ demande de voir une fiche + réponse du propriétaire : fonctionne
+  ✓ lecture directe de l’analyse entière d’une fiche partagée : ENCORE OUVERTE (défaut ancien, pas encore fermé)
+  ✓ lecture directe des états déclarés : ENCORE OUVERTE (défaut ancien)
+  ✓ invitation acceptée : fonctionne
+  ✓ proposer son analyse : HTTP 200
+  ✓ analyse proposée puis acceptée : le proche la lit
+  ✓ régler un usage : HTTP 500 (SUSPENDU, refusé fermé)
+  ✓ effacer un compte partie d’un consentement : réussit
+
+17 vérifications passées, 0 en échec.

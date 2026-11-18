@@ -1,0 +1,47 @@
+══ Reconstruction de prod112 : baseline + migrations jusqu'à la 112, rien au-delà
+EXCLUE	supabase-migration-101-ROLLBACK-grants.sql	rollback : appliqué dans l'ordre, il déferait la 101 juste après l'avoir posée.
+EXCLUE	supabase-migration-117-ROLLBACK-tolerance-de-transition.sql	retour arrière : appliqué dans l'ordre, il déferait la 117 juste après l'avoir posée.
+EXCLUE	supabase-migration-85-rename-profile-notes-policy.sql	correction de dérive, NON REJOUABLE — elle renomme une policy créée à la main dans la console. Sur une base neuve, supabase-schema.sql ligne 181 crée déjà la policy sous son nom final : l'ancien nom n'existe jamais, il n'y a rien à renommer. Le fichier le dit lui-même : « one-shot, le renommage n'est pas rejouable ».
+  111 migrations appliquées dans l'ordre
+══ 0. Le schéma rejoué est-il celui de la production ?
+  ✓ la garde est celle de la 112 (empreinte attendue en production)
+  ✓ clés étrangères : trois en « mise à vide », deux en cascade
+  ✓ mêmes cinq clés étrangères, mêmes noms, que le relevé de production
+  ✓ mêmes cinq politiques que le relevé de production
+  ✓ la 113 n'est pas appliquée
+  ✓ la 116 n'est pas appliquée
+══ 1. Jeu d'essai : un pilote P, son proche B, un lecteur X ; et deux comptes sans rapport, U1 et U2
+  ✓ cinq consentements posés (3 autour de P/B/X, 2 entre U1 et U2)
+══ 2. AVANT la 115 — effacement joué puis annulé
+  ✓ effacer B (proche chez P, lecteur chez X) ÉCHOUE
+      message : ERROR:  contact_consents : le type et les parties d'un consentement ne se modifient pas
+  ✓ effacer X (lecteur de la fiche de P) ÉCHOUE
+  ✓ effacer U2 ÉCHOUE aussi
+  ✓ rien n'a été modifié par ces essais
+══ 3. Application de la 115 SEULE — fichier exact
+0cf4438977139b3b64201a93b3ef4072dbbe3590fabda12e25d82a5893ff9b16
+      NOTICE:  115 : contact_consents_granted_by_fkey (granted_by) passée de « n » à cascade.
+      NOTICE:  115 : contact_consents_proche_user_id_fkey (proche_user_id) passée de « n » à cascade.
+      NOTICE:  115 : contact_consents_requested_by_fkey (requested_by) passée de « n » à cascade.
+  ✓ la migration s'applique sans erreur
+  ✓ les cinq clés étrangères sont en cascade
+  ✓ la garde n'a pas été touchée
+  ✓ aucune ligne n'a été modifiée (contenu identique, 5 lignes)
+  ✓ rejouable : une seconde application ne change rien et n'échoue pas
+══ 4. APRÈS la 115
+  ✓ effacer B RÉUSSIT
+  ✓ plus aucun consentement ne mentionne B
+  ✓ le partage de P à X, sans rapport avec B, est intact
+  ✓ les consentements de U1 et U2 sont intacts, à l'octet près
+  ✓ la fiche de P n'est plus rattachée à un compte (elle existe toujours)
+  ✓ effacer X RÉUSSIT
+  ✓ le partage de P à X est parti avec X
+  ✓ U1 et U2 toujours intacts
+  ✓ aucun autre compte n'a été emporté
+══ 5. La garde de la 112 tient toujours
+  ✓ le pilote ne peut toujours pas changer la partie d'un consentement
+  ✓ ni s'accorder lui-même un consentement actif
+  ✓ et U2, partie de deux consentements, s'efface désormais
+  ✓ ses deux consentements sont partis avec lui
+
+29 vérifications passées, 0 en échec.

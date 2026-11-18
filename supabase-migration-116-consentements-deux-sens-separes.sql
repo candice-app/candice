@@ -29,15 +29,17 @@
 --   B. Vocabulaire de portée contrôlé par type : une portée d'un sens ne peut plus se glisser
 --      dans une ligne de l'autre sens.
 --   C. Un consentement refusé ou retiré ne se réactive pas : il se redemande.
---   D. Le serveur n'active et n'élargit qu'en NOMMANT le titulaire (`granted_by`) : une ligne
---      active sans preuve ne peut plus être écrite, par aucun chemin.
+--   D. Le serveur n'active et n'élargit qu'en NOMMANT le titulaire (`granted_by`). Une seule
+--      tolérance, le temps du déploiement : le lien de partage de fiche créé par l'ancienne
+--      version du code. La migration 117 la lève.
 --   E. `requested_by` est écrit par la base (identité de la session), jamais par le client.
 --   F. L'analyse du pilote ne s'ouvre au proche que si le PILOTE l'a demandée (ligne créée
 --      par lui, portée « analysis ») ET que le proche l'a acceptée (preuve écrite par la base).
 --   G. Suppression des deux politiques de lecture directe.
 --
--- PRÉALABLE : 112, 114 et 115 appliquées, et le code de la branche déployé AVANT (la version
--- actuellement en ligne crée ses liens de partage sans nommer le titulaire : D la refuserait). Aucune donnée n'est modifiée ; si une ligne existante
+-- PRÉALABLE : 112, 113, 114 et 115 appliquées.
+-- COMPATIBLE AVEC LES DEUX VERSIONS DU CODE (celle en ligne, `680f896`, et celle de la branche) :
+-- elle s'applique AVANT le déploiement. Voir docs/securite/ordre-de-deploiement.md. Aucune donnée n'est modifiée ; si une ligne existante
 -- contredit la séparation, la migration S'ARRÊTE et le dit, plutôt que de trancher seule.
 
 BEGIN;
@@ -136,13 +138,22 @@ BEGIN
       RAISE EXCEPTION 'contact_consents : un partage d''analyse se crée dans la session du pilote';
     END IF;
     -- D. Activer ou élargir = attester QUI accorde. Sans nom, pas d'écriture.
-    IF v_devient_active OR v_elargit THEN
+    --    TOLÉRANCE DE TRANSITION (levée par la 117) : la version du code en ligne avant ce
+    --    chantier crée ses liens de partage de fiche sans nommer le titulaire. Tant qu'elle peut
+    --    encore tourner, cette seule écriture reste acceptée — et la ligne reste SANS PREUVE
+    --    (`granted_by` vide) : le code nouveau ne l'ouvrira pas.
+    IF (v_devient_active OR v_elargit)
+       AND NOT (NEW.kind = 'profile_view' AND v_devient_active AND NOT v_elargit AND NEW.granted_by IS NULL) THEN
       IF v_titulaire IS NULL OR NEW.granted_by IS DISTINCT FROM v_titulaire THEN
         RAISE EXCEPTION 'contact_consents : le serveur n''accorde ni n''élargit sans attester l''accord du titulaire';
       END IF;
       IF v_elargit AND (NEW.granted_at IS NULL OR NEW.granted_at IS NOT DISTINCT FROM OLD.granted_at) THEN
         RAISE EXCEPTION 'contact_consents : un élargissement exige une attestation nouvelle';
       END IF;
+      NEW.granted_via := 'serveur';
+      NEW.granted_at  := coalesce(NEW.granted_at, now());
+    ELSIF v_devient_active THEN
+      -- le cas toléré ci-dessus : marqué « serveur », sans titulaire nommé.
       NEW.granted_via := 'serveur';
       NEW.granted_at  := coalesce(NEW.granted_at, now());
     ELSIF TG_OP = 'UPDATE' AND NEW.granted_by IS DISTINCT FROM OLD.granted_by THEN

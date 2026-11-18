@@ -18,6 +18,8 @@ import re, sys, pathlib
 EXCLUS = {
     'supabase-migration-101-ROLLBACK-grants.sql':
         "rollback : appliqué dans l'ordre, il déferait la 101 juste après l'avoir posée.",
+    'supabase-migration-117-ROLLBACK-tolerance-de-transition.sql':
+        "retour arrière : appliqué dans l'ordre, il déferait la 117 juste après l'avoir posée.",
     'supabase-migration-85-rename-profile-notes-policy.sql':
         "correction de dérive, NON REJOUABLE — elle renomme une policy créée à la main dans "
         "la console. Sur une base neuve, supabase-schema.sql ligne 181 crée déjà la policy "
