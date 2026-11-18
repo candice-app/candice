@@ -1,0 +1,822 @@
+{
+ "Sophie": {
+  "admissibles": 56,
+  "bilan": {
+   "fermer": 1819,
+   "indecidable": 340,
+   "ouvrir": 56,
+   "coexistence_nouvelle_pas_encore_posee": 9,
+   "coexistence_remplacee": 1
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2",
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "food gastronomy",
+   "food",
+   "Food & Gastronomie",
+   "marcher seule en ville avec podcast",
+   "marcher seule en ville avec un podcast",
+   "books literature",
+   "grd_schedule_disruption"
+  ],
+  "questions": [
+   {
+    "cle": "food2.0857",
+    "type": "chips_single",
+    "texte": "Tu te reconnais plutôt dans quelle phrase ?",
+    "options": [
+     "r1=J’adore cuisiner",
+     "r2=J’aime cuisiner quand j’ai le temps",
+     "r3=Je cuisine surtout par nécessité",
+     "r4=Je préfère largement qu’on cuisine pour moi",
+     "r5=Cela dépend complètement"
+    ]
+   },
+   {
+    "cle": "food2.0858",
+    "type": "chips_multi",
+    "texte": "Pour toi, un repas réussi repose surtout sur…",
+    "options": [
+     "r1=Les personnes présentes",
+     "r2=La qualité des produits",
+     "r3=Les saveurs",
+     "r4=Le lieu",
+     "r5=L’ambiance",
+     "r6=Le service",
+     "r7=Le vin ou les boissons",
+     "r8=La créativité",
+     "r9=La simplicité",
+     "r10=La générosité",
+     "r11=La surprise",
+     "r12=Le temps qu’on prend"
+    ]
+   },
+   {
+    "cle": "reading2.1233",
+    "type": "chips_multi",
+    "texte": "Quand tu lis, tu cherches surtout à…",
+    "options": [
+     "r1=M’évader",
+     "r2=Ressentir des émotions",
+     "r3=Apprendre",
+     "r4=Comprendre le monde",
+     "r5=Réfléchir",
+     "r6=Me détendre",
+     "r7=M’endormir",
+     "r8=M’inspirer",
+     "r9=Développer une compétence",
+     "r10=Ralentir",
+     "r11=Rêver",
+     "r12=Voyager",
+     "r13=Me divertir",
+     "r14=Alimenter des conversations"
+    ]
+   },
+   {
+    "cle": "reading2.1235",
+    "type": "chips_multi",
+    "texte": "Tu lis surtout…",
+    "options": [
+     "r1=Avant de dormir",
+     "r2=Le matin",
+     "r3=Pendant les transports",
+     "r4=En vacances",
+     "r5=Le week-end",
+     "r6=Pendant les pauses",
+     "r7=À tout moment",
+     "r8=Seulement quand j’ai du temps"
+    ]
+   },
+   {
+    "cle": "sensory.0261",
+    "type": "text",
+    "texte": "Quelles couleurs te font naturellement du bien ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   }
+  ]
+ },
+ "Camille": {
+  "admissibles": 23,
+  "bilan": {
+   "fermer": 1825,
+   "indecidable": 377,
+   "ouvrir": 23
+  },
+  "branches": [
+   "sport",
+   "bricolage",
+   "nature",
+   "nature & jardinage",
+   "sport fitness",
+   "sportp",
+   "grd_poor_execution"
+  ],
+  "questions": [
+   {
+    "cle": "nature.0210",
+    "type": "chips_single",
+    "texte": "Quelle place nature et plein air occupe-t-il réellement dans ta vie ?",
+    "options": [
+     "r1=Une vraie passion",
+     "r2=Un intérêt régulier",
+     "r3=Un plaisir occasionnel",
+     "r4=Surtout un moment partagé",
+     "r5=Très peu de place"
+    ]
+   },
+   {
+    "cle": "nature.0211",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce que tu recherches d’abord dans nature et plein air ?",
+    "options": [
+     "r1=Montagne",
+     "r2=Forêt",
+     "r3=Campagne",
+     "r4=Mer",
+     "r5=Lac",
+     "r6=Désert",
+     "r7=Jungle",
+     "r8=Parc"
+    ]
+   },
+   {
+    "cle": "sport.0183",
+    "type": "chips_single",
+    "texte": "Quelle place sport et activité physique occupe-t-il réellement dans ta vie ?",
+    "options": [
+     "r1=Une vraie passion",
+     "r2=Un intérêt régulier",
+     "r3=Un plaisir occasionnel",
+     "r4=Surtout un moment partagé",
+     "r5=Très peu de place"
+    ]
+   },
+   {
+    "cle": "sport.0184",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce que tu recherches d’abord dans sport et activité physique ?",
+    "options": [
+     "r1=Plaisir",
+     "r2=Santé",
+     "r3=Défoulement",
+     "r4=Performance",
+     "r5=Social",
+     "r6=Plein air",
+     "r7=Compétition",
+     "r8=Progression"
+    ]
+   },
+   {
+    "cle": "sportp.0505",
+    "type": "chips_multi",
+    "texte": "Quand tu fais du sport, qu’est-ce qui compte le plus pour toi ?",
+    "options": [
+     "r1=Me sentir bien",
+     "r2=Me défouler",
+     "r3=Progresser",
+     "r4=Me dépasser",
+     "r5=Être en bonne santé",
+     "r6=Être dehors",
+     "r7=Partager avec d’autres",
+     "r8=Gagner ou performer",
+     "r9=Préparer un objectif",
+     "r10=Avoir un moment pour moi",
+     "r11=Me vider la tête",
+     "r12=Me sentir plus fort(e)"
+    ]
+   },
+   {
+    "cle": "sportp.0506",
+    "type": "chips_single",
+    "texte": "Recevoir quelque chose lié au sport, pour toi, ce serait…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Une bonne idée si c’est adapté à ma pratique",
+     "r3=Oui pour une expérience ou une inscription",
+     "r4=Oui pour de la récupération ou du confort",
+     "r5=Possible seulement avec une référence précise",
+     "r6=Risqué : je préfère choisir mon matériel",
+     "r7=Je préfère éviter les cadeaux liés au sport"
+    ]
+   }
+  ]
+ },
+ "Inès": {
+  "admissibles": 56,
+  "bilan": {
+   "fermer": 1819,
+   "indecidable": 340,
+   "ouvrir": 56,
+   "coexistence_nouvelle_pas_encore_posee": 9,
+   "coexistence_remplacee": 1
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2",
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "books literature",
+   "grd_public_exposure"
+  ],
+  "questions": [
+   {
+    "cle": "food2.0857",
+    "type": "chips_single",
+    "texte": "Tu te reconnais plutôt dans quelle phrase ?",
+    "options": [
+     "r1=J’adore cuisiner",
+     "r2=J’aime cuisiner quand j’ai le temps",
+     "r3=Je cuisine surtout par nécessité",
+     "r4=Je préfère largement qu’on cuisine pour moi",
+     "r5=Cela dépend complètement"
+    ]
+   },
+   {
+    "cle": "food2.0858",
+    "type": "chips_multi",
+    "texte": "Pour toi, un repas réussi repose surtout sur…",
+    "options": [
+     "r1=Les personnes présentes",
+     "r2=La qualité des produits",
+     "r3=Les saveurs",
+     "r4=Le lieu",
+     "r5=L’ambiance",
+     "r6=Le service",
+     "r7=Le vin ou les boissons",
+     "r8=La créativité",
+     "r9=La simplicité",
+     "r10=La générosité",
+     "r11=La surprise",
+     "r12=Le temps qu’on prend"
+    ]
+   },
+   {
+    "cle": "reading2.1233",
+    "type": "chips_multi",
+    "texte": "Quand tu lis, tu cherches surtout à…",
+    "options": [
+     "r1=M’évader",
+     "r2=Ressentir des émotions",
+     "r3=Apprendre",
+     "r4=Comprendre le monde",
+     "r5=Réfléchir",
+     "r6=Me détendre",
+     "r7=M’endormir",
+     "r8=M’inspirer",
+     "r9=Développer une compétence",
+     "r10=Ralentir",
+     "r11=Rêver",
+     "r12=Voyager",
+     "r13=Me divertir",
+     "r14=Alimenter des conversations"
+    ]
+   },
+   {
+    "cle": "reading2.1235",
+    "type": "chips_multi",
+    "texte": "Tu lis surtout…",
+    "options": [
+     "r1=Avant de dormir",
+     "r2=Le matin",
+     "r3=Pendant les transports",
+     "r4=En vacances",
+     "r5=Le week-end",
+     "r6=Pendant les pauses",
+     "r7=À tout moment",
+     "r8=Seulement quand j’ai du temps"
+    ]
+   },
+   {
+    "cle": "sensory.0261",
+    "type": "text",
+    "texte": "Quelles couleurs te font naturellement du bien ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   }
+  ]
+ },
+ "Léa": {
+  "admissibles": 49,
+  "bilan": {
+   "fermer": 1808,
+   "ouvrir": 49,
+   "indecidable": 353,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "craftsmanship",
+   "Arts visuels & pratiques créatives",
+   "craft",
+   "creator",
+   "art",
+   "art & culture",
+   "voyage",
+   "travel2",
+   "grd_too_intimate",
+   "grd_sentimental_overload"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0887",
+    "type": "chips_multi",
+    "texte": "Quels formats de séjour te font réellement envie ?",
+    "options": [
+     "r1=Un city-trip",
+     "r2=Un week-end à la campagne",
+     "r3=Un séjour à la montagne",
+     "r4=Un séjour au bord de l’eau",
+     "r5=Un road trip",
+     "r6=Un voyage itinérant",
+     "r7=Un séjour dans un seul lieu",
+     "r8=Un voyage culturel",
+     "r9=Un voyage gastronomique",
+     "r10=Un séjour de repos",
+     "r11=Un voyage sportif ou actif",
+     "r12=Un voyage en famille",
+     "r13=Un voyage romantique",
+     "r14=Un voyage entre amis",
+     "r15=Un voyage seul(e)",
+     "r16=Un séjour tout compris",
+     "r17=Une expérience insolite",
+     "r18=Un grand voyage lointain"
+    ]
+   },
+   {
+    "cle": "travel2.0888",
+    "type": "chips_single",
+    "texte": "En voyage, ton rythme idéal ressemble plutôt à…",
+    "options": [
+     "r1=Un programme dense : je veux profiter au maximum",
+     "r2=Plusieurs activités bien choisies chaque jour",
+     "r3=Un équilibre entre découverte et repos",
+     "r4=Une activité principale et beaucoup de liberté",
+     "r5=Très peu de programme",
+     "r6=Du repos avant tout",
+     "r7=Cela dépend complètement du type de séjour"
+    ]
+   },
+   {
+    "cle": "art.0128",
+    "type": "chips_single",
+    "texte": "Quelle place culture — art, musées et expositions occupe-t-il réellement dans ta vie ?",
+    "options": [
+     "r1=Une vraie passion",
+     "r2=Un intérêt régulier",
+     "r3=Un plaisir occasionnel",
+     "r4=Surtout un moment partagé",
+     "r5=Très peu de place"
+    ]
+   },
+   {
+    "cle": "art.0129",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce que tu recherches d’abord dans culture — art, musées et expositions ?",
+    "options": [
+     "r1=Beauté",
+     "r2=Émotion",
+     "r3=Apprentissage",
+     "r4=Histoire",
+     "r5=Inspiration",
+     "r6=Dépaysement",
+     "r7=Discussion",
+     "r8=Architecture"
+    ]
+   },
+   {
+    "cle": "craft.0615",
+    "type": "chips_multi",
+    "texte": "Quels univers créatifs ou artistiques t’attirent vraiment ?",
+    "options": [
+     "r1=Photographie",
+     "r2=Peinture",
+     "r3=Dessin ou illustration",
+     "r4=Aquarelle",
+     "r5=Gravure ou impression",
+     "r6=Sculpture",
+     "r7=Céramique ou poterie",
+     "r8=Collage",
+     "r9=Calligraphie ou lettering",
+     "r10=Arts textiles",
+     "r11=Couture",
+     "r12=Broderie",
+     "r13=Tricot ou crochet",
+     "r14=Tissage",
+     "r15=Travail du bois",
+     "r16=Verre",
+     "r17=Mosaïque",
+     "r18=Bijouterie créative",
+     "r19=Reliure ou papeterie",
+     "r20=Sérigraphie",
+     "r21=Art numérique",
+     "r22=Design d’objet",
+     "r23=Artisanat local",
+     "r24=Autre"
+    ]
+   },
+   {
+    "cle": "craft.0616",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui te plaît le plus dans ces univers ?",
+    "options": [
+     "r1=Créer de mes mains",
+     "r2=Apprendre une technique",
+     "r3=M’exprimer",
+     "r4=Me détendre",
+     "r5=Photographier ou conserver des souvenirs",
+     "r6=Décorer mon intérieur",
+     "r7=Découvrir le travail d’artistes",
+     "r8=Posséder un objet unique",
+     "r9=Soutenir un artisan",
+     "r10=Collectionner",
+     "r11=Partager une activité",
+     "r12=Offrir ce que j’ai créé"
+    ]
+   }
+  ]
+ },
+ "Manon": {
+  "admissibles": 0,
+  "bilan": {
+   "fermer": 1848,
+   "indecidable": 377
+  },
+  "branches": [
+   "deco",
+   "deco & maison",
+   "brocantes",
+   "grd_poor_execution"
+  ],
+  "questions": []
+ },
+ "Clara": {
+  "admissibles": 24,
+  "bilan": {
+   "fermer": 1822,
+   "indecidable": 377,
+   "ouvrir": 24,
+   "coexistence_nouvelle_pas_encore_posee": 2
+  },
+  "branches": [
+   "art",
+   "museum",
+   "art & culture",
+   "papeteries",
+   "lecture",
+   "reading",
+   "reading2",
+   "grd_poor_execution"
+  ],
+  "questions": [
+   {
+    "cle": "reading2.1233",
+    "type": "chips_multi",
+    "texte": "Quand tu lis, tu cherches surtout à…",
+    "options": [
+     "r1=M’évader",
+     "r2=Ressentir des émotions",
+     "r3=Apprendre",
+     "r4=Comprendre le monde",
+     "r5=Réfléchir",
+     "r6=Me détendre",
+     "r7=M’endormir",
+     "r8=M’inspirer",
+     "r9=Développer une compétence",
+     "r10=Ralentir",
+     "r11=Rêver",
+     "r12=Voyager",
+     "r13=Me divertir",
+     "r14=Alimenter des conversations"
+    ]
+   },
+   {
+    "cle": "reading2.1235",
+    "type": "chips_multi",
+    "texte": "Tu lis surtout…",
+    "options": [
+     "r1=Avant de dormir",
+     "r2=Le matin",
+     "r3=Pendant les transports",
+     "r4=En vacances",
+     "r5=Le week-end",
+     "r6=Pendant les pauses",
+     "r7=À tout moment",
+     "r8=Seulement quand j’ai du temps"
+    ]
+   },
+   {
+    "cle": "art.0128",
+    "type": "chips_single",
+    "texte": "Quelle place culture — art, musées et expositions occupe-t-il réellement dans ta vie ?",
+    "options": [
+     "r1=Une vraie passion",
+     "r2=Un intérêt régulier",
+     "r3=Un plaisir occasionnel",
+     "r4=Surtout un moment partagé",
+     "r5=Très peu de place"
+    ]
+   },
+   {
+    "cle": "art.0129",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce que tu recherches d’abord dans culture — art, musées et expositions ?",
+    "options": [
+     "r1=Beauté",
+     "r2=Émotion",
+     "r3=Apprentissage",
+     "r4=Histoire",
+     "r5=Inspiration",
+     "r6=Dépaysement",
+     "r7=Discussion",
+     "r8=Architecture"
+    ]
+   },
+   {
+    "cle": "museum.0699",
+    "type": "chips_multi",
+    "texte": "Quels univers t’attirent le plus ?",
+    "options": [
+     "r1=Beaux-arts et peinture",
+     "r2=Art contemporain",
+     "r3=Photographie",
+     "r4=Sculpture",
+     "r5=Histoire",
+     "r6=Civilisations et archéologie",
+     "r7=Sciences et techniques",
+     "r8=Nature et découvertes",
+     "r9=Design et arts décoratifs",
+     "r10=Mode",
+     "r11=Architecture",
+     "r12=Expositions immersives",
+     "r13=Street art",
+     "r14=Artisanat et métiers d’art",
+     "r15=Petits musées insolites"
+    ]
+   },
+   {
+    "cle": "museum.0700",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui te plaît le plus dans une visite ?",
+    "options": [
+     "r1=Découvrir et apprendre",
+     "r2=Être ému(e) par les œuvres",
+     "r3=La beauté du lieu",
+     "r4=Le calme et la parenthèse",
+     "r5=Partager la visite avec quelqu’un",
+     "r6=Approfondir un sujet qui me passionne",
+     "r7=Voir des pièces exceptionnelles",
+     "r8=L’expérience globale (lieu, café, boutique)",
+     "r9=Photographier",
+     "r10=Sortir de mon quotidien"
+    ]
+   }
+  ]
+ },
+ "Nour": {
+  "admissibles": 44,
+  "bilan": {
+   "fermer": 1833,
+   "indecidable": 340,
+   "ouvrir": 44,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 1
+  },
+  "branches": [
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "grd_schedule_disruption"
+  ],
+  "questions": [
+   {
+    "cle": "food2.0857",
+    "type": "chips_single",
+    "texte": "Tu te reconnais plutôt dans quelle phrase ?",
+    "options": [
+     "r1=J’adore cuisiner",
+     "r2=J’aime cuisiner quand j’ai le temps",
+     "r3=Je cuisine surtout par nécessité",
+     "r4=Je préfère largement qu’on cuisine pour moi",
+     "r5=Cela dépend complètement"
+    ]
+   },
+   {
+    "cle": "food2.0858",
+    "type": "chips_multi",
+    "texte": "Pour toi, un repas réussi repose surtout sur…",
+    "options": [
+     "r1=Les personnes présentes",
+     "r2=La qualité des produits",
+     "r3=Les saveurs",
+     "r4=Le lieu",
+     "r5=L’ambiance",
+     "r6=Le service",
+     "r7=Le vin ou les boissons",
+     "r8=La créativité",
+     "r9=La simplicité",
+     "r10=La générosité",
+     "r11=La surprise",
+     "r12=Le temps qu’on prend"
+    ]
+   },
+   {
+    "cle": "sensory.0261",
+    "type": "text",
+    "texte": "Quelles couleurs te font naturellement du bien ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   },
+   {
+    "cle": "FOO-02",
+    "type": "chips_multi",
+    "texte": "Pour {occasion_ou_repas}, qu’est-ce qui rendrait ce repas réussi ?",
+    "options": [
+     "r1=Les personnes présentes",
+     "r2=La qualité des produits",
+     "r3=Les saveurs",
+     "r4=Le lieu",
+     "r5=L'ambiance",
+     "r6=Le service",
+     "r7=Le vin ou les boissons",
+     "r8=La créativité",
+     "r9=La simplicité",
+     "r10=La générosité",
+     "r11=La surprise",
+     "r12=Le temps qu'on prend"
+    ]
+   },
+   {
+    "cle": "FOO-04",
+    "type": "chips_multi",
+    "texte": "Qu’aimerais-tu éviter dans une attention gourmande ?",
+    "options": [
+     "r1=Les coffrets trop génériques",
+     "r2=Les gadgets de cuisine",
+     "r3=Les produits très luxueux",
+     "r4=Les paniers imposés",
+     "r5=Les restaurants gastronomiques",
+     "r6=Les ateliers",
+     "r7=Les box",
+     "r8=Les produits sucrés",
+     "r9=Les boissons alcoolisées",
+     "r10=Les cadeaux alimentaires en général"
+    ]
+   }
+  ]
+ },
+ "Alice": {
+  "admissibles": 0,
+  "bilan": {
+   "fermer": 1848,
+   "indecidable": 377
+  },
+  "branches": [
+   "grd_public_exposure"
+  ],
+  "questions": []
+ },
+ "Jeanne": {
+  "admissibles": 12,
+  "bilan": {
+   "fermer": 1834,
+   "indecidable": 377,
+   "coexistence_nouvelle_pas_encore_posee": 2,
+   "ouvrir": 12
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2"
+  ],
+  "questions": [
+   {
+    "cle": "reading2.1233",
+    "type": "chips_multi",
+    "texte": "Quand tu lis, tu cherches surtout à…",
+    "options": [
+     "r1=M’évader",
+     "r2=Ressentir des émotions",
+     "r3=Apprendre",
+     "r4=Comprendre le monde",
+     "r5=Réfléchir",
+     "r6=Me détendre",
+     "r7=M’endormir",
+     "r8=M’inspirer",
+     "r9=Développer une compétence",
+     "r10=Ralentir",
+     "r11=Rêver",
+     "r12=Voyager",
+     "r13=Me divertir",
+     "r14=Alimenter des conversations"
+    ]
+   },
+   {
+    "cle": "reading2.1235",
+    "type": "chips_multi",
+    "texte": "Tu lis surtout…",
+    "options": [
+     "r1=Avant de dormir",
+     "r2=Le matin",
+     "r3=Pendant les transports",
+     "r4=En vacances",
+     "r5=Le week-end",
+     "r6=Pendant les pauses",
+     "r7=À tout moment",
+     "r8=Seulement quand j’ai du temps"
+    ]
+   }
+  ]
+ },
+ "Yasmina": {
+  "admissibles": 33,
+  "bilan": {
+   "fermer": 1826,
+   "indecidable": 351,
+   "ouvrir": 33,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "voyage",
+   "travel2",
+   "bienetre",
+   "bien-etre",
+   "grd_public_exposure"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0887",
+    "type": "chips_multi",
+    "texte": "Quels formats de séjour te font réellement envie ?",
+    "options": [
+     "r1=Un city-trip",
+     "r2=Un week-end à la campagne",
+     "r3=Un séjour à la montagne",
+     "r4=Un séjour au bord de l’eau",
+     "r5=Un road trip",
+     "r6=Un voyage itinérant",
+     "r7=Un séjour dans un seul lieu",
+     "r8=Un voyage culturel",
+     "r9=Un voyage gastronomique",
+     "r10=Un séjour de repos",
+     "r11=Un voyage sportif ou actif",
+     "r12=Un voyage en famille",
+     "r13=Un voyage romantique",
+     "r14=Un voyage entre amis",
+     "r15=Un voyage seul(e)",
+     "r16=Un séjour tout compris",
+     "r17=Une expérience insolite",
+     "r18=Un grand voyage lointain"
+    ]
+   },
+   {
+    "cle": "travel2.0888",
+    "type": "chips_single",
+    "texte": "En voyage, ton rythme idéal ressemble plutôt à…",
+    "options": [
+     "r1=Un programme dense : je veux profiter au maximum",
+     "r2=Plusieurs activités bien choisies chaque jour",
+     "r3=Un équilibre entre découverte et repos",
+     "r4=Une activité principale et beaucoup de liberté",
+     "r5=Très peu de programme",
+     "r6=Du repos avant tout",
+     "r7=Cela dépend complètement du type de séjour"
+    ]
+   },
+   {
+    "cle": "sensory.0261",
+    "type": "text",
+    "texte": "Quelles couleurs te font naturellement du bien ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   }
+  ]
+ }
+}

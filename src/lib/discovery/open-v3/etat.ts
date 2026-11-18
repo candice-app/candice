@@ -41,6 +41,8 @@ export const FAIT_SUJET_ABORDE = 'discovery.sujet_aborde';
  */
 export const FAIT_PROJET = 'discovery.projet';
 const BRANCHES_BANQUE = new Set(BANQUE.map((q) => q.branche));
+const DOMAINE_DE_LA_BRANCHE = new Map<string, string>();
+for (const [domaine, brs] of BRANCHES_DU_DOMAINE) for (const b of brs) DOMAINE_DE_LA_BRANCHE.set(b, domaine);
 export interface Projet { readonly id: string; readonly type: 'achat' | 'sejour'; readonly branche: string; readonly objet: string; readonly debut: string; readonly fin?: string }
 /** Lit la valeur d'un fait de projet. `null` si elle n'en est pas une : rien n'est deviné. */
 export function lireProjet(valeur: string): Projet | null {
@@ -140,6 +142,16 @@ export async function lireEtat(
         // branches de la banque (`books_literature` → reading, reading2).
         for (const b of branchesDuDomaineJournal(parent)) branchesOuvertes.add(b);
       }
+    }
+    // ── LE DOMAINE DE LA BANQUE, EN TAG. Les questions de la refonte (« CRE- », « FOO- »,
+    //    « THE- »…) s'ouvrent sur `INTEREST.<domaine>=positive`, avec le nom que la BANQUE donne
+    //    au domaine (`creativity`, `food`, `live_performance`). L'intérêt, lui, est écrit sous
+    //    son sujet (« art », « cuisine », « reliure »). Sans ce pont, treize branches restaient
+    //    fermées à quelqu'un dont l'intérêt ouvrait pourtant la branche voisine du même domaine.
+    //    Un intérêt qui ouvre une branche est un intérêt pour le domaine de cette branche.
+    for (const b of branchesOuvertes) {
+      const domaine = DOMAINE_DE_LA_BRANCHE.get(b);
+      if (domaine) tags.set(`INTEREST.${domaine}`, 'positive');
     }
     for (const c of portrait.contexts) {
       tags.set(`CONTEXT.${clef(String(c.construct))}`, 'positive');

@@ -1,3 +1,4 @@
+import { fauxClientLecture } from '../../../knowledge/__tests__/faux-client';
 import { describe, it, expect, vi } from 'vitest';
 import { BANQUE } from '../banque';
 import { prochainesQuestions } from '../selection';
@@ -15,11 +16,14 @@ import type { EtatDiscovery } from '../conditions';
 //
 // On éprouve donc la chaîne : ce que la sélection sert, l'enregistrement doit l'accepter.
 
-const faux = () => {
+const faux = (tables: Record<string, readonly unknown[]> = {}) => {
   const appels: { fn: string; args: Record<string, unknown> }[] = [];
   return {
     appels,
     client: {
+      // Les lectures passent par un faux client qui APPLIQUE les filtres (réponses déjà
+      // données à la question) ; les écritures restent espionnées.
+      from: fauxClientLecture(tables).from,
       rpc: vi.fn(async (fn: string, args: Record<string, unknown>) => {
         appels.push({ fn, args });
         return { data: { sources: 1, evidences: 1, facts: 0, open: 0 }, error: null };

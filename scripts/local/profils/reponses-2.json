@@ -1,0 +1,11 @@
+{
+ "Sophie": {"food2.0859": ["r2","r7","r9"], "food2.0860": ["r2","r1"], "reading2.1237": ["r2"], "reading.0108": ["r3"], "sensory.0264": ["r2"], "sensory.0267": ["r3"]},
+ "Camille": {"nature.0212": ["r5"], "nature.0215": ["r1","r2"], "sport.0185": ["r2","r6","r5"], "sport.0189": ["r2"],
+  "sportp.0507": {"texte":"Du matériel choisi à ma place. Sans la bonne taille et le bon modèle, ça finit au placard.","units":[{"family":"OTHER","label":"matériel choisi à sa place","relation_label":"à éviter absolument — sans la bonne taille et le bon modèle, ça finit au placard"}]}},
+ "Inès": {"food2.0859": ["r2","r5"], "food2.0860": ["r3","r1"], "reading2.1237": ["r2"], "reading.0108": ["r8"], "sensory.0264": ["r1"], "sensory.0267": ["r3"]},
+ "Léa": {"travel2.0889": ["r3"], "travel2.0891": ["r6","r2","r15"], "art.0130": ["r1","r6"], "art.0133": ["r1","r8"], "craft.0617": ["r3"], "craft.0618": ["r12","r1"]},
+ "Clara": {"reading2.1237": ["r3"], "art.0130": ["r3","r7","r1"], "art.0133": ["r6","r1","r3"], "museum.0701": ["r4"], "museum.0702": ["r5","r1"], "reading.0108": ["r8"]},
+ "Nour": {"food2.0859": ["r10","r2"], "food2.0860": ["r5"], "sensory.0264": ["r5"]},
+ "Jeanne": {"reading2.1237": ["r2"], "reading.0108": ["r8"]},
+ "Yasmina": {"travel2.0889": ["r2"], "travel2.0891": ["r14","r4"], "sensory.0264": ["r3"]}
+}

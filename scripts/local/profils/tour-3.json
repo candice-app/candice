@@ -1,0 +1,784 @@
+{
+ "Sophie": {
+  "admissibles": 56,
+  "bilan": {
+   "fermer": 1807,
+   "indecidable": 340,
+   "ouvrir": 56,
+   "coexistence_nouvelle_pas_encore_posee": 9,
+   "coexistence_remplacee": 1,
+   "deja_posee": 12
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2",
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "food gastronomy",
+   "food",
+   "Food & Gastronomie",
+   "marcher seule en ville avec podcast",
+   "marcher seule en ville avec un podcast",
+   "books literature",
+   "grd_schedule_disruption",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "food.0023",
+    "type": "chips_single",
+    "texte": "À table, tu es plutôt…",
+    "options": [
+     "r1=Toujours partant(e) pour découvrir",
+     "r2=Curieux(se), mais avec quelques limites",
+     "r3=Fidèle à mes cuisines préférées",
+     "r4=Très attaché(e) à mes habitudes",
+     "r5=Cela dépend du contexte"
+    ]
+   },
+   {
+    "cle": "food.0025",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut te faire refuser un plat, même bien préparé ?",
+    "options": [
+     "r1=Une texture",
+     "r2=Un ingrédient précis",
+     "r3=Trop d’épices",
+     "r4=Trop de gras",
+     "r5=Trop de sucre",
+     "r6=Les mélanges sucré-salé",
+     "r7=Le cru",
+     "r8=Les abats",
+     "r9=Les produits de la mer",
+     "r10=Les aliments fermentés",
+     "r11=Autre"
+    ]
+   },
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   },
+   {
+    "cle": "reading.0112",
+    "type": "chips_single",
+    "texte": "Tu préfères lire…",
+    "options": [
+     "r1=Sur papier",
+     "r2=Sur liseuse",
+     "r3=En livre audio",
+     "r4=Un mélange",
+     "r5=Je n’ai pas de préférence"
+    ]
+   },
+   {
+    "cle": "FOO-08",
+    "type": "chips_multi",
+    "texte": "Pour {occasion}, qu’est-ce qui compte le plus dans le choix d’un restaurant ?",
+    "options": [
+     "r1=Cuisine",
+     "r2=Décor",
+     "r3=Ambiance",
+     "r4=Service",
+     "r5=Rapport qualité-prix",
+     "r6=Originalité",
+     "r7=Vue",
+     "r8=Calme",
+     "r9=Terrasse",
+     "r10=Carte des vins",
+     "r11=Produits locaux",
+     "r12=Surprise"
+    ]
+   },
+   {
+    "cle": "sensory.0265",
+    "type": "chips_single",
+    "texte": "Quelle lumière te met le plus à l’aise ?",
+    "options": [
+     "r1=Beaucoup de lumière naturelle",
+     "r2=Lumière douce et tamisée",
+     "r3=Lumière vive",
+     "r4=Bougies ou éclairage chaleureux",
+     "r5=Je n’y suis pas sensible"
+    ]
+   }
+  ]
+ },
+ "Camille": {
+  "admissibles": 23,
+  "bilan": {
+   "fermer": 1814,
+   "indecidable": 377,
+   "deja_posee": 11,
+   "ouvrir": 23
+  },
+  "branches": [
+   "nature",
+   "sport",
+   "bricolage",
+   "sport fitness",
+   "sportp",
+   "grd_poor_execution",
+   "sport_practice"
+  ],
+  "questions": [
+   {
+    "cle": "sport.0191",
+    "type": "chips_single",
+    "texte": "Recevoir du matériel de sport, c’est…",
+    "options": [
+     "r1=Une très bonne idée",
+     "r2=Possible si la référence est exacte",
+     "r3=Risqué car je suis exigeant(e)",
+     "r4=Je préfère une expérience ou un bon",
+     "r5=À éviter"
+    ]
+   },
+   {
+    "cle": "nature.0213",
+    "type": "text",
+    "texte": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans nature et plein air ?",
+    "options": []
+   },
+   {
+    "cle": "nature.0216",
+    "type": "chips_single",
+    "texte": "Dans la nature, tu préfères…",
+    "options": [
+     "r1=Être actif(ve)",
+     "r2=Contempler et me reposer",
+     "r3=Photographier",
+     "r4=Partager un repas ou un moment",
+     "r5=Un peu de tout"
+    ]
+   },
+   {
+    "cle": "sport.0186",
+    "type": "text",
+    "texte": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans sport et activité physique ?",
+    "options": []
+   },
+   {
+    "cle": "sportp.0508",
+    "type": "chips_single",
+    "texte": "À quelle fréquence pratiques-tu ce sport aujourd’hui ?",
+    "options": [
+     "r1=Presque tous les jours",
+     "r2=Trois à cinq fois par semaine",
+     "r3=Une à deux fois par semaine",
+     "r4=Quelques fois par mois",
+     "r5=Par périodes",
+     "r6=Surtout en vacances ou en saison",
+     "r7=Je reprends seulement"
+    ]
+   },
+   {
+    "cle": "sportp.0510",
+    "type": "chips_multi",
+    "texte": "Tu préfères pratiquer…",
+    "options": [
+     "r1=Seul(e)",
+     "r2=En couple",
+     "r3=Avec des amis",
+     "r4=En groupe",
+     "r5=En club",
+     "r6=Avec un coach",
+     "r7=En compétition",
+     "r8=Librement, sans cadre",
+     "r9=Cela dépend du sport"
+    ]
+   }
+  ]
+ },
+ "Inès": {
+  "admissibles": 56,
+  "bilan": {
+   "fermer": 1807,
+   "indecidable": 340,
+   "ouvrir": 56,
+   "coexistence_nouvelle_pas_encore_posee": 9,
+   "coexistence_remplacee": 1,
+   "deja_posee": 12
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2",
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "books literature",
+   "grd_public_exposure",
+   "food",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "food.0021",
+    "type": "chips_multi",
+    "texte": "Quelle place la nourriture occupe-t-elle vraiment dans ta vie ?",
+    "options": [
+     "r1=Un plaisir important",
+     "r2=Un grand sujet de passion",
+     "r3=Un moment de partage",
+     "r4=Une source de réconfort",
+     "r5=Un terrain de découverte",
+     "r6=Quelque chose de surtout pratique",
+     "r7=Une attention liée à la santé"
+    ]
+   },
+   {
+    "cle": "food.0023",
+    "type": "chips_single",
+    "texte": "À table, tu es plutôt…",
+    "options": [
+     "r1=Toujours partant(e) pour découvrir",
+     "r2=Curieux(se), mais avec quelques limites",
+     "r3=Fidèle à mes cuisines préférées",
+     "r4=Très attaché(e) à mes habitudes",
+     "r5=Cela dépend du contexte"
+    ]
+   },
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   },
+   {
+    "cle": "reading.0112",
+    "type": "chips_single",
+    "texte": "Tu préfères lire…",
+    "options": [
+     "r1=Sur papier",
+     "r2=Sur liseuse",
+     "r3=En livre audio",
+     "r4=Un mélange",
+     "r5=Je n’ai pas de préférence"
+    ]
+   },
+   {
+    "cle": "sensory.0265",
+    "type": "chips_single",
+    "texte": "Quelle lumière te met le plus à l’aise ?",
+    "options": [
+     "r1=Beaucoup de lumière naturelle",
+     "r2=Lumière douce et tamisée",
+     "r3=Lumière vive",
+     "r4=Bougies ou éclairage chaleureux",
+     "r5=Je n’y suis pas sensible"
+    ]
+   },
+   {
+    "cle": "FOO-08",
+    "type": "chips_multi",
+    "texte": "Pour {occasion}, qu’est-ce qui compte le plus dans le choix d’un restaurant ?",
+    "options": [
+     "r1=Cuisine",
+     "r2=Décor",
+     "r3=Ambiance",
+     "r4=Service",
+     "r5=Rapport qualité-prix",
+     "r6=Originalité",
+     "r7=Vue",
+     "r8=Calme",
+     "r9=Terrasse",
+     "r10=Carte des vins",
+     "r11=Produits locaux",
+     "r12=Surprise"
+    ]
+   }
+  ]
+ },
+ "Léa": {
+  "admissibles": 59,
+  "bilan": {
+   "fermer": 1786,
+   "ouvrir": 59,
+   "indecidable": 353,
+   "deja_posee": 12,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "craftsmanship",
+   "Arts visuels & pratiques créatives",
+   "craft",
+   "creator",
+   "creativity",
+   "art",
+   "voyage",
+   "travel2",
+   "travel",
+   "grd_too_intimate",
+   "grd_sentimental_overload"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0917",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui te fait dire qu’un hébergement est vraiment réussi ?",
+    "options": [
+     "r1=Le charme ou l’âme du lieu",
+     "r2=La chambre",
+     "r3=La literie",
+     "r4=Le calme",
+     "r5=La localisation",
+     "r6=La vue",
+     "r7=Le service",
+     "r8=Le design",
+     "r9=L’histoire ou l’architecture",
+     "r10=Le petit-déjeuner",
+     "r11=La restauration",
+     "r12=Le spa",
+     "r13=La piscine",
+     "r14=Les espaces communs",
+     "r15=L’accueil humain",
+     "r16=Le rapport qualité-prix",
+     "r17=La praticité"
+    ]
+   },
+   {
+    "cle": "travel2.0918",
+    "type": "chips_single",
+    "texte": "À qualité équivalente, tu serais davantage séduit(e) par…",
+    "options": [
+     "r1=Un lieu simple avec beaucoup d’âme",
+     "r2=Un lieu très confortable",
+     "r3=Un lieu au design exceptionnel",
+     "r4=Un lieu historique",
+     "r5=Un service remarquable",
+     "r6=Une adresse prestigieuse",
+     "r7=Une vue exceptionnelle",
+     "r8=Un excellent rapport qualité-prix",
+     "r9=Un équilibre entre charme et confort"
+    ]
+   },
+   {
+    "cle": "art.0131",
+    "type": "text",
+    "texte": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — art, musées et expositions ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0261",
+    "type": "text",
+    "texte": "Quelles couleurs te font naturellement du bien ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   },
+   {
+    "cle": "CRE-05",
+    "type": "chips_multi",
+    "texte": "Qu’aimerais-tu absolument éviter dans une attention créative ?",
+    "options": [
+     "r1=Du matériel trop basique",
+     "r2=Du matériel trop expert",
+     "r3=Une technique qui ne m’intéresse pas",
+     "r4=Une œuvre trop imposante",
+     "r5=Un objet décoratif difficile à intégrer",
+     "r6=Un style trop éloigné de mes goûts",
+     "r7=Une copie ou un objet produit en masse",
+     "r8=Une activité qui demande trop de temps",
+     "r9=Un atelier imposé à une date précise",
+     "r10=Un objet qui prend de la place",
+     "r11=Quelque chose de trop fragile",
+     "r12=Un cadeau “créatif” qui ressemble à un devoir",
+     "r13=Autre"
+    ]
+   }
+  ]
+ },
+ "Manon": {
+  "admissibles": 0,
+  "bilan": {
+   "fermer": 1848,
+   "indecidable": 377
+  },
+  "branches": [
+   "deco",
+   "deco & maison",
+   "brocantes",
+   "grd_poor_execution"
+  ],
+  "questions": []
+ },
+ "Clara": {
+  "admissibles": 35,
+  "bilan": {
+   "fermer": 1799,
+   "indecidable": 377,
+   "deja_posee": 12,
+   "ouvrir": 35,
+   "coexistence_nouvelle_pas_encore_posee": 2
+  },
+  "branches": [
+   "art",
+   "museum",
+   "papeteries",
+   "lecture",
+   "reading",
+   "reading2",
+   "grd_poor_execution"
+  ],
+  "questions": [
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   },
+   {
+    "cle": "reading.0112",
+    "type": "chips_single",
+    "texte": "Tu préfères lire…",
+    "options": [
+     "r1=Sur papier",
+     "r2=Sur liseuse",
+     "r3=En livre audio",
+     "r4=Un mélange",
+     "r5=Je n’ai pas de préférence"
+    ]
+   },
+   {
+    "cle": "art.0131",
+    "type": "text",
+    "texte": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — art, musées et expositions ?",
+    "options": []
+   },
+   {
+    "cle": "art.0134",
+    "type": "chips_single",
+    "texte": "Tu préfères visiter…",
+    "options": [
+     "r1=Librement, à mon rythme",
+     "r2=Avec un guide",
+     "r3=Avec un audio-guide",
+     "r4=Avec quelqu’un qui connaît bien le sujet",
+     "r5=Rapidement, en sélectionnant quelques œuvres"
+    ]
+   },
+   {
+    "cle": "museum.0703",
+    "type": "chips_single",
+    "texte": "Ta visite idéale ressemble plutôt à…",
+    "options": [
+     "r1=Longue et approfondie",
+     "r2=Ciblée sur une partie précise",
+     "r3=Libre, au fil des salles",
+     "r4=Guidée par un passionné",
+     "r5=Avec un audioguide à mon rythme",
+     "r6=Courte mais intense",
+     "r7=Combinée avec un café ou un déjeuner"
+    ]
+   },
+   {
+    "cle": "museum.0709",
+    "type": "chips_multi",
+    "texte": "Avant ou après une visite, tu aimes…",
+    "options": [
+     "r1=Lire sur le sujet avant",
+     "r2=Découvrir sans préparation",
+     "r3=Acheter le catalogue",
+     "r4=Passer par la boutique",
+     "r5=Prendre un café sur place",
+     "r6=En parler ensuite",
+     "r7=Prolonger avec un livre ou un documentaire",
+     "r8=Rien de particulier"
+    ]
+   }
+  ]
+ },
+ "Nour": {
+  "admissibles": 41,
+  "bilan": {
+   "fermer": 1830,
+   "indecidable": 340,
+   "ouvrir": 41,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 1,
+   "deja_posee": 6
+  },
+  "branches": [
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "grd_schedule_disruption",
+   "food",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "food.0021",
+    "type": "chips_multi",
+    "texte": "Quelle place la nourriture occupe-t-elle vraiment dans ta vie ?",
+    "options": [
+     "r1=Un plaisir important",
+     "r2=Un grand sujet de passion",
+     "r3=Un moment de partage",
+     "r4=Une source de réconfort",
+     "r5=Un terrain de découverte",
+     "r6=Quelque chose de surtout pratique",
+     "r7=Une attention liée à la santé"
+    ]
+   },
+   {
+    "cle": "food.0023",
+    "type": "chips_single",
+    "texte": "À table, tu es plutôt…",
+    "options": [
+     "r1=Toujours partant(e) pour découvrir",
+     "r2=Curieux(se), mais avec quelques limites",
+     "r3=Fidèle à mes cuisines préférées",
+     "r4=Très attaché(e) à mes habitudes",
+     "r5=Cela dépend du contexte"
+    ]
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0267",
+    "type": "chips_single",
+    "texte": "La foule, pour toi…",
+    "options": [
+     "r1=Me donne de l’énergie",
+     "r2=Ne me dérange pas pour une bonne occasion",
+     "r3=Me fatigue vite",
+     "r4=Me stresse",
+     "r5=Cela dépend de l’espace et de l’organisation"
+    ]
+   },
+   {
+    "cle": "FOO-08",
+    "type": "chips_multi",
+    "texte": "Pour {occasion}, qu’est-ce qui compte le plus dans le choix d’un restaurant ?",
+    "options": [
+     "r1=Cuisine",
+     "r2=Décor",
+     "r3=Ambiance",
+     "r4=Service",
+     "r5=Rapport qualité-prix",
+     "r6=Originalité",
+     "r7=Vue",
+     "r8=Calme",
+     "r9=Terrasse",
+     "r10=Carte des vins",
+     "r11=Produits locaux",
+     "r12=Surprise"
+    ]
+   },
+   {
+    "cle": "FOO-07",
+    "type": "text",
+    "texte": "Quels restaurants ou styles de restaurants te font particulièrement plaisir ?",
+    "options": []
+   }
+  ]
+ },
+ "Alice": {
+  "admissibles": 0,
+  "bilan": {
+   "fermer": 1848,
+   "indecidable": 377
+  },
+  "branches": [
+   "grd_public_exposure"
+  ],
+  "questions": []
+ },
+ "Jeanne": {
+  "admissibles": 17,
+  "bilan": {
+   "fermer": 1825,
+   "indecidable": 377,
+   "coexistence_nouvelle_pas_encore_posee": 2,
+   "deja_posee": 4,
+   "ouvrir": 17
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2"
+  ],
+  "questions": [
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   },
+   {
+    "cle": "reading.0112",
+    "type": "chips_single",
+    "texte": "Tu préfères lire…",
+    "options": [
+     "r1=Sur papier",
+     "r2=Sur liseuse",
+     "r3=En livre audio",
+     "r4=Un mélange",
+     "r5=Je n’ai pas de préférence"
+    ]
+   }
+  ]
+ },
+ "Yasmina": {
+  "admissibles": 49,
+  "bilan": {
+   "fermer": 1804,
+   "indecidable": 351,
+   "deja_posee": 6,
+   "ouvrir": 49,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "voyage",
+   "travel2",
+   "bienetre",
+   "bien-etre",
+   "travel",
+   "grd_public_exposure",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0917",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui te fait dire qu’un hébergement est vraiment réussi ?",
+    "options": [
+     "r1=Le charme ou l’âme du lieu",
+     "r2=La chambre",
+     "r3=La literie",
+     "r4=Le calme",
+     "r5=La localisation",
+     "r6=La vue",
+     "r7=Le service",
+     "r8=Le design",
+     "r9=L’histoire ou l’architecture",
+     "r10=Le petit-déjeuner",
+     "r11=La restauration",
+     "r12=Le spa",
+     "r13=La piscine",
+     "r14=Les espaces communs",
+     "r15=L’accueil humain",
+     "r16=Le rapport qualité-prix",
+     "r17=La praticité"
+    ]
+   },
+   {
+    "cle": "travel2.0918",
+    "type": "chips_single",
+    "texte": "À qualité équivalente, tu serais davantage séduit(e) par…",
+    "options": [
+     "r1=Un lieu simple avec beaucoup d’âme",
+     "r2=Un lieu très confortable",
+     "r3=Un lieu au design exceptionnel",
+     "r4=Un lieu historique",
+     "r5=Un service remarquable",
+     "r6=Une adresse prestigieuse",
+     "r7=Une vue exceptionnelle",
+     "r8=Un excellent rapport qualité-prix",
+     "r9=Un équilibre entre charme et confort"
+    ]
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0267",
+    "type": "chips_single",
+    "texte": "La foule, pour toi…",
+    "options": [
+     "r1=Me donne de l’énergie",
+     "r2=Ne me dérange pas pour une bonne occasion",
+     "r3=Me fatigue vite",
+     "r4=Me stresse",
+     "r5=Cela dépend de l’espace et de l’organisation"
+    ]
+   }
+  ]
+ }
+}

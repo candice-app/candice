@@ -97,6 +97,12 @@ type EntreeExtraction = {
   questionCode?: string; correctionEventId?: string;
   /** La source du VERBATIM dont cette extraction est la lecture, quand l'appelant la connaît. */
   verbatimSourceId?: string;
+  /**
+   * Les relations que le CONTRAT de la question admet pour une entité (onglet 9 du référentiel
+   * Discovery). Absent = pas de contrat particulier. Une entité lue avec une relation hors de
+   * cette liste n'est pas écrite comme entité : elle rejoint la connaissance ouverte, verbatim.
+   */
+  relationsAdmises?: readonly string[];
 };
 
 /**
@@ -197,7 +203,8 @@ function degreCanonique(v: string | undefined): InterestRelationship | undefined
         target_family: 'INTEREST', subject: asSubjectId(normalizeLabel(label)), target_construct: asSubjectId(normalizeLabel(label)),
         subjectLabel: label, ...(u.parentDomain ? { parent_domain: normalizeLabel(u.parentDomain) } : {}),
         ...(degreCanonique(u.relationship) ? { relationship: degreCanonique(u.relationship) } : {}), strength: 'moderate' } as Evidence);
-    } else if (u.family === 'ENTITY' && u.relation && ENTITY_RELATIONS.includes(u.relation)) {
+    } else if (u.family === 'ENTITY' && u.relation && ENTITY_RELATIONS.includes(u.relation)
+      && (!input.relationsAdmises || input.relationsAdmises.includes(u.relation))) {
       evidences.push({ ...common, evidence_id: evidenceId(sourceId, `ENTITY:${normalizeLabel(label)}`), raw_information: label,
         target_family: 'ENTITY', entity_id: asEntityId(normalizeLabel(label)), target_construct: asEntityId(normalizeLabel(label)),
         entityLabel: label, entityType: normalizeLabel(u.entityType ?? 'unknown'), relation: u.relation, strength: 'moderate' } as Evidence);

@@ -20,12 +20,16 @@ const ARTICLES = new Set([
 const COMBINING_MARKS = new RegExp('[\\u0300-\\u036f]', 'g');
 
 export function normalizeLabel(raw: string): string {
-  const deAccented = raw.normalize('NFD').replace(COMBINING_MARKS, '');
-  const lowered = deAccented.toLowerCase();
+  // ⚠ L'ARTICLE EST RECONNU AVANT DE RETIRER LES ACCENTS. La première version dépliait les
+  //    accents d'abord : « thé » devenait « the », article anglais, et disparaissait. « Thé en
+  //    vrac, pas en sachet » s'enregistrait « en vrac pas en sachet » ; « le thé » donnait une
+  //    clé VIDE. Relevé le 19 nov. sur le journal d'un profil de test. Un mot qui porte un
+  //    accent n'est jamais un article de la liste (« thé », « à ») : il est conservé.
+  const lowered = raw.normalize('NFC').toLowerCase();
   // Ponctuation → espace ; on conserve lettres, chiffres, espaces et tirets.
   const depunctuated = lowered.replace(/[^\p{L}\p{N}\s-]/gu, ' ');
   // Tirets et espaces multiples → une seule espace.
   const unified = depunctuated.replace(/[-\s]+/g, ' ').trim();
   const tokens = unified.split(' ').filter((t) => t.length > 0 && !ARTICLES.has(t));
-  return tokens.join(' ');
+  return tokens.map((t) => t.normalize('NFD').replace(COMBINING_MARKS, '')).join(' ');
 }

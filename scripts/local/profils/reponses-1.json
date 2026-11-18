@@ -1,0 +1,20 @@
+{
+ "Sophie": {
+  "food2.0857": ["r2"], "food2.0858": ["r1","r12","r9"], "reading2.1233": ["r6","r1","r10"], "reading2.1235": ["r2","r5"],
+  "sensory.0261": {"texte":"Les verts profonds et les bleus un peu gris. Le blanc cassé aussi.","units":[{"family":"OTHER","label":"verts profonds","relation_label":"couleur qui lui fait du bien"},{"family":"OTHER","label":"bleus un peu gris","relation_label":"couleur qui lui fait du bien"},{"family":"OTHER","label":"blanc cassé","relation_label":"couleur qui lui fait du bien"}]},
+  "sensory.0262": {"texte":"L’orange vif, et le fluo en général.","units":[{"family":"OTHER","label":"orange vif","relation_label":"n’aime presque jamais porter ou avoir chez elle"},{"family":"OTHER","label":"couleurs fluo","relation_label":"n’aime presque jamais porter ou avoir chez elle"}]}
+ },
+ "Camille": {"nature.0210": ["r2"], "nature.0211": ["r1","r2"], "sport.0183": ["r1"], "sport.0184": ["r4","r8","r6"], "sportp.0505": ["r3","r4","r9","r6"], "sportp.0506": ["r6"]},
+ "Inès": {
+  "food2.0857": ["r5"], "food2.0858": ["r5","r1","r9"], "reading2.1233": ["r5","r10","r4"], "reading2.1235": ["r1","r5"],
+  "sensory.0261": {"texte":"Les tons sourds : beige, gris perle, vert sauge.","units":[{"family":"OTHER","label":"tons sourds : beige, gris perle, vert sauge","relation_label":"couleurs qui lui font du bien"}]},
+  "sensory.0262": {"texte":"Tout ce qui brille ou qui est criard.","units":[{"family":"OTHER","label":"tout ce qui brille ou qui est criard","relation_label":"n’aime presque jamais porter ou avoir chez elle"}]}
+ },
+ "Léa": {"travel2.0887": ["r8","r7","r15"], "travel2.0888": ["r4"], "art.0128": ["r2"], "art.0129": ["r1","r2","r5"], "craft.0615": ["r19","r9"], "craft.0616": ["r1","r2"]},
+ "Clara": {"reading2.1233": ["r3","r4","r5"], "reading2.1235": ["r7"], "art.0128": ["r1"], "art.0129": ["r4","r3","r1"], "museum.0699": ["r1","r9","r5"], "museum.0700": ["r6","r7","r4"]},
+ "Nour": {"food2.0857": ["r5"], "food2.0858": ["r1","r5"],
+  "sensory.0261": {"texte":"Je ne sais pas trop. Le bleu marine, peut-être.","units":[{"family":"OTHER","label":"bleu marine","relation_label":"couleur qui lui fait peut-être du bien — elle dit ne pas trop savoir"}]}},
+ "Jeanne": {"reading2.1233": ["r2","r5"], "reading2.1235": ["r1"]},
+ "Yasmina": {"travel2.0887": ["r12","r10"], "travel2.0888": ["r3"],
+  "sensory.0261": {"texte":"Les couleurs chaudes : le terracotta, l’ocre.","units":[{"family":"OTHER","label":"couleurs chaudes : terracotta, ocre","relation_label":"couleurs qui lui font du bien"}]}}
+}

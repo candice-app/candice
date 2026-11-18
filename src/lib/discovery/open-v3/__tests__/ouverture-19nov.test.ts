@@ -176,3 +176,24 @@ describe('la condition d’une sous-partie est écrite sur sa première question
     expect(verdictDe(question('relation2.0793')!, relation)).toBe('ouvrir');
   });
 });
+
+describe('niveau C : la règle vaut pour la question, pas seulement pour une phrase de sa condition', () => {
+  it('« CRE-17 », niveau C, s’ouvrait sur le seul intérêt pour la création : il lui faut un projet', async () => {
+    const { verdictDe } = await import('../selection');
+    const q = question('CRE-17')!;
+    expect(q.niveau).toBe('C');
+    const creation = etat({ tags: new Map([['INTEREST.creativity', 'positive']]), branchesOuvertes: new Set([q.branche]) });
+    expect(verdictDe(q, creation)).toBe('indecidable');                                   // projets non lus : on ne sait pas
+    expect(verdictDe(q, { ...creation, projets: new Map() })).toBe('fermer');             // lus, aucun
+    expect(verdictDe(q, { ...creation, projets: new Map([[q.branche, new Set(['achat' as const])]]) })).toBe('ouvrir');
+  });
+  it('aucune question de niveau C n’est admissible sans projet, quel que soit le reste', () => {
+    const tout = etat({
+      branchesOuvertes: new Set(BANQUE.map((q) => q.branche)), niveauParBranche: new Map(BANQUE.map((q) => [q.branche, 'C' as const])),
+      tags: new Map([...ALIAS_BRANCHES.keys(), 'creativity', 'food', 'shoe', 'floral', 'gaming', 'humor', 'board_game', 'learning', 'watch', 'memories', 'sleep', 'live_performance', 'celebration'].map((d) => [`INTEREST.${d}`, 'positive'])),
+      sujetsChoisis: new Set(BANQUE.map((q) => q.branche)), projets: new Map(),
+    });
+    const c = prochainesQuestions(tout, { combien: 5000, parBranche: 5000 }).choix.map((x) => x.question).filter((q) => q.niveau === 'C');
+    expect(c.filter((q) => !analyserCondition(q.condition_emission).clauses.some((k) => k.type === 'tag' && k.chemin.startsWith('CONTEXT.'))).map((q) => q.id)).toEqual([]);
+  });
+});

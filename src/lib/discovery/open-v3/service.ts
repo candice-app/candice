@@ -35,6 +35,7 @@ import type { Evidence } from '@/lib/knowledge/evidence';
  * ──────────────────────────────────────────────────────────────────────────── */
 export { cleOption } from './cle-option';
 import { cleOption } from './cle-option';
+import { relationsAdmises, OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import { libelleBranche } from './branches';
 import { poolDe, estPrioritaire } from './coexistence';
 
@@ -108,6 +109,8 @@ export class ReponseInvalideError extends Error {}
 
 /** Ce qu'une réponse a produit, pour que l'appelant puisse le dire et le tracer. */
 export interface ResultatReponse {
+  /** La même réponse existait déjà, vivante : rien n'a été réécrit. */
+  readonly dejaFaite?: boolean;
   readonly sourceId: string;
   readonly preuvesEcrites: number;
   /** Options retenues qui n'ont rien produit, avec le motif. Jamais silencieux. */
@@ -152,7 +155,36 @@ export async function enregistrerReponseFermee(
   }
 
   const timestamp = input.timestamp ?? new Date().toISOString();
-  const sourceId = randomUUID();
+  // ── L'IDENTITÉ D'UNE RÉPONSE FERMÉE EST CELLE DE CE QUI A ÉTÉ CHOISI. Même personne, même
+  //    question, mêmes options → même source. La première version tirait un identifiant au
+  //    hasard : un double envoi (deux onglets, un bouton pressé deux fois, une requête rejouée)
+  //    écrivait une seconde source et doublait chaque preuve — la consolidation y lisait une
+  //    conviction deux fois plus appuyée. Relevé le 19 nov. en rejouant un lot de réponses.
+  //    Une réponse DIFFÉRENTE à la même question est une nouvelle source, qui supersède
+  //    l'ancienne : le dernier mot compte, l'ancien reste lisible dans l'historique.
+  const clesTriees = [...new Set(input.clesOptions)].sort();
+  const lectureSources = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): { eq(c: string, v: string):
+      Promise<{ data: { id: string }[] | null; error: { message: string } | null }> } } } };
+  };
+  const { data: anciennes, error: eLecture } = await lectureSources.from('knowledge_sources').select('id')
+    .eq('user_id', input.userId).eq('source_type', 'discovery_closed').eq('question_code', q.id);
+  if (eLecture) throw new Error(`lecture des réponses précédentes impossible : ${eLecture.message}`);
+  const idsAnciens = (anciennes ?? []).map((x) => x.id);
+  let sourceId = evidenceId('discovery_closed', `${input.userId}:${q.id}:${clesTriees.join(',')}`);
+  if (idsAnciens.includes(sourceId)) {
+    const vivantes = client as unknown as {
+      from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+        Promise<{ data: { id: string }[] | null; error: { message: string } | null }> } } };
+    };
+    const { data: encore, error: eVie } = await vivantes.from('knowledge_evidences').select('id').eq('source_id', sourceId).is('superseded_at', null);
+    if (eVie) throw new Error(`lecture des preuves précédentes impossible : ${eVie.message}`);
+    // La même réponse, encore vivante : rien à réécrire.
+    if ((encore ?? []).length > 0) return { sourceId, preuvesEcrites: 0, sansEmission: [], dejaFaite: true };
+    // La même réponse, mais supersédée entre-temps (A, puis B, puis A de nouveau) : c'est un
+    // nouveau dernier mot, il lui faut sa propre source.
+    sourceId = evidenceId('discovery_closed', `${input.userId}:${q.id}:${clesTriees.join(',')}:${idsAnciens.length}`);
+  }
   const about = accountAbout(asUserId(input.userId));
   const source = createSourceRecord({
     about, ownerId: asUserId(input.userId), id: sourceId,
@@ -204,6 +236,8 @@ export async function enregistrerReponseFermee(
     // La connaissance d'abord. Si ceci échoue, l'appelant NE marque pas la question posée :
     // mieux vaut la reposer que perdre la réponse en interdisant de la reposer.
     await persistKnowledge(client, { source, evidences });
+    // Les réponses précédentes à CETTE question cessent d'être vivantes.
+    await supersedeSources(client as never, { oldSourceIds: idsAnciens, newSourceId: sourceId, timestamp });
   }
   if (sansEmission.length > 0) {
     console.warn('[discovery] options sans émission', q.id, sansEmission);
@@ -251,6 +285,7 @@ export async function enregistrerReponseOuverte(
   const q = questionParId(input.questionId);
   if (!q) throw new ReponseInvalideError(`question « ${input.questionId} » absente de la banque active`);
   if (q.forme !== 'open') throw new ReponseInvalideError(`« ${q.id} » n'est pas une question ouverte`);
+  if (OUVERTES_ARCHIVEES.has(q.id)) throw new ReponseInvalideError(`« ${q.id} » est archivée par le référentiel : elle n'est ni servie ni lue`);
   const texte = input.texte.trim();
   if (texte.length === 0) throw new ReponseInvalideError('réponse vide');
 
@@ -299,6 +334,8 @@ export async function enregistrerReponseOuverte(
       // La barrière accompagne la question : le modèle lit les deux ensemble.
       fieldContext: `${q.enonce}\n\nINFÉRENCES INTERDITES : ${barriere}`,
       questionCode: factType, verbatimSourceId, timestamp,
+      // Le contrat de la question borne les relations qu'une entité peut y recevoir.
+      ...(relationsAdmises(q.id) ? { relationsAdmises: relationsAdmises(q.id) } : {}),
     });
     return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: r.evidences.length, extractionEnAttente: false };
   } catch (e) {
@@ -410,6 +447,8 @@ export async function rejouerLecturesEnAttente(
       about, ownerId, rawText: v.raw_text,
       fieldContext: `${q.enonce}\n\nINFÉRENCES INTERDITES : ${barriere ?? ''}`,
       questionCode: v.question_code, verbatimSourceId: v.id, timestamp: v.ts,
+      // Le rejeu applique le MÊME contrat que la première lecture.
+      ...(relationsAdmises(qid) ? { relationsAdmises: relationsAdmises(qid) } : {}),
     };
     const attendue = estEnvie ? sourceLectureEnvie(v.id) : extractionSourceId(entree);
     if (await existe(attendue)) continue;                       // déjà lue : rien à faire

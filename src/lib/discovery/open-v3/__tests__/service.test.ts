@@ -1,3 +1,4 @@
+import { fauxClientLecture } from '../../../knowledge/__tests__/faux-client';
 import { describe, it, expect, vi } from 'vitest';
 import { enregistrerReponseFermee, enregistrerReponseOuverte, cleOption, ReponseInvalideError } from '../service';
 import { BANQUE } from '../banque';
@@ -9,11 +10,14 @@ import { produireDepuisOption } from '../produire';
 // pas le fait que la fonction n'ait pas levé. Un test qui se contente de « ça n'a pas
 // explosé » ne dit rien de ce qui a été écrit.
 
-const faux = () => {
+const faux = (tables: Record<string, readonly unknown[]> = {}) => {
   const appels: { fn: string; args: Record<string, unknown> }[] = [];
   return {
     appels,
     client: {
+      // Les lectures passent par un faux client qui APPLIQUE les filtres (réponses déjà
+      // données à la question) ; les écritures restent espionnées.
+      from: fauxClientLecture(tables).from,
       rpc: vi.fn(async (fn: string, args: Record<string, unknown>) => {
         appels.push({ fn, args });
         return { data: { sources: 1, evidences: 1, facts: 0, open: 0 }, error: null };
@@ -110,15 +114,31 @@ describe('ce qui est écrit porte sa provenance', () => {
       questionId: q.id, clesOptions: [cleOption(q.options[0])],
       timestamp: '2026-11-17T12:00:00.000Z',
     };
-    // Même source → mêmes identifiants. On force la même source en rejouant la charge.
-    const a = faux(); await enregistrerReponseFermee(a.client, commun);
-    const idsA = (a.appels[0].args.p_evidences as Record<string, unknown>[]).map((e) => e.id ?? e.evidence_id);
-    // Une NOUVELLE réponse a une nouvelle source, donc de nouvelles preuves : le journal
-    // n'écrase pas, les deux coexistent. C'est voulu, et on le vérifie aussi.
-    const b = faux(); await enregistrerReponseFermee(b.client, commun);
-    const idsB = (b.appels[0].args.p_evidences as Record<string, unknown>[]).map((e) => e.id ?? e.evidence_id);
-    expect(idsA.length).toBeGreaterThan(0);
-    expect(idsA).not.toEqual(idsB);
+    // LA MÊME RÉPONSE A LA MÊME SOURCE : l'identité vient de ce qui a été choisi.
+    const a = faux(); const ra = await enregistrerReponseFermee(a.client, commun);
+    const b = faux(); const rb = await enregistrerReponseFermee(b.client, { ...commun, timestamp: '2026-11-18T09:00:00.000Z' });
+    const ids = (x: typeof a) => (x.appels[0].args.p_evidences as Record<string, unknown>[]).map((e) => e.id ?? e.evidence_id);
+    expect(ids(a).length).toBeGreaterThan(0);
+    expect(rb.sourceId).toBe(ra.sourceId);
+    expect(ids(b)).toEqual(ids(a));
+    // Et quand elle est déjà au journal, encore vivante : rien n'est réécrit (double envoi).
+    const c = faux({
+      knowledge_sources: [{ id: ra.sourceId, user_id: commun.userId, source_type: 'discovery_closed', question_code: q.id }],
+      knowledge_evidences: [{ id: 'e1', source_id: ra.sourceId, superseded_at: null }],
+    });
+    const rc = await enregistrerReponseFermee(c.client, commun);
+    expect(rc).toMatchObject({ dejaFaite: true, preuvesEcrites: 0, sourceId: ra.sourceId });
+    expect(c.appels).toHaveLength(0);
+    // La même réponse, mais supersédée entre-temps : un nouveau dernier mot, une nouvelle source.
+    const d = faux({
+      knowledge_sources: [{ id: ra.sourceId, user_id: commun.userId, source_type: 'discovery_closed', question_code: q.id }],
+      knowledge_evidences: [{ id: 'e1', source_id: ra.sourceId, superseded_at: '2026-11-17T13:00:00.000Z' }],
+    });
+    // (l'écriture de la supersession n'est pas jouée par ce faux client : elle est prouvée sur
+    //  la pile locale, script 31.)
+    await expect(enregistrerReponseFermee(d.client, commun)).rejects.toThrow();
+    expect(d.appels).toHaveLength(1);
+    expect((d.appels[0].args.p_source as { id?: string } | undefined)?.id ?? JSON.stringify(d.appels[0].args)).not.toBe(ra.sourceId);
   });
 
   it('une option qui ne produit rien est signalée, pas avalée', async () => {

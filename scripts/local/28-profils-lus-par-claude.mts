@@ -128,7 +128,15 @@ if (etape === 'hsg') {
     const ok = (await s.client.from('knowledge_open_knowledge').select('*').eq('user_id', s.userId)).data ?? [];
     const faits = (await s.client.from('knowledge_facts').select('*').eq('user_id', s.userId)).data ?? [];
     const portrait = await lirePortrait(s.client as never, { userId: s.userId });
-    sortie[voix.prenom] = { attendu: voix.attendu, preuves: ev, connaissances_ouvertes: ok, faits, portrait };
+    // Relevé COMPACT et sans identifiant de compte : ce que le journal dit, pas ses clés techniques.
+    const garder = (o: Record<string, unknown>, cles: string[]) => Object.fromEntries(cles.filter((k) => o[k] !== null && o[k] !== undefined && o[k] !== '').map((k) => [k, o[k]]));
+    void portrait;
+    sortie[voix.prenom] = {
+      attendu: voix.attendu,
+      preuves: ev.map((e) => garder(e, ['target_family', 'target_construct', 'preference_value', 'polarity', 'relationship', 'relation', 'parent_domain', 'severity', 'strength', 'stability', 'confidence', 'assertion_status', 'source_type', 'superseded_at'])),
+      connaissances_ouvertes: ok.map((x) => garder(x, ['subject_label', 'subject', 'relation', 'sensitive', 'assertion_status'])),
+      faits: faits.map((f) => garder(f, ['fact_type', 'value', 'superseded_at'])),
+    };
     const parFamille: Record<string, number> = {};
     for (const e of ev) parFamille[e.target_family as string] = (parFamille[e.target_family as string] ?? 0) + 1;
     console.log(`${voix.prenom.padEnd(8)} ${ev.length} preuve(s) ${JSON.stringify(parFamille)} · ${ok.length} connaissance(s) ouverte(s) · ${faits.length} fait(s)`);

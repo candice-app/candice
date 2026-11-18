@@ -29,6 +29,7 @@
 // parcours n'est reproductible.
 // ─────────────────────────────────────────────────────────────────────────────────────
 import { DEPENDANCES, TETES_DE_SOUS_PARTIE } from './dependances';
+import { OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import { coexistence, estPrioritaire, poolDe } from './coexistence';
 import { BANQUE, type QuestionV3 } from './banque';
 import { analyserCondition, evaluerCondition, type EtatDiscovery, type Verdict } from './conditions';
@@ -68,9 +69,20 @@ export interface Resultat {
  */
 export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyMap<string, number> = PARTAGE_BANQUE): Verdict {
   const vise = informationVisee(q, partage);
-  const propre = evaluerCondition(analyserCondition(q.condition_emission), etat,
+  const analyse = analyserCondition(q.condition_emission);
+  const propre = evaluerCondition(analyse, etat,
     { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(q.id) });
   if (propre === 'fermer') return 'fermer';
+  // ── UNE QUESTION DE NIVEAU C EXIGE « UN OBJET, UNE ACTION OU UNE OCCASION NOMMÉS » (politique
+  //    de saturation du référentiel), quelle que soit la façon dont sa condition est écrite.
+  //    Les questions de la refonte la disent par un tag (`INTEREST.creativity=positive`) : sans
+  //    cette règle, « CRE-17 » s'ouvrait à quiconque s'intéresse à la création. Il faut un
+  //    projet en cours dans le domaine — ou une condition qui porte elle-même sur un contexte
+  //    nommé (`CONTEXT.…`), auquel cas c'est elle qui en répond.
+  if (q.niveau === 'C' && !analyse.clauses.some((c) => c.type === 'tag' && c.chemin.startsWith('CONTEXT.'))) {
+    if (!etat.projets) return 'indecidable';
+    if ((etat.projets.get(poolDe(q.branche))?.size ?? 0) === 0) return 'fermer';
+  }
   const idTete = TETES_DE_SOUS_PARTIE.get(q.id);
   const tete = idTete ? PAR_ID.get(idTete) : undefined;
   if (!tete) return propre;
@@ -152,6 +164,8 @@ export function prochainesQuestions(
   for (const q of banque) {
     if (etat.dejaPosees.has(q.id)) { dejaPosees++; continue; }
     if (sterile(q)) { steriles++; continue; }
+    // Une question ouverte que le référentiel a archivée (onglet 9) n'est jamais servie.
+    if (OUVERTES_ARCHIVEES.has(q.id)) { steriles++; continue; }
     // UN DOMAINE QUE LA PERSONNE A ÉCARTÉ n'est plus proposé d'initiative. Sa propre démarche
     // (« explorer ce sujet ») est la seule chose qui passe outre.
     if (etat.nePasCreuser.has(q.branche) && !etat.sujetsChoisis?.has(q.branche)) { fermees++; continue; }

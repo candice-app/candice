@@ -1,0 +1,822 @@
+{
+ "Sophie": {
+  "admissibles": 50,
+  "bilan": {
+   "fermer": 1819,
+   "indecidable": 340,
+   "ouvrir": 50,
+   "coexistence_nouvelle_pas_encore_posee": 9,
+   "coexistence_remplacee": 1,
+   "deja_posee": 6
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2",
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "food gastronomy",
+   "food",
+   "Food & Gastronomie",
+   "marcher seule en ville avec podcast",
+   "marcher seule en ville avec un podcast",
+   "books literature",
+   "grd_schedule_disruption",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "food2.0859",
+    "type": "chips_multi",
+    "texte": "Parmi ces expériences gourmandes, lesquelles te feraient vraiment plaisir ?",
+    "options": [
+     "r1=Restaurant gastronomique",
+     "r2=Petit bistrot exceptionnel",
+     "r3=Atelier de cuisine",
+     "r4=Atelier pâtisserie",
+     "r5=Dégustation",
+     "r6=Chef à domicile",
+     "r7=Marché local",
+     "r8=Visite de producteur",
+     "r9=Pique-nique",
+     "r10=Brunch",
+     "r11=Food tour",
+     "r12=Week-end gastronomique"
+    ]
+   },
+   {
+    "cle": "food2.0860",
+    "type": "chips_multi",
+    "texte": "Autour de la nourriture, qu’est-ce qui te ferait plutôt passer à côté ?",
+    "options": [
+     "r1=Les coffrets trop génériques",
+     "r2=Les gadgets de cuisine",
+     "r3=Les produits très luxueux",
+     "r4=Les paniers imposés",
+     "r5=Les restaurants gastronomiques",
+     "r6=Les ateliers",
+     "r7=Les box",
+     "r8=Les produits sucrés",
+     "r9=Les boissons alcoolisées",
+     "r10=Les cadeaux alimentaires en général"
+    ]
+   },
+   {
+    "cle": "reading2.1237",
+    "type": "chips_single",
+    "texte": "Recevoir un livre en cadeau te semble…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Une bonne idée si la personne me connaît très bien",
+     "r3=Une bonne idée avec une référence précise",
+     "r4=Une bonne idée dans certains genres seulement",
+     "r5=Assez risqué",
+     "r6=Je préfère choisir moi-même"
+    ]
+   },
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   },
+   {
+    "cle": "sensory.0264",
+    "type": "chips_single",
+    "texte": "Pour te sentir bien dans un lieu, tu préfères…",
+    "options": [
+     "r1=Le silence",
+     "r2=Une musique douce",
+     "r3=Une ambiance vivante",
+     "r4=Des bruits de nature",
+     "r5=Cela dépend du moment"
+    ]
+   },
+   {
+    "cle": "sensory.0267",
+    "type": "chips_single",
+    "texte": "La foule, pour toi…",
+    "options": [
+     "r1=Me donne de l’énergie",
+     "r2=Ne me dérange pas pour une bonne occasion",
+     "r3=Me fatigue vite",
+     "r4=Me stresse",
+     "r5=Cela dépend de l’espace et de l’organisation"
+    ]
+   }
+  ]
+ },
+ "Camille": {
+  "admissibles": 17,
+  "bilan": {
+   "fermer": 1825,
+   "indecidable": 377,
+   "deja_posee": 6,
+   "ouvrir": 17
+  },
+  "branches": [
+   "nature",
+   "sport",
+   "bricolage",
+   "sport fitness",
+   "sportp",
+   "grd_poor_execution",
+   "sport_practice"
+  ],
+  "questions": [
+   {
+    "cle": "nature.0212",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à nature et plein air ?",
+    "options": [
+     "r1=Froid",
+     "r2=Chaleur",
+     "r3=Pluie",
+     "r4=Insectes",
+     "r5=Foule",
+     "r6=Manque de toilettes",
+     "r7=Dormir dehors",
+     "r8=Marcher longtemps"
+    ]
+   },
+   {
+    "cle": "nature.0215",
+    "type": "chips_multi",
+    "texte": "Dans quel environnement te sens-tu le mieux ?",
+    "options": [
+     "r1=Montagne",
+     "r2=Forêt",
+     "r3=Campagne",
+     "r4=Mer ou océan",
+     "r5=Lac ou rivière",
+     "r6=Désert",
+     "r7=Jungle",
+     "r8=Parc urbain",
+     "r9=Chez moi"
+    ]
+   },
+   {
+    "cle": "sport.0185",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à sport et activité physique ?",
+    "options": [
+     "r1=Blessure",
+     "r2=Mauvaise référence",
+     "r3=Pression",
+     "r4=Injonction",
+     "r5=Équipement inutile",
+     "r6=Taille",
+     "r7=Niveau inadéquat",
+     "r8=Logistique"
+    ]
+   },
+   {
+    "cle": "sport.0189",
+    "type": "chips_single",
+    "texte": "À quelle fréquence fais-tu du sport ?",
+    "options": [
+     "r1=Presque tous les jours",
+     "r2=Plusieurs fois par semaine",
+     "r3=Une fois par semaine",
+     "r4=Par périodes",
+     "r5=Rarement en ce moment"
+    ]
+   },
+   {
+    "cle": "sportp.0507",
+    "type": "text",
+    "texte": "Y a-t-il quelque chose qu’il faudrait absolument éviter dans une attention liée au sport ?",
+    "options": []
+   }
+  ]
+ },
+ "Inès": {
+  "admissibles": 50,
+  "bilan": {
+   "fermer": 1819,
+   "indecidable": 340,
+   "ouvrir": 50,
+   "coexistence_nouvelle_pas_encore_posee": 9,
+   "coexistence_remplacee": 1,
+   "deja_posee": 6
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2",
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "books literature",
+   "grd_public_exposure",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "food2.0859",
+    "type": "chips_multi",
+    "texte": "Parmi ces expériences gourmandes, lesquelles te feraient vraiment plaisir ?",
+    "options": [
+     "r1=Restaurant gastronomique",
+     "r2=Petit bistrot exceptionnel",
+     "r3=Atelier de cuisine",
+     "r4=Atelier pâtisserie",
+     "r5=Dégustation",
+     "r6=Chef à domicile",
+     "r7=Marché local",
+     "r8=Visite de producteur",
+     "r9=Pique-nique",
+     "r10=Brunch",
+     "r11=Food tour",
+     "r12=Week-end gastronomique"
+    ]
+   },
+   {
+    "cle": "food2.0860",
+    "type": "chips_multi",
+    "texte": "Autour de la nourriture, qu’est-ce qui te ferait plutôt passer à côté ?",
+    "options": [
+     "r1=Les coffrets trop génériques",
+     "r2=Les gadgets de cuisine",
+     "r3=Les produits très luxueux",
+     "r4=Les paniers imposés",
+     "r5=Les restaurants gastronomiques",
+     "r6=Les ateliers",
+     "r7=Les box",
+     "r8=Les produits sucrés",
+     "r9=Les boissons alcoolisées",
+     "r10=Les cadeaux alimentaires en général"
+    ]
+   },
+   {
+    "cle": "reading2.1237",
+    "type": "chips_single",
+    "texte": "Recevoir un livre en cadeau te semble…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Une bonne idée si la personne me connaît très bien",
+     "r3=Une bonne idée avec une référence précise",
+     "r4=Une bonne idée dans certains genres seulement",
+     "r5=Assez risqué",
+     "r6=Je préfère choisir moi-même"
+    ]
+   },
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   },
+   {
+    "cle": "sensory.0264",
+    "type": "chips_single",
+    "texte": "Pour te sentir bien dans un lieu, tu préfères…",
+    "options": [
+     "r1=Le silence",
+     "r2=Une musique douce",
+     "r3=Une ambiance vivante",
+     "r4=Des bruits de nature",
+     "r5=Cela dépend du moment"
+    ]
+   },
+   {
+    "cle": "sensory.0267",
+    "type": "chips_single",
+    "texte": "La foule, pour toi…",
+    "options": [
+     "r1=Me donne de l’énergie",
+     "r2=Ne me dérange pas pour une bonne occasion",
+     "r3=Me fatigue vite",
+     "r4=Me stresse",
+     "r5=Cela dépend de l’espace et de l’organisation"
+    ]
+   }
+  ]
+ },
+ "Léa": {
+  "admissibles": 43,
+  "bilan": {
+   "fermer": 1808,
+   "ouvrir": 43,
+   "indecidable": 353,
+   "deja_posee": 6,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "craftsmanship",
+   "Arts visuels & pratiques créatives",
+   "craft",
+   "creator",
+   "creativity",
+   "art",
+   "voyage",
+   "travel2",
+   "grd_too_intimate",
+   "grd_sentimental_overload"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0889",
+    "type": "chips_single",
+    "texte": "Si quelqu’un organisait un séjour pour toi, tu préférerais…",
+    "options": [
+     "r1=Tout connaître et tout valider",
+     "r2=Valider la destination, les dates et l’hébergement",
+     "r3=Valider les grandes lignes et garder quelques surprises",
+     "r4=Connaître les dates, mais découvrir le contenu",
+     "r5=Être presque totalement surpris(e)",
+     "r6=Tout organiser moi-même",
+     "r7=Cela dépend de la personne qui organise"
+    ]
+   },
+   {
+    "cle": "travel2.0891",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher un voyage pour toi ?",
+    "options": [
+     "r1=Un mauvais hébergement",
+     "r2=Un programme trop chargé",
+     "r3=Trop de transports",
+     "r4=Un manque d’organisation",
+     "r5=Trop de rigidité",
+     "r6=La foule",
+     "r7=Le bruit",
+     "r8=La chaleur",
+     "r9=Le froid",
+     "r10=Une mauvaise nourriture",
+     "r11=Le manque de confort",
+     "r12=Le manque d’authenticité",
+     "r13=Des dépenses imprévues",
+     "r14=Voyager avec les mauvaises personnes",
+     "r15=Ne pas avoir assez de temps seul(e)",
+     "r16=Des activités imposées",
+     "r17=Autre"
+    ]
+   },
+   {
+    "cle": "art.0130",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — art, musées et expositions ?",
+    "options": [
+     "r1=Foule",
+     "r2=Visite trop longue",
+     "r3=Médiation absente",
+     "r4=Art trop conceptuel",
+     "r5=Lieu froid",
+     "r6=Trop d’informations",
+     "r7=Scénographie faible",
+     "r8=Manque de confort"
+    ]
+   },
+   {
+    "cle": "art.0133",
+    "type": "chips_multi",
+    "texte": "Quand tu visites un musée ou une exposition, qu’est-ce qui t’attire le plus ?",
+    "options": [
+     "r1=Peinture",
+     "r2=Photographie",
+     "r3=Sculpture",
+     "r4=Art contemporain",
+     "r5=Art moderne",
+     "r6=Impressionnisme",
+     "r7=Mode",
+     "r8=Design",
+     "r9=Architecture",
+     "r10=Histoire",
+     "r11=Sciences",
+     "r12=Archéologie",
+     "r13=Street art",
+     "r14=Expériences immersives"
+    ]
+   },
+   {
+    "cle": "craft.0617",
+    "type": "chips_single",
+    "texte": "Recevoir quelque chose lié à l’art ou à une pratique créative, pour toi, ce serait…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Une bonne idée si cela correspond exactement à ma pratique",
+     "r3=Oui pour un atelier ou une expérience",
+     "r4=Oui pour une œuvre ou un objet artisanal",
+     "r5=Oui pour du matériel, mais avec une référence précise",
+     "r6=Plutôt risqué : je préfère choisir",
+     "r7=Je préfère éviter ce type de cadeau"
+    ]
+   },
+   {
+    "cle": "craft.0618",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qu’il faudrait absolument éviter dans une attention artistique ou créative ?",
+    "options": [
+     "r1=Du matériel trop basique",
+     "r2=Du matériel trop expert",
+     "r3=Une technique qui ne m’intéresse pas",
+     "r4=Une œuvre trop imposante",
+     "r5=Un objet décoratif difficile à intégrer",
+     "r6=Un style trop éloigné de mes goûts",
+     "r7=Une copie ou un objet produit en masse",
+     "r8=Une activité qui demande trop de temps",
+     "r9=Un atelier imposé à une date précise",
+     "r10=Un objet qui prend de la place",
+     "r11=Quelque chose de trop fragile",
+     "r12=Un cadeau « créatif » qui ressemble à un devoir",
+     "r13=Autre"
+    ]
+   }
+  ]
+ },
+ "Manon": {
+  "admissibles": 0,
+  "bilan": {
+   "fermer": 1848,
+   "indecidable": 377
+  },
+  "branches": [
+   "deco",
+   "deco & maison",
+   "brocantes",
+   "grd_poor_execution"
+  ],
+  "questions": []
+ },
+ "Clara": {
+  "admissibles": 20,
+  "bilan": {
+   "fermer": 1820,
+   "indecidable": 377,
+   "deja_posee": 6,
+   "ouvrir": 20,
+   "coexistence_nouvelle_pas_encore_posee": 2
+  },
+  "branches": [
+   "art",
+   "museum",
+   "papeteries",
+   "lecture",
+   "reading",
+   "reading2",
+   "grd_poor_execution"
+  ],
+  "questions": [
+   {
+    "cle": "reading2.1237",
+    "type": "chips_single",
+    "texte": "Recevoir un livre en cadeau te semble…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Une bonne idée si la personne me connaît très bien",
+     "r3=Une bonne idée avec une référence précise",
+     "r4=Une bonne idée dans certains genres seulement",
+     "r5=Assez risqué",
+     "r6=Je préfère choisir moi-même"
+    ]
+   },
+   {
+    "cle": "art.0130",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — art, musées et expositions ?",
+    "options": [
+     "r1=Foule",
+     "r2=Visite trop longue",
+     "r3=Médiation absente",
+     "r4=Art trop conceptuel",
+     "r5=Lieu froid",
+     "r6=Trop d’informations",
+     "r7=Scénographie faible",
+     "r8=Manque de confort"
+    ]
+   },
+   {
+    "cle": "art.0133",
+    "type": "chips_multi",
+    "texte": "Quand tu visites un musée ou une exposition, qu’est-ce qui t’attire le plus ?",
+    "options": [
+     "r1=Peinture",
+     "r2=Photographie",
+     "r3=Sculpture",
+     "r4=Art contemporain",
+     "r5=Art moderne",
+     "r6=Impressionnisme",
+     "r7=Mode",
+     "r8=Design",
+     "r9=Architecture",
+     "r10=Histoire",
+     "r11=Sciences",
+     "r12=Archéologie",
+     "r13=Street art",
+     "r14=Expériences immersives"
+    ]
+   },
+   {
+    "cle": "museum.0701",
+    "type": "chips_single",
+    "texte": "Recevoir une attention liée aux musées ou expositions, ce serait…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Oui, pour une exposition bien choisie",
+     "r3=Oui, pour une visite à partager",
+     "r4=Oui, pour un beau livre ou catalogue",
+     "r5=Oui, pour un pass ou un abonnement",
+     "r6=Seulement si cela correspond vraiment à mes goûts",
+     "r7=Je préfère éviter"
+    ]
+   },
+   {
+    "cle": "museum.0702",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui pourrait gâcher une visite pour toi ?",
+    "options": [
+     "r1=La foule",
+     "r2=Devoir faire la queue",
+     "r3=Une visite trop longue",
+     "r4=Un audioguide imposé",
+     "r5=Une visite trop rapide avec quelqu’un de pressé",
+     "r6=Un sujet qui ne m’intéresse pas",
+     "r7=Des espaces bruyants",
+     "r8=Une visite guidée obligatoire",
+     "r9=Y aller seul(e)",
+     "r10=Y aller accompagné(e)",
+     "r11=Rien de particulier"
+    ]
+   },
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   }
+  ]
+ },
+ "Nour": {
+  "admissibles": 41,
+  "bilan": {
+   "fermer": 1833,
+   "indecidable": 340,
+   "ouvrir": 41,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 1,
+   "deja_posee": 3
+  },
+  "branches": [
+   "cuisine",
+   "food2",
+   "cuisine & gastronomie",
+   "grd_schedule_disruption",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "food2.0859",
+    "type": "chips_multi",
+    "texte": "Parmi ces expériences gourmandes, lesquelles te feraient vraiment plaisir ?",
+    "options": [
+     "r1=Restaurant gastronomique",
+     "r2=Petit bistrot exceptionnel",
+     "r3=Atelier de cuisine",
+     "r4=Atelier pâtisserie",
+     "r5=Dégustation",
+     "r6=Chef à domicile",
+     "r7=Marché local",
+     "r8=Visite de producteur",
+     "r9=Pique-nique",
+     "r10=Brunch",
+     "r11=Food tour",
+     "r12=Week-end gastronomique"
+    ]
+   },
+   {
+    "cle": "food2.0860",
+    "type": "chips_multi",
+    "texte": "Autour de la nourriture, qu’est-ce qui te ferait plutôt passer à côté ?",
+    "options": [
+     "r1=Les coffrets trop génériques",
+     "r2=Les gadgets de cuisine",
+     "r3=Les produits très luxueux",
+     "r4=Les paniers imposés",
+     "r5=Les restaurants gastronomiques",
+     "r6=Les ateliers",
+     "r7=Les box",
+     "r8=Les produits sucrés",
+     "r9=Les boissons alcoolisées",
+     "r10=Les cadeaux alimentaires en général"
+    ]
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0264",
+    "type": "chips_single",
+    "texte": "Pour te sentir bien dans un lieu, tu préfères…",
+    "options": [
+     "r1=Le silence",
+     "r2=Une musique douce",
+     "r3=Une ambiance vivante",
+     "r4=Des bruits de nature",
+     "r5=Cela dépend du moment"
+    ]
+   },
+   {
+    "cle": "FOO-04",
+    "type": "chips_multi",
+    "texte": "Qu’aimerais-tu éviter dans une attention gourmande ?",
+    "options": [
+     "r1=Les coffrets trop génériques",
+     "r2=Les gadgets de cuisine",
+     "r3=Les produits très luxueux",
+     "r4=Les paniers imposés",
+     "r5=Les restaurants gastronomiques",
+     "r6=Les ateliers",
+     "r7=Les box",
+     "r8=Les produits sucrés",
+     "r9=Les boissons alcoolisées",
+     "r10=Les cadeaux alimentaires en général"
+    ]
+   },
+   {
+    "cle": "FOO-08",
+    "type": "chips_multi",
+    "texte": "Pour {occasion}, qu’est-ce qui compte le plus dans le choix d’un restaurant ?",
+    "options": [
+     "r1=Cuisine",
+     "r2=Décor",
+     "r3=Ambiance",
+     "r4=Service",
+     "r5=Rapport qualité-prix",
+     "r6=Originalité",
+     "r7=Vue",
+     "r8=Calme",
+     "r9=Terrasse",
+     "r10=Carte des vins",
+     "r11=Produits locaux",
+     "r12=Surprise"
+    ]
+   }
+  ]
+ },
+ "Alice": {
+  "admissibles": 0,
+  "bilan": {
+   "fermer": 1848,
+   "indecidable": 377
+  },
+  "branches": [
+   "grd_public_exposure"
+  ],
+  "questions": []
+ },
+ "Jeanne": {
+  "admissibles": 10,
+  "bilan": {
+   "fermer": 1834,
+   "indecidable": 377,
+   "coexistence_nouvelle_pas_encore_posee": 2,
+   "ouvrir": 10,
+   "deja_posee": 2
+  },
+  "branches": [
+   "lecture",
+   "reading",
+   "reading2"
+  ],
+  "questions": [
+   {
+    "cle": "reading2.1237",
+    "type": "chips_single",
+    "texte": "Recevoir un livre en cadeau te semble…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Une bonne idée si la personne me connaît très bien",
+     "r3=Une bonne idée avec une référence précise",
+     "r4=Une bonne idée dans certains genres seulement",
+     "r5=Assez risqué",
+     "r6=Je préfère choisir moi-même"
+    ]
+   },
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   }
+  ]
+ },
+ "Yasmina": {
+  "admissibles": 30,
+  "bilan": {
+   "fermer": 1826,
+   "indecidable": 351,
+   "deja_posee": 3,
+   "ouvrir": 30,
+   "coexistence_nouvelle_pas_encore_posee": 7,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "voyage",
+   "travel2",
+   "bienetre",
+   "bien-etre",
+   "grd_public_exposure",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0889",
+    "type": "chips_single",
+    "texte": "Si quelqu’un organisait un séjour pour toi, tu préférerais…",
+    "options": [
+     "r1=Tout connaître et tout valider",
+     "r2=Valider la destination, les dates et l’hébergement",
+     "r3=Valider les grandes lignes et garder quelques surprises",
+     "r4=Connaître les dates, mais découvrir le contenu",
+     "r5=Être presque totalement surpris(e)",
+     "r6=Tout organiser moi-même",
+     "r7=Cela dépend de la personne qui organise"
+    ]
+   },
+   {
+    "cle": "travel2.0891",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher un voyage pour toi ?",
+    "options": [
+     "r1=Un mauvais hébergement",
+     "r2=Un programme trop chargé",
+     "r3=Trop de transports",
+     "r4=Un manque d’organisation",
+     "r5=Trop de rigidité",
+     "r6=La foule",
+     "r7=Le bruit",
+     "r8=La chaleur",
+     "r9=Le froid",
+     "r10=Une mauvaise nourriture",
+     "r11=Le manque de confort",
+     "r12=Le manque d’authenticité",
+     "r13=Des dépenses imprévues",
+     "r14=Voyager avec les mauvaises personnes",
+     "r15=Ne pas avoir assez de temps seul(e)",
+     "r16=Des activités imposées",
+     "r17=Autre"
+    ]
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0264",
+    "type": "chips_single",
+    "texte": "Pour te sentir bien dans un lieu, tu préfères…",
+    "options": [
+     "r1=Le silence",
+     "r2=Une musique douce",
+     "r3=Une ambiance vivante",
+     "r4=Des bruits de nature",
+     "r5=Cela dépend du moment"
+    ]
+   }
+  ]
+ }
+}

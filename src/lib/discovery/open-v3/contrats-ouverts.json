@@ -1,0 +1,1874 @@
+{
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_3.xlsx",
+ "sha256_classeur": "1b326ff4ea28d83cc8880e8451d30acff7d31a93962f8c73d3a738fdc5093425",
+ "contrats": [
+  {
+   "question": "CHS-05",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:gift_antipattern:SOFT",
+   "schema_ecriture": "detail_chaussure_a_eviter=<segment explicite>",
+   "scope": "chaussures à recevoir/acheter",
+   "condition_extraction": "Un détail nommé comme à éviter crée seulement une exclusion sur ce détail. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer rejet de toutes les chaussures ni contrainte médicale. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "CHS-10",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:constraint:SOFT",
+   "schema_ecriture": "matiere_chaussure_refusee_ou_mal_supportee=<matiere>",
+   "scope": "matières des chaussures",
+   "condition_extraction": "Extraire la matière seulement si elle est nommée. Refus explicite => exclusion, inconfort décrit => contrainte sans diagnostic. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas d’allergie ou de pathologie déduite; pas de généralisation hors chaussures. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "CRE-06",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "element_creatif_deplait=<technique|style|matiere>",
+   "scope": "technique/style/matière créative",
+   "condition_extraction": "Créer préférence négative contextualisée; relation DISLIKE uniquement si un concept est explicitement nommé, jamais LOVE/LIKE. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "N’aime pas ne veut pas dire interdiction HARD ni dégoût de toute la créativité. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "FOO-07",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_PLACE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:known_references",
+   "schema_ecriture": "restaurant=<lieu résolu> OU style_restaurant=<style littéral>",
+   "scope": "restaurants et styles seulement",
+   "condition_extraction": "Restaurant nommé => ENTITY_PLACE LIKE dans le seul contexte restaurant après résolution; style => PREFERENCE.type_preference. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Mention du restaurant ne prouve aimer tous ses plats; pas de fausse adresse ni d’intention de visite. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "FPL-14",
+   "statut": "ARCHIVE_NON_EXECUTABLE",
+   "polarite": "NONE",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "NO_EMISSION",
+   "destination_secondaire": "NONE",
+   "schema_ecriture": "AUCUNE",
+   "scope": "archive hors parcours",
+   "condition_extraction": "Ne jamais activer de parseur ni d’émission sur la ligne archivée. NO_EMISSION; aucun parseur",
+   "inferences_interdites": "Conserver verbatim et stratégie historique pour traçabilité sans effet. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "aucune",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "GAM-12",
+   "statut": "ARCHIVE_NON_EXECUTABLE",
+   "polarite": "NONE",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "NO_EMISSION",
+   "destination_secondaire": "NONE",
+   "schema_ecriture": "AUCUNE",
+   "scope": "archive hors parcours",
+   "condition_extraction": "Ne jamais activer de parseur ni d’émission sur la ligne archivée. NO_EMISSION; aucun parseur",
+   "inferences_interdites": "Attachement historique à une console n’est ni possession ni projet d’achat. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "aucune",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "MON-06",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:gift_antipattern:SOFT",
+   "schema_ecriture": "detail_montre_a_eviter=<detail nommé>",
+   "scope": "montre cadeau ou achat",
+   "condition_extraction": "Une exclusion par détail explicitement nommé. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de rejet des montres ni de marque entière par extrapolation. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "THE-15",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "ACTION_PARAMETER",
+   "schema_ecriture": "type_spectacle_souhaite=<type explicite>; action_id obligatoire",
+   "scope": "sortie/spectacle identifié",
+   "condition_extraction": "Créer une préférence locale rattachée à la sortie; expire clôture/annulation; pas de goût durable sans autre déclaration. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Aucun consentement à acheter des billets; ne pas inférer date/lieu. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "activity.0285",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:disruptor:SOFT",
+   "schema_ecriture": "materiel_ne_pas_choisir_pour_moi=<objet nommé>",
+   "scope": "matériel de l’activité citée",
+   "condition_extraction": "Par objet nommé, signaler que le choix doit être validé par l’utilisateur. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas déduire que l’objet est détesté ou interdit dans tout contexte. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "aesthetic.1964",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:aesthetic_universe",
+   "schema_ecriture": "univers_esthetique_evite=<style nommé>",
+   "scope": "univers visuel",
+   "condition_extraction": "Une préférence négative SOFT par univers explicite; pas d’ENTITY par simple concept. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas étendre à toutes les marques ou œuvres de ce style. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "animals.2145",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "animal_ideal_hypothetique=<espece ou caractéristique citée>",
+   "scope": "animal hypothétique, contexte aspiration",
+   "condition_extraction": "Conserver une projection déclarée purement hypothétique sur l'animal idéal. Une espèce ou caractéristique explicitement citée peut être inscrite comme fait de projection avec la clé existante animal_ideal_hypothetique ; ce n'est pas PREFERENCE.desired_item, ni WANT_TO_OWN, ni un projet d'adoption, ni la preuve d'un animal possédé. Conserver le verbatim OPEN_KNOWLEDGE et ne rien déduire sur les moyens, le foyer ou l'espèce d'un animal réel. Émission primaire OPEN_KNOWLEDGE uniquement sur soumission explicite ; extraction secondaire uniquement pour les segments effectivement exprimés, avec provenance, portée et permissions.",
+   "inferences_interdites": "Ne pas inférer animal actuel, adoption prévue, santé ou moyens. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "bags.0363",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:gift_antipattern:SOFT",
+   "schema_ecriture": "detail_maroquinerie_a_eviter=<detail nommé>",
+   "scope": "sac ou accessoire de maroquinerie",
+   "condition_extraction": "Exclusion limitée au détail ou produit explicitement cité. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de rejet global d’une marque, de tous les sacs ou des cadeaux. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "brand.0269",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_PRODUCT",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "ENTITY_PRODUCT:LIKE",
+   "schema_ecriture": "produit_de_marque=<produit résolu>; brand_context=<marque ancrée>",
+   "scope": "produits de la marque identifiée",
+   "condition_extraction": "Identifier d’abord la marque contexte; n’émettre LIKE que pour chaque produit identifié, sinon PREFERENCE.known_references littérale. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Aimer un produit ne vaut pas aimer toute la marque ou les autres produits. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "celebav.2166",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "celebration_marquante=<moment déclaré>; motif=<motif si exprimé>",
+   "scope": "un souvenir de célébration passée",
+   "condition_extraction": "Déclarer le souvenir relaté comme FACT auto-déclaré daté; valeur recherchée uniquement si elle est explicitement formulée. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de trait de personnalité ni de préférence de cadeau généralisée. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "celebav.2167",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:disruptor:SOFT",
+   "schema_ecriture": "celebration_forme_a_eviter=<format nommé>",
+   "scope": "formes de célébration",
+   "condition_extraction": "Exclusion explicite de format, sans déduire une expérience négative déjà vécue. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de rejet de toutes les célébrations ou d’une personne précise. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "change.1791",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:disruptor:SOFT",
+   "schema_ecriture": "attention_ou_formulation_a_eviter=<formulation ou attention exacte>",
+   "scope": "accompagnement d’une transition",
+   "condition_extraction": "Interdire la proposition textuelle ou le type d’attention nommé pour cette situation; action sur tiers jamais automatique. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inventer la cause de transition ni une situation médicale. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "change.1795",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "souvenir_nouveau_depart=<moment>; emotion_declaree=liberte",
+   "scope": "souvenir de nouveau départ",
+   "condition_extraction": "Relater une expérience passée et le motif exprimé; facultatif, intime, sans extrapolation. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "N’en déduire ni rupture, ni emploi perdu, ni pathologie, ni souhait de recommencer. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "children.2079",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "moment_prefere_avec_un_enfant=<moment déclaré>",
+   "scope": "moment vécu avec un enfant non identifié",
+   "condition_extraction": "Conserver la situation; extraire format de moment uniquement si explicitement décrit. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer que l’enfant est le sien ni un âge, une garde ou un foyer. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "comics.0422",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_WORK",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "reference_bande_dessinee=<titre>; auteur_ou_dessinateur=<personne>",
+   "scope": "comics, séparer œuvre et créateur",
+   "condition_extraction": "Titre résolu => LIKE contextualisé; auteur/dessinateur nommé => FACT admiration ou préférence déclarée concernant son œuvre, sans LOVE automatique. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas créer une œuvre sous le nom de l’auteur; aucune possession/lecture déduite. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "creator.0277",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:value_sought",
+   "schema_ecriture": "aspect_touche=<element explicitement nommé>; entite_contexte=<entité présente>",
+   "scope": "univers du créateur déjà identifié",
+   "condition_extraction": "Préférence pour un aspect nommé, non pour toute œuvre. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas transformer émotion en achat, amour de chaque œuvre ou possession. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "creator.0278",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_WORK",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "ENTITY_WORK:LIKE",
+   "schema_ecriture": "oeuvre_preferee=<oeuvre résolue>; creator_context=<entite ancrée>",
+   "scope": "œuvre d’un créateur identifié",
+   "condition_extraction": "Résoudre l’œuvre puis associer LIKE relative; pas besoin de LOVE. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas confondre artiste, œuvre, marque, ni inférer propriété. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "drinks.2102",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "moment_ideal_boisson=<description>; attributs explicites isolés",
+   "scope": "moment idéal hypothétique autour d’une boisson",
+   "condition_extraction": "FACT projection; seules composantes de goûts explicitement citées peuvent nourrir PREFERENCE sensorielles/contextuelles. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer consommation d’alcool, habitudes réellement pratiquées ou invitation. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "family.1839",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "tradition_familiale_importante=<tradition citée>; importance_declaree=<verbatim>",
+   "scope": "tradition familiale décrite",
+   "condition_extraction": "FACT contextualisé auto-déclaré; aucune entité familiale créée depuis la mention vague. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de décès, rupture, conflit ou membre de famille inféré. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "fashion.0151",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:color_preference",
+   "schema_ecriture": "couleur_aimee_portee=<couleur normalisée>",
+   "scope": "couleur portée sur vêtement",
+   "condition_extraction": "Une valeur de color_preference par couleur explicitement citée; entité=aucune. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Une couleur portée ne vaut pas couleur préférée pour toute la maison; pas ENTITY_BRAND. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "fashion.0152",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:disruptor:SOFT",
+   "schema_ecriture": "element_mode_evite=<coupe|matiere|couleur|detail + libelle>",
+   "scope": "vêtements et accessoires seulement",
+   "condition_extraction": "Segmenter par type; refus presque toujours = contrainte contextuelle forte mais pas interdiction universelle. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas ENTITY_BRAND si marque non citée; aucune allergie supposée. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "fashion2.1076",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_BRAND",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "ENTITY_BRAND:LIKE",
+   "schema_ecriture": "marque_portee_appreciee=<marque résolue>",
+   "scope": "marque effectivement portée au moment de la déclaration",
+   "condition_extraction": "LIKE contextualisé + FACT usage déclaré uniquement si portée explicitement; date conservée. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas affirmer achat récent, propriété de tous produits, ni préférence stable pour tout. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "food.0039",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_PLACE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "restaurant_marquant=<restaurant vérifié>; raison=<verbatim>",
+   "scope": "restaurant vécu passé",
+   "condition_extraction": "Conserver comme FACT narratif le restaurant nommé uniquement après identification non ambiguë ; sinon conserver le verbatim OPEN_KNOWLEDGE seul. La mention « m'a marqué » n'est ni LIKE, ni DISLIKE, ni NEUTRAL. Le restaurant résolu est un référent du FACT, pas une relation d'appréciation. Aucune relation ENTITY n'est émise par ce contrat ; conserver le motif déclaré sans extrapolation. Émission primaire OPEN_KNOWLEDGE uniquement sur soumission explicite ; extraction secondaire uniquement pour les segments effectivement exprimés, avec provenance, portée et permissions.",
+   "inferences_interdites": "« Marqué » ne vaut pas aimé; pas de restaurant fictif ou localisation inventée. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "fragrance2.1165",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:sensory_preference",
+   "schema_ecriture": "odeur_maison_aimee=<odeur ou famille olfactive explicitement citée>",
+   "scope": "odeur d’intérieur, pas parfum porté",
+   "condition_extraction": "Extraire senteurs/notes si explicitement nommées; aucune ENTITE_PRODUCT sans marque/produit. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas généraliser à la peau ni à une préférence de bougie ou de produit. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "games.0959",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "ENTITY_PRODUCT",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "ENTITY_PRODUCT:DISLIKE",
+   "schema_ecriture": "jeu_non_aime=<titre résolu>; motif=<verbatim>",
+   "scope": "jeu de société cité",
+   "condition_extraction": "DISLIKE du jeu nommé avec justification séparée, jamais AVOID HARD sans refus explicite. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas étendre la déception à toute la licence ou au genre. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "hosting.2052",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_PRODUCT",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:type_preference",
+   "schema_ecriture": "attention_offerte_aux_invites=<format nommé>; role=give",
+   "scope": "accueil/invités, rôle donneur",
+   "condition_extraction": "Conserver uniquement la préférence directement déclarée pour des types ou formats de petites attentions que l'utilisateur aime offrir à ses invités, en rôle GIVE et contexte accueil, selon le schéma existant attention_offerte_aux_invites=<format nommé>; role=give. Ne jamais classer cette préférence de donneur dans PREFERENCE.gift_format (qui porte sur le cadeau reçu), ni créer AFFECTION_LANGUAGE sans déclaration explicite d'une modalité relationnelle. Un produit nommé peut être identifié comme référent secondaire seulement si sa résolution est unique ; aucune possession, budget, autorisation d'achat ni préférence de recevoir n'en découle. Émission primaire OPEN_KNOWLEDGE uniquement sur soumission explicite ; extraction secondaire uniquement pour les segments effectivement exprimés, avec provenance, portée et permissions.",
+   "inferences_interdites": "Ne pas transformer en préférence de recevoir, possession ou budget. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "learning2.1459",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "sujet_interet_ponctuel=<sujet cité>; stability=contextual",
+   "scope": "intérêt ponctuel / sujet",
+   "condition_extraction": "Créer intérêt contextualisé faible si nommé; ne pas inférer expertise ou pratique. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas d’intérêt permanent ni projet de formation. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "mental.1866",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "ACTION_PARAMETER",
+   "schema_ecriture": "usage_de_deux_heures_liberees=<activité>; week_id=date semaine",
+   "scope": "créneau hypothétique de la semaine en cours",
+   "condition_extraction": "Expiration dimanche fin de semaine locale; si pas de vrai créneau réservé, conserver seulement la projection; confirmation avant proposition. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer agenda libre, besoin médical ou consentement à déléguer. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "pets.0403",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_PRODUCT",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "souhait_pour_animal=<objet ou expérience>; pet_id si connu",
+   "scope": "cadeau/achat pour un animal",
+   "condition_extraction": "Envie de donner/acheter pour animal, pas achat réalisé; si pet_id absent, rester verbatim sans attribuer animal à l’utilisateur. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer possession, caractéristiques de santé ou dangerosité. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "pets.0409",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "ENTITY_PRODUCT",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:disruptor:SOFT",
+   "schema_ecriture": "pratique_ou_objet_refuse_pour_animal=<objet explicite>",
+   "scope": "protection liée à l’animal cité",
+   "condition_extraction": "Refus explicite => exclusion stricte sur objet; santé de l’animal jamais inférée. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas d’interdiction de soins médicaux ni diagnostic; pas de pet_id inventé. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "philoconso.1628",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "produit_symbole_de_consommation=<produit cité>; rationale=<texte>",
+   "scope": "symbole hypothétique de la philosophie d’achat",
+   "condition_extraction": "Produit choisi pour représenter des valeurs, pas objet désiré ou détenu. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "N’inférer aucune consommation effective ni valeur éthique non exprimée. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "philovie.1662",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "moment_decalage_mode_de_vie=<moment déclaré>",
+   "scope": "récit personnel passé",
+   "condition_extraction": "Verbatim personnel daté, sans ENTITY_PERSON depuis pronoms ni DRIVER. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer maladie, dépression, événement familial, séparation. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "philovie.1663",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_PERSON",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "personne_mode_vie_admire=<nom résolu si présent>; pourquoi=<verbatim>",
+   "scope": "admiration d’un mode de vie déclaré",
+   "condition_extraction": "Si une personne est nommée et résolue, la mention est FACT admiration de son mode de vie; pas relation LOVE/LIKE pour la personne en général. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Aucun DRIVER, objectif de vie, orientation ni identité déduits. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "podcast.0467",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_WORK",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "episode_marquant=<episode résolu>; raison=<verbatim>",
+   "scope": "souvenir d’écoute d’un épisode",
+   "condition_extraction": "Conserver comme FACT narratif l'épisode nommé uniquement après identification non ambiguë ; sinon conserver le verbatim OPEN_KNOWLEDGE seul. « M'a marqué » ne démontre ni LIKE, ni DISLIKE, ni NEUTRAL. L'épisode résolu est un référent du FACT, pas une relation d'appréciation. Une relation ENTITY n'est émise que si un segment distinct exprime explicitement une appréciation ou intention envers l'épisode, parmi les neuf relations canoniques et avec preuve ; sans cela, aucune relation (pas même NEUTRAL) ; aucun abonnement, réécoute ou intérêt général inféré. Émission primaire OPEN_KNOWLEDGE uniquement sur soumission explicite ; extraction secondaire uniquement pour les segments effectivement exprimés, avec provenance, portée et permissions.",
+   "inferences_interdites": "Ne pas inférer désir de réécouter, abonnement ni recommandation de tout le podcast. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "relation.0013",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:disruptor:HARD",
+   "schema_ecriture": "acte_a_ne_pas_prendre_en_charge_sans_consentement=<acte nommé>",
+   "scope": "délégation/prise en charge par Candice et proches",
+   "condition_extraction": "Limite explicite : requérir validation pour cet acte, ne jamais autoriser par silence. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas attribuer la limite à un tiers ni créer ENTITY_PERSON depuis « quelqu’un ». Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "remembrance.1992",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "cadeau_recu_emouvant=<objet ou expérience relaté>; contexte=<verbatim>",
+   "scope": "souvenir d’un cadeau reçu",
+   "condition_extraction": "FACT passé; la raison de l’émotion n’équivaut pas à demande de cadeau identique. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de budget, donateur identifié par supposition, désir de nouvel objet. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "resonance.1542",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "type_personne_admire=<qualités explicitement citées>",
+   "scope": "type/qualités abstraites de personnes",
+   "condition_extraction": "Admirer des qualités ne crée aucune ENTITY_PERSON; conserver déclaratif. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer sa propre personnalité ni romance ou affiliation. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "rituals.1871",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:disruptor:SOFT",
+   "schema_ecriture": "rituel_a_ne_pas_deranger=<moment nommé>",
+   "scope": "plage / rituel déclaré",
+   "condition_extraction": "Préserver le moment explicite; si horaires non déclarés, ne pas inventer de créneau fixe. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Aucun diagnostic ou état familial; pas de règle permanente de calendrier inventée. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "sensory.0261",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:color_preference",
+   "schema_ecriture": "couleur_bien_etre=<couleur citée>",
+   "scope": "effet sensoriel agréable des couleurs",
+   "condition_extraction": "Créer color_preference dans contexte bien-être, aucune entité de lieu. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer décoration de domicile ou couleur vestimentaire universelle. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "sensory.0262",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:color_preference",
+   "schema_ecriture": "couleur_evitee=<couleur citée>; usages=porter|interieur seulement si précisé",
+   "scope": "couleurs portées ou intérieur selon texte",
+   "condition_extraction": "Préférence négative contextualisée, pas ENTITY_PLACE; si contexte non précisé, garder les deux usages comme possibilités, pas exclusions certaines séparées. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer rejet dans tous contextes ni traumatisme. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "sensory2.1482",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_PLACE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "lieu_bien_etre_marquant=<lieu vérifié>; raison=<verbatim>",
+   "scope": "lieu réel vécu",
+   "condition_extraction": "Conserver comme FACT de souvenir déclaré le lieu nommé uniquement après identification non ambiguë ; sinon conserver le verbatim OPEN_KNOWLEDGE seul. Avoir ressenti du bien-être en un lieu n'établit ni envie d'y retourner, ni relation LIKE ou NEUTRAL avec ce lieu. Le lieu résolu reste le référent du FACT. Une relation ENTITY additionnelle n’est permise que si un segment distinct affirme explicitement une appréciation ou intention envers le lieu, parmi les neuf relations canoniques et avec preuve ; sans cela, aucune relation (pas même NEUTRAL). Conserver le motif textuel sans inférer domicile, habitudes, moyens ou intention de visite. Émission primaire OPEN_KNOWLEDGE uniquement sur soumission explicite ; extraction secondaire uniquement pour les segments effectivement exprimés, avec provenance, portée et permissions.",
+   "inferences_interdites": "Ne pas inférer sa ville actuelle ni ses moyens. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "sensory2.1487",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "caracteristiques_lieu_ideal=<elements explicitement cités>",
+   "scope": "lieu hypothétique idéal",
+   "condition_extraction": "Une préférence par caractéristique typée; aucune entité PLACE si aucun vrai lieu. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas en déduire domicile, projet d’achat ou capacité financière. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "shoes.0335",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:gift_antipattern:SOFT",
+   "schema_ecriture": "detail_chaussure_a_eviter=<élément>",
+   "scope": "chaussures",
+   "condition_extraction": "Exclusion sur élément nommé uniquement. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de rejet des chaussures en général ni marque non mentionnée. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "sport.0193",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_SPORT",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:type_preference",
+   "schema_ecriture": "sport_aime_regarder=<discipline résolue>; role=watch",
+   "scope": "sport regardé en spectateur",
+   "condition_extraction": "Préférence de visionnage seulement, sport nommé; pas de pratique. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer qu’elle pratique ce sport ni qu’elle connaît ses équipes. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "sportp.0507",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "negative",
+   "type_entite": "ENTITY_PRODUCT",
+   "relations_admissibles": [
+    "DISLIKE",
+    "AVOID"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "NEUTRAL"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "GUARDRAIL:gift_antipattern:SOFT",
+   "schema_ecriture": "attention_sport_a_eviter=<objet ou expérience nommé>",
+   "scope": "cadeau/attention liée à la pratique sportive",
+   "condition_extraction": "Exclusion de la forme explicitement citée. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas déduire refus du sport, blessure, âge ou incapacité. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "success.1752",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "reussite_future_transformante=<projet ou résultat exprimé>",
+   "scope": "aspiration pour l’avenir",
+   "condition_extraction": "Conserver sous forme d’aspiration/projection, sans échéance inventée. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer situation financière, événement accompli ou NEED. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "theatre2.1383",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "ACTION_PARAMETER",
+   "schema_ecriture": "type_spectacle_recherche=<type>; action_id obligatoire",
+   "scope": "sortie ou choix de spectacle identifié",
+   "condition_extraction": "Préférence locale de recherche uniquement; expire à clôture de la recherche/sortie. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Aucune preuve d’achat ou goût stable universel. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "time.1566",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "RENVOI:17_DESTINATIONS_CONDITIONNELLES",
+   "schema_ecriture": "journee_ideale=<description par segments>",
+   "scope": "journée idéale hypothétique",
+   "condition_extraction": "FACT projection; si horaires/formats explicitement décrits, extraire PREFERENCE contextual uniquement sans supposer pratique réelle. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas déduire emploi, horaires actuels, santé ou situation familiale. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "travel.0069",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_PLACE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "hebergement_marquant=<hebergement résolu>; raison=<verbatim>",
+   "scope": "hébergement vécu",
+   "condition_extraction": "Conserver comme FACT narratif l'hébergement nommé uniquement après identification non ambiguë ; sinon conserver le verbatim OPEN_KNOWLEDGE seul. « M'a marqué » ne démontre ni satisfaction, ni insatisfaction, ni indifférence (NEUTRAL). L'hébergement résolu est référent du FACT, sans relation ENTITY émise par ce contrat. Ne pas déduire une recommandation, une nouvelle visite, une disponibilité ou une adresse inventée. Émission primaire OPEN_KNOWLEDGE uniquement sur soumission explicite ; extraction secondaire uniquement pour les segments effectivement exprimés, avec provenance, portée et permissions.",
+   "inferences_interdites": "Ne pas déduire qu’il est aimé, disponible ou situé à tel endroit sans source. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "travel2.0906",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "positive",
+   "type_entite": "ENTITY_DESTINATION",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "PREFERENCE:desired_item",
+   "schema_ecriture": "destination_revee=<destination vérifiée> OU type_voyage=<type>",
+   "scope": "envie actuelle de voyage",
+   "condition_extraction": "WANT_TO_VISIT seulement pour lieu vérifié et volonté explicite de visiter; type de voyage en préférence contextualisée; pas de réservation. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas inférer budget, dates, formalités ou voyage déjà fait. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "travel2.0935",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_PLACE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "hebergement_marquant=<hébergement vérifié>; raison=<verbatim>",
+   "scope": "souvenir d’hébergement",
+   "condition_extraction": "Conserver comme FACT narratif l'hébergement nommé uniquement après identification non ambiguë ; sinon conserver le verbatim OPEN_KNOWLEDGE seul. « M'a marqué » ne démontre ni satisfaction, ni insatisfaction, ni indifférence (NEUTRAL). L'hébergement résolu est référent du FACT, sans relation ENTITY émise par ce contrat. Si ce fait est déjà présent depuis travel.0069, ne pas émettre deux fois le même fait : relier les preuves compatibles au même fait selon les règles de provenance, sans effacer l'historique. Émission primaire OPEN_KNOWLEDGE uniquement sur soumission explicite ; extraction secondaire uniquement pour les segments effectivement exprimés, avec provenance, portée et permissions.",
+   "inferences_interdites": "Ne pas inférer appréciation positive depuis « marqué ». Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "values.1902",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "definition_reussite_personnelle=<verbatim>",
+   "scope": "définition personnelle de la réussite",
+   "condition_extraction": "FACT d’opinion auto-déclarée; pas ENTITY_PERSON ni DRIVER. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Ne pas déduire ambition, revenus, famille ou personnalité. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "values.1907",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "ENTITY_PERSON",
+   "relations_admissibles": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT"
+   ],
+   "relations_interdites": [
+    "NEUTRAL",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "personne_admiree=<nom résolu si présent>; motif=<verbatim>",
+   "scope": "admiration de personne spécifiquement nommée",
+   "condition_extraction": "Sans personne nommée, verbatim seulement; FACT admiration, pas LOVE, aucune relation HSG d’affection automatique. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas de DRIVER, idéal de vie, affiliation, intimité ni donnée sur la personne tierce. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  },
+  {
+   "question": "values.1912",
+   "statut": "ACTIF_VERBATIM_ET_EXTRACTION_CONDITIONNELLE",
+   "polarite": "narrative",
+   "type_entite": "NONE",
+   "relations_admissibles": [
+    "NEUTRAL"
+   ],
+   "relations_interdites": [
+    "LOVE",
+    "LIKE",
+    "CURIOUS",
+    "WANT_TO_TRY",
+    "WANT_TO_OWN",
+    "WANT_TO_VISIT",
+    "DISLIKE",
+    "AVOID"
+   ],
+   "emission_primaire": "OPEN_KNOWLEDGE",
+   "destination_secondaire": "FACT:self_only",
+   "schema_ecriture": "moment_representatif_de_mes_valeurs=<moment vécu relaté>",
+   "scope": "souvenir/valeurs personnelles",
+   "condition_extraction": "Conserver un récit personnel déclaré, pas ENTITY_PERSON depuis un souvenir. OPEN_KNOWLEDGE sur soumission explicite du verbatim; secondary uniquement si le segment source démontre la valeur et sa portée; aucun mot absent ajouté",
+   "inferences_interdites": "Pas d’inférence sur conviction, santé, religion ou personnes présentes. Aucun PROFILE/NEED/DRIVER, aucun partage à un tiers, aucune preuve d'achat ou de possession supplémentaire à partir de la réponse seule.",
+   "permissions": "self_only; aucune communication à un tiers hors validation spécifique et permissions exactes",
+   "version": "OPEN_V2_2026_11"
+  }
+ ],
+ "destinations_conditionnelles": [
+  {
+   "question_id": "CRE-06",
+   "rang_destination": "1",
+   "declencheur": "SEGMENT_TECHNIQUE",
+   "declencheur_signification": "le segment nomme explicitement une technique",
+   "voie": "HSG_EVIDENCE",
+   "famille": "PREFERENCE",
+   "attribut_ou_cle": "type_preference",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "la technique rejetée est nommée dans le segment",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucun HARD. Aucun LIKE ni LOVE. Un concept nommé ne suffit pas à produire une relation ENTITY DISLIKE. La polarité reste negative et la portée reste créative.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "CRE-06",
+   "rang_destination": "2",
+   "declencheur": "SEGMENT_STYLE",
+   "declencheur_signification": "le segment nomme explicitement un style",
+   "voie": "HSG_EVIDENCE",
+   "famille": "PREFERENCE",
+   "attribut_ou_cle": "aesthetic_universe",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "le style rejeté est nommé dans le segment",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucun HARD. Aucun LIKE ni LOVE. Un concept nommé ne suffit pas à produire une relation ENTITY DISLIKE. La polarité reste negative et la portée reste créative.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "CRE-06",
+   "rang_destination": "3",
+   "declencheur": "SEGMENT_MATIERE",
+   "declencheur_signification": "le segment nomme explicitement une matière",
+   "voie": "HSG_EVIDENCE",
+   "famille": "PREFERENCE",
+   "attribut_ou_cle": "material_preference",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "la matière rejetée est nommée dans le segment",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucun HARD. Aucun LIKE ni LOVE. Un concept nommé ne suffit pas à produire une relation ENTITY DISLIKE. La polarité reste negative et la portée reste créative.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "learning2.1459",
+   "rang_destination": "1",
+   "declencheur": "SUJET_DECLARE",
+   "declencheur_signification": "le segment nomme explicitement un sujet d’intérêt",
+   "voie": "HSG_EVIDENCE",
+   "famille": "INTEREST",
+   "attribut_ou_cle": "<identite_du_sujet_declare>",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": "contextual",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "le sujet est nommé dans le segment ; « ponctuellement » fixe la stabilité",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Ne pas écrire INTEREST:type_preference — le sujet EST le construct. L’expertise et la pratique restent indéterminées en l’absence de preuve.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "NON_PRECISE"
+  },
+  {
+   "question_id": "comics.0422",
+   "rang_destination": "1",
+   "declencheur": "OEUVRE_RESOLUE_APPRECIEE",
+   "declencheur_signification": "une œuvre est résolue de façon unique ET le segment exprime explicitement son appréciation",
+   "voie": "HSG_EVIDENCE",
+   "famille": "ENTITY",
+   "attribut_ou_cle": "NONE",
+   "type_entite": "ENTITY_WORK",
+   "relation": "LIKE",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "résolution unique de l’œuvre ET appréciation explicite dans le segment",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucune relation envers le créateur dérivée de l’appréciation de l’œuvre.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "comics.0422",
+   "rang_destination": "2",
+   "declencheur": "AUTEUR_MENTIONNE",
+   "declencheur_signification": "le segment mentionne un auteur ou un dessinateur",
+   "voie": "FACT",
+   "famille": "NONE",
+   "attribut_ou_cle": "auteur_ou_dessinateur_mentionne",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": null,
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "l’auteur ou le dessinateur est nommé dans le segment",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucune relation envers le créateur dérivée de l’appréciation de l’œuvre.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "SANS_OBJET",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "drinks.2102",
+   "rang_destination": "1",
+   "declencheur": "PROJECTION_DECLAREE",
+   "declencheur_signification": "la réponse décrit une projection, déclarée comme telle",
+   "voie": "FACT",
+   "famille": "NONE",
+   "attribut_ou_cle": "moment_ideal_boisson",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": null,
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "la réponse décrit le moment, déclaré comme idéal",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucune préférence n’est émise depuis ce contrat, quelle que soit la formulation. Une fréquence dans une scène imaginée reste un détail de la projection. Une fréquence déclarée dans la vie réelle peut exprimer une habitude, mais ne prouve aucun goût. Une préférence explicitement déclarée reste dans le verbatim. Aucune habitude actuelle déduite.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "SANS_OBJET",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "pets.0403",
+   "rang_destination": "1",
+   "declencheur": "SOUHAIT_AVEC_IDENTIFIANT",
+   "declencheur_signification": "un souhait est exprimé ET l’identifiant requis est connu",
+   "voie": "FACT",
+   "famille": "NONE",
+   "attribut_ou_cle": "souhait_pour_animal",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": null,
+   "identifiant_requis": "pet_id",
+   "preuve_exigee": "un souhait est exprimé ET pet_id est connu",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Un produit nommé ne déclenche aucune relation, aucun achat et aucune possession. Sans pet_id, le souhait n’a pas de sujet : verbatim seul.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "SANS_OBJET",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "podcast.0467",
+   "rang_destination": "1",
+   "declencheur": "REFERENT_RESOLU",
+   "declencheur_signification": "l’objet nommé est résolu de façon unique et devient le référent du fait, sans relation",
+   "voie": "FACT",
+   "famille": "NONE",
+   "attribut_ou_cle": "episode_marquant",
+   "type_entite": "ENTITY_WORK",
+   "relation": "NONE",
+   "stabilite": null,
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "l’épisode est résolu de façon unique ; il est référent, pas objet d’une relation",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "« M’a marqué » ne démontre ni LIKE, ni DISLIKE, ni NEUTRAL. Aucun abonnement, aucune réécoute, aucun intérêt général pour le podcast.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "SANS_OBJET",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "podcast.0467",
+   "rang_destination": "2",
+   "declencheur": "RELATION_EXPLICITE_DISTINCTE",
+   "declencheur_signification": "un SECOND segment, distinct de celui qui nomme l’objet, exprime explicitement une relation canonique envers cet objet résolu",
+   "voie": "HSG_EVIDENCE",
+   "famille": "ENTITY",
+   "attribut_ou_cle": "NONE",
+   "type_entite": "ENTITY_WORK",
+   "relation": "<appreciation_parmi_les_neuf>",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "un SECOND segment, distinct de celui qui nomme l’objet, exprime explicitement une APPRÉCIATION de cet objet résolu. Un COMPORTEMENT déclaré — « je l’ai réécouté trois fois », « j’y retourne souvent » — ne vaut pas appréciation, même dans un segment distinct. « M’a marqué » et le bien-être ressenti ne valent pas non plus appréciation.",
+   "si_declencheur_absent": "rien",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucune relation depuis un comportement : « je l’ai réécouté trois fois » décrit ce que la personne a fait, pas ce qu’elle en pense. « M’a marqué » ne démontre ni LIKE, ni DISLIKE, ni NEUTRAL. Aucun abonnement, aucune réécoute et aucun intérêt général pour le podcast. Un comportement déclaré n’a aujourd’hui aucune destination arbitrée : il reste dans le verbatim.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "sensory2.1482",
+   "rang_destination": "1",
+   "declencheur": "REFERENT_RESOLU",
+   "declencheur_signification": "l’objet nommé est résolu de façon unique et devient le référent du fait, sans relation",
+   "voie": "FACT",
+   "famille": "NONE",
+   "attribut_ou_cle": "lieu_de_bien_etre",
+   "type_entite": "ENTITY_PLACE",
+   "relation": "NONE",
+   "stabilite": null,
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "le lieu est résolu de façon unique ; il est référent, pas objet d’une relation",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Avoir ressenti du bien-être en un lieu n’établit ni envie d’y retourner, ni relation. Ne pas inférer domicile, habitudes, moyens ni intention de visite.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "SANS_OBJET",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "sensory2.1482",
+   "rang_destination": "2",
+   "declencheur": "RELATION_EXPLICITE_DISTINCTE",
+   "declencheur_signification": "un SECOND segment, distinct de celui qui nomme l’objet, exprime explicitement une relation canonique envers cet objet résolu",
+   "voie": "HSG_EVIDENCE",
+   "famille": "ENTITY",
+   "attribut_ou_cle": "NONE",
+   "type_entite": "ENTITY_PLACE",
+   "relation": "<appreciation_parmi_les_neuf>",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "un SECOND segment, distinct de celui qui nomme l’objet, exprime explicitement une APPRÉCIATION de cet objet résolu. Un COMPORTEMENT déclaré — « je l’ai réécouté trois fois », « j’y retourne souvent » — ne vaut pas appréciation, même dans un segment distinct. « M’a marqué » et le bien-être ressenti ne valent pas non plus appréciation.",
+   "si_declencheur_absent": "rien",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucune relation depuis un comportement ni depuis une sensation. Avoir ressenti du bien-être en un lieu n’établit ni envie d’y retourner, ni appréciation du lieu. Ne pas inférer domicile, habitudes, moyens ni intention de visite. Un comportement déclaré n’a aujourd’hui aucune destination arbitrée : il reste dans le verbatim.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "sensory2.1487",
+   "rang_destination": "1",
+   "declencheur": "ELEMENT_ESTHETIQUE",
+   "declencheur_signification": "le segment nomme explicitement un élément esthétique",
+   "voie": "HSG_EVIDENCE",
+   "famille": "PREFERENCE",
+   "attribut_ou_cle": "aesthetic_universe",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "l’élément esthétique est nommé dans le segment",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Le contexte du lieu idéal hypothétique est conservé : aucune préférence n’est présentée comme un lieu réel ou possédé.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "sensory2.1487",
+   "rang_destination": "2",
+   "declencheur": "ELEMENT_SENSORIEL",
+   "declencheur_signification": "le segment nomme explicitement un élément sensoriel",
+   "voie": "HSG_EVIDENCE",
+   "famille": "PREFERENCE",
+   "attribut_ou_cle": "sensory_preference",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": "undetermined",
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "l’élément sensoriel est nommé dans le segment",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Le contexte du lieu idéal hypothétique est conservé : aucune préférence n’est présentée comme un lieu réel ou possédé.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "secondary",
+   "relationship": "SANS_OBJET"
+  },
+  {
+   "question_id": "time.1566",
+   "rang_destination": "1",
+   "declencheur": "PROJECTION_DECLAREE",
+   "declencheur_signification": "la réponse décrit une projection, déclarée comme telle",
+   "voie": "FACT",
+   "famille": "NONE",
+   "attribut_ou_cle": "journee_ideale",
+   "type_entite": "NONE",
+   "relation": "NONE",
+   "stabilite": null,
+   "identifiant_requis": "NONE",
+   "preuve_exigee": "la réponse décrit la journée, déclarée comme idéale",
+   "si_declencheur_absent": "verbatim seul",
+   "statut": "DEFINIE",
+   "inferences_interdites": "Aucune préférence n’est émise depuis ce contrat, quelle que soit la formulation. Une fréquence dans une scène imaginée reste un détail de la projection. Une fréquence déclarée dans la vie réelle peut exprimer une habitude, mais ne prouve aucun goût. Une préférence explicitement déclarée reste dans le verbatim. Aucun rituel, aucun rythme et aucune habitude actuelle déduits.",
+   "version_contrat_open": "OPEN_V2_2026_11",
+   "evidence_role": "SANS_OBJET",
+   "relationship": "SANS_OBJET"
+  }
+ ]
+}
