@@ -37,7 +37,8 @@ export async function POST(req: NextRequest) {
   if (invite.contact_id) {
     const { error: linkError } = await admin
       .from("contacts")
-      .update({ proche_user_id: user.id })
+      // Le compte connecté accepte l'invitation : c'est LUI qui établit le lien (migration 113).
+      .update({ proche_user_id: user.id, proche_lien_confirme_par: user.id })
       .eq("id", invite.contact_id);
     if (linkError) console.error("[invite/link] contacts update proche_user_id", linkError.message);
   }

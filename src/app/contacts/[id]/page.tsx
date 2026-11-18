@@ -264,10 +264,13 @@ export default async function ContactPage({
       // (practical_info = prénom/adresse/dates) réduite au booléen procheComplete, NON affichée.
       // Fuite client nulle mais lecture de données perso sans consentement. Corriger proprement
       // suppose une source de « complétude » sans lire le brut (flag dédié / consent) — à trancher.
+      // Complétude SANS charger le profil (corrigé le 18 nov.) : seul l'identifiant est lu,
+      // et seulement si les quatre volets sont renseignés. Reste un booléen sur un compte que
+      // le pilote désigne lui-même — signalé à Estelle.
       admin
-        .from("my_profile")
-        .select("attention_reception, temperament_axes, lifestyle_axes, practical_info")
-        .eq("user_id", procheUserId)
+        .from("my_profile").select("user_id").eq("user_id", procheUserId)
+        .not("attention_reception", "is", null).not("temperament_axes", "is", null)
+        .not("lifestyle_axes", "is", null).not("practical_info", "is", null)
         .maybeSingle(),
       // B→A : consentement où B est pilote et A est proche (lecture via RLS proche_read_own_consents)
       supabase
@@ -281,12 +284,7 @@ export default async function ContactPage({
         .maybeSingle(),
     ]);
     procheAnalysis = procheAnalysisRow as ProcheAnalysis | null;
-    procheComplete = !!(
-      procheProfile?.attention_reception &&
-      procheProfile?.temperament_axes &&
-      procheProfile?.lifestyle_axes &&
-      procheProfile?.practical_info
-    );
+    procheComplete = !!procheProfile;
     incomingConsentData = incomingConsentRaw as { id: string; status: string } | null;
   }
   const profile = typedContact.questionnaire_responses?.[0];

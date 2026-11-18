@@ -17,14 +17,15 @@ export async function POST(req: NextRequest) {
 
   const { data: contact } = await admin
     .from("contacts")
-    .select("id, name, email, proche_user_id")
+    .select("id, name, email, proche_user_id, proche_lien_confirme_par")
     .eq("id", contactId)
     .eq("user_id", user.id)
     .maybeSingle();
 
   if (!contact) return NextResponse.json({ error: "Contact not found" }, { status: 404 });
 
-  const piloteFirstName = (user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null;
+  // Nettoyé À LA SOURCE : ce prénom part dans des courriels et des notifications adressés à d'autres.
+  const piloteFirstName = texteSur((user.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null);
 
   // Case: proche hasn't registered yet — resend invite link by email
   if (!contact.proche_user_id) {
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
     if (newLinkError) console.error("[invite/nudge] invite_links insert", newLinkError.message);
     if (!newLink) return NextResponse.json({ method: "none" });
     const inviteUrl = `${APP_URL}/invite/${newLink.token}`;
-    const procheFirstName = contact.name.split(" ")[0];
+    const procheFirstName = texteSur(contact.name.split(" ")[0]) ?? "";
     await envoyerCourriel({
       to: contact.email,
       subject: piloteFirstName
@@ -56,18 +57,22 @@ export async function POST(req: NextRequest) {
 
   const procheUserId = contact.proche_user_id as string;
 
-  const { data: procheProfile } = await admin
-    .from("my_profile")
-    .select("attention_reception, temperament_axes, lifestyle_axes, practical_info")
-    .eq("user_id", procheUserId)
-    .maybeSingle();
+  // ── LE COMPTE DÉSIGNÉ A-T-IL LUI-MÊME ACCEPTÉ CE LIEN ? `proche_user_id` est écrit par le
+  //    pilote : sans cette preuve, relancer reviendrait à laisser n'importe quel compte faire
+  //    envoyer une notification ou un courriel à n'importe quel autre, en son nom (constaté le
+  //    18 nov.). Sans lien confirmé : aucune lecture de son profil, aucun envoi.
+  if (contact.proche_lien_confirme_par !== procheUserId) {
+    return NextResponse.json({ method: "none", reason: "lien_non_confirme" });
+  }
 
-  const procheComplete = !!(
-    procheProfile?.attention_reception &&
-    procheProfile?.temperament_axes &&
-    procheProfile?.lifestyle_axes &&
-    procheProfile?.practical_info
-  );
+  // Complétude SANS charger le profil : on ne lit que l'identifiant, et seulement si les quatre
+  // volets sont renseignés. Aucune donnée personnelle du proche n'entre dans cette route.
+  const { data: procheProfile } = await admin
+    .from("my_profile").select("user_id").eq("user_id", procheUserId)
+    .not("attention_reception", "is", null).not("temperament_axes", "is", null)
+    .not("lifestyle_axes", "is", null).not("practical_info", "is", null)
+    .maybeSingle();
+  const procheComplete = !!procheProfile;
 
   if (procheComplete) {
     return NextResponse.json({ method: "none", reason: "already_complete" });
@@ -105,7 +110,15 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({ method: "email" });
 }
 
-function buildNudgeEmailHtml(piloteFirstName: string | null, procheFirstName: string | null): string {
+/** Un prénom vient des métadonnées du compte, que chacun écrit librement : il n'entre jamais
+ *  tel quel dans le HTML d'un courriel envoyé à quelqu'un d'autre. */
+function texteSur(s: string | null): string | null {
+  if (s == null) return null;
+  return s.replace(/[<>&"'`]/g, "").replace(/\s+/g, " ").trim().slice(0, 40) || null;
+}
+
+function buildNudgeEmailHtml(piloteBrut: string | null, procheBrut: string | null): string {
+  const piloteFirstName = texteSur(piloteBrut), procheFirstName = texteSur(procheBrut);
   const greeting = procheFirstName ? `Bonjour ${procheFirstName}.` : "Bonjour.";
   const senderLine = piloteFirstName
     ? `${piloteFirstName} veut prendre encore mieux soin de toi — et Candice est là pour l'aider.`
