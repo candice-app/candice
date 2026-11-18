@@ -119,4 +119,63 @@ await P.client.from('contacts').update({ proche_user_id: X.userId }).eq('id', k!
 await X.client.from('my_profile').upsert({ user_id: X.userId, practical_info: { vetos: { allergies: ['gluten'], halal: true } } }, { onConflict: 'user_id' });
 x = await reco(); console.log('  le pilote repointe son contact vers le compte de X → au modèle :', x.vus);
 v.verifier(x.vus.length === 0, 'B10 : changer le compte lié du contact n’ouvre pas le profil du nouveau compte', x.vus.join(', '));
+
+console.log('\n══ C. LA PORTÉE PRÉSENTÉE EST LA PORTÉE ACCEPTÉE (migration 114)');
+{
+  const Q = await compteLocal('consent-pilote-c'), C = await compteLocal('consent-proche-c'), T = await compteLocal('consent-tiers-c');
+  const { data: kc } = await Q.client.from('contacts').insert({ user_id: Q.userId, name: 'Chloé Test', relationship: 'friend', proche_user_id: C.userId }).select('id').single();
+  await C.client.from('my_profile').upsert({ user_id: C.userId, practical_info: { vetos: { allergies: ['arachide'], halal: true } }, singularity_answers: { cadeaux_non: 'les bougies parfumées' } }, { onConflict: 'user_id' });
+  const cQ = await cookiesDe(Q.email, Q.motDePasse), cC = await cookiesDe(C.email, C.motDePasse), cT = await cookiesDe(T.email, T.motDePasse);
+  let d: any = await Q.client.from('contact_consents').insert({ pilote_id: Q.userId, contact_id: kc!.id, proche_user_id: C.userId, status: 'pending', kind: 'contact_analysis', scope: ['analysis'] }).select('id').single();
+  const idC = d.data.id as string;
+  // Le proche CONSULTE la demande : il voit « analysis ».
+  const vue = (await C.client.from('contact_consents').select('scope').eq('id', idC).single()).data!.scope;
+  // Pendant ce temps, le demandeur tente d'élargir.
+  let q: any = await Q.client.from('contact_consents').update({ scope: ['analysis', 'reco:regime', 'reco:allergie:arachide', 'reco:reponses_libres'] }).eq('id', idC).select('id');
+  console.log('  demande affichée', vue, '→ le demandeur élargit la portée pendant la consultation →', dit(q));
+  v.verifier(refuse(q), 'C1 : le demandeur ne peut pas élargir une demande EN ATTENTE');
+  // Le proche accepte ce qu'il a vu — par la VRAIE route.
+  let rr = await poster(`/api/consent/${idC}/respond`, cT, { action: 'accept' }, 'PATCH');
+  v.verifier(rr.status === 404 || rr.status === 403, 'C2 : un tiers ne peut pas accepter à la place du proche', `HTTP ${rr.status}`);
+  rr = await poster(`/api/consent/${idC}/respond`, cQ, { action: 'accept' }, 'PATCH');
+  v.verifier(rr.status === 403 && (await ligne(idC)).status === 'pending', 'C3 : le demandeur ne peut pas accepter sa propre demande par la route', `HTTP ${rr.status}`);
+  rr = await poster(`/api/consent/${idC}/respond`, cC, { action: 'accept' }, 'PATCH');
+  let lc = await ligne(idC);
+  console.log('  le proche accepte par la route → HTTP', rr.status, '· portée active :', lc.scope, '· accordé par :', lc.granted_by === C.userId ? 'le proche' : lc.granted_by);
+  v.verifier(rr.status === 200 && lc.status === 'active' && JSON.stringify(lc.scope) === JSON.stringify(vue) && lc.granted_by === C.userId, 'C4 : la portée acceptée est exactement celle qui était affichée');
+  const recoC = async () => { const avant = (await etat()).recus.length; await dicter([IDEE]); await poster('/api/recommendations/generate', cQ, { contactId: kc!.id }); const e = (await etat()).recus.slice(avant).map((x) => `${x.systeme}\n${x.texte}`).join('\n'); return TEMOINS.filter((m) => e.includes(m)); };
+  let vus = await recoC();
+  v.verifier(vus.length === 0, 'C5 : aucune donnée ajoutée n’est devenue accessible', vus.join(', '));
+  // Variante : supprimer la demande et en recréer une plus large ; l'écran du proche tient l'ANCIEN identifiant.
+  await Q.client.from('contact_consents').update({ status: 'revoked' }).eq('id', idC);
+  d = await Q.client.from('contact_consents').insert({ pilote_id: Q.userId, contact_id: kc!.id, proche_user_id: C.userId, status: 'pending', kind: 'contact_analysis', scope: ['analysis'] }).select('id').single();
+  const idAncien = d.data.id as string;
+  await Q.client.from('contact_consents').delete().eq('id', idAncien);
+  d = await Q.client.from('contact_consents').insert({ pilote_id: Q.userId, contact_id: kc!.id, proche_user_id: C.userId, status: 'pending', kind: 'contact_analysis', scope: ['analysis', 'reco:regime'] }).select('id').single();
+  rr = await poster(`/api/consent/${idAncien}/respond`, cC, { action: 'accept' }, 'PATCH');
+  lc = await ligne(d.data.id);
+  console.log('  demande remplacée par une plus large ; le proche accepte l’ANCIENNE → HTTP', rr.status, '· nouvelle demande :', lc.status);
+  v.verifier(rr.status === 404 && lc.status === 'pending', 'C6 : accepter l’ancienne demande n’active pas la nouvelle');
+  // Restreindre reste permis.
+  q = await Q.client.from('contact_consents').update({ scope: ['analysis'] }).eq('id', d.data.id).select('id');
+  v.verifier(!refuse(q), 'C7 : le demandeur peut RESTREINDRE sa demande');
+  // Le SERVEUR élargit une ligne active sans attester l'accord : REFUSÉ.
+  await C.client.from('contact_consents').update({ status: 'active' }).eq('id', d.data.id);
+  q = await admin.from('contact_consents').update({ scope: ['analysis', 'reco:regime', 'reco:reponses_libres'] }).eq('id', d.data.id).select('id');
+  lc = await ligne(d.data.id); vus = await recoC();
+  console.log('  le serveur élargit sans attester →', dit(q), '· portée :', lc.scope);
+  v.verifier(refuse(q) && JSON.stringify(lc.scope) === '["analysis"]' && vus.length === 0, 'C8 : le serveur ne peut pas élargir une portée sans attester l’accord du titulaire');
+  q = await admin.from('contact_consents').update({ scope: ['analysis', 'reco:regime'], granted_by: Q.userId, granted_at: new Date().toISOString() }).eq('id', d.data.id).select('id');
+  v.verifier(refuse(q), 'C9 : ni en attestant au nom de quelqu’un d’autre que le titulaire');
+  // LIGNE HISTORIQUE : active, sans preuve, portant déjà une portée que personne n'a validée.
+  await Q.client.from('contact_consents').update({ status: 'revoked' }).eq('id', d.data.id);
+  const { data: hist } = await admin.from('contact_consents').insert({ pilote_id: Q.userId, contact_id: kc!.id, proche_user_id: C.userId, status: 'active', kind: 'contact_analysis', scope: ['analysis', 'reco:reponses_libres'] }).select('id, granted_by').single();
+  vus = await recoC();
+  v.verifier(hist!.granted_by === null && vus.length === 0, 'C10 : une ligne historique sans preuve n’ouvre rien', vus.join(', '));
+  rr = await poster('/api/consent/exclusions', cC, { contactId: kc!.id, action: 'autoriser', portee: 'reco:regime' });
+  lc = await ligne(hist!.id); vus = await recoC();
+  console.log('  le proche autorise son RÉGIME sur cette ligne → portée :', lc.scope, '· au modèle :', vus);
+  v.verifier(lc.granted_by === C.userId && vus.includes('porc') && !vus.includes('bougies parfumées') && !lc.scope.includes('reco:reponses_libres'),
+    'C11 : son accord pour le régime ne valide PAS la portée historique (réponses libres) qu’il n’a jamais accordée', `${vus.join(', ')} · ${JSON.stringify(lc.scope)}`);
+}
 v.bilan();

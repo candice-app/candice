@@ -27,8 +27,10 @@ for (const c of [R, V]) {
 // Le lien P → R : un contact de P rattaché au compte de R, et un consentement actif.
 const { data: contact, error: eC } = await P.client.from('contacts').insert({ user_id: P.userId, name: 'Rose', relationship: 'friend', proche_user_id: R.userId }).select('id').single();
 if (eC) throw eC;
-const { data: consent, error: eK } = await P.client.from('contact_consents').insert({ pilote_id: P.userId, contact_id: contact!.id, proche_user_id: R.userId, status: 'active', kind: 'contact_analysis' }).select('id').single();
+// Le pilote DEMANDE, le proche ACCEPTE : depuis la migration 112, le demandeur ne peut plus créer lui-même un consentement actif.
+const { data: consent, error: eK } = await P.client.from('contact_consents').insert({ pilote_id: P.userId, contact_id: contact!.id, proche_user_id: R.userId, status: 'pending', kind: 'contact_analysis' }).select('id').single();
 if (eK) throw eK;
+{ const { error } = await R.client.from('contact_consents').update({ status: 'active' }).eq('id', consent!.id); if (error) throw error; }
 const cookie = { P: await cookiesDe(P.email, P.motDePasse), X: await cookiesDe(X.email, X.motDePasse) };
 
 // Ce qui a été fait SUR le compte d'un autre : lu avec la clé de service, hors RLS — c'est

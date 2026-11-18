@@ -44,12 +44,19 @@ export async function POST(req: NextRequest) {
 
   const piloteId = contact.user_id as string;
   const { data: existante, error: eK } = await admin
-    .from('contact_consents').select('id, scope, status')
+    .from('contact_consents').select('id, scope, status, granted_by')
     .eq('pilote_id', piloteId).eq('contact_id', contactId).eq('status', 'active').maybeSingle();
   if (eK) return NextResponse.json({ error: 'lecture impossible' }, { status: 500 });
 
+  // ON N'HÉRITE PAS D'UNE PORTÉE DONT L'ACCORD N'EST PAS ÉTABLI. Si la ligne existante n'a pas
+  // été accordée par CETTE personne (ligne historique, ou écrite par le serveur sans preuve),
+  // ses portées d'usage ne sont pas reprises : l'accord donné maintenant, pour UNE chose, ne
+  // doit pas en couvrir d'autres que la personne n'a jamais validées.
+  const accordEtabli = existante?.granted_by === user.id;
+  const porteesReprises = ((existante?.scope as string[] | undefined) ?? [])
+    .filter((p) => accordEtabli || (p !== PORTEE_EXCLUSIONS_RECO && !estUsageValide(p)));
   const avant: EtatConsentement | null = existante
-    ? { scope: (existante.scope as string[]) ?? [], status: existante.status as EtatConsentement['status'] }
+    ? { scope: porteesReprises, status: existante.status as EtatConsentement['status'] }
     : null;
   // Le retrait porte sur CETTE portée seulement : si la même ligne couvre d'autres usages,
   // ils sont préservés (voir portees.ts).
