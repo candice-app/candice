@@ -1,0 +1,33 @@
+  ✓ 1 : le DEMANDEUR ne peut pas répondre à sa propre demande
+  ✓ 1 : un TIERS non plus
+1. le propriétaire autorise UNE allergie → HTTP 200 · portée enregistrée : [ 'facts_allergies:gluten' ]
+  ✓ 1 : seule l’allergie réellement déclarée et cochée est dans la portée ; accord attesté
+   fiche vue par le destinataire → HTTP 200 {
+  gluten: true,
+  fruits_a_coque: false,
+  kiwi: false,
+  halal: false,
+  alcool: false,
+  taille: false
+}
+  ✓ 2 : le destinataire voit l’allergie autorisée (gluten)
+  ✓ 2 : il ne reçoit NI l’autre allergie (fruits à coque), NI la précision libre (kiwi)
+  ✓ 2 : ni le régime, ni le rapport à l’alcool
+  ✓ 2 : rien n’affirme qu’il n’y a pas d’autre allergie
+  ✓ 2 : un tiers n’a pas accès à cette fiche
+  ✓ 3 : une allergie ajoutée après le partage n’est pas partagée
+3. le propriétaire retire l’allergie → accepté · fiche : 200 {
+  gluten: false,
+  fruits_a_coque: false,
+  kiwi: false,
+  halal: false,
+  alcool: false,
+  taille: false
+}
+  ✓ 4 : après le retrait, plus aucune allergie n’est envoyée au destinataire
+  ✓ 4 : et rien n’affirme une absence d’allergie
+  ✓ 5 : le destinataire ne peut pas élargir lui-même ce qu’il voit
+4. révocation → HTTP 200 · fiche pour le destinataire : HTTP 200
+  ✓ 6 : après révocation, la fiche ne livre plus rien
+
+13 vérifications passées, 0 en échec.

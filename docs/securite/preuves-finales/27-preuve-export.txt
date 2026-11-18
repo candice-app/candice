@@ -1,0 +1,32 @@
+export → HTTP 200 · 662 ko · 46 rubriques
+  ✓ 0 : l’export est constitué en entier (aucune lecture incomplète)
+
+══ COMPLET
+  ✓ présent : mon profil
+  ✓ présent : mes proches
+  ✓ présent : ce que j’ai saisi sur un proche
+  ✓ présent : mes notes
+  ✓ présent : mes envies
+  ✓ présent : le Carnet d’envies
+  ✓ présent : mes états déclarés
+  ✓ présent : mes souvenirs
+  ✓ présent : le journal de connaissance
+  ✓ une table de 1 250 lignes sort en entier (pas de coupe à mille)
+  ✓ présent : le partage de fiche que j’ai accordé, avec sa portée et la preuve que c’est moi
+  ✓ le PROCHE, lui, retrouve dans SON export l’autorisation qu’il a donnée
+
+══ SANS LES DONNÉES DES AUTRES
+  ✓ absent : ce que mon proche a autorisé à Candice (son réglage ne m’est pas révélé)
+  ✓ absent : l’identifiant d’un autre compte (mon proche)
+  ✓ absent : l’identifiant d’un autre compte (l’autre pilote, qui a aussi réservé mon envie)
+  ✓ absent : l’identifiant d’un autre compte (le lecteur de ma fiche)
+  ✓ absent : l’adresse d’un autre
+  ✓ absent : le fait que mon envie a été réservée, et par qui
+  ✓ absent : la fiche, la note et l’analyse qu’un autre pilote tient sur moi
+  ✓ absent : le profil de mon proche
+  ✓ absent : empreintes de jetons et clés de notification
+  ✓ le fichier DIT ce qu’il ne contient pas, par catégorie
+  ✓ ma fiche dit qu’elle est rattachée à un compte, sans dire lequel
+  ✓ sans session : 401
+
+25 vérifications passées, 0 en échec.

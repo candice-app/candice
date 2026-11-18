@@ -10,6 +10,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
+import { envoyerSousLimite, LimiteEnvoiError } from "@/lib/mail/envoi-limite";
 
 export async function POST(
   _req: NextRequest,
@@ -88,6 +89,7 @@ export async function POST(
 
   // Envoyer un email à B — non bloquant
   notifyProche(
+    user.id,
     contact.proche_user_id,
     user.user_metadata?.full_name as string | undefined,
     prenomSur(contact.name) ?? "toi",
@@ -98,6 +100,7 @@ export async function POST(
 }
 
 async function notifyProche(
+  piloteId: string,
   procheUserId: string,
   piloteFullName: string | undefined,
   contactFirstName: string,
@@ -110,7 +113,7 @@ async function notifyProche(
   const piloteFirstName = prenomSur(piloteFullName) ?? "Quelqu'un";
   const procheFirstName = prenomSur(proche.user_metadata?.full_name as string | undefined) ?? "";
 
-  await envoyerCourriel({
+  await envoyerSousLimite(admin, { expediteur: piloteId, type: 'proposition_analyse' }, {
     to: proche.email,
     subject: `${piloteFirstName} veut partager une analyse avec toi ✦`,
     html: buildEmail(piloteFirstName, procheFirstName, contactFirstName, consentId),

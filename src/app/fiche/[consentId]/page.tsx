@@ -130,7 +130,7 @@ export default async function FichePartageePage({
   const [{ data: analysisRaw }, avatarUrl] = await Promise.all([
     admin.from("profile_analysis").select(ANALYSIS_ROW_V2_SELECT)
       .eq("user_id", consent.pilote_id).is("contact_id", null).maybeSingle(),
-    getSignedAvatarUrl(sharerProfile.avatar_path, consent.pilote_id),
+    getSignedAvatarUrl(sharerProfile.avatar_path, consent.pilote_id, { pourUnTiers: true }),
   ]);
 
   const full = buildProfileV2Data({

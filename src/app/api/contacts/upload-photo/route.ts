@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
-import { estIdentifiant, extensionImage, TAILLE_MAX_IMAGE } from "@/lib/storage/chemins";
+import { estIdentifiant } from "@/lib/storage/chemins";
+import { normaliserImage, ImageRefusee, reponseRefus } from "@/lib/storage/image";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -26,18 +27,23 @@ export async function POST(request: NextRequest) {
 
   if (!contact) return NextResponse.json({ error: "Contact not found" }, { status: 404 });
 
-  const ext = extensionImage(file.type);
-  if (!ext) return NextResponse.json({ error: "Format non pris en charge (JPEG, PNG ou WebP)" }, { status: 415 });
-  if (file.size > TAILLE_MAX_IMAGE) return NextResponse.json({ error: "Image trop lourde (5 Mo max)" }, { status: 413 });
   if (!estIdentifiant(contactId)) return NextResponse.json({ error: "contactId invalide" }, { status: 400 });
+  // L'image est refaite par le serveur : format lu dans les octets, HEIC converti, remise à
+  // l'endroit, métadonnées retirées (GPS compris). L'extension vient de ce que NOUS écrivons.
+  let image;
+  try { image = await normaliserImage(await file.arrayBuffer()); }
+  catch (e) {
+    if (e instanceof ImageRefusee) { const r = reponseRefus(e); return NextResponse.json({ error: r.message }, { status: r.status }); }
+    throw e;
+  }
+  const ext = image.extension;
   const path = `${user.id}/${contactId}/avatar.${ext}`;
-  const bytes = await file.arrayBuffer();
 
   const admin = createAdminClient();
 
   const { error: uploadError } = await admin.storage
     .from("contact-photos")
-    .upload(path, bytes, { contentType: file.type, upsert: true });
+    .upload(path, image.contenu, { contentType: image.type, upsert: true });
 
   if (uploadError) {
     return NextResponse.json({ error: uploadError.message }, { status: 500 });

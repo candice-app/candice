@@ -1,0 +1,56 @@
+dépôts : avatars (privé), contact-photos (privé)
+  ✓ 0 : les deux dépôts sont privés
+
+══ 1. LECTURE AUTORISÉE — chacun dépose et relit SES fichiers
+  Alice dépose sa photo de profil → HTTP 200 · chemin <alice>/avatar.png · relecture par le lien signé → HTTP 200
+  ✓ 1.1 : la photo de profil relue par le lien signé est bien celle déposée
+  ✓ 1.2 : idem pour la photo d’un proche
+  ✓ 1.3 : idem pour une photo d’envie
+  ✓ 1.4 : chaque fichier est rangé sous le dossier de son propriétaire
+
+══ 2. ACCÈS CROISÉ — Victor veut les fichiers d’Alice
+  avec SA session, directement sur le stockage : télécharger → refusé · se signer un lien → refusé · lister le dossier → 0 fichier(s)
+  ✓ 2.1 : la session de Victor ne télécharge, ne signe ni ne liste rien chez Alice
+  ✓ 2.2 : sans session, ni l’adresse « publique » ni l’adresse directe n’ouvrent le fichier
+  ✓ 2.3 : Victor met le chemin de la photo d’Alice dans SON profil → sa page ne reçoit aucun lien vers elle
+  ✓ 2.4 : même tentative par une photo d’envie → aucun lien
+  ✓ 2.5 : même tentative par la photo d’un proche → aucun lien
+  ✓ 2.6 : Victor ne fait pas lire au modèle un fichier d’Alice
+  ✓ 2.7 : (contrôle) avec son propre chemin, sa page lui sert sa photo
+
+══ 3. CHEMIN FALSIFIÉ
+  ✓ 3.1 : 5 chemins fabriqués (remontée de dossier, barre en tête, double barre, encodage) → aucun lien vers Alice
+  (information) si l’on signait « victor/../alice/… » avec les droits serveur : signature acceptée · ouverture → HTTP 200 — ouvrirait la photo d’Alice : la garde de l’application est NÉCESSAIRE
+  ✓ 3.2 : un identifiant de fiche fabriqué ne dépose rien hors de son dossier
+  ✓ 3.3 : rien n’a été écrit dans le dossier d’Alice
+
+══ 4. LIEN SIGNÉ
+  lien remis à la propriétaire : valable 3600 s · il désigne avatars/<alice>/avatar.png
+  ✓ 4.1 : un lien remis à son propriétaire vaut une heure
+  ✓ 4.2 : le jeton d’un fichier n’ouvre pas un autre fichier
+  ✓ 4.3 : un jeton altéré est refusé
+  ✓ 4.4 : sans jeton, rien
+  ✓ 4.5 : à l’échéance, le lien cesse d’ouvrir le fichier (essai avec un lien de 2 s)
+
+══ 5. APRÈS UN RETRAIT D’ACCÈS — le sort des liens déjà émis
+  fiche partagée : Victor reçoit un lien vers la photo d’Alice, valable 300 s
+  ✓ 5.1 : (contrôle) pendant le partage, Victor voit la photo d’Alice
+  ✓ 5.2 : le lien remis à un tiers vaut CINQ MINUTES, et n’est jamais le lien d’une heure de la propriétaire
+  ✓ 5.3 : partage retiré → la page ne sert plus aucun lien
+  le lien DÉJÀ reçu, rouvert juste après le retrait → HTTP 200 (un lien signé ne se révoque pas : il vit jusqu’à son échéance, ici 5 min au plus)
+  ✓ 5.4 : CONSTAT — le lien déjà émis ouvre encore le fichier jusqu’à son échéance (borne : 5 minutes)
+  ? 5.5 NON PROUVÉ ICI : ce stockage local refuse le remplacement d’un fichier (HTTP 500 ) — à vérifier sur le stockage de production
+  ? 5.6 NON PROUVÉ ICI : ce stockage local refuse la suppression ( Internal Server Error ) — à vérifier sur le stockage de production
+
+══ 6. PHOTOS D’IPHONE (HEIC), ORIENTATION, MÉTADONNÉES — par les vraies routes, de vrais fichiers
+  fichier déposé : HEIC 2612 octets · métadonnées présentes : iPhone de test, MARQUEUR-LOGICIEL, MARQUEUR-OBJECTIF, Exif
+  → HTTP 200 · rangé : ….jpg · jpeg 400×300 · scène : rouge bleu vert jaune · métadonnées restantes : 0
+  ✓ 6.1 : une photo HEIC d’iPhone est ACCEPTÉE et rangée en JPEG
+  ✓ 6.2 : prise téléphone debout, elle est rangée À L’ENDROIT
+  ✓ 6.3 : ni position GPS, ni appareil, ni date : aucune métadonnée dans le fichier rangé
+  ✓ 6.4 : JPEG « orientation 6 » avec GPS → à l’endroit, sans métadonnées
+  ✓ 6.5 : photo de profil en HEIC → acceptée, rangée en JPEG
+  SVG annoncé comme JPEG, faux HEIC, GIF annoncé comme PNG → HTTP 415 415 415
+  ✓ 6.6 : le type annoncé ne compte pas — ce qui n’est pas une vraie image admise est refusé
+
+30 vérifications passées, 0 en échec.

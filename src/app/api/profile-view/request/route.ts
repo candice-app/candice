@@ -13,6 +13,7 @@ import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
 import { isQuestionnaireComplete, PROFILE_ROW_SELECT, type ProfileRow } from "@/lib/profile/sheet-data";
+import { envoyerSousLimite, LimiteEnvoiError } from "@/lib/mail/envoi-limite";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -81,6 +82,7 @@ export async function POST(req: NextRequest) {
 
   // Email à Y — non bloquant
   notifyTarget(
+    user.id,
     targetUserId,
     user.user_metadata?.full_name as string | undefined,
     consent.id,
@@ -90,6 +92,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function notifyTarget(
+  demandeurId: string,
   targetUserId: string,
   requesterFullName: string | undefined,
   consentId: string,
@@ -101,7 +104,7 @@ async function notifyTarget(
   const requesterFirstName = prenomSur(requesterFullName) ?? "Quelqu'un";
   const targetFirstName = prenomSur(target.user_metadata?.full_name as string | undefined) ?? "";
 
-  await envoyerCourriel({
+  await envoyerSousLimite(admin, { expediteur: demandeurId, type: 'demande_fiche' }, {
     to: target.email,
     subject: `${requesterFirstName} veut voir ton profil`,
     html: buildEmail(requesterFirstName, targetFirstName, consentId),

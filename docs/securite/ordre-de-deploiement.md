@@ -1,4 +1,4 @@
-# Ordre de déploiement — consentements (migrations 113 à 118)
+# Ordre de déploiement — migrations 113 à 119
 
 État de départ, relevé en production le 18 nov. à 15 h 26 (requête en lecture seule) : code `680f896`
 (« A »), schéma jusqu'à la 112, garde `5a0703b0…`, **0 consentement, 0 fiche reliée, 0 invitation
@@ -13,15 +13,16 @@ utilisée, 0 lien de partage réclamé**. Code à déployer : la branche `hsg-re
 | 3 | **114** — portée figée avant acceptation | A | non |
 | 4 | **116** — deux sens, deux lignes ; fermeture des lectures directes | A | non : compatible A **et** B |
 | 5 | **118** — ce qui a été calculé avec les données d'un proche suit son autorisation | A | non : compatible A, **requise par B** |
-| 6 | **Déploiement de B** | A puis B | — |
-| 7 | **117** — le serveur nomme toujours le titulaire | B | oui : après B seulement |
+| 6 | **119** — limites d'envoi des courriels | A | non : compatible A, **requise par B** |
+| 7 | **Déploiement de B** (après `npm install` : deux dépendances ajoutées) | A puis B | — |
+| 8 | **117** — le serveur nomme toujours le titulaire | B | oui : après B seulement |
 
 La 116 passe AVANT le déploiement. C'est ce qui corrige l'ordre annoncé le 18 nov. après-midi, où le
 code de la branche aurait écrit un type (`profile_usage`) que le schéma ne connaissait pas encore.
 La seule règle incompatible avec A — le serveur doit nommer celui qui accorde, alors que A crée ses
 liens de partage de fiche sans le faire — est isolée dans la 117, appliquée en dernier.
 
-**Les numéros ne sont pas l'ordre** : 115 d'abord, 118 avant le déploiement, 117 en dernier.
+**Les numéros ne sont pas l'ordre** : 115 d'abord ; 118 et 119 avant le déploiement ; 117 en dernier.
 
 ## Chaque état, observé
 
@@ -72,6 +73,7 @@ ne s'ouvre qui était fermé.
 | La 116 trouve une ligne `contact_analysis` portant autre chose que « analysis » | elle **s'arrête** et le dit (essayé) | inventorier ; en production la table est vide |
 | B déployé trop tôt, avant la 116 (B × 114) | régler un usage → 500, **fermé** ; rien d'autre ne casse (17/17) | appliquer la 116 |
 | B déployé avant la 118 (B × 116) | une recommandation n'est **pas enregistrée** (la branche écrit sa provenance, les colonnes manquent) ; si elle dépendait du proche, elle n'est pas renvoyée non plus (500) ; le réglage d'usage marche (18/18) | appliquer la 118 |
+| B déployé avant la 119 | aucun courriel déclenché par un utilisateur ne part (invitation, rappel, relance, demande, export) : la réservation échoue, **fermée** — établi par test unitaire, non rejoué par les routes | appliquer la 119 |
 | B déployé sans aucune migration (B × 112) | invitation, proposition d'analyse et réglage d'usage **suspendus** ; aucune lecture ouverte (16/16) | appliquer 115, 113, 114, 116 |
 
 ## Contrôles à chaque étape (lecture seule)
@@ -96,3 +98,9 @@ Base locale reconstruite depuis les fichiers du dépôt : sa garde, ses clés é
 politiques coïncident avec le relevé de production, mais ce n'est pas la base de production. Les
 tables du service d'authentification sont celles de la pile locale. Le déploiement lui-même
 (commit servi, réussite) ne se lit que chez l'hébergeur.
+
+## Ce que le déploiement de la branche change en dehors de la base
+
+- **Deux dépendances** : `heic-decode` (décodage des photos d'iPhone) et `sharp` déclarée directement (elle n'était présente que par Next). `npm install` avant le build.
+- **Variables d'environnement** : aucune nouvelle. `CRON_SECRET` doit exister et faire au moins 16 caractères, sinon toutes les tâches planifiées répondent 401 (c'est voulu).
+- **Limite de l'hébergeur** : une requête de dépôt ne dépasse pas ~4,5 Mo sur une fonction Vercel. Le serveur accepte jusqu'à 20 Mo, mais une photo plus lourde que la limite de l'hébergeur sera refusée avant d'atteindre le code. À vérifier sur un vrai iPhone après déploiement.

@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
+import { envoyerSousLimite, LimiteEnvoiError } from "@/lib/mail/envoi-limite";
 
 export async function POST(request: NextRequest) {
   // Session requise : le welcome ne part que vers l'adresse du compte connecté.
@@ -14,7 +16,7 @@ export async function POST(request: NextRequest) {
   const firstName = prenomSur(prenomBrut);
   const email = user.email; // destinataire = session, JAMAIS une adresse du corps
 
-  const error = await envoyerCourriel({
+  const error = await envoyerSousLimite(createAdminClient(), { expediteur: user.id, type: 'bienvenue', aSoi: true }, {
     to: email,
     subject: "Candice est prête.",
     html: `<!DOCTYPE html>
@@ -92,6 +94,7 @@ export async function POST(request: NextRequest) {
 </html>`,
   }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
+  if (error instanceof LimiteEnvoiError) return NextResponse.json({ error: error.message }, { status: 429 });
   if (error) {
     console.error("[email/welcome]", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

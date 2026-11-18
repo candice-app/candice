@@ -5,6 +5,7 @@ import { sendPushToUser } from "@/lib/notifications/push-sender";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
+import { reserverEnvoi } from "@/lib/mail/limites";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -33,6 +34,9 @@ export async function POST(req: NextRequest) {
     if (!contact.email) {
       return NextResponse.json({ method: "none", reason: "no_email" });
     }
+    // La limite d'abord : on ne fabrique pas un nouveau lien d'invitation pour un courriel qui ne partira pas.
+    const reserveInvitation = await reserverEnvoi(admin, { expediteur: user.id, destinataire: contact.email, type: 'invitation' });
+    if (!reserveInvitation.ok) return NextResponse.json({ method: "none", reason: "limite" }, { status: 429 });
     const { data: newLink, error: newLinkError } = await admin
       .from("invite_links")
       .insert({
@@ -46,7 +50,7 @@ export async function POST(req: NextRequest) {
     if (!newLink) return NextResponse.json({ method: "none" });
     const inviteUrl = `${APP_URL}/invite/${newLink.token}`;
     const procheFirstName = texteSur(contact.name.split(" ")[0]) ?? "";
-    await envoyerCourriel({
+    await envoyerCourriel({   // limite déjà réservée plus haut, avant de créer le lien
       to: contact.email,
       subject: piloteFirstName
         ? `${piloteFirstName} t'invite sur Candice ✦`
@@ -100,6 +104,8 @@ export async function POST(req: NextRequest) {
 
   const procheFirstName = (procheUser.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? null;
 
+  const reserve = await reserverEnvoi(admin, { expediteur: user.id, destinataire: procheUser.email, type: 'relance' });
+  if (!reserve.ok) return NextResponse.json({ method: "none", reason: "limite" }, { status: 429 });
   await envoyerCourriel({
     to: procheUser.email,
     subject: piloteFirstName

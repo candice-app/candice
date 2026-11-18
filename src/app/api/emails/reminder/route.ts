@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
+import { envoyerSousLimite, LimiteEnvoiError } from "@/lib/mail/envoi-limite";
 
 export async function POST(request: NextRequest) {
   // Session requise + le contact doit appartenir à l'utilisateur.
@@ -29,7 +31,7 @@ export async function POST(request: NextRequest) {
   const senderFirstName = prenomSur(user.user_metadata?.full_name as string | undefined) ?? undefined;
   const profileUrl = `${APP_URL}/profil/${contactId}`;
 
-  const error = await envoyerCourriel({
+  const error = await envoyerSousLimite(createAdminClient(), { expediteur: user.id, type: 'rappel' }, {
     to: contactEmail,
     subject: "Votre fiche est incomplète.",
     html: `<!DOCTYPE html>
@@ -107,6 +109,7 @@ export async function POST(request: NextRequest) {
 </html>`,
   }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
+  if (error instanceof LimiteEnvoiError) return NextResponse.json({ error: error.message }, { status: 429 });
   if (error) {
     console.error("[email/reminder]", error);
     return NextResponse.json({ error: error.message }, { status: 500 });

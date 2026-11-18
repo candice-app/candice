@@ -4,6 +4,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
+import { envoyerSousLimite, LimiteEnvoiError } from "@/lib/mail/envoi-limite";
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -78,6 +79,7 @@ export async function POST(req: NextRequest) {
   }
 
   notifyPilote(
+    user.id,
     invite.pilote_id,
     invite.pilote_name,
     (user.user_metadata?.full_name as string | undefined) ?? null
@@ -87,6 +89,7 @@ export async function POST(req: NextRequest) {
 }
 
 async function notifyPilote(
+  procheId: string,
   piloteId: string,
   piloteName: string | null,
   procheFullName: string | null
@@ -98,7 +101,7 @@ async function notifyPilote(
   const piloteFirstName = prenomSur(piloteName) ?? "";
   const procheFirstName = prenomSur(procheFullName);
 
-  await envoyerCourriel({
+  await envoyerSousLimite(admin, { expediteur: procheId, type: 'invitation_acceptee' }, {
     to: pilote.email,
     subject: `${procheFirstName ? `${procheFirstName} a` : "Ton proche a"} complété sa fiche ✦`,
     html: buildNotifHtml(piloteFirstName, procheFirstName),

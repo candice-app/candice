@@ -4,6 +4,7 @@ import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
+import { envoyerSousLimite, LimiteEnvoiError } from "@/lib/mail/envoi-limite";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
         const { data: { user: sender } } = await admin.auth.admin.getUserById(shareLink.sender_id);
         if (sender?.email) {
           const ownerFirstName = prenomSur(shareLink.sender_name as string | null) ?? "";
-          await envoyerCourriel({
+          await envoyerSousLimite(admin, { expediteur: user.id, type: 'fiche_complete' }, {
             to: sender.email,
             subject: "La fiche de ton proche est complète ✦",
             html: buildProfileCompleteHtml(ownerFirstName, null),

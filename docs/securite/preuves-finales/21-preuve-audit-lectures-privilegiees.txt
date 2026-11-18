@@ -1,0 +1,91 @@
+
+══ 1. INVITATION
+  A crée une invitation visant la fiche de V → HTTP 404
+  ✓ 1.1 : on n’invite pas sur la fiche d’un autre pilote
+  ✓ 1.2 : sans session, 401
+  ✓ 1.3 : A invite sur SA fiche
+  ✓ 1.4 : A ne peut pas accepter sa propre invitation
+  O accepte → HTTP 200 · fiche liée à O, lien confirmé par O : true
+  ✓ 1.5 : la personne invitée accepte ; le lien est confirmé par elle
+  T réutilise le même lien → HTTP 410
+  ✓ 1.6 : une invitation ne sert qu’UNE fois — un second compte ne se rattache pas
+  ✓ 1.7 : une ancienne invitation visant la fiche d’un autre ne rattache rien
+  ✓ 1.8 : accepter une nouvelle invitation ne déplace pas un lien déjà confirmé par quelqu’un d’autre
+
+══ 2. COURRIELS — un prénom hostile
+  A (prénom hostile) demande à voir la fiche de O → HTTP 200 · courriel : [ 'a veut voir ton profil' ]
+  ✓ 2.1 : la demande part bien à la personne visée
+  ✓ 2.2 : ni balise ni lien étranger, dans le sujet comme dans le corps
+  A propose de partager son analyse à O (lien confirmé) → HTTP 200 · [ 'a veut partager une analyse avec toi ✦' ]
+  ✓ 2.3 : proposition envoyée, sans balise ni lien étranger
+  A vise un compte qu’il a seulement DÉSIGNÉ (T n’a rien accepté) → HTTP 422 · courriels : 0
+  ✓ 2.4 : on n’écrit pas, au nom de Candice, à un compte seulement désigné
+  ✓ 2.5 : un autre pilote ne peut pas proposer sur cette fiche
+  A fait envoyer une « invitation » à une adresse et vers un lien de son choix → HTTP 400 · courriels : 0
+  ✓ 2.6 : l’adresse et le lien fournis par le navigateur ne sont plus acceptés
+  ✓ 2.7 : ni pour la fiche d’un autre pilote
+  ✓ 2.8 : ni avec le jeton d’invitation d’un autre
+  A invite sa propre fiche (en glissant encore un lien et une adresse) → HTTP 200 · à : [ 'zoe@test.candice.invalid' ] · hôtes des liens : [ 'candice.app' ]
+  ✓ 2.9 : le courriel part à l’adresse DE LA FICHE, avec des liens vers Candice seulement
+  l’ancienne route d’envoi SANS authentification → HTTP 404 · courriels : 0
+  ✓ 2.10 : la route qui envoyait un courriel à n’importe qui, sans session, n’existe plus
+
+══ 3. TÂCHES PLANIFIÉES
+  sans en-tête, « Bearer undefined », vide, faux → HTTP 401 401 401 401 401 401 401 401 401
+  ✓ 3.1 : six routes planifiées, aucune ne s’ouvre sans le secret ; aucun courriel parti
+  ✓ 3.2 : avec le secret, la tâche s’exécute
+
+══ 4. ANNULATION D’UNE SUPPRESSION DE COMPTE
+  un robot de messagerie OUVRE le lien → HTTP 200 · suppression toujours programmée : true
+  ✓ 4.1 : ouvrir le lien n’annule rien
+  ✓ 4.2 : un jeton inventé n’annule rien
+  la personne appuie sur « Garder mon compte » → HTTP 200 · état : active
+  ✓ 4.3 : le geste annule la suppression
+
+══ 5. PAGE D’UN PROCHE — son analyse, section par section
+  aucun partage → HTTP 200 []
+  ✓ 5.1 : sans partage, rien de l’analyse de O ne sort
+  ✓ 5.2 : demande en attente → rien
+  O partage UNE section (« ce qui tombe à côté ») → HTTP 200 · sur la page de V : [ 'RESUME-OLGA', 'ACOTE-OLGA', 'PUCE-ACOTE' ]
+  ✓ 5.3 : le résumé (socle) et CETTE section sortent ; ni « ce qui touche », ni l’intime, ni la section jamais proposée
+  ✓ 5.4 : mode aveugle → rien ne sort
+  O retire son partage → HTTP 200 · []
+  ✓ 5.5 : partage retiré → rien
+  ligne ancienne, active, SANS preuve → page du proche : [] · fiche partagée : non disponible
+  ✓ 5.6 : un partage actif sans preuve d’accord n’ouvre ni la page du proche, ni la fiche partagée
+
+══ 6. DÉPÔTS DE FICHIERS
+  type html, svg déguisé, identifiant fabriqué, fiche d’un autre (carnet), fiche d’un autre (photo), extension fabriquée → HTTP 415 415 400 404 404 415
+  ✓ 6.1 : seul un type image admis entre
+  ✓ 6.2 : ni identifiant fabriqué, ni fiche d’un autre dans le chemin
+  ✓ 6.3 : l’extension ne vient plus du nom du fichier
+  ✓ 6.4 : on ne fait pas lire au modèle le fichier d’un autre
+
+══ 7. ROUTES QUI APPELLENT LE MODÈLE — plus aucune sans session
+  sans session → HTTP 401 401 401 · appels au modèle provoqués : 0
+  ✓ 7.1 : trois routes fermées ; aucun appel au modèle provoqué par un inconnu
+  ✓ 7.2 : l’ancienne route d’écriture sans session n’existe plus
+
+══ 8. LIEN DE PARTAGE, RETRAIT, ANNULATION — chaque route, par chaque partie
+  ✓ 8.1 : créer un lien sans session → 401
+  ✓ 8.2 : le propriétaire ne « réclame » pas son propre lien
+  O crée un lien (une section ; il tente d’y glisser « analysis », un usage et une allergie qu’il n’a pas) → A l’ouvre → HTTP 307 · portée : [ 'deep_miss' ] · accordé par O : true · via serveur
+  ✓ 8.3 : le lien ouvre exactement la section choisie ; la base n’accepte l’écriture du serveur que parce qu’elle nomme le propriétaire
+  ✓ 8.4 : le lien est à usage unique — un second compte n’obtient rien
+  ✓ 8.5 : ni le lecteur, ni un tiers, ni un inconnu ne retirent le partage à la place du propriétaire
+  ✓ 8.6 : le lecteur ne peut pas « répondre » pour tout s’ouvrir
+  ✓ 8.7 : le propriétaire retire ; le partage est fermé
+  ✓ 8.8 : rouvrir le lien après le retrait ne recrée pas l’accès
+  ✓ 8.9 : seul l’auteur d’une demande peut l’annuler
+  ✓ 8.10 : son auteur l’annule
+
+══ 9. UNE ADRESSE OU UN NUMÉRO NE RÉVÈLE PLUS L’EXISTENCE D’UN COMPTE
+  ajout d’un proche — adresse d’un compte existant : {"found":false} · adresse inconnue : {"found":false} · numéro existant : {"found":false}
+  ✓ 9.1 : ajouter un proche — même réponse, à l’octet près, que l’adresse ou le numéro ait un compte ou non
+  recherche d’une fiche — adresse existante : {"found":false} · adresse inconnue : {"found":false} · identifiant inconnu : {"found":false}
+  ✓ 9.2 : chercher une fiche par adresse — même réponse qu’une adresse inconnue et qu’un identifiant inconnu
+  ✓ 9.3 : (contrôle) l’identifiant que la personne a choisi et donné permet toujours de lui adresser une demande
+  ✓ 9.4 : une personne qui ne veut pas être trouvée, un identifiant inconnu, un format invalide : la même réponse
+  ✓ 9.5 : les fonctions de recherche de la base ne s’appellent pas directement depuis un compte
+
+50 vérifications passées, 0 en échec.

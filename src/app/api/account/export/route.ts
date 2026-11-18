@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
 import { createAdminClient } from '@/utils/supabase/admin';
 import { envoyerCourriel } from '@/lib/mail/transport';
+import { envoyerSousLimite, LimiteEnvoiError } from '@/lib/mail/envoi-limite';
+import { construireExport } from '@/lib/account/export';
 // ⚠ NON routé par envoyerCourriel : cet envoi porte une PIÈCE JOINTE (l'export RGPD), que l'interface Courriel du
 // transport ne prend pas en charge. Router ici dépublierait silencieusement la pièce jointe. À router quand le
 // transport saura porter une pièce jointe (décision d'Estelle sur l'interface Courriel).
@@ -14,38 +16,13 @@ export async function POST() {
   const uid = user.id;
   const admin = createAdminClient();
 
-  const [
-    { data: profile },
-    { data: contacts },
-    { data: suggestions },
-    { data: proactiveSuggestions },
-    { data: confidences },
-    { data: profileNotes },
-    { data: notificationLog },
-    { data: lifecycleEvents },
-  ] = await Promise.all([
-    admin.from('my_profile').select('*').eq('user_id', uid).maybeSingle(),
-    admin.from('contacts').select('*, questionnaire_responses(*)').eq('user_id', uid),
-    admin.from('suggestions').select('*').eq('user_id', uid),
-    admin.from('proactive_suggestions').select('*').eq('user_id', uid),
-    admin.from('confidences').select('*').eq('user_id', uid),
-    admin.from('profile_notes').select('*').eq('user_id', uid),
-    admin.from('notification_log').select('*').eq('user_id', uid),
-    admin.from('account_lifecycle_events').select('*').eq('user_id', uid),
-  ]);
-
-  const exportData = {
-    exported_at: new Date().toISOString(),
-    user: { id: uid, email: user.email, created_at: user.created_at },
-    my_profile: profile,
-    contacts: contacts ?? [],
-    suggestions: suggestions ?? [],
-    proactive_suggestions: proactiveSuggestions ?? [],
-    confidences: confidences ?? [],
-    profile_notes: profileNotes ?? [],
-    notification_log: notificationLog ?? [],
-    account_lifecycle_events: lifecycleEvents ?? [],
-  };
+  // Un seul constructeur pour les deux routes : complet, paginé, sans les données des autres.
+  const exportData = await construireExport(admin, { id: uid, email: user.email, created_at: user.created_at });
+  if (exportData.lectures_incompletes.length > 0) {
+    // Un export tronqué qui se présenterait comme complet serait pire qu'une erreur.
+    console.error('[account/export] lectures incomplètes', exportData.lectures_incompletes.join(' | '));
+    return NextResponse.json({ error: "L'export n'a pas pu être constitué en entier. Réessaie dans un instant." }, { status: 500 });
+  }
 
   const json = JSON.stringify(exportData, null, 2);
   const encodedData = Buffer.from(json).toString('base64');
@@ -56,7 +33,7 @@ export async function POST() {
   // journalise que le nom et la taille de la pièce, jamais son contenu : cet export
   // porte l'intégralité des données de la personne.
   try {
-    await envoyerCourriel({
+    await envoyerSousLimite(admin, { expediteur: uid, type: 'export', aSoi: true }, {
     to: user.email,
     subject: 'Ton export de données Candice (RGPD)',
     html: `<!DOCTYPE html>
@@ -68,7 +45,7 @@ export async function POST() {
       Conformément au RGPD, voici l'ensemble des données que Candice détient sur toi. L'export est joint à cet email au format JSON.
     </p>
     <p style="font-size:12px;font-weight:300;color:#9E7B5A;margin:0;">
-      Cet export inclut : ton profil, tes proches et leurs questionnaires, tes confidences, tes notes, les suggestions générées et l'historique de notifications.
+      Cet export inclut : ton profil, tes proches et ce que tu as saisi sur eux, tes confidences, tes notes, tes souvenirs, ton Carnet d'envies, ce que Candice a retenu pour toi, tes consentements, les recommandations et l'historique de ton compte. Il n'inclut pas les données qui appartiennent à d'autres personnes ; le fichier dit lesquelles.
     </p>
   </div>
 </body></html>`,
@@ -78,6 +55,7 @@ export async function POST() {
     }],
     });
   } catch (e) {
+    if (e instanceof LimiteEnvoiError) return NextResponse.json({ error: e.message }, { status: 429 });
     return NextResponse.json({ error: (e as Error).message }, { status: 500 });
   }
 

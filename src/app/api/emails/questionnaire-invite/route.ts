@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { APP_URL } from "@/lib/resend";
 import { envoyerCourriel } from "@/lib/mail/transport";
 import { prenomSur } from "@/lib/mail/texte-sur";
+import { envoyerSousLimite, LimiteEnvoiError } from "@/lib/mail/envoi-limite";
 
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
@@ -48,12 +50,13 @@ export async function POST(request: NextRequest) {
     ? `Une invitation Candice de la part de ${piloteFirstName} ✦`
     : "Une invitation Candice ✦";
 
-  const error = await envoyerCourriel({
+  const error = await envoyerSousLimite(createAdminClient(), { expediteur: user.id, type: 'invitation' }, {
     to: contactEmail,
     subject,
     html: buildInviteHtml(piloteFirstName, contactFirstName, profileUrl, piloteSexe),
   }).then(() => null).catch((e: unknown) => (e instanceof Error ? e : new Error(String(e))));
 
+  if (error instanceof LimiteEnvoiError) return NextResponse.json({ error: error.message }, { status: 429 });
   if (error) {
     console.error("[email/questionnaire-invite]", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
