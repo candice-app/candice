@@ -48,7 +48,7 @@ Le classeur n'a pas été modifié cette nuit. Effectifs recalculés : `docs/dis
 | `scripts/local/15` — dix comptes, plomberie | 208 / 0 |
 | `scripts/local/10`, `12`, `13` — non-régression | 15 / 0, 14 / 0, 40 / 0 |
 | `scripts/local/28` — dix profils en personnage, deux lots de réponses | relevé : `docs/discovery/etat-19nov/preuve-dix-profils.md` |
-| `next build` | voir la section « À vérifier » : dernière exécution réussie sur l'état précédant le dernier lot |
+| `next build` (copie de travail, variables locales factices) | réussi, code 0, sur l'état commité |
 
 Contre-exemples couverts : domaine non renseigné, rejet explicite, réponse contradictoire, non-réponse, question retirée de la banque, donnée d'un autre compte.
 
