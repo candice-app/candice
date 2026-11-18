@@ -1,0 +1,5762 @@
+[
+ {
+  "id": "CRE-01",
+  "option": "Je pratique moi-même une ou plusieurs activités créatives",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je pratique moi-même une ou plusieurs activités créatives)"
+ },
+ {
+  "id": "CRE-01",
+  "option": "Je collectionne certains objets ou artistes",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je collectionne certains objets ou artistes)"
+ },
+ {
+  "id": "CRE-09",
+  "option": "Débutant(e)",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Débutant(e))"
+ },
+ {
+  "id": "CRE-09",
+  "option": "En apprentissage",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (En apprentissage)"
+ },
+ {
+  "id": "CRE-09",
+  "option": "Intermédiaire",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Intermédiaire)"
+ },
+ {
+  "id": "CRE-09",
+  "option": "Confirmé(e)",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Confirmé(e))"
+ },
+ {
+  "id": "CRE-09",
+  "option": "Très expérimenté(e)",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très expérimenté(e))"
+ },
+ {
+  "id": "CRE-09",
+  "option": "Professionnel(le) ou semi-professionnel(le)",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Professionnel(le) ou semi-professionnel(le))"
+ },
+ {
+  "id": "CHS-06",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "CHS-07",
+  "option": "Pour remplacer une paire usée",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pour remplacer une paire usée)"
+ },
+ {
+  "id": "CEL-02",
+  "option": "Je ne souhaite pas célébrer cette occasion",
+  "rang": "9",
+  "voie": "HSG_EVIDENCE",
+  "famille": "GUARDRAIL",
+  "motif": "contrat_incomplet",
+  "detail": "garde-fou à paramètre non résolu « occasion={occasion} » (Je ne souhaite pas célébrer cette occasion)"
+ },
+ {
+  "id": "FPL-15",
+  "option": "Anniversaire",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Anniversaire)"
+ },
+ {
+  "id": "FPL-15",
+  "option": "Invitation",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Invitation)"
+ },
+ {
+  "id": "FPL-15",
+  "option": "Remerciement",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Remerciement)"
+ },
+ {
+  "id": "FPL-15",
+  "option": "Mariage",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mariage)"
+ },
+ {
+  "id": "FPL-15",
+  "option": "Naissance",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Naissance)"
+ },
+ {
+  "id": "FPL-15",
+  "option": "Saint-Valentin",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Saint-Valentin)"
+ },
+ {
+  "id": "FPL-15",
+  "option": "Sans raison",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Sans raison)"
+ },
+ {
+  "id": "GAM-15",
+  "option": "",
+  "rang": null,
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "relation « WANT_TO_TRY|WANT_TO_OWN (à résoudre depuis le verbatim) » non canonique ou ambiguë ()"
+ },
+ {
+  "id": "GAM-16",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "JDS-13",
+  "option": "Possible, mais j’ai déjà beaucoup de jeux",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Possible, mais j’ai déjà beaucoup de jeux)"
+ },
+ {
+  "id": "activity.0283",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "animals.2137",
+  "option": "Je cherche des lieux pet-friendly",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je cherche des lieux pet-friendly)"
+ },
+ {
+  "id": "animals.2137",
+  "option": "Je privilégie des solutions de garde",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je privilégie des solutions de garde)"
+ },
+ {
+  "id": "bags.0364",
+  "option": "Pour remplacer un sac usé",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pour remplacer un sac usé)"
+ },
+ {
+  "id": "bags.0375",
+  "option": "Avoir un sac pour chaque usage",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Avoir un sac pour chaque usage)"
+ },
+ {
+  "id": "bags.0378",
+  "option": "Qu’il ferme",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il ferme)"
+ },
+ {
+  "id": "bags.0378",
+  "option": "Qu’il tienne debout",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il tienne debout)"
+ },
+ {
+  "id": "bags.0378",
+  "option": "Qu’il puisse contenir un ordinateur",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il puisse contenir un ordinateur)"
+ },
+ {
+  "id": "bags.0378",
+  "option": "Qu’il résiste au poids",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il résiste au poids)"
+ },
+ {
+  "id": "bags.0378",
+  "option": "Qu’il ait des poches",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il ait des poches)"
+ },
+ {
+  "id": "bags.0378",
+  "option": "Qu’il soit lavable",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il soit lavable)"
+ },
+ {
+  "id": "bags.0379",
+  "option": "La sécurité",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La sécurité)"
+ },
+ {
+  "id": "bags.0379",
+  "option": "Un espace ordinateur",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un espace ordinateur)"
+ },
+ {
+  "id": "bags.0379",
+  "option": "L’imperméabilité",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (L’imperméabilité)"
+ },
+ {
+  "id": "bags.0379",
+  "option": "Beaucoup de rangement",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup de rangement)"
+ },
+ {
+  "id": "bags.0384",
+  "option": "Qu’il contienne mon téléphone",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il contienne mon téléphone)"
+ },
+ {
+  "id": "bags.0384",
+  "option": "Qu’il contienne un grand portefeuille",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il contienne un grand portefeuille)"
+ },
+ {
+  "id": "bags.0384",
+  "option": "Qu’il contienne une bouteille",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il contienne une bouteille)"
+ },
+ {
+  "id": "bags.0384",
+  "option": "Qu’il contienne un livre",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il contienne un livre)"
+ },
+ {
+  "id": "bags.0384",
+  "option": "Qu’il contienne mon ordinateur",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il contienne mon ordinateur)"
+ },
+ {
+  "id": "bags.0384",
+  "option": "Qu’il passe sous le siège d’un avion",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Qu’il passe sous le siège d’un avion)"
+ },
+ {
+  "id": "beauty2.1298",
+  "option": "Inexistant",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Inexistant)"
+ },
+ {
+  "id": "beauty2.1303",
+  "option": "Le temps",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le temps)"
+ },
+ {
+  "id": "beauty2.1303",
+  "option": "Le prix",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le prix)"
+ },
+ {
+  "id": "beauty2.1303",
+  "option": "Les allergies",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les allergies)"
+ },
+ {
+  "id": "celebav.2176",
+  "option": "Stressant",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Stressant)"
+ },
+ {
+  "id": "celebav.2176",
+  "option": "Très difficile",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très difficile)"
+ },
+ {
+  "id": "celebav.2179",
+  "option": "Très souvent",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très souvent)"
+ },
+ {
+  "id": "celebav.2179",
+  "option": "Parfois",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Parfois)"
+ },
+ {
+  "id": "celebav.2179",
+  "option": "Rarement",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rarement)"
+ },
+ {
+  "id": "celebav.2179",
+  "option": "Je fais très attention à distinguer les deux",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je fais très attention à distinguer les deux)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Trouver l’idée",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Trouver l’idée)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Trouver le bon cadeau",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Trouver le bon cadeau)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Respecter le budget",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Respecter le budget)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Organiser",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Organiser)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Réunir les personnes",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Réunir les personnes)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Anticiper",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Anticiper)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Garder le secret",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Garder le secret)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Être certain(e) que cela lui plaira",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Être certain(e) que cela lui plaira)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Trouver les mots",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Trouver les mots)"
+ },
+ {
+  "id": "celebav.2184",
+  "option": "Tout faire à temps",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Tout faire à temps)"
+ },
+ {
+  "id": "celebav.2187",
+  "option": "Très stimulant",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très stimulant)"
+ },
+ {
+  "id": "celebav.2187",
+  "option": "Agréable",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Agréable)"
+ },
+ {
+  "id": "celebav.2187",
+  "option": "Gérable",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Gérable)"
+ },
+ {
+  "id": "celebav.2187",
+  "option": "Fatigant",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Fatigant)"
+ },
+ {
+  "id": "celebav.2187",
+  "option": "Très stressant",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très stressant)"
+ },
+ {
+  "id": "celebav.2189",
+  "option": "Le manque d’idées",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le manque d’idées)"
+ },
+ {
+  "id": "celebav.2189",
+  "option": "Le manque de temps",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le manque de temps)"
+ },
+ {
+  "id": "celebav.2189",
+  "option": "Le budget",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le budget)"
+ },
+ {
+  "id": "celebav.2189",
+  "option": "La logistique",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La logistique)"
+ },
+ {
+  "id": "celebav.2189",
+  "option": "La peur de me tromper",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La peur de me tromper)"
+ },
+ {
+  "id": "celebav.2189",
+  "option": "Le manque d’énergie",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le manque d’énergie)"
+ },
+ {
+  "id": "celebration.0815",
+  "option": "Rien",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien)"
+ },
+ {
+  "id": "celebration.0816",
+  "option": "Rien en particulier",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien en particulier)"
+ },
+ {
+  "id": "collection.2019",
+  "option": "Oui, c’est une vraie passion",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, c’est une vraie passion)"
+ },
+ {
+  "id": "collection.2019",
+  "option": "Oui, une ou deux collections importantes",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, une ou deux collections importantes)"
+ },
+ {
+  "id": "collection.2019",
+  "option": "J’aime compléter certaines séries",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’aime compléter certaines séries)"
+ },
+ {
+  "id": "collection.2019",
+  "option": "J’accumule quelques objets sans vraiment appeler ça une collection",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’accumule quelques objets sans vraiment appeler ça une collection)"
+ },
+ {
+  "id": "collection.2019",
+  "option": "J’ai collectionné dans le passé",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai collectionné dans le passé)"
+ },
+ {
+  "id": "collection.2019",
+  "option": "Non, pas vraiment",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non, pas vraiment)"
+ },
+ {
+  "id": "collection.2020",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "collection.2025",
+  "option": "À ses débuts",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (À ses débuts)"
+ },
+ {
+  "id": "collection.2025",
+  "option": "Déjà bien construite",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Déjà bien construite)"
+ },
+ {
+  "id": "collection.2025",
+  "option": "Presque complète",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Presque complète)"
+ },
+ {
+  "id": "collection.2025",
+  "option": "Très importante",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très importante)"
+ },
+ {
+  "id": "collection.2025",
+  "option": "En évolution constante",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (En évolution constante)"
+ },
+ {
+  "id": "collection.2025",
+  "option": "Limitée volontairement",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Limitée volontairement)"
+ },
+ {
+  "id": "collection.2025",
+  "option": "En pause",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (En pause)"
+ },
+ {
+  "id": "collection.2025",
+  "option": "En cours de tri ou de réduction",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (En cours de tri ou de réduction)"
+ },
+ {
+  "id": "collection.2034",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "comics.0425",
+  "option": "Quelques titres choisis",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques titres choisis)"
+ },
+ {
+  "id": "comics.0425",
+  "option": "Plusieurs séries complètes",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Plusieurs séries complètes)"
+ },
+ {
+  "id": "comics.0425",
+  "option": "Une bibliothèque déjà bien remplie",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une bibliothèque déjà bien remplie)"
+ },
+ {
+  "id": "comics.0425",
+  "option": "Une vraie collection",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une vraie collection)"
+ },
+ {
+  "id": "comics.0425",
+  "option": "Beaucoup de livres mais peu de place",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup de livres mais peu de place)"
+ },
+ {
+  "id": "comics.0426",
+  "option": "Sont souvent trop encombrantes",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Sont souvent trop encombrantes)"
+ },
+ {
+  "id": "comics.0431",
+  "option": "Je ne lis pas vraiment de comics",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je ne lis pas vraiment de comics)"
+ },
+ {
+  "id": "comics.0436",
+  "option": "Je ne l’ai pas commencée",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je ne l’ai pas commencée)"
+ },
+ {
+  "id": "comics.0436",
+  "option": "J’ai seulement les premiers tomes",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai seulement les premiers tomes)"
+ },
+ {
+  "id": "comics.0436",
+  "option": "Il me manque quelques numéros",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Il me manque quelques numéros)"
+ },
+ {
+  "id": "comics.0436",
+  "option": "Je suis à jour",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je suis à jour)"
+ },
+ {
+  "id": "comics.0436",
+  "option": "J’ai déjà toute la série",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai déjà toute la série)"
+ },
+ {
+  "id": "consumption2.1176",
+  "option": "J’ai déjà beaucoup de choses",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai déjà beaucoup de choses)"
+ },
+ {
+  "id": "consumption2.1176",
+  "option": "Je manque de place",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je manque de place)"
+ },
+ {
+  "id": "consumption2.1176",
+  "option": "Je suis en train de trier ou de réduire",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je suis en train de trier ou de réduire)"
+ },
+ {
+  "id": "consumption2.1200",
+  "option": "Me donne envie de rendre l’équivalent",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Me donne envie de rendre l’équivalent)"
+ },
+ {
+  "id": "consumption2.1214",
+  "option": "Je l’ai déjà acheté",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je l’ai déjà acheté)"
+ },
+ {
+  "id": "consumption2.1215",
+  "option": "Pour compléter une collection",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pour compléter une collection)"
+ },
+ {
+  "id": "craft.0630",
+  "option": "Mon téléphone",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mon téléphone)"
+ },
+ {
+  "id": "craft.0630",
+  "option": "Un appareil compact",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un appareil compact)"
+ },
+ {
+  "id": "craft.0630",
+  "option": "Un hybride",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un hybride)"
+ },
+ {
+  "id": "craft.0630",
+  "option": "Un reflex",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un reflex)"
+ },
+ {
+  "id": "craft.0630",
+  "option": "Un appareil argentique",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un appareil argentique)"
+ },
+ {
+  "id": "craft.0630",
+  "option": "Plusieurs appareils",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Plusieurs appareils)"
+ },
+ {
+  "id": "craft.0630",
+  "option": "Je débute et je ne suis pas équipé(e)",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je débute et je ne suis pas équipé(e))"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Marque",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Marque)"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Modèle",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Modèle)"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Taille",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Taille)"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Format",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Format)"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Matière",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Matière)"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Couleur",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Couleur)"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Niveau de qualité",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Niveau de qualité)"
+ },
+ {
+  "id": "craft.0646",
+  "option": "Compatibilité",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Compatibilité)"
+ },
+ {
+  "id": "craft.0653",
+  "option": "De la place pour des œuvres",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De la place pour des œuvres)"
+ },
+ {
+  "id": "craft.0653",
+  "option": "De la place uniquement pour de petits formats",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De la place uniquement pour de petits formats)"
+ },
+ {
+  "id": "craft.0653",
+  "option": "Déjà beaucoup d’objets",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Déjà beaucoup d’objets)"
+ },
+ {
+  "id": "craft.0653",
+  "option": "Très peu d’espace",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très peu d’espace)"
+ },
+ {
+  "id": "craft.0653",
+  "option": "Un intérieur très épuré",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un intérieur très épuré)"
+ },
+ {
+  "id": "craft.0653",
+  "option": "Une collection déjà organisée",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une collection déjà organisée)"
+ },
+ {
+  "id": "craft.0658",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "craft.0664",
+  "option": "Très petit format",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très petit format)"
+ },
+ {
+  "id": "craft.0664",
+  "option": "Petit",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Petit)"
+ },
+ {
+  "id": "craft.0664",
+  "option": "Moyen",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Moyen)"
+ },
+ {
+  "id": "craft.0664",
+  "option": "Grand",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Grand)"
+ },
+ {
+  "id": "craft.0664",
+  "option": "Objet à poser",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Objet à poser)"
+ },
+ {
+  "id": "craft.0664",
+  "option": "Objet mural",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Objet mural)"
+ },
+ {
+  "id": "daily.0257",
+  "option": "Qu’on prenne des nouvelles dans les moments difficiles",
+  "rang": "7",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « condition » (Qu’on prenne des nouvelles dans les moments difficiles)"
+ },
+ {
+  "id": "daily2.1127",
+  "option": "Je me déplace peu",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je me déplace peu)"
+ },
+ {
+  "id": "daily2.1131",
+  "option": "Aucun moment fixe : je préfère la spontanéité",
+  "rang": "9",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « absence_de_critere » (Aucun moment fixe : je préfère la spontanéité)"
+ },
+ {
+  "id": "daily2.1141",
+  "option": "Matin",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Matin)"
+ },
+ {
+  "id": "daily2.1141",
+  "option": "Journée de travail",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Journée de travail)"
+ },
+ {
+  "id": "daily2.1141",
+  "option": "Déplacement",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Déplacement)"
+ },
+ {
+  "id": "daily2.1141",
+  "option": "Repas",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Repas)"
+ },
+ {
+  "id": "daily2.1141",
+  "option": "Soirée",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Soirée)"
+ },
+ {
+  "id": "daily2.1141",
+  "option": "Organisation familiale",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Organisation familiale)"
+ },
+ {
+  "id": "daily2.1141",
+  "option": "Week-end",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Week-end)"
+ },
+ {
+  "id": "destination.0288",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "dreams.1998",
+  "option": "Un rêve qui me fait plaisir à imaginer",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un rêve qui me fait plaisir à imaginer)"
+ },
+ {
+  "id": "dreams.1998",
+  "option": "Une envie sérieuse",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une envie sérieuse)"
+ },
+ {
+  "id": "dreams.1998",
+  "option": "Un projet sur lequel j’ai commencé à agir",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un projet sur lequel j’ai commencé à agir)"
+ },
+ {
+  "id": "dreams.1998",
+  "option": "Un objectif déjà planifié",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un objectif déjà planifié)"
+ },
+ {
+  "id": "dreams.1998",
+  "option": "Quelque chose que je repousse depuis longtemps",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelque chose que je repousse depuis longtemps)"
+ },
+ {
+  "id": "dreams.1998",
+  "option": "Un ancien rêve auquel je pense encore",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un ancien rêve auquel je pense encore)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Chercher des informations",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Chercher des informations)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Réserver",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Réserver)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "M’inscrire",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (M’inscrire)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Acheter du matériel",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Acheter du matériel)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Économiser",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Économiser)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Dégager du temps",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dégager du temps)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Trouver quelqu’un avec qui le faire",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Trouver quelqu’un avec qui le faire)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Me former",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Me former)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Tester à petite échelle",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Tester à petite échelle)"
+ },
+ {
+  "id": "dreams.2003",
+  "option": "Prendre une décision",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Prendre une décision)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "Rien pour le moment",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien pour le moment)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’ai commencé à me renseigner",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai commencé à me renseigner)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’ai économisé",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai économisé)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’ai réservé ou acheté quelque chose",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai réservé ou acheté quelque chose)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’ai commencé à apprendre",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai commencé à apprendre)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’en ai parlé à quelqu’un",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’en ai parlé à quelqu’un)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’ai testé",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai testé)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’ai un plan",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai un plan)"
+ },
+ {
+  "id": "dreams.2009",
+  "option": "J’ai déjà commencé concrètement",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai déjà commencé concrètement)"
+ },
+ {
+  "id": "dreams.2010",
+  "option": "Rien pour le moment",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien pour le moment)"
+ },
+ {
+  "id": "dreams.2014",
+  "option": "Dans les 7 jours",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dans les 7 jours)"
+ },
+ {
+  "id": "dreams.2014",
+  "option": "Dans le mois",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dans le mois)"
+ },
+ {
+  "id": "dreams.2014",
+  "option": "Dans les 3 mois",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dans les 3 mois)"
+ },
+ {
+  "id": "dreams.2014",
+  "option": "Sans échéance",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Sans échéance)"
+ },
+ {
+  "id": "dreams.2014",
+  "option": "Je préfère ne pas fixer de délai",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je préfère ne pas fixer de délai)"
+ },
+ {
+  "id": "energy.1592",
+  "option": "Rien de particulier",
+  "rang": "21",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien de particulier)"
+ },
+ {
+  "id": "energy.1602",
+  "option": "De la liberté",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De la liberté)"
+ },
+ {
+  "id": "energy.1602",
+  "option": "Du repos",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Du repos)"
+ },
+ {
+  "id": "energy.1602",
+  "option": "De l’ennui",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De l’ennui)"
+ },
+ {
+  "id": "energy.1602",
+  "option": "De la culpabilité",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De la culpabilité)"
+ },
+ {
+  "id": "energy.1602",
+  "option": "De l’excitation",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De l’excitation)"
+ },
+ {
+  "id": "energy.1604",
+  "option": "Une seule",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une seule)"
+ },
+ {
+  "id": "energy.1604",
+  "option": "Deux",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Deux)"
+ },
+ {
+  "id": "energy.1604",
+  "option": "Trois ou quatre",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Trois ou quatre)"
+ },
+ {
+  "id": "energy.1604",
+  "option": "Une semaine",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une semaine)"
+ },
+ {
+  "id": "energy.1604",
+  "option": "Beaucoup, cela ne me pèse pas",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup, cela ne me pèse pas)"
+ },
+ {
+  "id": "family.1806",
+  "option": "Rien de précis",
+  "rang": "15",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien de précis)"
+ },
+ {
+  "id": "family.1807",
+  "option": "Je ne me tourne pas nécessairement vers ma famille",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je ne me tourne pas nécessairement vers ma famille)"
+ },
+ {
+  "id": "family.1812",
+  "option": "Oui, clairement",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, clairement)"
+ },
+ {
+  "id": "family.1812",
+  "option": "Oui, surtout dans les moments importants",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, surtout dans les moments importants)"
+ },
+ {
+  "id": "family.1812",
+  "option": "Oui, mais avec des limites",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, mais avec des limites)"
+ },
+ {
+  "id": "family.1812",
+  "option": "Seulement lorsque le lien a réellement été entretenu",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Seulement lorsque le lien a réellement été entretenu)"
+ },
+ {
+  "id": "family.1812",
+  "option": "Non, le lien de naissance ne suffit pas",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non, le lien de naissance ne suffit pas)"
+ },
+ {
+  "id": "family.1815",
+  "option": "Oui, et cela me convient",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, et cela me convient)"
+ },
+ {
+  "id": "family.1815",
+  "option": "Oui, mais seulement dans certaines situations",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, mais seulement dans certaines situations)"
+ },
+ {
+  "id": "family.1815",
+  "option": "Peu",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Peu)"
+ },
+ {
+  "id": "family.1815",
+  "option": "Non",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non)"
+ },
+ {
+  "id": "family.1817",
+  "option": "Participer réellement à la décision",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Participer réellement à la décision)"
+ },
+ {
+  "id": "family.1817",
+  "option": "Être consultée",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Être consultée)"
+ },
+ {
+  "id": "family.1817",
+  "option": "Être informée en amont",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Être informée en amont)"
+ },
+ {
+  "id": "family.1817",
+  "option": "Être informée une fois la décision prise",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Être informée une fois la décision prise)"
+ },
+ {
+  "id": "family.1817",
+  "option": "Respecter la décision sans nécessairement la comprendre",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Respecter la décision sans nécessairement la comprendre)"
+ },
+ {
+  "id": "family.1817",
+  "option": "Aucune place particulière",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucune place particulière)"
+ },
+ {
+  "id": "family.1820",
+  "option": "Non, je partage presque tout",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non, je partage presque tout)"
+ },
+ {
+  "id": "family.1821",
+  "option": "Peu",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Peu)"
+ },
+ {
+  "id": "family.1821",
+  "option": "Non",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non)"
+ },
+ {
+  "id": "family.1832",
+  "option": "Un peu",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un peu)"
+ },
+ {
+  "id": "family.1832",
+  "option": "Non, la sincérité compte davantage",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non, la sincérité compte davantage)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Minimaliste",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Minimaliste)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Élégant et intemporel",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Élégant et intemporel)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Chic décontracté",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Chic décontracté)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Classique",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Classique)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Moderne",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Moderne)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Très féminin",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très féminin)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Très masculin",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très masculin)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Androgyne",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Androgyne)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Romantique",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Romantique)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Bohème",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Bohème)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Vintage",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Vintage)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Preppy",
+  "rang": "12",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Preppy)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Streetwear",
+  "rang": "13",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Streetwear)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Sportif",
+  "rang": "14",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Sportif)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Rock",
+  "rang": "15",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rock)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Créatif ou original",
+  "rang": "16",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Créatif ou original)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Luxe discret",
+  "rang": "17",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Luxe discret)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Très tendance",
+  "rang": "18",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très tendance)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Naturel et décontracté",
+  "rang": "19",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Naturel et décontracté)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Professionnel et structuré",
+  "rang": "20",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Professionnel et structuré)"
+ },
+ {
+  "id": "fashion2.1061",
+  "option": "Mon style change beaucoup selon les occasions",
+  "rang": "21",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mon style change beaucoup selon les occasions)"
+ },
+ {
+  "id": "fashion2.1067",
+  "option": "Très décontractés",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très décontractés)"
+ },
+ {
+  "id": "fashion2.1067",
+  "option": "Décontractés mais soignés",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Décontractés mais soignés)"
+ },
+ {
+  "id": "fashion2.1067",
+  "option": "Chic décontracté",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Chic décontracté)"
+ },
+ {
+  "id": "fashion2.1067",
+  "option": "Assez habillés",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Assez habillés)"
+ },
+ {
+  "id": "fashion2.1067",
+  "option": "Très professionnels",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très professionnels)"
+ },
+ {
+  "id": "fashion2.1067",
+  "option": "Dépendants d’un uniforme ou d’un dress code",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dépendants d’un uniforme ou d’un dress code)"
+ },
+ {
+  "id": "fashion2.1069",
+  "option": "Être libre au niveau du ventre",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Être libre au niveau du ventre)"
+ },
+ {
+  "id": "fashion2.1069",
+  "option": "Être à l’aise aux épaules",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Être à l’aise aux épaules)"
+ },
+ {
+  "id": "fashion2.1069",
+  "option": "Avoir de la place au niveau des bras",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Avoir de la place au niveau des bras)"
+ },
+ {
+  "id": "fashion2.1069",
+  "option": "Être bien maintenu(e)",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Être bien maintenu(e))"
+ },
+ {
+  "id": "fashion2.1069",
+  "option": "Pouvoir porter un soutien-gorge facilement",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pouvoir porter un soutien-gorge facilement)"
+ },
+ {
+  "id": "fashion2.1069",
+  "option": "Pouvoir bouger et m’asseoir sans y penser",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pouvoir bouger et m’asseoir sans y penser)"
+ },
+ {
+  "id": "fashion2.1069",
+  "option": "Aucune contrainte particulière",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucune contrainte particulière)"
+ },
+ {
+  "id": "fashion2.1075",
+  "option": "Rien en particulier",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien en particulier)"
+ },
+ {
+  "id": "fashion2.1089",
+  "option": "Machine et aucun soin particulier",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Machine et aucun soin particulier)"
+ },
+ {
+  "id": "fashion2.1089",
+  "option": "Quelques précautions simples",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques précautions simples)"
+ },
+ {
+  "id": "fashion2.1089",
+  "option": "Lavage délicat",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Lavage délicat)"
+ },
+ {
+  "id": "fashion2.1089",
+  "option": "Nettoyage à sec pour certaines pièces",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Nettoyage à sec pour certaines pièces)"
+ },
+ {
+  "id": "fashion2.1089",
+  "option": "J’accepte un entretien exigeant pour une pièce exceptionnelle",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’accepte un entretien exigeant pour une pièce exceptionnelle)"
+ },
+ {
+  "id": "fashion2.1092",
+  "option": "La facilité d’entretien",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La facilité d’entretien)"
+ },
+ {
+  "id": "fashion2.1092",
+  "option": "La possibilité de la porter à même la peau",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La possibilité de la porter à même la peau)"
+ },
+ {
+  "id": "fashion2.1094",
+  "option": "La facilité à porter un soutien-gorge",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La facilité à porter un soutien-gorge)"
+ },
+ {
+  "id": "fashion2.1095",
+  "option": "Je dois absolument essayer",
+  "rang": "12",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je dois absolument essayer)"
+ },
+ {
+  "id": "fashion2.1104",
+  "option": "Ma taille habituelle",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Ma taille habituelle)"
+ },
+ {
+  "id": "fashion2.1104",
+  "option": "Ma taille dans cette marque",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Ma taille dans cette marque)"
+ },
+ {
+  "id": "fashion2.1104",
+  "option": "Une pièce comparable qui me va bien",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une pièce comparable qui me va bien)"
+ },
+ {
+  "id": "fashion2.1104",
+  "option": "Mes mensurations",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mes mensurations)"
+ },
+ {
+  "id": "fashion2.1104",
+  "option": "Une photo de l’étiquette d’une pièce adaptée",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une photo de l’étiquette d’une pièce adaptée)"
+ },
+ {
+  "id": "fashion2.1104",
+  "option": "Je préfère essayer",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je préfère essayer)"
+ },
+ {
+  "id": "fashion2.1104",
+  "option": "Ma taille évolue en ce moment",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Ma taille évolue en ce moment)"
+ },
+ {
+  "id": "fashion2.1105",
+  "option": "Tour de poitrine",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Tour de poitrine)"
+ },
+ {
+  "id": "fashion2.1105",
+  "option": "Tour de taille",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Tour de taille)"
+ },
+ {
+  "id": "fashion2.1105",
+  "option": "Tour de hanches",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Tour de hanches)"
+ },
+ {
+  "id": "fashion2.1105",
+  "option": "Épaules",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Épaules)"
+ },
+ {
+  "id": "fashion2.1105",
+  "option": "Longueur de jambe",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Longueur de jambe)"
+ },
+ {
+  "id": "fashion2.1105",
+  "option": "Longueur de bras",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Longueur de bras)"
+ },
+ {
+  "id": "food.0030",
+  "option": "Les plats populaires",
+  "rang": "1",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (Les plats populaires)"
+ },
+ {
+  "id": "food.0030",
+  "option": "La cuisine régionale",
+  "rang": "2",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (La cuisine régionale)"
+ },
+ {
+  "id": "food.0030",
+  "option": "La haute gastronomie",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (La haute gastronomie)"
+ },
+ {
+  "id": "food.0030",
+  "option": "La street food",
+  "rang": "4",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (La street food)"
+ },
+ {
+  "id": "food.0030",
+  "option": "Les produits",
+  "rang": "5",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (Les produits)"
+ },
+ {
+  "id": "food.0030",
+  "option": "Les desserts",
+  "rang": "6",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (Les desserts)"
+ },
+ {
+  "id": "food.0030",
+  "option": "Les boissons",
+  "rang": "7",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (Les boissons)"
+ },
+ {
+  "id": "food.0030",
+  "option": "L’ambiance et la culture",
+  "rang": "8",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence à paramètre non résolu (L’ambiance et la culture)"
+ },
+ {
+  "id": "fragrance2.1168",
+  "option": "Collection",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Collection)"
+ },
+ {
+  "id": "games.0952",
+  "option": "Deux",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Deux)"
+ },
+ {
+  "id": "games.0952",
+  "option": "Trois ou quatre",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Trois ou quatre)"
+ },
+ {
+  "id": "games.0952",
+  "option": "Cinq ou six",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Cinq ou six)"
+ },
+ {
+  "id": "games.0952",
+  "option": "Un grand groupe",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un grand groupe)"
+ },
+ {
+  "id": "games.0961",
+  "option": "Très peu de jeux",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très peu de jeux)"
+ },
+ {
+  "id": "games.0961",
+  "option": "Quelques jeux bien choisis",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques jeux bien choisis)"
+ },
+ {
+  "id": "games.0961",
+  "option": "Une bibliothèque déjà bien remplie",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une bibliothèque déjà bien remplie)"
+ },
+ {
+  "id": "games.0961",
+  "option": "Une vraie collection",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une vraie collection)"
+ },
+ {
+  "id": "games.0961",
+  "option": "Beaucoup de jeux auxquels je ne joue pas assez",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup de jeux auxquels je ne joue pas assez)"
+ },
+ {
+  "id": "games.0970",
+  "option": "Presque aucune préparation",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Presque aucune préparation)"
+ },
+ {
+  "id": "games.0970",
+  "option": "Quelques minutes",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques minutes)"
+ },
+ {
+  "id": "games.0970",
+  "option": "Une installation plus longue si le jeu vaut le coup",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une installation plus longue si le jeu vaut le coup)"
+ },
+ {
+  "id": "gaming.0207",
+  "option": "PlayStation",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (PlayStation)"
+ },
+ {
+  "id": "gaming.0207",
+  "option": "Xbox",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Xbox)"
+ },
+ {
+  "id": "gaming.0207",
+  "option": "Nintendo Switch",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Nintendo Switch)"
+ },
+ {
+  "id": "gaming.0207",
+  "option": "PC",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (PC)"
+ },
+ {
+  "id": "gaming.0207",
+  "option": "Mobile",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mobile)"
+ },
+ {
+  "id": "gaming.0207",
+  "option": "Réalité virtuelle",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Réalité virtuelle)"
+ },
+ {
+  "id": "gaming.0207",
+  "option": "Je ne joue pas",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je ne joue pas)"
+ },
+ {
+  "id": "gaming2.1394",
+  "option": "PC",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (PC)"
+ },
+ {
+  "id": "gaming2.1394",
+  "option": "PlayStation",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (PlayStation)"
+ },
+ {
+  "id": "gaming2.1394",
+  "option": "Xbox",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Xbox)"
+ },
+ {
+  "id": "gaming2.1394",
+  "option": "Nintendo",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Nintendo)"
+ },
+ {
+  "id": "gaming2.1394",
+  "option": "Mobile",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mobile)"
+ },
+ {
+  "id": "gaming2.1394",
+  "option": "Steam Deck ou console portable",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Steam Deck ou console portable)"
+ },
+ {
+  "id": "gaming2.1394",
+  "option": "Plusieurs plateformes",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Plusieurs plateformes)"
+ },
+ {
+  "id": "gaming2.1410",
+  "option": "PC",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (PC)"
+ },
+ {
+  "id": "gaming2.1410",
+  "option": "PlayStation",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (PlayStation)"
+ },
+ {
+  "id": "gaming2.1410",
+  "option": "Xbox",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Xbox)"
+ },
+ {
+  "id": "gaming2.1410",
+  "option": "Nintendo",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Nintendo)"
+ },
+ {
+  "id": "gaming2.1410",
+  "option": "Mobile",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mobile)"
+ },
+ {
+  "id": "gaming2.1410",
+  "option": "Console portable",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Console portable)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Quelques plantes à l’intérieur",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques plantes à l’intérieur)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Beaucoup de place à l’intérieur",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup de place à l’intérieur)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Un rebord de fenêtre",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un rebord de fenêtre)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Un balcon",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un balcon)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Une terrasse",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une terrasse)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Un petit jardin",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un petit jardin)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Un grand jardin",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un grand jardin)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Un potager",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un potager)"
+ },
+ {
+  "id": "garden.0558",
+  "option": "Aucun espace adapté pour le moment",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucun espace adapté pour le moment)"
+ },
+ {
+  "id": "garden.0565",
+  "option": "Beaucoup de soleil direct",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup de soleil direct)"
+ },
+ {
+  "id": "garden.0565",
+  "option": "Beaucoup de lumière sans soleil direct",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup de lumière sans soleil direct)"
+ },
+ {
+  "id": "garden.0565",
+  "option": "Lumière moyenne",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Lumière moyenne)"
+ },
+ {
+  "id": "garden.0565",
+  "option": "Peu de lumière",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Peu de lumière)"
+ },
+ {
+  "id": "garden.0565",
+  "option": "Plusieurs expositions différentes",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Plusieurs expositions différentes)"
+ },
+ {
+  "id": "garden.0582",
+  "option": "J’ai un système automatique",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai un système automatique)"
+ },
+ {
+  "id": "garden.0582",
+  "option": "C’est souvent compliqué",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (C’est souvent compliqué)"
+ },
+ {
+  "id": "garden.0582",
+  "option": "Je voyage peu",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je voyage peu)"
+ },
+ {
+  "id": "garden.0583",
+  "option": "Aucun, je suis déjà équipé(e)",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucun, je suis déjà équipé(e))"
+ },
+ {
+  "id": "home.0182",
+  "option": "J’ai un jardin ou un potager",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai un jardin ou un potager)"
+ },
+ {
+  "id": "home2.1268",
+  "option": "Beaucoup",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup)"
+ },
+ {
+  "id": "home2.1268",
+  "option": "Un peu",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un peu)"
+ },
+ {
+  "id": "home2.1268",
+  "option": "Très peu",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très peu)"
+ },
+ {
+  "id": "home2.1268",
+  "option": "Pas du tout",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pas du tout)"
+ },
+ {
+  "id": "home2.1273",
+  "option": "Je cuisine peu",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je cuisine peu)"
+ },
+ {
+  "id": "home2.1282",
+  "option": "Salon",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Salon)"
+ },
+ {
+  "id": "home2.1282",
+  "option": "Chambre",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Chambre)"
+ },
+ {
+  "id": "home2.1282",
+  "option": "Cuisine",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Cuisine)"
+ },
+ {
+  "id": "home2.1282",
+  "option": "Salle de bain",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Salle de bain)"
+ },
+ {
+  "id": "home2.1282",
+  "option": "Bureau",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Bureau)"
+ },
+ {
+  "id": "home2.1282",
+  "option": "Extérieur",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Extérieur)"
+ },
+ {
+  "id": "home2.1285",
+  "option": "Petit objet",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Petit objet)"
+ },
+ {
+  "id": "home2.1285",
+  "option": "Objet moyen",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Objet moyen)"
+ },
+ {
+  "id": "home2.1285",
+  "option": "Gros meuble",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Gros meuble)"
+ },
+ {
+  "id": "humor2.1429",
+  "option": "Omniprésent",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Omniprésent)"
+ },
+ {
+  "id": "humor2.1429",
+  "option": "Très fréquent",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très fréquent)"
+ },
+ {
+  "id": "humor2.1429",
+  "option": "Occasionnel",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Occasionnel)"
+ },
+ {
+  "id": "humor2.1429",
+  "option": "Peu présent",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Peu présent)"
+ },
+ {
+  "id": "JWL-TAILLE-01",
+  "option": "Oui, je la connais",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, je la connais)"
+ },
+ {
+  "id": "JWL-TAILLE-01",
+  "option": "Approximativement",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Approximativement)"
+ },
+ {
+  "id": "JWL-TAILLE-01",
+  "option": "Non, je ne la connais pas",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non, je ne la connais pas)"
+ },
+ {
+  "id": "JWL-TAILLE-02",
+  "option": "Ras-de-cou",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Ras-de-cou)"
+ },
+ {
+  "id": "JWL-TAILLE-02",
+  "option": "Courte",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Courte)"
+ },
+ {
+  "id": "JWL-TAILLE-02",
+  "option": "Moyenne",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Moyenne)"
+ },
+ {
+  "id": "JWL-TAILLE-02",
+  "option": "Longue",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Longue)"
+ },
+ {
+  "id": "JWL-TAILLE-02",
+  "option": "Je ne sais pas",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je ne sais pas)"
+ },
+ {
+  "id": "JWL-TAILLE-05",
+  "option": "Percées, aucun souci de métal",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Percées, aucun souci de métal)"
+ },
+ {
+  "id": "JWL-TAILLE-05",
+  "option": "Percées, mais certains métaux me gênent",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Percées, mais certains métaux me gênent)"
+ },
+ {
+  "id": "JWL-TAILLE-05",
+  "option": "Non percées",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non percées)"
+ },
+ {
+  "id": "jewelry.0302",
+  "option": "Oui, je le porte souvent",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, je le porte souvent)"
+ },
+ {
+  "id": "jewelry.0302",
+  "option": "Oui, je le garde précieusement",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui, je le garde précieusement)"
+ },
+ {
+  "id": "jewelry.0302",
+  "option": "Non",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Non)"
+ },
+ {
+  "id": "learning.0237",
+  "option": "Manque de temps",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Manque de temps)"
+ },
+ {
+  "id": "legacy.1502",
+  "option": "Je connais peu ces histoires",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je connais peu ces histoires)"
+ },
+ {
+  "id": "live.0490",
+  "option": "Dormir sur place",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dormir sur place)"
+ },
+ {
+  "id": "live.0490",
+  "option": "Hôtel",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Hôtel)"
+ },
+ {
+  "id": "live.0490",
+  "option": "Camping",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Camping)"
+ },
+ {
+  "id": "live.0490",
+  "option": "Food",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Food)"
+ },
+ {
+  "id": "live.0490",
+  "option": "Confort",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Confort)"
+ },
+ {
+  "id": "live.0497",
+  "option": "Mon artiste préféré",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mon artiste préféré)"
+ },
+ {
+  "id": "live.0497",
+  "option": "Un grand festival",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un grand festival)"
+ },
+ {
+  "id": "live.0497",
+  "option": "Un spectacle exceptionnel",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un spectacle exceptionnel)"
+ },
+ {
+  "id": "live.0497",
+  "option": "Rarement",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rarement)"
+ },
+ {
+  "id": "live.0500",
+  "option": "Affiches",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Affiches)"
+ },
+ {
+  "id": "live.0500",
+  "option": "Vinyles",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Vinyles)"
+ },
+ {
+  "id": "live.0500",
+  "option": "Merchandising",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Merchandising)"
+ },
+ {
+  "id": "live.0500",
+  "option": "Programmes",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Programmes)"
+ },
+ {
+  "id": "live.0500",
+  "option": "Photos",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Photos)"
+ },
+ {
+  "id": "live.0500",
+  "option": "Rien",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien)"
+ },
+ {
+  "id": "memory.0756",
+  "option": "Elles sont dispersées et ça me chagrine",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Elles sont dispersées et ça me chagrine)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les anniversaires",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les anniversaires)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les cadeaux",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les cadeaux)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les rendez-vous",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les rendez-vous)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les papiers",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les papiers)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les courses",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les courses)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les repas",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les repas)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les vacances",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les vacances)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les enfants",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les enfants)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les animaux",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les animaux)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Les proches",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les proches)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Le travail",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le travail)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "L’entretien de la maison",
+  "rang": "12",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (L’entretien de la maison)"
+ },
+ {
+  "id": "mental.1850",
+  "option": "Rien de particulier",
+  "rang": "13",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien de particulier)"
+ },
+ {
+  "id": "museum.0710",
+  "option": "J’en ai déjà un",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’en ai déjà un)"
+ },
+ {
+  "id": "museum.0723",
+  "option": "J’en ai une vraie collection",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’en ai une vraie collection)"
+ },
+ {
+  "id": "music.0126",
+  "option": "Me convient si j’ai une bonne place",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Me convient si j’ai une bonne place)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Écouteurs",
+  "rang": "1",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Écouteurs)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Casque",
+  "rang": "2",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Casque)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Enceinte",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Enceinte)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Platine",
+  "rang": "4",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Platine)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Système audio",
+  "rang": "5",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Système audio)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Accessoire pour la voiture",
+  "rang": "6",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Accessoire pour la voiture)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Abonnement",
+  "rang": "7",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Abonnement)"
+ },
+ {
+  "id": "music2.1027",
+  "option": "Rien, je suis déjà bien équipé(e)",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien, je suis déjà bien équipé(e))"
+ },
+ {
+  "id": "nature.0217",
+  "option": "De très peu de confort",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De très peu de confort)"
+ },
+ {
+  "id": "nature.0217",
+  "option": "D’un minimum de confort",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (D’un minimum de confort)"
+ },
+ {
+  "id": "nature.0217",
+  "option": "D’un vrai bon hébergement",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (D’un vrai bon hébergement)"
+ },
+ {
+  "id": "nature.0217",
+  "option": "De pouvoir rentrer rapidement",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De pouvoir rentrer rapidement)"
+ },
+ {
+  "id": "pets.0391",
+  "option": "J’ai un ou plusieurs animaux",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai un ou plusieurs animaux)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Chien",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Chien)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Chat",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Chat)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Cheval",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Cheval)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Lapin",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Lapin)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Rongeur",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rongeur)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Oiseaux",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oiseaux)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Poissons",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Poissons)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Reptiles",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Reptiles)"
+ },
+ {
+  "id": "pets.0392",
+  "option": "Plusieurs espèces",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Plusieurs espèces)"
+ },
+ {
+  "id": "pets.0397",
+  "option": "Beaucoup",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Beaucoup)"
+ },
+ {
+  "id": "pets.0397",
+  "option": "Souvent",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Souvent)"
+ },
+ {
+  "id": "pets.0397",
+  "option": "Parfois",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Parfois)"
+ },
+ {
+  "id": "pets.0397",
+  "option": "Rarement",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rarement)"
+ },
+ {
+  "id": "pets.0397",
+  "option": "Jamais",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Jamais)"
+ },
+ {
+  "id": "pets.0406",
+  "option": "Aucun",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucun)"
+ },
+ {
+  "id": "pets.0407",
+  "option": "Oui",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Oui)"
+ },
+ {
+  "id": "pets.0407",
+  "option": "Quelques-uns",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques-uns)"
+ },
+ {
+  "id": "pets.0407",
+  "option": "Très peu",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très peu)"
+ },
+ {
+  "id": "pets.0410",
+  "option": "Toujours avec toi",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Toujours avec toi)"
+ },
+ {
+  "id": "pets.0410",
+  "option": "Présent surtout à la maison",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Présent surtout à la maison)"
+ },
+ {
+  "id": "pets.0410",
+  "option": "Très indépendant",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très indépendant)"
+ },
+ {
+  "id": "philovie.1648",
+  "option": "De l’apaisement",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (De l’apaisement)"
+ },
+ {
+  "id": "philovie.1648",
+  "option": "Du confort",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Du confort)"
+ },
+ {
+  "id": "philovie.1648",
+  "option": "Un besoin de nouveauté",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un besoin de nouveauté)"
+ },
+ {
+  "id": "philovie.1648",
+  "option": "Une impression de stagnation",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une impression de stagnation)"
+ },
+ {
+  "id": "philovie.1648",
+  "option": "Une envie de créer un nouveau projet",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une envie de créer un nouveau projet)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Mon téléphone",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mon téléphone)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Un appareil compact",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un appareil compact)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Un hybride",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un hybride)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Un reflex",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un reflex)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Un appareil argentique",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un appareil argentique)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Un appareil instantané",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un appareil instantané)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Un drone",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un drone)"
+ },
+ {
+  "id": "photo.0673",
+  "option": "Plusieurs équipements selon les moments",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Plusieurs équipements selon les moments)"
+ },
+ {
+  "id": "photo.0678",
+  "option": "Je suis déjà bien protégé(e)",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je suis déjà bien protégé(e))"
+ },
+ {
+  "id": "photo.0684",
+  "option": "La dimension collection",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La dimension collection)"
+ },
+ {
+  "id": "photo.0686",
+  "option": "Partout, j’adore ça",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Partout, j’adore ça)"
+ },
+ {
+  "id": "photo.0686",
+  "option": "Quelques-unes bien choisies",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques-unes bien choisies)"
+ },
+ {
+  "id": "photo.0686",
+  "option": "Presque aucune",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Presque aucune)"
+ },
+ {
+  "id": "photo.0689",
+  "option": "Je ne connais pas bien le matériel",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je ne connais pas bien le matériel)"
+ },
+ {
+  "id": "photo.0691",
+  "option": "Les objectifs que je possède",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Les objectifs que je possède)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "Rien",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "La qualité en basse lumière",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La qualité en basse lumière)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "Le zoom ou les focales",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le zoom ou les focales)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "Le poids",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le poids)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "Le stockage",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le stockage)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "La batterie",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (La batterie)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "Le trépied ou les accessoires",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Le trépied ou les accessoires)"
+ },
+ {
+  "id": "photo.0696",
+  "option": "Mes compétences plus que le matériel",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mes compétences plus que le matériel)"
+ },
+ {
+  "id": "podcast.0472",
+  "option": "Écouteurs",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Écouteurs)"
+ },
+ {
+  "id": "podcast.0472",
+  "option": "Casque",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Casque)"
+ },
+ {
+  "id": "podcast.0472",
+  "option": "Enceinte",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Enceinte)"
+ },
+ {
+  "id": "podcast.0472",
+  "option": "Support pour la voiture",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Support pour la voiture)"
+ },
+ {
+  "id": "podcast.0472",
+  "option": "Abonnement audio",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Abonnement audio)"
+ },
+ {
+  "id": "podcast.0472",
+  "option": "Rien, je suis déjà bien équipé(e)",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien, je suis déjà bien équipé(e))"
+ },
+ {
+  "id": "relation.0001",
+  "option": "De temps en temps, quand elles tombent juste",
+  "rang": "2",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « condition » (De temps en temps, quand elles tombent juste)"
+ },
+ {
+  "id": "relation.0001",
+  "option": "Surtout lors de moments importants",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « condition » (Surtout lors de moments importants)"
+ },
+ {
+  "id": "relation.0001",
+  "option": "Je n’y attache pas beaucoup d’importance",
+  "rang": "5",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « rejet » (Je n’y attache pas beaucoup d’importance)"
+ },
+ {
+  "id": "relation2.0773",
+  "option": "Par le contact physique",
+  "rang": "8",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "contrat_incomplet",
+  "detail": "langage d'affection hors modalités (Par le contact physique)"
+ },
+ {
+  "id": "relation2.0779",
+  "option": "Est très important",
+  "rang": "1",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "contrat_incomplet",
+  "detail": "langage d'affection hors modalités (Est très important)"
+ },
+ {
+  "id": "relation2.0779",
+  "option": "Me fait du bien avec certaines personnes",
+  "rang": "2",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « condition » (Me fait du bien avec certaines personnes)"
+ },
+ {
+  "id": "relation2.0779",
+  "option": "Me convient surtout dans certains moments",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « condition » (Me convient surtout dans certains moments)"
+ },
+ {
+  "id": "relation2.0779",
+  "option": "N’est pas indispensable",
+  "rang": "4",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « absence_de_critere » (N’est pas indispensable)"
+ },
+ {
+  "id": "relation2.0788",
+  "option": "Se toucher ou être proche",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "contrat_incomplet",
+  "detail": "langage d'affection hors modalités (Se toucher ou être proche)"
+ },
+ {
+  "id": "remembrance.1978",
+  "option": "Décorer",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Décorer)"
+ },
+ {
+  "id": "repair.0841",
+  "option": "Un câlin",
+  "rang": "1",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "contrat_incomplet",
+  "detail": "langage d'affection hors modalités (Un câlin)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Netflix",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Netflix)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Prime Video",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Prime Video)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Disney+",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Disney+)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Apple TV+",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Apple TV+)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Max",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Max)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Canal+",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Canal+)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Arte",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Arte)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Crunchyroll",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Crunchyroll)"
+ },
+ {
+  "id": "series.0097",
+  "option": "Aucune",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucune)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Netflix",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Netflix)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Prime Video",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Prime Video)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Disney+",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Disney+)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Apple TV+",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Apple TV+)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Max",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Max)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Canal+",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Canal+)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Arte",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Arte)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Paramount+",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Paramount+)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Crunchyroll",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Crunchyroll)"
+ },
+ {
+  "id": "series2.1043",
+  "option": "Aucune",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucune)"
+ },
+ {
+  "id": "shoes.0336",
+  "option": "Pour remplacer une paire usée",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pour remplacer une paire usée)"
+ },
+ {
+  "id": "sleep.0587",
+  "option": "Je dors globalement bien",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je dors globalement bien)"
+ },
+ {
+  "id": "sleep.0587",
+  "option": "Je manque surtout de temps pour dormir",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je manque surtout de temps pour dormir)"
+ },
+ {
+  "id": "sleep.0587",
+  "option": "J’ai du mal à m’endormir",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’ai du mal à m’endormir)"
+ },
+ {
+  "id": "sleep.0587",
+  "option": "Je me réveille pendant la nuit",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je me réveille pendant la nuit)"
+ },
+ {
+  "id": "sleep.0587",
+  "option": "Je me réveille trop tôt",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je me réveille trop tôt)"
+ },
+ {
+  "id": "sleep.0587",
+  "option": "Mon sommeil est irrégulier",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mon sommeil est irrégulier)"
+ },
+ {
+  "id": "sleep.0587",
+  "option": "Je dors mais je récupère mal",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je dors mais je récupère mal)"
+ },
+ {
+  "id": "sleep.0600",
+  "option": "Je n’arrive pas à dormir en journée",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je n’arrive pas à dormir en journée)"
+ },
+ {
+  "id": "spirit.0733",
+  "option": "J’en ai déjà un",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (J’en ai déjà un)"
+ },
+ {
+  "id": "spirit.0735",
+  "option": "Je lis peu sur ces sujets",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je lis peu sur ces sujets)"
+ },
+ {
+  "id": "spirit.0743",
+  "option": "Pouvoir être joignable",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pouvoir être joignable)"
+ },
+ {
+  "id": "spirit.0744",
+  "option": "Oui, avec la bonne personne",
+  "rang": "2",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « condition » (Oui, avec la bonne personne)"
+ },
+ {
+  "id": "spirit.0744",
+  "option": "Pourquoi pas, sans en faire trop",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "AFFECTION_LANGUAGE",
+  "motif": "polarite_non_portee",
+  "detail": "langage d'affection de polarité « condition » (Pourquoi pas, sans en faire trop)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Course à pied",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Course à pied)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Trail",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Trail)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Marche",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Marche)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Randonnée",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Randonnée)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Vélo",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Vélo)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "VTT",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (VTT)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Natation",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Natation)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Fitness",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Fitness)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Musculation",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Musculation)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "CrossFit",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (CrossFit)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Yoga",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Yoga)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Pilates",
+  "rang": "12",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pilates)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Danse",
+  "rang": "13",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Danse)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Tennis",
+  "rang": "14",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Tennis)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Padel",
+  "rang": "15",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Padel)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Golf",
+  "rang": "16",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Golf)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Football",
+  "rang": "17",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Football)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Rugby",
+  "rang": "18",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rugby)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Basket",
+  "rang": "19",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Basket)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Handball",
+  "rang": "20",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Handball)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Volleyball",
+  "rang": "21",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Volleyball)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Sports de combat",
+  "rang": "22",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Sports de combat)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Boxe",
+  "rang": "23",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Boxe)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Escalade",
+  "rang": "24",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Escalade)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Ski",
+  "rang": "25",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Ski)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Snowboard",
+  "rang": "26",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Snowboard)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Surf",
+  "rang": "27",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Surf)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Voile",
+  "rang": "28",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Voile)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Équitation",
+  "rang": "29",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Équitation)"
+ },
+ {
+  "id": "sportp.0504",
+  "option": "Triathlon",
+  "rang": "30",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Triathlon)"
+ },
+ {
+  "id": "sportp.0509",
+  "option": "Débutant(e)",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Débutant(e))"
+ },
+ {
+  "id": "sportp.0509",
+  "option": "En progression",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (En progression)"
+ },
+ {
+  "id": "sportp.0509",
+  "option": "Intermédiaire",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Intermédiaire)"
+ },
+ {
+  "id": "sportp.0509",
+  "option": "Confirmé(e)",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Confirmé(e))"
+ },
+ {
+  "id": "sportp.0509",
+  "option": "Très expérimenté(e)",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très expérimenté(e))"
+ },
+ {
+  "id": "sportp.0509",
+  "option": "Compétiteur ou compétitrice",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Compétiteur ou compétitrice)"
+ },
+ {
+  "id": "sportp.0515",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "sportw.0544",
+  "option": "Dans ma ville seulement",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dans ma ville seulement)"
+ },
+ {
+  "id": "sportw.0544",
+  "option": "Quelques heures de trajet",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques heures de trajet)"
+ },
+ {
+  "id": "sportw.0544",
+  "option": "Un week-end",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un week-end)"
+ },
+ {
+  "id": "sportw.0544",
+  "option": "À l’étranger",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (À l’étranger)"
+ },
+ {
+  "id": "sportw.0544",
+  "option": "Seulement pour une occasion exceptionnelle",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Seulement pour une occasion exceptionnelle)"
+ },
+ {
+  "id": "sportw.0547",
+  "option": "La Ligue des champions",
+  "rang": "4",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (La Ligue des champions)"
+ },
+ {
+  "id": "sportw.0548",
+  "option": "Les tournois du Grand Chelem",
+  "rang": "2",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Les tournois du Grand Chelem)"
+ },
+ {
+  "id": "sportw.0548",
+  "option": "Roland-Garros",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Roland-Garros)"
+ },
+ {
+  "id": "sportw.0550",
+  "option": "Le Tournoi des Six Nations",
+  "rang": "3",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (Le Tournoi des Six Nations)"
+ },
+ {
+  "id": "sportw.0550",
+  "option": "La Coupe du monde",
+  "rang": "4",
+  "voie": "HSG_EVIDENCE",
+  "famille": "ENTITY",
+  "motif": "contrat_incomplet",
+  "detail": "entité sans relation déclarée (La Coupe du monde)"
+ },
+ {
+  "id": "success.1741",
+  "option": "Je suis satisfait(e) de mon rythme",
+  "rang": "9",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence sans valeur lisible (Je suis satisfait(e) de mon rythme)"
+ },
+ {
+  "id": "success.1744",
+  "option": "Rien de particulier : l’expérience vécue suffit",
+  "rang": "11",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence sans valeur lisible (Rien de particulier : l’expérience vécue suffit)"
+ },
+ {
+  "id": "tech.0200",
+  "option": "",
+  "rang": null,
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici ()"
+ },
+ {
+  "id": "tech2.1319",
+  "option": "Apple",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Apple)"
+ },
+ {
+  "id": "tech2.1319",
+  "option": "Android",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Android)"
+ },
+ {
+  "id": "tech2.1319",
+  "option": "Windows",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Windows)"
+ },
+ {
+  "id": "tech2.1319",
+  "option": "Linux",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Linux)"
+ },
+ {
+  "id": "tech2.1319",
+  "option": "Google",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Google)"
+ },
+ {
+  "id": "tech2.1319",
+  "option": "Amazon",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Amazon)"
+ },
+ {
+  "id": "tech2.1319",
+  "option": "Mixte",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Mixte)"
+ },
+ {
+  "id": "tech2.1329",
+  "option": "Il vient souvent me demander de l’aide",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Il vient souvent me demander de l’aide)"
+ },
+ {
+  "id": "tech2.1329",
+  "option": "Parfois",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Parfois)"
+ },
+ {
+  "id": "tech2.1329",
+  "option": "Rarement",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rarement)"
+ },
+ {
+  "id": "tech2.1329",
+  "option": "Jamais",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Jamais)"
+ },
+ {
+  "id": "theatre2.1369",
+  "option": "Plusieurs fois par mois",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Plusieurs fois par mois)"
+ },
+ {
+  "id": "theatre2.1369",
+  "option": "Quelques fois par an",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Quelques fois par an)"
+ },
+ {
+  "id": "theatre2.1369",
+  "option": "Une fois par an",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une fois par an)"
+ },
+ {
+  "id": "theatre2.1369",
+  "option": "Très rarement",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Très rarement)"
+ },
+ {
+  "id": "travel.0067",
+  "option": "Je préfère sortir le prendre ailleurs",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je préfère sortir le prendre ailleurs)"
+ },
+ {
+  "id": "travel.0067",
+  "option": "Je le saute souvent",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je le saute souvent)"
+ },
+ {
+  "id": "travel.0068",
+  "option": "Je l’utilise rarement",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je l’utilise rarement)"
+ },
+ {
+  "id": "travel2.0893",
+  "option": "Rester à moins de deux heures",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rester à moins de deux heures)"
+ },
+ {
+  "id": "travel2.0893",
+  "option": "Voyager quelques heures en train ou en voiture",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Voyager quelques heures en train ou en voiture)"
+ },
+ {
+  "id": "travel2.0893",
+  "option": "Prendre l’avion si la destination vaut le coup",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Prendre l’avion si la destination vaut le coup)"
+ },
+ {
+  "id": "travel2.0893",
+  "option": "Faire un trajet assez long",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Faire un trajet assez long)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Hébergement réellement accueillant",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Hébergement réellement accueillant)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Accès extérieur",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Accès extérieur)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Espaces de promenade",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Espaces de promenade)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Peu de restrictions",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Peu de restrictions)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Possibilité de le laisser un moment",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Possibilité de le laisser un moment)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Transport simple",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Transport simple)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Frais raisonnables",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Frais raisonnables)"
+ },
+ {
+  "id": "travel2.0901",
+  "option": "Équipement sur place",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Équipement sur place)"
+ },
+ {
+  "id": "travel2.0912",
+  "option": "Est parfois une source de contrainte",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Est parfois une source de contrainte)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Un objet artisanal",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un objet artisanal)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Un produit gastronomique",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un produit gastronomique)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Un vêtement ou accessoire",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un vêtement ou accessoire)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Une œuvre ou illustration",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une œuvre ou illustration)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Un livre",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un livre)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Un objet lié au lieu",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un objet lié au lieu)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Des photos seulement",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Des photos seulement)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Rien de matériel",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Rien de matériel)"
+ },
+ {
+  "id": "travel2.0913",
+  "option": "Un cadeau pour mes proches",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un cadeau pour mes proches)"
+ },
+ {
+  "id": "travel2.0927",
+  "option": "Je préfère le prendre à l’extérieur",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je préfère le prendre à l’extérieur)"
+ },
+ {
+  "id": "travel2.0927",
+  "option": "Je le saute souvent",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Je le saute souvent)"
+ },
+ {
+  "id": "travel2.0929",
+  "option": "Ne sera probablement pas utilisé",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Ne sera probablement pas utilisé)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Dates",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dates)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Budget",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Budget)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Durée",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Durée)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Temps de transport",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Temps de transport)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Horaires",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Horaires)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Garde d’enfants",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Garde d’enfants)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Présence des enfants",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Présence des enfants)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Animal",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Animal)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Régime alimentaire",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Régime alimentaire)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Accessibilité",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Accessibilité)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Sommeil",
+  "rang": "11",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Sommeil)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Travail",
+  "rang": "12",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Travail)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Documents",
+  "rang": "13",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Documents)"
+ },
+ {
+  "id": "travel2.0938",
+  "option": "Température",
+  "rang": "14",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Température)"
+ },
+ {
+  "id": "travel2.0939",
+  "option": "Une escapade simple",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une escapade simple)"
+ },
+ {
+  "id": "travel2.0939",
+  "option": "Un beau week-end",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un beau week-end)"
+ },
+ {
+  "id": "travel2.0939",
+  "option": "Une expérience premium",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Une expérience premium)"
+ },
+ {
+  "id": "travel2.0939",
+  "option": "Un séjour exceptionnel pour une grande occasion",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Un séjour exceptionnel pour une grande occasion)"
+ },
+ {
+  "id": "travel2.0943",
+  "option": "Rien : je préfère consacrer le budget aux expériences",
+  "rang": "9",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence sans valeur lisible (Rien : je préfère consacrer le budget aux expériences)"
+ },
+ {
+  "id": "travel2.0944",
+  "option": "Dates totalement modifiables",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Dates totalement modifiables)"
+ },
+ {
+  "id": "travel2.0944",
+  "option": "Annulation gratuite",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Annulation gratuite)"
+ },
+ {
+  "id": "travel2.0944",
+  "option": "Possibilité de choisir plus tard",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Possibilité de choisir plus tard)"
+ },
+ {
+  "id": "travel2.0944",
+  "option": "Bon valable longtemps",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Bon valable longtemps)"
+ },
+ {
+  "id": "travel2.0944",
+  "option": "Assurance",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Assurance)"
+ },
+ {
+  "id": "travel2.0944",
+  "option": "Pas besoin de flexibilité",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pas besoin de flexibilité)"
+ },
+ {
+  "id": "travel2.0945",
+  "option": "Aucun objet : l’expérience suffit",
+  "rang": "9",
+  "voie": "HSG_EVIDENCE",
+  "famille": "PREFERENCE",
+  "motif": "contrat_incomplet",
+  "detail": "préférence sans valeur lisible (Aucun objet : l’expérience suffit)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Résistance à l’eau",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Résistance à l’eau)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Pouvoir nager avec",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pouvoir nager avec)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Pouvoir faire du sport avec",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Pouvoir faire du sport avec)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Résistance aux chocs",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Résistance aux chocs)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Verre très résistant",
+  "rang": "5",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Verre très résistant)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Bonne lisibilité",
+  "rang": "6",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Bonne lisibilité)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Légèreté",
+  "rang": "7",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Légèreté)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Autonomie importante",
+  "rang": "8",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Autonomie importante)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Peu d’entretien",
+  "rang": "9",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Peu d’entretien)"
+ },
+ {
+  "id": "watch.0328",
+  "option": "Aucune contrainte particulière",
+  "rang": "10",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucune contrainte particulière)"
+ },
+ {
+  "id": "watch.0329",
+  "option": "Aucun ou presque",
+  "rang": "1",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Aucun ou presque)"
+ },
+ {
+  "id": "watch.0329",
+  "option": "Changer une pile de temps en temps",
+  "rang": "2",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Changer une pile de temps en temps)"
+ },
+ {
+  "id": "watch.0329",
+  "option": "Faire réviser une montre mécanique périodiquement",
+  "rang": "3",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Faire réviser une montre mécanique périodiquement)"
+ },
+ {
+  "id": "watch.0329",
+  "option": "Accepter un entretien régulier pour une belle pièce",
+  "rang": "4",
+  "voie": "FACT",
+  "famille": null,
+  "motif": "contrat_incomplet",
+  "detail": "FACT : écrit par le producteur de faits, pas ici (Accepter un entretien régulier pour une belle pièce)"
+ }
+]

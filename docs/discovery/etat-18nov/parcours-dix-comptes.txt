@@ -1,0 +1,347 @@
+
+══ Sophie  (panne du modèle pendant ses réponses libres)
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 36b09043-1086-564e-99ca-6fe78818ae08
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source e3025838-6515-560a-a334-a56681b0a2f0
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source b0350b46-a58c-5e88-9d0f-9d4aa658ddc9
+  ✓ Sophie · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : lecture, cuisine, sport
+  ✓ Sophie · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.adore_faire)
+  ✓ Sophie · lecture rejouée après la panne : une source de lecture (singularity.adore_faire)
+  ✓ Sophie · relance de trop : aucun appel au modèle, aucun doublon (singularity.adore_faire)
+  ✓ Sophie · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.cadeaux_non)
+  ✓ Sophie · lecture rejouée après la panne : une source de lecture (singularity.cadeaux_non)
+  ✓ Sophie · relance de trop : aucun appel au modèle, aucun doublon (singularity.cadeaux_non)
+  ✓ Sophie · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.plus_beau_cadeau)
+  ✓ Sophie · lecture rejouée après la panne : une source de lecture (singularity.plus_beau_cadeau)
+  ✓ Sophie · relance de trop : aucun appel au modèle, aucun doublon (singularity.plus_beau_cadeau)
+  ✓ Sophie · autant de connaissances lues que de réponses libres (3)
+   onboarding : 22 preuves fermées · branches ouvertes : 7 · questions Discovery ouvertes : 8 · page /moi/discovery : HTTP 200
+  ✓ Sophie · /moi/discovery affiche la première question que le moteur a choisie
+   food2.0857 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.food.domain_importance=adore_cuisiner
+  ✓ Sophie · food2.0857 : la réponse est acceptée et sa source relue
+  ✓ Sophie · food2.0857 : la progression est marquée APRÈS l’écriture
+   food2.0858 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.food.value_sought=les_personnes_presentes | PREFERENCE:PREFERENCE.food.value_sought=la_qualite_des_produits
+  ✓ Sophie · food2.0858 : la réponse est acceptée et sa source relue
+  ✓ Sophie · food2.0858 : la progression est marquée APRÈS l’écriture
+   food2.0859 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.food.gift_format=restaurant_gastronomique | PREFERENCE:PREFERENCE.food.gift_format=petit_bistrot_exceptionnel
+  ✓ Sophie · food2.0859 : la réponse est acceptée et sa source relue
+  ✓ Sophie · food2.0859 : la progression est marquée APRÈS l’écriture
+   food2.0860 (multi) → HTTP 200 · écrit et relu : GUARDRAIL:food.gift_antipattern.coffrets_trop_generiques | GUARDRAIL:food.gift_antipattern.gadgets_de_cuisine
+  ✓ Sophie · food2.0860 : la réponse est acceptée et sa source relue
+  ✓ Sophie · food2.0860 : la progression est marquée APRÈS l’écriture
+   reading2.1233 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.reading.value_sought=fonction recherchée dans la lecture=s'évader | PREFERENCE:PREFERENCE.reading.value_sought=fonction recherchée dans la lecture=ressentir des émotions
+  ✓ Sophie · reading2.1233 : la réponse est acceptée et sa source relue
+  ✓ Sophie · reading2.1233 : la progression est marquée APRÈS l’écriture
+   reading2.1235 (multi) → HTTP 200 · écrit et relu : CONTEXT:usage_context.moment_de_lecture_avant_de_dormir | CONTEXT:usage_context.moment_de_lecture_le_matin
+  ✓ Sophie · reading2.1235 : la réponse est acceptée et sa source relue
+  ✓ Sophie · reading2.1235 : la progression est marquée APRÈS l’écriture
+  ✓ Sophie · reprise : aucune des 6 questions répondues ne revient
+  ✓ Sophie · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Camille
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 8c28504c-3301-5e18-ac44-b6a47f0721db
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source a85def38-ab9f-5efb-998b-5a39d8b6f9e4
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 686a6330-966a-5e61-94bd-f50f6d80a462
+  ✓ Camille · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : musique, cinema, art
+  ✓ Camille · lecture : une source de lecture (singularity.adore_faire)
+  ✓ Camille · relance de trop : aucun appel au modèle, aucun doublon (singularity.adore_faire)
+  ✓ Camille · lecture : une source de lecture (singularity.cadeaux_non)
+  ✓ Camille · relance de trop : aucun appel au modèle, aucun doublon (singularity.cadeaux_non)
+  ✓ Camille · autant de connaissances lues que de réponses libres (2)
+   onboarding : 20 preuves fermées · branches ouvertes : 7 · questions Discovery ouvertes : 8 · page /moi/discovery : HTTP 200
+  ✓ Camille · /moi/discovery affiche la première question que le moteur a choisie
+   cinema.0070 (single) → HTTP 200 · écrit et relu : INTEREST:cinema | PREFERENCE:PREFERENCE.cinema.domain_importance=intensite=high;modalite=passion
+  ✓ Camille · cinema.0070 : la réponse est acceptée et sa source relue
+  ✓ Camille · cinema.0070 : la progression est marquée APRÈS l’écriture
+   cinema.0071 (ranked_multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.cinema.value_sought=effet_recherche=rire | PREFERENCE:PREFERENCE.cinema.value_sought=effet_recherche=emotion
+  ✓ Camille · cinema.0071 : la réponse est acceptée et sa source relue
+  ✓ Camille · cinema.0071 : la progression est marquée APRÈS l’écriture
+   cinema.0072 (ranked_multi) → HTTP 200 · écrit et relu : GUARDRAIL:cinema.disruptor.violence_graphique_a_l_image | GUARDRAIL:cinema.disruptor.charge_emotionnelle_triste_intense
+  ✓ Camille · cinema.0072 : la réponse est acceptée et sa source relue
+  ✓ Camille · cinema.0072 : la progression est marquée APRÈS l’écriture
+   cinema.0075 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.cinema.type_preference=genre=comedie | PREFERENCE:PREFERENCE.cinema.type_preference=genre=comedie_romantique
+  ✓ Camille · cinema.0075 : la réponse est acceptée et sa source relue
+  ✓ Camille · cinema.0075 : la progression est marquée APRÈS l’écriture
+   cinema.0077 (open) → HTTP 200 · écrit et relu : verbatim
+  ✓ Camille · cinema.0077 : la réponse est acceptée et sa source relue
+  ✓ Camille · cinema.0077 : la progression est marquée APRÈS l’écriture
+   cinema2.0981 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.cinema.gift_openness=accord_cadeau=enthousiaste
+  ✓ Camille · cinema2.0981 : la réponse est acceptée et sa source relue
+  ✓ Camille · cinema2.0981 : la progression est marquée APRÈS l’écriture
+  ✓ Camille · reprise : aucune des 6 questions répondues ne revient
+  ✓ Camille · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Inès  (panne du modèle pendant ses réponses libres)
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source fa505b32-0b0b-58f9-884d-675e9297767c
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 3ba21689-b5d8-5759-ad89-3307dbaa19b0
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 1fefe584-bafa-5bcf-a4e7-0fab7493dd35
+  ✓ Inès · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : voyage, mode, tech
+  ✓ Inès · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.marques_lieux)
+  ✓ Inès · lecture rejouée après la panne : une source de lecture (singularity.marques_lieux)
+  ✓ Inès · relance de trop : aucun appel au modèle, aucun doublon (singularity.marques_lieux)
+  ✓ Inès · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.evite_deteste)
+  ✓ Inès · lecture rejouée après la panne : une source de lecture (singularity.evite_deteste)
+  ✓ Inès · relance de trop : aucun appel au modèle, aucun doublon (singularity.evite_deteste)
+  ✓ Inès · autant de connaissances lues que de réponses libres (2)
+   onboarding : 20 preuves fermées · branches ouvertes : 8 · questions Discovery ouvertes : 8 · page /moi/discovery : HTTP 200
+  ✓ Inès · /moi/discovery affiche la première question que le moteur a choisie
+   fashion2.1059 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.fashion.gift_openness=acceptabilite=tres_favorable
+  ✓ Inès · fashion2.1059 : la réponse est acceptée et sa source relue
+  ✓ Inès · fashion2.1059 : la progression est marquée APRÈS l’écriture
+   fashion2.1060 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.fashion.gift_openness=categorie_vetement=manteau_ou_veste;plaisir_a_recevoir=oui | PREFERENCE:PREFERENCE.fashion.gift_openness=categorie_vetement=maille_ou_pull;plaisir_a_recevoir=oui
+  ✓ Inès · fashion2.1060 : la réponse est acceptée et sa source relue
+  ✓ Inès · fashion2.1060 : la progression est marquée APRÈS l’écriture
+   fashion2.1062 (ranked_multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.fashion.value_sought=critere=coupe | PREFERENCE:PREFERENCE.fashion.value_sought=critere=confort
+  ✓ Inès · fashion2.1062 : la réponse est acceptée et sa source relue
+  ✓ Inès · fashion2.1062 : la progression est marquée APRÈS l’écriture
+   fashion2.1063 (multi) → HTTP 200 · écrit et relu : GUARDRAIL:fashion.disruptor.une_coupe_trop_ajustee | GUARDRAIL:fashion.disruptor.une_coupe_trop_large
+  ✓ Inès · fashion2.1063 : la réponse est acceptée et sa source relue
+  ✓ Inès · fashion2.1063 : la progression est marquée APRÈS l’écriture
+   fashion.0143 (single) → HTTP 200 · écrit et relu : INTEREST:fashion | PREFERENCE:PREFERENCE.fashion.domain_importance=intensite=high;modalite=passion
+  ✓ Inès · fashion.0143 : la réponse est acceptée et sa source relue
+  ✓ Inès · fashion.0143 : la progression est marquée APRÈS l’écriture
+   fashion.0146 (open) → HTTP 200 · écrit et relu : verbatim
+  ✓ Inès · fashion.0146 : la réponse est acceptée et sa source relue
+  ✓ Inès · fashion.0146 : la progression est marquée APRÈS l’écriture
+  ✓ Inès · reprise : aucune des 6 questions répondues ne revient
+  ✓ Inès · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Léa
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source c9a3260a-89e4-5ea0-98ab-29947746c01c
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 6bfe07a1-7600-583b-a1b0-080a177c308a
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 3b64959b-c35d-587c-8e19-94606733bd47
+  ✓ Léa · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : nature, bienetre, deco
+  ✓ Léa · lecture : une source de lecture (singularity.envies_reves)
+  ✓ Léa · relance de trop : aucun appel au modèle, aucun doublon (singularity.envies_reves)
+  ✓ Léa · lecture : une source de lecture (singularity.detail_compris)
+  ✓ Léa · relance de trop : aucun appel au modèle, aucun doublon (singularity.detail_compris)
+  ✓ Léa · autant de connaissances lues que de réponses libres (2)
+   onboarding : 17 preuves fermées · branches ouvertes : 6 · questions Discovery ouvertes : 2 · page /moi/discovery : HTTP 200
+  ✓ Léa · /moi/discovery affiche la première question que le moteur a choisie
+   nature.0210 (single) → HTTP 200 · écrit et relu : INTEREST:nature | PREFERENCE:PREFERENCE.nature.domain_importance=place=vraie_passion
+  ✓ Léa · nature.0210 : la réponse est acceptée et sa source relue
+  ✓ Léa · nature.0210 : la progression est marquée APRÈS l’écriture
+   nature.0211 (ranked_multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.nature.value_sought=milieu=montagne | PREFERENCE:PREFERENCE.nature.value_sought=milieu=foret
+  ✓ Léa · nature.0211 : la réponse est acceptée et sa source relue
+  ✓ Léa · nature.0211 : la progression est marquée APRÈS l’écriture
+   nature.0212 (ranked_multi) → HTTP 200 · écrit et relu : GUARDRAIL:nature.disruptor.froid | GUARDRAIL:nature.disruptor.chaleur
+  ✓ Léa · nature.0212 : la réponse est acceptée et sa source relue
+  ✓ Léa · nature.0212 : la progression est marquée APRÈS l’écriture
+   nature.0215 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.nature.type_preference=environnement=montagne | PREFERENCE:PREFERENCE.nature.type_preference=environnement=foret
+  ✓ Léa · nature.0215 : la réponse est acceptée et sa source relue
+  ✓ Léa · nature.0215 : la progression est marquée APRÈS l’écriture
+   nature.0213 (open) → HTTP 200 · écrit et relu : verbatim
+  ✓ Léa · nature.0213 : la réponse est acceptée et sa source relue
+  ✓ Léa · nature.0213 : la progression est marquée APRÈS l’écriture
+   nature.0216 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.nature.type_preference=mode=activite_physique
+  ✓ Léa · nature.0216 : la réponse est acceptée et sa source relue
+  ✓ Léa · nature.0216 : la progression est marquée APRÈS l’écriture
+  ✓ Léa · reprise : aucune des 6 questions répondues ne revient
+  ✓ Léa · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Manon  (panne du modèle pendant ses réponses libres)
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 9020ed9a-3a9b-50b6-9081-326d23d65750
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source edf158f0-5680-5452-9cb0-22bb8b734bbe
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 05881271-ffa7-5860-aa1c-e1830f5a1d0d
+  ✓ Manon · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : vin, lecture, cuisine
+  ✓ Manon · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.adore_faire)
+  ✓ Manon · lecture rejouée après la panne : une source de lecture (singularity.adore_faire)
+  ✓ Manon · relance de trop : aucun appel au modèle, aucun doublon (singularity.adore_faire)
+  ✓ Manon · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.cadeaux_non)
+  ✓ Manon · lecture rejouée après la panne : une source de lecture (singularity.cadeaux_non)
+  ✓ Manon · relance de trop : aucun appel au modèle, aucun doublon (singularity.cadeaux_non)
+  ✓ Manon · autant de connaissances lues que de réponses libres (2)
+   onboarding : 22 preuves fermées · branches ouvertes : 7 · questions Discovery ouvertes : 6 · page /moi/discovery : HTTP 200
+  ✓ Manon · /moi/discovery affiche la première question que le moteur a choisie
+   food2.0857 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.food.domain_importance=adore_cuisiner
+  ✓ Manon · food2.0857 : la réponse est acceptée et sa source relue
+  ✓ Manon · food2.0857 : la progression est marquée APRÈS l’écriture
+   food2.0858 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.food.value_sought=les_personnes_presentes | PREFERENCE:PREFERENCE.food.value_sought=la_qualite_des_produits
+  ✓ Manon · food2.0858 : la réponse est acceptée et sa source relue
+  ✓ Manon · food2.0858 : la progression est marquée APRÈS l’écriture
+   food2.0859 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.food.gift_format=restaurant_gastronomique | PREFERENCE:PREFERENCE.food.gift_format=petit_bistrot_exceptionnel
+  ✓ Manon · food2.0859 : la réponse est acceptée et sa source relue
+  ✓ Manon · food2.0859 : la progression est marquée APRÈS l’écriture
+   food2.0860 (multi) → HTTP 200 · écrit et relu : GUARDRAIL:food.gift_antipattern.coffrets_trop_generiques | GUARDRAIL:food.gift_antipattern.gadgets_de_cuisine
+  ✓ Manon · food2.0860 : la réponse est acceptée et sa source relue
+  ✓ Manon · food2.0860 : la progression est marquée APRÈS l’écriture
+   reading2.1233 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.reading.value_sought=fonction recherchée dans la lecture=s'évader | PREFERENCE:PREFERENCE.reading.value_sought=fonction recherchée dans la lecture=ressentir des émotions
+  ✓ Manon · reading2.1233 : la réponse est acceptée et sa source relue
+  ✓ Manon · reading2.1233 : la progression est marquée APRÈS l’écriture
+   reading2.1235 (multi) → HTTP 200 · écrit et relu : CONTEXT:usage_context.moment_de_lecture_avant_de_dormir | CONTEXT:usage_context.moment_de_lecture_le_matin
+  ✓ Manon · reading2.1235 : la réponse est acceptée et sa source relue
+  ✓ Manon · reading2.1235 : la progression est marquée APRÈS l’écriture
+  ✓ Manon · reprise : aucune des 6 questions répondues ne revient
+  ✓ Manon · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Clara
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source ae084b10-d2a5-50f2-825f-e2929476b971
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source c53ef669-3a97-5a55-bc99-7e9ae2d9fda9
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source e2045ed3-d5fb-53b2-bac2-c4a768145276
+  ✓ Clara · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : sport, musique, cinema
+  ✓ Clara · lecture : une source de lecture (singularity.sujets_stimulants)
+  ✓ Clara · relance de trop : aucun appel au modèle, aucun doublon (singularity.sujets_stimulants)
+  ✓ Clara · lecture : une source de lecture (singularity.marques_lieux)
+  ✓ Clara · relance de trop : aucun appel au modèle, aucun doublon (singularity.marques_lieux)
+  ✓ Clara · autant de connaissances lues que de réponses libres (2)
+   onboarding : 11 preuves fermées · branches ouvertes : 6 · questions Discovery ouvertes : 10 · page /moi/discovery : HTTP 200
+  ✓ Clara · /moi/discovery affiche la première question que le moteur a choisie
+   cinema.0070 (single) → HTTP 200 · écrit et relu : INTEREST:cinema | PREFERENCE:PREFERENCE.cinema.domain_importance=intensite=high;modalite=passion
+  ✓ Clara · cinema.0070 : la réponse est acceptée et sa source relue
+  ✓ Clara · cinema.0070 : la progression est marquée APRÈS l’écriture
+   cinema.0071 (ranked_multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.cinema.value_sought=effet_recherche=rire | PREFERENCE:PREFERENCE.cinema.value_sought=effet_recherche=emotion
+  ✓ Clara · cinema.0071 : la réponse est acceptée et sa source relue
+  ✓ Clara · cinema.0071 : la progression est marquée APRÈS l’écriture
+   cinema.0072 (ranked_multi) → HTTP 200 · écrit et relu : GUARDRAIL:cinema.disruptor.violence_graphique_a_l_image | GUARDRAIL:cinema.disruptor.charge_emotionnelle_triste_intense
+  ✓ Clara · cinema.0072 : la réponse est acceptée et sa source relue
+  ✓ Clara · cinema.0072 : la progression est marquée APRÈS l’écriture
+   cinema.0075 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.cinema.type_preference=genre=comedie | PREFERENCE:PREFERENCE.cinema.type_preference=genre=comedie_romantique
+  ✓ Clara · cinema.0075 : la réponse est acceptée et sa source relue
+  ✓ Clara · cinema.0075 : la progression est marquée APRÈS l’écriture
+   cinema.0077 (open) → HTTP 200 · écrit et relu : verbatim
+  ✓ Clara · cinema.0077 : la réponse est acceptée et sa source relue
+  ✓ Clara · cinema.0077 : la progression est marquée APRÈS l’écriture
+   cinema2.0981 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.cinema.gift_openness=accord_cadeau=enthousiaste
+  ✓ Clara · cinema2.0981 : la réponse est acceptée et sa source relue
+  ✓ Clara · cinema2.0981 : la progression est marquée APRÈS l’écriture
+  ✓ Clara · reprise : aucune des 6 questions répondues ne revient
+  ✓ Clara · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Nour  (panne du modèle pendant ses réponses libres)
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 94afb802-67ca-5b3d-8d1a-1e06bcb3d9da
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 17a1f334-7176-5287-9cb3-3c4b2b2b2135
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 51f09d36-5cb5-5433-9189-8451087b579a
+  ✓ Nour · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : art, voyage, mode
+  ✓ Nour · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.evite_deteste)
+  ✓ Nour · lecture rejouée après la panne : une source de lecture (singularity.evite_deteste)
+  ✓ Nour · relance de trop : aucun appel au modèle, aucun doublon (singularity.evite_deteste)
+  ✓ Nour · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.remarquer)
+  ✓ Nour · lecture rejouée après la panne : une source de lecture (singularity.remarquer)
+  ✓ Nour · relance de trop : aucun appel au modèle, aucun doublon (singularity.remarquer)
+  ✓ Nour · autant de connaissances lues que de réponses libres (2)
+   onboarding : 14 preuves fermées · branches ouvertes : 7 · questions Discovery ouvertes : 4 · page /moi/discovery : HTTP 200
+  ✓ Nour · /moi/discovery affiche la première question que le moteur a choisie
+   fashion2.1059 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.fashion.gift_openness=acceptabilite=tres_favorable
+  ✓ Nour · fashion2.1059 : la réponse est acceptée et sa source relue
+  ✓ Nour · fashion2.1059 : la progression est marquée APRÈS l’écriture
+   fashion2.1060 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.fashion.gift_openness=categorie_vetement=manteau_ou_veste;plaisir_a_recevoir=oui | PREFERENCE:PREFERENCE.fashion.gift_openness=categorie_vetement=maille_ou_pull;plaisir_a_recevoir=oui
+  ✓ Nour · fashion2.1060 : la réponse est acceptée et sa source relue
+  ✓ Nour · fashion2.1060 : la progression est marquée APRÈS l’écriture
+   fashion2.1062 (ranked_multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.fashion.value_sought=critere=coupe | PREFERENCE:PREFERENCE.fashion.value_sought=critere=confort
+  ✓ Nour · fashion2.1062 : la réponse est acceptée et sa source relue
+  ✓ Nour · fashion2.1062 : la progression est marquée APRÈS l’écriture
+   fashion2.1063 (multi) → HTTP 200 · écrit et relu : GUARDRAIL:fashion.disruptor.une_coupe_trop_ajustee | GUARDRAIL:fashion.disruptor.une_coupe_trop_large
+  ✓ Nour · fashion2.1063 : la réponse est acceptée et sa source relue
+  ✓ Nour · fashion2.1063 : la progression est marquée APRÈS l’écriture
+   fashion.0143 (single) → HTTP 200 · écrit et relu : INTEREST:fashion | PREFERENCE:PREFERENCE.fashion.domain_importance=intensite=high;modalite=passion
+  ✓ Nour · fashion.0143 : la réponse est acceptée et sa source relue
+  ✓ Nour · fashion.0143 : la progression est marquée APRÈS l’écriture
+   fashion.0146 (open) → HTTP 200 · écrit et relu : verbatim
+  ✓ Nour · fashion.0146 : la réponse est acceptée et sa source relue
+  ✓ Nour · fashion.0146 : la progression est marquée APRÈS l’écriture
+  ✓ Nour · reprise : aucune des 6 questions répondues ne revient
+  ✓ Nour · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Alice
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source d3079467-3aad-54e7-8186-c70c8f32cbc1
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source fb02f662-c5bf-52e7-8a5e-d86521d51100
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 8a56b2b8-feef-5989-ab40-79d884ea81a3
+  ✓ Alice · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : tech, nature, bienetre
+  ✓ Alice · lecture : une source de lecture (singularity.adore_faire)
+  ✓ Alice · relance de trop : aucun appel au modèle, aucun doublon (singularity.adore_faire)
+  ✓ Alice · autant de connaissances lues que de réponses libres (1)
+   onboarding : 15 preuves fermées · branches ouvertes : 8 · questions Discovery ouvertes : 6 · page /moi/discovery : HTTP 200
+  ✓ Alice · /moi/discovery affiche la première question que le moteur a choisie
+   nature.0210 (single) → HTTP 200 · écrit et relu : INTEREST:nature | PREFERENCE:PREFERENCE.nature.domain_importance=place=vraie_passion
+  ✓ Alice · nature.0210 : la réponse est acceptée et sa source relue
+  ✓ Alice · nature.0210 : la progression est marquée APRÈS l’écriture
+   nature.0211 (ranked_multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.nature.value_sought=milieu=montagne | PREFERENCE:PREFERENCE.nature.value_sought=milieu=foret
+  ✓ Alice · nature.0211 : la réponse est acceptée et sa source relue
+  ✓ Alice · nature.0211 : la progression est marquée APRÈS l’écriture
+   nature.0212 (ranked_multi) → HTTP 200 · écrit et relu : GUARDRAIL:nature.disruptor.froid | GUARDRAIL:nature.disruptor.chaleur
+  ✓ Alice · nature.0212 : la réponse est acceptée et sa source relue
+  ✓ Alice · nature.0212 : la progression est marquée APRÈS l’écriture
+   nature.0215 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.nature.type_preference=environnement=montagne | PREFERENCE:PREFERENCE.nature.type_preference=environnement=foret
+  ✓ Alice · nature.0215 : la réponse est acceptée et sa source relue
+  ✓ Alice · nature.0215 : la progression est marquée APRÈS l’écriture
+   tech.0195 (single) → HTTP 200 · écrit et relu : INTEREST:tech | PREFERENCE:PREFERENCE.tech.domain_importance=intensite=high;modalite=passion
+  ✓ Alice · tech.0195 : la réponse est acceptée et sa source relue
+  ✓ Alice · tech.0195 : la progression est marquée APRÈS l’écriture
+   tech.0196 (ranked_multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.tech.value_sought=simplicite | PREFERENCE:PREFERENCE.tech.value_sought=performance
+  ✓ Alice · tech.0196 : la réponse est acceptée et sa source relue
+  ✓ Alice · tech.0196 : la progression est marquée APRÈS l’écriture
+  ✓ Alice · reprise : aucune des 6 questions répondues ne revient
+  ✓ Alice · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Jeanne  (panne du modèle pendant ses réponses libres)
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 18e6cc88-1b9d-543f-85eb-c05252537acc
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 90b49959-8ca2-5168-99e1-9ff18f99a6df
+[persistKnowledge] REJOUÉ (idempotent) : persist_journal a tout absorbé par ON CONFLICT (0 ligne), source 377d671b-4f2c-5bd2-b258-79d75244261d
+  ✓ Jeanne · 3 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : deco, vin, lecture
+  ✓ Jeanne · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.plus_beau_cadeau)
+  ✓ Jeanne · lecture rejouée après la panne : une source de lecture (singularity.plus_beau_cadeau)
+  ✓ Jeanne · relance de trop : aucun appel au modèle, aucun doublon (singularity.plus_beau_cadeau)
+  ✓ Jeanne · panne : la route signale l’échec, le verbatim est en base, aucune lecture écrite (singularity.cadeaux_non)
+  ✓ Jeanne · lecture rejouée après la panne : une source de lecture (singularity.cadeaux_non)
+  ✓ Jeanne · relance de trop : aucun appel au modèle, aucun doublon (singularity.cadeaux_non)
+  ✓ Jeanne · autant de connaissances lues que de réponses libres (2)
+   onboarding : 15 preuves fermées · branches ouvertes : 7 · questions Discovery ouvertes : 4 · page /moi/discovery : HTTP 200
+  ✓ Jeanne · /moi/discovery affiche la première question que le moteur a choisie
+   reading2.1233 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.reading.value_sought=fonction recherchée dans la lecture=s'évader | PREFERENCE:PREFERENCE.reading.value_sought=fonction recherchée dans la lecture=ressentir des émotions
+  ✓ Jeanne · reading2.1233 : la réponse est acceptée et sa source relue
+  ✓ Jeanne · reading2.1233 : la progression est marquée APRÈS l’écriture
+   reading2.1235 (multi) → HTTP 200 · écrit et relu : CONTEXT:usage_context.moment_de_lecture_avant_de_dormir | CONTEXT:usage_context.moment_de_lecture_le_matin
+  ✓ Jeanne · reading2.1235 : la réponse est acceptée et sa source relue
+  ✓ Jeanne · reading2.1235 : la progression est marquée APRÈS l’écriture
+   reading2.1237 (single) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.reading.gift_openness=acceptabilite=elevee
+  ✓ Jeanne · reading2.1237 : la réponse est acceptée et sa source relue
+  ✓ Jeanne · reading2.1237 : la progression est marquée APRÈS l’écriture
+   reading2.1236 (multi) → HTTP 200 · écrit et relu : PREFERENCE:PREFERENCE.reading.value_sought=qualité qui fait qu'un livre la marque=les personnages | PREFERENCE:PREFERENCE.reading.value_sought=qualité qui fait qu'un livre la marque=l'histoire
+  ✓ Jeanne · reading2.1236 : la réponse est acceptée et sa source relue
+  ✓ Jeanne · reading2.1236 : la progression est marquée APRÈS l’écriture
+   reading.0106 (single) → HTTP 200 · écrit et relu : INTEREST:reading | PREFERENCE:PREFERENCE.reading.domain_importance=intensite=high;modalite=passion
+  ✓ Jeanne · reading.0106 : la réponse est acceptée et sa source relue
+  ✓ Jeanne · reading.0106 : la progression est marquée APRÈS l’écriture
+   reading.0108 (ranked_multi) → HTTP 200 · écrit et relu : GUARDRAIL:reading.disruptor.style_d_ecriture_dense | GUARDRAIL:reading.disruptor.rythme_narratif_lent
+  ✓ Jeanne · reading.0108 : la réponse est acceptée et sa source relue
+  ✓ Jeanne · reading.0108 : la progression est marquée APRÈS l’écriture
+  ✓ Jeanne · reprise : aucune des 6 questions répondues ne revient
+  ✓ Jeanne · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+══ Yasmina
+  ✓ Yasmina · 0 centre(s) d’intérêt coché(s), relus au journal, sans doublon au second passage
+   centres d’intérêt cochés : (aucun)
+  ✓ Yasmina · lecture : une source de lecture (singularity.sentir_special)
+  ✓ Yasmina · relance de trop : aucun appel au modèle, aucun doublon (singularity.sentir_special)
+  ✓ Yasmina · lecture : une source de lecture (singularity.envies_reves)
+  ✓ Yasmina · relance de trop : aucun appel au modèle, aucun doublon (singularity.envies_reves)
+  ✓ Yasmina · autant de connaissances lues que de réponses libres (2)
+   onboarding : 18 preuves fermées · branches ouvertes : 2 · questions Discovery ouvertes : 0 · page /moi/discovery : HTTP 200
+  ✓ Yasmina · reprise : aucune des 0 questions répondues ne revient
+  ✓ Yasmina · le Discovery n’a écrit ni moteur, ni besoin, ni trait
+
+Application : http://127.0.0.1:3100
+┌─────────┬───────────┬────────────┬────────┬────────┬──────────┬──────────┬───────────┬─────────┬───────────┐
+│ (index) │ compte    │ onboarding │ libres │ pannes │ branches │ ouvertes │ repondues │ preuves │ restantes │
+├─────────┼───────────┼────────────┼────────┼────────┼──────────┼──────────┼───────────┼─────────┼───────────┤
+│ 0       │ 'Sophie'  │ 22         │ '3/3'  │ 3      │ 7        │ 8        │ 6         │ 11      │ 8         │
+│ 1       │ 'Camille' │ 20         │ '2/2'  │ 0      │ 7        │ 8        │ 6         │ 9       │ 8         │
+│ 2       │ 'Inès'    │ 20         │ '2/2'  │ 2      │ 8        │ 8        │ 6         │ 9       │ 10        │
+│ 3       │ 'Léa'     │ 17         │ '2/2'  │ 0      │ 6        │ 2        │ 6         │ 9       │ 1         │
+│ 4       │ 'Manon'   │ 22         │ '2/2'  │ 2      │ 7        │ 6        │ 6         │ 11      │ 6         │
+│ 5       │ 'Clara'   │ 11         │ '2/2'  │ 0      │ 6        │ 10       │ 6         │ 9       │ 10        │
+│ 6       │ 'Nour'    │ 14         │ '2/2'  │ 2      │ 7        │ 4        │ 6         │ 9       │ 6         │
+│ 7       │ 'Alice'   │ 15         │ '1/1'  │ 0      │ 8        │ 6        │ 6         │ 12      │ 6         │
+│ 8       │ 'Jeanne'  │ 15         │ '2/2'  │ 2      │ 7        │ 4        │ 6         │ 11      │ 4         │
+│ 9       │ 'Yasmina' │ 18         │ '2/2'  │ 0      │ 2        │ 0        │ 0         │ 0       │ 0         │
+└─────────┴───────────┴────────────┴────────┴────────┴──────────┴──────────┴───────────┴─────────┴───────────┘
+
+208 vérifications passées, 0 en échec.
