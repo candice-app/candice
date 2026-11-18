@@ -5,10 +5,8 @@
 --     (auth.uid() = pilote_id), pour TOUTES les opérations. Le pilote — celui qui DEMANDE —
 --     pouvait donc insérer lui-même une ligne `status = 'active'` au nom de n'importe quel
 --     compte, sans passer par les routes de l'application. Essai : accepté par la base.
---   · Le proche, lui, n'avait qu'un droit de LECTURE : son « j'accepte » envoyé par la route
---     ne modifiait aucune ligne, sans erreur.
---   Toute vérification « un consentement actif existe » était donc à la fois falsifiable par
---   le demandeur et impossible à satisfaire honnêtement par celui qui consent.
+--   Toute vérification « un consentement actif existe » était donc falsifiable par le
+--   demandeur. Même politique relevée sur la base vivante par Estelle le 18 nov.
 --
 -- CE QUE LA MIGRATION FAIT, pour les consentements `contact_analysis` uniquement
 -- (les `profile_view` sont déjà gérés par le propriétaire du profil, qui est `pilote_id`) :
@@ -16,8 +14,6 @@
 --      lui-même (auth.uid() = proche_user_id) ou par le serveur (rôle de service).
 --      Il fige aussi `proche_user_id`, `pilote_id`, `contact_id` et `kind` après création,
 --      et refuse que le demandeur élargisse la portée d'un consentement actif.
---   2. Une politique permet au proche de METTRE À JOUR ses propres lignes (accepter,
---      refuser, restreindre). Le déclencheur borne ce qu'il peut y changer.
 -- Le pilote garde tout le reste : demander (`pending`), révoquer, supprimer sa demande.
 --
 -- ADDITIVE. Aucune ligne existante n'est modifiée. Les consentements déjà actifs le restent ;
@@ -75,11 +71,8 @@ CREATE TRIGGER trg_garde_contact_consents
   BEFORE INSERT OR UPDATE ON public.contact_consents
   FOR EACH ROW EXECUTE FUNCTION public.garde_contact_consents();
 
-DROP POLICY IF EXISTS proche_respond_own_consents ON public.contact_consents;
-CREATE POLICY proche_respond_own_consents ON public.contact_consents
-  FOR UPDATE
-  USING (auth.uid() = proche_user_id)
-  WITH CHECK (auth.uid() = proche_user_id);
+-- (La politique qui laisse le proche RÉPONDRE, `proche_respond_consents`, existe déjà :
+--  migrations 40 et 49. Rien à ajouter de ce côté.)
 
 -- CONTRÔLE (lecture seule, à lancer après application) — consentements actifs sans date
 -- d'accord, qui n'ont donc pas suivi le parcours d'acceptation :
