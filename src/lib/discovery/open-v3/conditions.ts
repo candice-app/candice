@@ -614,7 +614,13 @@ function evaluerClause(
       // Sans attribut nommé, on ne peut pas savoir si l'information manque : on ne
       // suppose pas qu'elle manque pour avoir le droit de poser la question.
       const cles = contexte.attributs ?? (contexte.attribut ? [contexte.attribut] : []);
-      if (cles.length === 0) return 'indecidable';
+      // Aucune option n'écrit d'attribut nommé : l'information que la question recueille n'existe
+      // QUE dans sa propre réponse (aucune autre question ne l'écrit sous un nom). Elle manque tant
+      // que la question n'a pas reçu de réponse (20 nov. : raccordement, au lieu de « indécidable »).
+      if (cles.length === 0) {
+        if (!contexte.questionId) return 'indecidable';
+        return etat.dejaPosees.has(contexte.questionId) ? 'fermer' : 'ouvrir';
+      }
       // Chemin partagé : sa présence ne dit rien de CETTE question. Elle n'est pas « déjà
       // posée » (la sélection l'aurait écartée avant d'arriver ici) : l'information manque.
       if (contexte.attributsPartages) return 'ouvrir';

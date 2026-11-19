@@ -17,6 +17,7 @@ import { question as questionParId, type QuestionV3 } from './banque';
 import { cleOption } from './cle-option';
 import { enonceRempli } from './parametres';
 import { QUESTIONS_D_ENTITE } from './entites';
+import { QUESTIONS_D_ACTIVITE } from './activites';
 import { saisieLibreDe, groupeDe } from './reponses-structurees';
 import { verifierLot, signerLot, type Lot, LotIndisponibleError } from './lot';
 import { lireEtat } from './etat';
@@ -240,7 +241,7 @@ export async function traiterReponse(
   // ── 5 ter. D9 : L'ENTITÉ dont parle la question (« … chez {marque} ? »). La réponse, ou le passage,
   //    lui est rattaché : la même question reviendra pour une autre entité, jamais pour celle-ci.
   let entite: { id: string; libelle: string } | undefined;
-  if (QUESTIONS_D_ENTITE.has(q.id) && !renvoi) {
+  if ((QUESTIONS_D_ENTITE.has(q.id) || QUESTIONS_D_ACTIVITE.has(q.id)) && !renvoi) {
     try {
       const { etat } = await lireEtat(client, { userId: input.userId });
       entite = etat.entiteParQuestion?.get(q.id);

@@ -37,7 +37,10 @@ describe('la table est exhaustive et sans double emploi', () => {
     // questions « axe X » de la Réussite (D5, l'axe choisi à success.1711).
     const axes = BANQUE.filter((q) => /^Niveau B Réussite — axe /.test(q.condition_emission) && !analyserCondition(q.condition_emission).sensible).map((q) => q.id);
     expect(axes.length).toBeGreaterThan(20);
-    const ajouteesParDecision = ['CRE-17', 'CRE-11', ...axes];   // CRE-11 : activée le 19 nov. (18h54)
+    // 20 nov. : conditions que le texte « résolvait » en apparence mais que le moteur ne savait pas
+    // rattacher (un nom de domaine, une écriture « Niveau C <branche> : … ») — désormais lues ou consignées.
+    const raccordees20nov = ['food.0030', 'food.0049', 'aesthetic.1971', 'drinks.2103', 'remembrance.1994', 'sensory2.1489', 'philoconso.1629'];
+    const ajouteesParDecision = ['CRE-17', 'CRE-11', ...axes, ...raccordees20nov];   // CRE-11 : activée le 19 nov. (18h54)
     expect([...lues, ...nonLues].sort()).toEqual([...presentes, ...ajouteesParDecision].sort());
   });
   it('une hypothèse porte des choix ; une absence de lecture porte ce qui manque', () => {

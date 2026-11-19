@@ -1,0 +1,50 @@
+Fiche créée par le pilote sous sa session (RLS) ; le lien de compte est posé à la main, comme aux scripts 18 et 35.
+
+1–2. Sélection par le serveur, réponses avec le jeton signé
+  ✓ 1 : B choisit d’explorer l’apprentissage (HTTP 200)
+  ✓ 2 : les deux questions ont été SERVIES par le serveur et répondues (21 actes, tous HTTP 200)
+  ✓ 2 : la lecture de la réponse libre est partie au modèle, statut 200
+  ✓ 2 : ce que le modèle des destinations a reçu contient la réponse libre, telle qu’écrite
+
+3. Persistance et relecture
+  ✓ 3 : B relit son journal sous sa session (1 preuves)
+  ✓ 3 : « Astronomie » : un intérêt EXPLICITE (sa déclaration)
+     lecture réelle, céramique : []
+  ✓ 3 : « la chimie » (niée) n’est écrite comme aucun intérêt
+  ✓ 3 : le portrait relit « Astronomie »
+
+4a. Sans autorisation
+  ✓ 4a : la lecture des goûts (même fonction que la route) refuse : aucun consentement — pas une erreur
+       appel : {"statut":200,"outil":null,"modele":"claude-sonnet-4-6","debut_consigne":"Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja","donnees_de_B":[]}
+     sans autorisation : HTTP 200 · 1 appel(s) au modèle · données de B retrouvées dans l’envoi : []
+  ✓ 4a : AUCUNE donnée de B dans ce qui est parti au modèle (consigne et messages relus au relais)
+  ✓ 4a : la recommandation enregistrée ne déclare aucune donnée de B
+
+4b. B accorde reco:gouts depuis sa session
+  ✓ 4b : accord donné (HTTP 200, actif)
+  ✓ 4b : « Astronomie » est éligible (déclarée par B, explicite)
+  ✓ 4b : la réponse libre lue par modèle n’est PAS éligible (cas négatif gardé)
+       appel : {"statut":200,"outil":null,"modele":"claude-sonnet-4-6","debut_consigne":"Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja","donnees_de_B":["Astronomie"]}
+     après accord : HTTP 200 · 1 appel(s) au modèle · données de B retrouvées dans l’envoi : [{"libelle":"Astronomie","famille":"INTEREST","statut":"explicit"}]
+  ✓ 4b : « Astronomie » PART au modèle, dans la ligne des goûts déclarés
+  ✓ 4b : rien de ce qui part n’est une lecture par modèle (provenance : déclarations explicites seulement)
+     idées inspirées par une déclaration (vrai modèle) : 3 ["Partage une image du ciel de cette nuit","Propose une sortie observation des étoiles","Envoie un article ou podcast sur l'espace"]
+  ✓ 4b : aucune justification affichée ne cite la déclaration
+  ✓ 4b : la recommandation enregistrée porte sa provenance (reco:gouts, compte de B)
+  ✓ 4b : les idées proposées portent la même provenance
+
+4c. B retire reco:gouts
+  ✓ 4c : retrait (HTTP 200, inactif)
+  ✓ 4c : la recommandation tirée de ses goûts n’est plus restituée (vidée, à recalculer)
+  ✓ 4c : les idées seulement proposées qui en venaient sont retirées
+  ✓ 4c : la fiche du pilote s’affiche (HTTP 200)
+  ✓ 4c : aucune des idées tirées de ses goûts n’apparaît sur la fiche
+  ✓ 4c : la lecture des goûts refuse de nouveau
+       appel : {"statut":200,"outil":null,"modele":"claude-sonnet-4-6","debut_consigne":"Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja","donnees_de_B":[]}
+     après retrait : HTTP 200 · 1 appel(s) au modèle · données de B retrouvées dans l’envoi : []
+  ✓ 4c : plus AUCUNE donnée de B dans ce qui part au modèle
+  ✓ 4c : la nouvelle recommandation ne déclare aucune donnée de B
+
+Rapport : docs/discovery/parcours-complet-reel.json — parcours complet EXÉCUTÉ avec le VRAI modèle. Aucune clé, aucun en-tête n’y figure.
+
+27 vérifications passées, 0 en échec.

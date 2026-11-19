@@ -1,0 +1,698 @@
+{
+ "version": "2026-11-20",
+ "note": "LES RÉFÉRENTS D'ACTIVITÉ — table générée (20 nov., principe validé par Estelle).",
+ "modes": {
+  "attrait": "elle aime (ou aime regarder) ; ne prouve pas une pratique",
+  "pratique": "elle pratique aujourd’hui ; ne prouve ni niveau, ni fréquence, ni équipement, ni envie de progresser"
+ },
+ "sources": {
+  "craft.0615": {
+   "mode": "attrait",
+   "pourquoi": "« Quels univers créatifs ou artistiques t’attirent vraiment ? » : un attrait déclaré, pas une pratique"
+  },
+  "sportw.0532": {
+   "mode": "attrait",
+   "pourquoi": "« Quels sports aimes-tu réellement regarder ? » : aimer regarder, pas pratiquer"
+  },
+  "sportp.0504": {
+   "mode": "pratique",
+   "pourquoi": "« Quels sports pratiques-tu réellement aujourd’hui ? » : une pratique actuelle déclarée ; ni niveau, ni fréquence, ni équipement"
+  }
+ },
+ "exclues": {
+  "craft.0642": "« pratiques-tu ou aimerais-tu pratiquer » : la réponse ne dit pas laquelle des deux — elle n’établit ni une pratique, ni une envie d’essayer distincte",
+  "craft.0614": "« Je pratique moi-même » ne nomme aucune activité : une pratique sans objet ne remplit pas un paramètre",
+  "children.2065": "activités qu’elle souhaite encourager chez un enfant : ce n’est pas la sienne",
+  "travel2.0910": "activités de voyage : un contexte, pas une activité qu’elle aime ou pratique pour elle-même"
+ },
+ "options": [
+  {
+   "question": "craft.0615",
+   "option": "Photographie",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:photographie",
+   "forme": "la photographie"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Peinture",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:peinture",
+   "forme": "la peinture"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Dessin ou illustration",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:dessin_ou_illustration",
+   "forme": "le dessin ou l’illustration"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Aquarelle",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:aquarelle",
+   "forme": "l’aquarelle"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Gravure ou impression",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:gravure_ou_impression",
+   "forme": "la gravure ou l’impression"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Sculpture",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:sculpture",
+   "forme": "la sculpture"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Céramique ou poterie",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:ceramique_ou_poterie",
+   "forme": "la céramique ou la poterie"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Collage",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:collage",
+   "forme": "le collage"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Calligraphie ou lettering",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:calligraphie_ou_lettering",
+   "forme": "la calligraphie ou le lettering"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Arts textiles",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:arts_textiles",
+   "forme": "les arts textiles"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Couture",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:couture",
+   "forme": "la couture"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Broderie",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:broderie",
+   "forme": "la broderie"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Tricot ou crochet",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:tricot_ou_crochet",
+   "forme": "le tricot ou le crochet"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Tissage",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:tissage",
+   "forme": "le tissage"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Travail du bois",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:travail_du_bois",
+   "forme": "le travail du bois"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Verre",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:verre",
+   "forme": "le travail du verre"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Mosaïque",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:mosaique",
+   "forme": "la mosaïque"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Bijouterie créative",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:bijouterie_creative",
+   "forme": "la bijouterie créative"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Reliure ou papeterie",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:reliure_ou_papeterie",
+   "forme": "la reliure ou la papeterie"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Sérigraphie",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:serigraphie",
+   "forme": "la sérigraphie"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Art numérique",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:art_numerique",
+   "forme": "l’art numérique"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Design d’objet",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:design_d_objet",
+   "forme": "le design d’objet"
+  },
+  {
+   "question": "craft.0615",
+   "option": "Artisanat local",
+   "mode": "attrait",
+   "domaine": "creativity",
+   "construct": "INTEREST.creativity.type_preference",
+   "id": "activite:creativity:artisanat_local",
+   "forme": "l’artisanat local"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Football",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:football",
+   "forme": "le football"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Rugby",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:rugby",
+   "forme": "le rugby"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Tennis",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:tennis",
+   "forme": "le tennis"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Basket",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:basket",
+   "forme": "le basket"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Handball",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:handball",
+   "forme": "le handball"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Volleyball",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:volleyball",
+   "forme": "le volleyball"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Formule 1",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:formule_1",
+   "forme": "la Formule 1"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Moto",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:moto",
+   "forme": "la moto"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Cyclisme",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:cyclisme",
+   "forme": "le cyclisme"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Athlétisme",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:athletisme",
+   "forme": "l’athlétisme"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Natation",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:natation",
+   "forme": "la natation"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Ski",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:ski",
+   "forme": "le ski"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Sports de combat",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:sports_de_combat",
+   "forme": "les sports de combat"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Boxe",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:boxe",
+   "forme": "la boxe"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Golf",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:golf",
+   "forme": "le golf"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Sports américains",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:sports_americains",
+   "forme": "les sports américains"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Esport",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:esport",
+   "forme": "l’esport"
+  },
+  {
+   "question": "sportw.0532",
+   "option": "Équitation",
+   "mode": "attrait",
+   "domaine": "spectator_sport",
+   "construct": "INTEREST.spectator_sport.type_preference",
+   "id": "activite:spectator_sport:equitation",
+   "forme": "l’équitation"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Course à pied",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:course_a_pied",
+   "forme": "la course à pied"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Trail",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:trail",
+   "forme": "le trail"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Marche",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:marche",
+   "forme": "la marche"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Randonnée",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:randonnee",
+   "forme": "la randonnée"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Vélo",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:velo",
+   "forme": "le vélo"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "VTT",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:vtt",
+   "forme": "le VTT"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Natation",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:natation",
+   "forme": "la natation"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Fitness",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:fitness",
+   "forme": "le fitness"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Musculation",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:musculation",
+   "forme": "la musculation"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "CrossFit",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:crossfit",
+   "forme": "le CrossFit"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Yoga",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:yoga",
+   "forme": "le yoga"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Pilates",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:pilates",
+   "forme": "le Pilates"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Danse",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:danse",
+   "forme": "la danse"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Tennis",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:tennis",
+   "forme": "le tennis"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Padel",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:padel",
+   "forme": "le padel"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Golf",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:golf",
+   "forme": "le golf"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Football",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:football",
+   "forme": "le football"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Rugby",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:rugby",
+   "forme": "le rugby"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Basket",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:basket",
+   "forme": "le basket"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Handball",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:handball",
+   "forme": "le handball"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Volleyball",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:volleyball",
+   "forme": "le volleyball"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Sports de combat",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:sports_de_combat",
+   "forme": "les sports de combat"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Boxe",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:boxe",
+   "forme": "la boxe"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Escalade",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:escalade",
+   "forme": "l’escalade"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Ski",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:ski",
+   "forme": "le ski"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Snowboard",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:snowboard",
+   "forme": "le snowboard"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Surf",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:surf",
+   "forme": "le surf"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Voile",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:voile",
+   "forme": "la voile"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Équitation",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:equitation",
+   "forme": "l’équitation"
+  },
+  {
+   "question": "sportp.0504",
+   "option": "Triathlon",
+   "mode": "pratique",
+   "domaine": "sport_practice",
+   "construct": "discovery.fait.sport_practice.pratique",
+   "id": "activite:sport_practice:triathlon",
+   "forme": "le triathlon"
+  }
+ ],
+ "questions": {
+  "activity.0281": {
+   "modes": [
+    "attrait"
+   ],
+   "pourquoi": "« Qu’est-ce que tu aimes le plus dans {activité} ? » présume qu’elle l’aime : un attrait déclaré. Une pratique seule ne prouve pas qu’elle l’aime."
+  },
+  "activity.0282": {
+   "modes": [
+    "pratique"
+   ],
+   "pourquoi": "« Quel est ton niveau aujourd’hui ? » présume une pratique (la question demande le niveau ; elle ne le suppose pas). Aimer ne suffit pas."
+  },
+  "activity.0283": {
+   "modes": [
+    "pratique"
+   ],
+   "pourquoi": "« À quelle fréquence le pratiques-tu réellement ? » présume une pratique. Aimer ne suffit pas."
+  },
+  "activity.0284": {
+   "modes": [
+    "pratique"
+   ],
+   "pourquoi": "« … ou simplement continuer comme aujourd’hui ? » présume une pratique actuelle. Une envie d’essayer n’est pas une pratique actuelle."
+  }
+ },
+ "fermees": {
+  "activity.0285": "« du matériel qu’il ne faudrait surtout pas choisir à ta place » présume une pratique ÉQUIPÉE ; pratiquer ne démontre pas un équipement, et aucune réponse ne le déclare"
+ }
+}

@@ -108,6 +108,32 @@ for (const l of lignes) {
   }
 }
 
+// ── CE QUI MANQUE, PAR NATURE (20 nov.) : « sépare les prérequis métier réellement absents, les données
+//    à recueillir ou à rattacher, les clauses déjà comprises mais non exécutées, et les décisions produit
+//    encore nécessaires ». Chaque motif écrit est rangé dans UNE catégorie, avec ce qu'il faudrait.
+type Categorie = 'prerequis_metier_absent' | 'donnees_a_recueillir' | 'clause_comprise_non_executee' | 'decision_produit';
+const CATEGORIES: [RegExp, Categorie, string][] = [
+  [/recommandation EN PRÉPARATION|tension entre une recommandation/, 'decision_produit', 'la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne'],
+  [/seuil d’importance|critère de pertinence|souvenirs importants|rapport à la marque ambigu|symbolique \/ histoire|approfondissement expressément pertinent/, 'decision_produit', 'un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)'],
+  [/Famille \(branche relation2\)/, 'decision_produit', 'aucune règle d’ouverture écrite pour cette sous-partie : à écrire'],
+  [/options ne sont pas écrites/, 'prerequis_metier_absent', 'les réponses possibles de la question restent à écrire (contenu du référentiel)'],
+  [/règles K3/, 'prerequis_metier_absent', 'les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer'],
+  [/préparation TERMINÉE/, 'decision_produit', 'la fin d’une préparation est déjà déclarée (« Projet terminé ») ; reste à décider si, et jusqu’à quand, une question « après » se pose pour une préparation close, et à laquelle sa réponse se rattache'],
+  [/contextes de niveau C|niveau de délégation|Cartouche ADN/, 'prerequis_metier_absent', 'une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir'],
+  [/caractéristique de l’achat|budget|caractéristiques d’une préparation/, 'donnees_a_recueillir', 'une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare'],
+  [/paramètre \{activité\}|paramètre d’énoncé sans source/, 'donnees_a_recueillir', 'la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une'],
+  [/animal voyage|proche vit loin|dates importantes/, 'donnees_a_recueillir', 'une donnée qu’aucune question ne recueille (ou qui appartient au carnet du pilote) : à recueillir ou à rattacher'],
+  [/fatigue familiale/, 'prerequis_metier_absent', 'une démarche dite dans un texte libre, que rien ne détecte : détection à construire'],
+  [/INTEREST\.live_performance|INTEREST\.resonance/, 'clause_comprise_non_executee', 'un tag de la refonte dont la correspondance avec la branche historique n’est pas déclarée : une équivalence explicite à écrire'],
+  [/clause\(s\) que le moteur ne sait pas constater|condition non comprise|jamais décidable/, 'clause_comprise_non_executee', 'une clause comprise dont l’évaluation n’est pas raccordée'],
+  [/aucun écrivain ne produit/, 'donnees_a_recueillir', 'rien n’écrit l’objet attendu : une source à désigner'],
+];
+for (const l of lignes) if (l.statut === 'non_implementee') {
+  const c = CATEGORIES.find(([re]) => re.test(l.justification));
+  if (!c) throw new Error(`${l.id} : motif non rangé — « ${l.justification.slice(0, 120)} »`);
+  (l as Ligne & { categorie?: Categorie; ce_qu_il_faudrait?: string }).categorie = c[1];
+  (l as Ligne & { ce_qu_il_faudrait?: string }).ce_qu_il_faudrait = c[2];
+}
 const compte = (s: string) => lignes.filter((l) => l.statut === s).length;
 const statuts = [...new Set(lignes.map((l) => l.statut))].sort();
 const resume = Object.fromEntries(statuts.map((s) => [s, compte(s)]));
@@ -116,7 +142,8 @@ const clausesMuettes = lignes.reduce((n, l) => n + (l.clauses?.filter((x) => x.s
 writeFileSync('docs/discovery/couverture-referentiel.json', JSON.stringify({
   date: new Date().toISOString(), referentiel: 'Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_8.xlsx',
   methode: 'clause évaluée par conditions.ts dans l’état vide lu en base (compte neuf, pile locale) et dans un état ouvert ; indécidable dans les deux = non implémentée',
-  questions: lignes.length, resume, clauses: { total: clausesTotal, indecidables: clausesMuettes }, lignes,
+  questions: lignes.length, resume, clauses: { total: clausesTotal, indecidables: clausesMuettes },
+  non_implementees_par_nature: Object.fromEntries(['prerequis_metier_absent', 'donnees_a_recueillir', 'clause_comprise_non_executee', 'decision_produit'].map((c) => [c, lignes.filter((l) => (l as { categorie?: string }).categorie === c).length])), lignes,
 }, null, 1));
 
 const md: string[] = [
@@ -126,7 +153,18 @@ const md: string[] = [
   `**${lignes.length} questions** (${integral.actives.length} actives, ${integral.en_arbitrage.length} en arbitrage, ${integral.retirees.length} retirées) · **${clausesTotal} clauses** évaluées, dont **${clausesMuettes}** indécidables.`, '',
   '| Statut | Questions |', '|---|---|', ...statuts.map((s) => `| ${s} | ${resume[s]} |`), '',
 ];
-for (const s of ['fermee_par_le_produit', 'fermee_par_garde_de_sensibilite', 'non_implementee_hypothese', 'non_implementee']) {
+const NOMS: Record<Categorie, string> = { prerequis_metier_absent: 'Prérequis métier réellement absents', donnees_a_recueillir: 'Données à recueillir ou à rattacher',
+  clause_comprise_non_executee: 'Clauses déjà comprises mais non exécutées', decision_produit: 'Décisions produit encore nécessaires' };
+md.push('## Non implémentées, par nature de ce qui manque', '');
+for (const cat of Object.keys(NOMS) as Categorie[]) {
+  const de = lignes.filter((l) => (l as { categorie?: string }).categorie === cat);
+  md.push(`### ${NOMS[cat]} — ${de.length}`, '');
+  const par = new Map<string, string[]>();
+  for (const l of de) { const k = `${l.justification} → ${(l as { ce_qu_il_faudrait?: string }).ce_qu_il_faudrait}`; par.set(k, [...(par.get(k) ?? []), l.id]); }
+  for (const [j, ids] of par) md.push(`- **${ids.join(', ')}** — ${j}`);
+  md.push('');
+}
+for (const s of ['fermee_par_le_produit', 'fermee_par_garde_de_sensibilite', 'non_implementee_hypothese']) {
   md.push(`## ${s}`, '');
   const par = new Map<string, string[]>();
   for (const l of lignes.filter((x) => x.statut === s)) par.set(l.justification, [...(par.get(l.justification) ?? []), l.id]);

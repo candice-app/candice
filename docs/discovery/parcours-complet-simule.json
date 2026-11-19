@@ -1,5 +1,9 @@
 {
- "date": "2026-11-19T19:27:18.895Z",
+ "date": "2026-11-19T23:05:34.855Z",
+ "commit": "copie de travail non versionnée (mode simulé)",
+ "modifications_non_commitees_dans_src": true,
+ "version_du_lecteur": 4,
+ "modele_destinations": "claude-sonnet-4-6",
  "mode": "simule",
  "amont": "http://127.0.0.1:8787",
  "nature": "parcours complet EXÉCUTÉ, modèle SIMULÉ (plomberie seulement)",
@@ -191,5 +195,126 @@
    "donnees_de_B_dans_l_envoi": [],
    "ligne_des_gouts": null
   }
+ ],
+ "resultats_par_cas": [
+  {
+   "libelle": "1 : B choisit d’explorer l’apprentissage (HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : les deux questions ont été SERVIES par le serveur et répondues (21 actes, tous HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : la lecture de la réponse libre est partie au modèle, statut 200",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : ce que le modèle des destinations a reçu contient la réponse libre, telle qu’écrite",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : B relit son journal sous sa session (3 preuves)",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « Astronomie » : un intérêt EXPLICITE (sa déclaration)",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « la céramique japonaise » : un intérêt LU PAR MODÈLE (inféré), réellement écrit — condition du cas négatif 4b",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « la chimie » (niée) n’est écrite comme aucun intérêt",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : le portrait relit « Astronomie »",
+   "conforme": true
+  },
+  {
+   "libelle": "4a : la lecture des goûts (même fonction que la route) refuse : aucun consentement — pas une erreur",
+   "conforme": true
+  },
+  {
+   "libelle": "4a : AUCUNE donnée de B dans ce qui est parti au modèle (consigne et messages relus au relais)",
+   "conforme": true
+  },
+  {
+   "libelle": "4a : la recommandation enregistrée ne déclare aucune donnée de B",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : accord donné (HTTP 200, actif)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : « Astronomie » est éligible (déclarée par B, explicite)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : la réponse libre lue par modèle EXISTE et n’est PAS éligible (écartée : pas sa déclaration)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : « Astronomie » PART au modèle, dans la ligne des goûts déclarés",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : rien de ce qui part n’est une lecture par modèle (provenance : déclarations explicites seulement)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : l’idée qui s’en inspire est rendue, avec la justification neutre (rien n’est cité)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : aucune justification affichée ne cite la déclaration",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : la recommandation enregistrée porte sa provenance (reco:gouts, compte de B)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : les idées proposées portent la même provenance",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : retrait (HTTP 200, inactif)",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la recommandation tirée de ses goûts n’est plus restituée (vidée, à recalculer)",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : les idées seulement proposées qui en venaient sont retirées",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la fiche du pilote s’affiche (HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : aucune des idées tirées de ses goûts n’apparaît sur la fiche",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la lecture des goûts refuse de nouveau",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : plus AUCUNE donnée de B dans ce qui part au modèle",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la nouvelle recommandation ne déclare aucune donnée de B",
+   "conforme": true
+  }
+ ],
+ "modeles_observes_au_relais": [
+  "claude-sonnet-4-6"
  ]
 }

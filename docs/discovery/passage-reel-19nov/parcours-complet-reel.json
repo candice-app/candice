@@ -1,0 +1,183 @@
+{
+ "date": "2026-11-19T22:33:21.681Z",
+ "mode": "reel",
+ "amont": "https://api.anthropic.com",
+ "nature": "parcours complet EXÉCUTÉ avec le VRAI modèle",
+ "parcours": [
+  {
+   "cle": "learning2.1437",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1438",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-04",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-06",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1439",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1440",
+   "acte": "réponse",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-05",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-14",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1441",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1442",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-15",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0235",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0236",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0237",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0238",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0240",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0241",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1456",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1457",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1458",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1459",
+   "acte": "réponse",
+   "statut": 200
+  }
+ ],
+ "lecture_observee": [
+  {
+   "statut": 200,
+   "modele": "claude-sonnet-4-6",
+   "outil": "segments"
+  }
+ ],
+ "journal_de_B": [
+  {
+   "famille": "INTEREST",
+   "libelle": "Astronomie",
+   "statut": "explicit",
+   "polarite": "positive"
+  }
+ ],
+ "generations": [
+  {
+   "etape": "sans autorisation",
+   "http": 200,
+   "appels": [
+    {
+     "statut": 200,
+     "outil": null,
+     "modele": "claude-sonnet-4-6",
+     "debut_consigne": "Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja",
+     "donnees_de_B": []
+    }
+   ],
+   "donnees_de_B_dans_l_envoi": [],
+   "ligne_des_gouts": null
+  },
+  {
+   "etape": "après accord",
+   "http": 200,
+   "appels": [
+    {
+     "statut": 200,
+     "outil": null,
+     "modele": "claude-sonnet-4-6",
+     "debut_consigne": "Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja",
+     "donnees_de_B": [
+      "Astronomie"
+     ]
+    }
+   ],
+   "donnees_de_B_dans_l_envoi": [
+    {
+     "libelle": "Astronomie",
+     "famille": "INTEREST",
+     "statut": "explicit"
+    }
+   ],
+   "ligne_des_gouts": "CE QUE PROCHE A DÉCLARÉ AIMER OU SOUHAITER (confié en privé, pour t'aider à choisir) : Astronomie"
+  },
+  {
+   "etape": "après retrait",
+   "http": 200,
+   "appels": [
+    {
+     "statut": 200,
+     "outil": null,
+     "modele": "claude-sonnet-4-6",
+     "debut_consigne": "Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja",
+     "donnees_de_B": []
+    }
+   ],
+   "donnees_de_B_dans_l_envoi": [],
+   "ligne_des_gouts": null
+  }
+ ]
+}

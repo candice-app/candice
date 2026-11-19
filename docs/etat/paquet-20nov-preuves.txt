@@ -1,0 +1,25 @@
+Vérifications du paquet du 20 novembre (copie de travail du conteneur, modèle SIMULÉ, pile locale, comptes de test)
+
+Typage : propre (tsc --noEmit).
+Tests : 107 fichiers, 1 288 tests réussis (vitest).
+Construction : réussie (next build, Next.js 16.3.5).
+Épreuve du verdict du lanceur (tests-lanceur.sh) : 7 scénarios conformes sur 7.
+
+Scripts locaux (sortie 0, aucun échec) :
+  15 parcours de dix comptes ............ 208 vérifications
+  18 consentements ........................ 75
+  30 portes et niveau C ................... 53
+  32 route fermée et actes ................ 32
+  33 faits, destinations, projets ......... 35
+  35 décisions du 19 nov. ................. 45
+  36 huit destinations et cible ........... 15
+  37 parcours complet (mode simulé) ....... 29
+  38 prénoms des partages .................. 7
+  39 rejeu persisté et activités ........... 53
+
+Transitions de migrations (script 23, ce code « B » et l'ancien code « A ») :
+  A × 122 18/0 · B × 120 18/0 · B × 122 18/0 · B × 117 18/0 · B × 117 sans 121 et 122 18/0 · A × 117 17/0
+
+Couverture du référentiel : scripts/discovery/couverture-referentiel.mts → docs/discovery/couverture-referentiel.md
+
+Lecture réelle (scripts 34 et 37 en mode réel) : NON EXÉCUTÉE sur ce paquet — procédure : docs/discovery/procedure-vrai-modele.md

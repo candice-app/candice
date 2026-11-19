@@ -2,8 +2,8 @@
  * LES PARAMÈTRES D'ÉNONCÉ — « Pour {occasion}, quelles façons de célébrer te feraient plaisir ? ».
  *
  * Un paramètre n'est rempli que depuis sa SOURCE AUTORISÉE, écrite dans la table
- * (`parametres.json`, établie depuis les conditions des questions et l'onglet 12). Aujourd'hui,
- * la seule source exécutable est une PRÉPARATION EN COURS que la personne a déclarée et nommée :
+ * (`parametres.json`, établie depuis les conditions des questions et l'onglet 12). Trois sources
+ * exécutables : une entité déclarée (D9), un référent d'activité déclaré (20 nov.), et une PRÉPARATION EN COURS que la personne a déclarée et nommée :
  * son objet est la valeur du paramètre, la réponse lui appartient, et elle cesse de valoir quand
  * la préparation se termine. Sans valeur établie, la question n'est pas proposée : jamais une
  * accolade à l'écran, jamais une valeur supposée.
@@ -14,7 +14,7 @@ import type { EtatDiscovery, TypeDeProjet } from './conditions';
 import { poolDe } from './coexistence';
 
 export interface Parametre {
-  readonly question: string; readonly parametre: string; readonly source: 'projet' | 'non_etablie'; readonly genre?: TypeDeProjet;
+  readonly question: string; readonly parametre: string; readonly source: 'projet' | 'entite' | 'activite' | 'non_etablie'; readonly genre?: TypeDeProjet;
   readonly statut: 'executable' | 'source_non_etablie'; readonly consulte: string; readonly manque?: string;
 }
 const LIGNES = (table as unknown as { parametres: Parametre[] }).parametres;

@@ -4,25 +4,61 @@ Généré par `scripts/discovery/couverture-referentiel.mts` le 2026-11-19. Dét
 
 Méthode : chaque clause de chaque condition est évaluée par le vrai évaluateur du moteur, dans l’état réellement lu en base pour un compte neuf, puis dans un état où tout est déclaré. Une clause indécidable dans les deux n’est pas implémentée. « Fermée par le produit » ne s’emploie que lorsqu’une décision ou le référentiel la prévoit, et la cite.
 
-**2407 questions** (2286 actives, 6 en arbitrage, 115 retirées) · **2778 clauses** évaluées, dont **170** indécidables.
+**2407 questions** (2286 actives, 6 en arbitrage, 115 retirées) · **2778 clauses** évaluées, dont **154** indécidables.
 
 | Statut | Questions |
 |---|---|
 | en_arbitrage_hors_banque | 6 |
 | fermee_par_garde_de_sensibilite | 125 |
-| fermee_par_le_produit | 3 |
-| implementee_condition_d_origine | 1688 |
-| implementee_lecture_etablie | 285 |
-| non_implementee | 108 |
-| non_implementee_hypothese | 23 |
-| ouverte_sur_demarche | 54 |
+| fermee_par_le_produit | 1 |
+| implementee_condition_d_origine | 1694 |
+| implementee_lecture_etablie | 293 |
+| non_implementee | 94 |
+| non_implementee_hypothese | 24 |
+| ouverte_sur_demarche | 55 |
 | retiree_par_le_referentiel | 115 |
+
+## Non implémentées, par nature de ce qui manque
+
+### Prérequis métier réellement absents — 17
+
+- **CEL-12** — condition non comprise : niveau de délégation du projet inconnu → une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir
+- **THE-06B** — ses options ne sont pas écrites (« à écrire à partir des types réellement proposés par le catalogue ») : une question sans réponses possibles ne peut pas être servie → les réponses possibles de la question restent à écrire (contenu du référentiel)
+- **cinema2.0991, joys.1893, music2.1019, podcast.0473, series2.1046, sleep.0612** — les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées → les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer
+- **comics.0435, games.0968, garden.0582, podcast.0466, podcast.0471, watch.0320, watch.0323** — contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres → une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir
+- **learning2.1455** — condition non comprise : Cartouche ADN d’apprentissage — 1. Moteur de curiosité → une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir
+- **sleep.0607** — « SEULEMENT si la personne parle elle-même de fatigue familiale » : une démarche dans un texte libre, que rien ne détecte aujourd’hui → une démarche dite dans un texte libre, que rien ne détecte : détection à construire
+
+### Données à recueillir ou à rattacher — 23
+
+- **CEL-02, CEL-03, CEL-04, CEL-05, CEL-06, CEL-07, CEL-08, learning2.1462** — paramètre d’énoncé sans source établie (parametres.json) → la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une
+- **CEL-10, CEL-11** — questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas → une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare
+- **bags.0389, photo.0696, shoes.0355, watch.0321, watch.0328, watch.0329** — une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas → une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare
+- **craft.0620, craft.0622** — paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json) → la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une
+- **live.0498, museum.0721, sportw.0553** — « budget premium » : le budget d’une préparation n’est pas recueilli → une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare
+- **relation2.0786** — savoir qu’un proche vit loin : donnée du carnet du pilote, pas du Discovery → une donnée qu’aucune question ne recueille (ou qui appartient au carnet du pilote) : à recueillir ou à rattacher
+- **travel2.0901** — savoir qu’un animal voyage avec la personne : aucune question ne le recueille → une donnée qu’aucune question ne recueille (ou qui appartient au carnet du pilote) : à recueillir ou à rattacher
+
+### Clauses déjà comprises mais non exécutées — 0
+
+
+### Décisions produit encore nécessaires — 54
+
+- **CEL-01, CEL-09** — « dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère → un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)
+- **aesthetic.1971, drinks.2103, JWL-TAILLE-01, JWL-TAILLE-02, JWL-TAILLE-03, JWL-TAILLE-04, JWL-TAILLE-05, money.1590, relation2.0805, remembrance.1994, sensory2.1489, travel2.0943, watch.0325** — une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne → la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne
+- **animals.2147, flowers.2125, hosting.2059, jewelry.0299, jewelry.0303, jewelry.0305, jewelry.0306, money.1589, pets.0406, pets.0409, shoes.0354, travel.0060B, values.1916** — une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas → la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne
+- **bags.0368, celebration.0816, cinema2.0985, food2.0861, fragrance2.1153, mental.1850, pets.0396, philovie.1667, podcast.0472, reading2.1238, watch.0326** — un seuil d’importance ou d’intensité que le référentiel ne chiffre pas → un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)
+- **bags.0374, watch.0319** — « rapport à la marque ambigu » : aucun critère écrit → un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)
+- **beauty2.1298, food2.0878** — le critère de pertinence n’est pas écrit → un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)
+- **jewelry.0298, jewelry.0301, jewelry.0302, watch.0322** — un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit → un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)
+- **live.0501, sportw.0556, travel2.0945** — une préparation TERMINÉE : le moteur ne connaît que les préparations en cours → la fin d’une préparation est déjà déclarée (« Projet terminé ») ; reste à décider si, et jusqu’à quand, une question « après » se pose pour une préparation close, et à laquelle sa réponse se rattache
+- **pets.0411** — « si souvenirs importants » : aucun critère écrit → un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)
+- **relation2.0800, relation2.0801** — Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2) → aucune règle d’ouverture écrite pour cette sous-partie : à écrire
+- **values.1917** — une tension entre une recommandation et une valeur : côté recommandation, pas Discovery → la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne
 
 ## fermee_par_le_produit
 
-- **activity.0282** — fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit — « ton niveau aujourd'hui » présume une PRATIQUE ; aucune relation d'entité ne l'établit (aimer n'est pas pratiquer)
-- **activity.0283** — fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit — « le pratiques-tu réellement » présume une pratique ; même manque
-- **activity.0285** — fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit — « du matériel » présume une pratique équipée ; même manque
+- **activity.0285** — fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement — « du matériel qu’il ne faudrait surtout pas choisir à ta place » présume une pratique ÉQUIPÉE ; pratiquer ne démontre pas un équipement, et aucune réponse ne le déclare
 
 ## fermee_par_garde_de_sensibilite
 
@@ -43,6 +79,7 @@ Méthode : chaque clause de chaque condition est évaluée par le vrai évaluate
 - **home2.1278** — en attente d’arbitrage : « Art mural : pont avec la branche Art / Musées » : un pont, pas une règle. — choix : (a) Niveau B home2 (thème) | (b) Niveau B home2 ET branche Art ou Musées ouverte
 - **home2.1280** — en attente d’arbitrage : « Mobilier — SEULEMENT si pertinent (projet, déménagement, rénovation) ». — choix : (a) « Achat concret » dans la branche | (b) laisser fermé
 - **live.0496** — en attente d’arbitrage : « Achat concret, artiste adoré identifié » : l’artiste n’est pas connu du moteur. — choix : (a) « Achat concret » seul | (b) Achat concret ET une réponse qui nomme un artiste
+- **philoconso.1629** — en attente d’arbitrage : « Niveau C : uniquement lorsqu’un achat ou un cadeau est préparé » : la philosophie de consommation n’a pas d’achat « à elle » ; quel achat ou quel cadeau compte ? — choix : (a) tout achat ou cadeau en préparation, quel que soit son domaine | (b) seulement un achat ou un cadeau préparé dans la branche Philosophie de consommation (aujourd’hui : aucun écran ne le permet)
 - **photo.0685** — en attente d’arbitrage : « photo smartphone dominante (0673) » : 0673 est à choix multiple, la dominance ne se lit pas. — choix : (a) « Mon téléphone » seul coché | (b) « Mon téléphone » coché
 - **reading2.1251** — en attente d’arbitrage : « si essai lu (1238) » : reading2.1238 n’a pas d’option « Essai ». — choix : (a) « Philosophie », « Sciences humaines », « Psychologie », « Histoire », « Économie », « Vulgarisation scientifique » | (b) ajouter « Essais » aux options de 1238
 - **resonance.1536** — en attente d’arbitrage : « Territoire Le courage / L’accomplissement » : pas de numéro. — choix : (a) resonance.1526 : « Les exploits humains », « Les parcours de résilience », « Les rêves accomplis » | (b) Niveau B resonance (thème)
@@ -51,39 +88,3 @@ Méthode : chaque clause de chaque condition est évaluée par le vrai évaluate
 - **travel2.0944** — en attente d’arbitrage : « Niveau C, réservation offerte » : offerte à qui ? — choix : (a) « Cadeau concret » (elle offre) | (b) « Séjour concret » (on lui offre)
 - **value.1523** — en attente d’arbitrage : « paramétrique par catégorie (1522) » : « cette exigence » désigne UNE catégorie de 1522. — choix : (a) une fois par catégorie cochée, la catégorie affichée | (b) seulement si une seule catégorie est cochée
 - **work2.1356, work2.1357** — en attente d’arbitrage : « si concerné » (management ; activité créative) : aucune réponse ne le dit. — choix : (a) une question de rôle dans work2 | (b) work2.1357 : craft.0614 « Je pratique moi-même… » | (c) laisser fermé
-
-## non_implementee
-
-- **CEL-01, CEL-09** — « dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère
-- **CEL-02, CEL-03, CEL-04, CEL-05, CEL-06, CEL-07, CEL-08, learning2.1462** — paramètre d’énoncé sans source établie (parametres.json)
-- **CEL-10, CEL-11** — questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas
-- **CEL-12** — condition non comprise : niveau de délégation du projet inconnu
-- **REM-09** — tag `INTEREST.resonance` de la refonte : la correspondance avec la branche historique n’est pas établie
-- **REM-11, REM-12, REM-13, REM-14, REM-15, SOM-01, THE-16** — clause(s) que le moteur ne sait pas constater : {"type":"information_manquante"}
-- **THE-06A, THE-06B** — la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)
-- **activity.0281, activity.0284** — série « activité » : aucun écrivain ne produit une entité de type ENTITY_HOBBY — la condition est évaluée, mais ne peut jamais être remplie
-- **aesthetic.1971** — clause(s) que le moteur ne sait pas constater : {"type":"niveau","niveau":"C","branche":"esthetique : recommandation en preparation"}
-- **animals.2147, flowers.2125, hosting.2059, jewelry.0299, jewelry.0303, jewelry.0305, jewelry.0306, money.1589, pets.0406, pets.0409, shoes.0354, travel.0060B, values.1916** — une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas
-- **bags.0368, celebration.0816, cinema2.0985, food2.0861, fragrance2.1153, mental.1850, pets.0396, philovie.1667, podcast.0472, reading2.1238, watch.0326** — un seuil d’importance ou d’intensité que le référentiel ne chiffre pas
-- **bags.0374, watch.0319** — « rapport à la marque ambigu » : aucun critère écrit
-- **bags.0389, photo.0696, shoes.0355, watch.0321, watch.0328, watch.0329** — une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas
-- **beauty2.1298, food2.0878** — le critère de pertinence n’est pas écrit
-- **cinema2.0991, joys.1893, music2.1019, podcast.0473, series2.1046, sleep.0612** — les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées
-- **comics.0435, games.0968, garden.0582, podcast.0466, podcast.0471, watch.0320, watch.0323** — contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres
-- **craft.0620, craft.0622** — paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)
-- **drinks.2103** — clause(s) que le moteur ne sait pas constater : {"type":"niveau","niveau":"C","branche":"boissons : recommandation en preparation"}
-- **food.0030, food.0049** — clause(s) que le moteur ne sait pas constater : {"type":"domaines_actifs","noms":["cuisine","gastronomie"]}
-- **JWL-TAILLE-01, JWL-TAILLE-02, JWL-TAILLE-03, JWL-TAILLE-04, JWL-TAILLE-05, money.1590, relation2.0805, travel2.0943, watch.0325** — une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne
-- **jewelry.0298, jewelry.0301, jewelry.0302, watch.0322** — un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit
-- **learning2.1455** — condition non comprise : Cartouche ADN d’apprentissage — 1. Moteur de curiosité
-- **live.0498, museum.0721, sportw.0553** — « budget premium » : le budget d’une préparation n’est pas recueilli
-- **live.0501, sportw.0556, travel2.0945** — une préparation TERMINÉE : le moteur ne connaît que les préparations en cours
-- **pets.0411** — « si souvenirs importants » : aucun critère écrit
-- **philoconso.1629** — clause(s) que le moteur ne sait pas constater : {"type":"niveau","niveau":"C","branche":": uniquement lorsqu’un achat ou un cadeau est prepare"}
-- **relation2.0786** — savoir qu’un proche vit loin : donnée du carnet du pilote, pas du Discovery
-- **relation2.0800, relation2.0801** — Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)
-- **remembrance.1994** — clause(s) que le moteur ne sait pas constater : {"type":"niveau","niveau":"C","branche":"souvenirs : uniquement lorsqu’une recommandation est preparee"}
-- **sensory2.1489** — clause(s) que le moteur ne sait pas constater : {"type":"niveau","niveau":"C","branche":"sensoriel : uniquement lorsqu’une recommandation est en preparation"}
-- **sleep.0607** — « SEULEMENT si la personne parle elle-même de fatigue familiale » : une démarche dans un texte libre, que rien ne détecte aujourd’hui
-- **travel2.0901** — savoir qu’un animal voyage avec la personne : aucune question ne le recueille
-- **values.1917** — une tension entre une recommandation et une valeur : côté recommandation, pas Discovery

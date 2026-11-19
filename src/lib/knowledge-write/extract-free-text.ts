@@ -25,6 +25,9 @@ import { JOURNAL_VERSION_STAMP } from '../knowledge/version';
 import type { Evidence, OpenKnowledge, EntityRelation } from '../knowledge';
 import { cibleDUneEntite } from '../knowledge/cible-appreciation';
 
+/** Le modèle de l'extracteur des réponses libres et des récits (nommé pour les rapports d'essai). */
+export const MODELE_EXTRACTION_LIBRE = 'claude-sonnet-4-6';
+
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 const SYSTEM = `Tu es le moteur d'extraction de Candice. On te donne UNE réponse libre d'une personne sur elle-même. Procédure (ne commence jamais par chercher des tags) :
@@ -163,7 +166,7 @@ export async function buildFromFreeText(
   let units: Unit[] = [];
   try {
     const msg = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6', max_tokens: 1024,
+      model: MODELE_EXTRACTION_LIBRE, max_tokens: 1024,
       system: SYSTEM, tools: [TOOL], tool_choice: { type: 'tool', name: 'units' },
       messages: [{ role: 'user', content: `Champ : ${input.fieldContext}\nRéponse : « ${text} »` }],
     });

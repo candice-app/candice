@@ -37,6 +37,7 @@ import { OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import { PRESUMENT_L_ALCOOL } from './correspondances';
 import { coexistence, estPrioritaire, poolDe, type VerdictCoexistence } from './coexistence';
 import { QUESTIONS_D_ENTITE } from './entites';
+import { QUESTIONS_D_ACTIVITE } from './activites';
 import { BANQUE, type QuestionV3 } from './banque';
 import { analyserCondition, evaluerCondition, type EtatDiscovery, type Verdict } from './conditions';
 
@@ -215,7 +216,7 @@ export type MotifDExclusion =
 function dejaPoseePourCeQuiCompte(q: QuestionV3, etat: EtatDiscovery): boolean {
   // D9 : une question à propos d'une entité n'est disponible que pour une entité pour laquelle elle
   // n'a pas encore été posée (entites.ts) : c'est la disponibilité qui tient la progression.
-  if (QUESTIONS_D_ENTITE.has(q.id) && etat.entiteParQuestion) return false;
+  if ((QUESTIONS_D_ENTITE.has(q.id) || QUESTIONS_D_ACTIVITE.has(q.id)) && etat.entiteParQuestion) return false;
   const besoin = requiertProjet(q);
   if (!besoin || !etat.projetsCourants || !etat.poseesParProjet) return etat.dejaPosees.has(q.id);
   const pool = poolDe(q.branche);

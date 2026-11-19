@@ -78,14 +78,54 @@
    ]
   },
   {
+   "question": "REM-09",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.resonance=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.resonance!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "lue": "Tags ENTRANTS — ouvrir si `INTEREST.resonance=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.resonance!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "etablie",
+   "critere": "texte compris tel quel",
+   "justification": "Le texte d’origine est compris clause par clause depuis le raccordement de « information manquante » (20 nov.) ; `INTEREST.resonance` est écrit par les intérêts du domaine resonance.",
+   "non_repris": []
+  },
+  {
+   "question": "THE-06A",
+   "origine": "INTEREST.live_performance positif, direct ou confirmé",
+   "lue": "`INTEREST.live_performance=positive`",
+   "statut": "etablie",
+   "critere": "tag écrit par le journal",
+   "justification": "« INTEREST.live_performance positif, direct ou confirmé » : ce tag est écrit par l’intérêt « spectacle vivant » (THE-01, live.0474, theatre.0098, theatre2.1363 écrivent INTEREST live_performance). L’ancien motif (« que rien n’écrit sous ce nom ») était faux : relevé le 20 nov.",
+   "non_repris": []
+  },
+  {
    "question": "activity.0281",
    "origine": "Entité {activité} détectée et importante",
    "lue": "Entité déclarée pour cette question",
    "statut": "etablie",
-   "critere": "entité déclarée avec une relation que la question présume (D9)",
-   "justification": "« ce que tu aimes dans » présume l'appréciation — relations admises : LOVE, LIKE.",
+   "critere": "référent d'activité déclaré, mode attrait (activités, 20 nov.)",
+   "justification": "« Qu’est-ce que tu aimes le plus dans {activité} ? » présume qu’elle l’aime : un attrait déclaré. Une pratique seule ne prouve pas qu’elle l’aime. — sources : craft.0615, sportw.0532.",
    "non_repris": [
-    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+    "« importante » : aucun score ; une réponse déclarée, du mode que la question présume"
+   ]
+  },
+  {
+   "question": "activity.0282",
+   "origine": "Entité {activité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "référent d'activité déclaré, mode pratique (activités, 20 nov.)",
+   "justification": "« Quel est ton niveau aujourd’hui ? » présume une pratique (la question demande le niveau ; elle ne le suppose pas). Aimer ne suffit pas. — sources : sportp.0504.",
+   "non_repris": [
+    "« importante » : aucun score ; une réponse déclarée, du mode que la question présume"
+   ]
+  },
+  {
+   "question": "activity.0283",
+   "origine": "Entité {activité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "référent d'activité déclaré, mode pratique (activités, 20 nov.)",
+   "justification": "« À quelle fréquence le pratiques-tu réellement ? » présume une pratique. Aimer ne suffit pas. — sources : sportp.0504.",
+   "non_repris": [
+    "« importante » : aucun score ; une réponse déclarée, du mode que la question présume"
    ]
   },
   {
@@ -93,10 +133,10 @@
    "origine": "Entité {activité} détectée et importante",
    "lue": "Entité déclarée pour cette question",
    "statut": "etablie",
-   "critere": "entité déclarée avec une relation que la question présume (D9)",
-   "justification": "« progresser, t'équiper… » : un souhait d'essayer suffit — relations admises : LOVE, LIKE, WANT_TO_TRY.",
+   "critere": "référent d'activité déclaré, mode pratique (activités, 20 nov.)",
+   "justification": "« … ou simplement continuer comme aujourd’hui ? » présume une pratique actuelle. Une envie d’essayer n’est pas une pratique actuelle. — sources : sportp.0504.",
    "non_repris": [
-    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+    "« importante » : aucun score ; une réponse déclarée, du mode que la question présume"
    ]
   },
   {
@@ -1062,6 +1102,15 @@
    "non_repris": []
   },
   {
+   "question": "food.0030",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "food active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom officiel de la branche",
+   "justification": "« Cuisine/gastronomie » est le nom officiel de la branche food (« Gastronomie, restaurants, cuisine et boissons ») ; les deux questions en font partie. La garde alcool est reprise telle quelle.",
+   "non_repris": []
+  },
+  {
    "question": "food.0031",
    "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
    "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
@@ -1221,6 +1270,15 @@
    "statut": "etablie",
    "critere": "nom de domaine",
    "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0049",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "food active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom officiel de la branche",
+   "justification": "« Cuisine/gastronomie » est le nom officiel de la branche food (« Gastronomie, restaurants, cuisine et boissons ») ; les deux questions en font partie. La garde alcool est reprise telle quelle.",
    "non_repris": []
   },
   {
@@ -2960,43 +3018,23 @@
    "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
   },
   {
-   "question": "REM-09",
-   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.resonance=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.resonance!=true` ; ET information manquante ; ET score de pertinence suffisant.",
-   "statut": "sans_lecture",
-   "manque": "tag `INTEREST.resonance` de la refonte : la correspondance avec la branche historique n’est pas établie"
-  },
-  {
-   "question": "THE-06A",
-   "origine": "INTEREST.live_performance positif, direct ou confirmé",
-   "statut": "sans_lecture",
-   "manque": "la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)"
-  },
-  {
    "question": "THE-06B",
    "origine": "POSÉE SEULEMENT si THE-06A vaut accord conditionnel ou faible, ET si l’information n’est pas déjà connue par une autre branche",
    "statut": "sans_lecture",
-   "manque": "la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)"
-  },
-  {
-   "question": "activity.0282",
-   "origine": "Entité {activité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "« ton niveau aujourd'hui » présume une PRATIQUE ; aucune relation d'entité ne l'établit (aimer n'est pas pratiquer)",
-   "decision": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit"
-  },
-  {
-   "question": "activity.0283",
-   "origine": "Entité {activité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "« le pratiques-tu réellement » présume une pratique ; même manque",
-   "decision": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit"
+   "manque": "ses options ne sont pas écrites (« à écrire à partir des types réellement proposés par le catalogue ») : une question sans réponses possibles ne peut pas être servie"
   },
   {
    "question": "activity.0285",
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
-   "manque": "« du matériel » présume une pratique équipée ; même manque",
-   "decision": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit"
+   "manque": "« du matériel qu’il ne faudrait surtout pas choisir à ta place » présume une pratique ÉQUIPÉE ; pratiquer ne démontre pas un équipement, et aucune réponse ne le déclare",
+   "decision": "fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement"
+  },
+  {
+   "question": "aesthetic.1971",
+   "origine": "Niveau C Esthétique : recommandation en préparation",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
   },
   {
    "question": "animals.2147",
@@ -3113,6 +3151,12 @@
     "(a) une option « voyage » à une question de dreams à désigner",
     "(b) « Séjour concret »"
    ]
+  },
+  {
+   "question": "drinks.2103",
+   "origine": "Niveau C Boissons : recommandation en préparation",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
   },
   {
    "question": "fashion2.1105",
@@ -3338,6 +3382,16 @@
    "manque": "« si souvenirs importants » : aucun critère écrit"
   },
   {
+   "question": "philoconso.1629",
+   "origine": "Niveau C : uniquement lorsqu’un achat ou un cadeau est préparé",
+   "statut": "hypothese",
+   "manque": "« Niveau C : uniquement lorsqu’un achat ou un cadeau est préparé » : la philosophie de consommation n’a pas d’achat « à elle » ; quel achat ou quel cadeau compte ?",
+   "choix": [
+    "(a) tout achat ou cadeau en préparation, quel que soit son domaine",
+    "(b) seulement un achat ou un cadeau préparé dans la branche Philosophie de consommation (aujourd’hui : aucun écran ne le permet)"
+   ]
+  },
+  {
    "question": "philovie.1667",
    "origine": "Niveau C Philosophie de vie — À POSER SEULEMENT après avoir accumulé suffisamment de signaux",
    "statut": "sans_lecture",
@@ -3424,6 +3478,12 @@
    "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
   },
   {
+   "question": "remembrance.1994",
+   "origine": "Niveau C Souvenirs : uniquement lorsqu’une recommandation est préparée",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
    "question": "resonance.1536",
    "origine": "Territoire Le courage / L’accomplissement",
    "statut": "hypothese",
@@ -3432,6 +3492,12 @@
     "(a) resonance.1526 : « Les exploits humains », « Les parcours de résilience », « Les rêves accomplis »",
     "(b) Niveau B resonance (thème)"
    ]
+  },
+  {
+   "question": "sensory2.1489",
+   "origine": "Niveau C Sensoriel : uniquement lorsqu’une recommandation est en préparation",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
   },
   {
    "question": "series2.1046",

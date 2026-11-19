@@ -9,6 +9,7 @@
 // On ne remplit donc aucun champ « par défaut optimiste ».
 import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
 import { entitePour, QUESTIONS_D_ENTITE, type EntiteDuJournal } from './entites';
+import { activitePour, activitesDeclarees, QUESTIONS_D_ACTIVITE } from './activites';
 import { clef, TYPES_DE_PROJET, SITUATIONS_DE_VIE, type EtatDiscovery, type TypeDeProjet, type SituationDeVie } from './conditions';
 export type { TypeDeProjet };
 import { SELECTEURS } from './dependances';
@@ -452,6 +453,13 @@ export async function lireEtat(
       .map((e) => ({ id: String(e.entity), libelle: e.entityLabel, type: String(e.entityType), relation: String(e.relation), depuis: e.lastUpdated ?? '' }));
     entiteParQuestion = new Map();
     for (const id of QUESTIONS_D_ENTITE) { const x = entitePour(id, entites, poseesParEntite); if (x) entiteParQuestion.set(id, { id: x.id, libelle: x.libelle }); }
+  }
+  // ── LES RÉFÉRENTS D'ACTIVITÉ (20 nov.) : dérivés de ses réponses déclarées, jamais écrits comme entité.
+  //    Une question n'en reçoit un que si le MODE est celui qu'elle présume (activites.ts).
+  if (progressionLue) {
+    const activites = activitesDeclarees(dernieresReponses);
+    entiteParQuestion ??= portrait ? new Map() : undefined;
+    if (entiteParQuestion) for (const id of QUESTIONS_D_ACTIVITE) { const a = activitePour(id, activites, poseesParEntite); if (a) entiteParQuestion.set(id, { id: a.id, libelle: a.libelle }); }
   }
   return {
     etat: {

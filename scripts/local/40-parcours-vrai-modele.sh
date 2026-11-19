@@ -5,7 +5,7 @@
 #
 # Ce que fait ce lanceur, dans l'ordre, et rien d'autre :
 #   1. vérifie la pile Supabase LOCALE (hôte, protocole et port exacts) ;
-#   2. te DEMANDE la clé (saisie masquée) : elle vit seulement dans ce processus et ses enfants —
+#   2. prend la clé de l'environnement du lancement s'il l'a, sinon te la DEMANDE (saisie masquée) : elle vit seulement dans ce processus et ses enfants —
 #      ni dans ton terminal, ni dans l'historique, ni dans un fichier, jamais affichée ;
 #   3. donne une valeur à CHAQUE variable que l'application lit (liste recalculée dans le code) :
 #      ainsi rien ne vient de `.env.local` — que ce lanceur ne lit pas, et que Next ne peut alors
@@ -14,6 +14,8 @@
 #      (127.0.0.1:3100), qui parle au modèle À TRAVERS le relais ;
 #   5. lance le script 34 (lecture par le vrai modèle, base en mémoire) puis le script 37 (parcours
 #      complet par les routes, sur la base locale), puis arrête le relais et l'application.
+#   Code de sortie : 0 seulement si les DEUX essais réussissent et que leurs rapports sont écrits
+#   pendant ce passage ; 1 sinon (scripts/local/_executer-essais.sh, éprouvé par tests-lanceur.sh).
 # Sorties : scripts/local/.resultats/34-reel.txt, 37-reel.txt (ignorés par git), rapports
 # docs/discovery/essai-extracteur-reel.json et docs/discovery/parcours-complet-reel.json.
 # Rien en production : base locale, comptes de test, données fictives.
@@ -23,7 +25,10 @@ echec() { printf '\n\033[31mARRÊT — %s\033[0m\n' "$*" >&2; exit 1; }
 ok()    { printf '  \033[32m✓\033[0m %s\n' "$*"; }
 mkdir -p scripts/local/.resultats
 
-echo "═══ 0. dépendances du dépôt ═══"
+echo "═══ 0. le verdict du lanceur, éprouvé sans appel payant ═══"
+bash scripts/local/tests-lanceur.sh || echec "le verdict du lanceur n'est pas fiable : rien n'est lancé."
+
+echo "═══ 0 bis. dépendances du dépôt ═══"
 [ -x node_modules/.bin/next ] || echec "node_modules/.bin/next absent : dépendances non installées (procédure, étape 2)."
 if [ -x node_modules/.bin/tsx ]; then TSX=node_modules/.bin/tsx; elif command -v tsx >/dev/null; then TSX=$(command -v tsx)
 else echec "tsx absent (procédure, étape 2 : « npm install --no-save tsx@4 »)."; fi
@@ -45,10 +50,13 @@ ok "Supabase local $API_URL"
 for p in 3100 8789; do lsof -nP -iTCP:$p -sTCP:LISTEN -t >/dev/null 2>&1 && echec "le port $p est déjà pris : arrête ce qui l'occupe."; done
 
 echo "═══ 2. la clé ═══"
-printf '  Colle la clé Anthropic puis Entrée (rien ne s’affiche) : '
-IFS= read -rs CLE; echo
-[ -n "$CLE" ] || echec "aucune clé saisie."
-export ANTHROPIC_API_KEY="$CLE"; unset CLE
+# Déjà présente dans l'environnement de ce lancement : elle sert telle quelle. Sinon : saisie masquée.
+if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
+  printf '  Colle la clé Anthropic puis Entrée (rien ne s’affiche) : '
+  IFS= read -rs CLE; echo
+  [ -n "$CLE" ] || echec "aucune clé saisie."
+  export ANTHROPIC_API_KEY="$CLE"; unset CLE
+fi
 unset ANTHROPIC_BASE_URL ANTHROPIC_AUTH_TOKEN
 ok "clé présente dans ce processus seulement (jamais affichée)"
 
@@ -82,13 +90,11 @@ curl -s -o /dev/null http://127.0.0.1:3100/ || echec "l'application ne répond p
 curl -s http://127.0.0.1:8789/__etat | grep -q '"amont":"https://api.anthropic.com"' || echec "le relais ne transmet pas au vrai modèle."
 ok "application locale :3100 → relais :8789 → api.anthropic.com"
 
-echo "═══ 5a. script 34 — lecture par le vrai modèle (base en mémoire) ═══"
-set +e
-"$TSX" scripts/local/34-essai-extracteur-reel.mts 2>&1 | tee scripts/local/.resultats/34-reel.txt
-R34=${PIPESTATUS[0]}
-echo "═══ 5b. script 37 — parcours complet par les routes ═══"
-env -u ANTHROPIC_API_KEY PARCOURS_MODELE=reel "$TSX" scripts/local/37-parcours-complet-lecture-reelle.mts 2>&1 | tee scripts/local/.resultats/37-reel.txt
-R37=${PIPESTATUS[0]}
-set -e
-echo
-echo "34 : sortie $R34 · 37 : sortie $R37 (0 = tout conforme). Les rapports sont dans docs/discovery/."
+echo "═══ 5. les deux essais ═══"
+J34=scripts/local/.resultats/34-reel.txt; RAP34=docs/discovery/essai-extracteur-reel.json
+J37=scripts/local/.resultats/37-reel.txt; RAP37=docs/discovery/parcours-complet-reel.json
+essai34() { "$TSX" scripts/local/34-essai-extracteur-reel.mts; }
+essai37() { env -u ANTHROPIC_API_KEY PARCOURS_MODELE=reel "$TSX" scripts/local/37-parcours-complet-lecture-reelle.mts; }
+. scripts/local/_executer-essais.sh
+# Le code de sortie du lanceur EST le verdict : 0 seulement si les deux essais et leurs rapports sont conformes.
+if executer_essais; then exit 0; else exit 1; fi

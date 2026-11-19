@@ -375,3 +375,33 @@ describe('pannes, rejeu et reprise', () => {
     void rejouerLecturesEnAttente;
   });
 });
+
+// 20 nov. — écarts du premier passage réel (31/38) : le modèle avait « corrigé » SUJET_DECLARE en
+// SUJET_DECLARED, et rendu « j'adore » pour « j’adore ». Deux pertes de lecture, aucune faute de sens.
+describe('lecteur v4 : codes de déclencheurs et variantes typographiques', async () => {
+  const { codeDeDeclencheur, decoderDeclencheurs, consigneDeDecoupage, VERSION_LECTURE } = await import('../destinations');
+  const ds = DESTINATIONS_PAR_QUESTION.get('learning2.1459')!;
+  it('la consigne présente des CODES, et le décodage rend les déclencheurs', () => {
+    const c = consigneDeDecoupage('Quels sujets ?', ds, '');
+    expect(c).toContain(`${codeDeDeclencheur(0)} :`);
+    for (const d of ds) expect(c).not.toContain(`- ${d.declencheur} :`);
+    const brut = decoderDeclencheurs({ segments: [{ declencheur: 'C1', passage: 'x' }, { declencheur: 'SUJET_DECLARED', passage: 'y' }, { declencheur: ds[0].declencheur, passage: 'z' }] }, ds) as { segments: { declencheur: string }[] };
+    expect(brut.segments.map((s) => s.declencheur)).toEqual([ds[0].declencheur, 'SUJET_DECLARED', ds[0].declencheur]);
+    expect(VERSION_LECTURE).toBe(4);
+  });
+  it('un code inconnu ou un nom déformé reste écarté (« declencheur_inconnu »)', () => {
+    const e = examinerSegments('la géologie', decoderDeclencheurs({ segments: [{ declencheur: 'SUJET_DECLARED', passage: 'la géologie', attitude: 'interet', affirme: true, personne: 'soi', temps: 'actuel' }] }, ds), ds);
+    expect(e.ecartes.map((x) => x.motif)).toEqual(['declencheur_inconnu']);
+  });
+  it.each([
+    ['L’an prochain, j’aimerais marcher.', "j'aimerais marcher", 15],
+    ['un café à 10 h', 'à 10 h', 8],
+    ['“Les thermes”', '"Les thermes"', 0],
+  ])('« %s » contient « %s » à sa place exacte', (texte, passage, debut) => {
+    expect(positionExacte(texte, passage)).toEqual({ debut, fin: debut + passage.length });
+  });
+  it('seules ces variantes passent : une lettre différente reste une copie inexacte', () => {
+    expect(positionExacte('j’adore cet établissement', "j'adore cet etablissement")).toBeNull();
+    expect(positionExacte('Les thermes', 'les thermes')).toBeNull();
+  });
+});

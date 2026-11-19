@@ -1,98 +1,57 @@
-# Lancer les essais avec le vrai modèle — procédure exacte
+# Lecture réelle : la procédure, à exécuter en une fois
 
-Deux essais n'ont encore jamais tourné avec le vrai modèle :
+Cette procédure lance deux essais avec le vrai modèle, sur la pile Supabase **locale** et avec des personnes fictives :
 
-- **script 34**, l'essai de lecture. Le vrai modèle lit des réponses fictives : 15 destinations, la cible des appréciations, la qualification D1 et la cible dans un récit. Il n'y a pas de base : tout se passe en mémoire.
-- **script 37**, le parcours complet. Il passe par les vraies routes, sur la pile Supabase **locale** :
-  - sélection, lot signé, réponse ;
-  - lecture par le modèle, écriture, relecture ;
-  - recommandation sans accord, après accord, puis après retrait.
+- **le script 34**, l'essai de lecture : 38 cas, base en mémoire ;
+- **le script 37**, le parcours complet par les routes, avec les entrées du modèle observées par le relais.
 
-  Ce qui part au modèle est observé par le relais.
+Rien ne touche la production : aucune migration sur la base vivante, aucun déploiement.
 
-Le lanceur `scripts/local/40-parcours-vrai-modele.sh` fait tout, dans l'ordre :
+## Une seule commande, dans le Terminal du Mac
 
-- il te demande la clé lui-même, et elle reste seulement dans son processus ;
-- il ne lit pas `.env.local`, et donne une valeur locale à chaque variable que l'application lit ;
-- il s'arrête si une seule variable lue par l'application n'a pas de valeur locale.
-
-Rien ne touche la production. Il n'y a pas de migration sur la base vivante, et aucun déploiement.
-
-## Étapes, dans le Terminal du Mac
-
-**1. Le dépôt, sur le commit figé**
+Ouvre d'abord Docker Desktop, puis lance :
 
 ```bash
-cd ~/candice
-git status
-git log --oneline -1
+cd ~/candice && git log --oneline -1 && { supabase status >/dev/null 2>&1 || bash scripts/local/01-monter-la-pile.sh; } && bash scripts/local/40-parcours-vrai-modele.sh; echo "VERDICT : $?"
 ```
 
-`git log` doit afficher le commit figé du paquet. `git status` ne doit montrer aucun fichier modifié, hors `.claude/settings.local.json`.
+- `git log` affiche le commit testé. Il doit être celui du paquet.
+- Si la pile locale tourne déjà, elle est gardée telle quelle. Sinon, `01-monter-la-pile.sh` la monte, et attend ton « o » avant d'appliquer les migrations à la base **locale**.
+- Ta base locale doit contenir les migrations du paquet. Celles du 19 novembre sont déjà sur ton Mac, et ce paquet n'en ajoute aucune.
+- Le lanceur prend la clé dans l'environnement du lancement. Si elle n'y est pas, il te la demande en saisie masquée.
+- **Avant tout appel payant**, le lanceur vérifie son propre verdict sur 7 scénarios simulés (`tests-lanceur.sh`), et s'arrête si l'un d'eux échoue.
+- **VERDICT : 0** signifie que les deux essais sont conformes et que leurs rapports ont été écrits pendant ce passage.
+- **VERDICT : 1** signifie qu'il y a au moins un écart, une panne d'API, un rapport absent, ancien ou illisible, ou un journal non écrit.
 
-**2. Les dépendances**
+Les dépendances (`npm ci`) et `tsx` (`npm install --no-save tsx@4`, ou un `tsx` présent dans le PATH) doivent déjà être installés. Le lanceur s’arrête s’il manque l’un ou l’autre ; il ne télécharge rien.
 
-C'est ton geste, une fois. La branche ajoute des dépendances, et `tsx` lance les scripts.
+## Ce que les rapports contiennent
 
-```bash
-npm ci
-npm install --no-save tsx@4
-```
+Les rapports sont `docs/discovery/essai-extracteur-reel.json` et `docs/discovery/parcours-complet-reel.json`. Les journaux sont dans `scripts/local/.resultats/`.
 
-**3. La pile locale**
+Chaque rapport nomme :
 
-Ouvre d'abord Docker Desktop, puis :
+- le **commit testé**, et signale toute modification non commitée dans `src` ;
+- la **version du lecteur** (v4) ;
+- les **modèles** appelés : destinations, extracteur libre et qualification pour le 34 ; modèles observés au relais pour le 37 ;
+- le **résultat de chaque cas**.
 
-```bash
-bash scripts/local/01-monter-la-pile.sh
-```
+Le rapport du 34 garde aussi, pour chaque cas, **ce que le modèle a réellement rendu**, ses codes traduits en déclencheurs.
 
-Le script :
+Aucune clé et aucun en-tête n'y figurent.
 
-- vérifie que tout est local, sur l'hôte et le port exacts ;
-- affiche l'ordre des migrations ;
-- attend ton « o » avant de les appliquer à la base **locale**.
+**Une panne ne passe jamais pour un résultat vide.** Un cas dont la lecture est restée en attente, ou dont le modèle n'a pas été appelé, est compté en échec. Le script 37 exige que la céramique lue par le modèle soit réellement écrite avant de vérifier qu'elle ne part pas à la recommandation ; s'il ne la trouve pas, il s'arrête en échec. Une erreur d'écriture d'un rapport fait sortir le script en code 3.
 
-**4. Les deux essais**
+## Après le passage
 
-```bash
-bash scripts/local/40-parcours-vrai-modele.sh
-```
+Écris-moi « fait ». Je lis les rapports sur ton disque.
 
-Colle la clé quand il la demande, puis appuie sur Entrée. Rien ne s'affiche. Compte une quarantaine d'appels courts au modèle.
+Je corrige ensuite les défauts observés, puis je te donne la commande qui rejoue les seuls cas concernés. Le parcours complet du script 37 se rejoue toujours entier, avec ses vérifications de consentement et de retrait.
 
-**5. Le compte rendu**
+## Les trois catégories de preuve
 
-Écris-moi « fait ». Je lis les sorties directement sur ton disque :
-
-- `scripts/local/.resultats/34-reel.txt` et `37-reel.txt` ;
-- `docs/discovery/essai-extracteur-reel.json` ;
-- `docs/discovery/parcours-complet-reel.json`.
-
-Aucun de ces fichiers ne contient la clé, ni aucun en-tête.
-
-**6. Arrêter la pile locale (facultatif)**
-
-```bash
-supabase stop
-```
-
-## Ce que chaque essai établit, et ce qu'il n'établit pas
-
-| Catégorie | Où | État au 19 nov. au soir |
+| Catégorie | Où | État |
 |---|---|---|
-| **Logique éprouvée avec réponses simulées** : ce que l'application écrit, refuse, relit et transmet, pour une lecture donnée | tests unitaires ; scripts 33, 35, 36, 37 (mode `simule`) et 39 | exécuté |
-| **Lecture réellement observée du modèle** : ce que le vrai modèle découpe, qualifie et cible | script 34 ; la partie « lecture » du script 37 en mode `reel` | **pas encore exécuté** |
-| **Parcours complet réellement exécuté** avec le vrai modèle : routes, base, recommandation, entrées observées au relais | script 37, mode `reel` | **pas encore exécuté** |
-
-Si la pile locale ne peut pas monter, parce que Docker ou le CLI Supabase manque, le script 37 en mode réel ne peut pas tourner. Le script 34 peut tourner seul, sans base :
-
-```bash
-cd ~/candice
-read -rs ANTHROPIC_API_KEY
-export ANTHROPIC_API_KEY
-node_modules/.bin/tsx scripts/local/34-essai-extracteur-reel.mts | tee scripts/local/.resultats/34-reel.txt
-unset ANTHROPIC_API_KEY
-```
-
-Pour `read -rs` : colle la clé, puis Entrée. Rien ne s'affiche.
+| Logique éprouvée avec réponses simulées | tests ; scripts 33, 35, 36, 37 simulé, 39 | exécutée sur le paquet |
+| Lecture réellement observée du modèle | script 34 | 1ᵉʳ passage le 19 nov. sur 50e3c42 : **31/38**. Écarts corrigés dans ce paquet, **à rejouer** |
+| Parcours complet réellement exécuté | script 37 réel | 1ᵉʳ passage le 19 nov. sur 50e3c42 : **27/0**, mais le cas négatif « céramique » était vide. Exigence renforcée, **à rejouer** |

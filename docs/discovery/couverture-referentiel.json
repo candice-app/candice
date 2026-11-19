@@ -1,22 +1,28 @@
 {
- "date": "2026-11-19T19:21:06.833Z",
+ "date": "2026-11-19T23:00:31.871Z",
  "referentiel": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_8.xlsx",
  "methode": "clause évaluée par conditions.ts dans l’état vide lu en base (compte neuf, pile locale) et dans un état ouvert ; indécidable dans les deux = non implémentée",
  "questions": 2407,
  "resume": {
   "en_arbitrage_hors_banque": 6,
   "fermee_par_garde_de_sensibilite": 125,
-  "fermee_par_le_produit": 3,
-  "implementee_condition_d_origine": 1688,
-  "implementee_lecture_etablie": 285,
-  "non_implementee": 108,
-  "non_implementee_hypothese": 23,
-  "ouverte_sur_demarche": 54,
+  "fermee_par_le_produit": 1,
+  "implementee_condition_d_origine": 1694,
+  "implementee_lecture_etablie": 293,
+  "non_implementee": 94,
+  "non_implementee_hypothese": 24,
+  "ouverte_sur_demarche": 55,
   "retiree_par_le_referentiel": 115
  },
  "clauses": {
   "total": 2778,
-  "indecidables": 170
+  "indecidables": 154
+ },
+ "non_implementees_par_nature": {
+  "prerequis_metier_absent": 17,
+  "donnees_a_recueillir": 23,
+  "clause_comprise_non_executee": 0,
+  "decision_produit": 54
  },
  "lignes": [
   {
@@ -1721,7 +1727,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère"
+   "justification": "« dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "CEL-02",
@@ -1757,7 +1765,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "CEL-03",
@@ -1789,7 +1799,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "CEL-04",
@@ -1821,7 +1833,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "CEL-05",
@@ -1857,7 +1871,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "CEL-06",
@@ -1893,7 +1909,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "CEL-07",
@@ -1925,7 +1943,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "CEL-08",
@@ -1953,7 +1973,7 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
@@ -1961,7 +1981,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "CEL-09",
@@ -1985,7 +2007,7 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
@@ -1993,7 +2015,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère"
+   "justification": "« dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "CEL-10",
@@ -2025,7 +2049,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas"
+   "justification": "questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "CEL-11",
@@ -2057,7 +2083,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas"
+   "justification": "questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "CEL-12",
@@ -2081,7 +2109,7 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
@@ -2089,7 +2117,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "condition non comprise : niveau de délégation du projet inconnu"
+   "justification": "condition non comprise : niveau de délégation du projet inconnu",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "FPL-01",
@@ -3454,6 +3484,7 @@
    "niveau": null,
    "forme": "open",
    "condition_origine": "Tags ENTRANTS — ouvrir si  `INTEREST.resonance=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.resonance!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "condition_evaluee": "Tags ENTRANTS — ouvrir si `INTEREST.resonance=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.resonance!=true` ; ET information manquante ; ET score de pertinence suffisant.",
    "clauses": [
     {
      "clause": "{\"type\":\"tag\",\"chemin\":\"INTEREST.resonance\",\"operateur\":\"=\",\"valeur\":\"positive\"}",
@@ -3465,15 +3496,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "tag `INTEREST.resonance` de la refonte : la correspondance avec la branche historique n’est pas établie"
+   "statut": "implementee_lecture_etablie",
+   "justification": "texte compris tel quel"
   },
   {
    "id": "REM-11",
@@ -3493,15 +3524,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"information_manquante\"}"
+   "statut": "implementee_condition_d_origine",
+   "justification": "le texte du référentiel est compris clause par clause"
   },
   {
    "id": "REM-12",
@@ -3525,15 +3556,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"information_manquante\"}"
+   "statut": "implementee_condition_d_origine",
+   "justification": "le texte du référentiel est compris clause par clause"
   },
   {
    "id": "REM-13",
@@ -3557,15 +3588,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"information_manquante\"}"
+   "statut": "implementee_condition_d_origine",
+   "justification": "le texte du référentiel est compris clause par clause"
   },
   {
    "id": "REM-14",
@@ -3589,15 +3620,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"information_manquante\"}"
+   "statut": "implementee_condition_d_origine",
+   "justification": "le texte du référentiel est compris clause par clause"
   },
   {
    "id": "REM-15",
@@ -3617,15 +3648,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"information_manquante\"}"
+   "statut": "implementee_condition_d_origine",
+   "justification": "le texte du référentiel est compris clause par clause"
   },
   {
    "id": "SOM-01",
@@ -3645,15 +3676,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"information_manquante\"}"
+   "statut": "ouverte_sur_demarche",
+   "justification": "sensible : ne s’ouvre que sur la démarche de la personne"
   },
   {
    "id": "SOM-04",
@@ -3750,14 +3781,15 @@
    "niveau": null,
    "forme": "single",
    "condition_origine": "INTEREST.live_performance positif, direct ou confirmé",
+   "condition_evaluee": "`INTEREST.live_performance=positive`",
    "clauses": [
     {
-     "clause": "{\"type\":\"prose\",\"texte\":\"INTEREST.live_performance positif, direct ou confirmé\"}",
-     "statut": "indecidable"
+     "clause": "{\"type\":\"tag\",\"chemin\":\"INTEREST.live_performance\",\"operateur\":\"=\",\"valeur\":\"positive\"}",
+     "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)"
+   "statut": "implementee_lecture_etablie",
+   "justification": "tag écrit par le journal"
   },
   {
    "id": "THE-06B",
@@ -3777,7 +3809,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)"
+   "justification": "ses options ne sont pas écrites (« à écrire à partir des types réellement proposés par le catalogue ») : une question sans réponses possibles ne peut pas être servie",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "les réponses possibles de la question restent à écrire (contenu du référentiel)"
   },
   {
    "id": "THE-01",
@@ -3941,15 +3975,15 @@
     },
     {
      "clause": "{\"type\":\"information_manquante\"}",
-     "statut": "indecidable"
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"score_suffisant\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"information_manquante\"}"
+   "statut": "implementee_condition_d_origine",
+   "justification": "le texte du référentiel est compris clause par clause"
   },
   {
    "id": "activity.0281",
@@ -3965,8 +3999,8 @@
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "série « activité » : aucun écrivain ne produit une entité de type ENTITY_HOBBY — la condition est évaluée, mais ne peut jamais être remplie"
+   "statut": "implementee_lecture_etablie",
+   "justification": "référent d'activité déclaré, mode attrait (activités, 20 nov.)"
   },
   {
    "id": "activity.0282",
@@ -3975,14 +4009,15 @@
    "niveau": "B",
    "forme": "open",
    "condition_origine": "Entité {activité} détectée et importante",
+   "condition_evaluee": "Entité déclarée pour cette question",
    "clauses": [
     {
-     "clause": "{\"type\":\"prose\",\"texte\":\"Entité {activité} détectée et importante\"}",
-     "statut": "indecidable"
+     "clause": "{\"type\":\"entite\"}",
+     "statut": "evaluee"
     }
    ],
-   "statut": "fermee_par_le_produit",
-   "justification": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit — « ton niveau aujourd'hui » présume une PRATIQUE ; aucune relation d'entité ne l'établit (aimer n'est pas pratiquer)"
+   "statut": "implementee_lecture_etablie",
+   "justification": "référent d'activité déclaré, mode pratique (activités, 20 nov.)"
   },
   {
    "id": "activity.0283",
@@ -3991,14 +4026,15 @@
    "niveau": "B",
    "forme": "open",
    "condition_origine": "Entité {activité} détectée et importante",
+   "condition_evaluee": "Entité déclarée pour cette question",
    "clauses": [
     {
-     "clause": "{\"type\":\"prose\",\"texte\":\"Entité {activité} détectée et importante\"}",
-     "statut": "indecidable"
+     "clause": "{\"type\":\"entite\"}",
+     "statut": "evaluee"
     }
    ],
-   "statut": "fermee_par_le_produit",
-   "justification": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit — « le pratiques-tu réellement » présume une pratique ; même manque"
+   "statut": "implementee_lecture_etablie",
+   "justification": "référent d'activité déclaré, mode pratique (activités, 20 nov.)"
   },
   {
    "id": "activity.0284",
@@ -4014,8 +4050,8 @@
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "série « activité » : aucun écrivain ne produit une entité de type ENTITY_HOBBY — la condition est évaluée, mais ne peut jamais être remplie"
+   "statut": "implementee_lecture_etablie",
+   "justification": "référent d'activité déclaré, mode pratique (activités, 20 nov.)"
   },
   {
    "id": "activity.0285",
@@ -4031,7 +4067,7 @@
     }
    ],
    "statut": "fermee_par_le_produit",
-   "justification": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit — « du matériel » présume une pratique équipée ; même manque"
+   "justification": "fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement — « du matériel qu’il ne faudrait surtout pas choisir à ta place » présume une pratique ÉQUIPÉE ; pratiquer ne démontre pas un équipement, et aucune réponse ne le déclare"
   },
   {
    "id": "aesthetic.1948",
@@ -4451,7 +4487,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"niveau\",\"niveau\":\"C\",\"branche\":\"esthetique : recommandation en preparation\"}"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "aesthetic.1972",
@@ -4819,7 +4857,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "animals.2148",
@@ -5155,7 +5195,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "bags.0369",
@@ -5251,7 +5293,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« rapport à la marque ambigu » : aucun critère écrit"
+   "justification": "« rapport à la marque ambigu » : aucun critère écrit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "bags.0375",
@@ -5503,7 +5547,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "bags.0390",
@@ -5839,7 +5885,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "le critère de pertinence n’est pas écrit"
+   "justification": "le critère de pertinence n’est pas écrit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "beauty2.1299",
@@ -8130,7 +8178,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "celebration.0817",
@@ -9863,7 +9913,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "cinema2.0986",
@@ -9959,7 +10011,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer"
   },
   {
    "id": "cinema2.0992",
@@ -10849,7 +10903,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "comics.0436",
@@ -12227,7 +12283,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)"
+   "justification": "paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "craft.0621",
@@ -12259,7 +12317,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)"
+   "justification": "paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "craft.0623",
@@ -14538,7 +14598,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"niveau\",\"niveau\":\"C\",\"branche\":\"boissons : recommandation en preparation\"}"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "drinks.2104",
@@ -17014,7 +17076,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "flowers.2126",
@@ -17260,18 +17324,19 @@
    "niveau": "B",
    "forme": "multi",
    "condition_origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "condition_evaluee": "food active ; ne jamais afficher les questions alcool si la personne ne boit pas",
    "clauses": [
     {
-     "clause": "{\"type\":\"domaines_actifs\",\"noms\":[\"cuisine\",\"gastronomie\"]}",
-     "statut": "indecidable"
+     "clause": "{\"type\":\"domaines_actifs\",\"noms\":[\"food\"]}",
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"pas_si_sans_alcool\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"domaines_actifs\",\"noms\":[\"cuisine\",\"gastronomie\"]}"
+   "statut": "implementee_lecture_etablie",
+   "justification": "nom officiel de la branche"
   },
   {
    "id": "food.0031",
@@ -17658,18 +17723,19 @@
    "niveau": "A",
    "forme": "multi",
    "condition_origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "condition_evaluee": "food active ; ne jamais afficher les questions alcool si la personne ne boit pas",
    "clauses": [
     {
-     "clause": "{\"type\":\"domaines_actifs\",\"noms\":[\"cuisine\",\"gastronomie\"]}",
-     "statut": "indecidable"
+     "clause": "{\"type\":\"domaines_actifs\",\"noms\":[\"food\"]}",
+     "statut": "evaluee"
     },
     {
      "clause": "{\"type\":\"pas_si_sans_alcool\"}",
      "statut": "evaluee"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"domaines_actifs\",\"noms\":[\"cuisine\",\"gastronomie\"]}"
+   "statut": "implementee_lecture_etablie",
+   "justification": "nom officiel de la branche"
   },
   {
    "id": "food.0050",
@@ -17786,7 +17852,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "food2.0862",
@@ -18063,7 +18131,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "le critère de pertinence n’est pas écrit"
+   "justification": "le critère de pertinence n’est pas écrit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "food2.0879",
@@ -18447,7 +18517,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "fragrance2.1154",
@@ -19109,7 +19181,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "games.0969",
@@ -20192,7 +20266,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "garden.0583",
@@ -21173,7 +21249,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "hosting.2060",
@@ -21726,7 +21804,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "JWL-TAILLE-02",
@@ -21746,7 +21826,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "JWL-TAILLE-03",
@@ -21766,7 +21848,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "JWL-TAILLE-04",
@@ -21782,7 +21866,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "JWL-TAILLE-05",
@@ -21802,7 +21888,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "jewelry.0291",
@@ -21935,7 +22023,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "jewelry.0299",
@@ -21951,7 +22041,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "jewelry.0300",
@@ -21983,7 +22075,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "jewelry.0302",
@@ -21999,7 +22093,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "jewelry.0303",
@@ -22015,7 +22111,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "jewelry.0305",
@@ -22031,7 +22129,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "jewelry.0306",
@@ -22047,7 +22147,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "joys.1882",
@@ -22244,7 +22346,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer"
   },
   {
    "id": "joys.1894",
@@ -22708,7 +22812,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "condition non comprise : Cartouche ADN d’apprentissage — 1. Moteur de curiosité"
+   "justification": "condition non comprise : Cartouche ADN d’apprentissage — 1. Moteur de curiosité",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "learning2.1456",
@@ -22826,7 +22932,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "paramètre d’énoncé sans source établie (parametres.json)"
+   "justification": "paramètre d’énoncé sans source établie (parametres.json)",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "la valeur du paramètre n’est recueillie par aucune réponse : une question qui la demande, une par une"
   },
   {
    "id": "learning2.1463",
@@ -23739,7 +23847,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« budget premium » : le budget d’une préparation n’est pas recueilli"
+   "justification": "« budget premium » : le budget d’une préparation n’est pas recueilli",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "live.0499",
@@ -23788,7 +23898,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours"
+   "justification": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la fin d’une préparation est déjà déclarée (« Projet terminé ») ; reste à décider si, et jusqu’à quand, une question « après » se pose pour une préparation close, et à laquelle sa réponse se rattache"
   },
   {
    "id": "live.0502",
@@ -24236,7 +24348,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "mental.1851",
@@ -24797,7 +24911,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "money.1590",
@@ -24813,7 +24929,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "money.1591",
@@ -25219,7 +25337,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« budget premium » : le budget d’une préparation n’est pas recueilli"
+   "justification": "« budget premium » : le budget d’une préparation n’est pas recueilli",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "museum.0722",
@@ -25764,7 +25884,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer"
   },
   {
    "id": "music2.1020",
@@ -26178,7 +26300,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "pets.0397",
@@ -26345,7 +26469,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "pets.0407",
@@ -26398,7 +26524,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "pets.0410",
@@ -26430,7 +26558,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« si souvenirs importants » : aucun critère écrit"
+   "justification": "« si souvenirs importants » : aucun critère écrit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "pets.0412",
@@ -26765,8 +26895,8 @@
      "statut": "indecidable"
     }
    ],
-   "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"niveau\",\"niveau\":\"C\",\"branche\":\": uniquement lorsqu’un achat ou un cadeau est prepare\"}"
+   "statut": "non_implementee_hypothese",
+   "justification": "en attente d’arbitrage : « Niveau C : uniquement lorsqu’un achat ou un cadeau est préparé » : la philosophie de consommation n’a pas d’achat « à elle » ; quel achat ou quel cadeau compte ? — choix : (a) tout achat ou cadeau en préparation, quel que soit son domaine | (b) seulement un achat ou un cadeau préparé dans la branche Philosophie de consommation (aujourd’hui : aucun écran ne le permet)"
   },
   {
    "id": "philoconso.1630",
@@ -27375,7 +27505,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "photo.0668",
@@ -27849,7 +27981,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "photo.0697",
@@ -28332,7 +28466,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "podcast.0467",
@@ -28412,7 +28548,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "podcast.0472",
@@ -28428,7 +28566,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "podcast.0473",
@@ -28444,7 +28584,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer"
   },
   {
    "id": "reading.0106",
@@ -28716,7 +28858,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "reading2.1239",
@@ -29650,7 +29794,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "savoir qu’un proche vit loin : donnée du carnet du pilote, pas du Discovery"
+   "justification": "savoir qu’un proche vit loin : donnée du carnet du pilote, pas du Discovery",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une donnée qu’aucune question ne recueille (ou qui appartient au carnet du pilote) : à recueillir ou à rattacher"
   },
   {
    "id": "relation2.0787",
@@ -29897,7 +30043,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)"
+   "justification": "Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "aucune règle d’ouverture écrite pour cette sous-partie : à écrire"
   },
   {
    "id": "relation2.0801",
@@ -29913,7 +30061,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)"
+   "justification": "Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "aucune règle d’ouverture écrite pour cette sous-partie : à écrire"
   },
   {
    "id": "relation2.0802",
@@ -29992,7 +30142,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "relation2.0806",
@@ -30376,7 +30528,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"niveau\",\"niveau\":\"C\",\"branche\":\"souvenirs : uniquement lorsqu’une recommandation est preparee\"}"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "remembrance.1995",
@@ -31814,7 +31968,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "clause(s) que le moteur ne sait pas constater : {\"type\":\"niveau\",\"niveau\":\"C\",\"branche\":\"sensoriel : uniquement lorsqu’une recommandation est en preparation\"}"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "sensory2.1490",
@@ -32312,7 +32468,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer"
   },
   {
    "id": "series2.1047",
@@ -32883,7 +33041,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "shoes.0355",
@@ -32899,7 +33059,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "shoes.0356",
@@ -33302,7 +33464,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« SEULEMENT si la personne parle elle-même de fatigue familiale » : une démarche dans un texte libre, que rien ne détecte aujourd’hui"
+   "justification": "« SEULEMENT si la personne parle elle-même de fatigue familiale » : une démarche dans un texte libre, que rien ne détecte aujourd’hui",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une démarche dite dans un texte libre, que rien ne détecte : détection à construire"
   },
   {
    "id": "sleep.0608",
@@ -33388,7 +33552,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+   "justification": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "les « règles K3 » des questions préventives n’existent dans aucune source : à fournir, ou à retirer"
   },
   {
    "id": "sleep.0613",
@@ -34755,7 +34921,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« budget premium » : le budget d’une préparation n’est pas recueilli"
+   "justification": "« budget premium » : le budget d’une préparation n’est pas recueilli",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "sportw.0554",
@@ -34803,7 +34971,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours"
+   "justification": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la fin d’une préparation est déjà déclarée (« Projet terminé ») ; reste à décider si, et jusqu’à quand, une question « après » se pose pour une préparation close, et à laquelle sa réponse se rattache"
   },
   {
    "id": "success.1708",
@@ -37234,7 +37404,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "travel.0061",
@@ -37635,7 +37807,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "savoir qu’un animal voyage avec la personne : aucune question ne le recueille"
+   "justification": "savoir qu’un animal voyage avec la personne : aucune question ne le recueille",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une donnée qu’aucune question ne recueille (ou qui appartient au carnet du pilote) : à recueillir ou à rattacher"
   },
   {
    "id": "travel2.0902",
@@ -38433,7 +38607,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "travel2.0944",
@@ -38465,7 +38641,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours"
+   "justification": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la fin d’une préparation est déjà déclarée (« Projet terminé ») ; reste à décider si, et jusqu’à quand, une question « après » se pose pour une préparation close, et à laquelle sa réponse se rattache"
   },
   {
    "id": "value.1516",
@@ -38954,7 +39132,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+   "justification": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "values.1917",
@@ -38970,7 +39150,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une tension entre une recommandation et une valeur : côté recommandation, pas Discovery"
+   "justification": "une tension entre une recommandation et une valeur : côté recommandation, pas Discovery",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "watch.0307",
@@ -39188,7 +39370,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "« rapport à la marque ambigu » : aucun critère écrit"
+   "justification": "« rapport à la marque ambigu » : aucun critère écrit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "watch.0320",
@@ -39204,7 +39388,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "watch.0321",
@@ -39220,7 +39406,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "watch.0322",
@@ -39236,7 +39424,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+   "justification": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "watch.0323",
@@ -39252,7 +39442,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+   "justification": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres",
+   "categorie": "prerequis_metier_absent",
+   "ce_qu_il_faudrait": "une notion que le moteur n’a pas (contexte de préparation précis, délégation, « cartouche ») : à définir"
   },
   {
    "id": "watch.0324",
@@ -39284,7 +39476,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+   "justification": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "la question vit chez le pilote, pendant une recommandation : décider si elle y est posée (au pilote, sur son proche) ou réécrite pour une préparation de la personne"
   },
   {
    "id": "watch.0326",
@@ -39300,7 +39494,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+   "justification": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas",
+   "categorie": "decision_produit",
+   "ce_qu_il_faudrait": "un seuil ou un critère que le référentiel ne chiffre pas : à fixer (ou à remplacer par une réponse explicite de la personne)"
   },
   {
    "id": "watch.0327",
@@ -39332,7 +39528,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "watch.0329",
@@ -39348,7 +39546,9 @@
     }
    ],
    "statut": "non_implementee",
-   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+   "justification": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas",
+   "categorie": "donnees_a_recueillir",
+   "ce_qu_il_faudrait": "une caractéristique de la préparation (catégorie, usage, budget, format…) à demander quand la personne la déclare"
   },
   {
    "id": "watch.0330",

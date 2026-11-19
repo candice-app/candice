@@ -194,6 +194,8 @@ E(['learning2.1456', 'learning2.1457', 'learning2.1458', 'learning2.1459', 'lear
   'Branche learning2 ouverte', 'regroupement éditorial', '« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.')
 
 # ═════ 6. HYPOTHÈSES — il faut choisir ═══════════════════════════════════════════════════════
+H('philoconso.1629', '« Niveau C : uniquement lorsqu’un achat ou un cadeau est préparé » : la philosophie de consommation n’a pas d’achat « à elle » ; quel achat ou quel cadeau compte ?',
+  ['(a) tout achat ou cadeau en préparation, quel que soit son domaine', '(b) seulement un achat ou un cadeau préparé dans la branche Philosophie de consommation (aujourd’hui : aucun écran ne le permet)'])
 H('comics.0438', '« Si occasion envisagée » a deux sens en BD.', ['(a) seconde main : réponse à une question « d’occasion » (aucune en BD : il faudrait la désigner)', '(b) un événement en préparation (« Événement concret »)'])
 H(['bags.0388', 'shoes.0357', 'watch.0327'], '« seconde main / vintage envisagé » : envisagé où ?',
   ['(a) consumption2.1188 hors « Je préfère du neuf » et « Je préfère éviter » (rapport général à la seconde main)', '(b) pour l’achat en préparation : le moteur ne connaît pas cette caractéristique d’un achat'])
@@ -354,10 +356,30 @@ for i, l in ENT['questions'].items():
     E(i, 'Entité déclarée pour cette question', 'entité déclarée avec une relation que la question présume (D9)',
       f"{l['pourquoi']} — relations admises : {', '.join(l['relations'])}.", ['« importante » : aucun score ; une relation déclarée, choisie question par question'])
 for i, pourquoi in ENT['fermees'].items(): S(i, pourquoi, 'fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit')
+# 20 nov. — les ACTIVITÉS : un référent d'activité typé (activites-referents.json), avec le prérequis
+# exact de chaque question. Le principe est validé par Estelle (20 nov.) : aimer ≠ pratiquer ;
+# pratiquer ≠ niveau, équipement ou envie de progresser ; envie d'essayer ≠ pratique actuelle.
+ACT = json.load(open(R / 'src/lib/discovery/open-v3/activites-referents.json'))
+for i, l in ACT['questions'].items():
+    E(i, 'Entité déclarée pour cette question', f"référent d'activité déclaré, mode {' ou '.join(l['modes'])} (activités, 20 nov.)",
+      f"{l['pourquoi']} — sources : {', '.join(k for k, v in ACT['sources'].items() if v['mode'] in l['modes'])}.", ['« importante » : aucun score ; une réponse déclarée, du mode que la question présume'])
+for i, pourquoi in ACT['fermees'].items(): S(i, pourquoi, 'fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement')
+
+# 20 nov. — RACCORDEMENTS : des conditions déjà comprises, que le moteur ne savait pas rattacher.
+E(['food.0030', 'food.0049'], 'food active ; ne jamais afficher les questions alcool si la personne ne boit pas', 'nom officiel de la branche',
+  '« Cuisine/gastronomie » est le nom officiel de la branche food (« Gastronomie, restaurants, cuisine et boissons ») ; les deux questions en font partie. La garde alcool est reprise telle quelle.')
+
+E('THE-06A', '`INTEREST.live_performance=positive`', 'tag écrit par le journal',
+  '« INTEREST.live_performance positif, direct ou confirmé » : ce tag est écrit par l’intérêt « spectacle vivant » (THE-01, live.0474, theatre.0098, theatre2.1363 écrivent INTEREST live_performance). L’ancien motif (« que rien n’écrit sous ce nom ») était faux : relevé le 20 nov.')
+E('REM-09', cond('REM-09'), 'texte compris tel quel',
+  'Le texte d’origine est compris clause par clause depuis le raccordement de « information manquante » (20 nov.) ; `INTEREST.resonance` est écrit par les intérêts du domaine resonance.')
+S('THE-06B', 'ses options ne sont pas écrites (« à écrire à partir des types réellement proposés par le catalogue ») : une question sans réponses possibles ne peut pas être servie')
 
 # ═════ 7. SANS LECTURE — le moteur ne sait pas le constater ═══════════════════════════════════
 RECO = 'une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne'
 S(['JWL-TAILLE-01', 'JWL-TAILLE-02', 'JWL-TAILLE-03', 'JWL-TAILLE-04', 'JWL-TAILLE-05', 'money.1590', 'relation2.0805', 'travel2.0943', 'watch.0325'], RECO)
+# « Niveau C <branche> : recommandation en préparation » : le même sens, sous une autre écriture (20 nov.).
+S(['aesthetic.1971', 'drinks.2103', 'remembrance.1994', 'sensory2.1489'], RECO)
 S(['jewelry.0298', 'jewelry.0301', 'jewelry.0302', 'watch.0322'], 'un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit')
 S(['bags.0374', 'watch.0319'], '« rapport à la marque ambigu » : aucun critère écrit')
 S('relation2.0786', 'savoir qu’un proche vit loin : donnée du carnet du pilote, pas du Discovery')

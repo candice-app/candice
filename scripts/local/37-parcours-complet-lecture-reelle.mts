@@ -29,6 +29,8 @@
 // SÉCURITÉ : base, application et relais strictement locaux (adresse, protocole et port exacts) ;
 // le processus de l'application ne doit avoir aucune connexion hors de la boucle locale.
 import { writeFileSync } from 'node:fs';
+import { execSync } from 'node:child_process';
+import { MODELE_DESTINATIONS, VERSION_LECTURE } from '../../src/lib/discovery/open-v3/destinations.ts';
 import { compteLocal, verificateur, pileLocale } from './_compte-local.mts';
 import { cookiesDe, poster, obtenirLot, repondre } from './_session-http.mts';
 import { exigerLocal, exigerProcessusLocal } from './_garde-locale.mts';
@@ -66,7 +68,16 @@ if (MODE === 'simule') { const r = await fetch(`${FAUX}/__raz`, { method: 'POST'
 await razRelais();
 
 const v = verificateur();
-const rapport: Record<string, unknown> = { date: new Date().toISOString(), mode: MODE, amont,
+let COMMIT: string, MODIFIE: boolean;
+try { COMMIT = execSync('git rev-parse HEAD', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim(); MODIFIE = execSync('git status --porcelain -- src', { encoding: 'utf8' }).trim().length > 0; }
+catch {
+  // Le mode réel exige un commit : un essai réel qui ne dit pas ce qu'il a testé ne prouve rien.
+  // Le mode simulé tourne aussi dans la copie de travail sans git du conteneur : il le dit.
+  if (MODE === 'reel') { console.error('ARRÊT — commit testé illisible (git).'); process.exit(2); }
+  COMMIT = 'copie de travail non versionnée (mode simulé)'; MODIFIE = true;
+}
+console.log(`commit ${COMMIT}${MODIFIE ? ' (+ modifications non commitées dans src)' : ''} · lecteur v${VERSION_LECTURE} · modèle des destinations ${MODELE_DESTINATIONS} · mode ${MODE}`);
+const rapport: Record<string, unknown> = { date: new Date().toISOString(), commit: COMMIT, modifications_non_commitees_dans_src: MODIFIE, version_du_lecteur: VERSION_LECTURE, modele_destinations: MODELE_DESTINATIONS, mode: MODE, amont,
   nature: MODE === 'simule' ? 'parcours complet EXÉCUTÉ, modèle SIMULÉ (plomberie seulement)' : 'parcours complet EXÉCUTÉ avec le VRAI modèle' };
 const plier = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’`]/g, "'");
 const lu = <T,>(r: { data: T | null; error: { message: string } | null }, quoi: string): T => {
@@ -132,8 +143,17 @@ const libelle = (e: Ev) => String(e.subject_label ?? e.entity_label ?? e.prefere
 const astro = journal.filter((e) => plier(libelle(e)).includes('astronomie'));
 v.verifier(astro.length === 1 && astro[0].target_family === 'INTEREST' && astro[0].assertion_status === 'explicit', '3 : « Astronomie » : un intérêt EXPLICITE (sa déclaration)', JSON.stringify(astro));
 const ceram = journal.filter((e) => plier(libelle(e)).includes('ceramique'));
-if (MODE === 'simule') v.verifier(ceram.length === 1 && ceram[0].assertion_status === 'inferred', '3 : « la céramique japonaise » : un intérêt LU PAR MODÈLE (inféré)', JSON.stringify(ceram));
-else console.log('     lecture réelle, céramique :', JSON.stringify(ceram.map((e) => ({ famille: e.target_family, statut: e.assertion_status }))));
+// Exigé dans les DEUX modes (20 nov.) : sans cette preuve inférée réellement écrite, le test « elle ne
+// part pas au modèle » (4b) passerait sans rien démontrer — c'est ce qui s'est produit au premier passage réel.
+v.verifier(ceram.length >= 1 && ceram.every((e) => e.assertion_status === 'inferred'), '3 : « la céramique japonaise » : un intérêt LU PAR MODÈLE (inféré), réellement écrit — condition du cas négatif 4b', JSON.stringify(ceram));
+if (ceram.length === 0) {
+  console.error('ARRÊT — la lecture n’a pas écrit la céramique : le cas négatif 4b ne prouverait rien.');
+  rapport.arret = 'lecture sans preuve inférée de la céramique : parcours interrompu avant la recommandation';
+  rapport.journal_de_B = journal.map((e) => ({ famille: e.target_family, libelle: libelle(e), statut: e.assertion_status, polarite: e.polarity }));
+  rapport.resultats_par_cas = v.resultats;
+  try { writeFileSync(`docs/discovery/parcours-complet-${MODE}.json`, JSON.stringify(rapport, null, 1)); } catch (e) { console.error(`ÉCHEC — rapport non écrit : ${e instanceof Error ? e.message : 'erreur'}`); process.exit(3); }
+  v.bilan(); process.exit(1);
+}
 v.verifier(!journal.some((e) => plier(libelle(e)).includes('chimie') && e.polarity !== 'rejet'), '3 : « la chimie » (niée) n’est écrite comme aucun intérêt');
 const portrait = await lirePortrait(B.client as never, { userId: B.userId });
 v.verifier(portrait.interests.some((i) => plier(i.subjectLabel).includes('astronomie')), '3 : le portrait relit « Astronomie »');
@@ -195,7 +215,8 @@ const acc = await poster('/api/consent/exclusions', cB, { contactId: k.id, actio
 v.verifier(acc.status === 200 && (acc.json as { actif?: boolean }).actif === true, '4b : accord donné (HTTP 200, actif)', `HTTP ${acc.status}`);
 g = await gouts();
 v.verifier(g.autorise && g.gouts.some((x) => plier(x.libelle).includes('astronomie')), '4b : « Astronomie » est éligible (déclarée par B, explicite)', JSON.stringify(g.gouts.map((x) => x.libelle)));
-v.verifier(!g.gouts.some((x) => plier(x.libelle).includes('ceramique') || plier(x.libelle).includes('cartes')), '4b : la réponse libre lue par modèle n’est PAS éligible (cas négatif gardé)', JSON.stringify(g.ecartes));
+v.verifier(!g.gouts.some((x) => plier(x.libelle).includes('ceramique') || plier(x.libelle).includes('cartes'))
+  && (g.ecartes['pas_sa_declaration'] ?? 0) >= 1, '4b : la réponse libre lue par modèle EXISTE et n’est PAS éligible (écartée : pas sa déclaration)', JSON.stringify(g.ecartes));
 const b = await generer('après accord');
 v.verifier(!!b.ligneGouts && plier(b.ligneGouts).includes('astronomie'), '4b : « Astronomie » PART au modèle, dans la ligne des goûts déclarés', b.ligneGouts ?? '(absente)');
 v.verifier(b.retrouves.every((m) => m.statut === 'explicit'), '4b : rien de ce qui part n’est une lecture par modèle (provenance : déclarations explicites seulement)', JSON.stringify(b.obs.donnees_de_B_dans_l_envoi));
@@ -229,8 +250,10 @@ const r2 = await reco();
 v.verifier(!!r2 && r2.portees_proche.length === 0 && r2.proche_compte === null, '4c : la nouvelle recommandation ne déclare aucune donnée de B');
 
 rapport.generations = [a.obs, b.obs, c.obs];
-rapport.verifications = v;
+rapport.resultats_par_cas = v.resultats;
 const fichier = `docs/discovery/parcours-complet-${MODE}.json`;
-writeFileSync(fichier, JSON.stringify(rapport, (cle, val) => (cle === 'verifications' ? undefined : val), 1));
+rapport.modeles_observes_au_relais = [...new Set([a, b, c].flatMap((x) => x.obs.appels.map((y) => y.modele)).concat((rapport.lecture_observee as { modele: string | null }[]).map((y) => y.modele)))];
+try { writeFileSync(fichier, JSON.stringify(rapport, null, 1)); }
+catch (e) { console.error(`ÉCHEC — rapport non écrit : ${e instanceof Error ? e.message : 'erreur'}`); process.exit(3); }
 console.log(`\nRapport : ${fichier} — ${rapport.nature}. Aucune clé, aucun en-tête n’y figure.`);
 v.bilan();

@@ -1,0 +1,831 @@
+{
+ "date": "2026-11-19T22:32:50.048Z",
+ "modele_destinations": "claude-sonnet-4-6",
+ "cas": 38,
+ "conformes": 31,
+ "note": "Vrai modèle, données fictives, base en mémoire. Aucune clé ni en-tête dans ce fichier.",
+ "resultats": [
+  {
+   "id": "sujet-present",
+   "question": "learning2.1459",
+   "texte": "En ce moment la géologie, et un peu l’histoire des cartes anciennes.",
+   "attendu": "deux intérêts (géologie, histoire des cartes), stabilité contextual",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SUJET_DECLARED",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "declencheur_inconnu"
+     },
+     {
+      "declencheur": "SUJET_DECLARED",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "declencheur_inconnu"
+     }
+    ]
+   },
+   "conforme": false
+  },
+  {
+   "id": "sujet-nie",
+   "question": "learning2.1459",
+   "texte": "La géologie ne m’intéresse pas du tout, contrairement à ce qu’on croit.",
+   "attendu": "rien (négation)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SUJET_DECLARED",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "declencheur_inconnu"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "sujet-autre-personne",
+   "question": "learning2.1459",
+   "texte": "Mon frère est passionné de géologie, moi je l’écoute.",
+   "attendu": "rien (autre personne)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SUJET_DECLARED",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "declencheur_inconnu"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "sujet-passe",
+   "question": "learning2.1459",
+   "texte": "J’adorais la géologie quand j’étais petite.",
+   "attendu": "rien (passé)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SUJET_DECLARED",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "declencheur_inconnu"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "sujet-condition",
+   "question": "learning2.1459",
+   "texte": "Si j’avais le temps, peut-être la géologie.",
+   "attendu": "rien (condition)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SUJET_DECLARED",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "declencheur_inconnu"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "sujet-ironie",
+   "question": "learning2.1459",
+   "texte": "La géologie, passionnant, vraiment… je plaisante.",
+   "attendu": "rien (ironie dite)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SUJET_DECLARED",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "declencheur_inconnu"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "rejet-technique-style",
+   "question": "CRE-06",
+   "texte": "Je n’aime vraiment pas le macramé, et le style shabby chic me hérisse.",
+   "attendu": "deux rejets (technique, style), stabilité undetermined",
+   "observe": {
+    "preuves": [
+     "PREFERENCE:PREFERENCE.creativity.type_preference [rejet] (undetermined)",
+     "PREFERENCE:PREFERENCE.creativity.aesthetic_universe [rejet] (undetermined)"
+    ],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SEGMENT_TECHNIQUE",
+      "debut": 23,
+      "fin": 33,
+      "issue": "ecrit"
+     },
+     {
+      "declencheur": "SEGMENT_STYLE",
+      "debut": 38,
+      "fin": 58,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "rejet-inverse",
+   "question": "CRE-06",
+   "texte": "Franchement j’adore le macramé, je n’ai rien contre aucune technique.",
+   "attendu": "rien (aucun rejet dit)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SEGMENT_MATIERE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "attitude_non_conforme"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "auteur-et-titre",
+   "question": "comics.0422",
+   "texte": "Tout ce que fait Moebius, et la série Blacksad.",
+   "attendu": "un fait auteur (Moebius) ; le titre écrit comme référent ou mis en clarification, jamais inventé",
+   "observe": {
+    "preuves": [],
+    "faits": [
+     "discovery.fait.comics.auteur_ou_dessinateur_mentionne={\"valeur\":\"Moebius\",\"libelle\":\"Moebius\",\"question\":\"comics.0422\",\"declencheur\":\""
+    ],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "OEUVRE_RESOLUE_APPRECIEE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "attitude_non_explicite"
+     },
+     {
+      "declencheur": "AUTEUR_MENTIONNE",
+      "debut": 17,
+      "fin": 24,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "auteur-nie",
+   "question": "comics.0422",
+   "texte": "Pas Moebius, je n’ai jamais accroché.",
+   "attendu": "rien (négation)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "AUTEUR_MENTIONNE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "non_affirme"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "projection",
+   "question": "time.1566",
+   "texte": "L’an prochain, j’aimerais prendre un mois entier pour marcher jusqu’à Compostelle.",
+   "attendu": "un fait de projection",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "PROJECTION_DECLAREE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     }
+    ]
+   },
+   "conforme": false
+  },
+  {
+   "id": "projection-autre",
+   "question": "time.1566",
+   "texte": "Ma sœur veut partir un mois à Compostelle.",
+   "attendu": "rien (autre personne)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": []
+   },
+   "conforme": true
+  },
+  {
+   "id": "rejet-matiere",
+   "question": "CRE-06",
+   "texte": "Je n’aime vraiment pas travailler le plastique.",
+   "attendu": "un rejet de matière, undetermined",
+   "observe": {
+    "preuves": [
+     "PREFERENCE:PREFERENCE.creativity.material_preference [rejet] (undetermined)"
+    ],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SEGMENT_MATIERE",
+      "debut": 34,
+      "fin": 46,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "matiere-aimee",
+   "question": "CRE-06",
+   "texte": "J’aime beaucoup le lin et la laine.",
+   "attendu": "rien (aucun rejet)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": []
+   },
+   "conforme": true
+  },
+  {
+   "id": "oeuvre-appreciee",
+   "question": "comics.0422",
+   "texte": "J’adore Blacksad.",
+   "attendu": "œuvre non résolue en base vide → clarification, aucune œuvre inventée",
+   "observe": {
+    "preuves": [
+     "ENTITY:oeuvre:bande_dessinee:blacksad (undetermined)"
+    ],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "OEUVRE_RESOLUE_APPRECIEE",
+      "debut": 8,
+      "fin": 16,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": false
+  },
+  {
+   "id": "auteur-mentionne",
+   "question": "comics.0422",
+   "texte": "On m’a parlé de Moebius, je ne connais pas.",
+   "attendu": "rien d’appréciation (mention ou rien)",
+   "observe": {
+    "preuves": [],
+    "faits": [
+     "discovery.fait.comics.auteur_ou_dessinateur_mentionne={\"valeur\":\"Moebius\",\"libelle\":\"Moebius\",\"question\":\"comics.0422\",\"declencheur\":\""
+    ],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "AUTEUR_MENTIONNE",
+      "debut": 16,
+      "fin": 23,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "boisson-projection",
+   "question": "drinks.2102",
+   "texte": "Un verre de vin nature sur une terrasse à Lisbonne, au coucher du soleil.",
+   "attendu": "un fait de projection (ni habitude ni goût)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "PROJECTION_DECLAREE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "precision_inexacte"
+     }
+    ]
+   },
+   "conforme": false
+  },
+  {
+   "id": "boisson-autre",
+   "question": "drinks.2102",
+   "texte": "Mon mari adore le whisky tourbé.",
+   "attendu": "rien (autre personne)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": []
+   },
+   "conforme": true
+  },
+  {
+   "id": "souhait-animal",
+   "question": "pets.0403",
+   "texte": "Un nouveau panier pour Moka.",
+   "attendu": "aucun animal déclaré en base → pas de souhait écrit sans identifiant",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "SOUHAIT_AVEC_IDENTIFIANT",
+      "debut": 0,
+      "fin": 27,
+      "issue": "clarification",
+      "motif": "aucun_animal_declare"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "souhait-animal-autre",
+   "question": "pets.0403",
+   "texte": "Le chien de ma voisine aurait besoin d’un manteau.",
+   "attendu": "rien (animal d’une autre personne)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": []
+   },
+   "conforme": true
+  },
+  {
+   "id": "episode",
+   "question": "podcast.0467",
+   "texte": "L’épisode de Transfert sur la disparition de Lucie m’a bouleversée.",
+   "attendu": "épisode non résolu en base vide → clarification ; aucune appréciation écrite sur un référent inconnu",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "REFERENT_RESOLU",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     }
+    ]
+   },
+   "conforme": false
+  },
+  {
+   "id": "episode-nie",
+   "question": "podcast.0467",
+   "texte": "Aucun, je n’écoute pas de podcasts.",
+   "attendu": "rien",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": []
+   },
+   "conforme": true
+  },
+  {
+   "id": "lieu-bien-etre",
+   "question": "sensory2.1482",
+   "texte": "Les thermes de Bagnères-de-Bigorre, pour la chaleur de l’eau et le silence.",
+   "attendu": "lieu non résolu → clarification ou référent ; aucune préférence générale inventée",
+   "observe": {
+    "preuves": [],
+    "faits": [
+     "discovery.fait.sensory.lieu_de_bien_etre={\"valeur\":\"thermes de Bagnères-de-Bigorre — Bagnères-de-Bigorre\",\"libelle\":\"ther"
+    ],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "RELATION_EXPLICITE_DISTINCTE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     },
+     {
+      "declencheur": "REFERENT_RESOLU",
+      "debut": 0,
+      "fin": 34,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": false
+  },
+  {
+   "id": "cible-aspect-lieu",
+   "question": "sensory2.1482",
+   "texte": "Les thermes de Bagnères, à Bagnères-de-Bigorre : j’y ai adoré le silence.",
+   "attendu": "aucune relation envers l’établissement (l’appréciation porte sur le silence)",
+   "observe": {
+    "preuves": [],
+    "faits": [
+     "discovery.fait.sensory.lieu_de_bien_etre={\"valeur\":\"Les thermes de Bagnères — Bagnères-de-Bigorre\",\"libelle\":\"Les thermes"
+    ],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "RELATION_EXPLICITE_DISTINCTE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     },
+     {
+      "declencheur": "REFERENT_RESOLU",
+      "debut": 0,
+      "fin": 46,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "cible-referent-lieu",
+   "question": "sensory2.1482",
+   "texte": "Les thermes de Bagnères, à Bagnères-de-Bigorre : j’adore cet établissement.",
+   "attendu": "relation LOVE/LIKE envers le lieu, écrite ou en attente de sa clarification",
+   "observe": {
+    "preuves": [],
+    "faits": [
+     "discovery.fait.sensory.lieu_de_bien_etre={\"valeur\":\"Les thermes de Bagnères — Bagnères-de-Bigorre\",\"libelle\":\"Les thermes"
+    ],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "RELATION_EXPLICITE_DISTINCTE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     },
+     {
+      "declencheur": "REFERENT_RESOLU",
+      "debut": 0,
+      "fin": 46,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": false
+  },
+  {
+   "id": "cible-aspect-episode",
+   "question": "podcast.0467",
+   "texte": "L’épisode 12 de Transfert. J’ai adoré la voix de l’invitée.",
+   "attendu": "aucune relation envers l’épisode",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "REFERENT_RESOLU",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     },
+     {
+      "declencheur": "RELATION_EXPLICITE_DISTINCTE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "cible-aspect-oeuvre",
+   "question": "comics.0422",
+   "texte": "J’adore le dessin de Blacksad.",
+   "attendu": "aucune relation envers Blacksad",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "OEUVRE_RESOLUE_APPRECIEE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "lieu-autre",
+   "question": "sensory2.1482",
+   "texte": "Ma mère adore son spa à Biarritz.",
+   "attendu": "rien (autre personne)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "REFERENT_RESOLU",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "autre_personne"
+     },
+     {
+      "declencheur": "RELATION_EXPLICITE_DISTINCTE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "autre_personne"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "lieu-ideal",
+   "question": "sensory2.1487",
+   "texte": "Beaucoup de bois clair, une grande baie vitrée, et l’odeur du feu de cheminée.",
+   "attendu": "des éléments voulus (esthétique et sensoriel)",
+   "observe": {
+    "preuves": [
+     "PREFERENCE:PREFERENCE.sensory.aesthetic_universe (undetermined)",
+     "PREFERENCE:PREFERENCE.sensory.aesthetic_universe (undetermined)"
+    ],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "ELEMENT_SENSORIEL",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     },
+     {
+      "declencheur": "ELEMENT_ESTHETIQUE",
+      "debut": 0,
+      "fin": 22,
+      "issue": "ecrit"
+     },
+     {
+      "declencheur": "ELEMENT_ESTHETIQUE",
+      "debut": 24,
+      "fin": 46,
+      "issue": "ecrit"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "lieu-ideal-nie",
+   "question": "sensory2.1487",
+   "texte": "Surtout pas de moquette ni de musique d’ambiance.",
+   "attendu": "aucune présence voulue écrite (ce sont des refus)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false,
+    "releve": [
+     {
+      "declencheur": "ELEMENT_ESTHETIQUE",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "attitude_non_conforme"
+     },
+     {
+      "declencheur": "ELEMENT_SENSORIEL",
+      "debut": null,
+      "fin": null,
+      "issue": "ecarte",
+      "motif": "copie_inexacte"
+     }
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "envie",
+   "question": "food2.0882A",
+   "texte": "J’ai très envie de ramen tonkotsu en ce moment.",
+   "attendu": "une envie, à proposer au Carnet (rien ajouté d’office)",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false
+   },
+   "conforme": true
+  },
+  {
+   "id": "pas-envie",
+   "question": "food2.0882A",
+   "texte": "Rien de particulier, je mange de tout.",
+   "attendu": "aucune envie",
+   "observe": {
+    "preuves": [],
+    "faits": [],
+    "ouvertes": [],
+    "extractionEnAttente": false
+   },
+   "conforme": true
+  },
+  {
+   "id": "cible-recit-aspect-lieu",
+   "question": "récit",
+   "texte": "J’adore l’ambiance du Café de Flore le matin.",
+   "attendu": "LOVE absente",
+   "observe": {
+    "entites": [],
+    "ouvertes": [
+     "Café de Flore (love, cible non établie)"
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "cible-recit-referent-marque",
+   "question": "récit",
+   "texte": "J’adore Patagonia, j’ai presque tout chez eux.",
+   "attendu": "LOVE ecrite",
+   "observe": {
+    "entites": [
+     "Patagonia:LOVE"
+    ],
+    "ouvertes": [
+     "j'ai presque tout chez eux (achète massivement / fidèle à la marque)"
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "cible-recit-aspect-destination",
+   "question": "récit",
+   "texte": "J’aimerais découvrir la cuisine du Japon.",
+   "attendu": "WANT_TO_VISIT absente",
+   "observe": {
+    "entites": [],
+    "ouvertes": [
+     "Japon (curious, cible non établie)"
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "cible-recit-referent-destination",
+   "question": "récit",
+   "texte": "J’aimerais vraiment aller au Japon un jour.",
+   "attendu": "WANT_TO_VISIT ecrite",
+   "observe": {
+    "entites": [
+     "Japon:WANT_TO_VISIT"
+    ],
+    "ouvertes": []
+   },
+   "conforme": true
+  },
+  {
+   "id": "cible-recit-aspect-auteur",
+   "question": "récit",
+   "texte": "J’adore les couvertures des livres d’Annie Ernaux.",
+   "attendu": "LOVE absente",
+   "observe": {
+    "entites": [],
+    "ouvertes": [
+     "Annie Ernaux (love, cible non établie)"
+    ]
+   },
+   "conforme": true
+  },
+  {
+   "id": "D1-qualification",
+   "question": "garde-fous",
+   "texte": "Une paire de baskets en toile · Un livre de cuisine japonaise · Un portefeuille en cuir pleine fleur",
+   "attendu": "baskets rétrogradées (refus SOFT), livre compatible",
+   "observe": {
+    "verdict": {
+     "Un livre de cuisine japonaise": "compatible_verifiee",
+     "Un portefeuille en cuir pleine fleur": "compatible_verifiee",
+     "Une paire de baskets en toile": "retrogradee"
+    },
+    "ecartees": [],
+    "bilan": {
+     "compatiblesVerifiees": 2,
+     "compatiblesAvecDouteSoft": 0,
+     "retrogradees": 1,
+     "ecarteesHard": 0,
+     "ecarteesNonVerifiees": 0,
+     "qualificationEchouee": false
+    }
+   },
+   "conforme": true
+  }
+ ]
+}

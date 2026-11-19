@@ -47,8 +47,12 @@ export async function compteLocal(nom: string): Promise<CompteLocal> {
 /** Petit compteur de vérifications : une preuve qui échoue fait sortir le script en erreur. */
 export function verificateur() {
   let ok = 0, ko = 0;
+  const resultats: { libelle: string; conforme: boolean; detail?: string }[] = [];
   return {
+    /** Chaque vérification, dans l'ordre : pour les rapports « résultat par cas ». */
+    resultats,
     verifier(cond: boolean, libelle: string, detail = '') {
+      resultats.push({ libelle, conforme: cond, ...(cond || !detail ? {} : { detail: detail.slice(0, 600) }) });
       if (cond) { ok++; console.log(`  ✓ ${libelle}`); }
       else { ko++; console.log(`  ✗ ${libelle}${detail ? ' — ' + detail : ''}`); }
     },

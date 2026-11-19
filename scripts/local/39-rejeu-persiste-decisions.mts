@@ -230,5 +230,29 @@ console.log('\n═══ D9 — destination, lieu, entité (créateur), activit�
   for (const id of ['activity.0282', 'activity.0283', 'activity.0285']) await admissible(a.c, id, false, `D9.8 fermée par le produit (présume une pratique)`);
 }
 
+// ═══ ACTIVITÉS (20 nov.) — référent d'activité typé, dérivé des réponses, jamais une entité ═══
+console.log('\n═══ Activités : aimer ≠ pratiquer ; pratiquer ≠ équipement ; aucune entité créée (relu en base) ═══');
+{
+  const a = await compteLocal('rejeu-activites');
+  await repondre(a, 'craft.0615', ['Céramique ou poterie']);
+  await repondre(a, 'sportp.0504', ['Escalade']);
+  const { etat } = await lireEtat(a.client as never, { userId: a.userId });
+  const carte = etat.entiteParQuestion ?? new Map();
+  v.verifier(carte.get('activity.0281')?.id === 'activite:creativity:ceramique_ou_poterie', 'ACT.1 « ce que tu aimes le plus dans… » reçoit la céramique (attrait déclaré), pas l’escalade', JSON.stringify(carte.get('activity.0281')));
+  v.verifier(['activity.0282', 'activity.0283', 'activity.0284'].every((id) => carte.get(id)?.id === 'activite:sport_practice:escalade'), 'ACT.2 niveau, fréquence, « progresser… ou continuer » reçoivent l’escalade (pratique déclarée), jamais la céramique');
+  v.verifier(!carte.has('activity.0285'), 'ACT.3 le matériel reste fermé : pratiquer ne démontre pas un équipement');
+  const ent = lu(await a.client.from('knowledge_evidences').select('target_family').eq('user_id', a.userId).eq('target_family', 'ENTITY'), 'entités') as unknown[];
+  v.verifier(ent.length === 0, 'ACT.4 aucune entité écrite au journal : le référent est dérivé, pas créé');
+  const esc = carte.get('activity.0283')!;
+  const ro = await svc.enregistrerReponseOuverte(a.client as never, { userId: a.userId, questionId: 'activity.0283', texte: 'Deux fois par semaine, en salle.', acteId: `rejeu-${++n}`, entite: esc });
+  const src = lu(await a.client.from('knowledge_sources').select('branch_id').eq('id', ro.verbatimSourceId).single(), 'source') as { branch_id: string };
+  const { etat: apres } = await lireEtat(a.client as never, { userId: a.userId });
+  v.verifier(src.branch_id === 'entite:activite:sport_practice:escalade' && !apres.entiteParQuestion?.has('activity.0283'), 'ACT.5 la réponse reste rattachée à l’escalade ; la question n’est plus posée pour elle', src.branch_id);
+  const b = await compteLocal('rejeu-activites-regarde');
+  await repondre(b, 'sportw.0532', ['Football']);
+  const { etat: eb } = await lireEtat(b.client as never, { userId: b.userId });
+  v.verifier(eb.entiteParQuestion?.get('activity.0281')?.libelle === 'le football' && !eb.entiteParQuestion?.has('activity.0283'), 'ACT.6 aimer regarder le football : « ce que tu aimes dans le football » oui, « à quelle fréquence le pratiques-tu » non');
+}
+
 console.log('\n(faux modèle derrière le relais ; données fictives ; comptes de test séparés)');
 v.bilan();

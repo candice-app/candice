@@ -38,7 +38,9 @@ import { ENTITY_RELATIONS, type EntityRelation } from '@/lib/knowledge/vocabular
 // v3 (19 nov., 19h56) : épreuve de la cible — une appréciation d'un aspect n'est plus transportée sur
 // le référent. Aucune lecture v2 n'existe en production (le code servi ne contient pas ce lecteur) ;
 // la montée de version garantit seulement qu'une lecture locale v2 serait relue sous la règle actuelle.
-export const VERSION_LECTURE = 3;
+// v4 (20 nov.) : déclencheurs présentés par code ; variantes typographiques d'un même caractère
+// tolérées dans la copie. Corrige les écarts du premier passage réel (19 nov., 31/38).
+export const VERSION_LECTURE = 4;
 
 export interface Destination {
   readonly question: string; readonly rang: string; readonly declencheur: string; readonly signification: string;
@@ -107,8 +109,13 @@ for (const d of TOUTES) if (!exigenceDe(d)) throw new Error(`destination ${cleDe
  * ÉPREUVE 1 — la copie exacte.
  * ──────────────────────────────────────────────────────────────────────────── */
 /** Position du passage dans la réponse, à l'identique (forme Unicode composée seulement). */
+// Variantes typographiques d'UN MÊME caractère (constaté au premier passage réel, 19 nov. : le modèle
+// rend « j'adore » pour « j’adore »). Chaque substitution remplace un caractère par un caractère :
+// les positions trouvées restent celles du texte de la personne, et rien d'autre n'est toléré.
+const TYPO: Readonly<Record<string, string>> = { '’': "'", 'ʼ': "'", '‘': "'", '`': "'", '´': "'", '\u00A0': ' ', '\u202F': ' ', '\u2009': ' ', '“': '"', '”': '"', '«': '"', '»': '"', '–': '-', '‑': '-' };
+const sansTypo = (s: string) => s.replace(/[’ʼ‘`´\u00A0\u202F\u2009“”«»–‑]/g, (c) => TYPO[c] ?? c);
 export function positionExacte(texte: string, passage: string): { debut: number; fin: number } | null {
-  const t = texte.normalize('NFC'), p = passage.normalize('NFC');
+  const t = sansTypo(texte.normalize('NFC')), p = sansTypo(passage.normalize('NFC'));
   if (p.trim().length === 0 || p !== p.trim()) return null;
   const debut = t.indexOf(p);
   return debut < 0 ? null : { debut, fin: debut + p.length };
@@ -428,7 +435,8 @@ export const MODELE_DESTINATIONS = 'claude-sonnet-4-6';
 export function consigneDeDecoupage(enonce: string, destinations: readonly Destination[], barriere: string): string {
   return `Tu lis UNE réponse à la question « ${enonce} ». Tu DÉCOUPES et tu QUALIFIES ; tu n'interprètes rien et tu ne complètes rien.
 Pour chacun des déclencheurs ci-dessous, rends les passages de la réponse qui le satisfont.
-${destinations.map((d) => `- ${d.declencheur} : ${d.signification}. Preuve exigée : ${d.preuve}`).join('\n')}
+${destinations.map((d, i) => `- ${codeDeDeclencheur(i)} : ${d.signification}. Preuve exigée : ${d.preuve}`).join('\n')}
+Le champ « declencheur » reçoit le CODE (C1, C2…) tel qu'écrit ci-dessus, et rien d'autre.
 
 RÈGLES DE COPIE. « passage », « condition », « limite », « identite.nom » et « identite.rattachement » sont copiés de la réponse CARACTÈRE POUR CARACTÈRE (accents, majuscules, fautes comprises). Un passage est le plus court groupe de mots qui nomme la chose. Tu ne corriges, ne traduis, ne complètes jamais.
 
@@ -446,13 +454,28 @@ POUR CHAQUE PASSAGE, déclare ce que la phrase en dit :
 Si rien ne satisfait un déclencheur, ne rends rien pour lui. Dans le doute, ne rends rien.
 INTERDICTIONS : ${barriere || 'ne déduis rien que la personne n’a pas écrit.'}`;
 }
+/** Les déclencheurs sont présentés au modèle par un code neutre (C1, C2…) : au premier passage réel,
+ *  il avait « corrigé » SUJET_DECLARE en SUJET_DECLARED, et la lecture entière était perdue. */
+export const codeDeDeclencheur = (i: number) => `C${i + 1}`;
+/** Le découpage rendu par le modèle, ses codes remplacés par les déclencheurs. Un code inconnu
+ *  reste tel quel : l'examen l'écarte (« declencheur_inconnu »). Le nom exact est aussi accepté. */
+export function decoderDeclencheurs(brut: unknown, destinations: readonly Destination[]): unknown {
+  const parCode = new Map(destinations.map((d, i) => [codeDeDeclencheur(i), d.declencheur]));
+  const segments = (brut as { segments?: unknown })?.segments;
+  if (!Array.isArray(segments)) return brut;
+  return { ...(brut as object), segments: segments.map((x) => {
+    const seg = x as Record<string, unknown>;
+    const v = typeof seg?.declencheur === 'string' ? seg.declencheur.trim() : seg?.declencheur;
+    return typeof v === 'string' && parCode.has(v) ? { ...seg, declencheur: parCode.get(v) } : seg;
+  }) };
+}
 export async function lireSegmentsParModele(enonce: string, texte: string, destinations: readonly Destination[], barriere: string): Promise<unknown> {
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
   const msg = await anthropic.messages.create({
     model: MODELE_DESTINATIONS, max_tokens: 1200, system: consigneDeDecoupage(enonce, destinations, barriere),
     tools: [{ name: 'segments', description: 'Passages exacts de la réponse, rangés par déclencheur et qualifiés.', input_schema: { type: 'object' as const,
       properties: { segments: { type: 'array', items: { type: 'object', properties: {
-        declencheur: { type: 'string', enum: destinations.map((d) => d.declencheur) }, passage: { type: 'string' },
+        declencheur: { type: 'string', enum: destinations.map((_, i) => codeDeDeclencheur(i)) }, passage: { type: 'string' },
         attitude: { type: 'string', enum: ['rejet', 'interet', 'appreciation', 'presence_voulue', 'souhait', 'projection', 'mention', 'referent', 'autre'] },
         affirme: { type: 'boolean' }, personne: { type: 'string', enum: ['soi', 'autre', 'indetermine'] },
         temps: { type: 'string', enum: ['actuel', 'passe_revolu', 'futur_ou_souhait', 'hypothetique', 'indetermine'] },
@@ -465,5 +488,5 @@ export async function lireSegmentsParModele(enonce: string, texte: string, desti
   });
   const bloc = msg.content.find((b) => b.type === 'tool_use');
   if (!bloc || bloc.type !== 'tool_use') throw new Error('réponse du modèle sans découpage');
-  return bloc.input;
+  return decoderDeclencheurs(bloc.input, destinations);
 }

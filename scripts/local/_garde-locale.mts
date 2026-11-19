@@ -35,10 +35,18 @@ export function exigerLocal({ nom, url, port }: AttenduLocal): URL {
  * Sans effet de bord — aucune requête n'est envoyée à l'application.
  */
 export function exigerProcessusLocal(port: number): void {
+  // lsof sort en code 1 quand rien ne correspond (aucune connexion établie) : ce n'est pas une panne.
+  // Seule l'ABSENCE de lsof (ENOENT) en est une — vérifiée d'abord. (Constaté sur le Mac d'Estelle le
+  // 19 nov. : `lsof -v` y écrit sa version sur stderr et sort en erreur ; l'ancienne garde le prenait
+  // pour une absence.)
   const lsof = (args: string[]) => {
-    try { return execFileSync('lsof', args, { encoding: 'utf8' }); }
-    catch { return ''; }
+    try { return execFileSync('lsof', args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
+    catch (e) {
+      if ((e as NodeJS.ErrnoException).code === 'ENOENT') throw new Error("ARRÊT — `lsof` indisponible : impossible de prouver où l'application se connecte.");
+      return String((e as { stdout?: string }).stdout ?? '');
+    }
   };
+  lsof(['-v']);
   const ecoute = lsof(['-nP', `-iTCP:${port}`, '-sTCP:LISTEN', '-t']).trim();
   if (!ecoute) {
     throw new Error(`ARRÊT — aucun processus n'écoute sur :${port}. Lance l'application d'abord.`);
@@ -59,8 +67,5 @@ export function exigerProcessusLocal(port: number): void {
       `ARRÊT — le processus de l'application est connecté hors de la boucle locale : ` +
       `${[...new Set(distantes)].join(', ')}. Une route locale peut servir une base distante.`,
     );
-  }
-  if (!lsof(['-v'])) {
-    throw new Error("ARRÊT — `lsof` indisponible : impossible de prouver où l'application se connecte.");
   }
 }
