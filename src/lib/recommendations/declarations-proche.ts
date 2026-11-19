@@ -160,6 +160,15 @@ export async function lireRejetsDuProche(
     }
     if (motif !== null) { ecarter(motif); continue; }
 
+    // UN GARDE-FOU DU DISCOVERY N'A PAS DE LIBELLÉ APPARIABLE. Son `target_construct` est un
+    // chemin technique (« shoe.gift_openness.cadeau_chaussures_refuse »), et l'appariement
+    // retire toute idée qui partage UN mot avec le libellé du rejet : ce chemin retirait donc
+    // toute idée contenant « cadeau », « attention », « une », « pas »… — et ne retirait pas
+    // les chaussures d'une idée qui ne dit pas « chaussures ». Tant que chaque garde-fou du
+    // Discovery ne porte pas ce qu'il écarte (décision de contenu, non prise), il n'écarte
+    // rien, et c'est COMPTÉ ici plutôt que de retirer des idées au hasard.
+    if (l.target_family === 'GUARDRAIL' && sourceType === 'discovery_closed') { ecarter('garde_fou_discovery_sans_objet_appariable'); continue; }
+
     if (l.target_family === 'GUARDRAIL') {
       rejets.push({
         label: String(l.target_construct ?? ''), family: 'GUARDRAIL',

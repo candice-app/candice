@@ -37,6 +37,8 @@ import type { Evidence } from '@/lib/knowledge/evidence';
 export { cleOption } from './cle-option';
 import { cleOption } from './cle-option';
 import { relationsAdmises, OUVERTES_ARCHIVEES } from './contrats-ouverts';
+import aliasOptions from './alias-options.json';
+import { DESTINATIONS_PAR_QUESTION, executable, lireSegmentsParModele, validerSegments, type Destination } from './destinations';
 import { libelleBranche } from './branches';
 import { poolDe, estPrioritaire } from './coexistence';
 
@@ -73,7 +75,7 @@ function aServir(c: Choix): QuestionAServir {
     libelle: libelleBranche(q.branche) ?? libelleDuPool(q.branche),
     question_text: q.enonce,
     question_type: type,
-    options: type === 'text' ? null : q.options.map((o) => ({ label: o.libelle, value: cleOption(o) })),
+    options: type === 'text' ? null : q.options.filter((o) => !estAliasMasque(q.id, o)).map((o) => ({ label: o.libelle, value: cleOption(o) })),
     locked_text: true,
     motif: c.motif,
   };
@@ -105,6 +107,16 @@ export async function prochainesQuestionsPour(
   if (manques.length > 0) console.warn('[discovery] état incomplet', manques);
   return { questions: r.choix.map(aServir), diagnostic: r.diagnostic, manques };
 }
+
+/** Une réponse donnée pour un projet en cours. `value` = JSON { projet, question, option, contrat }. */
+export const FAIT_REPONSE_DE_PROJET = 'discovery.reponse_de_projet';
+
+const ALIAS = new Map<string, string>((aliasOptions as { alias: { question: string; rang_canonique: string; rang_alias: string }[] }).alias
+  .map((a) => [`${a.question}|r${a.rang_alias}`, `r${a.rang_canonique}`] as [string, string]));
+/** La clé de l'option canonique quand la clé reçue est celle d'un alias masqué (onglet 6). */
+export const optionCanonique = (questionId: string, cle: string): string => ALIAS.get(`${questionId}|${cle}`) ?? cle;
+/** Vrai si cette option est un alias masqué : conservée pour les réponses historiques, jamais affichée. */
+export const estAliasMasque = (questionId: string, o: OptionV3): boolean => ALIAS.has(`${questionId}|${cleOption(o)}`);
 
 export class ReponseInvalideError extends Error {}
 /** Le même acte existe déjà avec une AUTRE réponse : ce n'est pas un renvoi, c'est refusé. */
@@ -157,6 +169,8 @@ export interface ResultatReponse {
   /** L'instant de l'acte : celui de la première écriture, y compris quand il est renvoyé. */
   readonly timestamp: string;
   readonly preuvesEcrites: number;
+  /** Faits écrits : options de fait, ou réponses rattachées à un projet. */
+  readonly faitsEcrits: number;
   /** Options retenues qui n'ont rien produit, avec le motif. Jamais silencieux. */
   readonly sansEmission: readonly { readonly option: string; readonly motif: string }[];
 }
@@ -181,6 +195,9 @@ export async function enregistrerReponseFermee(
     readonly clesOptions: readonly string[];
     /** Identité de l'acte : « cette question dans ce lot ». Voir lot.ts. */
     readonly acteId: string;
+    /** Le projet en cours auquel cette réponse appartient (question de niveau C, achat ou séjour
+     *  concret). La réponse est alors rattachée au projet et n'écrit AUCUNE connaissance générale. */
+    readonly projet?: Projet;
     readonly timestamp?: string;
   },
 ): Promise<ResultatReponse> {
@@ -194,7 +211,9 @@ export async function enregistrerReponseFermee(
 
   const parCle = new Map(q.options.map((o) => [cleOption(o), o] as const));
   const choisies: OptionV3[] = [];
-  for (const cle of input.clesOptions) {
+  for (const cleRecue of input.clesOptions) {
+    // Un alias (onglet 6) « produit EXACTEMENT la même connaissance que l'option canonique ».
+    const cle = optionCanonique(q.id, cleRecue);
     const o = parCle.get(cle);
     if (!o) throw new ReponseInvalideError(`option « ${cle} » inconnue de « ${q.id} » — rien n'est écrit`);
     choisies.push(o);
@@ -212,7 +231,7 @@ export async function enregistrerReponseFermee(
   //    l'appelant à partir du lot signé). La même requête renvoyée porte le même acte : rien
   //    n'est réécrit. Un autre lot est un autre acte, même si les options sont identiques.
   if (!input.acteId?.trim()) throw new ReponseInvalideError('acte sans identité : une réponse appartient à un lot proposé');
-  const clesTriees = [...new Set(input.clesOptions)].sort();
+  const clesTriees = [...new Set(input.clesOptions.map((c) => optionCanonique(q.id, c)))].sort();
   const optionRef = clesTriees.join(',');
   const sourceId = sourceDeLActe('discovery_closed', input.userId, q.id, input.acteId);
   const actes = await sourcesDeLaQuestion(client, input.userId, 'discovery_closed', q.id);
@@ -223,7 +242,7 @@ export async function enregistrerReponseFermee(
     if ((meme.option_ref ?? '') !== optionRef) {
       throw new ActeDejaEnregistreError(`« ${q.id} » a déjà reçu une autre réponse dans ce parcours — rien n'est écrit`);
     }
-    return { sourceId, preuvesEcrites: 0, sansEmission: [], dejaFaite: true, timestamp: meme.ts };
+    return { sourceId, preuvesEcrites: 0, faitsEcrits: 0, sansEmission: [], dejaFaite: true, timestamp: meme.ts };
   }
   const about = accountAbout(asUserId(input.userId));
   const source = createSourceRecord({
@@ -235,13 +254,41 @@ export async function enregistrerReponseFermee(
     // Les clés des options, telles que le navigateur les a renvoyées : de quoi reconnaître le
     // même acte, et relire ce qui a été coché sans dépendre de la progression.
     optionRef,
+    ...(input.projet ? { branchId: `projet:${input.projet.id}` } : {}),
     timestamp,
   });
 
   const evidences: Evidence[] = [];
+  const facts: ReturnType<typeof createFact>[] = [];
   const sansEmission: { option: string; motif: string }[] = [];
   for (const o of choisies) {
     const p = produireDepuisOption(q, o);
+    // ── UNE RÉPONSE DONNÉE POUR UN PROJET APPARTIENT AU PROJET (décision n° 4). « Pour cet achat,
+    //    plutôt un petit format » ne dit pas que la personne préfère les petits formats : écrite
+    //    comme une préférence, elle compterait un jour pour un goût général. Elle est gardée comme
+    //    un FAIT rattaché au projet, avec le contrat exact de l'option, et n'entre dans aucune
+    //    consolidation. Clos, le projet garde ses réponses ; elles n'ouvrent ni n'interdisent rien.
+    if (input.projet) {
+      if (p.type === 'rien' && p.motif !== 'connaissance_ouverte' && p.motif !== 'contrat_incomplet') { sansEmission.push({ option: o.libelle, motif: p.motif }); continue; }
+      const valeur = JSON.stringify({
+        projet: input.projet.id, type: input.projet.type, branche: input.projet.branche, question: q.id, option: cleOption(o), libelle: o.libelle,
+        contrat: { voie: o.voie, ...(o.famille ? { famille: o.famille } : {}), ...(o.domaine ? { domaine: o.domaine } : {}), ...(o.attribut ? { attribut: o.attribut } : {}),
+          ...(o.valeur ? { valeur: o.valeur } : {}), ...(o.polarite ? { polarite: o.polarite } : {}), ...(o.severite ? { severite: o.severite } : {}) },
+      });
+      facts.push(createFact({ about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, FAIT_REPONSE_DE_PROJET, `${q.id}:${cleOption(o)}`),
+        fact_type: FAIT_REPONSE_DE_PROJET, value: valeur, context: `projet:${input.projet.id}`, source: sourceId, timestamp,
+        confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' }));
+      continue;
+    }
+    if (p.type === 'fait') {
+      facts.push(createFact({ about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, p.fait.factType, `${p.fait.valeur}:${cleOption(o)}`),
+        fact_type: p.fait.factType,
+        // La valeur du contrat, avec sa polarité et sa stabilité : un fait « sous condition » ou
+        // « temporaire » ne doit pas se relire comme un fait acquis.
+        value: JSON.stringify({ valeur: p.fait.valeur, ...(p.fait.polarite ? { polarite: p.fait.polarite } : {}), ...(p.fait.stabilite ? { stabilite: p.fait.stabilite } : {}), question: q.id, libelle: o.libelle }),
+        source: sourceId, timestamp, confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' }));
+      continue;
+    }
     if (p.type === 'rien') { sansEmission.push({ option: o.libelle, motif: p.motif }); continue; }
     for (const e of [p.evidence, ...(p.autres ?? [])]) evidences.push({
       ...e,
@@ -279,7 +326,7 @@ export async function enregistrerReponseFermee(
   // mieux vaut la reposer que perdre la réponse en interdisant de la reposer.
   // LA SOURCE EST ÉCRITE MÊME SANS PREUVE : l'acte a eu lieu, et c'est elle qui permet de
   // reconnaître son renvoi. Une réponse dont aucune option n'émet reste un acte.
-  const issue = await persistKnowledge(client, { source, evidences });
+  const issue = await persistKnowledge(client, { source, evidences, facts });
   // LE DERNIER MOT COMPTE, et un seul. On relit APRÈS avoir écrit : deux actes arrivés en même
   // temps se voient alors l'un l'autre, et les deux requêtes concluent pareil.
   await reconcilierDernierMot(client, input.userId, 'discovery_closed', q.id, sourceId, timestamp);
@@ -289,8 +336,8 @@ export async function enregistrerReponseFermee(
   // Deux requêtes du MÊME acte arrivées ensemble passent toutes deux le contrôle d'existence ;
   // la base n'en écrit qu'une (identifiants dérivés). Celle dont l'écriture a été absorbée
   // n'a pas créé l'acte : elle le dit, pour que rien ne se compte deux fois.
-  if (issue === 'replayed') return { sourceId, preuvesEcrites: 0, sansEmission, timestamp, dejaFaite: true };
-  return { sourceId, preuvesEcrites: evidences.length, sansEmission, timestamp };
+  if (issue === 'replayed') return { sourceId, preuvesEcrites: 0, faitsEcrits: 0, sansEmission, timestamp, dejaFaite: true };
+  return { sourceId, preuvesEcrites: evidences.length, faitsEcrits: facts.length, sansEmission, timestamp };
 }
 
 /**
@@ -318,6 +365,10 @@ export interface ResultatOuverte {
   readonly preuvesExtraites: number;
   /** Le modèle n'a pas répondu : le verbatim est sauvegardé, sa lecture reste à faire. */
   readonly extractionEnAttente: boolean;
+  /** La réponse appartient à ce projet : aucune lecture générale n'en est faite. */
+  readonly rattacheeAuProjet?: string;
+  /** Questions de l'onglet 17 : ce que leurs destinations ont écrit, et ce qui est resté au verbatim. */
+  readonly destinations?: ResultatDestinations;
   /** `food2.0882A` seulement : ce que le contrat dédié a écrit. */
   readonly envie?: { readonly ecrite: boolean; readonly contraintes: number; readonly ecartes: readonly string[] };
 }
@@ -333,6 +384,11 @@ export async function enregistrerReponseOuverte(
     readonly texte: string;
     /** Identité de l'acte : « cette question dans ce lot ». Voir lot.ts. */
     readonly acteId: string;
+    /** Le projet en cours auquel cette réponse appartient : le verbatim lui est rattaché, et
+     *  aucune connaissance générale n'en est tirée (l'envie culinaire garde son contrat propre). */
+    readonly projet?: Projet;
+    /** Lecteur de segments (onglet 17). Ne se passe qu'en essai ; par défaut, le modèle. */
+    readonly lecteur?: LecteurDeSegments;
     readonly timestamp?: string;
   },
 ): Promise<ResultatOuverte> {
@@ -382,10 +438,12 @@ export async function enregistrerReponseOuverte(
     source: createSourceRecord({
       about, ownerId, id: verbatimSourceId, sourceType: 'discovery_open',
       questionCode: factType, questionText: q.enonce, rawText: texte, timestamp,
+      ...(input.projet ? { branchId: `projet:${input.projet.id}` } : {}),
     }),
     facts: [createFact({
       about, ownerId, fact_id: factId(verbatimSourceId, factType, texte),
       fact_type: factType, value: texte, source: verbatimSourceId, timestamp,
+      ...(input.projet ? { context: `projet:${input.projet.id}` } : {}),
       confidence: 'high', user_confirmed: true, assertionStatus: 'explicit',
     })],
   });
@@ -395,12 +453,23 @@ export async function enregistrerReponseOuverte(
   // Un acte arrivé en même temps est plus récent : c'est lui qui sera lu, pas celui-ci.
   if (!dernierMot) return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp };
 
+  // UNE RÉPONSE DE PROJET N'EST PAS LUE POUR EN TIRER UNE CONNAISSANCE GÉNÉRALE : la phrase est
+  // gardée, rattachée au projet. Seule l'envie culinaire, qui a son contrat propre, est lue.
+  if (input.projet && q.id !== CONTRAT_ENVIE_CULINAIRE) {
+    return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp, rattacheeAuProjet: input.projet.id };
+  }
+
   // ── 2. LA LECTURE PAR LE MODÈLE, et seulement maintenant. Son échec ne retire pas le
   //       verbatim, et il est SIGNALÉ : `extractionEnAttente` dit qu'il faudra rejouer.
   try {
     if (q.id === CONTRAT_ENVIE_CULINAIRE) {
       const envie = await ecrireEnvieCulinaire(client, { userId: input.userId, texte, verbatimSourceId, timestamp });
       return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, envie, timestamp };
+    }
+    // Les questions de l'onglet 17 ont un contrat de destinations : lui seul décide de ce qui s'écrit.
+    if (DESTINATIONS_PAR_QUESTION.has(q.id)) {
+      const d = await ecrireDestinations(client, { userId: input.userId, question: q, texte, barriere, verbatimSourceId, timestamp, ...(input.lecteur ? { lecteur: input.lecteur } : {}) });
+      return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: d.preuves, extractionEnAttente: false, timestamp, destinations: d };
     }
     const { extractFreeText } = await import('@/lib/knowledge-write/extract-free-text');
     const r = await extractFreeText(client, {
@@ -483,6 +552,79 @@ async function ecrireEnvieCulinaire(
   return { ecrite: facts.length > 0, contraintes: openKnowledge.length, ecartes: lecture.ecartes };
 }
 
+/* ────────────────────────────────────────────────────────────────────────────
+ * ONGLET 17 — les destinations conditionnelles (voir destinations.ts).
+ *
+ * Une seule source de lecture, d'identifiant DÉRIVÉ de celle du verbatim : rejouer après une
+ * panne retombe sur la même source. Elle existe aussi quand rien ne se déclenche — c'est elle
+ * qui dit « lu, verbatim seul », et qui distingue ce cas d'une lecture qui n'a pas eu lieu.
+ * ──────────────────────────────────────────────────────────────────────────── */
+export type LecteurDeSegments = (enonce: string, texte: string, destinations: readonly Destination[], barriere: string) => Promise<unknown>;
+export interface ResultatDestinations {
+  readonly dejaLue: boolean; readonly preuves: number; readonly faits: number;
+  /** Déclencheurs satisfaits mais dont la destination ne peut pas s'écrire, avec le motif. */
+  readonly nonExecutees: readonly { readonly declencheur: string; readonly motif: string }[];
+  readonly ecartes: readonly string[];
+}
+export function sourceLectureDestinations(verbatimSourceId: string): string {
+  return evidenceId('lecture-destinations', verbatimSourceId);
+}
+async function ecrireDestinations(
+  client: WriteClient,
+  input: { userId: string; question: QuestionV3; texte: string; barriere: string; verbatimSourceId: string; timestamp: string; lecteur?: LecteurDeSegments },
+): Promise<ResultatDestinations> {
+  const q = input.question;
+  const destinations = DESTINATIONS_PAR_QUESTION.get(q.id)!;
+  const about = accountAbout(asUserId(input.userId)); const ownerId = asUserId(input.userId);
+  const sourceId = sourceLectureDestinations(input.verbatimSourceId);
+  const dejaLue = await (client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: unknown }> } } };
+  }).from('knowledge_sources').select('id').eq('id', sourceId).maybeSingle();
+  if (dejaLue.data) return { dejaLue: true, preuves: 0, faits: 0, nonExecutees: [], ecartes: [] };
+
+  const brut = await (input.lecteur ?? lireSegmentsParModele)(q.enonce, input.texte, destinations, input.barriere);   // LÈVE si le modèle est en panne
+  const { parDeclencheur, ecartes } = validerSegments(input.texte, brut, destinations);
+  const domaine = q.options.find((o) => o.domaine)?.domaine ?? q.branche;
+  const cle = (x: string) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  const evidences: Evidence[] = []; const facts: ReturnType<typeof createFact>[] = []; const nonExecutees: { declencheur: string; motif: string }[] = [];
+  const { asSubjectId } = await import('@/lib/knowledge/identity');
+  const { normalizeLabel } = await import('@/lib/knowledge/normalize');
+  for (const d of destinations) {
+    const passages = parDeclencheur.get(d.declencheur) ?? [];
+    if (passages.length === 0) continue;
+    const e = executable(d);
+    if (!e.ok) { nonExecutees.push({ declencheur: d.declencheur, motif: e.motif }); continue; }
+    for (const passage of passages) {
+      if (d.voie === 'FACT') {
+        const type = `discovery.fait.${cle(domaine)}.${cle(d.cle)}`;
+        facts.push(createFact({ about, ownerId, fact_id: factId(sourceId, type, passage), fact_type: type,
+          value: JSON.stringify({ valeur: passage, question: q.id, declencheur: d.declencheur }), source: sourceId, timestamp: input.timestamp,
+          // Les mots sont ceux de la personne ; c'est leur RANGEMENT qui est une lecture.
+          confidence: 'medium', user_confirmed: false, assertionStatus: 'inferred' }));
+      } else if (d.famille === 'INTEREST') {
+        const sujet = asSubjectId(normalizeLabel(passage));
+        evidences.push({
+          about, ownerId, source_id: sourceId, source_type: 'extraction_inferred', evidence_id: evidenceId(sourceId, `INTEREST:${sujet}`),
+          target_family: 'INTEREST', target_construct: sujet, subject: sujet, subjectLabel: passage, raw_information: passage,
+          // « ponctuellement » : le contrat fixe la stabilité à `contextual`, le rôle à `secondary`,
+          // et AUCUN degré d'engagement (pas de `relationship`). `strength` n'est pas ce degré :
+          // le journal exige une force sur toute preuve sans valeur, et la lecture d'un texte
+          // libre l'écrit partout à `moderate` (extract-free-text.ts).
+          strength: 'moderate', confidence: 'low', context: 'GLOBAL', stability: 'contextual', evidence_role: 'secondary',
+          assertionStatus: 'inferred', assertionBasis: 'self_report', timestamp: input.timestamp, version: JOURNAL_VERSION_STAMP,
+        } as unknown as Evidence);
+      } else nonExecutees.push({ declencheur: d.declencheur, motif: 'famille_non_prise_en_charge' });
+    }
+  }
+  await persistKnowledge(client, {
+    source: createSourceRecord({ about, ownerId, id: sourceId, sourceType: 'extraction_inferred', questionCode: `discovery.${q.id}`,
+      questionText: `Lecture par destinations conditionnelles (onglet 17) — ${q.id}`, rawText: input.texte, timestamp: input.timestamp }),
+    evidences, facts,
+  });
+  if (nonExecutees.length > 0) console.warn('[discovery] destinations non exécutées — verbatim seul', q.id, nonExecutees);
+  return { dejaLue: false, preuves: evidences.length, faits: facts.length, nonExecutees, ecartes };
+}
+
 /**
  * REJOUE les lectures restées en attente : réponses ouvertes du Discovery dont le verbatim
  * est en base et dont la lecture par le modèle n'a pas abouti (panne, coupure).
@@ -534,11 +676,13 @@ export async function rejouerLecturesEnAttente(
       // Le rejeu applique le MÊME contrat que la première lecture.
       ...(relationsAdmises(qid) ? { relationsAdmises: relationsAdmises(qid) } : {}),
     };
-    const attendue = estEnvie ? sourceLectureEnvie(v.id) : extractionSourceId(entree);
+    const aDestinations = DESTINATIONS_PAR_QUESTION.has(qid);
+    const attendue = estEnvie ? sourceLectureEnvie(v.id) : aDestinations ? sourceLectureDestinations(v.id) : extractionSourceId(entree);
     if (await existe(attendue)) continue;                       // déjà lue : rien à faire
     if (rejouees >= (input.max ?? 5)) { encoreEnAttente++; continue; }
     try {
       if (estEnvie) await ecrireEnvieCulinaire(client, { userId: input.userId, texte: v.raw_text, verbatimSourceId: v.id, timestamp: v.ts });
+      else if (aDestinations) await ecrireDestinations(client, { userId: input.userId, question: q, texte: v.raw_text, barriere: barriere ?? '', verbatimSourceId: v.id, timestamp: v.ts });
       else {
         if (!barriere) continue;
         await extractFreeText(client, entree);

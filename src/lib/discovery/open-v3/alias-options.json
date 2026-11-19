@@ -1,0 +1,43 @@
+{
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_4.xlsx",
+ "sha256_classeur": "5a66c613db82797d336534a679e513321cbbdbf7bf20cfd12102c4f84cf28eca",
+ "onglet": "6_ALIAS_OPTIONS",
+ "alias": [
+  {
+   "question": "live.0478",
+   "rang_canonique": "1",
+   "libelle_canonique": "Trop de foule",
+   "rang_alias": "9",
+   "libelle_alias": "Trop de monde",
+   "motif": "concepts équivalents au lexique, reste des libellés identique",
+   "regle": "l’alias reste sélectionnable dans les réponses historiques et produit EXACTEMENT la même connaissance que l’option canonique. Une seule formulation est affichée dans le questionnaire actif."
+  },
+  {
+   "question": "tech2.1318",
+   "rang_canonique": "2",
+   "libelle_canonique": "Maison connectée",
+   "rang_alias": "9",
+   "libelle_alias": "Domotique",
+   "motif": "concepts équivalents au lexique, reste des libellés identique",
+   "regle": "l’alias reste sélectionnable dans les réponses historiques et produit EXACTEMENT la même connaissance que l’option canonique. Une seule formulation est affichée dans le questionnaire actif."
+  },
+  {
+   "question": "theatre2.1365",
+   "rang_canonique": "2",
+   "libelle_canonique": "Être ému(e)",
+   "rang_alias": "11",
+   "libelle_alias": "Être ému",
+   "motif": "doublon à la parenthèse de genre près : « Être ému » et « Être ému(e) » sont la même réponse. Trouvé par relecture, non par le détecteur — ma normalisation traitait la parenthèse comme un mot séparé, si bien que « etre emu » et « etre emu e » paraissaient différents.",
+   "regle": "l’alias reste sélectionnable dans les réponses historiques et produit EXACTEMENT la même connaissance que l’option canonique. Une seule formulation est affichée dans le questionnaire actif."
+  },
+  {
+   "question": "theatre2.1365",
+   "rang_canonique": "7",
+   "libelle_canonique": "Être surpris(e)",
+   "rang_alias": "12",
+   "libelle_alias": "Être surpris",
+   "motif": "doublon à la parenthèse de genre près : « Être surpris » et « Être surpris(e) » sont la même réponse. Trouvé par relecture, non par le détecteur — ma normalisation traitait la parenthèse comme un mot séparé, si bien que « etre emu » et « etre emu e » paraissaient différents.",
+   "regle": "l’alias reste sélectionnable dans les réponses historiques et produit EXACTEMENT la même connaissance que l’option canonique. Une seule formulation est affichée dans le questionnaire actif."
+  }
+ ]
+}

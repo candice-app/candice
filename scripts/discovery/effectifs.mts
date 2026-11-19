@@ -6,7 +6,8 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { BANQUE, MANIFESTE } from '../../src/lib/discovery/open-v3/banque.ts';
 import { analyserCondition, type EtatDiscovery } from '../../src/lib/discovery/open-v3/conditions.ts';
-import { verdictDe } from '../../src/lib/discovery/open-v3/selection.ts';
+import { verdictDe, aParametre } from '../../src/lib/discovery/open-v3/selection.ts';
+import { couvertureDestinations } from '../../src/lib/discovery/open-v3/destinations.ts';
 import { ALIAS_BRANCHES, SOUS_PARTIES, TAGS_ATTENDUS, HYPOTHESES } from '../../src/lib/discovery/open-v3/correspondances.ts';
 import { DEPENDANCES, TETES_DE_SOUS_PARTIE, SELECTEURS } from '../../src/lib/discovery/open-v3/dependances.ts';
 import { REMPLACEMENTS, poolDe } from '../../src/lib/discovery/open-v3/coexistence.ts';
@@ -67,7 +68,8 @@ const sortie = {
   branches: new Set(BANQUE.map((q) => q.branche)).size,
   par_niveau: Object.fromEntries(['A', 'B', 'C', null].map((n) => [n ?? 'sans_niveau', BANQUE.filter((q) => (q.niveau ?? null) === n).length])),
   comptes, dependances: { total: DEPENDANCES.size, resolues: [...DEPENDANCES.values()].filter((d) => d.resolu).length },
-  coexistence: { paires: REMPLACEMENTS.size }, contrats_ouverts: CONTRATS_OUVERTS.size, destinations_conditionnelles_non_executees: DESTINATIONS_CONDITIONNELLES.length,
+  coexistence: { paires: REMPLACEMENTS.size }, contrats_ouverts: CONTRATS_OUVERTS.size, destinations_conditionnelles: { total: DESTINATIONS_CONDITIONNELLES.length, executees: couvertureDestinations().filter((d) => d.executee).length, verbatim_seul: couvertureDestinations().filter((d) => !d.executee).map((d) => `${d.question}#${d.rang} ${d.declencheur} : ${d.motif}`) },
+  enonces_a_parametre_non_servis: BANQUE.filter(aParametre).map((q) => q.id), faits_d_option: BANQUE.reduce((n, q) => n + q.options.filter((o) => produireDepuisOption(q, o).type === 'fait').length, 0),
   identifiants: Object.fromEntries([...cat].filter(([k]) => !k.startsWith('ouvrable_sur_le_terrain')).map(([k, ids]) => [k, ids])),
 };
 mkdirSync(new URL('../../docs/discovery/etat-19nov/', import.meta.url), { recursive: true });

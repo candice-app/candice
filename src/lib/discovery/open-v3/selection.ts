@@ -108,7 +108,7 @@ function sterile(q: QuestionV3): boolean {
   if (q.forme === 'open') return false; // le verbatim est conservé, donc on apprend
   return !q.options.some((o) => {
     const p = produireDepuisOption(q, o);
-    return p.type === 'evidence' || p.motif === 'connaissance_ouverte';
+    return p.type === 'evidence' || p.type === 'fait' || p.motif === 'connaissance_ouverte';
   });
 }
 
@@ -142,8 +142,24 @@ function compterPartage(banque: readonly QuestionV3[]): Map<string, number> {
 }
 const PARTAGE_BANQUE = compterPartage(BANQUE);
 
+/** Vrai si l'énoncé ou une option porte un paramètre entre accolades. */
+export const aParametre = (q: QuestionV3): boolean => /\{[^}]+\}/.test(q.enonce) || q.options.some((o) => /\{[^}]+\}/.test(o.libelle));
+
+/**
+ * LA QUESTION N'A DE SENS QUE POUR UN PROJET EN COURS : son niveau est C (« un objet, une action
+ * ou une occasion nommés »), ou sa condition nomme un achat ou un séjour concret. Sa réponse
+ * appartient alors à ce projet, pas à la personne en général.
+ */
+export function requiertProjet(q: QuestionV3): 'achat' | 'sejour' | 'tout' | null {
+  const clauses = analyserCondition(q.condition_emission).clauses;
+  const contexte = clauses.find((c) => c.type === 'contexte' && (c.libelle === 'achat concret' || c.libelle === 'sejour concret'));
+  if (contexte && contexte.type === 'contexte') return contexte.libelle === 'achat concret' ? 'achat' : 'sejour';
+  if (q.niveau === 'C' && !clauses.some((c) => c.type === 'tag' && c.chemin.startsWith('CONTEXT.'))) return 'tout';
+  return null;
+}
+
 export type MotifDExclusion =
-  | 'deja_posee' | 'sterile' | 'archivee' | 'domaine_ecarte' | 'fermee' | 'indecidable'
+  | 'deja_posee' | 'sterile' | 'parametre_non_resolu' | 'archivee' | 'domaine_ecarte' | 'fermee' | 'indecidable'
   | `coexistence_${Exclude<VerdictCoexistence, { poser: true }>['motif']}`;
 
 /**
@@ -164,6 +180,9 @@ export function motifDExclusion(
   const partage = opts.partage ?? PARTAGE_BANQUE;
   if (!opts.ignorerDejaPosee && etat.dejaPosees.has(q.id)) return 'deja_posee';
   if (sterile(q)) return 'sterile';
+  // UN ÉNONCÉ À PARAMÈTRE (« À quelle fréquence pratiques-tu {activité} ? ») ne se sert pas tant
+  // que rien ne remplit le paramètre : on n'affiche jamais une accolade à la personne.
+  if (aParametre(q)) return 'parametre_non_resolu';
   // Une question ouverte que le référentiel a archivée (onglet 9) n'est jamais servie.
   if (OUVERTES_ARCHIVEES.has(q.id)) return 'archivee';
   // UN DOMAINE QUE LA PERSONNE A ÉCARTÉ n'est plus proposé d'initiative. Sa propre démarche
@@ -211,7 +230,7 @@ export function prochainesQuestions(
   for (const q of banque) {
     const exclusion = motifDExclusion(q, etat, { partage });
     if (exclusion === 'deja_posee') { dejaPosees++; continue; }
-    if (exclusion === 'sterile' || exclusion === 'archivee') { steriles++; continue; }
+    if (exclusion === 'sterile' || exclusion === 'archivee' || exclusion === 'parametre_non_resolu') { steriles++; continue; }
     if (exclusion === 'domaine_ecarte' || exclusion === 'fermee') { fermees++; continue; }
     if (exclusion === 'indecidable') { indecidables++; continue; }
     if (exclusion !== null) { remplacees++; continue; }

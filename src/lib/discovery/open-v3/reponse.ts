@@ -17,9 +17,11 @@ import { question as questionParId, type QuestionV3 } from './banque';
 import { cleOption } from './cle-option';
 import { verifierLot, signerLot, type Lot, LotIndisponibleError } from './lot';
 import { lireEtat } from './etat';
-import { motifDExclusion } from './selection';
+import { motifDExclusion, requiertProjet } from './selection';
+import { poolDe } from './coexistence';
+import type { Projet } from './etat';
 import {
-  enregistrerReponseFermee, enregistrerReponseOuverte, prochainesQuestionsPour, sourceDeLActe,
+  enregistrerReponseFermee, enregistrerReponseOuverte, prochainesQuestionsPour, sourceDeLActe, projetsEnCours, estAliasMasque,
   ActeDejaEnregistreError, ReponseInvalideError, type QuestionAServir,
 } from './service';
 import { libelleBranche } from './branches';
@@ -49,7 +51,8 @@ function poser(q: QuestionV3, lot: Lot, jeton: string, index: number, libelle?: 
       id: q.id, question_key: q.id, dimension: q.branche, subdimension: null,
       // Texte du référentiel, revu et validé : JAMAIS reformulé par un modèle.
       question_text: q.enonce, question_type: type,
-      options: type === 'text' ? null : q.options.map((o) => ({ label: o.libelle, value: cleOption(o) })),
+      // Un alias masqué (onglet 6) n'est jamais affiché ; reçu, il vaut l'option canonique.
+      options: type === 'text' ? null : q.options.filter((o) => !estAliasMasque(q.id, o)).map((o) => ({ label: o.libelle, value: cleOption(o) })),
       sort_order: 0, locked_text: true,
     },
     jeton, sessionId: lot.id, mode: lot.mode,
@@ -196,6 +199,25 @@ export async function traiterReponse(
     }
   }
 
+  // ── 5 bis. LE PROJET AUQUEL LA RÉPONSE APPARTIENT. Une question de niveau C, ou qui nomme un
+  //    achat ou un séjour concret, se répond POUR un projet en cours du même domaine : c'est à
+  //    lui que la réponse est rattachée. Plusieurs projets en cours dans le domaine : le plus
+  //    récent. Aucun : la question n'aurait pas dû être posée — refus, rien n'est écrit.
+  let projet: Projet | undefined;
+  const besoin = skip ? null : requiertProjet(q);
+  if (besoin && !renvoi) {
+    try {
+      const enCours = (await projetsEnCours(client, { userId: input.userId }))
+        .filter((p) => poolDe(p.branche) === poolDe(q.branche) && (besoin === 'tout' || p.type === besoin))
+        .sort((a, b) => (a.debut < b.debut ? 1 : -1));
+      projet = enCours[0];
+    } catch (e) {
+      console.error('[discovery/reponse] projets illisibles', e);
+      return refus(503, 'etat_illisible', 'la réponse n’a pas pu être vérifiée — rien n’est enregistré');
+    }
+    if (!projet) return refus(409, 'conditions_non_tenues', 'cette question n’est plus d’actualité — recharge la page');
+  }
+
   // ═════════ À PARTIR D'ICI ON ÉCRIT. Tout ce qui précède n'a fait que lire.
 
   // ── LE JOURNAL D'ABORD. S'il échoue, on ne marque RIEN : la question sera reposée.
@@ -203,10 +225,10 @@ export async function traiterReponse(
   if (!skip) {
     try {
       if (q.forme === 'open') {
-        const r = await enregistrerReponseOuverte(client, { userId: input.userId, questionId: q.id, texte, acteId: lot.id, timestamp: instant });
+        const r = await enregistrerReponseOuverte(client, { userId: input.userId, questionId: q.id, texte, acteId: lot.id, timestamp: instant, ...(projet ? { projet } : {}) });
         nouvelActe = !r.dejaFaite; lectureEnAttente = r.extractionEnAttente; instant = r.timestamp;
       } else {
-        const r = await enregistrerReponseFermee(client, { userId: input.userId, questionId: q.id, clesOptions: cles, acteId: lot.id, timestamp: instant });
+        const r = await enregistrerReponseFermee(client, { userId: input.userId, questionId: q.id, clesOptions: cles, acteId: lot.id, timestamp: instant, ...(projet ? { projet } : {}) });
         nouvelActe = !r.dejaFaite; instant = r.timestamp;
       }
     } catch (e) {

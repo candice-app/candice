@@ -10,12 +10,11 @@
  * lecture, par le code : une relation hors contrat n'est jamais écrite comme une entité —
  * les mots de la personne restent, eux, conservés tels quels.
  *
- * CE QUI N'EST PAS EXÉCUTÉ : les quinze destinations conditionnelles de l'onglet 17 (neuf
- * questions). Elles demandent au lecteur de qualifier chaque segment (« le segment nomme
- * explicitement une technique ») avant de choisir une destination ; ce lecteur-là n'est pas
- * écrit. Elles sont importées, exposées et comptées ici pour que rien ne disparaisse, et les
- * neuf questions restent lues par le contrat général, qui n'écrit aucune des destinations
- * conditionnelles.
+ * LES QUINZE DESTINATIONS CONDITIONNELLES de l'onglet 17 sont exécutées par `destinations.ts` :
+ * les neuf questions concernées ne passent plus par le contrat général. Onze destinations ne
+ * peuvent pas s'écrire en l'état (stabilité « undetermined » refusée par le journal, entité à
+ * résoudre de façon unique, identifiant d'animal) : la règle du contrat s'applique alors —
+ * « verbatim seul » — et le motif est rendu.
  *
  * Données importées par `scripts/discovery/importer-contrats-ouverts.py` (empreinte vérifiée).
  */
@@ -37,7 +36,7 @@ const D = brut as unknown as Donnees;
 export const CONTRATS_OUVERTS: ReadonlyMap<string, ContratOuvert> = new Map(D.contrats.map((c) => [c.question, c] as const));
 /** Questions que le référentiel a archivées : ni servies, ni lues. */
 export const OUVERTES_ARCHIVEES: ReadonlySet<string> = new Set(D.contrats.filter((c) => c.statut === 'ARCHIVE_NON_EXECUTABLE').map((c) => c.question));
-/** Destinations conditionnelles de l'onglet 17 : importées, non exécutées (voir l'en-tête). */
+/** Destinations conditionnelles de l'onglet 17, telles qu'importées (exécution : destinations.ts). */
 export const DESTINATIONS_CONDITIONNELLES: readonly Record<string, string | null>[] = D.destinations_conditionnelles;
 
 /**

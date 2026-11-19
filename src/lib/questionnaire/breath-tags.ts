@@ -161,7 +161,7 @@ export interface SocleFact {
  * exception) : seuls les FACTs `visibility_derived != 'internal_only'` entrent — santé, mobilité, adresse
  * ne sortent JAMAIS (§35/R12, et protège une future fiche de proche). Erreur bruyante, jamais de 0 silencieux.
  */
-export async function readSocleFacts(client: TagsReadClient, userId: string): Promise<SocleFact[]> {
+export async function readSocleFacts(client: TagsReadClient, userId: string, opts: { discovery?: 'sans' | 'seulement' } = {}): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
     .select('fact_type, value, visibility_derived, assertion_status, superseded_at, source')
@@ -172,7 +172,15 @@ export async function readSocleFacts(client: TagsReadClient, userId: string): Pr
   if (error) throw new BreathReadError(`knowledge_facts read: ${error.message}`);
   type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null; source?: string | null };
   // superseded_at non null = FACT corrigé (remplacé) → exclu de la prose, comme les evidences (§48septies).
+  // LES FAITS DU DISCOVERY NE SONT PAS DES FAITS DU SOCLE. Sous `discovery.*` vivent les phrases
+  // entières des réponses ouvertes, les réponses attachées à un projet, les choix de sujets et
+  // des valeurs techniques. Les lecteurs de ce module les envoient tels quels à un modèle
+  // (« FAITS, à nommer ») : sans ce tri, chaque phrase écrite au Discovery partait dans chaque
+  // prompt. Ils ne sortent que sur demande expresse, pour le lecteur qui sait les trier
+  // (discovery/open-v3/faits-portrait.ts).
+  const mode = opts.discovery ?? 'sans';
   return ((data ?? []) as Row[])
+    .filter((r) => r.fact_type.startsWith('discovery.') === (mode === 'seulement'))
     .filter((r) => r.visibility_derived !== 'internal_only' && !r.superseded_at)
     .map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status, sourceId: r.source ?? null }));
 }

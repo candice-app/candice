@@ -14,6 +14,7 @@ import { entitesDuJournal, nbEntites } from "@/lib/profile/entites-du-journal";
 import { AFFECTION_MODALITIES } from "@/lib/knowledge/vocabulary";
 import { phrasesDuJournal, contraintesPratiquesDe, type PhrasesDuJournal } from "@/lib/profile/phrases-du-journal";
 import { readSocleFacts } from "@/lib/questionnaire/breath-tags";
+import { faitsDiscoveryPourPortrait } from "@/lib/discovery/open-v3/faits-portrait";
 import { radarDuPortrait, attentionDuPortrait, ceQuiMarcheDuPortrait,
          type RadarJournal, type AttentionJournal } from "@/lib/profile/portrait-vers-synthese";
 
@@ -105,6 +106,8 @@ function buildAnalysisPrompt(data: {
   phrases: PhrasesDuJournal;
   /** Verbatim q17, lu dans le journal (filtre de visibilité appliqué). */
   verbatimAEviter: string | null;
+  /** Faits d'option du Discovery, déjà mis en lignes avec leur provenance (faits-portrait.ts). */
+  faitsDiscovery?: readonly string[];
   gender: Gender;
 }): string {
   const { practicalInfo, singularity, discoveryAnswers, recentMemories, entities, radar, attention, phrases, verbatimAEviter, gender } = data;
@@ -183,6 +186,15 @@ function buildAnalysisPrompt(data: {
         lines.push(`${label} : ${String(v).trim().slice(0, 100)}`);
       }
     }
+    lines.push("");
+  }
+
+  // Ce que le Discovery a établi comme FAITS (pratiques, situations) — lu dans le journal.
+  // Ni les phrases entières de la personne, ni les réponses attachées à un projet précis.
+  if (data.faitsDiscovery && data.faitsDiscovery.length > 0) {
+    lines.push("── FAITS ÉTABLIS PAR LE DISCOVERY (journal) ──");
+    lines.push("Un fait « lu dans une réponse libre » n'est pas une déclaration : ne l'affirme pas, ne le cite pas. Un fait marqué contradictoire n'est pas tranché : ne l'utilise pas.");
+    for (const l of data.faitsDiscovery) lines.push(l);
     lines.push("");
   }
 
@@ -590,6 +602,7 @@ export async function generateProfileAnalysis(
   // plus complète, c'est une fiche dont on ne sait plus d'où elle vient.
   let phrases: PhrasesDuJournal = phrasesDuJournal(PORTRAIT_VIDE);
   let verbatimAEviter: string | null = null;
+  let faitsDiscovery: readonly string[] = [];
   try {
     // Le portrait a déjà été lu pour la garde : on ne le relit pas. Deux lectures
     // pourraient diverger, et la divergence se verrait à l'écran.
@@ -602,6 +615,9 @@ export async function generateProfileAnalysis(
     // visibilité mécaniquement : santé, mobilité et adresse n'en sortent jamais.
     const faits = await readSocleFacts(supabase as never, userId);
     verbatimAEviter = faits.find((x) => x.factType === 'relational.q17_register')?.value ?? null;
+    const fd = faitsDiscoveryPourPortrait(await readSocleFacts(supabase as never, userId, { discovery: 'seulement' }));
+    faitsDiscovery = fd.lignes;
+    if (fd.ecartes.illisibles > 0 || fd.ecartes.auDelaDuPlafond > 0) console.warn('[profile-analysis] faits Discovery non rendus', fd.ecartes);
     entitiesStatus = "success";
     await logStep("entity_extraction", "success", Date.now() - t4, undefined,
       { count: nbEntites(entities), evites: entities.evites.length, preuves: portrait.nbPreuves });
@@ -657,6 +673,7 @@ export async function generateProfileAnalysis(
     attention,
     phrases,
     verbatimAEviter,
+    faitsDiscovery,
     gender,
   }) + worksLevelsLine;
 

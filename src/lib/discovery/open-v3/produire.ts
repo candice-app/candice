@@ -36,7 +36,21 @@ export type Production =
       /** Une option peut dire DEUX choses distinctes (« une place importante » : un intérêt
        *  pour le domaine, ET le niveau déclaré). Les preuves supplémentaires sont ici. */
       readonly autres?: readonly EvidenceBrute[] }
+  /** Un FAIT déclaré (« Quels sports pratiques-tu réellement ? » → vélo) : ce que la personne
+   *  fait, possède ou subit, tel que le contrat l'écrit. Ni goût, ni degré, ni trait. */
+  | { readonly type: 'fait'; readonly fait: FaitBrut }
   | { readonly type: 'rien'; readonly motif: MotifNonEcriture; readonly detail: string };
+
+export interface FaitBrut {
+  /** `discovery.fait.<domaine>.<attribut>` — le domaine et l'attribut du contrat, tels quels. */
+  readonly factType: string;
+  /** La valeur du contrat, sous sa forme canonique. */
+  readonly valeur: string;
+  readonly polarite?: string;
+  readonly stabilite?: string;
+}
+/** Préfixe des faits déclarés par une option du Discovery. */
+export const PREFIXE_FAIT = 'discovery.fait.';
 
 export type MotifNonEcriture =
   /** Le contrat dit explicitement de ne rien écrire. Ce n'est pas un défaut. */
@@ -170,7 +184,24 @@ export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
     case 'ACTION_PARAMETER': return rien('action_interface', o.libelle);
     case 'DISCOVERY_STATE':  return rien('etat_parcours', o.libelle);
     case 'OPEN_KNOWLEDGE':   return rien('connaissance_ouverte', o.libelle);
-    case 'FACT':             return rien('contrat_incomplet', `FACT : écrit par le producteur de faits, pas ici (${o.libelle})`);
+    case 'FACT': {
+      // LES 600 OPTIONS DE FAIT. La première version les renvoyait à un « producteur de faits »
+      // qui n'existait pas : cocher « Vélo » à « Quels sports pratiques-tu réellement
+      // aujourd'hui ? » n'écrivait rien, et 96 questions passaient pour ne rien apprendre.
+      // Le fait est écrit tel que le contrat le dit : son domaine, son attribut, sa valeur.
+      // Sans attribut, la valeur le nomme elle-même quand elle n'a qu'UNE clé (`{"pratique":
+      // "velo"}`) ; sinon le contrat ne dit pas quoi écrire, et on n'écrit pas.
+      const domaine = o.domaine?.trim();
+      if (!domaine) return rien('contrat_incomplet', `fait sans domaine (${o.libelle})`);
+      const cles = Object.keys(o.valeur ?? {}).filter((k) => k !== '__libres__' && k !== '__scalaire__');
+      const attribut = o.attribut?.trim() || (cles.length === 1 && !scalaire(o.valeur) ? cles[0] : undefined);
+      if (!attribut) return rien('contrat_incomplet', `fait sans attribut ni clé unique (${o.libelle})`);
+      const brute = o.attribut?.trim() ? valeurCanonique(o.valeur) : String((o.valeur as Record<string, unknown>)[attribut] ?? '').trim() || undefined;
+      if (!brute) return rien('contrat_incomplet', `fait sans valeur lisible (${o.libelle})`);
+      if (estParametre(brute)) return rien('contrat_incomplet', `fait à paramètre non résolu (${o.libelle})`);
+      return { type: 'fait', fait: { factType: `${PREFIXE_FAIT}${assainir(domaine)}.${assainir(attribut)}`, valeur: brute,
+        ...(o.polarite ? { polarite: o.polarite } : {}), ...(o.stabilite ? { stabilite: o.stabilite } : {}) } };
+    }
     case 'HSG_EVIDENCE':     break;
   }
 
