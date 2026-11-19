@@ -59,7 +59,7 @@ console.log('   fait relu en base :', faits);
 for (const id of ['causes.1920', 'causes.1921', 'causes.1922']) {
   const q = question(id)!;
   const cles = q.options.slice(0, q.forme === 'single' ? 1 : 2).map(cleOption);
-  await enregistrerReponseFermee(c.client as never, { userId: c.userId, questionId: id, clesOptions: cles });
+  await enregistrerReponseFermee(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: id, clesOptions: cles });
 }
 const { data: ev } = await c.client.from('knowledge_evidences').select('target_family,target_construct,context,preference_value,polarity,raw_information,source_id').eq('user_id', c.userId).neq('source_id', sid);
 console.log('\n3. relu en base après trois réponses :'); for (const e of ev!) console.log(`   ${e.target_family} ${e.target_construct} = ${e.preference_value ?? ''} [contexte ${e.context}, polarité ${e.polarity}] « ${e.raw_information} »`);

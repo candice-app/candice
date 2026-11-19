@@ -22,7 +22,7 @@ const X = await compteLocal('situation-autre'), V = await compteLocal('situation
 // R et V ont un journal (sinon la régénération s'arrête d'elle-même et ne prouve rien).
 for (const c of [R, V]) {
   const q = question('animals.2131')!;
-  await enregistrerReponseFermee(c.client as never, { userId: c.userId, questionId: q.id, clesOptions: q.options.slice(0, 2).map(cleOption) });
+  await enregistrerReponseFermee(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: q.id, clesOptions: q.options.slice(0, 2).map(cleOption) });
 }
 // Le lien P → R : un contact de P rattaché au compte de R, et un consentement actif.
 const { data: contact, error: eC } = await P.client.from('contacts').insert({ user_id: P.userId, name: 'Rose', relationship: 'friend', proche_user_id: R.userId }).select('id').single();

@@ -155,29 +155,14 @@ describe("chemins ②/③ — moteur Discovery (garde complète)", () => {
     expect(open.has("fragrance-family")).toBe(true);
   });
 
-  it("recordAnswer écrit le statut (answered / skipped)", async () => {
-    const state: MockState = {
-      questions: [], profile: { discovery_answers: {} },
-      completion: [], session: { id: "s1", pending_keys: ["fragrance.families"], current_index: 0 },
-      writes: [],
-    };
-    await engine.recordAnswer("u1", "s1", "fragrance.families", ["powdery"], false, makeDb(state));
-    const write = state.writes.find(w => w.table === "profile_completion");
-    expect((write?.payload as { status?: string })?.status).toBe("answered");
-
-    state.writes = [];
-    await engine.recordAnswer("u1", "s1", "fragrance.families", null, true, makeDb(state));
-    const skip = state.writes.find(w => w.table === "profile_completion");
-    expect((skip?.payload as { status?: string })?.status).toBe("skipped");
-  });
-});
-
-describe("chemin ⑥ — legacy neutralisé", () => {
   it("GET /api/discovery/next → 410, plus aucun sélecteur legacy exporté", async () => {
     const route = await import("../../app/api/discovery/next/route");
     const res = await route.GET();
     expect(res.status).toBe(410);
     expect(engine.getNextDripQuestion).toBeUndefined();
     expect(engine.createOrResumeSession).toBeUndefined();
+    // Le chemin de réponse a quitté ce module : open-v3/reponse.ts (lot signé, contrôles avant écriture).
+    expect(engine.recordAnswer).toBeUndefined();
+    expect(engine.createDiscoverySession).toBeUndefined();
   });
 });

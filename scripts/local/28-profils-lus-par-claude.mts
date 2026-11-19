@@ -19,7 +19,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import { compteLocal, pileLocale } from './_compte-local.mts';
-import { cookiesDe, poster } from './_session-http.mts';
+import { cookiesDe, poster, obtenirLot, repondre } from './_session-http.mts';
 import { VOIX } from './09-faux-comptes.mts';
 import { produceSocleAnswer, produceSocleFact } from '../../src/lib/questionnaire/produce-socle.ts';
 import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-interests.ts';
@@ -102,21 +102,34 @@ if (etape === 'questions') {
 }
 
 if (etape === 'repondre') {
+  // Les réponses d'un personnage ne partent que pour les questions que le SERVEUR lui propose
+  // (lot signé). Une réponse préparée pour une question qu'il ne propose pas n'est pas envoyée :
+  // elle est comptée, et dite.
   const fichier = arg('fichier')!;
   const reponses = JSON.parse(readFileSync(existsSync(fichier) ? fichier : ICI + fichier, 'utf8')) as Record<string, Record<string, string | string[] | { texte: string; units: unknown[] }>>;
-  let echecs = 0;
+  let echecs = 0, nonProposees = 0;
   for (const [prenom, parCle] of Object.entries(reponses)) {
     const s = await session(prenom);
-    for (const [cle, rep] of Object.entries(parCle)) {
-      let answer: string | string[];
-      if (typeof rep === 'object' && !Array.isArray(rep)) { answer = rep.texte; await dicter([{ units: rep.units }]); } else answer = rep;
-      const r = await poster('/api/discovery/answer', s.cookie, { sessionId: null, pendingKeys: [cle], currentIndex: 0, mode: 'full', questionKey: cle, answer });
-      const src = (await s.client.from('knowledge_sources').select('id').eq('user_id', s.userId).in('question_code', [cle, `discovery.${cle}`])).data ?? [];
-      const ev = src.length ? ((await s.client.from('knowledge_evidences').select('target_family, target_construct, preference_value, polarity').in('source_id', src.map((x) => x.id))).data ?? []) : [];
-      if (r.status !== 200) echecs++;
-      console.log(`${prenom.padEnd(8)} ${cle} → HTTP ${r.status} · ${ev.map((e) => `${e.target_family}:${e.target_construct}${e.preference_value ? '=' + e.preference_value : ''}${e.polarity && e.polarity !== 'positive' ? ' [' + e.polarity + ']' : ''}`).join(' | ') || '(rien d’écrit au journal)'}${r.status !== 200 ? ' ' + JSON.stringify(r.json).slice(0, 160) : ''}`);
+    const restantes = new Map(Object.entries(parCle));
+    for (let garde = 0; garde < 40 && restantes.size > 0; garde++) {
+      let propose = await obtenirLot(s.cookie, 'full');
+      let avance = false;
+      while (propose && restantes.has(propose.question.question_key)) {
+        const cle = propose.question.question_key; const rep = restantes.get(cle)!; restantes.delete(cle);
+        let answer: string | string[];
+        if (typeof rep === 'object' && !Array.isArray(rep)) { answer = rep.texte; await dicter([{ units: rep.units }]); } else answer = typeof rep === 'string' && propose.question.question_type !== 'text' ? [rep] : rep;
+        const r = await repondre(s.cookie, { jeton: propose.jeton, questionKey: cle, answer });
+        const src = (await s.client.from('knowledge_sources').select('id').eq('user_id', s.userId).in('question_code', [cle, `discovery.${cle}`])).data ?? [];
+        const ev = src.length ? ((await s.client.from('knowledge_evidences').select('target_family, target_construct, preference_value, polarity').in('source_id', src.map((x) => x.id))).data ?? []) : [];
+        if (r.status !== 200) echecs++;
+        console.log(`${prenom.padEnd(8)} ${cle} → HTTP ${r.status} · ${ev.map((e) => `${e.target_family}:${e.target_construct}${e.preference_value ? '=' + e.preference_value : ''}${e.polarity && e.polarity !== 'positive' ? ' [' + e.polarity + ']' : ''}`).join(' | ') || '(rien d’écrit au journal)'}${r.status !== 200 ? ' ' + (r.motif ?? '') : ''}`);
+        avance = true; propose = r.next as typeof propose;
+      }
+      if (!avance) break;
     }
+    if (restantes.size > 0) { nonProposees += restantes.size; console.log(`${prenom.padEnd(8)} ${restantes.size} réponse(s) préparée(s) non envoyée(s) — question non proposée par le serveur : ${[...restantes.keys()].join(' ')}`); }
   }
+  console.log(`\n${nonProposees} réponse(s) non envoyée(s), ${echecs} refusée(s).`);
   if (echecs) { console.error(`${echecs} réponse(s) refusée(s)`); process.exit(1); }
 }
 

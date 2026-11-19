@@ -63,7 +63,7 @@ describe('ce que la sélection sert, l’enregistrement l’accepte', () => {
       const { client, appels } = faux();
       await enregistrerReponseFermee(client, {
         userId: '00000000-0000-4000-8000-000000000001',
-        questionId: q.id,
+        acteId: 'lot-test', questionId: q.id,
         clesOptions: [cleOption(opt)],
         timestamp: '2026-11-17T12:00:00.000Z',
       });
@@ -109,7 +109,7 @@ describe('la forme servie et la forme attendue ne divergent pas', () => {
       const { client } = faux();
       await expect(enregistrerReponseFermee(client, {
         userId: '00000000-0000-4000-8000-000000000001',
-        questionId: q.id,
+        acteId: 'lot-test', questionId: q.id,
         clesOptions: [cleOption(q.options[0]), cleOption(q.options[1])],
       })).rejects.toThrow();
     }
@@ -120,7 +120,7 @@ describe('la forme servie et la forme attendue ne divergent pas', () => {
         const { client, appels } = faux();
         await enregistrerReponseFermee(client, {
           userId: '00000000-0000-4000-8000-000000000001',
-          questionId: q.id,
+          acteId: 'lot-test', questionId: q.id,
           clesOptions: productives.slice(0, 2).map(cleOption),
           timestamp: '2026-11-17T12:00:00.000Z',
         });

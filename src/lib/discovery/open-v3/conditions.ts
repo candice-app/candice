@@ -67,6 +67,23 @@ export interface EtatDiscovery {
    * vide = aucun projet en cours : elles sont fausses.
    */
   readonly projets?: ReadonlyMap<string, ReadonlySet<'achat' | 'sejour'>>;
+  /**
+   * CE QUI OUVRE UNE SOUS-PARTIE dont le référentiel ne nomme pas la question de tri : la règle
+   * écrite pour sa branche (table figée `correspondances.json`). `niveau_B_du_parent` : la
+   * feuille Branches range les sous-branches parmi les questions de niveau B. `non_resolue` :
+   * la règle existe en prose et n'a pas de forme exécutable — la condition reste non résolue.
+   * Absent = l'appelant ne fournit pas la table (essais unitaires) : la sous-partie suit sa branche.
+   */
+  readonly reglesSousParties?: ReadonlyMap<string, { readonly regle: 'dependance' | 'niveau_B_du_parent' | 'non_resolue'; readonly parents: readonly string[] }>;
+  /**
+   * Questions dont la dépendance est tenue pour satisfaite par un SIGNAL explicite équivalent
+   * (avoir choisi « Vin & spiritueux » vaut « vin sélectionné »). Table figée, voir
+   * `ouvertures-explicites.json`. Aucune réponse n'est écrite à la place de la personne.
+   */
+  readonly questionsSignalees?: ReadonlySet<string>;
+  /** Domaines dont la personne a dit qu'ils tiennent « très peu de place » aujourd'hui. Ce
+   *  n'est ni un rejet ni un refus : leurs questions restent posables, après celles des autres. */
+  readonly placeFaible?: ReadonlySet<string>;
   /** La dernière question à laquelle la personne a répondu (ou qu'elle a passée). Sert à ne
    *  pas enchaîner une question historique juste après celle qui la remplace. */
   readonly dernierePosee?: string;
@@ -77,6 +94,8 @@ export type Clause =
   | { readonly type: 'ne_pas_creuser'; readonly domaine: string }
   | { readonly type: 'interet'; readonly domaine: string }
   | { readonly type: 'branche_ouverte'; readonly branche: string; readonly sousPartie?: boolean }
+  /** « Ouverture branche X (voir onglet Branches) » : la question qui ENTRE dans la branche. */
+  | { readonly type: 'ouverture_branche'; readonly branche: string }
   | { readonly type: 'niveau'; readonly niveau: 'A' | 'B' | 'C'; readonly branche: string }
   | { readonly type: 'information_manquante' }
   | { readonly type: 'score_suffisant' }
@@ -130,6 +149,8 @@ export interface ConditionAnalysee {
    * fort que le OU, comme partout.
    */
   readonly groupes: readonly (readonly (readonly Clause[])[])[];
+  /** Consignes de rédaction accrochées à une ouverture de branche. Rapportées, jamais évaluées. */
+  readonly consignes?: string;
 }
 
 const norme = (s: string) => s.replace(/\s+/g, ' ').trim();
@@ -287,6 +308,23 @@ export function analyserCondition(texte: string): ConditionAnalysee {
   const clauses: Clause[] = [];
   const inconnues: string[] = [];
   const groupes: Clause[][][] = [];
+  // ── « OUVERTURE BRANCHE X (voir onglet Branches) — … ». La question qui entre dans une
+  //    branche. Ce qui suit la parenthèse est une CONSIGNE DE RÉDACTION (« MERGE FINAL :
+  //    remplace… », « NOUVELLE BRANCHE ⭐⭐⭐⭐ », « ne jamais ressembler à un questionnaire
+  //    financier ») : elle est conservée telle quelle pour le rapport (`consignes`), et les
+  //    marques de sensibilité qu'elle porte ont déjà été lues ci-dessus sur le texte entier.
+  //    La règle d'ouverture elle-même est dans la feuille Branches (voir ouvertures.ts).
+  const ouverture = nettoye.match(/^Ouverture branche\s+(.+?)\s*\(([^)]*)voir onglet Branches\)\s*(.*)$/i);
+  if (ouverture) {
+    // « Hôtellerie (distincte du voyage — voir onglet Branches) » : le nom est devant.
+    const clause: Clause = { type: 'ouverture_branche', branche: clef(ouverture[1].replace(/\s*—\s*AXE\s.*$/i, '')) };
+    const consignes = norme(ouverture[3].replace(/^[—.\s]+/, ''));
+    return {
+      clauses: [clause], groupes: [[[clause]]], lisible: !sensible || ouvertureSurDemarche,
+      inconnues: [], contientDisjonction: false, sensible, ouvertureSurDemarche,
+      ...(niveau ? { niveauSensibilite: niveau } : {}), ...(consignes ? { consignes } : {}),
+    };
+  }
   for (const segment of sansCommentaires.split(/\s*;\s*/)) {
     const alternatives: Clause[][] = [];
     for (const alt of segment.split(/\s+OU\s+/)) {
@@ -326,7 +364,9 @@ export interface ContexteQuestion {
   /** Le domaine commun aux générations de la branche (`poolDe`) : un projet vaut pour lui. */
   readonly pool?: string;
   /** La réponse dont cette question dépend, quand le référentiel en écrit une (`dependances.ts`). */
-  readonly dependance?: { readonly selecteur: string; readonly cles: readonly string[]; readonly resolu: boolean };
+  readonly dependance?: { readonly selecteur: string; readonly cles: readonly string[]; readonly resolu: boolean; readonly signalee?: boolean };
+  /** La question présume que la personne boit de l'alcool (table figée). */
+  readonly presumeAlcool?: boolean;
 }
 
 /**
@@ -428,16 +468,38 @@ function evaluerClause(
       // à la question qui fait le tri, la condition est connue et fausse.
       if (c.sousPartie && contexte.dependance) {
         const d = contexte.dependance;
+        // Un signal explicite équivalent à la réponse attendue (table figée) ouvre la sous-partie.
+        if (d.signalee) return 'ouvrir';
         if (!d.resolu) return 'indecidable';
         const choisies = etat.optionsChoisies?.get(d.selecteur);
         if (!choisies) return 'fermer';
         return d.cles.some((o) => choisies.has(o)) ? 'ouvrir' : 'fermer';
       }
       const ids = designe(c.branche, etat);
+      // UNE SOUS-PARTIE SANS QUESTION DE TRI suit la règle écrite pour sa branche.
+      if (c.sousPartie && etat.reglesSousParties) {
+        const sp = etat.reglesSousParties.get(c.branche);
+        // Inconnue de la table, règle en prose, ou dépendance annoncée et introuvable : non résolu.
+        if (!sp || sp.regle !== 'niveau_B_du_parent') return 'indecidable';
+        const ordre = { A: 1, B: 2, C: 3 } as const;
+        const atteint = Math.max(0, ...sp.parents.map((b) => ordre[etat.niveauParBranche.get(b) ?? ('' as 'A')] ?? 0));
+        return atteint >= ordre.B ? 'ouvrir' : 'fermer';
+      }
       if (ids.some((b) => etat.branchesOuvertes.has(b))) return 'ouvrir';
       // Un nom que ni la banque ni l'état ne connaissent : on ne sait pas de quelle branche
       // il parle. Ce n'est pas « fermée », c'est « non résolu » — et compté comme tel.
       return etat.aliasBranches && !etat.aliasBranches.has(c.branche) ? 'indecidable' : 'fermer';
+    }
+    case 'ouverture_branche': {
+      // LA QUESTION QUI ENTRE DANS UNE BRANCHE se pose quand la branche est ouverte au sens du
+      // moteur : son domaine a été choisi ou détecté chez la personne, ou elle a demandé à
+      // explorer le sujet. C'est la part EXÉCUTABLE de la règle écrite (feuille Branches :
+      // « X sélectionné · X cité spontanément… ») ; les autres signaux de cette règle — une
+      // liste d'envies, un proche qui prépare une attention, une occasion — n'ont pas encore de
+      // forme lisible et n'ouvrent rien. Un nom que la table ne rattache à aucune branche
+      // (« Hôtellerie », branche distincte sans règle exécutable) reste non résolu.
+      if (etat.aliasBranches && !etat.aliasBranches.has(c.branche)) return 'indecidable';
+      return designe(c.branche, etat).some((b) => etat.branchesOuvertes.has(b)) ? 'ouvrir' : 'fermer';
     }
     case 'niveau': {
       // LE NIVEAU C N'EST PAS UNE PROFONDEUR. « Niveau C : exige un objet, une action ou une
@@ -476,7 +538,11 @@ function evaluerClause(
       // Il est donc neutre ici : c'est la sélection qui tranche, et elle en répond.
       return 'ouvrir';
     case 'pas_si_sans_alcool':
-      return etat.sansAlcool ? 'fermer' : 'ouvrir';
+      // « Ne jamais afficher les questions alcool si la personne ne boit pas » est écrit sur
+      // les TRENTE questions de la branche historique food. Lue à la lettre, la consigne
+      // fermait toute la cuisine à quelqu'un qui ne boit pas. Elle protège les questions QUI
+      // PRÉSUMENT une consommation d'alcool — et celles-là seulement (décision du 19 nov.).
+      return etat.sansAlcool && contexte.presumeAlcool ? 'fermer' : 'ouvrir';
     case 'contexte': {
       // « Achat concret », « séjour concret » : un projet de ce type, en cours, dans le domaine
       // de la question. L'intérêt pour le voyage ne crée pas un séjour.

@@ -1,0 +1,238 @@
+{
+ "version": "2026-11-19.1",
+ "source": "Sens des options de craft.0614 fixé par Estelle le 19 nov. (pratique déclarée ; souhait sans pratique établie ; découverte sans achat établi ; achat occasionnel ; collection déclarée ; appréciation esthétique sans pratique, achat ni collection). Rapprochement fait question par question, sur ce que chaque énoncé présume.",
+ "note": "Aucune option n’ouvre un axe entier. « J’aimerais apprendre ou reprendre une pratique » n’ouvre aujourd’hui aucune question : toutes celles de l’axe Pratiquant présument une pratique actuelle. Les questions à paramètre (craft.0620, craft.0622 : « {activité} ») ne figurent pas ici : elles attendent leur paramètre.",
+ "dependances": [
+  {
+   "question": "craft.0619",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« Quelles activités pratiques-tu réellement aujourd’hui ? » : la question présume que la personne pratique."
+  },
+  {
+   "question": "craft.0621",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« Dans cette pratique, tu te considères plutôt… » : il faut une pratique."
+  },
+  {
+   "question": "craft.0623",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« Tu préfères pratiquer… » : posée à qui pratique.",
+   "a_confirmer": "La question aurait aussi un sens pour qui souhaite apprendre (« En cours », « En stage ponctuel »). Faut-il l’ouvrir aussi sur « J’aimerais apprendre ou reprendre une pratique » ?"
+  },
+  {
+   "question": "craft.0624",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« …avancer dans cette pratique », avec l’option « Rien, je pratique déjà comme je le souhaite » : il faut une pratique."
+  },
+  {
+   "question": "craft.0625",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« Pour du matériel créatif, tu préfères… » : le matériel de quelqu’un qui pratique.",
+   "a_confirmer": "Vaut-elle aussi pour qui souhaite apprendre ?"
+  },
+  {
+   "question": "craft.0626",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« …que tu utilises déjà avec confiance » : il faut une pratique."
+  },
+  {
+   "question": "craft.0627",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« Que fais-tu généralement de ce que tu crées ? » : il faut créer."
+  },
+  {
+   "question": "craft.0628",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je pratique moi-même une ou plusieurs activités créatives"
+   ],
+   "suppose": "une pratique actuelle",
+   "justification": "« Quand quelqu’un découvre ce que tu crées… » : il faut créer."
+  },
+  {
+   "question": "craft.0648",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes"
+   ],
+   "suppose": "un achat ou une collection",
+   "justification": "« Qu’aimes-tu réellement acheter ou garder… » : présume qu’on achète ou qu’on garde. Regarder, ou aimer les beaux objets, ne l’établit pas."
+  },
+  {
+   "question": "craft.0649",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’aime surtout regarder et découvrir",
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "un attrait pour les œuvres ou les objets",
+   "justification": "« Quel type d’œuvres ou d’objets t’attire le plus ? » : un attrait suffit, sans achat."
+  },
+  {
+   "question": "craft.0650",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’aime surtout regarder et découvrir",
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "un attrait pour les œuvres ou les objets",
+   "justification": "« Qu’est-ce qui donne le plus de valeur à une œuvre… pour toi ? » : un regard sur les œuvres suffit."
+  },
+  {
+   "question": "craft.0651",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "un goût pour l’objet lui-même",
+   "justification": "« Tu serais le plus touché(e) par… » une pièce reçue : présume qu’un objet fait plaisir. Aimer regarder ne dit pas qu’on veut posséder."
+  },
+  {
+   "question": "craft.0652",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "un goût pour l’objet lui-même",
+   "justification": "« Recevoir une œuvre ou un objet artisanal… » : même raison."
+  },
+  {
+   "question": "craft.0653",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "des objets chez soi",
+   "justification": "« Aujourd’hui, chez toi, tu as plutôt… » de la place pour des œuvres : présume qu’un objet peut entrer chez la personne."
+  },
+  {
+   "question": "craft.0654",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’aime surtout regarder et découvrir",
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "un attrait pour les œuvres ou les objets",
+   "justification": "« Y a-t-il des artistes… que tu aimes particulièrement ? » : un attrait suffit."
+  },
+  {
+   "question": "craft.0655",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes"
+   ],
+   "suppose": "un achat ou une collection",
+   "justification": "« …tu préfères… acheter directement à l’artiste, dans une galerie… » : présume qu’on achète."
+  },
+  {
+   "question": "craft.0656",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’aime surtout regarder et découvrir",
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "un attrait pour les œuvres ou les objets",
+   "justification": "« Tu es davantage attiré(e) par… » : un attrait suffit."
+  },
+  {
+   "question": "craft.0657",
+   "selecteur": "craft.0614",
+   "options": [
+    "J’achète parfois des œuvres ou des objets artisanaux",
+    "Je collectionne certains objets ou artistes",
+    "J’aime les beaux objets, sans être particulièrement connaisseur"
+   ],
+   "suppose": "un goût pour l’objet lui-même",
+   "justification": "« Pour ce type d’objet, tu préfères… plusieurs petites pièces, une belle pièce de temps en temps… » : présume qu’un objet est le bienvenu."
+  },
+  {
+   "question": "craft.0658",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je collectionne certains objets ou artistes"
+   ],
+   "suppose": "une collection déclarée",
+   "justification": "« Collectionnes-tu actuellement quelque chose dans cet univers ? » — le classeur écrit « n’ouvrir que si la personne collectionne réellement ou exprime une logique de série ». Il faut une collection."
+  },
+  {
+   "question": "craft.0659",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je collectionne certains objets ou artistes"
+   ],
+   "suppose": "une collection déclarée",
+   "justification": "« Qu’est-ce qui guide ta collection ? » Il faut une collection."
+  },
+  {
+   "question": "craft.0660",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je collectionne certains objets ou artistes"
+   ],
+   "suppose": "une collection déclarée",
+   "justification": "« Compléter ta collection en cadeau… » Il faut une collection."
+  },
+  {
+   "question": "craft.0661",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je collectionne certains objets ou artistes"
+   ],
+   "suppose": "une collection déclarée",
+   "justification": "« Pour éviter les doublons… ce que tu possèdes » Il faut une collection."
+  },
+  {
+   "question": "craft.0662",
+   "selecteur": "craft.0614",
+   "options": [
+    "Je collectionne certains objets ou artistes"
+   ],
+   "suppose": "une collection déclarée",
+   "justification": "« Pour une pièce de collection… » Il faut une collection."
+  }
+ ]
+}

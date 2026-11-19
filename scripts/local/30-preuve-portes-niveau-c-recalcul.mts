@@ -8,7 +8,7 @@
 //      sport suivante n'est pas servie, et n'est pas marquée posée.
 //   4. Contre-exemples : rien de coché ; question hors banque ; compte d'un autre.
 import { compteLocal, verificateur } from './_compte-local.mts';
-import { cookiesDe, poster } from './_session-http.mts';
+import { cookiesDe, poster, obtenirLot, repondre } from './_session-http.mts';
 import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-interests.ts';
 import { lireEtat } from '../../src/lib/discovery/open-v3/etat.ts';
 import { BANQUE, question } from '../../src/lib/discovery/open-v3/banque.ts';
@@ -97,37 +97,50 @@ console.log('\n══ 2. Explorer un sujet');
   v.verifier(inconnu.status === 400, 'un sujet inconnu est refusé (400)');
 }
 
-// ── 3. RECALCUL APRÈS CHAQUE RÉPONSE
-console.log('\n══ 3. Après chaque réponse, recalculer');
+// ── 3. « TRÈS PEU DE PLACE » N'EST PAS UN REFUS ; LE REFUS EST UN ACTE (décision du 19 nov.)
+console.log('\n══ 3. Faible place, refus explicite, recalcul');
 {
-  const c = await compteLocal('portes-sportive'); const cookie = await cookiesDe(c.email, c.motDePasse);
-  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'nature', label: 'Nature & jardinage' }, { id: 'lecture', label: 'Lecture' }], timestamp: ts() });
+  const c = await compteLocal('portes-nature'); const cookie = await cookiesDe(c.email, c.motDePasse);
+  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'nature', label: 'Nature & jardinage' }], timestamp: ts() });
   const avant = (await admissibles(c)).filter((q) => q.branche === 'nature').map((q) => q.id);
   v.verifier(avant.includes('nature.0210') && avant.includes('nature.0211'), `« Nature » cochée : ${avant.length} questions de nature admissibles`);
-  // Une session de trois questions : nature, nature, lecture — dans cet ordre.
-  const lot = ['nature.0210', 'nature.0211', 'reading2.1233'];
+  v.verifier(!(await admissibles(c)).some((q) => q.branche === 'garden'), '« Nature & jardinage » n’ouvre pas le jardinage (arbitrage en attente, dit dans la table)');
+  // Le serveur propose ; on répond à ce qu'il propose.
+  let lot = await obtenirLot(cookie);
+  v.verifier(lot?.question.question_key === 'nature.0210', 'la première question proposée est celle de la place de la nature', lot?.question.question_key);
+  v.verifier(question('nature.0210')!.enonce === 'Quelle place la nature et le plein air occupent-ils réellement dans ta vie ?', 'son énoncé est celui de la révision éditoriale');
   const r5 = question('nature.0210')!.options.find((o) => o.libelle === 'Très peu de place')!;
-  const r = await poster('/api/discovery/answer', cookie, { sessionId: null, pendingKeys: lot, currentIndex: 0, mode: 'full', questionKey: 'nature.0210', answer: `r${r5.rang}` });
-  const suivante = (r.json as { next?: { question?: { question_key?: string } } }).next?.question?.question_key;
-  v.verifier(r.status === 200 && suivante === 'reading2.1233', 'elle répond « Très peu de place » : la question de nature suivante n’est PAS servie, la lecture l’est', `suivante = ${suivante}`);
-  const e = await etatDe(c);
-  v.verifier(!e.dejaPosees.has('nature.0211'), 'la question sautée n’est pas marquée posée : non montrée n’est pas refusée');
-  const apres = (await admissibles(c)).filter((q) => q.branche === 'nature');
-  v.verifier(apres.length === 0, 'plus aucune question de nature n’est proposée d’initiative', apres.map((q) => q.id).join(','));
-  const pref = (await c.client.from('knowledge_evidences').select('target_family, target_construct, polarity').eq('user_id', c.userId).eq('target_construct', 'PREFERENCE.nature.domain_importance')).data ?? [];
-  v.verifier(pref.length === 1 && pref[0].polarity === 'rejet', 'sa réponse est au journal, avec sa polarité de rejet — la case cochée à l’inscription y reste aussi', JSON.stringify(pref));
+  const r = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'nature.0210', answer: [`r${r5.rang}`] });
+  v.verifier(r.status === 200 && r.next?.question.question_key === 'nature.0211', 'elle répond « Très peu de place » : la question de nature suivante RESTE posée — une faible place n’interdit rien', `suivante = ${r.next?.question.question_key}`);
+  const pref = (await c.client.from('knowledge_evidences').select('target_construct, polarity, strength').eq('user_id', c.userId).eq('target_construct', 'PREFERENCE.nature.domain_importance')).data ?? [];
+  v.verifier(pref.length === 1 && pref[0].polarity === 'absence_de_critere' && pref[0].strength !== 'weak', 'au journal : une faible place, ni rejet ni preuve « faible »', JSON.stringify(pref));
+  const e1 = await etatDe(c);
+  v.verifier(e1.placeFaible?.has('nature') === true && !e1.nePasCreuser.has('nature'), 'l’état retient une place faible, et aucun refus');
+  v.verifier((await admissibles(c)).some((q) => q.branche === 'nature'), 'les questions de nature restent admissibles');
   const interet = (await c.client.from('knowledge_evidences').select('target_construct').eq('user_id', c.userId).eq('target_family', 'INTEREST')).data ?? [];
-  v.verifier(interet.some((x) => x.target_construct === 'nature'), 'réponse contradictoire : les deux déclarations sont conservées, aucune n’est réécrite');
-  // Sa propre démarche rouvre le sujet.
-  await poster('/api/discovery/sujet', cookie, { branche: 'nature', choisi: true });
-  v.verifier((await admissibles(c)).some((q) => q.branche === 'nature'), 'elle choisit d’explorer la nature : ses questions redeviennent admissibles');
-  // Non-réponse : passer une question ne l'ouvre pas à nouveau, et n'écrit rien.
+  v.verifier(interet.some((x) => x.target_construct === 'nature'), 'réponse contradictoire : la case cochée et la faible place sont conservées toutes deux');
+
+  // LE REFUS EXPLICITE : le seul acte qui arrête les questions du sujet.
   const n0 = await preuves(c);
-  const passe = await poster('/api/discovery/answer', cookie, { sessionId: null, pendingKeys: ['reading2.1235'], currentIndex: 0, mode: 'full', questionKey: 'reading2.1235', answer: null, skip: true });
-  v.verifier(passe.status === 200 && await preuves(c) === n0 && (await etatDe(c)).dejaPosees.has('reading2.1235'), 'non-réponse : la question passée n’écrit rien et ne revient pas');
-  // Question hors de la banque active (archivée) : refusée, rien n'est écrit.
-  const archivee = await poster('/api/discovery/answer', cookie, { sessionId: null, pendingKeys: ['series.0094'], currentIndex: 0, mode: 'full', questionKey: 'series.0094', answer: ['r1'] });
-  v.verifier(question('series.0094') === undefined && await preuves(c) === n0, 'question retirée de la banque : absente du moteur, aucune preuve écrite', `HTTP ${archivee.status}`);
+  const refus = await poster('/api/discovery/sujet', cookie, { branche: 'nature', refuse: true });
+  v.verifier(refus.status === 200 && (await preuves(c)) === n0, 'elle demande à ne plus être questionnée sur la nature : acte enregistré, aucune préférence écrite');
+  v.verifier(!(await admissibles(c)).some((q) => q.branche === 'nature'), 'plus aucune question de nature n’est admissible');
+  const apresRefus = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'nature.0211', answer: [`r${question('nature.0211')!.options[0].rang}`] });
+  v.verifier(apresRefus.status === 409 && apresRefus.motif === 'conditions_non_tenues' && (await preuves(c)) === n0, 'la question de nature restée à l’écran est refusée, rien n’est écrit', `HTTP ${apresRefus.status} ${apresRefus.motif}`);
+  v.verifier(!(await etatDe(c)).dejaPosees.has('nature.0211'), 'la question refusée n’est pas marquée posée');
+  const reprise = await poster('/api/discovery/sujet', cookie, { branche: 'nature', refuse: false });
+  v.verifier(reprise.status === 200 && (await admissibles(c)).some((q) => q.branche === 'nature'), 'elle accepte de nouveau : les questions redeviennent admissibles');
+  const double = await poster('/api/discovery/sujet', cookie, { branche: 'nature', refuse: true, choisi: true });
+  v.verifier(double.status === 400, 'refuser et choisir dans la même requête est refusé (400)');
+
+  // Non-réponse : passer une question n'écrit rien et elle ne revient pas.
+  lot = await obtenirLot(cookie);
+  const cle = lot!.question.question_key;
+  const passe = await repondre(cookie, { jeton: lot!.jeton, questionKey: cle, skip: true });
+  v.verifier(passe.status === 200 && await preuves(c) === n0 && (await etatDe(c)).dejaPosees.has(cle), 'non-réponse : la question passée n’écrit rien et ne revient pas', cle);
+  // Question retirée de la banque : absente du moteur, donc d'aucun lot — refusée, rien d'écrit.
+  const archivee = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'series.0094', answer: ['r1'] });
+  v.verifier(question('series.0094') === undefined && archivee.status === 403 && await preuves(c) === n0, 'question retirée de la banque : refusée, aucune preuve écrite', `HTTP ${archivee.status} ${archivee.motif}`);
 }
 
 // ── 4. DONNÉE INACCESSIBLE : le compte d'un autre

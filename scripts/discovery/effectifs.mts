@@ -7,7 +7,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { BANQUE, MANIFESTE } from '../../src/lib/discovery/open-v3/banque.ts';
 import { analyserCondition, type EtatDiscovery } from '../../src/lib/discovery/open-v3/conditions.ts';
 import { verdictDe } from '../../src/lib/discovery/open-v3/selection.ts';
-import { ALIAS_BRANCHES, BRANCHES_DU_DOMAINE } from '../../src/lib/discovery/open-v3/branches.ts';
+import { ALIAS_BRANCHES, SOUS_PARTIES, TAGS_ATTENDUS, HYPOTHESES } from '../../src/lib/discovery/open-v3/correspondances.ts';
 import { DEPENDANCES, TETES_DE_SOUS_PARTIE, SELECTEURS } from '../../src/lib/discovery/open-v3/dependances.ts';
 import { REMPLACEMENTS, poolDe } from '../../src/lib/discovery/open-v3/coexistence.ts';
 import { OUVERTES_ARCHIVEES, CONTRATS_OUVERTS, DESTINATIONS_CONDITIONNELLES } from '../../src/lib/discovery/open-v3/contrats-ouverts.ts';
@@ -16,11 +16,10 @@ import { produireDepuisOption } from '../../src/lib/discovery/open-v3/produire.t
 
 const noms = new Set<string>([...ALIAS_BRANCHES.keys(), ...BANQUE.map((q) => q.branche)]);
 for (const s of ALIAS_BRANCHES.values()) for (const b of s) noms.add(b);
-for (const d of BRANCHES_DU_DOMAINE.keys()) noms.add(d);
 const tout: EtatDiscovery = {
-  tags: new Map([...noms].map((n) => [`INTEREST.${n}`, 'positive'] as const)), nePasCreuser: new Set(), branchesOuvertes: noms,
+  tags: new Map([...[...noms].map((n) => [`INTEREST.${n}`, 'positive'] as const), ...[...TAGS_ATTENDUS.values()].flatMap((s) => [...s].map((t) => [t, 'positive'] as const))]), nePasCreuser: new Set(), branchesOuvertes: noms,
   niveauParBranche: new Map([...noms].map((n) => [n, 'C'] as const)), dejaPosees: new Set(), attributsConnus: new Set(), sansAlcool: false,
-  contextesConnus: new Set(), contextesActifs: new Set(), aliasBranches: ALIAS_BRANCHES,
+  contextesConnus: new Set(), contextesActifs: new Set(), aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES,
   sujetsChoisis: new Set(BANQUE.map((q) => q.branche)),
   projets: new Map([...new Set(BANQUE.map((q) => poolDe(q.branche)))].map((p) => [p, new Set(['achat', 'sejour'] as const)] as const)),
   optionsChoisies: new Map(BANQUE.filter((q) => SELECTEURS.has(q.id)).map((q) => [q.id, new Set(q.options.map(cleOption))] as const)),
@@ -41,10 +40,16 @@ for (const q of BANQUE) {
   else if (a.sensible && !a.ouvertureSurDemarche) ranger(`sensible_${a.niveauSensibilite ?? 'consigne'}_fermee`, q.id);
   else if (v === 'indecidable') {
     const tete = TETES_DE_SOUS_PARTIE.get(q.id);
-    if (/^ouverture branche/i.test(q.condition_emission)) ranger('non_resolue_ouverture_de_branche_onglet_absent', q.id);
+    const nomsEcrits = (a.clauses as { branche?: string; sousPartie?: boolean; type: string }[]).filter((c) => c.branche).map((c) => c.branche!);
+    const sp = nomsEcrits.map((n) => SOUS_PARTIES.get(n)).find((x) => x);
+    const hyp = HYPOTHESES.find((h) => nomsEcrits.includes(h.nom));
+    if (/^ouverture branche/i.test(q.condition_emission)) ranger('non_resolue_ouverture_d_une_branche_distincte_sans_regle_executable', q.id);
     else if (DEPENDANCES.get(q.id) && !DEPENDANCES.get(q.id)!.resolu) ranger('non_resolue_dependance_sans_option_rapprochee', q.id);
-    else if (tete) ranger('non_resolue_condition_de_sous_partie_non_comprise', q.id);
+    else if (tete) ranger('non_resolue_condition_de_tete_de_sous_partie_non_comprise', q.id);
     else if (a.inconnues.length > 0) ranger('non_resolue_fragment_non_compris', q.id);
+    else if (sp && sp.regle === 'non_resolue') ranger('non_resolue_sous_partie_dont_l_ouverture_est_en_prose', q.id);
+    else if (hyp && hyp.critere === 'condition_en_prose') ranger('non_resolue_condition_en_prose_apres_le_nom', q.id);
+    else if (hyp) ranger('non_resolue_nom_tenu_pour_une_hypothese', q.id);
     else ranger('non_resolue_nom_ou_contexte_non_rattache', q.id);
   } else if (v === 'fermer') ranger('fermee_meme_avec_tout', q.id);
   else if (verdictDe(q, sansDemarche) !== 'ouvrir') ranger('ouvrable_sur_demarche_explicite', q.id);

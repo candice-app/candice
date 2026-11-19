@@ -118,7 +118,11 @@ describe('les portes mécaniques', () => {
   it('une question alcool ne se pose jamais à quelqu’un qui ne boit pas', () => {
     const c = analyserCondition('ne jamais afficher les questions alcool si la personne ne boit pas');
     expect(evaluerCondition(c, etatVide, ctx)).toBe('ouvrir');
-    expect(evaluerCondition(c, etat({ sansAlcool: true }), ctx)).toBe('fermer');
+    // La consigne protège les questions qui PRÉSUMENT une consommation d'alcool…
+    expect(evaluerCondition(c, etat({ sansAlcool: true }), { ...ctx, presumeAlcool: true })).toBe('fermer');
+    // … et pas les autres : elle est écrite sur les trente questions de cuisine, qui ne
+    // doivent pas toutes se fermer pour quelqu'un qui ne boit pas (décision du 19 nov.).
+    expect(evaluerCondition(c, etat({ sansAlcool: true }), ctx)).toBe('ouvrir');
   });
 
   it('on ne redemande pas ce que Candice sait déjà', () => {

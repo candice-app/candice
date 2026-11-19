@@ -1,0 +1,459 @@
+{
+ "version": "2026-11-19.1",
+ "note": "Table FIGÉE. Ce qu’une catégorie d’onboarding ou un domaine lu dans un texte libre OUVRE. Ouvrir une branche permet de poser ses questions : cela n’écrit aucune préférence. Une ligne « hypothese » n’ouvre rien.",
+ "categories_onboarding": [
+  {
+   "id": "lecture",
+   "libelle": "Lecture",
+   "branches": [
+    "reading",
+    "reading2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "La catégorie porte le nom officiel de la branche (« Lecture »). Règle écrite : « Aime lire »."
+  },
+  {
+   "id": "cuisine",
+   "libelle": "Cuisine & gastronomie",
+   "branches": [
+    "food",
+    "food2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "Règle écrite de Food & Gastronomie : « Gastronomie, cuisine, restaurant… sélectionnés ou cités ». Les questions historiques de food s’ouvrent sur « Cuisine/gastronomie active »."
+  },
+  {
+   "id": "sport",
+   "libelle": "Sport",
+   "branches": [
+    "sport",
+    "sportp"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "Règle écrite de Sport pratiqué : « Sport sélectionné comme centre d’intérêt ». La branche historique s’appelle « Sport ».",
+   "non_ouvertes": [
+    {
+     "branche": "sportw",
+     "raison": "La feuille Branches sépare les deux : « pratiquer un sport et regarder du sport n’ont RIEN à voir ». Sport spectateur demande un sport « cité comme centre d’intérêt de suivi »."
+    }
+   ]
+  },
+  {
+   "id": "musique",
+   "libelle": "Musique",
+   "branches": [
+    "music",
+    "music2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "Règle écrite : « Musique sélectionnée ».",
+   "non_ouvertes": [
+    {
+     "branche": "live",
+     "raison": "Danse · Concerts · Festivals demande que la musique ou la danse soit « importante », ou un événement cité : une case cochée ne le dit pas."
+    }
+   ]
+  },
+  {
+   "id": "cinema",
+   "libelle": "Ciné & séries",
+   "branches": [
+    "cinema",
+    "cinema2",
+    "series",
+    "series2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; décision d’Estelle du 19 nov. (correspondances d’exploration)",
+   "justification": "Règles écrites : « Cinéma sélectionné », « Séries sélectionnées ou citées ». La catégorie nomme les deux ; Estelle valide d’explorer le cinéma et les séries depuis « Ciné & séries ». La coexistence des générations (onglet 13) décide ensuite quelles questions se posent."
+  },
+  {
+   "id": "art",
+   "libelle": "Art & culture",
+   "branches": [
+    "art"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "La branche historique s’appelle « Art » et s’ouvre sur « Intérêt art, musées et expositions sélectionné ou détecté ».",
+   "non_ouvertes": [
+    {
+     "branche": "museum",
+     "raison": "Musées & expositions demande « culture/art cités » ou un musée mentionné. La catégorie ne nomme pas les musées : accessible par « explorer ce sujet »."
+    },
+    {
+     "branche": "craft",
+     "raison": "Arts visuels & pratiques créatives demande un « univers créatif sélectionné » : aimer l’art n’est pas pratiquer ni acheter."
+    }
+   ]
+  },
+  {
+   "id": "voyage",
+   "libelle": "Voyage",
+   "branches": [
+    "travel",
+    "travel2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "Règle écrite : « Voyage sélectionné »."
+  },
+  {
+   "id": "mode",
+   "libelle": "Mode & beauté",
+   "branches": [
+    "fashion",
+    "fashion2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "Règle écrite : « Mode sélectionnée ».",
+   "non_ouvertes": [
+    {
+     "branche": "beauty2",
+     "raison": "La catégorie nomme la beauté, mais l’ouverture de Beauté porte « Ne pas ouvrir automatiquement ». À DÉCIDER : « Mode & beauté » ouvre-t-elle aussi la beauté, comme « Ciné & séries » ouvre les deux ?",
+     "a_decider": true
+    },
+    {
+     "branche": "bags",
+     "raison": "La règle écrit « Sélection mode », et son garde-fou « Ne pas ouvrir automatiquement parce qu’elle aime les vêtements ». La source se contredit ; l’ouverture de Mode précise que sacs, chaussures, bijoux et montres « restent dans leurs branches spécialisées »."
+    },
+    {
+     "branche": "shoes",
+     "raison": "Même contradiction (« Sélection mode » / branche spécialisée)."
+    },
+    {
+     "branche": "jewelry",
+     "raison": "« sélection Mode & beauté » dans la règle, « Ne pas ouvrir automatiquement simplement parce que la personne aime la mode » dans son garde-fou."
+    },
+    {
+     "branche": "watch",
+     "raison": "« Ne pas ouvrir automatiquement parce que la personne aime le luxe ou la mode. »"
+    }
+   ]
+  },
+  {
+   "id": "tech",
+   "libelle": "Tech & jeux",
+   "branches": [
+    "tech",
+    "tech2",
+    "games"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "La catégorie porte le nom officiel de la branche (« Tech »). Règle écrite de Jeux de société : « Jeux ou tech sélectionnés ».",
+   "non_ouvertes": [
+    {
+     "branche": "gaming2",
+     "raison": "L’ouverture de Gaming porte « NE JAMAIS ouvrir par défaut ». À DÉCIDER : « jeux », dans « Tech & jeux », désigne-t-il aussi les jeux vidéo ?",
+     "a_decider": true
+    }
+   ]
+  },
+  {
+   "id": "nature",
+   "libelle": "Nature & jardinage",
+   "branches": [
+    "nature"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "justification": "La catégorie porte le nom officiel de la branche historique (« Nature »).",
+   "non_ouvertes": [
+    {
+     "branche": "garden",
+     "raison": "La catégorie nomme le jardinage, mais le garde-fou de Jardinage & plantes écrit « ne pas ouvrir parce qu’elle aime la nature ou les fleurs ». À DÉCIDER : « Nature & jardinage » ouvre-t-elle le jardinage ?",
+     "a_decider": true
+    }
+   ]
+  },
+  {
+   "id": "bienetre",
+   "libelle": "Bien-être",
+   "branches": [
+    "wellbeing"
+   ],
+   "statut": "etablie",
+   "source": "décision d’Estelle du 19 nov. (correspondances d’exploration)",
+   "justification": "La catégorie porte le nom officiel de la branche (« Bien-être »). Estelle valide d’explorer le bien-être depuis « Bien-être »."
+  },
+  {
+   "id": "deco",
+   "libelle": "Déco & maison",
+   "branches": [
+    "home",
+    "home2"
+   ],
+   "statut": "etablie",
+   "source": "décision d’Estelle du 19 nov. (correspondances d’exploration)",
+   "justification": "Estelle valide d’explorer la maison et la décoration depuis « Déco & maison ». Les deux générations forment un seul domaine (onglet 13)."
+  },
+  {
+   "id": "vin",
+   "libelle": "Vin & spiritueux",
+   "branches": [],
+   "statut": "etablie",
+   "source": "décision d’Estelle du 19 nov. (correspondances d’exploration)",
+   "justification": "Estelle : « ouvre seulement les questions pertinentes au vin ». La seule partie de Boissons qui porte sur le vin est sa sous-branche « Vin » (drinks.2093), que le classeur ouvre « si vin sélectionné » : avoir choisi « Vin & spiritueux » vaut ce signal. Le reste de Boissons ne s’ouvre pas, et aucune réponse n’est écrite à la place de la personne.",
+   "signaux": [
+    {
+     "question": "drinks.2093",
+     "vaut": "« Vin » sélectionné à drinks.2085"
+    }
+   ]
+  }
+ ],
+ "domaines_journal": [
+  {
+   "journal": "food_gastronomy",
+   "branches": [
+    "food",
+    "food2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Food & Gastronomie : « Gastronomie… sélectionnés ou cités »."
+  },
+  {
+   "journal": "cooking",
+   "branches": [
+    "food",
+    "food2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Food & Gastronomie : « cuisine… sélectionnés ou cités »."
+  },
+  {
+   "journal": "wine_spirits",
+   "branches": [],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Même lecture que la catégorie « Vin & spiritueux » : seule la sous-branche « Vin » de Boissons.",
+   "signaux": [
+    {
+     "question": "drinks.2093",
+     "vaut": "« Vin » sélectionné à drinks.2085"
+    }
+   ]
+  },
+  {
+   "journal": "travel",
+   "branches": [
+    "travel",
+    "travel2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Voyage & Hôtellerie : « destination citée · rêve de séjour »."
+  },
+  {
+   "journal": "fashion",
+   "branches": [
+    "fashion",
+    "fashion2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Nom officiel « Mode »."
+  },
+  {
+   "journal": "beauty_skincare",
+   "branches": [
+    "beauty",
+    "beauty2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Beauté : « Intérêt pour les soins · produits de beauté évoqués »."
+  },
+  {
+   "journal": "jewelry_watches",
+   "branches": [],
+   "statut": "hypothese",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Le domaine du journal réunit bijoux et montres ; un bijou cité n’ouvre pas les montres, et l’inverse. Rien ne dit lequel des deux a été évoqué."
+  },
+  {
+   "journal": "design_decor",
+   "branches": [
+    "home",
+    "home2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Maison : « parle de décoration »."
+  },
+  {
+   "journal": "art",
+   "branches": [
+    "art",
+    "museum"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Art : nom officiel. Musées & expositions : « Culture/art cités »."
+  },
+  {
+   "journal": "photography",
+   "branches": [
+    "photo"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Photographie : « Photo citée comme intérêt ou pratique »."
+  },
+  {
+   "journal": "music",
+   "branches": [
+    "music",
+    "music2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Nom officiel « Musique »."
+  },
+  {
+   "journal": "cinema_series",
+   "branches": [
+    "cinema",
+    "cinema2",
+    "series",
+    "series2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Le domaine du journal porte les deux noms, comme la catégorie « Ciné & séries » : même décision du 19 nov. À relire : le classeur écrit aussi « Ne pas ouvrir automatiquement [les séries] depuis le cinéma »."
+  },
+  {
+   "journal": "books_literature",
+   "branches": [
+    "reading",
+    "reading2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Lecture : « Aime lire · cite un livre »."
+  },
+  {
+   "journal": "sport_fitness",
+   "branches": [
+    "sport",
+    "sportp"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Sport pratiqué : « sport cité spontanément · pratique régulière mentionnée ». Pas Sport spectateur."
+  },
+  {
+   "journal": "outdoor_nature",
+   "branches": [
+    "nature"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Nom officiel « Nature »."
+  },
+  {
+   "journal": "tech",
+   "branches": [
+    "tech",
+    "tech2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Nom officiel « Tech »."
+  },
+  {
+   "journal": "gaming",
+   "branches": [
+    "gaming",
+    "gaming2"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Gaming : « évoque souvent des jeux ». Le domaine du journal est celui de la branche."
+  },
+  {
+   "journal": "craftsmanship",
+   "branches": [
+    "craft"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Arts visuels, pratiques créatives & artisanat : « artiste/artisan mentionné »."
+  },
+  {
+   "journal": "wellbeing",
+   "branches": [
+    "wellbeing"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Nom officiel « Bien-être »."
+  },
+  {
+   "journal": "gardening",
+   "branches": [
+    "garden"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Jardinage & plantes : « plante, fleur, jardin, potager ou balcon cité »."
+  },
+  {
+   "journal": "animals",
+   "branches": [
+    "pets",
+    "animals"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Animaux : « parle spontanément d’animaux ». Les animaux (philosophie) : « S’ouvre si les animaux sont évoqués »."
+  },
+  {
+   "journal": "collecting",
+   "branches": [
+    "collection"
+   ],
+   "statut": "etablie",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "justification": "Collection : « S’ouvre si une collection ou une logique de série est évoquée »."
+  }
+ ],
+ "journal_sans_branche": [
+  "architecture",
+  "cars_mobility",
+  "culture_history",
+  "science",
+  "business_entrepreneurship",
+  "personal_development",
+  "family_parenting"
+ ],
+ "questions_qui_presument_l_alcool": {
+  "source": "décision d’Estelle du 19 nov. (correspondances d’exploration) : « Ne boit pas » protège les questions qui supposent une consommation d’alcool, sans fermer toutes les questions sur les boissons.",
+  "questions": [
+   {
+    "question": "food.0049",
+    "raison": "« Quand tu bois de l’alcool, qu’est-ce qui te fait le plus plaisir ? » présume que la personne en boit."
+   },
+   {
+    "question": "food.0050",
+    "raison": "« Pour le vin, tu préfères plutôt… » présume qu’elle boit du vin."
+   },
+   {
+    "question": "drinks.2093",
+    "raison": "Sous-branche Vin : « Tu apprécies surtout… le rouge, le blanc… » présume qu’elle boit du vin."
+   },
+   {
+    "question": "drinks.2088",
+    "raison": "« Quelle place souhaites-tu donner aux boissons alcoolisées ? » : la personne a déjà dit qu’elle n’en boit pas."
+   }
+  ]
+ }
+}

@@ -49,7 +49,7 @@ describe('une réponse refusée n’écrit rien du tout', () => {
     const { client, appels } = faux();
     await expect(enregistrerReponseFermee(client, {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: q.id,
+      acteId: 'lot-test', questionId: q.id,
       clesOptions: [cleOption(q.options[0]), 'option-fabriquee'],
     })).rejects.toThrow(ReponseInvalideError);
     // Rien n'a été écrit — pas même la partie valide. Une réponse à moitié écrite
@@ -61,7 +61,7 @@ describe('une réponse refusée n’écrit rien du tout', () => {
     const { client, appels } = faux();
     await expect(enregistrerReponseFermee(client, {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: 'question-qui-n-existe-pas',
+      acteId: 'lot-test', questionId: 'question-qui-n-existe-pas',
       clesOptions: ['r1'],
     })).rejects.toThrow(ReponseInvalideError);
     expect(appels).toHaveLength(0);
@@ -72,7 +72,7 @@ describe('une réponse refusée n’écrit rien du tout', () => {
     const { client, appels } = faux();
     await expect(enregistrerReponseFermee(client, {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: q.id,
+      acteId: 'lot-test', questionId: q.id,
       clesOptions: [cleOption(q.options[0]), cleOption(q.options[1])],
     })).rejects.toThrow(ReponseInvalideError);
     expect(appels).toHaveLength(0);
@@ -83,7 +83,7 @@ describe('une réponse refusée n’écrit rien du tout', () => {
     const { client } = faux();
     await expect(enregistrerReponseFermee(client, {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: q.id, clesOptions: [],
+      acteId: 'lot-test', questionId: q.id, clesOptions: [],
     })).rejects.toThrow(ReponseInvalideError);
   });
 });
@@ -94,7 +94,7 @@ describe('ce qui est écrit porte sa provenance', () => {
     const { client, appels } = faux();
     const r = await enregistrerReponseFermee(client, {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: q.id, clesOptions: [cleOption(q.options[0])],
+      acteId: 'lot-test', questionId: q.id, clesOptions: [cleOption(q.options[0])],
       timestamp: '2026-11-17T12:00:00.000Z',
     });
     expect(appels).toHaveLength(1);
@@ -107,38 +107,24 @@ describe('ce qui est écrit porte sa provenance', () => {
     for (const p of preuves) expect(p.source_id).toBe(r.sourceId);
   });
 
-  it('rejouer la MÊME réponse donne les mêmes identifiants de preuve — idempotent', async () => {
+  it('le MÊME acte donne la même source et les mêmes preuves ; un autre acte, une autre source', async () => {
     const q = questionFermeeProductive();
     const commun = {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: q.id, clesOptions: [cleOption(q.options[0])],
+      acteId: 'lot-1', questionId: q.id, clesOptions: [cleOption(q.options[0])],
       timestamp: '2026-11-17T12:00:00.000Z',
     };
-    // LA MÊME RÉPONSE A LA MÊME SOURCE : l'identité vient de ce qui a été choisi.
     const a = faux(); const ra = await enregistrerReponseFermee(a.client, commun);
     const b = faux(); const rb = await enregistrerReponseFermee(b.client, { ...commun, timestamp: '2026-11-18T09:00:00.000Z' });
     const ids = (x: typeof a) => (x.appels[0].args.p_evidences as Record<string, unknown>[]).map((e) => e.id ?? e.evidence_id);
     expect(ids(a).length).toBeGreaterThan(0);
     expect(rb.sourceId).toBe(ra.sourceId);
     expect(ids(b)).toEqual(ids(a));
-    // Et quand elle est déjà au journal, encore vivante : rien n'est réécrit (double envoi).
-    const c = faux({
-      knowledge_sources: [{ id: ra.sourceId, user_id: commun.userId, source_type: 'discovery_closed', question_code: q.id }],
-      knowledge_evidences: [{ id: 'e1', source_id: ra.sourceId, superseded_at: null }],
-    });
-    const rc = await enregistrerReponseFermee(c.client, commun);
-    expect(rc).toMatchObject({ dejaFaite: true, preuvesEcrites: 0, sourceId: ra.sourceId });
-    expect(c.appels).toHaveLength(0);
-    // La même réponse, mais supersédée entre-temps : un nouveau dernier mot, une nouvelle source.
-    const d = faux({
-      knowledge_sources: [{ id: ra.sourceId, user_id: commun.userId, source_type: 'discovery_closed', question_code: q.id }],
-      knowledge_evidences: [{ id: 'e1', source_id: ra.sourceId, superseded_at: '2026-11-17T13:00:00.000Z' }],
-    });
-    // (l'écriture de la supersession n'est pas jouée par ce faux client : elle est prouvée sur
-    //  la pile locale, script 31.)
-    await expect(enregistrerReponseFermee(d.client, commun)).rejects.toThrow();
-    expect(d.appels).toHaveLength(1);
-    expect((d.appels[0].args.p_source as { id?: string } | undefined)?.id ?? JSON.stringify(d.appels[0].args)).not.toBe(ra.sourceId);
+    // MÊMES OPTIONS, AUTRE LOT : un autre acte. Il n'est pas confondu avec le premier.
+    const c = faux(); const rc = await enregistrerReponseFermee(c.client, { ...commun, acteId: 'lot-2' });
+    expect(rc.sourceId).not.toBe(ra.sourceId);
+    // Les identités d'acte complètes (renvoi, A → B → A, simultanéité) sont éprouvées avec une
+    // base qui retient ses écritures : voir actes.test.ts.
   });
 
   it('une option qui ne produit rien est signalée, pas avalée', async () => {
@@ -151,7 +137,7 @@ describe('ce qui est écrit porte sa provenance', () => {
     const { client } = faux();
     const r = await enregistrerReponseFermee(client, {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: q.id, clesOptions: [cleOption(action)],
+      acteId: 'lot-test', questionId: q.id, clesOptions: [cleOption(action)],
     });
     expect(r.preuvesEcrites).toBe(0);
     expect(r.sansEmission).toHaveLength(1);
@@ -195,7 +181,7 @@ describe('une réponse ouverte : le verbatim d’abord, l’extraction ensuite',
     // Et le service refuserait quand même, si une passait un jour.
     await expect(enregistrerReponseOuverte(client, {
       userId: '00000000-0000-4000-8000-000000000001',
-      questionId: 'question-inexistante', texte: 'quelque chose',
+      acteId: 'lot-test', questionId: 'question-inexistante', texte: 'quelque chose',
     })).rejects.toThrow(ReponseInvalideError);
   });
 
@@ -204,10 +190,10 @@ describe('une réponse ouverte : le verbatim d’abord, l’extraction ensuite',
     const fermee = questionFermeeProductive();
     const { client } = faux();
     await expect(enregistrerReponseOuverte(client, {
-      userId: '00000000-0000-4000-8000-000000000001', questionId: ouverte.id, texte: '   ',
+      userId: '00000000-0000-4000-8000-000000000001', acteId: 'lot-test', questionId: ouverte.id, texte: '   ',
     })).rejects.toThrow(ReponseInvalideError);
     await expect(enregistrerReponseOuverte(client, {
-      userId: '00000000-0000-4000-8000-000000000001', questionId: fermee.id, texte: 'du texte',
+      userId: '00000000-0000-4000-8000-000000000001', acteId: 'lot-test', questionId: fermee.id, texte: 'du texte',
     })).rejects.toThrow(ReponseInvalideError);
   });
 });

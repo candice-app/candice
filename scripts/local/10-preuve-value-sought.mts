@@ -32,7 +32,7 @@ for (const [qid, libelles] of cibles) {
     nOptions++;
     // UNE RÉPONSE PAR OPTION : chacune est éprouvée seule (les combinaisons sont plus bas).
     const r = await enregistrerReponseFermee(c.client as never, {
-      userId: c.userId, questionId: qid, clesOptions: [cleOption(o)],
+      acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: qid, clesOptions: [cleOption(o)],
     });
     if (r.preuvesEcrites === 1) nEcrites++;
     else console.log(`  ✗ ${qid} « ${o.libelle} » : ${JSON.stringify(r.sansEmission)}`);
@@ -75,7 +75,7 @@ console.log('   exemple relu par le portrait :', JSON.stringify(p.preferences.fi
 const c2 = await compteLocal('preuve-value-sought-multi');
 const qm = question('animals.2131')!;
 const deux = qm.options.slice(0, 3).map(cleOption);
-const rm = await enregistrerReponseFermee(c2.client as never, { userId: c2.userId, questionId: qm.id, clesOptions: deux });
+const rm = await enregistrerReponseFermee(c2.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c2.userId, questionId: qm.id, clesOptions: deux });
 const { data: lm } = await c2.client.from('knowledge_evidences').select('preference_value').eq('user_id', c2.userId);
 console.log(`\nréponse multiple animals.2131 (3 options) : ${rm.preuvesEcrites} produites, ${lm!.length} relues :`, lm!.map((l) => l.preference_value));
 v.verifier(lm!.length === 3, 'les trois valeurs d’une même réponse multiple sont toutes relues', `${lm!.length} relue(s)`);
@@ -84,7 +84,7 @@ const pref = p2.preferences.find((x) => String(x.path) === 'PREFERENCE.animals.v
 console.log('   portrait :', JSON.stringify({ value: pref?.value, values: pref?.values }));
 v.verifier(pref?.values.length === 3, 'le portrait rend les trois valeurs, pas seulement la dernière', `${pref?.values.length}`);
 // REJEU de la même réponse (même source impossible : nouvelle source) → coexistence sans doublon de valeur.
-await enregistrerReponseFermee(c2.client as never, { userId: c2.userId, questionId: qm.id, clesOptions: deux });
+await enregistrerReponseFermee(c2.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c2.userId, questionId: qm.id, clesOptions: deux });
 const p3 = await lirePortrait(c2.client as never, { userId: c2.userId });
 const pref3 = p3.preferences.find((x) => String(x.path) === 'PREFERENCE.animals.value_sought');
 v.verifier(pref3?.values.length === 3, 'répondre une seconde fois ne duplique aucune valeur', `${pref3?.values.length}`);

@@ -13,7 +13,8 @@ import { randomUUID } from 'node:crypto';
 import { question as questionParId, type OptionV3, type QuestionV3 } from './banque';
 import { prochainesQuestions, type Choix } from './selection';
 import { produireDepuisOption } from './produire';
-import { lireEtat, FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE, FAIT_PROJET, lireProjet, type Projet } from './etat';
+import { lireEtat, FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE, FAIT_SUJET_REFUSE, FAIT_PROJET, lireProjet, type Projet } from './etat';
+import { memeSujet } from './correspondances';
 import { analyserCondition } from './conditions';
 import { BANQUE } from './banque';
 import { createFact } from '@/lib/knowledge/fact';
@@ -106,12 +107,55 @@ export async function prochainesQuestionsPour(
 }
 
 export class ReponseInvalideError extends Error {}
+/** Le même acte existe déjà avec une AUTRE réponse : ce n'est pas un renvoi, c'est refusé. */
+export class ActeDejaEnregistreError extends ReponseInvalideError {}
+
+/** L'identifiant de source d'un acte : dérivé, donc le même pour la même requête renvoyée. */
+export function sourceDeLActe(type: 'discovery_closed' | 'discovery_open', userId: string, questionId: string, acteId: string): string {
+  return evidenceId(type, `${userId}:${questionId}:acte:${acteId}`);
+}
+
+interface LigneSource { id: string; option_ref: string | null; raw_text: string | null; ts: string; source_type: string }
+/** Toutes les sources d'une question pour ce compte et cette voie, vivantes ou non. */
+async function sourcesDeLaQuestion(client: WriteClient, userId: string, type: string, questionCode: string): Promise<LigneSource[]> {
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): { eq(c: string, v: string):
+      Promise<{ data: LigneSource[] | null; error: { message: string } | null }> } } } };
+  };
+  const { data, error } = await lecture.from('knowledge_sources').select('id, option_ref, raw_text, ts, source_type')
+    .eq('user_id', userId).eq('source_type', type).eq('question_code', questionCode);
+  if (error) throw new Error(`lecture des réponses précédentes impossible : ${error.message}`);
+  return data ?? [];
+}
+
+/**
+ * LE DERNIER MOT : parmi les actes d'une question, le plus récent reste vivant, les autres
+ * cessent de l'être. Le plus récent est décidé par l'instant puis par l'identifiant — une
+ * règle que deux requêtes simultanées appliquent à l'identique. Celle qui a écrit le dernier
+ * mot retire les autres ; celle qui ne l'a pas écrit ne retire que le sien.
+ */
+async function reconcilierDernierMot(
+  client: WriteClient, userId: string, type: 'discovery_closed' | 'discovery_open', questionCode: string, moi: string, timestamp: string,
+  derivees: readonly string[] = [],
+): Promise<{ readonly dernierMot: boolean }> {
+  const tous = await sourcesDeLaQuestion(client, userId, type, questionCode);
+  const rang = (x: LigneSource) => `${new Date(x.ts).toISOString()}|${x.id}`;
+  const dernier = tous.reduce<LigneSource | null>((m, x) => (!m || rang(x) > rang(m) ? x : m), null);
+  if (!dernier || dernier.id === moi) {
+    await supersedeSources(client as never, { oldSourceIds: [...tous.map((x) => x.id), ...derivees].filter((id) => id !== moi), newSourceId: moi, timestamp });
+    return { dernierMot: true };
+  }
+  await supersedeSources(client as never, { oldSourceIds: [moi], newSourceId: dernier.id, timestamp });
+  return { dernierMot: false };
+}
 
 /** Ce qu'une réponse a produit, pour que l'appelant puisse le dire et le tracer. */
 export interface ResultatReponse {
   /** La même réponse existait déjà, vivante : rien n'a été réécrit. */
   readonly dejaFaite?: boolean;
   readonly sourceId: string;
+  /** L'instant de l'acte : celui de la première écriture, y compris quand il est renvoyé. */
+  readonly timestamp: string;
   readonly preuvesEcrites: number;
   /** Options retenues qui n'ont rien produit, avec le motif. Jamais silencieux. */
   readonly sansEmission: readonly { readonly option: string; readonly motif: string }[];
@@ -135,6 +179,8 @@ export async function enregistrerReponseFermee(
     readonly userId: string;
     readonly questionId: string;
     readonly clesOptions: readonly string[];
+    /** Identité de l'acte : « cette question dans ce lot ». Voir lot.ts. */
+    readonly acteId: string;
     readonly timestamp?: string;
   },
 ): Promise<ResultatReponse> {
@@ -155,35 +201,29 @@ export async function enregistrerReponseFermee(
   }
 
   const timestamp = input.timestamp ?? new Date().toISOString();
-  // ── L'IDENTITÉ D'UNE RÉPONSE FERMÉE EST CELLE DE CE QUI A ÉTÉ CHOISI. Même personne, même
-  //    question, mêmes options → même source. La première version tirait un identifiant au
-  //    hasard : un double envoi (deux onglets, un bouton pressé deux fois, une requête rejouée)
-  //    écrivait une seconde source et doublait chaque preuve — la consolidation y lisait une
-  //    conviction deux fois plus appuyée. Relevé le 19 nov. en rejouant un lot de réponses.
-  //    Une réponse DIFFÉRENTE à la même question est une nouvelle source, qui supersède
-  //    l'ancienne : le dernier mot compte, l'ancien reste lisible dans l'historique.
+  // ── L'IDENTITÉ D'UNE RÉPONSE EST CELLE DE L'ACTE, pas celle de son contenu.
+  //
+  //    Première version : un identifiant tiré au hasard — un double envoi doublait chaque
+  //    preuve. Deuxième version (19 nov. au matin) : un identifiant dérivé des options
+  //    cochées — le double envoi ne comptait plus, mais deux actes distincts de même contenu
+  //    étaient confondus : après A, puis B, un nouvel A retombait sur l'identifiant du
+  //    premier, et il fallait une rustine (le rang) pour l'en distinguer.
+  //    L'acte est « la réponse à cette question dans ce lot proposé » (`acteId`, fourni par
+  //    l'appelant à partir du lot signé). La même requête renvoyée porte le même acte : rien
+  //    n'est réécrit. Un autre lot est un autre acte, même si les options sont identiques.
+  if (!input.acteId?.trim()) throw new ReponseInvalideError('acte sans identité : une réponse appartient à un lot proposé');
   const clesTriees = [...new Set(input.clesOptions)].sort();
-  const lectureSources = client as unknown as {
-    from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): { eq(c: string, v: string):
-      Promise<{ data: { id: string }[] | null; error: { message: string } | null }> } } } };
-  };
-  const { data: anciennes, error: eLecture } = await lectureSources.from('knowledge_sources').select('id')
-    .eq('user_id', input.userId).eq('source_type', 'discovery_closed').eq('question_code', q.id);
-  if (eLecture) throw new Error(`lecture des réponses précédentes impossible : ${eLecture.message}`);
-  const idsAnciens = (anciennes ?? []).map((x) => x.id);
-  let sourceId = evidenceId('discovery_closed', `${input.userId}:${q.id}:${clesTriees.join(',')}`);
-  if (idsAnciens.includes(sourceId)) {
-    const vivantes = client as unknown as {
-      from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
-        Promise<{ data: { id: string }[] | null; error: { message: string } | null }> } } };
-    };
-    const { data: encore, error: eVie } = await vivantes.from('knowledge_evidences').select('id').eq('source_id', sourceId).is('superseded_at', null);
-    if (eVie) throw new Error(`lecture des preuves précédentes impossible : ${eVie.message}`);
-    // La même réponse, encore vivante : rien à réécrire.
-    if ((encore ?? []).length > 0) return { sourceId, preuvesEcrites: 0, sansEmission: [], dejaFaite: true };
-    // La même réponse, mais supersédée entre-temps (A, puis B, puis A de nouveau) : c'est un
-    // nouveau dernier mot, il lui faut sa propre source.
-    sourceId = evidenceId('discovery_closed', `${input.userId}:${q.id}:${clesTriees.join(',')}:${idsAnciens.length}`);
+  const optionRef = clesTriees.join(',');
+  const sourceId = sourceDeLActe('discovery_closed', input.userId, q.id, input.acteId);
+  const actes = await sourcesDeLaQuestion(client, input.userId, 'discovery_closed', q.id);
+  const meme = actes.find((x) => x.id === sourceId);
+  if (meme) {
+    // LE MÊME ACTE : la requête a été renvoyée (double clic, reprise après coupure, rejeu).
+    // S'il porte une AUTRE réponse, ce n'est pas un renvoi : un acte ne se réécrit pas.
+    if ((meme.option_ref ?? '') !== optionRef) {
+      throw new ActeDejaEnregistreError(`« ${q.id} » a déjà reçu une autre réponse dans ce parcours — rien n'est écrit`);
+    }
+    return { sourceId, preuvesEcrites: 0, sansEmission: [], dejaFaite: true, timestamp: meme.ts };
   }
   const about = accountAbout(asUserId(input.userId));
   const source = createSourceRecord({
@@ -192,6 +232,9 @@ export async function enregistrerReponseFermee(
     questionText: q.enonce,
     answerText: choisies.map((o) => o.libelle).join(' · '),
     questionCode: q.id,
+    // Les clés des options, telles que le navigateur les a renvoyées : de quoi reconnaître le
+    // même acte, et relire ce qui a été coché sans dépendre de la progression.
+    optionRef,
     timestamp,
   });
 
@@ -232,17 +275,22 @@ export async function enregistrerReponseFermee(
     // d'annoncer un nombre d'écritures que la base ne contiendra pas.
     throw new Error(`« ${q.id} » : ${evidences.length} preuves pour ${idsDistincts.size} identifiants — rien n'est écrit`);
   }
-  if (evidences.length > 0) {
-    // La connaissance d'abord. Si ceci échoue, l'appelant NE marque pas la question posée :
-    // mieux vaut la reposer que perdre la réponse en interdisant de la reposer.
-    await persistKnowledge(client, { source, evidences });
-    // Les réponses précédentes à CETTE question cessent d'être vivantes.
-    await supersedeSources(client as never, { oldSourceIds: idsAnciens, newSourceId: sourceId, timestamp });
-  }
+  // La connaissance d'abord. Si ceci échoue, l'appelant NE marque pas la question posée :
+  // mieux vaut la reposer que perdre la réponse en interdisant de la reposer.
+  // LA SOURCE EST ÉCRITE MÊME SANS PREUVE : l'acte a eu lieu, et c'est elle qui permet de
+  // reconnaître son renvoi. Une réponse dont aucune option n'émet reste un acte.
+  const issue = await persistKnowledge(client, { source, evidences });
+  // LE DERNIER MOT COMPTE, et un seul. On relit APRÈS avoir écrit : deux actes arrivés en même
+  // temps se voient alors l'un l'autre, et les deux requêtes concluent pareil.
+  await reconcilierDernierMot(client, input.userId, 'discovery_closed', q.id, sourceId, timestamp);
   if (sansEmission.length > 0) {
     console.warn('[discovery] options sans émission', q.id, sansEmission);
   }
-  return { sourceId, preuvesEcrites: evidences.length, sansEmission };
+  // Deux requêtes du MÊME acte arrivées ensemble passent toutes deux le contrôle d'existence ;
+  // la base n'en écrit qu'une (identifiants dérivés). Celle dont l'écriture a été absorbée
+  // n'a pas créé l'acte : elle le dit, pour que rien ne se compte deux fois.
+  if (issue === 'replayed') return { sourceId, preuvesEcrites: 0, sansEmission, timestamp, dejaFaite: true };
+  return { sourceId, preuvesEcrites: evidences.length, sansEmission, timestamp };
 }
 
 /**
@@ -261,6 +309,10 @@ export async function enregistrerReponseFermee(
  * laissée dans le classeur.
  */
 export interface ResultatOuverte {
+  /** Le même acte existait déjà : rien n'a été réécrit, le modèle n'a pas été rappelé. */
+  readonly dejaFaite?: boolean;
+  /** L'instant de l'acte : celui de la première écriture, y compris quand il est renvoyé. */
+  readonly timestamp: string;
   readonly verbatimEcrit: boolean;
   readonly verbatimSourceId: string;
   readonly preuvesExtraites: number;
@@ -279,6 +331,8 @@ export async function enregistrerReponseOuverte(
     readonly userId: string;
     readonly questionId: string;
     readonly texte: string;
+    /** Identité de l'acte : « cette question dans ce lot ». Voir lot.ts. */
+    readonly acteId: string;
     readonly timestamp?: string;
   },
 ): Promise<ResultatOuverte> {
@@ -308,8 +362,23 @@ export async function enregistrerReponseOuverte(
   //       autorité, et c'est la sauvegarde : si tout ce qui suit échoue, la phrase est là.
   //       La source dit d'où elle vient (`discovery_open`) — la première version la rangeait
   //       sous « onboarding », ce qui était faux.
-  const verbatimSourceId = randomUUID();
-  await persistKnowledge(client, {
+  if (!input.acteId?.trim()) throw new ReponseInvalideError('acte sans identité : une réponse appartient à un lot proposé');
+  const verbatimSourceId = sourceDeLActe('discovery_open', input.userId, q.id, input.acteId);
+  const actes = await sourcesDeLaQuestion(client, input.userId, 'discovery_open', factType);
+  const meme = actes.find((x) => x.id === verbatimSourceId);
+  if (meme) {
+    // LE MÊME ACTE, renvoyé. Le verbatim est déjà là ; sa lecture, si elle manque, est reprise
+    // par le rejeu des lectures en attente — on ne rappelle pas le modèle sur le chemin de la
+    // personne pour une requête qu'elle a déjà faite.
+    if ((meme.raw_text ?? '').trim() !== texte) {
+      throw new ActeDejaEnregistreError(`« ${q.id} » a déjà reçu une autre réponse dans ce parcours — rien n'est écrit`);
+    }
+    return { verbatimEcrit: false, dejaFaite: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp: meme.ts };
+  }
+  // Les lectures tirées des réponses précédentes à cette question (même code, voie inférée)
+  // tombent avec elles : une inférence ne survit pas à la phrase dont elle a été tirée.
+  const lecturesAnciennes = (await sourcesDeLaQuestion(client, input.userId, 'extraction_inferred', factType)).map((x) => x.id);
+  const issueVerbatim = await persistKnowledge(client, {
     source: createSourceRecord({
       about, ownerId, id: verbatimSourceId, sourceType: 'discovery_open',
       questionCode: factType, questionText: q.enonce, rawText: texte, timestamp,
@@ -320,13 +389,18 @@ export async function enregistrerReponseOuverte(
       confidence: 'high', user_confirmed: true, assertionStatus: 'explicit',
     })],
   });
+  // La requête jumelle du même acte a écrit le verbatim la première : elle seule le fait lire.
+  if (issueVerbatim === 'replayed') return { verbatimEcrit: false, dejaFaite: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp };
+  const { dernierMot } = await reconcilierDernierMot(client, input.userId, 'discovery_open', factType, verbatimSourceId, timestamp, lecturesAnciennes);
+  // Un acte arrivé en même temps est plus récent : c'est lui qui sera lu, pas celui-ci.
+  if (!dernierMot) return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp };
 
   // ── 2. LA LECTURE PAR LE MODÈLE, et seulement maintenant. Son échec ne retire pas le
   //       verbatim, et il est SIGNALÉ : `extractionEnAttente` dit qu'il faudra rejouer.
   try {
     if (q.id === CONTRAT_ENVIE_CULINAIRE) {
       const envie = await ecrireEnvieCulinaire(client, { userId: input.userId, texte, verbatimSourceId, timestamp });
-      return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, envie };
+      return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, envie, timestamp };
     }
     const { extractFreeText } = await import('@/lib/knowledge-write/extract-free-text');
     const r = await extractFreeText(client, {
@@ -337,10 +411,10 @@ export async function enregistrerReponseOuverte(
       // Le contrat de la question borne les relations qu'une entité peut y recevoir.
       ...(relationsAdmises(q.id) ? { relationsAdmises: relationsAdmises(q.id) } : {}),
     });
-    return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: r.evidences.length, extractionEnAttente: false };
+    return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: r.evidences.length, extractionEnAttente: false, timestamp };
   } catch (e) {
     console.error('[discovery] lecture par le modèle impossible — verbatim conservé, à rejouer', q.id, e);
-    return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: true };
+    return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: true, timestamp };
   }
 }
 
@@ -434,9 +508,19 @@ export async function rejouerLecturesEnAttente(
     from(t: string): { select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: unknown }> } } };
   }).from('knowledge_sources').select('id').eq('id', id).maybeSingle()).data;
 
+  // UNE RÉPONSE REMPLACÉE N'EST PLUS LUE : sa phrase reste au journal, mais en tirer une
+  // connaissance aujourd'hui ferait revivre ce que la personne a corrigé.
+  const { data: faitsVivants, error: eFaits } = await (client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { source: string }[] | null; error: { message: string } | null }> } } };
+  }).from('knowledge_facts').select('source').eq('user_id', input.userId).is('superseded_at', null);
+  if (eFaits) throw new Error(`lecture des verbatims vivants impossible : ${eFaits.message}`);
+  const vivants = new Set((faitsVivants ?? []).map((f) => f.source));
+
   let examinees = 0, rejouees = 0, encoreEnAttente = 0;
   for (const v of data ?? []) {
     if (v.about_id !== input.userId || !v.question_code || !v.raw_text) continue;
+    if (!vivants.has(v.id)) continue;
     const qid = v.question_code.replace(/^discovery\./, '');
     const q = questionParId(qid);
     if (!q || q.forme !== 'open') continue;
@@ -534,6 +618,11 @@ export async function declarerSujet(
       confidence: 'high', user_confirmed: input.origine !== 'texte_libre', assertionStatus: 'explicit',
     });
     await persistKnowledge(client, { source, facts: [fact] });
+    // Le dernier mot compte : choisir d'explorer un sujet retire le refus qu'on en avait fait.
+    if (input.origine !== 'texte_libre') {
+      const refus = await faitsVivantsDuSujet(client, input.userId, input.branche, [FAIT_SUJET_REFUSE]);
+      if (refus.length > 0) await supersedeSources(client as never, { oldSourceIds: [...new Set(refus.map((f) => f.source))], newSourceId: sourceId, timestamp });
+    }
     return { etat: 'choisi' };
   }
 
@@ -550,6 +639,69 @@ export async function declarerSujet(
     oldSourceIds: [...new Set(vivants.map((f) => f.source))], newSourceId: sourceId, timestamp,
   });
   return { etat: 'retire' };
+}
+
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * LE REFUS EXPLICITE — « ne plus me poser de questions sur ce sujet ».
+ *
+ * Quatre choses distinctes, que la première version confondait : la PLACE qu'un domaine tient
+ * aujourd'hui, le fait de l'APPRÉCIER, l'ENVIE de l'explorer, et le REFUS d'en parler. Une
+ * réponse « très peu de place » était lue comme un refus. Le refus est désormais un acte que
+ * la personne fait elle-même, daté, réversible, écrit sous son identité — et c'est le seul qui
+ * arrête les questions d'un sujet. Il n'écrit AUCUNE préférence : refuser d'en parler ne dit
+ * pas qu'on n'aime pas.
+ * Refuser un sujet retire la démarche « explorer ce sujet » ; choisir de l'explorer retire le
+ * refus : le dernier mot compte.
+ * ──────────────────────────────────────────────────────────────────────────── */
+async function faitsVivantsDuSujet(client: ClientSujets, userId: string, branche: string, types: readonly string[]) {
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { source: string; fact_type: string; value: string; about_id: string }[] | null; error: { message: string } | null }> } } };
+  };
+  const { data, error } = await lecture.from('knowledge_facts').select('source, fact_type, value, about_id').eq('user_id', userId).is('superseded_at', null);
+  if (error) throw new Error(`lecture des sujets impossible : ${error.message}`);
+  const sujet = new Set(memeSujet(branche));
+  return (data ?? []).filter((f) => f.about_id === userId && types.includes(f.fact_type) && sujet.has(f.value));
+}
+
+export async function refuserSujet(
+  client: ClientSujets,
+  input: { readonly userId: string; readonly branche: string; readonly refuse: boolean; readonly timestamp?: string },
+): Promise<{ readonly etat: 'refuse' | 'repris' | 'inchange' }> {
+  if (!BRANCHES_CONNUES.has(input.branche)) throw new ReponseInvalideError(`« ${input.branche} » n'est pas un sujet de la banque`);
+  const timestamp = input.timestamp ?? new Date().toISOString();
+  const about = accountAbout(asUserId(input.userId));
+  const refus = await faitsVivantsDuSujet(client, input.userId, input.branche, [FAIT_SUJET_REFUSE]);
+  const sourceId = randomUUID();
+  if (input.refuse) {
+    if (refus.length > 0) return { etat: 'inchange' };
+    const demarches = await faitsVivantsDuSujet(client, input.userId, input.branche, [FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE]);
+    await persistKnowledge(client, {
+      source: createSourceRecord({ about, ownerId: asUserId(input.userId), id: sourceId, sourceType: 'user_declaration', questionCode: FAIT_SUJET_REFUSE,
+        questionText: 'Sujet sur lequel la personne ne veut plus être questionnée', answerText: input.branche, timestamp }),
+      facts: [createFact({ about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, FAIT_SUJET_REFUSE, input.branche),
+        fact_type: FAIT_SUJET_REFUSE, value: input.branche, source: sourceId, timestamp, confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' })],
+    });
+    if (demarches.length > 0) await supersedeSources(client as never, { oldSourceIds: [...new Set(demarches.map((f) => f.source))], newSourceId: sourceId, timestamp });
+    return { etat: 'refuse' };
+  }
+  if (refus.length === 0) return { etat: 'inchange' };
+  await persistKnowledge(client, { source: createSourceRecord({ about, ownerId: asUserId(input.userId), id: sourceId, sourceType: 'user_declaration',
+    questionCode: `${FAIT_SUJET_REFUSE}.retrait`, questionText: 'La personne accepte de nouveau des questions sur ce sujet', answerText: input.branche, timestamp }) });
+  await supersedeSources(client as never, { oldSourceIds: [...new Set(refus.map((f) => f.source))], newSourceId: sourceId, timestamp });
+  return { etat: 'repris' };
+}
+
+/** Les sujets que la personne a mis de côté (vivants), par identifiant de branche. */
+export async function sujetsRefusesPar(client: ClientSujets, input: { readonly userId: string }): Promise<readonly string[]> {
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { fact_type: string; value: string; about_id: string }[] | null; error: { message: string } | null }> } } };
+  };
+  const { data, error } = await lecture.from('knowledge_facts').select('fact_type, value, about_id').eq('user_id', input.userId).is('superseded_at', null);
+  if (error) throw new Error(`lecture des sujets mis de côté impossible : ${error.message}`);
+  return [...new Set((data ?? []).filter((f) => f.about_id === input.userId && f.fact_type === FAIT_SUJET_REFUSE).map((f) => f.value))];
 }
 
 

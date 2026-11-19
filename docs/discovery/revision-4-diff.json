@@ -1,0 +1,1104 @@
+{
+ "source": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_3.xlsx",
+ "source_sha256": "1b326ff4ea28d83cc8880e8451d30acff7d31a93962f8c73d3a738fdc5093425",
+ "revision": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_4.xlsx",
+ "revision_sha256": "5a66c613db82797d336534a679e513321cbbdbf7bf20cfd12102c4f84cf28eca",
+ "cellules_modifiees": 95,
+ "par_bloc": {
+  "F": 5,
+  "G": 90
+ },
+ "bloc_F_les_19_contrats": [
+  {
+   "question_id": "art.0128",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "beauty.0155",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "cinema.0070",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "consumption.0242",
+   "polarite": "rejet",
+   "valeur": "place=faible"
+  },
+  {
+   "question_id": "fashion.0143",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "fragrance.0163",
+   "polarite": "rejet",
+   "valeur": "very_low"
+  },
+  {
+   "question_id": "gaming.0202",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "home.0173",
+   "polarite": "rejet",
+   "valeur": "place=faible"
+  },
+  {
+   "question_id": "humor.0136",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "learning.0235",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "music.0116",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "nature.0210",
+   "polarite": "rejet",
+   "valeur": "place=tres_faible"
+  },
+  {
+   "question_id": "reading.0106",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "series.0086",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "sport.0183",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "tech.0195",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "theatre.0098",
+   "polarite": "absence_de_critere",
+   "valeur": "intensite=low; modalite=place_marginale"
+  },
+  {
+   "question_id": "wellbeing.0218",
+   "polarite": "absence_de_critere",
+   "valeur": "place=tres_faible"
+  },
+  {
+   "question_id": "work.0227",
+   "polarite": "rejet",
+   "valeur": "place=tres_faible"
+  }
+ ],
+ "bloc_F_releve_non_corrige": "Les dix-neuf contrats n'emploient pas la même échelle de valeur pour la même réponse (voir « valeur » ci-dessus). Non corrigé ici : aucun lecteur ne compare aujourd'hui ces valeurs entre domaines.",
+ "bloc_G_isolees_non_corrigees": [
+  {
+   "question_id": "consumption.0242",
+   "enonce": "Quelle place consommation et valeur occupe-t-il réellement dans ta vie ?",
+   "pourquoi": "« consommation et valeur » : la correction oblige à dire si « valeur » est la valeur des choses ou ce qui a de la valeur pour la personne.",
+   "sens_A": "Quelle place la consommation et la valeur des choses occupe-t-il réellement dans ta vie ?",
+   "sens_B": "Quelle place ta façon de consommer et ce qui compte pour toi occupe-t-il réellement dans ta vie ?"
+  },
+  {
+   "question_id": "consumption.0243",
+   "enonce": "Qu’est-ce que tu recherches d’abord dans consommation et valeur ?",
+   "pourquoi": "« consommation et valeur » : la correction oblige à dire si « valeur » est la valeur des choses ou ce qui a de la valeur pour la personne.",
+   "sens_A": "Qu’est-ce que tu recherches d’abord dans la consommation et la valeur des choses ?",
+   "sens_B": "Qu’est-ce que tu recherches d’abord dans ta façon de consommer et ce qui compte pour toi ?"
+  },
+  {
+   "question_id": "consumption.0244",
+   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "pourquoi": "« consommation et valeur » : la correction oblige à dire si « valeur » est la valeur des choses ou ce qui a de la valeur pour la personne.",
+   "sens_A": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la consommation et la valeur des choses ?",
+   "sens_B": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à ta façon de consommer et ce qui compte pour toi ?"
+  },
+  {
+   "question_id": "consumption.0245",
+   "enonce": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans consommation et valeur ?",
+   "pourquoi": "« consommation et valeur » : la correction oblige à dire si « valeur » est la valeur des choses ou ce qui a de la valeur pour la personne.",
+   "sens_A": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la consommation et la valeur des choses ?",
+   "sens_B": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans ta façon de consommer et ce qui compte pour toi ?"
+  },
+  {
+   "question_id": "consumption.0246",
+   "enonce": "Qu’aimerais-tu découvrir ou vivre davantage autour de consommation et valeur ?",
+   "pourquoi": "« consommation et valeur » : la correction oblige à dire si « valeur » est la valeur des choses ou ce qui a de la valeur pour la personne.",
+   "sens_A": "Qu’aimerais-tu découvrir ou vivre davantage autour de la consommation et la valeur des choses ?",
+   "sens_B": "Qu’aimerais-tu découvrir ou vivre davantage autour de ta façon de consommer et ce qui compte pour toi ?"
+  }
+ ],
+ "note": "Seul l'onglet 0_FICHE_CANONIQUE est écrit, comme aux révisions 1 à 3 : c'est lui que l'import lit. L'onglet 1_CONTRATS_PAR_REPONSE répète l'énoncé et la polarité et garde l'ancienne valeur.",
+ "diff": [
+  {
+   "bloc": "F",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P5426",
+   "question_id": "consumption.0242",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. : pour une question sur la place actuelle d'un domaine, « Très peu de place » décrit une faible place actuelle — ni dégoût, ni refus d'en parler. Polarité alignée sur les quatorze autres contrats.",
+   "option": "Très peu de place"
+  },
+  {
+   "bloc": "F",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P9539",
+   "question_id": "fragrance.0163",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. : pour une question sur la place actuelle d'un domaine, « Très peu de place » décrit une faible place actuelle — ni dégoût, ni refus d'en parler. Polarité alignée sur les quatorze autres contrats.",
+   "option": "Très peu de place"
+  },
+  {
+   "bloc": "F",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P10660",
+   "question_id": "home.0173",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. : pour une question sur la place actuelle d'un domaine, « Très peu de place » décrit une faible place actuelle — ni dégoût, ni refus d'en parler. Polarité alignée sur les quatorze autres contrats.",
+   "option": "Très peu de place"
+  },
+  {
+   "bloc": "F",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P13531",
+   "question_id": "nature.0210",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. : pour une question sur la place actuelle d'un domaine, « Très peu de place » décrit une faible place actuelle — ni dégoût, ni refus d'en parler. Polarité alignée sur les quatorze autres contrats.",
+   "option": "Très peu de place"
+  },
+  {
+   "bloc": "F",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P20721",
+   "question_id": "work.0227",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. : pour une question sur la place actuelle d'un domaine, « Très peu de place » décrit une faible place actuelle — ni dégoût, ni refus d'en parler. Polarité alignée sur les quatorze autres contrats.",
+   "option": "Très peu de place"
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2122",
+   "question_id": "art.0128",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place culture — art, musées et expositions occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place l’art, les musées et les expositions occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2129",
+   "question_id": "art.0129",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans culture — art, musées et expositions ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans l’art, les musées et les expositions ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2139",
+   "question_id": "art.0130",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — art, musées et expositions ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à l’art, aux musées et aux expositions ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2149",
+   "question_id": "art.0131",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — art, musées et expositions ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans l’art, les musées et les expositions ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2152",
+   "question_id": "art.0132",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de culture — art, musées et expositions ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de l’art, des musées et des expositions ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2486",
+   "question_id": "beauty.0155",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place beauté et soins occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place la beauté et les soins occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2493",
+   "question_id": "beauty.0156",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans beauté et soins ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans la beauté et les soins ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2503",
+   "question_id": "beauty.0157",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à beauté et soins ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la beauté et aux soins ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2513",
+   "question_id": "beauty.0158",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans beauté et soins ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la beauté et les soins ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D2516",
+   "question_id": "beauty.0159",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de beauté et soins ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de la beauté et des soins ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D4526",
+   "question_id": "cinema.0070",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place culture — cinéma occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place le cinéma occupe-t-il réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D4533",
+   "question_id": "cinema.0071",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans culture — cinéma ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans le cinéma ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D4543",
+   "question_id": "cinema.0072",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — cinéma ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée au cinéma ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D4553",
+   "question_id": "cinema.0073",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — cinéma ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans le cinéma ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D4556",
+   "question_id": "cinema.0074",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de culture — cinéma ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour du cinéma ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D8118",
+   "question_id": "fashion.0143",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place mode et vêtements occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place la mode et les vêtements occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D8125",
+   "question_id": "fashion.0144",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans mode et vêtements ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans la mode et les vêtements ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D8135",
+   "question_id": "fashion.0145",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à mode et vêtements ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la mode et aux vêtements ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D8145",
+   "question_id": "fashion.0146",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans mode et vêtements ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la mode et les vêtements ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D8148",
+   "question_id": "fashion.0147",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de mode et vêtements ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de la mode et des vêtements ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D9534",
+   "question_id": "fragrance.0163",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place parfum et odeurs occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place le parfum et les odeurs occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D9541",
+   "question_id": "fragrance.0164",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans parfum et odeurs ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans le parfum et les odeurs ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D9551",
+   "question_id": "fragrance.0165",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à parfum et odeurs ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée au parfum et aux odeurs ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D9561",
+   "question_id": "fragrance.0166",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans parfum et odeurs ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans le parfum et les odeurs ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D9564",
+   "question_id": "fragrance.0167",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de parfum et odeurs ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour du parfum et des odeurs ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10073",
+   "question_id": "gaming.0202",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place jeux vidéo occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place les jeux vidéo occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10080",
+   "question_id": "gaming.0203",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans jeux vidéo ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans les jeux vidéo ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10090",
+   "question_id": "gaming.0204",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à jeux vidéo ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée aux jeux vidéo ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10101",
+   "question_id": "gaming.0205",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans jeux vidéo ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans les jeux vidéo ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10104",
+   "question_id": "gaming.0206",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de jeux vidéo ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour des jeux vidéo ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10655",
+   "question_id": "home.0173",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place maison et décoration occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place la maison et la décoration occupent-elles réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10662",
+   "question_id": "home.0174",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans maison et décoration ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans la maison et la décoration ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10672",
+   "question_id": "home.0175",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à maison et décoration ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la maison et à la décoration ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10682",
+   "question_id": "home.0176",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans maison et décoration ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la maison et la décoration ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D10685",
+   "question_id": "home.0177",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de maison et décoration ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de la maison et de la décoration ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11135",
+   "question_id": "humor.0136",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place culture — humour occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place l’humour occupe-t-il réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11142",
+   "question_id": "humor.0137",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans culture — humour ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans l’humour ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11152",
+   "question_id": "humor.0138",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — humour ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à l’humour ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11164",
+   "question_id": "humor.0139",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — humour ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans l’humour ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11167",
+   "question_id": "humor.0140",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de culture — humour ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de l’humour ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11663",
+   "question_id": "learning.0235",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place apprentissage et curiosité occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place l’apprentissage et la curiosité occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11670",
+   "question_id": "learning.0236",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans apprentissage et curiosité ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans l’apprentissage et la curiosité ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11680",
+   "question_id": "learning.0237",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à apprentissage et curiosité ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à l’apprentissage et à la curiosité ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11690",
+   "question_id": "learning.0238",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans apprentissage et curiosité ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans l’apprentissage et la curiosité ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D11693",
+   "question_id": "learning.0239",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de apprentissage et curiosité ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de l’apprentissage et de la curiosité ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13135",
+   "question_id": "music.0116",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place culture — musique occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place la musique occupe-t-elle réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13142",
+   "question_id": "music.0117",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans culture — musique ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans la musique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13152",
+   "question_id": "music.0118",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — musique ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la musique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13162",
+   "question_id": "music.0119",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — musique ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la musique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13165",
+   "question_id": "music.0120",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de culture — musique ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de la musique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13526",
+   "question_id": "nature.0210",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place nature et plein air occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place la nature et le plein air occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13533",
+   "question_id": "nature.0211",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans nature et plein air ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans la nature et le plein air ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13543",
+   "question_id": "nature.0212",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à nature et plein air ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la nature et au plein air ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13553",
+   "question_id": "nature.0213",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans nature et plein air ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la nature et le plein air ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D13556",
+   "question_id": "nature.0214",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de nature et plein air ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de la nature et du plein air ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D14826",
+   "question_id": "reading.0106",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place culture — lecture occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place la lecture occupe-t-elle réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D14833",
+   "question_id": "reading.0107",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans culture — lecture ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans la lecture ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D14843",
+   "question_id": "reading.0108",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — lecture ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la lecture ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D14853",
+   "question_id": "reading.0109",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — lecture ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la lecture ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D14856",
+   "question_id": "reading.0110",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de culture — lecture ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de la lecture ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D16654",
+   "question_id": "series.0086",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place culture — séries occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place les séries occupent-elles réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D16661",
+   "question_id": "series.0087",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans culture — séries ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans les séries ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D16671",
+   "question_id": "series.0088",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — séries ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée aux séries ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D16681",
+   "question_id": "series.0089",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — séries ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans les séries ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D16684",
+   "question_id": "series.0090",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de culture — séries ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour des séries ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D17747",
+   "question_id": "sport.0183",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place sport et activité physique occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place le sport et l’activité physique occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D17754",
+   "question_id": "sport.0184",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans sport et activité physique ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans le sport et l’activité physique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D17764",
+   "question_id": "sport.0185",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à sport et activité physique ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée au sport et à l’activité physique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D17774",
+   "question_id": "sport.0186",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans sport et activité physique ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans le sport et l’activité physique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D17777",
+   "question_id": "sport.0187",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de sport et activité physique ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour du sport et de l’activité physique ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D18774",
+   "question_id": "tech.0195",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place technologie et innovation occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place la technologie et l’innovation occupent-elles réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D18781",
+   "question_id": "tech.0196",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans technologie et innovation ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans la technologie et l’innovation ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D18791",
+   "question_id": "tech.0197",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à technologie et innovation ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la technologie et à l’innovation ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D18801",
+   "question_id": "tech.0198",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans technologie et innovation ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans la technologie et l’innovation ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D18804",
+   "question_id": "tech.0199",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de technologie et innovation ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour de la technologie et de l’innovation ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D19020",
+   "question_id": "theatre.0098",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place culture — théâtre occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place le théâtre occupe-t-il réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D19027",
+   "question_id": "theatre.0099",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans culture — théâtre ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans le théâtre ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D19037",
+   "question_id": "theatre.0100",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à culture — théâtre ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée au théâtre ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D19047",
+   "question_id": "theatre.0101",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans culture — théâtre ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans le théâtre ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D19050",
+   "question_id": "theatre.0102",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de culture — théâtre ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour du théâtre ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20650",
+   "question_id": "wellbeing.0218",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place bien-être et repos occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place le bien-être et le repos occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20657",
+   "question_id": "wellbeing.0219",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans bien-être et repos ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans le bien-être et le repos ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20667",
+   "question_id": "wellbeing.0220",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à bien-être et repos ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée au bien-être et au repos ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20677",
+   "question_id": "wellbeing.0221",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans bien-être et repos ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans le bien-être et le repos ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20680",
+   "question_id": "wellbeing.0222",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de bien-être et repos ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour du bien-être et du repos ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20716",
+   "question_id": "work.0227",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place travail et carrière occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place le travail et la carrière occupent-ils réellement dans ta vie ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20723",
+   "question_id": "work.0228",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans travail et carrière ?",
+   "apres": "Qu’est-ce que tu recherches d’abord dans le travail et la carrière ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20733",
+   "question_id": "work.0229",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à travail et carrière ?",
+   "apres": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée au travail et à la carrière ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20743",
+   "question_id": "work.0230",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans travail et carrière ?",
+   "apres": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans le travail et la carrière ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  },
+  {
+   "bloc": "G",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D20746",
+   "question_id": "work.0231",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de travail et carrière ?",
+   "apres": "Qu’aimerais-tu découvrir ou vivre davantage autour du travail et de la carrière ?",
+   "decision": "Révision éditoriale du 19 nov. : énoncé produit par gabarit, langue corrigée (article, accord, préposition ; préfixe de rangement « culture — » retiré). Intention, options et contrat inchangés."
+  }
+ ]
+}

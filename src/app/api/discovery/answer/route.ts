@@ -1,190 +1,55 @@
 import { NextResponse, after } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
-import { recordAnswer, createDiscoverySession, precomputePersonalizationsForKeys } from "@/lib/discovery/engine";
 import { generateProfileAnalysis } from "@/lib/profile/generateProfileAnalysis";
-import { question as questionV3 } from "@/lib/discovery/open-v3/banque";
-import { enregistrerReponseFermee, enregistrerReponseOuverte, rejouerLecturesEnAttente } from "@/lib/discovery/open-v3/service";
+import { rejouerLecturesEnAttente } from "@/lib/discovery/open-v3/service";
+import { traiterReponse } from "@/lib/discovery/open-v3/reponse";
 
+// RECEVOIR UNE RÉPONSE DU DISCOVERY.
+//
+// La route ne décide rien : `traiterReponse` vérifie le lot signé, la question, la forme, le
+// parcours et les conditions AVANT toute écriture, puis écrit dans l'ordre journal →
+// progression → avancée. Ce que le navigateur affirme (liste de questions, position) n'est
+// plus lu : seul le lot signé par le serveur dit ce qui a été proposé.
 export async function POST(req: Request) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json() as {
-    sessionId?: string | null;
-    // Levier 1 : contexte de session envoyé à la PREMIÈRE réponse (session pas
-    // encore née — le GET /moi/discovery est désormais sans effet de bord).
-    pendingKeys?: string[];
-    currentIndex?: number;
-    mode?: "quick" | "full";
-    questionKey: string;
-    answer?: string | string[] | Record<string, unknown> | null;
-    skip?: boolean;
-  };
+  let body: { jeton?: unknown; questionKey?: unknown; answer?: unknown; skip?: unknown };
+  try { body = await req.json(); } catch { return NextResponse.json({ error: "requête illisible" }, { status: 400 }); }
+  if (!body || typeof body !== "object") return NextResponse.json({ error: "requête illisible" }, { status: 400 });
 
-  const { questionKey, answer = null, skip = false } = body;
-  let sessionId = body.sessionId ?? null;
+  const issue = await traiterReponse(supabase, {
+    userId: user.id, jeton: body.jeton, questionKey: body.questionKey, answer: body.answer, skip: body.skip === true,
+  });
+  if (!issue.ok) return NextResponse.json({ error: issue.message, motif: issue.motif }, { status: issue.status });
 
-  if (!questionKey) {
-    return NextResponse.json({ error: "questionKey requis" }, { status: 400 });
-  }
-
-  // Levier 1 : première réponse → la session naît MAINTENANT (pas au rendu).
-  if (!sessionId) {
-    if (!body.pendingKeys?.length) {
-      return NextResponse.json({ error: "contexte de session manquant" }, { status: 400 });
-    }
-    sessionId = await createDiscoverySession(
-      user.id, supabase, body.mode ?? "full", body.pendingKeys, body.currentIndex ?? 0,
-    );
-    if (!sessionId) {
-      return NextResponse.json({ error: "création de session impossible" }, { status: 500 });
-    }
-  }
-
-  // ── LE JOURNAL D'ABORD. Avant toute marque de progression.
-  //
-  //    Une question de la banque OPEN V3 écrit une preuve ; l'ancienne banque n'en écrivait
-  //    aucune. Si l'écriture échoue, on répond 503 et on ne marque RIEN : la question sera
-  //    reposée, ce qui se répare. L'inverse — progression marquée, réponse perdue — ne se
-  //    répare pas, et la personne n'a aucun moyen de s'en apercevoir.
-  const qV3 = questionV3(questionKey);
-  if (qV3 && !skip) {
-    try {
-      if (qV3.forme === "open") {
-        // ── QUESTION OUVERTE : le VERBATIM d'abord, l'extraction ensuite.
-        //
-        //    L'ordre n'est pas interchangeable. Une extraction écrite sans son verbatim est
-        //    une inférence orpheline : elle affirme quelque chose sans que la phrase dont
-        //    elle est tirée existe quelque part. Si le verbatim échoue, l'extraction n'est
-        //    pas tentée — mieux vaut ne rien savoir que savoir sans pouvoir le justifier.
-        const texte = typeof answer === "string" ? answer.trim() : "";
-        if (texte.length === 0) {
-          return NextResponse.json({ error: "réponse vide" }, { status: 400 });
-        }
-        const ecrit = await enregistrerReponseOuverte(supabase as never, {
-          userId: user.id, questionId: questionKey, texte,
-        });
-        // Le modèle n'a pas répondu : la phrase est sauvegardée, sa lecture reste à faire.
-        // On le trace ici ; le rejeu ci-dessous la reprendra à la prochaine réponse.
-        if (ecrit.extractionEnAttente) console.warn("[discovery/answer] lecture en attente", questionKey);
-      } else {
-        const cles = Array.isArray(answer) ? answer.map(String)
-          : typeof answer === "string" ? [answer] : [];
-        if (cles.length === 0) {
-          return NextResponse.json({ error: "aucune option reçue" }, { status: 400 });
-        }
-        await enregistrerReponseFermee(supabase as never, {
-          userId: user.id, questionId: questionKey, clesOptions: cles,
-        });
-      }
-    } catch (e) {
-      console.error("[discovery/answer] écriture du journal impossible", questionKey, e);
-      return NextResponse.json(
-        { error: "la réponse n'a pas pu être enregistrée — elle te sera reposée" },
-        { status: 503 },
-      );
-    }
-  }
-
-  const result = await recordAnswer(
-    user.id, sessionId, questionKey, answer, skip, supabase,
-  );
-
-  // ── LES LECTURES RESTÉES EN ATTENTE (panne du modèle lors d'une réponse précédente) sont
-  //    rejouées APRÈS la réponse, hors du chemin de la personne. Sans doublon : une lecture
-  //    déjà faite n'est jamais refaite (voir rejouerLecturesEnAttente).
+  // ── LES LECTURES RESTÉES EN ATTENTE (panne du modèle lors d'une réponse précédente, ou de
+  //    celle-ci) sont rejouées APRÈS la réponse, hors du chemin de la personne. Sans doublon :
+  //    une lecture déjà faite n'est jamais refaite (voir rejouerLecturesEnAttente).
   after(async () => {
     try { await rejouerLecturesEnAttente(supabase as never, { userId: user.id, max: 3 }); }
     catch (e) { console.error("[discovery/answer] rejeu des lectures impossible", e); }
   });
 
-  // Chantier 3.2 — répercuter les réponses structurées dans practical_info
-  // (source de vérité des faits affichés en fiche + moteur de vetos).
-  if (!skip && answer && typeof answer === "object" && !Array.isArray(answer)) {
+  // La fatigue compte les ACTES, pas les requêtes : une requête renvoyée ne compte pas deux fois.
+  if (issue.nouvelActe) {
     try {
-      const { data: p } = await supabase
-        .from("my_profile")
-        .select("practical_info")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      const pi = ((p?.practical_info as Record<string, unknown>) ?? {});
-
-      if (questionKey === "practical.dietary") {
-        const a = answer as { choices?: string[]; allergy_detail?: string };
-        const choices = a.choices ?? [];
-        const updated: Record<string, unknown> = { ...pi };
-        if (choices.includes("vegetarian")) updated.regime = "vegetarien";
-        if (choices.includes("vegan"))      updated.regime = "vegan";
-        if (choices.includes("halal"))      updated.regime = "halal";
-        if (choices.includes("casher"))     updated.regime = "casher";
-        if (choices.includes("no_alcohol")) updated.alcool = "ne_bois_pas";
-        if (choices.includes("food_allergy") && a.allergy_detail) {
-          const existing = Array.isArray(pi.allergies) ? (pi.allergies as string[]) : [];
-          updated.allergies = existing.includes("autre") ? existing : [...existing.filter(x => x !== "aucune"), "autre"];
-          updated.allergies_detail = a.allergy_detail;
-        }
-        const { error } = await supabase.from("my_profile").update({ practical_info: updated }).eq("user_id", user.id);
-        if (error) console.error("[discovery/answer] my_profile update practical.dietary", error.message);
-      }
-
-      if (questionKey === "practical.mobility") {
-        const a = answer as { has_constraint?: boolean; types?: string[]; detail?: string; intensity?: string };
-        if (a.has_constraint) {
-          const TYPE_FR: Record<string, string> = {
-            marche_longue: "marche longue", escaliers: "escaliers",
-            station_debout: "station debout prolongée", autre: "",
-          };
-          const parts = [
-            ...(a.types ?? []).map(t => TYPE_FR[t] ?? t).filter(Boolean),
-            a.detail?.trim() || null,
-          ].filter(Boolean);
-          const { error } = await supabase.from("my_profile").update({
-            practical_info: {
-              ...pi,
-              mobilite_sante: parts.join(" · "),
-              mobilite_intensite: a.intensity ?? null, // 'legere' | 'systematique'
-            },
-          }).eq("user_id", user.id);
-          if (error) console.error("[discovery/answer] my_profile update practical.mobility", error.message);
-        }
-      }
-    } catch { /* non bloquant — la réponse discovery reste enregistrée */ }
-  }
-
-  // Incrémenter la fatigue sur chaque réponse (pas les skips)
-  if (!skip) {
-    try {
-      type ProfileFatigue = { discovery_fatigue_score?: number };
-      const { data: p } = await supabase
-        .from("my_profile")
-        .select("discovery_fatigue_score")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      const score = ((p as ProfileFatigue | null)?.discovery_fatigue_score ?? 0) + 1;
-      const { error } = await supabase
-        .from("my_profile")
-        .update({ discovery_fatigue_score: score })
-        .eq("user_id", user.id);
+      const { data: p } = await supabase.from("my_profile").select("discovery_fatigue_score").eq("user_id", user.id).maybeSingle();
+      const score = ((p as { discovery_fatigue_score?: number } | null)?.discovery_fatigue_score ?? 0) + 1;
+      const { error } = await supabase.from("my_profile").update({ discovery_fatigue_score: score }).eq("user_id", user.id);
       if (error) console.error("[discovery/answer] my_profile update discovery_fatigue_score", error.message);
     } catch { /* non bloquant */ }
   }
 
-  // Invalider le cache de /moi pour que les CTAs Discovery soient recalculés
-  revalidatePath('/moi');
+  // Invalider le cache de /moi pour que les appels Discovery soient recalculés
+  revalidatePath("/moi");
 
-  // D1 : réponse précédente → pré-calcul EN TÂCHE DE FOND des reformulations
-  // des questions suivantes de la session (jamais dans le rendu)
-  const upcoming = result.upcomingKeys ?? [];
-  if (upcoming.length > 0) {
-    after(() => precomputePersonalizationsForKeys(user.id, supabase, upcoming, { onlyMissing: true }));
-  }
-
-  // Quand la session est terminée, régénérer l'analyse (fire-and-forget)
-  if (result.done) {
+  // Quand le parcours est terminé par un acte nouveau, régénérer l'analyse (hors chemin).
+  if (issue.done && issue.nouvelActe) {
     generateProfileAnalysis(user.id, null, supabase).catch(() => {});
   }
 
-  return NextResponse.json({ next: result.next, done: result.done });
+  return NextResponse.json({ next: issue.next, done: issue.done });
 }

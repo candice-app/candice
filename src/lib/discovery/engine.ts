@@ -12,9 +12,6 @@ import {
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
-import { question as questionOpenV3 } from './open-v3/banque';
-import { cleOption as cleOptionV3, encoreAdmissibles } from './open-v3/service';
-import { libelleBranche } from './open-v3/branches';
 
 export interface QuestionOption { label: string; value: string; }
 
@@ -44,6 +41,9 @@ export interface NextQuestionResult {
   mode?: 'quick' | 'full';
   sectionLabel: string;
   progress: { current: number; total: number } | null;
+  /** Le lot signé par le serveur (open-v3/lot.ts). Le navigateur le renvoie tel quel avec
+   *  chaque réponse : c'est lui, et non `pendingKeys`, qui prouve ce qui a été proposé. */
+  jeton?: string;
 }
 
 // ── Dimension → section label map ────────────────────────────────────────────
@@ -152,168 +152,11 @@ Ton : ${contextHint ? `Contexte : ${contextHint}. ` : ''}Doux, précis, jamais c
 // vivants via GET /api/discovery/next : neutralisés — la route renvoie 410.
 // Le seul sélecteur autorisé est getNextMicroQuestion (garde complète).
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function getSessionQuestion(session: any, supabase: SupaDB): Promise<NextQuestionResult | null> {
-  const pendingKeys: string[] = session.pending_keys ?? [];
-  const idx: number = session.current_index ?? 0;
-
-  if (idx >= pendingKeys.length) return null;
-
-  const currentKey = pendingKeys[idx];
-
-  // ── LA BANQUE OPEN V3 D'ABORD. Elle vit dans le code, pas en base : aucune requête.
-  //    `discovery_questions` est l'ancienne table, et un identifiant OPEN V3 n'y existe
-  //    pas. Sans ce chemin, une session de six questions s'arrêtait après la première,
-  //    sans question suivante ni fin de session.
-  const qV3 = questionOpenV3(currentKey);
-  let question: DiscoveryQuestion;
-  if (qV3) {
-    const type = qV3.forme === 'open' ? 'text'
-      : qV3.forme === 'single' ? 'chips_single' : 'chips_multi';
-    question = {
-      id: qV3.id,
-      question_key: qV3.id,
-      dimension: qV3.branche,
-      subdimension: null,
-      question_text: qV3.enonce,
-      question_type: type,
-      options: type === 'text' ? null : qV3.options.map((o) => ({ label: o.libelle, value: cleOptionV3(o) })),
-      sort_order: 0,
-      locked_text: true, // texte du référentiel, revu — JAMAIS reformulé
-    };
-  } else {
-    // Sessions déjà EN COURS au moment du basculement : on ne les abandonne pas en
-    // silence, ce serait perdre le travail de quelqu'un en plein milieu.
-    const { data: q } = await supabase
-      .from('discovery_questions')
-      .select('id, question_key, dimension, subdimension, question_text, question_type, options, sort_order, locked_text')
-      .eq('question_key', currentKey)
-      .maybeSingle();
-    if (!q) return null;
-    question = q as DiscoveryQuestion;
-  }
-  // Reformulation coupée : texte de banque mot pour mot. Si réactivée, le
-  // texte pré-calculé (AUCUN appel LLM dans le rendu) est lu ici.
-  let personalizedText = question.question_text;
-  if (PERSONALIZATION_ACTIVE && !question.locked_text) {
-    const { data: pc } = await supabase
-      .from('profile_completion')
-      .select('personalized_text')
-      .eq('user_id', session.user_id)
-      .eq('question_key', currentKey)
-      .is('contact_id', null)
-      .maybeSingle();
-    const t = (pc as { personalized_text?: string | null } | null)?.personalized_text;
-    if (t) personalizedText = t;
-  }
-
-  return {
-    question: { ...question, question_text: personalizedText },
-    sessionId: session.id as string,
-    // Une question de la banque porte le nom que le référentiel donne à sa branche, ou rien —
-    // jamais son identifiant technique (« travel2 »).
-    sectionLabel: qV3 ? (libelleBranche(qV3.branche) ?? '') : (DIMENSION_LABELS[question.dimension] ?? question.dimension),
-    progress: { current: idx + 1, total: pendingKeys.length },
-  };
-}
-
-// ── Record answer ─────────────────────────────────────────────────────────────
-
-export type DiscoveryAnswer = string | string[] | Record<string, unknown> | null;
-
-export async function recordAnswer(
-  userId: string,
-  sessionId: string,
-  questionKey: string,
-  answer: DiscoveryAnswer,
-  skip: boolean,
-  supabase: SupaDB,
-): Promise<{ next: NextQuestionResult | null; done: boolean; upcomingKeys?: string[] }> {
-  const now = new Date().toISOString();
-
-  // Update profile_completion — status = source unique de la re-proposition
-  const { error: pcErr } = await marquerProgression(supabase, userId, questionKey, {
-    is_filled: !skip,
-    answer_data: skip ? null : (Array.isArray(answer) ? answer : answer),
-    answered_at: skip ? null : now,
-    last_asked_at: now,
-    skipped_count: skip ? 1 : 0,
-    status: skip ? 'skipped' : 'answered',
-  });
-  if (pcErr) console.error('[discovery/engine] profile_completion upsert', pcErr.message);
-
-  // If answered (not skipped): save into my_profile.discovery_answers
-  if (!skip && answer !== null) {
-    const { data: profile } = await supabase
-      .from('my_profile')
-      .select('discovery_answers')
-      .eq('user_id', userId)
-      .maybeSingle();
-
-    const existing = (profile?.discovery_answers as Record<string, unknown>) ?? {};
-    const { error: mpErr } = await supabase
-      .from('my_profile')
-      .update({
-        discovery_answers: { ...existing, [questionKey]: answer },
-        updated_at: now,
-      })
-      .eq('user_id', userId);
-    if (mpErr) console.error('[discovery/engine] my_profile update', mpErr.message);
-  }
-
-  // Advance session
-  const { data: session } = await supabase
-    .from('discovery_sessions')
-    .select('*')
-    .eq('id', sessionId)
-    .maybeSingle();
-
-  if (!session) return { next: null, done: true };
-
-  const pendingKeys: string[] = session.pending_keys ?? [];
-  let nextIndex = (session.current_index as number) + 1;
-
-  // ── APRÈS CHAQUE RÉPONSE, RECALCULER (référentiel, onglet 8). Le lot a été choisi au début
-  //    de la session ; ce que la personne vient de répondre peut avoir fermé une question à
-  //    venir. On saute celles qui ne sont plus admissibles — sans les marquer posées : une
-  //    question non montrée n'est pas une question refusée.
-  const aVenirV3 = pendingKeys.slice(nextIndex).filter((k) => questionOpenV3(k));
-  if (aVenirV3.length > 0) {
-    try {
-      const admissibles = await encoreAdmissibles(supabase as never, { userId, ids: aVenirV3 });
-      while (nextIndex < pendingKeys.length && questionOpenV3(pendingKeys[nextIndex]) && !admissibles.has(pendingKeys[nextIndex])) nextIndex++;
-    } catch (e) {
-      // Sans l'état relu on ne sait pas ce qui reste admissible : on arrête la session plutôt
-      // que de poser une question que sa réponse précédente a peut-être fermée.
-      console.error('[discovery/engine] recalcul impossible, session arrêtée', e);
-      nextIndex = pendingKeys.length;
-    }
-  }
-
-  if (nextIndex >= pendingKeys.length) {
-    // Session complete
-    const { error: doneErr } = await supabase
-      .from('discovery_sessions')
-      .update({ status: 'completed', current_index: nextIndex, last_activity_at: now })
-      .eq('id', sessionId);
-    if (doneErr) console.error('[discovery/engine] discovery_sessions update (completed)', doneErr.message);
-    return { next: null, done: true };
-  }
-
-  // Advance to next
-  const updated = await supabase
-    .from('discovery_sessions')
-    .update({ current_index: nextIndex, last_activity_at: now })
-    .eq('id', sessionId)
-    .select('*')
-    .single();
-  if (updated.error) console.error('[discovery/engine] discovery_sessions update (advance)', updated.error.message);
-
-  const next = updated.data ? await getSessionQuestion(updated.data, supabase) : null;
-  // D1 : les clés APRÈS la question servie — à pré-calculer en tâche de fond
-  // par l'appelant (route answer), jamais dans le rendu.
-  return { next, done: false, upcomingKeys: pendingKeys.slice(nextIndex + 1) };
-}
+// ── RECEVOIR UNE RÉPONSE n'est plus ici (19 nov.). `recordAnswer`, `createDiscoverySession` et
+//    `getSessionQuestion` croyaient la liste de questions envoyée par le navigateur et
+//    avançaient la session d'un cran par requête. Le chemin unique est désormais
+//    `open-v3/reponse.ts` : lot signé par le serveur, contrôles avant toute écriture, avancée
+//    par position. Les réponses de l'ancienne banque ne sont plus acceptées.
 
 export async function pauseSession(sessionId: string, supabase: SupaDB): Promise<void> {
   const { error } = await supabase
@@ -506,39 +349,6 @@ export async function getNextMicroQuestion(
     sectionLabel: DIMENSION_LABELS[picks[0].dimension] ?? picks[0].dimension,
     progress: mode === 'full' ? { current: 1, total: picks.length } : null,
   };
-}
-
-/**
- * Levier 1 — création de la session à la PREMIÈRE réponse (route answer).
- * Reprend le lot déterministe calculé au rendu (pendingKeys) et marque la
- * question courante « posée » (last_asked_at). Retourne l'id de session.
- */
-export async function createDiscoverySession(
-  userId: string,
-  supabase: SupaDB,
-  mode: 'quick' | 'full',
-  pendingKeys: string[],
-  currentIndex: number,
-): Promise<string | null> {
-  const { data: session, error: sessErr } = await supabase
-    .from('discovery_sessions')
-    .insert({
-      user_id: userId,
-      mode,
-      pending_keys: pendingKeys,
-      current_index: currentIndex,
-      status: 'active',
-    })
-    .select('id')
-    .single();
-  if (sessErr) console.error('[discovery/engine] discovery_sessions insert', sessErr.message);
-  if (!session) return null;
-  const currentKey = pendingKeys[currentIndex];
-  if (currentKey) {
-    const { error: askErr } = await marquerProgression(supabase, userId, currentKey, { last_asked_at: new Date().toISOString() });
-    if (askErr) console.error('[discovery/engine] profile_completion upsert (last_asked_at)', askErr.message);
-  }
-  return session.id as string;
 }
 
 // ── D1 CORRIGÉ : PRÉ-CALCUL des reformulations (jamais dans le rendu) ────────

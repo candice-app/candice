@@ -3,6 +3,7 @@ import { analyserCondition, evaluerCondition, type EtatDiscovery } from '../cond
 import { prochainesQuestions } from '../selection';
 import { BANQUE, question } from '../banque';
 import { ALIAS_BRANCHES, branchesDuDomaineJournal } from '../branches';
+import { SOUS_PARTIES } from '../correspondances';
 import { DEPENDANCES } from '../dependances';
 import { REMPLACEMENTS, coexistence, poolDe } from '../coexistence';
 import { cleOption } from '../cle-option';
@@ -14,7 +15,7 @@ const vide: EtatDiscovery = {
   tags: new Map(), nePasCreuser: new Set(), branchesOuvertes: new Set(),
   niveauParBranche: new Map(), dejaPosees: new Set(), attributsConnus: new Set(),
   sansAlcool: false, contextesConnus: new Set(), contextesActifs: new Set(),
-  aliasBranches: ALIAS_BRANCHES,
+  aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES,
 };
 const etat = (p: Partial<EtatDiscovery>): EtatDiscovery => ({ ...vide, ...p });
 const verdict = (id: string, e: EtatDiscovery) => {
@@ -86,9 +87,39 @@ describe('une sous-partie ne s’ouvre que sur la réponse qui la désigne', () 
     expect(verdict('craft.0638', e)).toBe('ouvrir');
     expect(verdict('craft.0639', e)).toBe('ouvrir');
   });
-  it('« Pratiquant » ne se rapproche d’aucune option avec certitude : non résolu, pas ouvert', () => {
-    expect(DEPENDANCES.get('craft.0619')).toMatchObject({ selecteur: 'craft.0614', resolu: false });
-    expect(verdict('craft.0619', crea)).toBe('indecidable');
+  it('craft.0614 : chaque question dépendante s’ouvre sur ce qu’elle présume, jamais un axe entier', () => {
+    const avec = (...libelles: string[]) => etat({ ...crea, optionsChoisies: new Map([['craft.0614', new Set(libelles.map((l) => cle('craft.0614', l)))]]) });
+    const PRATIQUE = 'Je pratique moi-même une ou plusieurs activités créatives';
+    const SOUHAIT = 'J’aimerais apprendre ou reprendre une pratique';
+    const REGARDER = 'J’aime surtout regarder et découvrir';
+    const ACHAT = 'J’achète parfois des œuvres ou des objets artisanaux';
+    const COLLECTION = 'Je collectionne certains objets ou artistes';
+    const BEAUX = 'J’aime les beaux objets, sans être particulièrement connaisseur';
+    expect(DEPENDANCES.get('craft.0619')).toMatchObject({ selecteur: 'craft.0614', resolu: true, origine: 'explicite' });
+    // Une pratique déclarée ouvre l'axe Pratiquant…
+    expect(verdict('craft.0619', avec(PRATIQUE))).toBe('ouvrir');
+    // … un SOUHAIT n'établit pas une pratique actuelle : « Quelles activités pratiques-tu
+    // réellement aujourd'hui ? » ne se pose pas.
+    expect(verdict('craft.0619', avec(SOUHAIT))).toBe('fermer');
+    expect(verdict('craft.0627', avec(SOUHAIT))).toBe('fermer');
+    // « Qu'aimes-tu réellement acheter ou garder » présume un achat : ni regarder, ni aimer les beaux objets.
+    expect(verdict('craft.0648', avec(ACHAT))).toBe('ouvrir');
+    expect(verdict('craft.0648', avec(COLLECTION))).toBe('ouvrir');
+    expect(verdict('craft.0648', avec(REGARDER))).toBe('fermer');
+    expect(verdict('craft.0648', avec(BEAUX))).toBe('fermer');
+    // « Quel type d'œuvres ou d'objets t'attire le plus ? » : un attrait suffit.
+    expect(verdict('craft.0649', avec(REGARDER))).toBe('ouvrir');
+    expect(verdict('craft.0649', avec(BEAUX))).toBe('ouvrir');
+    expect(verdict('craft.0649', avec(PRATIQUE))).toBe('fermer');
+    // Recevoir une pièce présume qu'un objet fait plaisir : pas pour qui aime surtout regarder.
+    expect(verdict('craft.0652', avec(BEAUX))).toBe('ouvrir');
+    expect(verdict('craft.0652', avec(REGARDER))).toBe('fermer');
+    // L'axe Collection : une collection déclarée, et elle seule.
+    expect(verdict('craft.0659', avec(COLLECTION))).toBe('ouvrir');
+    expect(verdict('craft.0659', avec(ACHAT))).toBe('fermer');
+    // Sans réponse à craft.0614, aucune ne s'ouvre.
+    expect(verdict('craft.0619', crea)).toBe('fermer');
+    expect(verdict('craft.0648', crea)).toBe('fermer');
   });
   it('chaque dépendance résolue désigne une question et des options qui existent', () => {
     for (const [id, d] of DEPENDANCES) {
@@ -154,8 +185,24 @@ describe('les protections ne se desserrent pas', () => {
   it('une question retirée de la banque active n’existe pas pour le moteur', () => {
     expect(question('series.0094')).toBeUndefined();
   });
-  it('« Ouverture branche X (voir onglet Branches) » reste non résolue : l’onglet n’est pas dans le classeur', () => {
-    expect(verdict('craft.0614', aCoche('craft'))).toBe('indecidable');
+  it('« Ouverture branche X (voir onglet Branches) » : la question d’entrée se pose quand la branche est ouverte, jamais par défaut', () => {
+    // La règle est dans la feuille Branches de la Banque V1.1 ; sa part exécutable : le domaine
+    // choisi ou détecté, ou la démarche de la personne.
+    expect(analyserCondition(question('craft.0614')!.condition_emission).clauses).toEqual([{ type: 'ouverture_branche', branche: 'arts & creatif' }]);
+    expect(verdict('craft.0614', aCoche('craft'))).toBe('ouvrir');
+    expect(verdict('craft.0614', vide)).toBe('fermer');
+    expect(verdict('craft.0614', aCoche('sport'))).toBe('fermer');
+    // Les consignes de rédaction sont conservées, pas évaluées.
+    expect(analyserCondition(question('gaming2.1388')!.condition_emission).consignes).toMatch(/NE JAMAIS ouvrir par défaut/);
+    expect(verdict('gaming2.1388', vide)).toBe('fermer');
+    // Une ouverture SENSIBLE reste fermée par la sensibilité, quel que soit le terrain.
+    expect(verdict('money.1571', aCoche('money'))).toBe('fermer');
+    expect(verdict('causes.1918', aCoche('causes'))).toBe('fermer');
+  });
+  it('« Hôtellerie » est une branche distincte du voyage, sans règle exécutable : non résolue', () => {
+    expect(question('travel2.0915')!.condition_emission).toMatch(/^Ouverture branche Hôtellerie \(distincte du voyage/);
+    expect(verdict('travel2.0915', aCoche('voyage', 'travel', 'travel2'))).toBe('indecidable');
+    expect(verdict('travel2.0916', aCoche('voyage', 'travel', 'travel2'))).toBe('indecidable');
   });
 });
 
@@ -169,11 +216,20 @@ describe('la condition d’une sous-partie est écrite sur sa première question
     expect(verdictDe(question('relation2.0788')!, relation)).toBe('indecidable');
     expect(verdictDe(question('relation2.0789')!, relation)).toBe('indecidable');
   });
-  it('une sous-partie dont la première question ne porte que le nom suit sa branche', async () => {
+  it('une sous-partie sans question de tri s’ouvre au niveau B de sa branche (feuille Branches), pas avant', async () => {
     const { verdictDe } = await import('../selection');
     const { TETES_DE_SOUS_PARTIE } = await import('../dependances');
     expect(TETES_DE_SOUS_PARTIE.has('relation2.0793')).toBe(false);        // « Sous-branche Amitié »
     expect(verdictDe(question('relation2.0793')!, relation)).toBe('ouvrir');
+    const debut = etat({ branchesOuvertes: new Set(['relation2']), niveauParBranche: new Map([['relation2', 'A' as const]]) });
+    expect(verdictDe(question('relation2.0793')!, debut)).toBe('fermer');
+  });
+  it('une sous-partie qui présume une situation de vie inconnue du moteur reste non résolue', async () => {
+    const { verdictDe } = await import('../selection');
+    const daily = etat({ branchesOuvertes: new Set(['daily2']), niveauParBranche: new Map([['daily2', 'C' as const]]) });
+    const coupleAuQuotidien = BANQUE.filter((q) => /^Sous-branche Couple au quotidien\s*$/.test(q.condition_emission));
+    expect(coupleAuQuotidien.length).toBeGreaterThan(0);
+    for (const q of coupleAuQuotidien) expect(verdictDe(q, daily), q.id).toBe('indecidable');
   });
 });
 

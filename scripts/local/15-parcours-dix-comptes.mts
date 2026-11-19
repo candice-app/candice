@@ -12,7 +12,7 @@
 // Le modèle est le faux serveur : cet essai éprouve la plomberie (ordre des écritures,
 // sauvegarde, rejeu, doublons), pas la qualité de lecture d'une phrase.
 import { compteLocal, verificateur } from './_compte-local.mts';
-import { cookiesDe, poster, APP } from './_session-http.mts';
+import { cookiesDe, poster, APP, obtenirLot } from './_session-http.mts';
 import { VOIX, repartir } from './09-faux-comptes.mts';
 import { produceSocleAnswer, produceSocleFact } from '../../src/lib/questionnaire/produce-socle.ts';
 import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-interests.ts';
@@ -101,14 +101,16 @@ for (let i = 0; i < VOIX.length; i++) {
 
   const repondues: string[] = []; let preuvesDiscovery = 0;
   for (let n = 0; n < NB_DISCOVERY; n++) {
-    const suiv = (await prochainesQuestionsPour(c.client as never, { userId: c.userId, combien: 1 })).questions[0];
-    if (!suiv) break;
+    // Le SERVEUR propose (lot signé) ; on répond à ce qu'il a proposé, avec son jeton.
+    const propose = await obtenirLot(cookie, 'quick');
+    if (!propose) break;
+    const suiv = propose.question;
     if (repondues.includes(suiv.question_key)) { v.verifier(false, `${voix.prenom} · une question déjà répondue est resservie`, suiv.question_key); break; }
     const q = question(suiv.question_key)!;
     let answer: string | string[];
     if (suiv.question_type === 'text') { answer = 'Une réponse libre de test, sans rien de particulier.'; await dicter([{ units: [] }]); }
     else answer = suiv.question_type === 'chips_single' ? [suiv.options![0].value] : suiv.options!.slice(0, 2).map((o) => o.value);
-    const r = await poster('/api/discovery/answer', cookie, { sessionId: null, pendingKeys: [suiv.question_key], currentIndex: 0, mode: 'full', questionKey: suiv.question_key, answer });
+    const r = await poster('/api/discovery/answer', cookie, { jeton: propose.jeton, questionKey: suiv.question_key, answer });
     // RELECTURE : ce que CETTE réponse a écrit, retrouvé par le code de la question.
     const src = (await c.client.from('knowledge_sources').select('id, source_type').eq('user_id', c.userId).in('question_code', [suiv.question_key, `discovery.${suiv.question_key}`])).data ?? [];
     const ev = src.length ? ((await c.client.from('knowledge_evidences').select('target_family, target_construct, preference_value, polarity').in('source_id', src.map((s) => s.id))).data ?? []) : [];

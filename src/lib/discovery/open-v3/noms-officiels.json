@@ -1,0 +1,1091 @@
+{
+ "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx",
+ "sha256_source": "0126a1878661a39f49d246cd708b305f0d325907d7bd0ae7efd61fd3521dbd1a",
+ "origine": "Candice_Banque_Microquestions_V1.1.xlsx (15 sept. 2026), feuilles Banque et Branches, reprises dans le Référentiel enrichi V2 avec leur provenance",
+ "statut_des_regles": "ORIGINALES — écrites en prose, jamais traduites en conditions exécutables ni arbitrées dans la source",
+ "branches": [
+  {
+   "id": "activity",
+   "nom_officiel": "Questions paramétriques obligatoires",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "aesthetic",
+   "nom_officiel": "Esthétique",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "COUCHE TRANSVERSALE, comme la Signature Sensorielle et la Signature de valeur. S’alimente à chaque objet, lieu, image ou recommandation visuelle.",
+    "garde_fous": "NOUVELLE BRANCHE. Décrit la GRAMMAIRE VISUELLE d’une personne : densité, époque, formes, matières, couleur, ornement, perfection, échelle, ordre, intemporalité. ⚠ Distinction avec Signature Sensorielle : le sensoriel porte sur les SENSATIONS (toucher, odeur, son, température), l’esthétique sur le REGARD. Les deux se croisent sur matières et couleurs — 1951↔sensory2.1473, 1952↔sensory2.1479 : ne pas reposer, mais l’angle diffère (visuel vs sensation).",
+    "niveau_B": "Minimalisme et chaleur (aimer la simplicité ≠ accepter la froideur), ornement, perfection (pont Signature de valeur), ORIGINALITÉ (1957 — la distinction admiration/appropriation est CAPITALE, application de la règle B1), CONTRASTE (1958 — le goût réside parfois précisément dans une TENSION), échelle, ordre (sans confondre esthétique et organisation réelle), intemporalité, émotion esthétique (croise Résonance), univers de référence (doit permettre PHOTO et LIEN), REPOUSSOIR (1964 — les rejets sont plus discriminants que les préférences), COHÉRENCE INTER-DOMAINES (1965). Arbitrages avancés : beauté/confort, beauté/singularité, beauté/statut (ponts Valeur et Argent), permanence/renouvellement, instinct (1970).",
+    "niveau_C": "Niveau C : univers concerné, rôle de l’esthétique, niveau d’audace, intégration à l’univers existant, compromis acceptable.",
+    "saturation": "PILOTE : peut sélectionner des univers associés, AJOUTER DES PHOTOS de lieux ou objets appréciés, signaler des rejets récurrents, raconter des choix réellement effectués.",
+    "parcours": "⭐⭐ 1965 (COHÉRENCE INTER-DOMAINES) est la question la plus structurante de la branche : elle DÉTERMINE SI CANDICE PEUT TRANSFÉRER LES APPRENTISSAGES ENTRE DOMAINES. Si la personne répond « chaque domaine est indépendant », le moteur ne doit PAS propager un goût de la mode vers la maison ou l’hôtellerie. Si elle répond « oui énormément », la signature esthétique devient un filtre universel au même titre que le sensoriel et la valeur. Cette réponse conditionne donc la portée même de la couche.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 59"
+   }
+  },
+  {
+   "id": "animals",
+   "nom_officiel": "Les animaux (philosophie)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre si les animaux sont évoqués, si la personne en possède ou en a possédé, ou si un cadeau lié est envisagé.",
+    "garde_fous": "NOUVELLE BRANCHE. ⚠ RECOUVREMENT avec Animaux (pets.0391-0413) — merge final : celle-ci porte sur le RAPPORT aux animaux, pets sur l’animal possédé. ⚠⚠ RÈGLE STRUCTURANTE identique à Enfants : LA BRANCHE DÉCRIT LE RAPPORT AUX ANIMAUX, LA FICHE DÉCRIT CHAQUE ANIMAL individuellement (prénom, espèce, race, naissance, caractère, habitudes, alimentation, santé, anniversaires, jouets, peurs, vétérinaire, tailles, cadeaux). ⚠ 2135 « as eu » et 2142 (empreinte de patte, portrait) peuvent renvoyer à un DEUIL ANIMALIER : ne jamais relancer, ne jamais proposer ces objets sans certitude sur le contexte.",
+    "niveau_B": "Rôle de l’animal, quotidien partagé, voyages (croise travel2.0901), dépenses (croise Argent — mesure l’investissement, jamais un jugement), causes animales (PONT causes.1937), souvenir animalier, activité idéale, objets-souvenirs, avenir, ce que les animaux apportent, animal idéal, LIEN PARFAIT (2146).",
+    "niveau_C": "Niveau C : animal concerné (renvoie à sa fiche), contexte, intention, DESTINATAIRE RÉEL (2150 — distinction essentielle : un cadeau POUR L’ANIMAL et un cadeau POUR LE MAÎTRE n’ont ni le même catalogue ni la même intention).",
+    "saturation": "PILOTE : posable (place visible de l’animal, activités partagées, cadeaux déjà appréciés, habitudes). PAS avec certitude sur : rôle émotionnel de l’animal, profondeur de l’attachement, valeurs associées à cette relation.",
+    "parcours": "⭐ 2131 (pourquoi tu les aimes) EXPLIQUE BIEN PLUS QUE L’ESPÈCE : affection, intelligence, fidélité, beauté, personnalité, indépendance, côté rassurant, présence, lien avec la nature. ⭐ 2146 (« qu’aimerais-tu que ton animal ressente avec toi ») révèle la manière dont la personne conçoit LA RELATION — et s’applique même à qui n’a pas d’animal. ⚠ Aimer les animaux ≠ vouloir vivre avec (croise resonance.1532).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 67"
+   }
+  },
+  {
+   "id": "art",
+   "nom_officiel": "Art (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "bags",
+   "nom_officiel": "Sacs & maroquinerie",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Sélection mode · citation d’un sac, d’une marque de maroquinerie ou d’un modèle précis · wishlist ou envie repérée · évocation du luxe, des accessoires ou des belles matières · un proche envisage d’offrir un sac, un portefeuille, un porte-cartes ou un bagage · besoin concret manifesté : sac ordinateur, sac quotidien, sac de voyage, remplacement d’un sac usé.",
+    "garde_fous": "Ne pas ouvrir automatiquement parce qu’elle aime les vêtements.",
+    "niveau_B": "Aime vraiment la maroquinerie · sac = bonne idée de cadeau · catégorie précise identifiée · marque/modèle cité · occasion qui approche · niveau A resté trop large. Poser 2 à 4 questions B pertinentes. Sous-branches ciblées : sac à main, cabas, sac à dos, sac ordinateur, voyage, petite maroquinerie (uniquement pour les catégories choisies en A2).",
+    "niveau_C": "Seulement : modèle réel · achat par un proche · budget important · contrainte précise bloquante · personne passionnée.",
+    "saturation": "À ce stade, Candice sait : cadeau acceptable ou non · catégorie à viser · ce qui compte le plus · style à choisir · matières/caractéristiques à éviter. Intérêt modéré : arrêt ici.",
+    "parcours": "Très fonctionnelle : 6-7 questions puis arrêt. Mode mais sac choisi personnellement : 4 questions puis Candice attend une wishlist/référence. Passionnée de sacs de luxe : 8-10 réparties dans le temps. Besoin concret sac ordinateur : la précision pratique compte davantage que la marque.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 5"
+   }
+  },
+  {
+   "id": "beauty",
+   "nom_officiel": "Beauté (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "beauty2",
+   "nom_officiel": "Beauté & bien-être corporel (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Intérêt pour les soins · produits de beauté évoqués · coiffure · fréquente un spa ou un institut · un proche cherche un cadeau · Candice détecte une routine beauté. NE PAS ouvrir automatiquement.",
+    "garde_fous": "⚠ REFONTE de beauty V1 (8 q) + ABSORPTION de l’ancienne branche Bien-être (spa, soins, massages) — merge final. Trois dimensions distinctes : expression de soi (maquillage, coiffure, parfum) · soin (peau, cheveux, corps, instituts) · bien-être corporel (spa, massages, hammam, sauna). NE JAMAIS présumer qu’une personne qui ne se maquille pas n’aime pas prendre soin d’elle ; inversement on peut dépenser en cosmétiques et détester les massages. SENSIBLE : anti-âge et soins visage jamais présentés comme une correction · freins (1303, « être touché(e) », intimité, allergies) = self-only, jamais posés au pilote · contre-indications (1312) = données de santé Art. 9, jamais inférées. Parfums cochés → croiser la branche Parfum sans dupliquer.",
+    "niveau_B": "Routine, fréquence (croise daily2.1128), massage (récupération / relaxation / luxe / duo), spa (TRÈS UTILE pour Voyage & Hôtellerie — synchroniser avec travel2.0929), coiffure, maquillage (ignorée si non pertinente), produits, marque vs efficacité, institut, solo ou partagé (un duo offert à qui préfère être seul = faux cadeau), freins, découverte. Sous-branches : Soins visage (si pertinent), Corps, Cheveux (haut risque : produit inadapté = inutilisable), Spa & hôtels (sync Voyage), Massage.",
+    "niveau_C": "Niveau C uniquement si cadeau envisagé : type de soin, institut, durée, surprise, contre-indications (uniquement si nécessaire).",
+    "saturation": "PILOTE : posable (habitudes visibles, salons fréquentés, massages appréciés, spa connus, routines exprimées, produits utilisés). PAS fiable sur : complexes, rapport au corps, inconfort, besoins émotionnels, préférences d’intimité. Arrêt : place de la beauté + pertinence produit/expérience + soins qui font du bien + catégories acceptées + limites d’intimité.",
+    "parcours": "Parcours : peu intéressé 6 → stop · passionné de skincare (routine, produits, marques, découverte, soins visage) · amateur de spa (massage, spa, hôtel, solo/duo, durée, ambiance) · cadeau concret (soin, institut, durée, surprise, contre-indications). Inférences : massages + spa + hôtels wellness → week-ends spa, hôtels avec espace bien-être, coffrets massage, expériences de récupération — NE PAS conclure qu’elle aime les cosmétiques, qu’elle veut des produits, ni qu’elle apprécie d’être touchée dans tous les contextes. Peu de maquillage → NE PAS conclure au désintérêt pour la beauté. PRINCIPE : la beauté n’est pas une question d’apparence mais une manière de prendre soin de soi, de récupérer, de se faire plaisir ou de retrouver de l’énergie — recommander selon cette FONCTION, pas selon des habitudes de consommation.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 34"
+   }
+  },
+  {
+   "id": "bond",
+   "nom_officiel": "Rapport au lien",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre lorsqu’une personne parle : d’une amitié importante · d’une déception relationnelle · d’une personne sur qui elle peut compter · d’un conflit · d’un éloignement · d’un sentiment de solitude · d’une relation qui dure · d’un proche qui l’a soutenue · d’un cadeau destiné à renforcer ou réparer un lien · d’une difficulté à comprendre les attentes d’un proche. S’alimente de phrases comme « on ne se parle pas souvent mais je sais qu’il sera toujours là », « ce n’est pas qu’elle ait oublié mon anniversaire, c’est que j’ai l’impression de toujours faire le premier pas ».",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐⭐, niveau 4. ⚠ CE QUE CE N’EST PAS : la sociabilité (on peut voir beaucoup de monde sans construire d’intimité) · les langages de l’amour (qui décrivent l’EXPRESSION de l’affection ; ici on cherche comment la CONFIANCE se construit, ce qui rend une relation sûre, ce qui crée l’engagement, ce qui constitue une rupture symbolique) · le style d’attachement clinique (JAMAIS de diagnostic anxieux/évitant/désorganisé/dépendance affective — besoins relationnels contextuels sans interprétation psychologique médicale) · une qualité morale (peu de contacts ≠ froid ; beaucoup de présence ≠ dépendant). Ne produit JAMAIS d’étiquette type « personne fusionnelle » : elle reconstruit une GRAMMAIRE DU LIEN — ce qui rapproche, sécurise, fragilise, répare, prouve que la relation compte. 8 axes : création de la proximité · sécurité relationnelle · loyauté · intimité et vulnérabilité · présence · continuité · indépendance · réparation. Questions sensibles : 1694-1699 (blessures), 1704 (confiance cassée), 1707 (besoin non exprimé — confiance conversationnelle suffisante requise).",
+    "niveau_B": "Actes/mots (la COHÉRENCE vaut plus qu’une forme isolée), initiative, réciprocité (⚠ réciprocité ≠ symétrie : donner du temps et recevoir une présence émotionnelle), vulnérabilité donnée et reçue, demande d’aide (valoriser l’entraide ≠ savoir demander), SENS DU SILENCE (1682, capital pour la distance), retrouvailles, franchise (loyauté par vérité / par protection / par respect de l’intimité), limites, place dans la vie de l’autre (≠ possession), moments clés, durée, évolution, relations d’une autre période, rituel relationnel, LÉGÈRETÉ (1692 — évite de hiérarchiser les liens verbaux au-dessus des autres), fiabilité, blessures, intention vs impact, excuses, réparation, conflit, maintien du lien.",
+    "niveau_C": "Niveau C par RÉCITS CONCRETS (les personnes idéalisent leur manière d’être en relation) : relation sûre, moment de présence (extraire le SUIVI, pas seulement le premier geste), DÉCEPTION PAR OMISSION (1702 — révèle les attentes implicites), amitié durable, confiance cassée (distinguer affection / proximité / confiance / désir de poursuivre — ces dimensions divergent), bonne distance, PREUVE SILENCIEUSE (1706 — matière directe pour les micro-gestes), besoin non exprimé.",
+    "saturation": "SOURCES DE CONNAISSANCE hiérarchisées : 1. moments critiques (maladie, deuil, naissance, séparation, réussite, déménagement, crise) — très forte valeur · 2. déceptions racontées — très forte, surtout « ce qui m’a blessée, ce n’est pas… c’est que… » qui révèle la RÈGLE RELATIONNELLE IMPLICITE · 3. relations durables · 4. initiatives répétées (qui appelle, organise, soutient, répare).",
+    "parcours": "⭐⭐⭐ SIGNATURE RELATIONNELLE PROFONDE (cartouche calculée, pour K1/K3) : créateurs de proximité · signaux de sécurité · preuves de loyauté · langage de présence · besoin de fréquence (élevé/régulier/ponctuel mais profond/faible si confiance forte) · rapport à l’intimité (verbal/émotionnel/expérientiel/pratique/progressif/très sélectif) · rapport à la vulnérabilité (facilement exprimée / avec quelques personnes / indirectement / difficilement demandée / plus facile à recevoir qu’à offrir / inverse) · besoin d’indépendance · attente de réciprocité (symétrique/complémentaire/variable/indispensable dans la durée) · blessures majeures · conditions de réparation. 10 MOTEURS RELATIONNELS (jamais un type unique) : par la présence · par la fiabilité (une seule présence au bon moment peut valoir plus que cent messages) · par l’intimité · par les expériences · par la complicité · par la loyauté · par la croissance · par le soin · le lien libre · par la continuité. ⭐ 9 TENSIONS STRUCTURANTES : proximité × indépendance · fréquence × profondeur · loyauté × franchise · soin × autonomie · vulnérabilité × contrôle · histoire × évolution · réciprocité × générosité · pardon × sécurité · présence × charge mentale. EXTRACTION TYPE : « on peut ne pas se parler pendant trois semaines, ça ne me dérange pas. Mais quand ma mère était hospitalisée, elle m’a écrit une fois et n’a plus jamais demandé comment ça allait » → PAS « a besoin de beaucoup de nouvelles » mais : faible exigence de fréquence ORDINAIRE + forte exigence de présence dans les moments CRITIQUES + importance du SUIVI + attente d’initiative spontanée + loyauté = continuité du soutien. APPLICATIONS : cadeau d’amitié → édition privée de photos avec phrases courtes, PAS une vidéo diffusée publiquement · anniversaire → dîner intime où chacun apporte un souvenir lié à une étape, la valeur vient de la reconnaissance relationnelle pas du standing · réconciliation → lettre sobre qui nomme l’absence, reconnaît l’effet, n’exige pas le pardon, propose un geste durable — PAS un cadeau coûteux sans conversation · soutien → proposer du précis (« je peux déposer le dîner jeudi ou prendre les enfants samedi ») puis reprendre des nouvelles quelques jours après · retrouvailles → lieu familier lié à l’histoire commune plutôt qu’expérience spectaculaire pour « rattraper le temps perdu ».",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 50"
+   }
+  },
+  {
+   "id": "brand",
+   "nom_officiel": "Questions paramétriques obligatoires",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "causes",
+   "nom_officiel": "Causes",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre lorsqu’une cause est spontanément évoquée · lorsqu’une association ou un projet est mentionné · lorsqu’un cadeau solidaire est envisagé.",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐. sensitivity: HIGH. Une personne peut être profondément sensible à une cause SANS appartenir à une association, prendre publiquement position, faire des dons, ou vouloir que cette cause soit présente dans chaque cadeau. À l’inverse, elle peut soutenir concrètement sans en parler. ⚠ CETTE BRANCHE NE CONSTRUIT JAMAIS UN PROFIL POLITIQUE OU MILITANT. « Aucune en particulier » doit être totalement acceptable et sans jugement. « Je suis surtout touché sans forcément agir » doit être NORMALISÉ. ⚠ « Mon histoire personnelle » (1919) ne déclenche JAMAIS de question sur la nature de cette histoire. ⚠⚠ RÈGLE ABSOLUE (1940) : ne PAS stocker d’information médicale personnelle simplement parce qu’une cause de santé est sélectionnée. Handicap (1939) : ne jamais en déduire une situation personnelle ou familiale. 1934 : Candice ne transforme JAMAIS une cause personnelle en signal public sans consentement.",
+    "niveau_B": "Cause principale, émotion dominante (pont Résonance), urgence ou temps long (aide immédiate / prévention / recherche / préservation / transmission), impact concret (pont Signature de valeur), local ou global, HUMAIN OU STRUCTUREL (1929 — très discriminant pour la FORME DE NARRATION), soutenir ou participer, expériences engagées, cadeau engagé idéal, DON EN SON NOM (1933 — souvent présenté comme universellement vertueux alors qu’il peut être très mal reçu), engagement visible, expérience fondatrice. 6 TERRITOIRES (pas une branche par cause) : Le vivant · L’humain et la vulnérabilité · La santé et la connaissance · L’éducation et l’égalité des chances · Le patrimoine et la transmission · Le territoire et la communauté.",
+    "niveau_C": "Niveau C — RÈGLE : ne JAMAIS partir directement de la cause, valider d’abord LE RÔLE qu’elle doit jouer. Place de la cause, forme de contribution, niveau d’implication, INTENSITÉ ÉMOTIONNELLE (1945 — toutes les occasions ne doivent pas devenir un rappel de la gravité du monde), visibilité, trace.",
+    "saturation": "Arrêt après le A : territoires de sensibilité + origine + formes de soutien + ouverture au cadeau solidaire + visibilité acceptable.",
+    "parcours": "⭐ PRINCIPE : la branche ne cherche pas des opinions mais QUELLES CAUSES RENCONTRENT LES VALEURS, L’HISTOIRE OU LA SENSIBILITÉ PROFONDE de la personne. Ponts : Animaux (1937), Enfants (1938), Transmission/Esthétique/Souvenirs (1941), Résonance émotionnelle (1925), Signature de valeur (1927).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 58"
+   }
+  },
+  {
+   "id": "celebav",
+   "nom_officiel": "Célébration avancée",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre avant un anniversaire · lors d’une étape importante · pendant la préparation d’une surprise · lorsqu’une célébration est évoquée. Nourrit directement Cadeaux, Hospitalité, Souvenirs, Relations, Valeurs, Rapport au temps, Voyages. Ne possède pas de sous-branche propre.",
+    "garde_fous": "⚠ REFONTE/EXTENSION de Célébration (celebration.0811-0832) — merge final. ⚠⚠ RÈGLE FONDATRICE : LA BRANCHE SÉPARE STRICTEMENT TROIS AXES — comment j’aime être célébré (reçu) · comment j’aime célébrer les autres (offert) · rapport à l’organisation. SANS CETTE SÉPARATION, LES RÉPONSES SONT AMBIGUËS. ⚠⚠ AXE 3 — RÈGLE ABSOLUE : une personne peut être extrêmement attentionnée et pourtant rater les occasions parce qu’elle oublie les dates, manque de temps, procrastine, ne sait pas quoi choisir ou se sent dépassée par la logistique. CANDICE NE DOIT JAMAIS INTERPRÉTER CELA COMME UN MANQUE D’AMOUR. 2190 (« après avoir oublié une première fois ») doit être formulée SANS CULPABILISATION.",
+    "niveau_B": "AXE 1 reçu : préparation visible/invisible, seuil de personnes, PERSONNES INDISPENSABLES (2159 — le lieu et le prestige comptent parfois moins que deux présences précises), rythme, anticipation (pont time.1560), cadeau vs événement, place des mots, trace, DÉCEPTIONS (2165 — contraintes dures), plus belle célébration reçue, scénario redouté, célébration idéale. AXE 2 offert : SOURCE DES IDÉES (2175 — très liée à la proposition de valeur), secret, réaction attendue (frustrations relationnelles), contrôle, PROJECTION (2179 — métacognition, première cause de cadeau raté), grands gestes, petites occasions, occasions manquées, célébration dont on est fier, DIFFICULTÉ PRINCIPALE (2184 — liste littéralement les fonctions du produit), geste idéal, reconnaissance quotidienne. AXE 3 : mode d’organisation, frein principal (croise Charge mentale et Énergie), anticipation réelle, CE QUI PEUT ÊTRE DÉLÉGUÉ (2191 — cartographie directe des services), niveau de contrôle.",
+    "niveau_C": "Niveau C uniquement quand une célébration est en préparation — Candice doit interroger LES TROIS DIMENSIONS : destinataire, effet visé, exposition (croiser 2154), surprise (croiser 2155), forme, RÔLE DE L’UTILISATEUR (2198 — définit le niveau de service attendu, donnée produit directe pour la conciergerie).",
+    "saturation": "PILOTE : peut répondre sur les réactions déjà observées, les célébrations appréciées ou rejetées, le confort avec l’attention, les types d’occasions organisées, les comportements visibles. Le pilote doit pouvoir signaler : observation certaine / supposition / ignorance.",
+    "parcours": "⭐⭐⭐ LES ÉCARTS ENTRE AXES SONT L’OUTPUT LE PLUS PUISSANT DE LA BRANCHE — 5 ASYMÉTRIES À DÉTECTER : (1) DONNE GRAND / REÇOIT PETIT — organise des fêtes extraordinaires mais préfère être célébrée intimement ; RISQUE : les proches supposent qu’elle attend la même chose en retour. (2) REÇOIT GRAND / DONNE DISCRET — aime les grandes démonstrations mais célèbre sobrement ; RISQUE : sous-estime l’effort nécessaire pour répondre aux attentes d’autrui. (3) INTENTION FORTE / EXÉCUTION FAIBLE — veut faire énormément plaisir mais manque de temps, d’idées ou d’organisation ; C’EST LE PROFIL QUI A LE PLUS BESOIN DE CANDICE. (4) ORGANISATION FORTE / ÉMOTION PEU LISIBLE — prépare tout parfaitement mais peine à exprimer ce qu’elle ressent ; Candice peut renforcer les mots, le message, la personnalisation. (5) SURPRISE OFFERTE / CONTRÔLE RECHERCHÉ — adore surprendre mais déteste être surprise ; cas classique de PROJECTION INVERSÉE. ⭐ 6 SIGNATURES D’IMPLICATION (jamais figées, jamais une catégorie unique) : le grand orchestrateur · l’attentionné débordé · le délégant exigeant · le spontané affectueux · le discret constant · le minimaliste sincère.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 68"
+   }
+  },
+  {
+   "id": "celebration",
+   "nom_officiel": "Célébration",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Accomplissement, projet terminé, réussite, anniversaire, diplôme, naissance, changement de travail, guérison, étape importante, défi personnel évoqués — ou réussite importante détectée par Candice.",
+    "garde_fous": "Tout le monde ne veut pas une fête (0811). Les malaises (0815 : centre de l’attention, discours, surprises publiques, photos, réseaux) sont des contraintes dures.",
+    "niveau_B": "Seulement si les célébrations comptent réellement. Les ⭐ (victoires invisibles 0831, langage de reconnaissance 0832) sont les questions les plus puissantes de la branche.",
+    "niveau_C": "Niveau C : seulement lorsqu’un événement arrive (niveau souhaité, célébration parfaite, budget, personnes à inclure, souvenir).",
+    "saturation": "Après les 5 A : aime célébrer ou non, quoi, comment, avec qui, quoi éviter. Pour la majorité, on s’arrête là.",
+    "parcours": "Point stratégique : la branche apprend le LANGAGE DE RECONNAISSANCE — deux marathoniens, l’un veut un dîner, l’autre veut « je suis fier de toi ». Elle sert les victoires invisibles (entretien réussi, traitement terminé, burn-out surmonté, résolution tenue), pas seulement les dates.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 20"
+   }
+  },
+  {
+   "id": "change",
+   "nom_officiel": "Rapport au changement",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre quand la personne évoque : nouveau projet · transition professionnelle · déménagement · grossesse ou naissance · séparation · départ · perte · deuil · fausse couche · maladie · évolution de santé · changement corporel · retraite · fin d’une période · besoin de repartir · difficulté à s’adapter · envie de renouveau. RÈGLE DE SENSIBILITÉ AVANT OUVERTURE — contexte ORDINAIRE (voyage, habitudes, travail, déco) : questions légères possibles · TRANSITION CHOISIE (entrepreneuriat, mariage, reconversion) : questions plus profondes, sans supposer uniquement de l’enthousiasme · ÉPREUVE OU PERTE (deuil, maladie, fausse couche, séparation subie, licenciement) : demander la PERMISSION d’approfondir, ne JAMAIS enchaîner automatiquement une banque de questions.",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐, niveau 4. « Aimes-tu le changement ? » est trop pauvre : on peut adorer changer de métier et détester déménager. 7 TYPES à distinguer : nouveauté · progression · transformation · transition · recommencement · PERTE · adaptation. 3 NATURES : changement CHOISI (stimulant même difficile) · IMPOSÉ (sidération, perte de contrôle, besoin de continuité) · AMBIGU (perte ET ouverture simultanées — devenir parent, quitter une relation, vendre une maison familiale, retraite : Candice doit ACCEPTER L’AMBIVALENCE sans forcer une lecture positive). DEUX ERREURS À ÉVITER ABSOLUMENT : proposer quelque chose de trop perturbant à qui a besoin de sécurité · transformer trop vite une épreuve en « nouveau départ », « opportunité » ou « renaissance ». ⚠ CE N’EST PAS : une mesure de résilience (ne JAMAIS noter la capacité à « rebondir » — on peut fonctionner tout en étant profondément affecté) · une injonction à tourner la page (certaines pertes doivent être intégrées, reconnues, ritualisées, CONSERVÉES dans l’histoire) · le rapport au risque · le rapport au temps · un diagnostic du deuil (JAMAIS d’« étapes du deuil », jamais conclure que la personne est « bloquée »).",
+    "niveau_B": "10 axes : besoin de continuité · appétence pour le renouvellement · besoin de préparation · tolérance à l’incertitude · vitesse d’adaptation · rapport à la clôture · rapport au recommencement · continuité identitaire · langage d’accompagnement · rapport à la trace. Domaine par domaine (1762-1763) : ne jamais étiqueter globalement quelqu’un comme stable ou changeant. ⭐ 1771 (amplitude de surprise) : on peut adorer un cadeau surprise et détester un voyage surprise — stocker l’AMPLITUDE, pas le goût de la surprise. 1784 (injonctions qui blessent) = contraintes dures sur toute génération de message.",
+    "niveau_C": "⚠⚠ NIVEAU S — SOUS-BRANCHE SENSIBLE (perte, deuil, événements difficiles) : jamais ouverte par scoring, uniquement si l’événement est explicitement mentionné ou si la personne choisit d’en parler. Questions de SOUTIEN, jamais d’analyse : reconnaissance souhaitée, besoin de présence, parler ou non, trace, DATES SENSIBLES (donnée particulièrement protégée, l’option « sans notification automatique » doit être techniquement respectée), ce qu’il faut éviter. PRINCIPE : NE JAMAIS FUSIONNER LES PERTES — fausse couche, deuil, maladie, séparation, licenciement partagent des mécanismes mais ne doivent JAMAIS être ramenés à une catégorie générique visible type « transition difficile ». Chaque événement a son histoire, son statut social, son niveau de reconnaissance, sa temporalité, son vocabulaire acceptable, son degré de confidentialité. Candice peut mutualiser les MÉCANISMES INTERNES (besoin de reconnaissance, aide concrète, besoin d’espace, dates, trace) mais jamais uniformiser l’expérience. 1797 (changement incomplet) : JAMAIS exposé aux proches.",
+    "saturation": "Niveau C conversationnel et largement optionnel : changement réussi, transition mal accompagnée, repère conservé, commencement libérateur, clôture manquée, changement incomplet, nouvelle version de soi.",
+    "parcours": "⭐⭐ SIGNATURE DE CHANGEMENT (cartouche calculée) — 10 tendances DÉTECTÉES PAR DOMAINE, jamais des profils rigides : le bâtisseur progressif · l’explorateur renouvelé · le transformateur (transformation très pensée, pas impulsive) · le recommenceur (énergie dans les débuts, difficulté dans la consolidation) · le gardien de continuité (≠ refus d’évoluer) · l’adaptateur pragmatique (n’aime pas le changement mais sait reconstruire) · le préparateur · le plongeur · le transformateur symbolique (rites, objets, mots, dates) · le continuateur (intègre le nouveau en maintenant un fil avec l’avant). TENSIONS : nouveauté × sécurité, et suivantes. PONTS : Souvenirs et Transmission (ce qu’on garde), Réussite (phase préférée), Énergie, Rapport au lien (1689).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 52"
+   }
+  },
+  {
+   "id": "children",
+   "nom_officiel": "Les enfants",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre si la personne a des enfants, en côtoie (neveux, filleuls, petits-enfants), ou si un cadeau pour enfant est envisagé.",
+    "garde_fous": "NOUVELLE BRANCHE. ⚠⚠ RÈGLE STRUCTURANTE : CETTE BRANCHE DÉCRIT LA VISION DE L’ADULTE, PAS L’ENFANT. Chaque enfant possède ensuite SA PROPRE FICHE (personnalité, passions, cadeaux, taille, pointures, livres, héros, anniversaires, évolution). Ne jamais confondre les deux objets. ⚠ 2066 (les écrans) : IL NE S’AGIT PAS DE JUGER, simplement de comprendre — aucune valeur morale attachée, la réponse sert uniquement à filtrer les recommandations. Croise Causes (causes.1938 enfance) et Famille.",
+    "niveau_B": "Mode d’apprentissage, anniversaire idéal (croise Célébration), approche de Noël, types de jouets (croise Jeux de société et Gaming), ACCOMPAGNEMENT ÉMOTIONNEL (2073 — influence énormément les conseils, croise change.1782), réussites valorisées, souvenir à offrir (croise Nostalgie et Transmission), traditions (pont Transmission et Rituels), vacances en famille (croise travel2.0900), approfondir ou découvrir, moment préféré, CE QUE L’ENFANT DIRA DE TOI (2080).",
+    "niveau_C": "Niveau C uniquement lorsqu’un cadeau ou une activité est préparé : âge (contrainte dure — sécurité, adéquation, intérêt), contexte, INTENTION DERRIÈRE LE CADEAU (2083 — transforme le cadeau en intention ; « le simple plaisir » est une réponse pleinement légitime), critère prioritaire.",
+    "saturation": "Arrêt après le A : philosophie éducative + valeurs + rapport aux cadeaux + activités + écrans + autonomie.",
+    "parcours": "⭐ 2083 est la question la plus opérationnelle de la branche : elle transforme un objet en intention (créativité, lecture, confiance, sport, curiosité, partage, autonomie, imagination, ou simple plaisir). 2080 rejoint legacy.1510, values.1915 et remembrance.1993 sur le thème de la trace — harmonisation nécessaire au merge.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 64"
+   }
+  },
+  {
+   "id": "cinema",
+   "nom_officiel": "Cinéma (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "cinema2",
+   "nom_officiel": "Cinéma (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Cinéma sélectionné · film, réalisateur, acteur, festival ou salle cité · films cultes, avant-premières, ciné-concerts évoqués · wishlist billets/affiche/abonnement/édition · un proche envisage une sortie · cinéma comme activité de couple, famille ou réconfort. NE PAS ouvrir automatiquement parce que la personne regarde des séries.",
+    "garde_fous": "⚠ REFONTE de cinema V1 (16 q) — merge final. Le genre seul ne suffit pas : deux drames peuvent répondre à des besoins opposés (catharsis, réflexion, beauté, réconfort). Thèmes évités = donnée sensible, ne jamais demander pourquoi.",
+    "niveau_B": "3 à 5 B max : films de référence (paramétrique), film récent, réalisateurs/acteurs (entités), cinémas du monde, époques, VO/VF, durée, découverte/valeur sûre, compagnie, réconfort, salle idéale, critique. Sous-branches : horreur, comédie, documentaire, animation.",
+    "niveau_C": "Niveau C : film/événement repéré, expérience (avant-première, festival, ciné-concert…), objets, abonnement (anti-doublon), modalité de surprise.",
+    "saturation": "Arrêt dès que : importance + émotions + genres + manière de regarder + rejets + attention acceptable connus.",
+    "parcours": "Occasionnel 5 → stop. Cinéphile 8-10 réparties. Croisements : Musique↔Cinéma (BO, ciné-concerts, music2.1030) ; Cinéma↔Séries = signal faible seulement, confirmation avant reco concrète.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 25"
+   }
+  },
+  {
+   "id": "collection",
+   "nom_officiel": "Collection",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre si une collection ou une logique de série est évoquée. Fermer immédiatement si « non, pas vraiment ». « J’ai collectionné dans le passé » → ouvrir la nostalgie UNIQUEMENT si pertinent.",
+    "garde_fous": "NOUVELLE BRANCHE. ⭐ RÈGLE STRUCTURANTE : CRÉER UNE SOUS-BRANCHE PAR COLLECTION IDENTIFIÉE — ne jamais mélanger les critères d’une collection de vinyles avec ceux d’une collection de montres. 2021 (motivation) : deux collectionneurs du même objet peuvent chercher des choses totalement différentes — recherche, complétion, rareté, histoire, nostalgie, esthétique, connaissance, transmission, unicité, souvenirs, communauté, coup de cœur. 2032 (valeur financière) : sensible, facultative, ne jamais demander le montant global.",
+    "niveau_B": "Logique de collection (critère d’appartenance), état de la collection (⚠ ne pas ajouter à une collection en cours de réduction), INVENTAIRE ANTI-DOUBLON (2026 — à câbler avec le Carnet d’envies), état et authenticité, neuf/vintage/ancien, rareté, usage ou conservation (un objet à utiliser n’a pas les mêmes contraintes qu’un objet à garder intact), présentation (ouvre rangement, vitrine, encadrement, éclairage, photographie), valeur financière, communauté, pièce favorite (moteur émotionnel), pièce manquante.",
+    "niveau_C": "Niveau C : référence exacte (donnée reine), budget de recherche (« être alerté lorsqu’elle apparaît » = fonctionnalité de VEILLE), tolérance d’état, expérience de collection, transmission (ponts Transmission, Famille, Souvenirs).",
+    "saturation": "Parcours : collectionneur occasionnel 5-7 questions · expert 8-11, uniquement parce que les réponses deviennent directement utiles à une recherche concrète.",
+    "parcours": "⭐ La collection est le domaine où l’ANTI-DOUBLON est le plus critique : 2022 (permission), 2023 (risques), 2026 (inventaire), 2035 (pièce manquante) et 2036 (référence exacte) forment ensemble la chaîne de sécurité d’un cadeau de collection.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 62"
+   }
+  },
+  {
+   "id": "comics",
+   "nom_officiel": "BD, comics & mangas",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Sélection BD & mangas dans la lecture · citation d’un titre, auteur, dessinateur ou personnage · évocation de comics, mangas, romans graphiques, webtoons ou animation liée · wishlist contenant un tome, une intégrale, une figurine ou une édition spéciale · un proche envisage d’offrir dans cet univers.",
+    "garde_fous": "Ne pas ouvrir automatiquement parce que la personne aime le cinéma d’animation, les séries ou le Japon. Ne jamais mettre BD, comics et mangas dans un seul bloc générique : formats distincts.",
+    "niveau_B": "Lit régulièrement · suit des séries ou auteurs · accepte ce type de cadeau · titre ou univers cité · branche trop large. 2 à 4 questions B. Sous-branches par format (manga, comics, franco-belge, roman graphique, webtoon) uniquement pour les formats choisis en A2.",
+    "niveau_C": "Seulement : passionné · compléter une collection · titre précis envisagé · édition spéciale · anti-doublon · expérience liée à l’univers.",
+    "saturation": "Après les 5 A : importance réelle · formats à viser · genres qui fonctionnent · pertinence du livre-cadeau · risques à éviter · objet/lecture/expérience. Règle d’arrêt : format + genres + niveau de lecture + permission + risque de doublon + degré de collection connus. Un seul titre adoré, un seul détesté et l’état réel de la bibliothèque > dix questions théoriques.",
+    "parcours": "Occasionnel : 5 puis arrêt. Amateur de mangas : 6-8 réparties. Passionné BD/romans graphiques : 7-9. Collectionneur : la précision anti-doublon devient prioritaire.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 7"
+   }
+  },
+  {
+   "id": "consumption",
+   "nom_officiel": "Consommation (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "consumption2",
+   "nom_officiel": "Consommation (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Peut s’ouvrir pour presque tout le monde mais TRÈS LÉGÈREMENT. Ouvrir si : préférences fortes sur les cadeaux matériels · achète peu / compare beaucoup / préfère la qualité · parle de seconde main, consommation responsable, luxe ou minimalisme · manque de place · rejette les objets inutiles · préfère les expériences · cite souvent des marques · aime les promotions · difficile à satisfaire matériellement · préfère les participations · parle d’abonnements ou de box · transition (déménagement, naissance, séparation, réduction de budget, désencombrement) · un proche envisage un cadeau coûteux ou durable. JAMAIS un questionnaire sur l’argent : la branche porte sur les MÉCANISMES DE CHOIX.",
+    "garde_fous": "⚠ REFONTE de consumption V1 (11 q) — merge final. Ne classe JAMAIS les personnes (économe / dépensière / responsable / matérialiste / minimaliste) : jugements simplistes et souvent faux. Question opérationnelle : comment cette personne choisit-elle, achète-t-elle, utilise-t-elle et reçoit-elle les choses ? Ne pas inférer de A1 : revenu, caractère dépensier, maîtrise budgétaire, matérialisme, générosité. Budget (1219) : contextuel, confidentiel, jamais inféré du standing, jamais communiqué au pilote sans autorisation. Cadeau coûteux (1197) NON POSABLE au pilote (variante observation seulement).",
+    "niveau_B": "3 à 5 B max. Blocs : arbitrages (qualité/quantité, prix/qualité, plaisir/investissement, marque, artisan, avis, essai, canal, promotions, temps de décision) · seconde main / reconditionné / vintage / location / réparation · durabilité & valeurs (jamais une identité morale ; niveau de compromis avant contrainte dure) · coût & cadeaux chers · abonnements & box (peut devenir dette future, doublon, tâche administrative) · formes de consommation (1205 = HIÉRARCHIE TRANSVERSALE du moteur) · nouveauté · coup de cœur & envies (1212 calibre le « j’adore » ; 1213 = score de fiabilité du Carnet d’envies). Sous-branches : Cadeaux reçus, Achats pour les autres (nourrit l’expérience pilote).",
+    "niveau_C": "Niveau C uniquement si produit ou dépense précise : nature de l’envie (donnée vivante), usage, critères non négociables (générés par catégorie), alternative (anti-remplacement arbitraire), état, budget, surprise, retour, présentation, fin de vie (risque émotionnel).",
+    "saturation": "PILOTE : posables (achat fréquent/rare, marques, rejet des objets inutiles, seconde main, manque de place, wishlists, références, importance des retours, promotions, critères exprimés, catégories appréciées). À confirmer directement : budget, gêne face aux cadeaux chers, rapport à l’argent, sentiment de dette, critères éthiques intimes, restriction budgétaire, inconfort face à l’accumulation, revenu, raisons d’un refus, limites pro/intimes. Arrêt : pertinence du matériel + catégories + valeur d’un achat + place réelle + qualité/variété/usage/expérience + contraintes + niveau de précision.",
+    "parcours": "Parcours : achète peu mais bien 6-8 · aime varier (petits objets ciblés, consommables, location, nouveautés validées, sans tolérance infinie à l’encombrement) · désencombre (expériences, services, consommables, réparation, remplacement, participation) · sensible aux marques (confiance / esthétique / statut / savoir-faire / collection / habitude) · achat concret 6-8. Inférences : peu d’objets + qualité + réparation → durables/réparables, NE PAS inférer préférence écologique ni budget élevé · nouveautés + attend les tests → curieux non early adopter · seconde main + premium + état impeccable → seconde main authentifiée, NE PAS inférer vintage patiné ni prix bas · manque de place + cadeaux appréciés → consommables d’exception, services, remplacement. Extraction : « lampe sublime mais nulle part où la mettre » → attirance forte + intention faible + contrainte d’espace dure → référence esthétique, PAS wishlist active. PRINCIPE : connaître ce qu’une personne aime ne suffit pas — savoir ce qu’elle accepte de POSSÉDER, comment elle veut le CHOISIR, et ce qui fera que l’objet sera réellement UTILISÉ.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 31"
+   }
+  },
+  {
+   "id": "craft",
+   "nom_officiel": "Arts visuels, pratiques créatives & artisanat",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Univers créatif sélectionné · pratique citée (photo, peinture, céramique, couture…) · artiste/artisan mentionné · création montrée ou offerte · wishlist contenant matériel, œuvre ou atelier · un proche cherche une attention créative.",
+    "garde_fous": "DEUX AXES SÉPARÉS dès l’entrée : PRATIQUANT (je crée) vs FAN/ACHETEUR/COLLECTIONNEUR (j’admire, j’achète). Ne jamais confondre. Piège n°1 : le cadeau créatif qui ressemble à un devoir. Piège n°2 : le matériel technique improvisé.",
+    "niveau_B": "Axe Pratiquant : pratiques réelles cartographiées (actuelle/ancienne/désirée + fréquence + niveau), puis sous-branches photo, peinture/dessin, céramique, textiles selon les pratiques. Axe Fan/acheteur : styles, valeur, espace, artistes cités. Axe Collection : uniquement si logique de série réelle (anti-doublon prioritaire).",
+    "niveau_C": "Seulement : projet créatif précis · achat technique (référence exacte) · œuvre repérée · expérience premium · pièce personnalisée.",
+    "saturation": "Après les 5 A : axe dominant · univers attirants · permission d’offrir · interdits. La branche est aussi un réservoir d’attentions GRATUITES : partager une expo, valoriser une création, imprimer une photo, offrir du temps pour créer.",
+    "parcours": "Curieux : 5-6 puis expériences. Pratiquant régulier : 8-12 réparties, référence exacte pour le matériel. Collectionneur : anti-doublon avant tout. Acheteur d’art : espace + style + artiste cités priment.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 14"
+   }
+  },
+  {
+   "id": "creator",
+   "nom_officiel": "Questions paramétriques obligatoires",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "daily",
+   "nom_officiel": "Famille, couple, amitié, quotidien et charge mentale",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "daily2",
+   "nom_officiel": "Daily — Vie quotidienne & foyer (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Rythme quotidien évoqué · vie de famille/couple/colocation · semaines chargées · manque de temps · gestes pratiques valorisés · télétravail, trajets, horaires, organisation · un proche cherche une attention simple et régulière · Candice ne sait pas quand/comment intervenir · une reco risque de créer de la logistique · transition en cours (naissance, déménagement, nouveau travail, reprise, séparation, changement d’école, aidance, déplacements). Ne JAMAIS ouvrir en bloc : données contextuelles et évolutives.",
+    "garde_fous": "⚠ REFONTE de daily.* V1 (8 q) — merge final. Surtout pas un inventaire administratif. DÉLIMITATION : Charge mentale = ce que la personne porte et voudrait déléguer · Rituels = ce qu’il faut protéger · Petites joies = plaisir rapide · Sommeil = récupération · Food = repas · Daily = comment la vie fonctionne, quand intervenir, comment améliorer une journée SANS la désorganiser. Recouvre relation2 sous-branche Couple (CPLE-D* vs CPLE*) — merge final. Transition (1113) → toutes les réponses DATÉES, jamais identitaires, réévaluées au changement de contexte.",
+    "niveau_B": "3 à 5 B max : organisation perso (sans créer un système en plus), anticipation (transversale), décisions fatigantes (réduire le choix), retour à la maison, soirée semaine, week-end (≠ voyage), disponibilité sociale (jamais d’inférence d’introversion), maison (ouvre Maison/Déco sur les seules dimensions importantes), trajets (croise Podcasts/Musique), temps personnel (ne pas supposer un désir de solitude ; 1129 croise Rêves, Lecture, Sport, Beauté, Nature, Arts créatifs). Sous-branches : Couple au quotidien (CPLE-D4 = self-only, temporaire, non communicable), Famille (croiser Charge mentale sans redemander), Télétravail.",
+    "niveau_C": "Niveau C uniquement quand une attention est réellement envisagée dans une période précise : besoin actuel (daté, prioritaire, à revalider), semaine à venir (préventif), tâche précise (délégable vs écoute vs décision vs temps), niveau d’intervention, créneau libéré, usage du temps (« rien » légitime, jamais « productif » imposé), attention sans logistique (max 2).",
+    "saturation": "PILOTE : posables (rythme visible, horaires, moments chargés, trajets, organisation familiale, habitudes du soir, week-ends, tâches détestées explicitement, sollicitations visibles, aides déjà appréciées, besoins matériels) — pilot_observation, confiance réduite, donnée temporaire, jamais une certitude. À confirmer directement : surcharge ressentie, satisfaction conjugale, solitude, perception du partage des tâches, frustration familiale, besoin d’aide actuel, choix enfants, fatigue, ce qui manque au couple, temps personnel insuffisant.",
+    "parcours": "Arrêt dès que : rythme + moments coûteux + bonne journée + aide bienvenue + niveau d’initiative + attentions-charge connus. Parcours : stable 6 → stop · parent logistique 7-9 · couple chargé (repas organisé, garde, sortie simple, soirée préparée, temps seul pour chacun, relais, message de reconnaissance) · très autonome (proposer sans imposer, aides fermées, ne pas sur-assister) · transition (tout daté). Inférences : décisions fatigantes → UNE reco + UNE alternative max, jamais dix options · imprévisible → bons flexibles, sans engagement · maison+calme en semaine → attentions à domicile SANS réduire voyages/fêtes du week-end · aime organiser → choix stratégique à elle, exécution prise en charge.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 29"
+   }
+  },
+  {
+   "id": "destination",
+   "nom_officiel": "Questions paramétriques obligatoires",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "dreams",
+   "nom_officiel": "Rêves & projets",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre lorsqu’une envie ou un projet est évoqué. Le niveau C intervient lorsqu’un projet devient concret.",
+    "garde_fous": "NOUVELLE BRANCHE. ⭐ 1998 (nature de l’envie) DISTINGUE PROJECTION, INTENTION ET ENGAGEMENT RÉEL — branchement critique : un RÊVE À IMAGINER ne doit JAMAIS être poussé à l’action. ⭐ 1999 (rapport à l’aide) est LA QUESTION QUI EMPÊCHE CANDICE DE TRANSFORMER UN RÊVE EN INJONCTION — l’option « n’en parle pas tant que je n’ai rien demandé » est une contrainte dure. 2011 (confidentialité) : essentiel pour reconversion, grossesse, projet entrepreneurial, santé, finances, création intime.",
+    "niveau_B": "Horizon, première étape (micro-attention SANS prendre le contrôle), importance personnelle (motivation profonde), personnel ou partagé, degré de surprise, soutien émotionnel (nourrit MOT/SER/GES/célébration), PRESSION À ÉVITER (2008 — crée des exclusions relationnelles fortes), avancement réel (évite d’offrir une première étape déjà accomplie), ce qui ferait la différence, confidentialité. Sous-branches : Voyage rêvé, et par domaine selon le projet.",
+    "niveau_C": "Niveau C : projet précis (donnée reine, lien/photo/document), prochaine action (⚠ ne JAMAIS transformer en rappel automatique sans demande explicite), NIVEAU D’AIDE AUTORISÉ (2015 — très forte règle de consentement), cadeau ou contribution, célébration intermédiaire, ÉCHEC OU CHANGEMENT (2018 — très importante pour NE PAS ENFERMER LA PERSONNE DANS UNE ANCIENNE ASPIRATION).",
+    "saturation": "Arrêt après le A : quel projet compte + rêve ou projet réel + désir d’être aidé + ce qui bloque + forme d’attention adaptée. Créer une entité PROJET avec date, importance, domaine, stabilité provisoire.",
+    "parcours": "⭐ PRINCIPE : la branche transforme une aspiration en attention JUSTE, jamais en pression. Les trois garde-fous — ne pas pousser un rêve, ne pas offrir une étape déjà franchie, ne pas enfermer dans un projet abandonné — sont des règles moteur.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 61"
+   }
+  },
+  {
+   "id": "drinks",
+   "nom_officiel": "Boissons",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre si une boisson est citée, un rituel de boisson évoqué, un cadeau lié envisagé. Ponts : Food, Hospitalité, Rituels, Signature de valeur.",
+    "garde_fous": "NOUVELLE BRANCHE. ⚠ RECOUVREMENT avec food2.0872-0873 — merge final. On identifie LES UNIVERS IMPORTANTS, pas la fréquence. ⚠ 2088 (alcool) : SANS JUGEMENT — « aucune » est une contrainte dure, exclure définitivement toute reco alcoolisée, jamais d’inférence sur la raison (santé, religion, grossesse, addiction, choix personnel).",
+    "niveau_B": "Sous-branches par univers, ouvertes seulement si sélectionné : Café, Thé, Vin (⭐ le NIVEAU D’EXPERTISE — débutant/amateur/passionné/collectionneur — conditionne totalement le cadeau), Cocktails, Spiritueux, Champagne (branche événementielle). Plus : niveau d’exigence (pont Signature de valeur), boissons de réception (pont Hospitalité), lieux, boisson-souvenir, fidélité/découverte, brunch, BOISSON SIGNATURE (2101), RITUEL PARFAIT (2102 — l’IA extrait énormément, à rapprocher de sensory2.1481).",
+    "niveau_C": "Niveau C : contexte, univers, type de recherche (valeur sûre / découverte / pièce exceptionnelle / expérience), niveau de sophistication (contextuel, fourchettes, jamais inféré du standing).",
+    "saturation": "PILOTE : posable (boissons commandées, habitudes, lieux favoris, cadeaux déjà appréciés). Arrêt après le A : univers + rituels + rapport à l’alcool + expériences + potentiel cadeau.",
+    "parcours": "⭐ 2086 (POURQUOI) est la question pivot : le goût, le rituel, le partage, la découverte, l’énergie, la détente, la gastronomie, le raffinement et la convivialité mènent à des recommandations totalement différentes pour la même boisson.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 65"
+   }
+  },
+  {
+   "id": "energy",
+   "nom_officiel": "Rapport à l’énergie",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Niveau 4 — moteurs profonds. S’ouvre progressivement, se nourrit de toutes les interactions. Influence quasiment TOUTES les recommandations.",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐. Les moteurs de recommandation actuels raisonnent en GOÛTS et ignorent complètement le COÛT ÉNERGÉTIQUE. Deux personnes peuvent adorer la même chose et la vivre radicalement différemment : « un week-end entre 15 amis me recharge » vs « j’adore mes amis mais j’ai besoin d’une journée seul après ». Candice doit apprendre COMBIEN COÛTE une expérience à cette personne, indépendamment de son attrait. ⚠ CE N’EST PAS : la santé (fatigue chronique, maladie, burn-out, sommeil) · la personnalité (introverti ≠ aime être seul ; extraverti ≠ aime les événements permanents) · le temps disponible (on peut avoir beaucoup de temps libre et très peu d’énergie). 8 axes : sources · dépenses · rythme · stimulation · récupération · interactions · responsabilités · signaux de saturation.",
+    "niveau_B": "Coût social (1599 — aimer quelqu’un ≠ être rechargé par sa présence), transitions, vacances, rapport au vide (culpabilité/ennui = offrir du temps vide n’est pas un cadeau pour tout le monde), coût de l’imprévu, VITESSE DE SATURATION (1604 — décisive pour dimensionner un voyage), ce qui saute en premier sous responsabilité (croise Charge mentale), micro-recharges (1606 — croise Petites joies), environnements régénérants (croise sensory2.1472), coût du cadre imposé (croise time.1570).",
+    "niveau_C": "Niveau C par RÉCITS : « raconte-moi une journée où tu t’es senti incroyablement vivant » puis « à l’inverse, une journée où tu étais vidé ». L’objectif n’est pas l’émotion mais le PROFIL ÉNERGÉTIQUE (contexte, personnes, durée, stimulation, autonomie, rythme).",
+    "saturation": "Arrêt après le A : ce qui recharge + ce qui vide + rythme optimal + récupération + stimulation souhaitée.",
+    "parcours": "⭐⭐ SIGNATURE ÉNERGÉTIQUE (cartouche calculée, pour K1/K3) : sources de recharge · coûts énergétiques · rythme optimal · besoin de récupération · coût social · tolérance aux imprévus · densité idéale · besoin de solitude · besoin de stimulation · vitesse de saturation · micro-recharges efficaces · environnements régénérants · TENSIONS STRUCTURANTES. ARCHÉTYPES DE RECHARGE : Rechargeur solitaire (calme, solitude, lecture, nature) · social (amis, famille, échanges, projets collectifs) · créatif (fabriquer, écrire, cuisiner, imaginer) · physique (mouvement, randonnée, sport) · contemplatif (silence, beauté, lenteur) · par la nouveauté (découverte, voyage, apprentissage) · par le foyer (maison, cuisine, jardin, cocon). ⭐ TENSIONS (paradoxes à modéliser explicitement) : aime recevoir × recharge seul (dîners adorés mais journée calme nécessaire après) · curieux × saturation rapide (adore découvrir mais deux activités par jour suffisent) · très sociable × besoin de solitude (sas de récupération) · aventurier × besoin de confort (explore, à condition d’un excellent hôtel) · généreux × énergie limitée (fait plaisir mais oublie son propre équilibre). CE QUE ÇA CHANGE : avant → « aime la gastronomie » → restaurant + spectacle + rooftop + bar. Après → foules fatigantes, deux activités suffisent, besoin de calme ensuite → un grand restaurant puis une promenade de nuit au bord de l’eau. Moins dense, meilleur souvenir. VISION PRODUIT : un mauvais cadeau est rarement un cadeau qui ne correspond pas aux goûts — c’est bien plus souvent un cadeau qui DEMANDE PLUS D’ÉNERGIE que la personne n’a envie d’en dépenser. La question n’est plus seulement « qu’est-ce qu’elle va aimer ? » mais « DANS QUEL ÉTAT D’ÉNERGIE aimerait-elle vivre cette expérience ? ».",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 47"
+   }
+  },
+  {
+   "id": "family",
+   "nom_officiel": "Rapport à la famille",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre quand la personne évoque : un repas ou une fête de famille · un parent ou grand-parent · une naissance · une tradition · un conflit · une belle-famille · une famille recomposée · une décision concernant les enfants · une histoire familiale · un sentiment de devoir · une distance prise · ce qu’elle souhaite reproduire ou éviter. Phrases : « chez nous personne ne rate Noël », « mes amis sont davantage ma famille que certains membres de ma famille », « j’ai toujours été celle qui maintient tout le monde ensemble », « je ne veux pas reproduire ce que j’ai vécu ».",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐, niveau 4. ⚠⚠ La famille n’est JAMAIS traitée comme une valeur universelle, uniforme ou nécessairement positive : elle peut être reçue, choisie, recomposée, construite, éloignée, protectrice, exigeante, ambivalente, absente, espace d’émancipation OU de contrainte. Ne JAMAIS partir du principe que famille = amour + proximité + sécurité. ⚠ CE N’EST PAS : la composition familiale (la fiche factuelle dit qui, pas ce que ces liens SIGNIFIENT) · le Rapport au lien (qui modélise les règles générales ; ici on cherche ce que le CADRE FAMILIAL ajoute : devoir, histoire, identité, continuité, appartenance, rôle, transmission — on peut être très souple avec ses amis et très exigeant envers sa famille) · la parentalité · une mesure de « valeurs familiales » (AUCUN jugement moral, culturel, religieux ou politique). 9 axes : fonction émotionnelle · définition de la famille · appartenance · devoir et solidarité · individuation · continuité · transformation · rituels et mémoire · gestion des différences.",
+    "niveau_B": "Fonction émotionnelle (refuge — mesurer la FONCTION pas l’amour, appartenance, sécurité, centre émotionnel origine/construite, foyer). Devoir (obligations, aide, sacrifices, disponibilité, responsabilité émotionnelle — AUCUN DIAGNOSTIC, uniquement la charge potentielle). Frontières (décisions, conseils non demandés, droit au désaccord, VIE PRIVÉE — le contenu n’a pas à être demandé, SEULE LA FRONTIÈRE COMPTE, rôles figés, couple face aux familles — sans normativité). Traditions et mémoire (héritées, rassemblements, histoires, objets, générations). Héritage (ce qu’on reçoit, ce qu’on transforme, CE QU’ON NE VEUT PAS REPRODUIRE — sous-question volontairement large, jamais de détail douloureux exigé, réussite familiale). Conflits (unité affichée, prendre parti, défendre, pardon, CONTINUITÉ À TOUT PRIX — réponses toujours NON CULPABILISANTES).",
+    "niveau_C": "Niveau C optionnel et conversationnel, ne jamais demander de raconter toute son histoire : souvenir fondateur (un déjeuner simple peut révéler plus qu’un grand événement), moment de solidarité, tradition significative (sa FONCTION importe plus qu’elle-même — dont « maintenir une personne symboliquement présente »), famille choisie (jamais pour OPPOSER aux origines), rôle pesant, ce qu’on aimerait transmettre, ce qu’on veut changer, LA FAMILLE OÙ L’ON VIT BIEN (excellent output de synthèse).",
+    "saturation": "PILOTE : peut renseigner fonction familiale (AVEC OBLIGATION D’EXEMPLE CONCRET), rôle tenu, traditions préservées, événements où la présence compte, réaction aux interventions familiales, transmission souhaitée (reste une HYPOTHÈSE si non formulée), CHARGE portée pour que la famille fonctionne (très utile pour recommander une attention qui NE CRÉE PAS une tâche supplémentaire). CONFIDENTIALITÉ : récits privés · tensions non exposées · Candice n’utilise que les implications opérationnelles · AUCUNE information concernant un membre de la famille n’est partagée avec un autre sans autorisation. Exemple — insight interne : « souhaite préserver une relation proche avec ses parents mais vit mal leur intervention dans ses décisions parentales » → formulation au proche : « une attention qui respecte pleinement leurs choix et leur manière de vivre aura plus de valeur qu’une initiative décidée à leur place ».",
+    "parcours": "⭐⭐ FONCTIONS FAMILIALES (cartouche calculée, plusieurs dominantes, jamais de profil rigide) : famille-refuge · famille-socle · famille-histoire · famille-projet (construite activement, pas seulement héritée) · famille-équipe · famille-identité (à ne JAMAIS confondre avec conformisme ou traditionalisme) · famille-transmission · famille-espace de liberté (chacun peut devenir lui-même, le lien existe sans contrôle) · famille-choisie (les liens biologiques ne suffisent pas nécessairement) · famille-complexe (attachement + obligations + ambivalence + besoin de protection — CETTE FONCTION NE DOIT JAMAIS ÊTRE TRAITÉE COMME UN PROFIL DÉFICIENT). ⭐ 10 TENSIONS : appartenance × indépendance · unité × authenticité · devoir × limites · famille d’origine × famille construite · tradition × évolution · transmission × liberté · proximité × vie privée · solidarité × réciprocité · mémoire × renouvellement · pardon × protection. INFÉRENCES INTERDITES : supposer qu’une personne aime sa famille parce qu’elle la voit souvent · conclure qu’une distance traduit un manque d’attachement · imposer l’idée qu’une réconciliation est souhaitable · considérer la famille biologique comme supérieure à la famille choisie · supposer que devenir parent devient le centre de l’identité · déduire une enfance heureuse ou difficile d’un comportement · diagnostiquer une dynamique familiale · attribuer culpabilité, dépendance ou traumatisme · considérer qu’une tradition doit être préservée · encourager le maintien d’un lien nuisible · exposer à un proche ce que la personne souhaite transformer · RECOMMANDER UNE SURPRISE FAMILIALE SANS VÉRIFIER LES RELATIONS RÉELLES ENTRE LES PARTICIPANTS. Ne JAMAIS raisonner « ce sont ses parents, leur présence lui fera forcément plaisir » : LE LIEN FAMILIAL NE SUFFIT PAS À PROUVER LA DÉSIRABILITÉ D’UNE PRÉSENCE.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 53"
+   }
+  },
+  {
+   "id": "fashion",
+   "nom_officiel": "Mode (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "fashion2",
+   "nom_officiel": "Mode (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Mode sélectionnée · vêtements, style, shopping, créateurs, marques évoqués · pièce citée · wishlist/envie contenant un vêtement · un proche envisage pièce, conseil, expérience shopping ou service · tenues évoquées fréquemment · envie d’évolution de style · difficulté à s’habiller · intérêt luxe/seconde main/vintage/créateurs. NE PAS ouvrir parce que la personne doit s’habiller au quotidien.",
+    "garde_fous": "⚠ REFONTE de fashion V1 (12 q) — merge final. Chaussures, bijoux, montres, sacs = branches spécialisées, données croisées avec le style global. LA source d’erreur n°1 : style admiré ≠ style porté (Pinterest/influenceur/marque admirée ≠ portabilité). Lingerie : jamais sans relation compatible + consentement + taille fiable + contexte. Zones de confort (1069) et mesures (1105) : self-only, askable_about_other=false, jamais de « défauts »/« correction »/« morphologie idéale ». Évolutions personnelles (1112) : self-only, preparatory, aucun conseil corporel automatique.",
+    "niveau_B": "3 à 5 B parmi : porté vs admiré, tenue signature, tenue de confiance, formalité, silhouettes, couleurs/motifs/matières réellement portés, détails, pièces difficiles, marques portées vs admirées (aspiration ≠ intention d’achat), logos, luxe, tendances, évolution du style, inspiration, habitudes d’achat, seconde main, éthique (jamais critère moral), entretien, essayage. Sous-branches : manteaux, mailles, chemises, robes, jeans (haut risque), pantalons, sport (croise sportp), homewear. Services : jamais suggérer analyse morpho/colorimétrique comme correction.",
+    "niveau_C": "Niveau C : pièce repérée, contexte d’usage, taille fiable (taille déclarée insuffisante si marque taille différemment/coupe ajustée/entre deux tailles/corps évolue/non échangeable), mesures (consentement), couleur, audace explicite, budget, retours, modalité, tenue complète.",
+    "saturation": "PILOTE : posables (catégories, couleurs, marques, pièces repérées, styles observés, logos évités, fréquence, signatures, refus, envies partagées) — observation, jamais identité stylistique. À confirmer directement : tailles, mensurations, zones de confort, rapport au corps, lingerie, changement corporel, gêne, confiance, budget, évolution, audace. Arrêt : permission + catégories + style porté + priorités + coupes/matières/couleurs + interdits + niveau de précision connus.",
+    "parcours": "Parcours : peu intéressée 5 → stop (ne pas transformer en passionnée). Bien habillée sans tendances 7-9. Passionnée 9-12. Style qui évolue : tri, conseil, pièces ciblées, retouches — aucune initiative tant que pas prête. Achat concret 6-8 orientées achat. Principe : comprendre ce qu’elle porte, admire, souhaite devenir et ne voudra jamais recevoir — sans confondre ces quatre informations.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 28"
+   }
+  },
+  {
+   "id": "flowers",
+   "nom_officiel": "Fleurs & Plantes",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre si fleurs ou plantes évoquées, si un cadeau floral est envisagé, ou lors d’une invitation. Ponts : Maison/Décoration, Signature sensorielle (parfums, couleurs, nature), Hospitalité (réception, décoration de table).",
+    "garde_fous": "NOUVELLE BRANCHE. ⭐ 2107 segmente tout : certaines personnes sont PROFONDÉMENT ÉMUES par un bouquet, d’autres y voient un cadeau « qui va faner ». ⭐ 2109 (ce qui plaît) est PLUS IMPORTANTE QUE LES ESPÈCES : « le geste » et « le symbole » orientent vers des recos radicalement différentes de « la beauté ». ⚠ 2115 : « je préfère qu’elles ne sentent pas » peut relever d’une sensibilité ou d’une allergie — contrainte dure, jamais questionnée. ⚠ 2116 (deuil) : croiser IMPÉRATIVEMENT change.1791 — les fleurs sont parfois explicitement refusées après une perte.",
+    "niveau_B": "Style de bouquet (croise Esthétique), couleurs (croise aesthetic.1952), parfums (croise Parfum et Sensoriel), occasions, ce qui plaît dans une plante, NIVEAU D’ENTRETIEN (2118 — contrainte dure : offrir une plante exigeante à qui veut du « très facile » est un faux cadeau), émotion florale, rapport au végétal dans les lieux, cadeau floral idéal, fleur symbolique, FLEURS DE MÉMOIRE (2123 — croise Nostalgie, Famille, Transmission), UNIVERS VÉGÉTAL IDÉAL (2124).",
+    "niveau_C": "Niveau C : occasion, MESSAGE TRANSMIS (2126 — le message prime sur l’espèce, le bouquet est un SUPPORT D’INTENTION), effet recherché, FORMAT FINAL (2128 — vérification qui évite une recommandation inadaptée).",
+    "saturation": "PILOTE : posable (bouquets déjà offerts, plantes présentes dans la maison, préférences observables, cadeaux appréciés). Arrêt après le A.",
+    "parcours": "⭐ Croisement fort avec Jardinage & plantes (garden.*) et home2.1272 — merge final à arbitrer : Jardinage porte sur la PRATIQUE, celle-ci sur le RAPPORT et le CADEAU.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 66"
+   }
+  },
+  {
+   "id": "food",
+   "nom_officiel": "Gastronomie, restaurants, cuisine et boissons",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "food2",
+   "nom_officiel": "Food & Gastronomie (refonte V2)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Gastronomie, cuisine, restaurant, voyage, recevoir, gourmandise, boisson, pâtisserie, café, vin, cocktail, marché, artisanat alimentaire sélectionnés ou cités · wishlist liée à la nourriture.",
+    "garde_fous": "⚠ REFONTE de food.* V1 (30 q) — merge final. Le piège : « tu aimes les sushis ? » vaut très peu — la vraie question est « qu’est-ce qui fait qu’un repas devient un moment de bonheur ? ». Boissons alcoolisées : choix personnel, jamais d’inférence.",
+    "niveau_B": "Seulement si la food est importante. Sous-branches : Cuisine, Restaurants, Produits, Gourmandises, Boissons, Recevoir, Souvenirs. Les ⭐ (madeleine 0883, récompense 0884, signature 0885) valent de l’or — la signature a rang de règle permanente.",
+    "niveau_C": "Niveau C seulement si pertinent : restaurant rêvé, produit désiré, expérience parfaite, budget, wishlist culinaire.",
+    "saturation": "Après les 5 A : rapport à la gastronomie, cuisine ou non, type d’expérience, valeur du repas, exclusions. Pour énormément de personnes, cela suffit.",
+    "parcours": "PROFIL GASTRONOMIQUE (attribut caché, pour K1/K3) : scores multi-dimensionnels — jamais une case unique, jamais visibles : Explorateur · Épicurien · Traditionnel · Technicien · Convivial · Esthète · Chasseur d’adresses · Locavore/artisan · Réconfort. Permet des recos très fines sans 30 questions de plus — exactement le type d’inférence où l’IA apporte de la valeur. Croisements : Nostalgie (madeleine, plat-souvenir, odeur), Célébration (récompense), Voyage.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 22"
+   }
+  },
+  {
+   "id": "fragrance",
+   "nom_officiel": "Parfum (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "fragrance2",
+   "nom_officiel": "Parfum (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Parfum sélectionné · odeur évoquée · parfum cité · reçoit souvent des parfums · un proche cherche un cadeau premium · wishlist contenant un parfum · bougies/senteurs/ambiance olfactive évoquées (pont vers Maison).",
+    "garde_fous": "⚠ REFONTE de fragrance V1 (10 q) — merge final. Le parfum est l’un des cadeaux LES PLUS RISQUÉS : deux personnes aimant les vanillés peuvent détester les mêmes marques, ne supporter qu’une concentration, vouloir signature ou rotation. Ne jamais apprendre seulement des notes/familles/listes : rôle + fidélité + audace + émotions + contextes + odeurs supportées + permission + références exactes. Catégorie à PERMISSION FORTE (1148). B12 budget = self-only.",
+    "niveau_B": "Seulement pour les amateurs : parfums portés (entités avec statut porté/terminé/ancien/signature/saison), raison d’aimer par parfum (paramétrique), intensité, contextes, saison, découverte, marque/odeur, niche/maisons, concentration, flacon, compliments, format. Sous-branches : bougies & senteurs (alimente Maison, diffuseurs même logique), produits parfumés.",
+    "niveau_C": "Niveau C uniquement lors d’un achat : référence repérée, occasion, taille, surprise, alternative (jamais de remplacement arbitraire).",
+    "saturation": "PILOTE : posable (parfum porté, fréquence, compliments, références citées, envies repérées) — PAS fiable sur : émotions recherchées, odeurs rejetées, budget, niveau de risque acceptable. Arrêt : importance + permission + fidélité + émotions + familles aimées/rejetées. Majorité : 5-7 questions.",
+    "parcours": "EMPREINTE OLFACTIVE (attribut caché, pour K1/K3) : ne pas stocker que des parfums — l’IA extrait les ACCORDS DOMINANTS des parfums aimés (muscs propres, vanille sèche, iris poudré, figue verte, fleur d’oranger, vétiver…) et construit un profil olfactif latent. Une création sortie dans deux ans sans lien de marque peut matcher par architecture olfactive. Inférence type : Prada Candy + L’Interdit Rouge + Baccarat Rouge 540 → attrait enveloppants/ambrés/gourmands + tolérance sillage modéré-présent. NE PAS conclure : aime tous les gourmands / toutes les créations de ces maisons / veut du très puissant / acceptera un similaire en cadeau.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 30"
+   }
+  },
+  {
+   "id": "games",
+   "nom_officiel": "Jeux de société",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Jeux ou tech sélectionnés · jeu cité spontanément · soirées jeux, escape games, jeux de cartes, jeux de rôle évoqués · un proche envisage d’offrir un jeu · joue régulièrement avec enfants/couple/amis · wishlist contenant un jeu. NE PAS ouvrir parce qu’elle aime « les activités à plusieurs ».",
+    "garde_fous": "Le piège classique : « aimer les jeux » peut vouloir dire ambiance 15 min, enquête 2h, gros jeu stratégique, familial, coop, à deux, ou « j’aime quand quelqu’un d’autre choisit et explique ». Un excellent jeu peut être un mauvais cadeau s’il ne sort jamais de la boîte.",
+    "niveau_B": "2 à 4 questions B : groupe réel, nombre de joueurs, durée, compétition, hasard/contrôle, interactions, univers, jeux aimés/détestés, fréquence, possession, permission cadeau. Sous-branches : ambiance, enquête, stratégie, familiaux, à deux — selon les types choisis en A2.",
+    "niveau_C": "Niveau C seulement : passionné · jeu précis · groupe identifié · risque de doublon · collection. Langue, installation, apprentissage, rejouabilité, extensions (base possédée certaine), éditions, expérience plutôt qu’objet.",
+    "saturation": "Arrêt dès que : complexité + dynamique + groupe réel + durée + mécaniques à éviter connues. Un seul jeu adoré ou détesté > cinq questions générales.",
+    "parcours": "Parcours : très occasionnel 5 → jeu simple ou soirée partagée. Famille 6-8 sans expertise. Ambiance 7-9. Passionné stratégie 8-10.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 24"
+   }
+  },
+  {
+   "id": "gaming",
+   "nom_officiel": "Gaming (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "gaming2",
+   "nom_officiel": "Gaming (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Joue régulièrement · possède une console · évoque souvent des jeux · un proche cherche un cadeau · Candice détecte un intérêt. NE JAMAIS ouvrir par défaut.",
+    "garde_fous": "⚠ REFONTE de gaming V1 (8 q) — merge final. « Tu joues à quels jeux ? » est largement insuffisant : deux joueurs de Zelda peuvent chercher l’exploration, les énigmes, la narration, le calme ou la nostalgie ; deux joueurs de Call of Duty peuvent jouer pour la compétition ou pour discuter avec leurs amis. Candice n’apprend pas les JEUX mais la RELATION au jeu. Plateforme = compatibilité, pas un profil. VR : certaines personnes la supportent mal (cinétose) — contrainte physique, ne jamais insister.",
+    "niveau_B": "Plateformes (compatibilité seule), fréquence, ce qui procure du plaisir, difficulté, découverte, univers, solo/multi, nostalgie (1401 — extrêmement utile pour les cadeaux), collection, temps de jeu (croise Daily : un jeu de 80 h offert à qui joue le week-end = faux cadeau), expériences (ouvre vers l’expérience plutôt que l’objet, croise games.0975), jeux marquants. Sous-branches : Nintendo, PC, Jeux narratifs (pont Lecture/Cinéma), Esport (si détecté), Réalité virtuelle (si intérêt).",
+    "niveau_C": "Niveau C uniquement si achat envisagé : jeu, plateforme (CONTRAINTE DURE — mauvaise plateforme = inutilisable), édition, surprise, mode de jeu prévu.",
+    "saturation": "PILOTE : posable (jeux joués ensemble, plateformes, habitudes, franchises préférées, fréquence). PAS certain sur : motivations profondes, émotions, difficulté recherchée, niveau de risque cadeau. Arrêt : place du gaming + pourquoi elle joue + expériences les plus plaisantes + cadeaux pertinents + franchises et souvenirs à valeur émotionnelle durable.",
+    "parcours": "BIBLIOTHÈQUE ÉMOTIONNELLE DES JEUX (amélioration retenue, pour K1/K3) : sur le modèle des livres, ne pas retenir que les titres joués mais ce que chaque jeu a REPRÉSENTÉ — premier jeu terminé, jeu qui a rapproché des amis, jeu joué avec un parent, jeu réconfort, univers dans lequel on aimerait revivre. Permet des cadeaux bien plus personnels qu’une reco par genre ou plateforme. Parcours : occasionnel 6 → stop · passionné (plateformes, univers, difficulté, jeux marquants, collection, expériences) · achat concret. Inférences : Zelda + Outer Wilds + Journey → attrait pour l’exploration, la découverte, les univers immersifs — NE PAS conclure qu’elle aimera tous les jeux d’aventure ou tous les RPG. Multijoueur → NE PAS conclure au goût de la compétition (peut chercher un moment social). PC → NE PAS conclure à une passion pour la technologie.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 38"
+   }
+  },
+  {
+   "id": "garden",
+   "nom_officiel": "Jardinage & plantes",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Intérêt nature/maison · plante, fleur, jardin, potager ou balcon cité · photos de plantes · déménagement avec extérieur · wishlist contenant plante/outil/atelier · un proche envisage d’offrir une plante.",
+    "garde_fous": "Aimer les plantes ≠ aimer s’en occuper. Une plante offerte peut être une tâche supplémentaire, voire une source de culpabilité. Toxicité enfants/animaux = contrainte de SÉCURITÉ prioritaire.",
+    "niveau_B": "Intérêt réel confirmé · espace connu · niveau d’entretien accepté connu. 2 à 4 questions B. Sous-branches : intérieur, fleurs & bouquets (INDÉPENDANTE du jardinage), potager, jardin paysager, cactus — uniquement sur signal.",
+    "niveau_C": "Seulement : achat précis d’une plante vivante · aménagement · passion · atelier · plante rare · cadeau premium. Avant toute plante vivante : lumière, espace, absence, toxicité.",
+    "saturation": "Après les 5 A : rapport réel aux plantes · espace disponible · permission d’offrir · catégories aimées · interdits/sécurité. Fleurs coupées possibles même sans jardinage.",
+    "parcours": "Décoratif faible entretien : 5-6 puis plantes robustes ou fleurs. Jardinier actif : 7-9. Passionné : 8-12 réparties. La sous-branche services (arrosage, rempotage, entretien) ouvre des attentions non matérielles.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 12"
+   }
+  },
+  {
+   "id": "home",
+   "nom_officiel": "Maison (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "home2",
+   "nom_officiel": "Maison (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Aime recevoir · parle de décoration · déménage · rénove · construit · parle souvent de son intérieur · un proche cherche un cadeau pour la maison · Candice détecte une envie liée au logement. NE PAS ouvrir systématiquement.",
+    "garde_fous": "⚠ REFONTE de home V1 (10 q) — merge final. Surtout PAS une branche « Décoration » : la maison est plus profonde que le style d’intérieur. Deux personnes qui aiment le japandi peuvent chercher le calme, la luminosité, ne l’aimer qu’en photo, ou ne rien vouloir acheter. Aimer les beaux objets n’empêche pas de détester bibelots, cadeaux déco, plantes ou cadres. Style RÉELLEMENT VÉCU, pas admiré sur Instagram. Catégorie à PERMISSION ÉLEVÉE comme le parfum et le livre. Recouvrements : daily2.1126 (bien-être à la maison), Food (cuisine — ne pas dupliquer), Jardinage (plantes), Parfum (senteurs, synchroniser), Art/Musées (art mural), Consommation (critères d’achat, encombrement). Palette couleurs 1270 à valider (doc source abrégé).",
+    "niveau_B": "Réception, épuré/vivant, rapport aux objets, personnalisation, matières (nourrit Mode et Sensory), couleurs, senteurs (sync Parfum), plantes (pont Jardinage), cuisine comme pièce (pont Food), organisation (croise Daily/Charge mentale), évolution, critères d’achat. Sous-branches : Linge de maison, Art mural, Éclairage, Mobilier (seulement si pertinent — très haut risque cadeau, dimensions et validation nécessaires).",
+    "niveau_C": "Niveau C uniquement lors d’un achat : objet, pièce, référence exacte, surprise, taille (encombrement + logistique), installation (anti cadeau-logistique).",
+    "saturation": "PILOTE : posable (style observé, objets présents, habitudes de réception, plantes, couleurs, ambiance générale, catégories appréciées). PAS certain sur : émotions recherchées, confort réel, objets refusés jamais exprimés, permission cadeau. Arrêt : rôle du foyer + vraies sources de bien-être + objets bienvenus + catégories trop risquées + style vécu + améliorations à impact concret.",
+    "parcours": "Parcours : peu intéressé 5 → stop · passionné de déco (A + style, matières, couleurs, senteurs, artisanat, objets, réception) · projet maison (niveau C complet). Inférences : lin + bois + neutres + japandi → matières naturelles, déco apaisante, objets sobres — NE PAS conclure au minimalisme absolu ni au refus des couleurs ailleurs (mode, art, voyage). Reçoit beaucoup → NE PAS conclure qu’elle aime les grands cadeaux de déco (elle peut simplement aimer cuisiner). PRINCIPE : la maison n’est pas une vitrine — Candice n’apprend pas ce qui est « beau », mais ce qui permet à une personne de se sentir véritablement chez elle.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 33"
+   }
+  },
+  {
+   "id": "hosting",
+   "nom_officiel": "Hospitalité",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre si la personne reçoit chez elle, évoque un repas partagé, une table, des invités, une fête à la maison. Ferme immédiatement si « fatigant » ou « je préfère être invité(e) » (2041).",
+    "garde_fous": "NOUVELLE BRANCHE. ⚠ RECOUVREMENT avec food2.0874-0875 (sous-branche Recevoir) et home2.1265 — merge final. Agit comme CHEF D’ORCHESTRE de toutes les branches liées au partage : Food, Boissons, Fleurs & Plantes, Maison, Décoration, Valeurs, Rituels, Célébrations.",
+    "niveau_B": "Table, détails soignés (croise Maison et Esthétique), rapport à la cuisine (croise food2.0857), format d’invités, souvenir de réception, ATTENTIONS D’HÔTE (2052 — l’IA extrait les gestes spontanés, révèle la manière d’exprimer l’attention), lieu, RÉCEPTION RÉUSSIE (2054 — « probablement la meilleure question »), traditions de table (pont Transmission), inspirations (croise Voyage & Hôtellerie), ce que l’hôte veut offrir, SOIRÉE PARFAITE (2058 — résume souvent toute la branche, à rapprocher de sensory2.1481 et time.1566).",
+    "niveau_C": "Niveau C uniquement lorsqu’une recommandation est préparée : type de réception, ambiance, objectif (⚠ « simplifier l’organisation » = signal de CHARGE, croiser Charge mentale), priorité du moment.",
+    "saturation": "Arrêt après le A : plaisir de recevoir + style + occasions + priorités. Pour la majorité des profils, cela suffit.",
+    "parcours": "⭐ 2046 (LE CADEAU D’HÔTE) est directement actionnable : vin, fleurs, plante, gourmandise, bougie — c’est l’une des attentions les plus fréquentes du catalogue, et l’une des plus faciles à rater. Ponts Boissons et Fleurs & Plantes.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 63"
+   }
+  },
+  {
+   "id": "humor",
+   "nom_officiel": "Humour (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "humor2",
+   "nom_officiel": "Humour (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Partage souvent des blagues · envoie régulièrement des memes · regarde du stand-up · cite des humoristes · un proche cherche une expérience ou un cadeau. NE PAS ouvrir automatiquement.",
+    "garde_fous": "⚠ REFONTE de humor V1 (7 q) — merge final. L’une des branches les plus PUISSANTES et presque toujours absente des profils : partager le même humour est un accélérateur de relation (couple, amis, collègues, famille). MAIS l’humour est un TRÈS MAUVAIS CANDIDAT À L’INFÉRENCE : deux amateurs de Monty Python peuvent détester le stand-up absurde ; deux amateurs de memes peuvent avoir des limites radicalement différentes sur le second degré, l’humour noir, la provocation, l’autodérision. Les limites (1419) sont des CONTRAINTES DURES, jamais inférées, jamais contournées — à croiser impérativement avant toute mise en scène (1436).",
+    "niveau_B": "Déclencheurs du rire, registre, RÔLE SOCIAL (1422), références (humoristes/créateurs/chaînes/podcasts), répliques cultes (messages personnalisés), memes, humour au travail (pont Travail), spectacles (pont Théâtre theatre2.1371), surprises (croise celebration.0815/0822), second degré (détermine le TON de Candice), humour en couple (croise Relation), souvenir de rire (mémoire émotionnelle). Sous-branches : Stand-up, Memes, Improvisation (pont Théâtre), Podcasts humoristiques.",
+    "niveau_C": "Niveau C uniquement si attention envisagée : type, référence, accompagnants, surprise, intensité (croiser les limites AVANT).",
+    "saturation": "PILOTE : posable (humour partagé, références communes, créateurs suivis, réactions observées). PAS certain sur : limites sensibles, humour réellement rejeté, niveau de second degré accepté. Arrêt : place de l’humour + ce qui fait rire + ce qu’il faut absolument éviter + références culturelles + pertinence d’une attention humoristique.",
+    "parcours": "⭐ RÔLE SOCIAL DE L’HUMOUR (amélioration retenue, pour K1/K3) : ce n’est pas la même chose d’être celui qui lance les blagues, celui qui rebondit, celui qui rit le plus, ou celui qui désamorce les tensions. Donnée bien plus STABLE et exploitable qu’une liste d’humoristes — permet d’adapter le ton, le type de message, et de préparer une surprise qui ressemble vraiment à la personne. Inférences : Kaamelott + The Office + Bloqués → humour de situation, personnages forts, dialogues mémorables — NE PAS conclure qu’elle aimera tous les humoristes français ni toutes les séries comiques. Aime l’humour noir → NE PAS conclure qu’elle accepte les plaisanteries sur tous les sujets. Partage beaucoup de memes → NE PAS conclure qu’elle veut des cadeaux humoristiques.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 39"
+   }
+  },
+  {
+   "id": "jewelry",
+   "nom_officiel": "Bijoux",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Au moins un signal : sélection Mode & beauté · citation d’une marque de bijoux, maison de luxe ou créateur · mention spontanée de bague, collier, bracelet, boucles d’oreilles, joaillerie, pierres ou bijoux · occasion rendant le bijou pertinent (anniversaire important, naissance, mariage, réussite, engagement, souvenir) · un proche envisage explicitement d’offrir un bijou.",
+    "garde_fous": "Ne pas ouvrir automatiquement simplement parce que la personne aime la mode.",
+    "niveau_B": "Bijou = bonne/excellente idée · en porte régulièrement · cite spontanément une marque, un créateur, une pierre ou un bijou · domaine important · occasion de cadeau qui se rapproche. Ne pas poser toutes les questions B : sélectionner les 2-3 plus utiles selon ce qui reste inconnu.",
+    "niveau_C": "Jamais une session « bijoux » : seulement si un proche recherche réellement un bijou · wishlist contenant une pièce · personne passionnée · hésitation entre recommandations proches · information technique bloquante.",
+    "saturation": "Après les 5 questions A, Candice sait : si elle peut recommander un bijou · avec quelle prudence · quelle catégorie · quel univers esthétique · quels métaux privilégier/exclure · valeur recherchée (esthétique, qualitative, symbolique, artisanale, fonctionnelle, statutaire) · interdits. Pour un intérêt modéré, la branche s’arrête là.",
+    "parcours": "Peu intéressée : 3 questions puis fermeture. Aime sans passion : 6-7 questions réparties dans le temps. Passionnée / projet concret : 8-10 max, jamais en une seule session.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 2"
+   }
+  },
+  {
+   "id": "joys",
+   "nom_officiel": "Petites joies",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Peut s’ouvrir presque pour tout le monde, mais SEULEMENT après le questionnaire initial et de manière LÉGÈRE. Particulièrement pertinente si : les petits gestes comptent · la personne aime les attentions régulières · elle traverse une période chargée · elle est peu matérialiste · un proche cherche une attention gratuite ou simple · Candice connaît encore mal ses plaisirs quotidiens.",
+    "garde_fous": "NOUVELLE BRANCHE. Cherche ce qui améliore la journée avec PEU de budget, PEU de logistique, PEU de risque, parfois AUCUN OBJET. Permet de recommander : message, boisson, snack, chanson, promenade, café, petite surprise, moment seul, geste pratique, attention sensorielle, présence, pause, contenu, souvenir. ⚠ 1886 (ce qui annule l’effet) = CONTRAINTES DURES sur toutes les attentions gratuites — « vouloir me remonter le moral à tout prix » est un signal majeur. 1893 (quand ça va mal) : question préparatoire, évite de projeter une solution universelle.",
+    "niveau_B": "2 à 3 questions B max : joie sensorielle (croise Signature Sensorielle), joie sociale, JOIE GRATUITE (1889 — cœur du positionnement relationnel de Candice), gourmandise refuge (extraire aussi les RESTRICTIONS ALIMENTAIRES), contenu qui fait du bien, surprise légère, petites joies quand ça va mal.",
+    "niveau_C": "Niveau C : petite joie actuelle (donnée temporaire, datée, PRIORITAIRE sur les préférences stables), fréquence idéale, ÉMETTEUR LÉGITIME (1896 — une attention n’a pas le même niveau d’intimité selon le lien), MICRO-AIDE (1897 — transforme la petite joie en service concret, croise Charge mentale).",
+    "saturation": "Arrêt après le A pour la majorité : ce qui améliore la journée + famille de plaisir + moment + forme + ce qu’il faut éviter. Parcours : peu matérialiste 5-6 → stop · très chargée (privilégier soulagement, temps, boisson, repas, message sans obligation, aide simple) · très sensible aux petits gestes 6-8 réparties.",
+    "parcours": "⭐ 1882 (LE DÉCLENCHEUR DE PETITE JOIE) est probablement l’une des questions à PLUS FORT RENDEMENT DE TOUT L’ARBRE : une réponse libre courte qui alimente messages, gestes, micro-services et attentions gratuites pendant toute la vie du profil.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 56"
+   }
+  },
+  {
+   "id": "learning",
+   "nom_officiel": "Apprentissage (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "learning2",
+   "nom_officiel": "Learning — ADN de curiosité (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Aime apprendre · écoute beaucoup de podcasts · lit régulièrement · suit des formations · regarde des documentaires · parle souvent de nouveaux sujets. Sinon rester TRÈS LÉGER.",
+    "garde_fous": "⚠ REFONTE de learning V1 (7 q) — merge final. Cette branche ne parle JAMAIS de formation : elle parle de CURIOSITÉ. On mesure la curiosité, pas le niveau d’études ; on parle de curiosité, pas d’expertise. Candice ne doit pas savoir ce que la personne SAIT mais comprendre COMMENT SON CERVEAU APPREND. C’est la branche qui vieillira le mieux. SÉPARATION IMPÉRATIVE : connaissances durables (« passionné d’histoire médiévale ») vs apprentissages temporaires (« apprend actuellement le japonais ») — ces derniers datés, expirés, réévalués.",
+    "niveau_B": "Profondeur, durée, étendue, mise en pratique, déclics, difficulté, seul/accompagné, projets (croise Travail), conférences, sujets racines, apprentissages marquants, envies actuelles (temporaires) + CARTOUCHE ADN D’APPRENTISSAGE (moteur de curiosité classé, style de curiosité — extrêmement stable, cycle, sujets racines vs satellites, apprentissages actifs — expirent, apprentissages futurs — opportunités de cadeaux, formats par sujet — paramétrique, seuil de nouveauté, accélérateurs). Sous-branches : Langues, Formation pro (pont Travail), Loisirs, IA (pont Tech), Conférences/MOOC/Masterclass.",
+    "niveau_C": "Niveau C uniquement si apprentissage envisagé : sujet, format, objectif, durée, possibilité d’offrir.",
+    "saturation": "PILOTE : posable (sujets souvent abordés, curiosité observable, livres, podcasts, conférences). PAS certain sur : motivation, profondeur, apprentissages souhaités, niveau de difficulté préféré. Arrêt : pourquoi elle aime apprendre + formats qui fonctionnent + sujets durables + temporaire vs permanent + cadeaux intellectuels plausibles.",
+    "parcours": "⭐ CARTOGRAPHIE DE LA CURIOSITÉ (amélioration retenue, pour K1/K3) : ne pas stocker des centres d’intérêt plats (« psychologie », « IA ») mais des GRAPHES DE CURIOSITÉ — quels sujets en entraînent d’autres, lesquels reviennent tous les deux-trois ans, lesquels sont ponctuels, lesquels déclenchent des conversations. Ex. Psychologie → neurosciences → biais cognitifs → prise de décision → entrepreneuriat · Cuisine → fermentation → microbiote → nutrition → longévité → sommeil → performance. Mesurer par nœud : profondeur, fréquence, ancienneté, intensité. Permet de proposer LE PROCHAIN SUJET LOGIQUE plutôt que davantage de contenu sur ce qui est déjà connu : « si tu as aimé ce livre sur le microbiote, tu aimerais probablement celui-ci sur le sommeil » — pas parce qu’il est dans la même catégorie, mais parce qu’il est dans le MÊME GRAPHE MENTAL. Inférences : podcasts scientifiques + essais + conférences → livres, conférences, documentaires, rencontres — NE JAMAIS conclure qu’elle veut suivre une formation ni qu’elle appréciera tout le domaine. Aime apprendre → NE PAS conclure qu’elle aime les contenus longs (peut préférer 10 minutes de vidéo, des échanges, des ateliers).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 40"
+   }
+  },
+  {
+   "id": "legacy",
+   "nom_officiel": "Transmission",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre quand : la personne explique quelque chose avec plaisir · évoque une tradition familiale · parle d’un savoir reçu · souhaite initier quelqu’un · lors d’un cadeau intergénérationnel · raconte ce qu’elle aimerait laisser · une passion ou expertise forte est détectée. Se nourrit aussi de formulations spontanées : « j’aimerais apprendre ça à mes enfants », « mon grand-père m’a toujours appris à… », « c’est dommage que ce savoir se perde », « j’adore faire découvrir ça ».",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐. NE JAMAIS en faire une sous-partie de Famille, Enfants ou Learning : la transmission porte sur un savoir, une histoire, une tradition, une manière de faire, une valeur, une passion, un patrimoine ou une vision du monde — et s’exprime avec les enfants MAIS AUSSI collègues, élèves, proches, communauté, inconnus, générations futures. Transmettre n’est pas enseigner : c’est choisir ce qu’on souhaite faire continuer après soi. 1510 (héritage souhaité) : jamais posée en contexte de deuil ou de maladie. INFÉRENCES INTERDITES : aimer transmettre ≠ vouloir enseigner professionnellement · avoir une expertise ≠ aimer l’expliquer · aimer les traditions ≠ refuser le changement · transmettre à ses enfants ≠ vouloir tout contrôler · sans enfant ≠ non concerné · discrète ≠ ne transmet rien · cadeau transmis ≠ forcément ancien · tenir à des objets ≠ vouloir tout léguer. NE JAMAIS CONFONDRE désir de transmission et besoin d’influence.",
+    "niveau_B": "Pédagogue ou passeur (1499), savoir reçu, geste appris, histoires familiales (croise Nostalgie), traditions (croise future branche Rituels), LIBERTÉ LAISSÉE À L’AUTRE (1504 — capitale : détermine le rapport à la fidélité), patience, transmission informelle, reconnaissance (croise Célébration), support, ce qui risque de se perdre (1509), héritage souhaité (1510). Territoires (pas des sous-branches séparées) : savoir · geste · culturelle · familiale · relationnelle · symbolique.",
+    "niveau_C": "Niveau C lorsqu’un cadeau ou une expérience de transmission est envisagé : objet de la transmission, personnes concernées, rôle du bénéficiaire, degré de formalisation, trace souhaitée. Le cadeau peut être CE QUI EST TRANSMIS, LE SUPPORT de transmission, ou L’OCCASION de transmettre.",
+    "saturation": "PILOTE : posable (ce qu’elle aime expliquer, traditions entretenues, histoires racontées, domaines de conseil naturel, gestes déjà transmis, personnes auprès desquelles elle est mentor). Le pilote doit DISTINGUER ce qu’il observe / ce qui a été explicitement exprimé / ce qu’il suppose. Exemple fiable : « il apprend chaque été à ses petits-enfants à pêcher ». Inférence trop forte : « il aimerait animer des ateliers de pêche ». Arrêt : besoin important ou occasionnel + ce qu’elle veut partager ou préserver + avec qui + comment + place laissée à l’appropriation + comment transformer cette envie de continuité en cadeau juste.",
+    "parcours": "⭐ SIGNATURE DE TRANSMISSION (cartouche calculée, pour K1/K3) : désir (faible/contextuel/fort/central) · contenus (savoirs/gestes/valeurs/traditions/histoires/passions) · public (famille/enfants/pairs/débutants/communauté) · langage (expliquer/montrer/faire ensemble/raconter/écrire/ritualiser/laisser expérimenter) · intention (rendre autonome/préserver/rapprocher/inspirer/faire continuer/partager du plaisir) · rapport à la fidélité (reproduction fidèle/essentiel préservé/réinterprétation encouragée) · trace souhaitée (émotionnelle/pratique/matérielle/narrative/intergénérationnelle). EXTRACTION TYPE : « mon père m’a appris cette recette, je la fais avec ma fille en changeant des ingrédients » → PAS « aime cuisiner » mais transmission familiale forte + geste partagé + souvenirs d’enfance + prolongement de tradition + réinterprétation acceptée + intérêt parent-enfant + sensibilité aux cadeaux qui documentent la continuité. CROISEMENTS PRODUIT : × Souvenirs (livre de récits plutôt qu’album photo) · × Enfants (le parent partage sa passion, pas un cadeau pour l’enfant seul) · × Artisanat (artisan qui transmet son geste) · × Food (carnet de recettes avec anecdotes et vocaux) · × Voyage (sur les traces d’une histoire familiale) · × Célébration (anniversaire où les proches racontent ce qu’ils ont reçu) · × Travail (mentorat, masterclass). INSIGHT : un cadeau de transmission ne célèbre pas ce qu’une personne aime, mais CE QU’ELLE A ENVIE DE FAIRE CONTINUER — très fort pour grands anniversaires, départs, naissances, mariages, fêtes familiales, étapes de vie, hommages, cadeaux intergénérationnels.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 42"
+   }
+  },
+  {
+   "id": "live",
+   "nom_officiel": "Danse · Concerts · Festivals",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Musique importante · danse importante · culture importante · événement, artiste, festival, concert ou spectacle cité · voyage musical · wishlist contenant une place.",
+    "garde_fous": "Si « très rarement » ou « pas vraiment mon univers » en A1 → fermer.",
+    "niveau_B": "Seulement si le domaine est important. Sous-branches ciblées : festivals, concerts (genres live), danse — uniquement pour les formats choisis en A2. Inclut le rapport à l’intensité sociale et la motivation profonde (question reine).",
+    "niveau_C": "Uniquement : passion · achat concret · anniversaire · événement.",
+    "saturation": "Après les 5 A, Candice connaît : pertinence du cadeau-billets · formats · moteur émotionnel · erreurs · niveau d’intérêt. Pour énormément de personnes cela suffit.",
+    "parcours": "La motivation profonde (0494) nourrit cadeaux, expériences, mots, surprises, voyages et attentions relationnelles : l’information la plus précieuse de la branche.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 9"
+   }
+  },
+  {
+   "id": "memory",
+   "nom_officiel": "Nostalgie & souvenirs",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Souvenirs évoqués spontanément · rapport aux photos anciennes · traditions familiales citées · objets gardés mentionnés · période dorée racontée · un proche cherche une attention mémorielle.",
+    "garde_fous": "BRANCHE SENSIBLE : les souvenirs touchent aux disparus et aux liens perdus. Interdits mémoriels (0752) = contraintes ABSOLUES. JAMAIS de surprise mémorielle sans validation quand des souvenirs sensibles existent (0748/0750). JAMAIS de retrouvailles-surprise (0765). Les souvenirs marquants ne décroissent jamais.",
+    "niveau_B": "Rapport aux souvenirs confirmé · canaux de madeleine connus (photo, musique, odeur, goût, lieu, récit) · périodes dorées identifiées · interdits cartographiés. 2 à 4 questions B.",
+    "niveau_C": "Seulement : souvenir précis à raviver (0763) · objet mémoriel (validation obligatoire, 0764) · retrouvailles (jamais en surprise) · transmission (livre de vie, enregistrements).",
+    "saturation": "Après les 5 A : nostalgie heureuse ou douloureuse · permission mémorielle · canaux · interdits. C’est le domaine des attentions les plus bouleversantes du catalogue — et des pires erreurs possibles.",
+    "parcours": "Nostalgique heureux : le terrain le plus riche (rétro, madeleines, pèlerinages, albums). Mémoire douloureuse : uniquement souvenirs récents et légers, ou rien. Transmetteur : livre de vie, mémoire orale. Croise photo (numérisation), gastronomie (repas d’époque), musique, voyage (pèlerinage).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 18"
+   }
+  },
+  {
+   "id": "mental",
+   "nom_officiel": "Charge mentale",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Ouvrir si la personne parle de : fatigue · surcharge · manque de temps · organisation · enfants · travail prenant · responsabilités · aidant familial · gestion de maison · entreprise · charge administrative. OU si Candice détecte qu’une AIDE PRATIQUE sera probablement plus pertinente qu’un cadeau.",
+    "garde_fous": "NOUVELLE BRANCHE — l’une des plus SOUS-ESTIMÉES. Elle ne sert pas seulement à faire plaisir : elle sert à savoir QUELLE ATTENTION VA RÉELLEMENT SOULAGER. Les moteurs actuels répondent « elle aime le thé → offre du thé » ; la vraie question est souvent « qu’est-ce qui lui coûte de l’énergie au quotidien ? ». ⚠ Cette branche ne doit JAMAIS ressembler à un questionnaire sur le burn-out ou la santé mentale — uniquement le FONCTIONNEMENT QUOTIDIEN. On évite les mots stress, burn-out, épuisement. 1865 (« qui pense à toi ») : facultative, sensitivity HIGH, jamais exposée à un proche.",
+    "niveau_B": "Tâches invisibles (1850 — « anniversaires » et « cadeaux » sont précisément ce que le produit prend en charge), CE QUE LA PERSONNE VEUT GARDER (1851 — aider ≠ prendre le contrôle : ces domaines sont EXCLUS des propositions de délégation), délégation prioritaire, périodes de besoin, gestes qui allègent (relié au catalogue de services), charge émotionnelle, reconnaissance de la charge (1856 — la reconnaissance est elle-même une attention), organisation, rappels, temps récupéré (lié à Petites joies).",
+    "niveau_C": "Niveau C seulement si contexte : tâche du jour, aide de la semaine, PÉRIODE DE SATURATION ANNUELLE (1862 — donnée récurrente permettant une anticipation), mode d’intervention en surcharge, service utile.",
+    "saturation": "Arrêt après le A pour 80 % des utilisateurs : niveau de charge + où + type d’aide + manière de proposer + quoi éviter. Croisements : Daily (1846↔1114, 1848↔1117), Énergie (1846↔1593), Célébration (1856↔0832), Petites joies (1859), Rituels.",
+    "parcours": "⭐⭐ DEUX QUESTIONS SIGNATURES : « QUI PENSE À TOI ? » (1865) mesure un DÉSÉQUILIBRE RELATIONNEL et non une charge de travail — extrêmement utile pour proposer des attentions qui RESTAURENT UN SENTIMENT DE RÉCIPROCITÉ · « LES DEUX HEURES LIBÉRÉES » (1866) révèle en UNE SEULE RÉPONSE ce qui manque réellement aujourd’hui ; l’IA classe (repos, activité personnelle, couple, famille, amis, création, sport, nature, sommeil, lecture, cuisine) et nourrit cadeaux, services, expériences ET attentions gratuites. Donnée VIVANTE qui évolue dans le temps.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 54"
+   }
+  },
+  {
+   "id": "money",
+   "nom_officiel": "Rapport à l’argent",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Peut s’ouvrir progressivement · après plusieurs recommandations · lors de discussions autour d’achats ou de projets. NE DOIT JAMAIS ressembler à un questionnaire financier.",
+    "garde_fous": "NOUVELLE BRANCHE. sensitivity: HIGH sur toute la branche. Ne cherche JAMAIS « combien gagnes-tu ? » mais « quelle place occupe l’argent dans ta vie et dans tes décisions ». Deux personnes au même salaire vivent l’argent de façon opposée : l’une dépense sans compter, l’autre culpabilise pour un café à 4 €, l’une investit tout, l’autre accumule « au cas où ». ⚠ DISTINCTION FONDAMENTALE : la CAPACITÉ à dépenser (dépend des moyens — n’intéresse PAS Candice) vs l’ENVIE de dépenser (trait de personnalité). Une personne au budget élevé peut détester les dépenses ostentatoires ; une autre au budget modeste économisera des mois pour une expérience qui lui tient à cœur. 1572 « coupable » = signal fort, ne jamais proposer de dépense ostentatoire. 1588 et 1591 : jamais communiqués au pilote.",
+    "niveau_B": "Achats impulsifs (croise consumption2.1211), source du plaisir financier (1578 — acheter/utiliser/offrir/investir/économiser/partager), épargne, présent ou futur, EFFORT FINANCIER CONSENTI (1581 — question clé du profil d’arbitrage), générosité (croise consumption2.1230), regrets, plus belle dépense (1584 — plus utile que de demander le budget), regret marquant, budget supplémentaire (croise Rêves), définition de la richesse (1587 — souvent la réponse ne parle pas d’argent), rapport idéal souhaité (temporaire).",
+    "niveau_C": "Niveau C uniquement lorsqu’une recommandation est préparée : équilibre du moment, priorité de l’occasion, flexibilité budgétaire. Données contextuelles.",
+    "saturation": "PILOTE : posable (habitudes de dépense observées, types de cadeaux déjà offerts, arbitrages visibles). JAMAIS avec certitude sur : rapport émotionnel à l’argent, culpabilité, sentiment de sécurité, priorités profondes. Arrêt : ce que représente l’argent + domaines de dépense plaisir vs arbitrage + comment adapter les recommandations SANS JAMAIS connaître les revenus.",
+    "parcours": "⭐ PROFIL D’ARBITRAGE (cartouche calculée, pour K1/K3/Budget Engine) : l’IA construit un profil de RELATION à l’argent, jamais une estimation de richesse ou de niveau de vie. Modélise « pour quoi suis-je prêt à faire un effort financier ? » — c’est cette information qui permet des recommandations ambitieuses mais cohérentes sans demander revenu ni patrimoine. Inférences : dépasse régulièrement son budget pour voyages, cadeaux et expériences marquantes → privilégier les recos à forte valeur émotionnelle dans CES domaines — NE PAS conclure qu’elle est dépensière en général : on peut être très généreux pour ses proches et extrêmement économe au quotidien.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 46"
+   }
+  },
+  {
+   "id": "museum",
+   "nom_officiel": "Musées & expositions",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Culture/art cités · musée, exposition ou artiste mentionné · visites en voyage · wishlist contenant billet, pass, catalogue · un proche cherche une sortie culturelle.",
+    "garde_fous": "La foule et le rythme imposé sont les deux tueurs de la visite (0702). Vérifier la possession d’un pass avant d’en offrir un (0710). Dates de fin d’exposition = donnée périssable (0719).",
+    "niveau_B": "Intérêt confirmé · univers identifiés · format de visite connu. 2 à 4 questions B. Sous-branches : beaux-arts, art contemporain, sciences/histoire, immersif — selon les univers choisis en A2.",
+    "niveau_C": "Seulement : exposition précise repérée · visite privée/premium · voyage culturel · livre de collection (anti-doublon) · conférence/rencontre.",
+    "saturation": "Après les 5 A : passion vs sortie sociale · univers · permission · irritants. Le billet est le début, pas la fin : créneau sans foule, moment complet, prolongement (catalogue, livre) font l’attention réussie.",
+    "parcours": "Sortie sociale : moments partagés, pas de contenus pointus. Amateur régulier : 6-8. Passionné : 8-11 réparties, entités artistes/lieux d’abord. En voyage : croiser avec la branche voyage.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 16"
+   }
+  },
+  {
+   "id": "music",
+   "nom_officiel": "Musique (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "music2",
+   "nom_officiel": "Musique (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Musique sélectionnée · artiste, groupe, chanson, concert ou festival cité · playlist ou rituel d’écoute mentionné · wishlist disque/matériel/billets · musique présente dans petites joies, sport, travail ou souvenirs.",
+    "garde_fous": "⚠ REFONTE de music V1 (12 q) — merge final. La musique est à la fois goût, régulateur émotionnel, marqueur identitaire, souvenir, rituel, activité sociale, collection, live et langage relationnel. « Musique associée à un mauvais souvenir » = contrainte mémorielle (croise Nostalgie). Live → croise Danse·Concerts·Festivals.",
+    "niveau_B": "3 à 5 B : artistes (entités), chanson-souvenir (sensible, « je préfère ne pas préciser »), moments, fidélité/découverte, paroles/son, playlist personnalisée (attention gratuite emblématique), qualité audio, supports physiques, vinyles, partage, humeur (preparatory 1019 : éviter la playlist « positive » imposée), identité. Sous-branches : classique/opéra, électro, jazz, rap.",
+    "niveau_C": "Niveau C : repérage, objet, matériel audio (→ branche tech, référence/compatibilité), expérience, morceau parfait pour un moment.",
+    "saturation": "Arrêt dès que : importance + rôle émotionnel + univers + manière d’écouter + attention acceptable + rejets connus.",
+    "parcours": "Rituel quotidien 7-9. Le pont musique-cinéma (BO, 1030) s’ouvre si musique de film cochée en A3.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 26"
+   }
+  },
+  {
+   "id": "nature",
+   "nom_officiel": "Nature (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "pets",
+   "nom_officiel": "Animaux",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Possède un animal · parle spontanément d’animaux · mentionne un chien, chat, cheval… · publie des photos de son animal · un proche indique qu’un animal est très important · une réponse ouverte contient des mots liés aux animaux.",
+    "garde_fous": "Sinon, ne JAMAIS ouvrir cette branche. Ne pas tomber dans le piège du questionnaire vétérinaire.",
+    "niveau_B": "Seulement si l’animal est important (membre de la famille, « bébé », partenaire, passion). Inclut les 4 « cas particuliers » : présence de l’animal (pet-friendly), immortalisation, rôle émotionnel, cadeau idéal.",
+    "niveau_C": "Uniquement : passion animaux · cadeau concret · espèce spécifique (questions chien/chat générées selon l’espèce).",
+    "saturation": "Après les 5 A, Candice connaît : présence · espèce · importance émotionnelle · autorisation cadeau · grande famille d’attentions. Pour beaucoup d’utilisateurs, la branche s’arrête ici.",
+    "parcours": "La plupart des utilisateurs : 5-7 questions. Passionné ou animal-membre de la famille : quelques-unes de plus, uniquement quand elles améliorent réellement les recommandations. Branche stratégique : elle éclaire aussi la dimension affective de la personne elle-même.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 6"
+   }
+  },
+  {
+   "id": "philoconso",
+   "nom_officiel": "Philosophie de consommation",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre lors d’un achat · lorsqu’un cadeau est préparé · après une recommandation de restaurant · lors d’une discussion sur des produits · après plusieurs conversations révélant un niveau d’exigence particulier.",
+    "garde_fous": "NOUVELLE BRANCHE. ⚠⚠ RECOUVREMENT FORT avec « Signature de valeur » (value.1516-1525) qui en est la version condensée à 6 axes — ARBITRAGE REQUIS au merge final (recommandation : cette branche = version longue, les 6 axes = parcours court). Ne parle NI de nourriture, NI de shopping, NI d’écologie : elle parle des VALEURS DERRIÈRE LES ACHATS. Deux personnes aiment le fromage : l’une achète le moins cher, l’autre fait 40 minutes de route chez un affineur — même produit, logique d’achat totalement différente. Ne jamais demander « es-tu bio ? » mais « pourquoi ce produit mérite-t-il d’être acheté ou offert ? ». 1616 (le pourquoi) est LA question la plus importante : deux personnes achètent bio, l’une pour sa santé, l’autre pour les agriculteurs.",
+    "niveau_B": "Canal privilégié, poids de l’histoire (1618, extrêmement discriminante), arbitrage prix-qualité, besoin de transparence (1620), local, confiance accordée, définition du luxe (évite d’assimiler luxe et qualité), catégories d’exigence, cadeau qui touche, compromis accepté (1626 — révèle la hiérarchie réelle), produit marquant, produit emblématique (1628 — résume toute la philosophie). Sous-branches par pont : Gastronomie (Food), Mode, Maison, Beauté, Voyages (marchés, producteurs, ateliers).",
+    "niveau_C": "Niveau C lorsqu’un achat ou un cadeau est préparé : catégorie, critère prioritaire, surprise, importance du récit.",
+    "saturation": "PILOTE : posable (habitudes d’achat, producteurs connus, marques favorites, cadeaux déjà appréciés, exigences observées). PAS avec certitude sur : motivations profondes, arbitrages, confiance accordée aux labels, compromis acceptables. Arrêt : ce qui donne de la valeur + dimensions qui orientent réellement + compromis acceptés ou non + quels cadeaux seront perçus comme sincères et cohérents.",
+    "parcours": "⭐ DEUX AXES CONTINUS (pour K1/K3) : AUTHENTICITÉ ↔ PRESTIGE (artisanal/local/producteurs/tradition/histoire ↔ grandes maisons/marques iconiques/luxe/innovation/exclusivité) — les deux recherchent la qualité, mais PAS LA MÊME · CONFIANCE ↔ COMMODITÉ (« je veux savoir qui l’a produit, comment, où, avec quoi » ↔ « peu importe tant que c’est bon »). ⭐⭐ INDICE DE CONFIANCE PRODUIT (amélioration retenue) : modéliser le SEUIL de confiance propre à chaque utilisateur — certains achètent dès qu’un produit est bien noté, d’autres ont besoin de connaître origine, fabricant, composition, voire l’histoire de l’artisan avant de ressentir du plaisir. Évite de proposer un panier gourmand anonyme à quelqu’un qui sera bien plus touché par quelques pots de miel accompagnés de l’histoire de l’apiculteur, ou un savon d’atelier familial plutôt qu’un coffret luxueux sans âme. Inférences : privilégie artisans, marchés, producteurs locaux, produits de saison → marchés, épiceries fines, ateliers, paniers gourmands, cadeaux artisanaux — NE PAS conclure qu’elle refuse les grandes marques ni qu’elle est militante écologiste. Recherche la meilleure qualité → NE PAS conclure qu’elle accepte toujours de payer plus cher.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 48"
+   }
+  },
+  {
+   "id": "philovie",
+   "nom_officiel": "Philosophie de vie",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre lorsqu’une personne parle d’une décision importante · d’un choix de vie · d’un regret · d’un projet · d’une remise en question · de quelqu’un qu’elle admire · de ce qu’elle souhaite pour ses enfants · de ce qu’elle voudrait changer · de ce qu’elle considère comme essentiel. Moments d’activation : anniversaire symbolique, changement professionnel, naissance, séparation, déménagement, retraite, grand voyage, départ, nouvelle étape.",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐⭐, niveau 4 « moteurs profonds ». Probablement l’une des plus STRUCTURANTES du modèle : explique pourquoi deux personnes aux mêmes goûts ne choisissent pas les mêmes expériences (trois personnes aiment voyager — l’une pour se sentir libre, l’autre pour apprendre et transmettre, la troisième pour ralentir et créer des souvenirs familiaux). ⚠ NE DOIT JAMAIS arriver trop tôt avec une question massive : mauvaise entrée « quel est le sens de ta vie ? », bonne entrée « quand tu imagines une vie vraiment réussie… ». Ne fabrique JAMAIS une devise simpliste type « carpe diem ». Ne cherche PAS une philosophie unique et cohérente : on peut trouver son bonheur dans la simplicité tout en ayant une forte ambition professionnelle. 7 dimensions liées mais distinctes : ce qui rend heureux · ce qui donne du sens · ce qui constitue une réussite · ce qu’on veut protéger · ce qu’on veut vivre avant qu’il ne soit trop tard · ce qu’on accepte de sacrifier · ce qu’on souhaite laisser. Questions sensibles : 1639 (regrets, avec douceur), 1653 (bonheur si les proches vont mal — uniquement si la relation le permet), 1662 (désalignement — contexte approprié uniquement).",
+    "niveau_B": "Grands rapports existentiels : réussite (1640 — aborde la réussite sans demander de se définir), ambition, utilité, plaisir (1643 — « il doit se mériter » = signal fort pour les cadeaux de pur plaisir), effort, confort (1645 — « du mal à m’autoriser » change la formulation d’une reco), liberté (non univoque), stabilité, changement, contrôle, risque (1650 — meilleure formulation qu’« es-tu audacieux ? »), devoir. Place du lien : valeur d’une expérience, bonheur individuel/collectif, présence. Trace et sens : impact quotidien, trace, ce qui doit rester, fierté, CONSEIL DE VIE (1659 — excellent révélateur, mais distinguer le conseil donné de la vie réellement menée).",
+    "niveau_C": "Niveau C par RÉCITS CONCRETS, jamais questionnaire philosophique : décision fondatrice, période heureuse, désalignement, personne admirée (les QUALITÉS citées comptent plus que la personne), vie alternative (≠ insatisfaction actuelle), année libre (révèle les moteurs bridés par les contraintes), choix difficile (meilleure source de hiérarchisation des valeurs), devise réelle (seulement après signaux suffisants, et DATÉE).",
+    "saturation": "HIÉRARCHIE DES SIGNAUX (règle de confiance) : 1. arbitrages vécus = très forte valeur (mais faire confirmer la motivation, ne pas l’interpréter seule) · 2. récits personnels = forte · 3. comportements répétés stables = forte · 4. déclarations directes = moyenne à forte selon la précision · 5. réponses abstraites (« ce qui compte c’est d’être heureux ») = modérée, inexploitable seule · 6. déclarations d’un proche = variable — une observation concrète est utile (« elle refuse souvent des engagements qui l’empêcheraient de voir ses enfants »), une définition globale ne l’est pas (« la famille est tout pour elle »).",
+    "parcours": "⭐⭐⭐ BOUSSOLE DE VIE (cartouche calculée, pour K1/K3) — dimensions : moteurs dominants · définition du bonheur · définition de la réussite · priorités protégées · regrets redoutés · rapport à l’effort · rapport à l’avenir · trace souhaitée · TENSIONS PRINCIPALES. 10 TERRITOIRES (jamais un type unique, plusieurs moteurs dominants) : Vivre pleinement · Construire · Être libre · Prendre soin · Comprendre et apprendre · Créer · Contribuer · Préserver · Trouver l’équilibre · Se dépasser — chacun avec son RISQUE DE CARICATURE à éviter (impulsive, obsédée par la réussite, refuse l’engagement, s’oublie pour les autres, intellectuelle et distante, manque d’ambition). ⭐ TENSIONS STRUCTURANTES (plus prédictives qu’un score isolé) : liberté × sécurité · présent × futur · ambition × équilibre · contribution × plaisir · stabilité × renouvellement · prendre soin × indépendance · excellence × simplicité. CHAÎNE D’EXTRACTION obligatoire : situation → choix → arbitrage → motivation déclarée → moteur potentiel → coût accepté → émotion finale → stabilité (isolée ou répétée) → confiance (déclaré/observé/confirmé/probable). EXEMPLE : « j’ai refusé un poste mieux payé parce que j’aurais dû être absente toute la semaine » → PAS « aime sa famille » mais priorité à la présence familiale + refus d’une réussite uniquement financière + arbitrage conscient argent/qualité de vie + seuil au-delà duquel l’ambition devient incompatible — NE PAS conclure qu’elle manque d’ambition, qu’elle refusera tout déplacement, ni que la famille primera dans chaque décision future. APPLICATION : la philosophie de vie ne REMPLACE pas les préférences, elle ajoute LA COUCHE DE SENS. Ex. aime la montagne et les beaux hôtels + moteur « créer des souvenirs familiaux et transmettre le goût de la nature » → refuge haut de gamme avec aventure accessible aux enfants, PLUTÔT qu’un hôtel de luxe isolé sans expérience partagée.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 49"
+   }
+  },
+  {
+   "id": "photo",
+   "nom_officiel": "Photographie",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Photo citée comme intérêt ou pratique · appareil/matériel mentionné · beaucoup de photos évoquées (voyage, famille, animaux) · wishlist contenant matériel, tirage, album ou séance · un proche cherche une attention photo. ⚠ MERGE FINAL : recouvre la sous-branche photo de Arts & créatif (craft.0629-0633) — fusion à arbitrer avec tout en base.",
+    "garde_fous": "Le photographe passionné n’aime pas forcément être photographié (0681) : ne JAMAIS offrir de séance sans le savoir. Matériel : compatibilité (boîtier, monture, objectifs) obligatoire.",
+    "niveau_B": "Pratique confirmée · matériel identifié · axe dominant connu (mémoire / création / partage / technique). 2 à 4 questions B. Sous-branches : argentique, smartphone, impression & albums, voyage/famille, matériel expert — selon signaux.",
+    "niveau_C": "Seulement : achat concret (compatibilité vérifiée) · projet · expérience premium · archives/numérisation.",
+    "saturation": "Après les 5 A : moteur photo · permission d’offrir · sujets aimés · interdits. Le gisement caché : « j’en fais trop peu de mes photos » → tri, album, impression, sauvegarde, numérisation. Croise Nostalgie (0694 ↔ memory.0756).",
+    "parcours": "Photographe du quotidien : 5-7, attentions mémoire. Passionné équipé : 8-11, référence exacte. Photographe de famille chargé : être enfin SUR les photos (0688). Contemplatif : expositions, livres, tirages.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 15"
+   }
+  },
+  {
+   "id": "place",
+   "nom_officiel": "Questions paramétriques obligatoires",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "podcast",
+   "nom_officiel": "Podcasts",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Citation spontanée d’un podcast · écoute déclarée de podcasts/radio/contenus audio · sujet que la personne aime approfondir · écoute pendant trajets, sport, travail ou coucher · wishlist contenant abonnement, événement live ou matériel audio · un proche cherche une attention liée à ses centres d’intérêt.",
+    "garde_fous": "Ne pas ouvrir automatiquement parce que la personne aime les livres, la musique ou les contenus culturels.",
+    "niveau_B": "Écoute régulière · émissions/créateurs cités · passion liée · recommandation concrète envisagée · niveau A trop large. 2 à 4 questions B. Sous-branches par format/sujet (interviews, actualité, psycho/dev perso, true crime, fiction audio, humour) uniquement sur signal.",
+    "niveau_C": "Seulement : auditeur passionné · abonnement ou expérience envisagé · sélection personnalisée · événement live · matériel audio · contexte émotionnel exigeant une grande précision.",
+    "saturation": "Après les 5 A : importance réelle · besoin recherché · sujets · formats · irritants. Règle d’arrêt : besoin + sujets + format + contexte d’écoute + irritants connus. Un épisode parfaitement choisi envoyé gratuitement au bon moment peut valoir plus qu’un abonnement payant.",
+    "parcours": "Occasionnel : 5 puis arrêt. Fidèle à quelques émissions : 6-8. Quotidien curieux : 7-9. Podcast-soutien : la sécurité émotionnelle prime sur la découverte.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 8"
+   }
+  },
+  {
+   "id": "reading",
+   "nom_officiel": "Lecture (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "reading2",
+   "nom_officiel": "Lecture (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Aime lire · cite un livre · partage une citation · offre souvent des livres · un proche cherche un cadeau · lit en vacances ou dans les transports · possède une liseuse · écoute des livres audio · fréquente une bibliothèque · Candice détecte une lecture récurrente. NE PAS ouvrir si la personne ne lit quasiment jamais.",
+    "garde_fous": "⚠ REFONTE de reading V1 (10 q) — merge final. Genres + auteurs favoris ne suffisent JAMAIS : deux lecteurs de romans historiques peuvent chercher l’immersion émotionnelle, l’apprentissage, une période précise, des personnages forts, ou ne lire qu’en vacances. Une personne peut dire aimer les essais sans jamais les terminer (elle les achète plus qu’elle ne les lit, ou préfère les écouter en podcast). Le livre est une catégorie à PERMISSION FORTE comme le parfum. Poésie : ne jamais reproduire de poème, recommandation d’ouvrage uniquement. À VALIDER : option « suggestions de Candice » en 1242 (marquée « ?? » dans le doc source).",
+    "niveau_B": "Seulement pour les lecteurs réguliers : genres réellement lus, ce qui est terminé (évite les livres abandonnés page 42), motifs d’abandon, lectures parallèles, découverte, auteur/collection/éditeur, objet-livre (belles éditions), acheté/emprunté/offert, annotation, relecture (forte valeur émotionnelle), livres marquants (préféré/fondateur/souvenir/cadeau/apprentissage), auteurs admirés (admiration ≠ envie de recevoir). Sous-branches : Romans, Essais, Livres audio (croise Podcasts), Poésie (très niche), BD/Manga (branches existantes).",
+    "niveau_C": "Niveau C seulement si un livre est envisagé : livre repéré (nom/ISBN/lien), pourquoi celui-ci, édition, surprise, alternative.",
+    "saturation": "PILOTE : posable (habitudes visibles, livres possédés, auteurs cités, genres, bibliothèque, achats). PAS fiable sur : émotions recherchées, livres fondateurs, abandon, plaisir réel, niveau de risque cadeau. Arrêt : pourquoi + comment + quand + ce qui est terminé + valeur émotionnelle durable + pertinence et risque du cadeau.",
+    "parcours": "Parcours : occasionnel 6 → stop · gros lecteur (A + genres, terminés, abandon, auteurs, marquants, découverte, édition) · lecteur d’apprentissage (essais, vulgarisation, annotation, fondateurs) · achat concret (référence, édition, alternative, surprise). Inférences : essais + terminés + annotés → lecture active, intérêt pour les idées, ouvrages exigeants — NE PAS conclure qu’elle veut n’importe quel essai ni tous les auteurs du domaine. Beaucoup de classiques possédés → NE PAS conclure qu’elle aime encore les lire. Lit surtout en vacances → NE PAS conclure qu’elle lira longtemps toute l’année. PRINCIPE : comprendre la relation INTIME à la lecture — ce qu’elle cherche, ce qu’elle vit, ce qu’elle termine réellement, ce qu’elle aimerait découvrir.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 32"
+   }
+  },
+  {
+   "id": "relation",
+   "nom_officiel": "Réception des attentions, mots, gestes, services et relation",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "relation2",
+   "nom_officiel": "Relation (refonte V2)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Peut s’ouvrir pour presque tout le monde, mais JAMAIS en bloc : un lien qui compte · langages d’attention renseignés · amitié/couple/famille/solitude évoqués · manque d’écoute/présence/reconnaissance · petits gestes valorisés · moments de qualité · gêne face aux démonstrations · transition relationnelle · un proche veut entretenir le lien. Le moteur identifie D’ABORD le type de relation (partenaire, parent, enfant, fratrie, ami proche, ami, collègue, récente, éloignée) : une préférence peut changer selon le lien.",
+    "garde_fous": "⚠ REFONTE de relation.* V1 (20 q) — merge final. JAMAIS un test psychologique ni un questionnaire de couple. Le niveau A a 6 questions mais la plupart n’en verront que 4-5 (déjà couvertes par la couche 0). NON-POSABLES AU PILOTE : contact physique, besoins émotionnels intimes, manque actuel, satisfaction du couple, limites privées, confidentialité, ressentis familiaux, ce qui blesse, besoin d’espace. Variantes pilote : options identiques, confiance max 0.65, nœud pilot_observation, confirmation directe préférable si reco intime.",
+    "niveau_B": "2 à 4 questions B max. Sous-branches : Couple (si partenaire ET accord d’enrichir — CPLE5 besoin actuel = temporaire, sensible, JAMAIS révélé), Amitié, Famille, Professionnel (jamais confondre proximité pro et intimité).",
+    "niveau_C": "Niveau C = contexte relationnel concret uniquement (attention à recommander dans une relation précise) : nature du lien AUJOURD’HUI, manque actuel (temporaire, jamais révélé comme vérité), intention, niveau d’intimité, canal, présence ou objet.",
+    "saturation": "Règle d’arrêt : proximité + preuve d’attention + rythme + moment partagé + langages + limites connus → stop. 5 à 8 questions vues en tout, étalées. La finalité n’est PAS un profil relationnel : c’est savoir quel geste donnera le sentiment d’être connu, respecté et important.",
+    "parcours": "Parcours : petits gestes (5-6 q → message spontané, détail retenu, micro-service) · indépendant très attaché (faible fréquence OK, moments forts, présence en cas de besoin) · couple chargé (organisation, garde, soirée sans logistique, reconnaissance) · amitié à distance (appel récurrent, visite planifiée, tradition à distance).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 19"
+   }
+  },
+  {
+   "id": "remembrance",
+   "nom_officiel": "Rapport aux souvenirs",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Nourrit Voyages, Cadeaux, Enfants, Célébrations, Hospitalité, Maison, Photographie, Transmission. NE POSSÈDE PAS de sous-branche dédiée.",
+    "garde_fous": "NOUVELLE BRANCHE. ⚠ RECOUVREMENT avec Nostalgie & souvenirs (memory.0748-0768) — merge final. Celle-ci est plus large et centrée sur la CONSERVATION (supports, objets, transmission) plutôt que sur les interdits mémoriels. 1978 (pourquoi garder) est BIEN PLUS IMPORTANTE que les objets eux-mêmes : c’est la FONCTION du souvenir qui détermine la recommandation.",
+    "niveau_B": "Objet sans valeur marchande (1982 — très puissant), émotion du souvenir, format d’album, lettre manuscrite, objets porteurs d’histoire (croise consumption2.1176 encombrement), souvenirs transmis (pont Transmission), trace d’un événement (croise Célébration), SOUVENIR À REVIVRE (1989), support prioritaire, lieu-mémoire (croise Voyage et Sensoriel), CADEAU LE PLUS ÉMOUVANT (1992 — extraire intention, émotion, contexte), HÉRITAGE MÉMORIEL (1993).",
+    "niveau_C": "Niveau C uniquement lorsqu’une recommandation est préparée : créer ou célébrer, support, discret ou exposé.",
+    "saturation": "PILOTE : peut répondre sur les albums visibles, les objets conservés. Arrêt après le A : importance + supports + rapport aux objets + potentiel des cadeaux mémoriels.",
+    "parcours": "⭐ 1993 est décrite dans le doc source comme « probablement la plus belle question de la branche » — elle rejoint legacy.1510, values.1915 et philovie.1657 sur le thème de la trace. Ces quatre questions doivent être harmonisées au merge final pour ne pas être posées quatre fois.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 60"
+   }
+  },
+  {
+   "id": "repair",
+   "nom_officiel": "Conflit & Réparation",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Uniquement si : la personne souhaite approfondir son profil relationnel · Candice accompagne une relation importante · plusieurs réponses montrent que la relation est importante.",
+    "garde_fous": "JAMAIS ouvrir juste après une séparation ou un conflit détecté. La branche décrit le fonctionnement HABITUEL, jamais l’état du moment. Candice n’est pas psychologue : elle n’analyse aucune cause, ne demande jamais « comment te disputes-tu ». Une seule question directrice : « quand une relation est difficile, comment continuer à être juste avec cette personne ? » sensitivity: HIGH sur toute la branche. NOTE : nom « Conflit & Réparation » retenu (reco du doc — le conflit n’est pas la finalité, la réparation oui).",
+    "niveau_B": "Seulement si la relation est importante : temps, canal, excuses, gestes, mots, public/privé, non-dits, contact, confiance, mineurs, personnes importantes. Le ⭐ « vrai signal » (0854) est self-only.",
+    "niveau_C": "Niveau C : contexte relationnel précis uniquement (attention qui a du sens, premier pas, tourner la page, réparation réelle, soin de soi).",
+    "saturation": "Après les 5 A : rythme, besoins, irritants, réparation, timing. Pour 90 % des utilisateurs, cela suffit.",
+    "parcours": "Sorties : le bon mot, le bon timing, le bon silence, le bon geste — ou ne rien faire. Le ⭐ 0855 capture ce qui redonne de la SÉCURITÉ dans la relation : l’information exacte dont Candice a besoin.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 21"
+   }
+  },
+  {
+   "id": "resonance",
+   "nom_officiel": "Résonance émotionnelle",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre quand : la personne raconte avoir été émue · après un film, un livre ou une rencontre · lors de la recherche d’une expérience marquante · lorsqu’un cadeau doit être particulièrement personnel · après plusieurs signaux émotionnels détectés. Se construit progressivement à partir de formulations comme « ça me bouleverse toujours de voir… », « j’ai trouvé cette histoire magnifique », « ce genre de choses me touche énormément ».",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐⭐. NE DOIT JAMAIS RESSEMBLER À UN TEST PSYCHOLOGIQUE. Deux personnes vivent la même expérience sans être touchées par les mêmes choses : dans un atelier artisanal, l’une est émue par la beauté de l’objet, l’autre par les années de savoir-faire, l’autre par l’histoire familiale de l’artisan, l’autre par la préservation d’un métier ancien. 1540 (les larmes) : sensitivity HIGH, uniquement dans un contexte chaleureux, jamais en début de parcours ni après un signal de fragilité. INFÉRENCES INTERDITES ABSOLUES : ne JAMAIS déduire une orientation politique · une religion · une situation familiale · une intention d’engagement · une préférence d’achat · une capacité émotionnelle générale · un trait de fragilité psychologique. Cette branche décrit des RÉSONANCES, pas une identité. Autres non-inférences : touché par les animaux ≠ vouloir un animal · ému par les enfants ≠ vouloir être parent · admirer les exploits sportifs ≠ aimer pratiquer · sensible aux histoires difficiles ≠ vouloir une expérience lourde.",
+    "niveau_B": "Territoires de résonance (pas de sous-branches rigides, ils SE COMBINENT) : Le vivant (animaux, enfants, nature, vulnérabilité, protection) · La transmission (famille, personnes âgées, traditions, artisans, savoir-faire, mémoire) · Le courage (résilience, exploits, engagement, persévérance, seconde chance) · Le lien (amour, amitié, solidarité, retrouvailles, générosité, communauté) · La création (art, artisanat, beauté, talent, œuvre d’une vie) · L’accomplissement (rêves réalisés, dépassement, excellence, transformation, projets collectifs). Plus force/vulnérabilité (1537, très discriminant), authenticité, proximité, larmes, souvenir émotionnel, admiration, expérience idéale.",
+    "niveau_C": "Niveau C lors de la création d’une expérience : émotion visée, territoire, INTENSITÉ (1546 — tout le monde n’a pas envie d’être bouleversé pendant son anniversaire), proximité, forme.",
+    "saturation": "PILOTE : posable (sujets qui émeuvent souvent, histoires racontées régulièrement, causes et êtres envers qui elle montre de la tendresse, films/rencontres marquants, personnes admirées). Le pilote doit distinguer observation / supposition / ignorance. Fiable : « elle pleure souvent devant les histoires de retrouvailles familiales ». Extrapolation trop forte : « elle doit adorer les expériences humanitaires ». Arrêt : quels univers touchent + pourquoi + quelle émotion + comment traduire cette sensibilité sans tomber dans le cliché.",
+    "parcours": "⭐⭐ CARTOGRAPHIE DE RÉSONANCE (cartouche calculée, pour K1/K3) — 5 couches : (1) sujets déclencheurs · (2) structures narratives (résilience, retrouvailles, sacrifice, réussite, héritage, protection, seconde chance, accomplissement) · (3) émotions provoquées (tendresse, admiration, compassion, émerveillement, gratitude, espoir) · (4) valeurs activées (famille, justice, courage, générosité, transmission, authenticité, liberté, beauté) · (5) forme d’expérience adaptée (contemplation, rencontre, participation, récit, transmission, action concrète). EXTRACTION TYPE : « j’ai visité une fabrique de céramique tenue par une mère et sa fille, la mère lui avait appris tous ses gestes, elles utilisaient encore le four du grand-père — j’ai trouvé ça bouleversant » → PAS « aime la céramique » mais : sensibilité aux savoir-faire + résonance forte avec la transmission familiale + attachement aux histoires intergénérationnelles + sensibilité aux entreprises incarnées + préférence pour les rencontres authentiques + émotion liée à la continuité. Recommandation juste = une VISITE PRIVÉE CHEZ UN ARTISAN QUI RACONTE SON HISTOIRE, et pas nécessairement un vase. VISION PRODUIT : les moteurs actuels savent dire « cette personne aime l’artisanat » ; Candice comprend « cette personne est émue par les gestes transmis entre générations, par la patience nécessaire à la maîtrise d’un savoir-faire, par ceux qui préservent une histoire familiale ». Le moteur ne repose plus sur une affinité de catégorie mais sur un MÉCANISME ÉMOTIONNEL.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 44"
+   }
+  },
+  {
+   "id": "rituals",
+   "nom_officiel": "Rituels",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Ouvrir si : routine, habitude, rituel, tradition personnelle évoqués · un moment récurrent cité (café du matin, sport, lecture du soir, appel hebdomadaire, promenade, brunch, bain, marché) · petits gestes réguliers valorisés · stabilité, organisation, besoin de calme, moments pour soi · repères bousculés · attention récurrente ou gratuite recherchée. NE PAS ouvrir comme un interrogatoire sur toutes les habitudes : identifier SEULEMENT les rituels à valeur émotionnelle ou fonctionnelle.",
+    "garde_fous": "NOUVELLE BRANCHE. Les rituels disent comment une personne organise son ÉQUILIBRE, son ATTACHEMENT et son QUOTIDIEN. Mine d’or pour les attentions gratuites, messages, gestes réguliers et moments difficiles. ⚠ DISTINCTION ESSENTIELLE À NE JAMAIS CONFONDRE : le RITUEL est un plaisir structuré et répétitif · la PETITE JOIE est un déclencheur simple, parfois spontané · la TRADITION est un rituel collectif ou symbolique inscrit dans le temps. Candice doit les RELIER sans les confondre. Recouvrement à arbitrer avec Transmission (legacy.1503 traditions) et Famille (family.1823).",
+    "niveau_B": "2 à 3 questions B max : rituel principal, partagé ou personnel (déterminer si l’attention doit INCLURE ou FACILITER), régularité, ce qui peut l’améliorer (directement exploitable : services, objets, attentions gratuites), RITUEL PERDU (1876 — très utile en transition ou fatigue), rituel relationnel (nourrit les attentions récurrentes), attention récurrente.",
+    "niveau_C": "Niveau C : soutenir sans dénaturer, créer un nouveau rituel, rituel de soutien en période difficile (⚠ un rituel ne doit PAS devenir une obligation supplémentaire).",
+    "saturation": "Arrêt dès que Candice connaît un ou deux rituels importants, leur fonction, leur contexte et la manière de les respecter ou les soutenir. 4 à 6 questions vues en général.",
+    "parcours": "⭐ 1871 (LE RITUEL À NE PAS PERTURBER) crée une EXCLUSION TEMPORELLE ET RELATIONNELLE majeure : aucune attention ne doit tomber sur ce créneau. ⭐ 1869 (fonction du rituel) : deux personnes peuvent avoir le même rituel pour des raisons opposées — calme, énergie, contrôle, plaisir, lien, motivation, repère, transition, souvenir, sécurité.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 55"
+   }
+  },
+  {
+   "id": "sensory",
+   "nom_officiel": "Goûts sensoriels et environnement",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "sensory2",
+   "nom_officiel": "Signature Sensorielle (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "⚠ BRANCHE À TRAITER DIFFÉREMMENT DE TOUTES LES AUTRES. Peut s’ouvrir progressivement · après un voyage · lors d’un achat · après une visite d’hôtel · après un restaurant · lors d’une discussion. Contrairement aux autres branches, elle n’a PAS besoin d’être ouverte volontairement : elle se nourrit naturellement de toutes les interactions.",
+    "garde_fous": "⚠ REFONTE de sensory V1 (7 q) — merge final. Ce n’est PAS une branche « 5 sens » ni un centre d’intérêt : c’est une COUCHE DE PERSONNALITÉ TRANSVERSALE qui influence tout le reste (voyages, hôtels, restaurants, maison, déco, mode, beauté, parfum, bien-être, cadeaux, sorties). Elle n’a PAS vocation à être « complétée » : elle se construit tout au long de la vie du profil. Ne JAMAIS demander « tu aimes le bois ? » — comprendre POURQUOI certains lieux procurent immédiatement du bonheur. Les goûts sensoriels sont plus STABLES que les goûts eux-mêmes. Exemple fondateur : deux personnes aiment le Japon — l’une cherche le silence, le bois, les onsens, la lumière douce ; l’autre Tokyo, les néons, la foule, l’énergie.",
+    "niveau_B": "Lumière, température, rythme (⚠ sensible au bruit ≠ cherche toujours le calme — peut aimer alterner), couleurs, textures alimentaires (pont Food), univers idéal (1481 — la plus riche de la branche, vaut dix questions), souvenir sensoriel (1482 — extraire les déclencheurs, pas le lieu), sens dominants, intensité (incroyablement discriminante), saisonnalité, retour à la maison (croise daily2.1122), signature personnelle (1487 — reconstruit presque tout le profil), lieu impossible à oublier (1488). Sous-branches / ponts : Matières (Maison, Mode), Gastronomie (Food), Parfum (Beauté), Nature (Voyage), Architecture (Maison, Voyage).",
+    "niveau_C": "Niveau C uniquement si une recommandation est en préparation : type d’expérience, ambiance du jour, intensité, surprise. ⚠ Les réponses C sont CONTEXTUELLES et ne modifient JAMAIS la signature permanente.",
+    "saturation": "PILOTE : posable (lieux appréciés ensemble, hôtels préférés, restaurants récurrents, ambiances recherchées, sensibilités observables). PAS certain sur : sensations intérieures, irritants invisibles, odeurs réconfortantes, matières préférées. Arrêt : sensations qui font durablement du bien + environnements qui ressourcent ou épuisent + éléments récurrents des meilleurs souvenirs + adaptations nécessaires des recommandations.",
+    "parcours": "⭐⭐ MOTEUR DE COHÉRENCE SENSORIELLE (amélioration majeure retenue, pour K1/K3/Catalogue) : attribuer à CHAQUE item du catalogue (hôtel, parfum, restaurant, vêtement, voyage, objet) une EMPREINTE SENSORIELLE (ex. boisé/feutré/chaud/naturel/silencieux vs lumineux/minéral/énergique/urbain), puis recommander par COMPATIBILITÉ entre l’empreinte de l’expérience et la signature de la personne — plus seulement par catégorie. Couche invisible qui donne l’impression que Candice comprend intuitivement. ARCHÉTYPES SENSORIELS calculés (jamais affichés comme étiquettes) : Le Refuge (calme, matières naturelles, enveloppant, boisé, lumière chaude) · L’Évasion (air, horizon, eau, vent, lumière, grands espaces) · L’Épicurien (textures riches, bonnes tables, odeurs gourmandes, lieux chaleureux et vivants) · L’Urbain (énergie, cafés animés, lumières de la ville, lieux créatifs) · L’Esthète (harmonie visuelle, beaux objets, design, matières nobles, atmosphères raffinées). Un même profil oriente simultanément hôtel, restaurant, parfum, vêtement, cadeau et destination avec une cohérence que les catégories ne permettent pas. Inférences : hôtels en bois + spas nordiques + forêts + chalets + parfums boisés → environnements naturels, chaleureux, enveloppants — NE PAS conclure qu’elle aimera toutes les destinations de montagne ni tous les hôtels rustiques (contexte et qualité restent déterminants).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 41"
+   }
+  },
+  {
+   "id": "series",
+   "nom_officiel": "Séries (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "series2",
+   "nom_officiel": "Séries (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Séries sélectionnées ou citées · plateforme, personnage ou univers mentionné · série dans un rituel · wishlist abonnement/objet · un proche cherche une attention liée à un univers sériel · binge-watching ou série-refuge évoqués.",
+    "garde_fous": "⚠ REFONTE de series V1 (12 q) — merge final. Les séries ne sont pas du « cinéma plus long » : rituel du soir, personnages, univers-refuge, conversation de couple, binge, curiosité, tension, détente, famille. Très sensible aux spoilers (1045 détermine la MANIÈRE de présenter une reco). Une personne peut ne vouloir AUCUNE recommandation (pile à voir déjà trop grande — 1054).",
+    "niveau_B": "3 à 5 B : série de référence, série récente, rythme de visionnage, compagnie (série commune = RITUEL RELATIONNEL), rituel, durée d’épisode, plateformes (anti-doublon abonnement), VO/VF, spoilers, série refuge (preparatory), inachevées, discussion (croise Podcasts). Sous-branches : policier/thriller, historique, comédie/sitcom, documentaire/true crime.",
+    "niveau_C": "Niveau C : série repérée, liste à voir, soirée série parfaite, objet dérivé, expérience.",
+    "saturation": "Arrêt dès que : importance + genres + émotion + format + causes d’abandon + attention acceptable connus.",
+    "parcours": "Série en couple : soirée sans logistique, série compatible, repas associé, rituel hebdo, objet seulement si univers fort. Cinéma↔Séries : signal faible, jamais de transfert automatique.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 27"
+   }
+  },
+  {
+   "id": "shoes",
+   "nom_officiel": "Chaussures",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Sélection mode · citation de sneakers, bottes, escarpins, mocassins ou chaussures techniques · mention d’une marque de chaussures · wishlist ou envie repérée contenant une paire · un proche envisage d’offrir des chaussures · pratique sportive ou activité extérieure rendant l’équipement pertinent.",
+    "garde_fous": "Ne pas ouvrir automatiquement simplement parce qu’une pointure est renseignée.",
+    "niveau_B": "Aime réellement les chaussures · paire = cadeau acceptable · catégorie précise qui ressort · marque/modèle cité · occasion d’achat. Poser 2 à 4 questions B pertinentes. Sous-branches ciblées : sneakers, bottes/bottines, habillées, techniques (uniquement pour les catégories choisies en A2).",
+    "niveau_C": "Seulement : paire précise · achat par un proche · budget important · passion · contrainte technique bloquante.",
+    "saturation": "Après les 5 A : recommander ou non · référence exacte nécessaire ou non · catégories à viser · priorités à respecter · univers esthétique · contraintes/exclusions. Intérêt modéré : arrêt ici.",
+    "parcours": "Préfère choisir elle-même : 2-3 questions puis wishlist / bon personnalisé / sortie shopping / participation / accessoire d’entretien. Peu intéressée mais ouverte : 5 puis arrêt. Passionnée sneakers : 7-9 réparties. Chaussure de sport concrète : précision et sécurité priment sur la surprise.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 4"
+   }
+  },
+  {
+   "id": "sleep",
+   "nom_officiel": "Sommeil",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Fatigue évoquée · sommeil/repos cité · période chargée · jeune parent · voyage fréquent · univers cocooning apprécié · wishlist contenant literie/confort · un proche veut aider à récupérer.",
+    "garde_fous": "BRANCHE SENSIBLE : réponses facultatives, privées, DATÉES (temporaires par défaut), jamais de diagnostic. Ne JAMAIS donner l’impression de vouloir « corriger » la personne. Question présence/proximité (0602) : self-only, jamais posée au pilote sur un proche.",
+    "niveau_B": "Signal de fatigue ou d’intérêt confort confirmé. 2 à 4 questions B. Sous-branches : literie/oreillers, odeurs, voyage/décalage, parents (UNIQUEMENT si la personne parle elle-même de fatigue familiale).",
+    "niveau_C": "Seulement : objet literie envisagé · nuit/séjour à réserver · besoin précis exprimé · fatigue importante · univers confort apprécié. Matelas/oreiller/couette : jamais sans référence ou essai.",
+    "saturation": "Après les 5 A : état daté du sommeil · leviers réels (environnement, charge, literie, rituels) · permission d’offrir · risque de perception corrective. Le vrai levier est parfois la charge mentale, pas un objet.",
+    "parcours": "Bon dormeur : 3-4 puis fermeture. Fatigue de période : attentions de service et de temps. Parent épuisé : sous-branche dédiée, gestes concrets. Amateur cocooning : objets de confort validés par 0603.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 13"
+   }
+  },
+  {
+   "id": "spirit",
+   "nom_officiel": "Spiritualité & intériorité",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "UNIQUEMENT sur signal explicite de la personne elle-même : pratique citée spontanément (méditation, prière, yoga intérieur, retraite), tradition évoquée par elle, lecture ou lieu de ressourcement mentionné. JAMAIS ouverte par inférence (un goût pour le calme n’est pas un signal spirituel).",
+    "garde_fous": "BRANCHE ART. 9 (convictions) : facultatif partout, « je préfère ne pas répondre » systématique, AUCUNE inférence de tradition ou croyance depuis d’autres goûts, AUCUNE catégorisation. SELF-ONLY intégral : le pilote ne renseigne jamais la spiritualité d’un proche. Fermeture définitive sans relance si refus.",
+    "niveau_B": "Seulement après ouverture explicite : pratiques, moments, lieux ressources, permission d’offrir. Le respect silencieux (0741) est souvent l’attention attendue.",
+    "niveau_C": "Uniquement : envie exprimée (retraite, lieu, objet) · consentement explicite. « Aucun objet » et « rien du tout » sont des réponses pleinement valables.",
+    "saturation": "Après les 5 A : dimension essentielle ou pratique de bien-être · solitaire ou partagé · permission · interdits identitaires. Beaucoup de profils s’arrêtent là — et c’est correct.",
+    "parcours": "La plus délicate du catalogue : l’attention peut être du pur respect (protéger les temps calmes, ne pas commenter). Retraite : consentement le plus explicite. Fêtes de tradition : terrain précieux ET miné (0739).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 17"
+   }
+  },
+  {
+   "id": "sport",
+   "nom_officiel": "Sport (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "sportp",
+   "nom_officiel": "Sport pratiqué",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Sport sélectionné comme centre d’intérêt · sport cité spontanément · pratique régulière mentionnée · objectif sportif · wishlist ou envie contenant sport, matériel ou activité physique · un proche cherche une attention liée au sport · discipline évoquée dans une réponse ouverte.",
+    "garde_fous": "IMPORTANT : deux branches distinctes — pratiquer un sport et regarder du sport n’ont RIEN à voir. Ne jamais confondre « j’aime le ski » et « je skie chaque semaine ». Attention à l’injonction pour « j’aimerais m’y remettre ».",
+    "niveau_B": "Pratique régulière ou passionnée · sport précis identifié · objectif ou événement · attention concrète recherchée · matériel/expérience envisagé. 2 à 4 questions B. Sous-branches par discipline (course/trail, randonnée, fitness, yoga/Pilates, vélo, collectifs, ski) uniquement pour les sports pratiqués.",
+    "niveau_C": "Seulement : passionné · achat technique · compétition · stage · expérience concrète. Matériel technique/sécurité : JAMAIS sans données suffisantes.",
+    "saturation": "Après les 5 A : pratique réelle · motivation dominante · permission d’offrir · risques à éviter · type d’attention adapté. Règle d’arrêt : pratique + fréquence + motivation + permission + contraintes connues.",
+    "parcours": "Marcheur bien-être : 5-6 puis arrêt. Coureur régulier : 7-9. Passionné compétiteur : 8-11 réparties. Reprise d’activité : douceur, zéro injonction.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 10"
+   }
+  },
+  {
+   "id": "sportw",
+   "nom_officiel": "Sport spectateur",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Sport cité comme centre d’intérêt de suivi · équipe, club, athlète ou compétition mentionné · matchs regardés régulièrement · wishlist contenant billets ou merchandising · un proche cherche une attention liée au sport suivi.",
+    "garde_fous": "L’erreur fatale du domaine : la mauvaise équipe. Ne jamais offrir de produit non officiel à un vrai fan.",
+    "niveau_B": "Suivi réel confirmé · entité (équipe/athlète) identifiée · événement envisagé. 2 à 4 questions B. Sous-branches par sport (football, tennis, sports mécaniques, rugby…) uniquement pour les sports suivis prioritaires.",
+    "niveau_C": "Seulement : passion · achat concret de billets · expérience premium · souvenir post-événement. Le VIP n’est PAS toujours une amélioration (ambiance).",
+    "saturation": "Après les 5 A : sports suivis · mode de suivi (club/athlète/spectacle/social) · permission d’offrir · interdits (rivalités). L’entité aimée + sa valeur émotionnelle valent plus que tout.",
+    "parcours": "Spectateur occasionnel social : 4-5 puis attentions de moment partagé. Fan de club : 6-8, entités d’abord. Passionné multi-sports : 7-10 réparties.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 11"
+   }
+  },
+  {
+   "id": "success",
+   "nom_officiel": "Rapport à la réussite",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "S’ouvre quand la personne parle : d’une promotion · reconversion · projet entrepreneurial · réussite dont elle est fière · sentiment d’échec · personne admirée · changement de priorités · besoin de reconnaissance · étape symbolique · cadeau lié à un accomplissement · âge charnière · retraite · regret. Phrases déclencheuses : « je gagne moins mais je ne reviendrais jamais en arrière », « j’ai atteint ce que je voulais mais je n’ai pas l’impression que ça en valait le prix ».",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐, niveau 4. Peut être rattachée à Philosophie de vie mais mérite une profondeur autonome. ⚠ CE N’EST PAS : l’ambition (intensité du désir) · le rapport au travail (la réussite peut se vivre dans la famille, la création, le sport, l’engagement, la transmission) · le rapport à l’argent · une mesure sociale (Candice ne classe JAMAIS selon un niveau de réussite réel ou supposé). 5 NIVEAUX À DISTINGUER, structurants : réussite APPRISE (modèle intégré) · DÉSIRÉE (souhaitée aujourd’hui) · DÉMONTRÉE (montrée aux autres) · RESSENTIE (fierté intérieure) · SOUTENABLE (vivable sans sacrifier ce qui compte davantage). INFÉRENCES INTERDITES : évaluer objectivement si une personne a réussi · classer les conceptions de la réussite · conclure qu’un besoin de reconnaissance est narcissique · considérer le goût du statut comme superficiel · déduire richesse ou classe sociale · confondre sécurité recherchée et peur pathologique · présenter un sacrifice comme admirable · glorifier l’épuisement · encourager un risque « parce que ça correspond au profil » · interpréter un échec comme un défaut · DÉVOILER À UN PROCHE des insécurités liées au statut ou à la reconnaissance · utiliser la comparaison sociale pour manipuler.",
+    "niveau_B": "9 axes : statut (distinguer symbole de statut et OBJET-TÉMOIN d’accomplissement) · liberté · impact · création · sécurité · reconnaissance (1732 le regard qui compte, 1733 la forme, 1735 capacité à se célébrer) · maîtrise · temps disponible (1742 = pont majeur Énergie) · transmission. Comparaison (1719) : aucune interprétation morale.",
+    "niveau_C": "Niveau C par RÉCITS : réussite profondément satisfaisante, RÉUSSITE VIDE (1747 — essentielle pour distinguer apprise et désirée), réussite invisible (croise celebration.0831), modèle admiré, renoncement réussi, sacrifice trop important, prochaine étape (distingue réussite symbolique / fonctionnelle / existentielle), réussite suffisante.",
+    "saturation": "CONFIDENTIALITÉ : récits détaillés PRIVÉS par défaut · tensions NON exposées · les proches reçoivent uniquement des IMPLICATIONS DE RECOMMANDATION. Exemple — insight interne : « forte sensibilité à la reconnaissance précise du rôle joué, liée à des expériences d’invisibilisation » → formulation au proche : « un message détaillant concrètement ce qu’elle a apporté aura beaucoup plus de valeur qu’un simple bravo ». RÈGLE DE MISE À JOUR : le rapport à la réussite change fortement après promotion, licenciement, burn-out, naissance, reconversion, création d’entreprise, succès, déception, perte financière, retraite, âge charnière. Chaque insight porte période + contexte + définition ancienne + définition actuelle + stabilité + confiance. LE MOTEUR CONSERVE L’ÉVOLUTION plutôt que d’écraser l’ancienne version.",
+    "parcours": "⭐⭐⭐ SIGNATURE D’ACCOMPLISSEMENT (cartouche calculée, modèle de données détaillé dans le doc source) : définition dominante · signaux de progression · sources de fierté · besoin de reconnaissance (intensité, source légitime, forme, visibilité) · rapport aux symboles · rapport au risque · sacrifices acceptables · limites non négociables · rythme d’accomplissement · capacité à célébrer · trace souhaitée · tensions · évolutions · stabilité · confiance. 10 SIGNATURES : statutaire (≠ superficialité) · libre · d’impact · créative · sécurisante · reconnue · de maîtrise · temporelle · transmise · intérieure. ⭐ 11 TENSIONS : statut × liberté · impact × visibilité · création × sécurité · reconnaissance × indépendance · maîtrise × vitesse · ambition × temps disponible · sécurité × croissance · individuelle × contribution · excellence × célébration · présent × étape suivante · héritage × liberté des suivants. 8 LOGIQUES DE RECONNAISSANCE : NOMMER · MATÉRIALISER · CÉLÉBRER · LÉGITIMER · LIBÉRER · TRANSMETTRE · RELIER · RESTAURER. EXTRACTION TYPE : « j’ai occupé un poste prestigieux mais je n’avais plus une minute à moi ; aujourd’hui je gagne moins mais je choisis mes projets » → PAS « n’aime pas le statut » mais : le statut a probablement compté + réussite REDÉFINIE + liberté et création devenues dominantes + temps disponible participe à l’accomplissement + revenu inférieur accepté contre autonomie. APPLICATIONS : promotion → objet durable lié au métier + message précis sur ce qu’elle a construit, PAS un objet statutaire générique · retraite → transmettre son savoir, documenter son parcours, rester utile — PAS un cadeau centré sur le repos · réussite discrète → attention privée célébrant le courage de la décision · cadeau de maîtrise (aime le vin) → session privée avec un expert pour PROGRESSER, plutôt qu’une bouteille prestigieuse. VÉRIFICATIONS AVANT TOUTE RECO : ce qui est réellement célébré · qui est légitime pour le reconnaître · niveau de visibilité · nature du symbole · COÛT ÉNERGÉTIQUE (la célébration ajoute-t-elle une obligation à quelqu’un qui sort d’une période intense ?) · rapport au temps · RISQUE DE PROJECTION (le proche célèbre-t-il ce que LUI considère comme une réussite ?).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 51"
+   }
+  },
+  {
+   "id": "tech",
+   "nom_officiel": "Technologie (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "tech2",
+   "nom_officiel": "Tech (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Parle souvent d’un appareil · demande régulièrement des conseils tech · achète des gadgets · travaille beaucoup avec la technologie · un proche cherche un cadeau · Candice détecte un intérêt. NE PAS ouvrir automatiquement.",
+    "garde_fous": "⚠ REFONTE de tech V1 (7 q) — merge final. Ne pas réduire la tech à Apple/Android, jeux vidéo, gadgets. Deux personnes peuvent avoir un iPhone : l’une adore tester, l’autre l’a parce que « ça marche ». Candice n’apprend pas les APPAREILS mais la RELATION à la technologie. Écosystème (1319) = compatibilité UNIQUEMENT, jamais une préférence esthétique ou identitaire. « J’aimerais y passer moins de temps » (1313) = ne pas proposer d’objets augmentant le temps d’écran. Catégorie à PERMISSION FORTE.",
+    "niveau_B": "Écosystème, fidélité, simplicité/personnalisation (tolérance à la complexité), investissements, frustrations (abonnements → croise consumption2.1201), IA, maison connectée (pont Maison), audio (pont Musique 1015/1027), productivité (pont Travail), réparer/remplacer (croise Consommation), expertise (mesure indirecte via 1329), expériences. Sous-branches : Audio, Photographie (pont), Gaming (renvoi), Maison connectée, Création (3D, Arduino, drones — si pertinent).",
+    "niveau_C": "Niveau C uniquement si achat envisagé : produit, usage, COMPATIBILITÉ (contrainte dure, prime sur l’affinité), surprise, gamme (fourchettes, jamais de montants).",
+    "saturation": "PILOTE : posable (appareils utilisés, écosystème, gadgets possédés, intérêt visible, expertise apparente). PAS fiable sur : motivations, frustrations, plaisir réel, niveau de risque cadeau. Arrêt : place de la tech + catégories à vraie valeur + profil face à l’innovation + bons cadeaux + contraintes de compatibilité.",
+    "parcours": "Parcours : peu intéressé 6 → stop · passionné (écosystème, renouvellement, audio, IA, maison connectée, productivité, expertise) · achat concret (produit, usage, compatibilité, surprise, gamme). Inférences : écosystème Apple complet → prioriser les accessoires compatibles — NE PAS conclure à une fidélité par conviction, ni au désir du dernier modèle, ni qu’elle appréciera n’importe quel accessoire Apple. Usage intensif de l’IA au travail → formations, livres, outils IA — NE PAS en déduire un goût pour les gadgets. PRINCIPE : la tech n’est pas une collection de gadgets mais une manière d’améliorer, simplifier ou enrichir le quotidien — comprendre la FONCTION qu’elle remplit.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 35"
+   }
+  },
+  {
+   "id": "theatre",
+   "nom_officiel": "Théâtre (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "theatre2",
+   "nom_officiel": "Théâtre & spectacle vivant (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Déclare aimer le théâtre · va régulièrement voir des spectacles · mentionne une pièce · aime les comédies musicales · apprécie le stand-up · un proche cherche une sortie. NE PAS ouvrir chez les personnes qui ne fréquentent jamais ce type de spectacle.",
+    "garde_fous": "⚠ REFONTE de theatre V1 (8 q) — merge final. RECOUVREMENT À TRANCHER avec Danse·Concerts·Festivals (live.*) : danse, cirque, opéra, ballet et festivals figurent dans les deux branches. Très différente du cinéma : les amateurs cherchent le texte, la mise en scène, les acteurs, l’humour, l’émotion, la proximité, le spectacle vivant, la scénographie, l’expérience de salle. On peut détester le classique et adorer le stand-up, le boulevard, l’immersif ou la comédie musicale. Catégorie à PERMISSION FORTE (billet daté = engagement logistique).",
+    "niveau_B": "Fréquence, ce qui marque, humour (renvoi Humour), comédies musicales (pont Musique), mise en scène, taille de salle (utile pour les réservations), découverte, budget culturel (sans montant), expérience autour du spectacle, répertoire suivi, spectacles marquants (préféré/fondateur/souvenir/émotion), festivals (utile pour les voyages). Sous-branches : Stand-up (→ Humour), Improvisation, Opéra/Ballet (si intérêt, croise music2.1021), Comédies musicales, Festivals.",
+    "niveau_C": "Niveau C uniquement si sortie envisagée : type, date (billet daté — croiser l’agenda avant réservation), compagnie, surprise, placement.",
+    "saturation": "PILOTE : posable (spectacles vus ensemble, fréquence, artistes appréciés, humour, habitudes). PAS certain sur : émotions recherchées, niveau de risque, styles réellement appréciés. Arrêt : place du spectacle vivant + formats les plus plaisants + expériences qui valent le détour + avec qui partager + pertinence des places en cadeau.",
+    "parcours": "SOIRÉE CULTURELLE IDÉALE (amélioration retenue, pour K3) : ne pas recommander seulement une pièce mais un SCÉNARIO COMPLET — petite salle ou grand théâtre selon les préférences, restaurant adapté avant ou après, bar pour prolonger, éventuellement une balade. Pour beaucoup, le souvenir ne vient pas de la représentation seule mais de l’ensemble de la soirée. Inférences : petites salles + intimiste + mise en scène contemporaine → jeunes compagnies, théâtres indépendants, festivals alternatifs — NE PAS conclure qu’elle appréciera tout le contemporain ni qu’elle veut toujours des sorties culturelles. Aime les comédies musicales → NE PAS conclure au goût pour le théâtre classique.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 37"
+   }
+  },
+  {
+   "id": "time",
+   "nom_officiel": "Rapport au temps",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Peut s’ouvrir après plusieurs échanges · lors de l’organisation d’un voyage · lors de la préparation d’un événement · lorsqu’une personne évoque son emploi du temps ou sa façon de planifier. Couche transversale : n’a pas de sous-branche dédiée, elle nourrit Voyages, Hospitalité, Rituels, Travail, Loisirs, Cadeaux, Relations.",
+    "garde_fous": "NOUVELLE BRANCHE. Le temps est une ressource ÉMOTIONNELLE, pas seulement pratique — variable qui explique énormément de frustrations et de cadeaux ratés : un week-end rempli d’activités offert à quelqu’un qui adore flâner · une surprise de dernière minute pour quelqu’un qui adore anticiper · un restaurant de 4 heures pour quelqu’un qui optimise ses journées. Ne demande PAS « es-tu organisé ? » mais COMMENT LA PERSONNE AIME VIVRE LE TEMPS. ⚠ Aimer ralentir pendant ses loisirs ne dit RIEN de sa façon de travailler — ne jamais conclure à la désorganisation ou au manque de productivité.",
+    "niveau_B": "Vacances (croise travel2.0888), surprises, moments qui méritent du temps, décisions (croise consumption2.1187), agenda, ATTENTE (1560 — excellente pour les cadeaux : l’annonce anticipée est-elle un plaisir ou une torture ?), souvenir de lenteur, frustrations (croise daily2.1118), quantité vs intensité d’expériences, rituels (pont future branche Rituels), temps offert (croise Relation), journée idéale (1566 — à rapprocher de sensory2.1481), TEMPS CHOISI VS SUBI (1570).",
+    "niveau_C": "Niveau C uniquement lorsqu’une expérience est préparée : rythme du jour, niveau de planification, intention. Données CONTEXTUELLES — ne modifient pas la signature temporelle (règle B9).",
+    "saturation": "PILOTE : posable (habitudes de planification, ponctualité, manière d’organiser les sorties, rythmes observés). PAS certain sur : rapport émotionnel au temps, besoin de lenteur, valeur accordée à l’anticipation, ce qui donne le sentiment d’une journée réussie. Arrêt : comment elle aime vivre son temps + quand elle recherche spontanéité ou anticipation + comment construire des expériences qui respectent SON rythme plutôt que celui des autres.",
+    "parcours": "⭐ SIGNATURE TEMPORELLE (cartouche calculée, pour K1/K3) : décrit comment une personne aime HABITER son temps plutôt que gérer son agenda — rythme naturel · besoin d’anticipation · tolérance à l’imprévu · philosophie du temps · préférences d’organisation · valeur du temps partagé. ⭐ AXE TRANSVERSAL TEMPS CHOISI VS TEMPS SUBI (amélioration majeure retenue, 1570) : beaucoup supportent très bien des journées chargées si elles les ont CHOISIES mais vivent mal les contraintes imposées ; d’autres recherchent un cadre rassurant et apprécient que tout soit organisé pour elles. Détermine : surprise très orchestrée ou grande liberté ? voyage minuté ou ouvert ? cadeau qui fait GAGNER du temps ou qui invite à EN PRENDRE ? Dimension qui dépasse l’organisation et touche directement au bien-être.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 45"
+   }
+  },
+  {
+   "id": "travel",
+   "nom_officiel": "Voyage et hôtellerie",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "travel2",
+   "nom_officiel": "Voyage & Hôtellerie (refonte V2)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Voyage sélectionné · destination citée · rêve de séjour · voyage passé marquant · hôtels/maisons d’hôtes/hébergements cités · wishlist contenant séjour/billet/expérience · occasion importante · un proche envisage un week-end · besoin de repos/découverte/temps partagé · mots-clés en réponse libre (partir, week-end, hôtel, road trip, escapade, resort, chalet, cabane). NE PAS ouvrir toute la branche parce qu’une personne « aime les vacances ». HÔTELLERIE = branche DISTINCTE : ouverture si hébergement cité, q16 confort/charme/luxe/service, hôtel influençant le voyage, nuit à recommander, literie/spa/chambre/vue/petit-déjeuner cités, wishlist ou cadeau hôtelier.",
+    "garde_fous": "⚠ REFONTE : remplace travel.* + destination.* + place.* V1 — merge final. Confusion majeure à éviter : aimer voyager ne dit presque rien sur COMMENT on aime voyager. Règles A4 (contrôle) : surprise totale ≠ permission générale — vérifier budget, documents, santé, enfants, travail, mobilité ; « tout connaître » = aucune réservation cachée. Contrainte dure prime TOUJOURS sur le score d’affinité. Standing général ≠ budget autorisé. Un hôtel prestigieux n’est pas forcément un hôtel juste.",
+    "niveau_B": "Voyage : 3-5 B max (durée, distance, transport, planification, densité, rythme quotidien, accompagnement, social, enfants, animal) + sous-branches Destinations (D1-D8) et Activités (V1-V5). Hôtellerie : 6 A puis 3-5 B (taille, service, chambre, salle de bain, literie→croiser Sommeil, petit-déjeuner, table, spa, atmosphère, local, famille, durabilité, prix, référence marquante avec test « hôtel ou moment »).",
+    "niveau_C": "Niveau C uniquement : destination envisagée · proche qui réserve · budget significatif · surprise à sécuriser · rêve devenu projet. 10 questions C : repéré, intention, contraintes, budget, éléments couverts, modalité, densité réelle, chambre, FLEXIBILITÉ (anti cadeau-logistique), souvenir.",
+    "saturation": "PILOTE : posables (formats, destinations, hôtels, activités, rythme, marquants, compagnons, confort visible, rejets, repérages) — confidence ≤ 0.65, source pilot_observation, ne déclenche JAMAIS seule une réservation non remboursable. À confirmer directement : budget, fatigue actuelle, santé, tolérance intime à la surprise, solitude, satisfaction du couple, documents, peurs, garde, confidentiel. Arrêt Voyage : émotion + format + rythme + contrôle + compagnons + contraintes. Arrêt Hôtellerie : importance + type + priorités + rédhibitoires + service/standing + permission.",
+    "parcours": "Parcours : occasionnel 6 q → stop · week-ends en couple 7-10 · passionné 9-12 · besoin de repos (trajet court, calme, peu de programme, départ tardif, logistique prise en charge — PAS un city-trip « parce que c’est beau ») · famille (satisfaire adultes ET enfants, pas cocher kids-friendly) · passionné d’hôtellerie 8-11. Inférences : surprise de contenu OK + planning rejeté = préférence contextuelle, pas contradiction. Palace+service+prestige secondaire+design classique rejeté = service premium dans un lieu moderne, PAS « aime le luxe ».",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 23"
+   }
+  },
+  {
+   "id": "value",
+   "nom_officiel": "Signature de valeur",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "COUCHE TRANSVERSALE, comme la Signature Sensorielle. S’alimente à chaque achat, cadeau, recommandation ou discussion sur un produit. Les 6 axes peuvent être posés progressivement, jamais en bloc.",
+    "garde_fous": "NOUVELLE BRANCHE, couche transversale. Deux personnes qui achètent le même produit n’achètent pas la même chose : l’une achète un prix, l’autre une histoire, une autre un savoir-faire, une garantie, un statut, une tranquillité d’esprit. Candice ne doit pas apprendre « tu aimes le thé » mais « POURQUOI ce thé vaut quelque chose à tes yeux ». Ne pas poser 30 questions : découvrir où le curseur se place sur 6 AXES UNIVERSELS. ⚠ Axe 2 (transparence) est distinct de l’écologie : une personne n’a pas besoin d’un fruit bio, elle a besoin d’AVOIR CONFIANCE. Recouvre partiellement Consommation (1182, 1178, 1194) — merge final.",
+    "niveau_B": "Après les 6 axes uniquement : catégories d’exigence (l’exigence est CATÉGORIELLE, pas globale), motif de l’exigence (paramétrique par catégorie), COMPROMIS ACCEPTÉS (1524 — mesure la vraie valeur : une valeur déclarée sans compromis n’est pas une contrainte), valeur appliquée au cadeau.",
+    "niveau_C": "Pas de niveau C dédié : la signature s’applique à toutes les recommandations de toutes les branches.",
+    "saturation": "Arrêt : dès que les 6 axes sont positionnés. Le reste s’enrichit par observation.",
+    "parcours": "⭐⭐ SIGNATURE DE VALEUR (cartouche calculée, pour K1/K3/Catalogue) : au lieu de stocker « bio : oui · producteurs : oui · local : oui », construire un profil pondéré — transparence ★★★★★ · authenticité ★★★★★ · savoir-faire ★★★★★ · qualité ★★★★★ · confiance ★★★★★ · santé ★★★☆☆ · producteur ★★★★☆ · local ★★☆☆☆ · prestige ★☆☆☆☆ · prix ★☆☆☆☆. PORTÉE : permet de recommander aussi bien un couteau, un hôtel, un restaurant, une marque de vêtements, un savon, un parfum ou une huile d’olive — parce qu’on ne compare plus des catégories mais des VALEURS. C’est ce qui manque aux moteurs de recommandation actuels : ils savent ce que les gens achètent, pas pourquoi ils considèrent qu’un objet a de la valeur. Permet des recommandations justes MÊME dans des domaines où Candice dispose de peu d’informations. IMPLICATION CATALOGUE : chaque item doit porter les mêmes axes de valeur que la personne, pour permettre le matching (même principe que l’empreinte sensorielle).",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 43"
+   }
+  },
+  {
+   "id": "values",
+   "nom_officiel": "Les valeurs",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Peut s’ouvrir progressivement. Irrigue TOUT le modèle : Signature de valeur, Enfants, Hospitalité, Travail, Voyages, Relations, Cadeaux, Consommation, Learning, Engagements. Ne possède PAS de sous-branche propre.",
+    "garde_fous": "NOUVELLE BRANCHE ⭐⭐⭐⭐⭐ — « probablement la plus importante de Candice » (doc source) : à partir d’ici on ne parle plus de goûts, on parle d’IDENTITÉ. Permet des recommandations justes MÊME DANS UN DOMAINE TOTALEMENT INCONNU. Exemple fondateur : quatre personnes adorent voyager — l’une pour voir sa famille, l’autre pour découvrir, l’autre pour se dépasser, l’autre pour ralentir. Le voyage est identique, la valeur derrière est totalement différente. ⚠ NE PAS CONFONDRE avec « Signature de valeur » (value.1516-1525) qui porte sur les critères d’ACHAT — ici ce sont les valeurs DE VIE. ⚠ 1906 (les injustices) : on ne cherche PAS une opinion politique mais LES VALEURS BLESSÉES — ne jamais inférer d’orientation politique, religieuse ou idéologique. Nos goûts changent, nos passions évoluent, mais certaines valeurs restent extrêmement stables toute la vie.",
+    "niveau_B": "Mode de décision, source de fierté, injustices (valeurs blessées), héros (extraire les QUALITÉS, pas les personnes), usage de l’énergie, valeurs relationnelles, moteurs de projet, LIEU D’ALIGNEMENT (1911 — fait ressortir les valeurs plus que les goûts), souvenir emblématique, DÉCISION FIDÈLE AUX VALEURS (1913 — un arbitrage vécu vaut infiniment plus qu’une valeur déclarée), évolution des valeurs (conserver l’historique), HÉRITAGE (1915).",
+    "niveau_C": "Niveau C TRÈS RARE : uniquement lorsqu’une recommandation semble entrer en TENSION avec une valeur importante. Valeur prioritaire du moment (contextuelle, ne modifie pas la boussole), compromis acceptable.",
+    "saturation": "PILOTE : peut répondre sur les valeurs perçues, les engagements visibles, les décisions récurrentes. JAMAIS avec certitude sur : valeurs profondes, arbitrages intérieurs, regrets, motivations existentielles. Arrêt (profil léger) : valeurs essentielles + non négociable + arbitrages + qualités admirées + définition de la réussite.",
+    "parcours": "⭐⭐⭐ BOUSSOLE DE VALEURS (cartouche calculée, pour K1/K3) : valeurs centrales · valeurs secondaires · arbitrages · COHÉRENCE ENTRE DISCOURS ET COMPORTEMENTS · évolutions dans le temps. L’IA construit une BOUSSOLE, PAS une simple liste de mots-clés. Inférence type : famille + transmission + temps partagé au premier plan → privilégier expériences collectives, traditions, cadeaux porteurs de sens — MAIS NE PAS conclure qu’elle rejettera des expériences plus individuelles ou ambitieuses. LES VALEURS ORIENTENT LES CHOIX, ELLES NE LES DÉTERMINENT PAS DE MANIÈRE ABSOLUE. 1915 est décrite dans le doc source comme « probablement la plus belle question de toute Candice » — à poser avec délicatesse, jamais en contexte de deuil ou de maladie.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 57"
+   }
+  },
+  {
+   "id": "watch",
+   "nom_officiel": "Montres",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "Au moins un signal : citation spontanée montres/horlogerie · sélection bijoux, mode, technologie, sport ou accessoires · mention d’une marque ou d’un modèle · montre visible dans une info transmise par le pilote · wishlist ou envie repérée contenant une montre · un proche envisage explicitement d’en offrir une · occasion symbolique (anniversaire important, diplôme, mariage, naissance, promotion, transmission).",
+    "garde_fous": "Ne pas ouvrir automatiquement parce que la personne aime le luxe ou la mode.",
+    "niveau_B": "Aime réellement les montres · montre identifiée comme bon cadeau · occasion qui approche · marque/modèle cité · recommandation trop large après le A. Poser 2 à 4 questions B pertinentes, jamais toutes.",
+    "niveau_C": "Jamais un questionnaire général : passionné · achat réel d’un proche · budget significatif · références à départager · caractéristique technique conditionnant l’usage.",
+    "saturation": "Après les 5 A : piste acceptable ou non · niveau de liberté pour choisir · traditionnelle ou connectée · styles adaptés · motivation dominante · exclusions principales. Pour un simple porteur-accessoire, la branche peut s’arrêter ici. Saturation : une référence précise ou une photo d’un modèle repéré pèse beaucoup plus que dix réponses générales.",
+    "parcours": "Ne porte presque jamais : 2 questions, fermeture. Accessoire : 5-6, mécanique jamais ouvert. Connectée : 6-7, jamais de calibres. Passionné horlogerie : 8-11, jamais en une fois.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 3"
+   }
+  },
+  {
+   "id": "wellbeing",
+   "nom_officiel": "Bien-être (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "work",
+   "nom_officiel": "Travail (V1 — à remplacer au merge)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)"
+  },
+  {
+   "id": "work2",
+   "nom_officiel": "Travail (refonte)",
+   "provenance_nom": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Banque (colonnes Domaine et Branche / Thème)",
+   "regles": {
+    "ouverture_niveau_A": "La personne travaille · est étudiante · entrepreneure · indépendante · retraitée active (adapter les formulations) · Candice détecte que le travail occupe une place importante.",
+    "garde_fous": "⚠ REFONTE de work V1 (8 q) — merge final. La branche la plus délicate. Métier, entreprise et poste deviennent vite OBSOLÈTES : ce qui compte est COMMENT la personne vit son travail. Deux Product Managers peuvent être heureux dans des environnements opposés. La branche doit rester valable après un changement d’entreprise. SÉPARER STRICTEMENT : informations STABLES (motivations 1338, style de travail, reconnaissance 1354) et informations TEMPORAIRES (1349 évolution recherchée, 1355 entrepreneuriat, recherche de poste, levée de fonds) — ces dernières expirent et sont réévaluées, jamais communiquées au pilote. Croise relation2.0802-0804 : jamais confondre proximité pro et intimité personnelle.",
+    "niveau_B": "Mode de travail, ce qui épuise (1344 — indique quand une attention soulage), environnement, télétravail (croise daily2.1138-1139), apprentissage (pont Learning/Podcasts), networking, évolution (datée), célébrations pro (croise Célébration), bureau (pont Maison/Tech), déconnexion (nourrit les attentions de récupération — Beauté, Daily), déplacements pro (aimer voyager ≠ aimer les déplacements pro), reconnaissance (1354 = PONT MAJEUR avec les 7 langages et celebration.0832). Sous-branches : Entrepreneuriat, Management (être manager ≠ aimer manager), Créatif, Étudiant, Retraité.",
+    "niveau_C": "Niveau C uniquement lorsqu’un événement approche : événement, type d’attention, public, surprise, budget (fourchettes).",
+    "saturation": "PILOTE : posable (métier, habitudes visibles, environnement, rythme, événements professionnels, réussites). PAS certain sur : motivations profondes, fatigue, ambitions, besoins de reconnaissance, équilibre recherché. Arrêt : place du travail + motivations profondes + ce qui fatigue + environnement optimal + attentions appréciées + périodes clés à accompagner.",
+    "parcours": "JOURNAL DES JALONS PROFESSIONNELS (amélioration retenue, pour K1/K3) : séparer le PROFIL (préférences durables — motivation, style, reconnaissance) de la CHRONOLOGIE (événements datés — prise de poste, promotion, lancement, conférence, premier recrutement, fin de gros projet). C’est le journal qui permet d’anticiper au bon moment sans polluer le profil avec des données rapidement obsolètes. Parcours : travail alimentaire 5 → stop · carrière investie (environnement, apprentissage, networking, évolution, reconnaissance, déconnexion) · entrepreneur (+ sous-branche et événements spécifiques) · événement pro (niveau C). Inférences : aime apprendre + résoudre + conférences → livres, formations, événements, rencontres — NE PAS conclure qu’elle veut toujours parler travail ni recevoir des cadeaux professionnels.",
+    "provenance": "Candice_Banque_Microquestions_V1.1.xlsx / feuille Branches / ligne 36"
+   }
+  }
+ ]
+}

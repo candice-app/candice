@@ -30,7 +30,8 @@
 // ─────────────────────────────────────────────────────────────────────────────────────
 import { DEPENDANCES, TETES_DE_SOUS_PARTIE } from './dependances';
 import { OUVERTES_ARCHIVEES } from './contrats-ouverts';
-import { coexistence, estPrioritaire, poolDe } from './coexistence';
+import { PRESUMENT_L_ALCOOL } from './correspondances';
+import { coexistence, estPrioritaire, poolDe, type VerdictCoexistence } from './coexistence';
 import { BANQUE, type QuestionV3 } from './banque';
 import { analyserCondition, evaluerCondition, type EtatDiscovery, type Verdict } from './conditions';
 
@@ -70,8 +71,14 @@ export interface Resultat {
 export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyMap<string, number> = PARTAGE_BANQUE): Verdict {
   const vise = informationVisee(q, partage);
   const analyse = analyserCondition(q.condition_emission);
+  // « NE BOIT PAS » protège les questions qui présument une consommation d'alcool, qu'elles
+  // portent ou non la consigne dans leur condition (la sous-branche « Vin » ne la porte pas).
+  const presumeAlcool = PRESUMENT_L_ALCOOL.has(q.id);
+  if (presumeAlcool && etat.sansAlcool) return 'fermer';
+  const dep = DEPENDANCES.get(q.id);
+  const dependance = dep && etat.questionsSignalees?.has(q.id) ? { ...dep, signalee: true } : dep;
   const propre = evaluerCondition(analyse, etat,
-    { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(q.id) });
+    { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance, presumeAlcool });
   if (propre === 'fermer') return 'fermer';
   // ── UNE QUESTION DE NIVEAU C EXIGE « UN OBJET, UNE ACTION OU UNE OCCASION NOMMÉS » (politique
   //    de saturation du référentiel), quelle que soit la façon dont sa condition est écrite.
@@ -135,6 +142,46 @@ function compterPartage(banque: readonly QuestionV3[]): Map<string, number> {
 }
 const PARTAGE_BANQUE = compterPartage(BANQUE);
 
+export type MotifDExclusion =
+  | 'deja_posee' | 'sterile' | 'archivee' | 'domaine_ecarte' | 'fermee' | 'indecidable'
+  | `coexistence_${Exclude<VerdictCoexistence, { poser: true }>['motif']}`;
+
+/**
+ * POURQUOI UNE QUESTION N'EST PAS ADMISSIBLE — ou `null` si elle l'est.
+ *
+ * UNE SEULE FONCTION, pour le choix du lot ET pour le contrôle d'une réponse reçue : la route
+ * de réponse refuse une question dont les conditions ne tiennent plus, et elle doit juger
+ * avec exactement les règles qui l'ont fait proposer. Deux copies de ces règles finiraient par
+ * diverger, et la plus permissive deviendrait la porte.
+ *
+ * `ignorerDejaPosee` : au moment où la personne répond, la question lui a par définition déjà
+ * été posée. Tout le reste est rejugé.
+ */
+export function motifDExclusion(
+  q: QuestionV3, etat: EtatDiscovery,
+  opts: { readonly partage?: ReadonlyMap<string, number>; readonly ignorerDejaPosee?: boolean } = {},
+): MotifDExclusion | null {
+  const partage = opts.partage ?? PARTAGE_BANQUE;
+  if (!opts.ignorerDejaPosee && etat.dejaPosees.has(q.id)) return 'deja_posee';
+  if (sterile(q)) return 'sterile';
+  // Une question ouverte que le référentiel a archivée (onglet 9) n'est jamais servie.
+  if (OUVERTES_ARCHIVEES.has(q.id)) return 'archivee';
+  // UN DOMAINE QUE LA PERSONNE A ÉCARTÉ n'est plus proposé d'initiative. Sa propre démarche
+  // (« explorer ce sujet ») est la seule chose qui passe outre.
+  if (etat.nePasCreuser.has(q.branche) && !etat.sujetsChoisis?.has(q.branche)) return 'domaine_ecarte';
+  const verdict = verdictDe(q, etat, partage);
+  if (verdict === 'fermer') return 'fermee';
+  if (verdict === 'indecidable') return 'indecidable';
+  // ── COEXISTENCE DES GÉNÉRATIONS (onglet 13). Une question historique que le référentiel
+  //    a remplacée n'est plus proposée d'initiative ; celle qu'il garde « distincte et
+  //    conditionnée » attend que la nouvelle ait été posée, qu'une information manque
+  //    encore, et ne vient jamais juste après elle.
+  const v = informationVisee(q, partage);
+  const facette = v.cles.length === 0 ? null : v.cles.some((k) => !etat.attributsConnus.has(k));
+  const c = coexistence(q.id, etat, facette);
+  return c.poser ? null : `coexistence_${c.motif}`;
+}
+
 export interface Reglages {
   /** Combien de questions rendre. 1 pour une micro-question, davantage pour une session. */
   readonly combien?: number;
@@ -162,27 +209,12 @@ export function prochainesQuestions(
   const eligibles: Choix[] = [];
 
   for (const q of banque) {
-    if (etat.dejaPosees.has(q.id)) { dejaPosees++; continue; }
-    if (sterile(q)) { steriles++; continue; }
-    // Une question ouverte que le référentiel a archivée (onglet 9) n'est jamais servie.
-    if (OUVERTES_ARCHIVEES.has(q.id)) { steriles++; continue; }
-    // UN DOMAINE QUE LA PERSONNE A ÉCARTÉ n'est plus proposé d'initiative. Sa propre démarche
-    // (« explorer ce sujet ») est la seule chose qui passe outre.
-    if (etat.nePasCreuser.has(q.branche) && !etat.sujetsChoisis?.has(q.branche)) { fermees++; continue; }
-
-    const verdict = verdictDe(q, etat, partage);
-    if (verdict === 'fermer') { fermees++; continue; }
-    if (verdict === 'indecidable') { indecidables++; continue; }
-
-    // ── COEXISTENCE DES GÉNÉRATIONS (onglet 13). Une question historique que le référentiel
-    //    a remplacée n'est plus proposée d'initiative ; celle qu'il garde « distincte et
-    //    conditionnée » attend que la nouvelle ait été posée, qu'une information manque
-    //    encore, et ne vient jamais juste après elle.
-    {
-      const v = informationVisee(q, partage);
-      const facette = v.cles.length === 0 ? null : v.cles.some((k) => !etat.attributsConnus.has(k));
-      if (!coexistence(q.id, etat, facette).poser) { remplacees++; continue; }
-    }
+    const exclusion = motifDExclusion(q, etat, { partage });
+    if (exclusion === 'deja_posee') { dejaPosees++; continue; }
+    if (exclusion === 'sterile' || exclusion === 'archivee') { steriles++; continue; }
+    if (exclusion === 'domaine_ecarte' || exclusion === 'fermee') { fermees++; continue; }
+    if (exclusion === 'indecidable') { indecidables++; continue; }
+    if (exclusion !== null) { remplacees++; continue; }
 
     // ── SCORE. Il n'ordonne que des questions DÉJÀ autorisées : il ne peut pas ouvrir ce
     //    qu'une condition a fermé. Il décide seulement de l'ordre, et son rôle s'arrête là.
@@ -196,6 +228,9 @@ export function prochainesQuestions(
     // « `2` prioritaire sur intention équivalente » : à score égal, la génération qui reprend
     // la branche passe devant l'historique.
     if (estPrioritaire(q.branche)) { score += 5; motifs.push('génération prioritaire'); }
+
+    // « TRÈS PEU DE PLACE » n'interdit rien : les autres sujets passent simplement d'abord.
+    if (etat.placeFaible?.has(poolDe(q.branche)) && !etat.sujetsChoisis?.has(q.branche)) { score -= 25; motifs.push('place faible déclarée : après les autres sujets'); }
 
     eligibles.push({ question: q, score, motif: motifs.join(' · ') });
   }

@@ -23,6 +23,7 @@
 import { BANQUE, type QuestionV3 } from './banque';
 import { clef } from './conditions';
 import { cleOption } from './cle-option';
+import explicites from './dependances-explicites.json';
 
 export interface Dependance {
   /** La question qui fait le tri, dans la même branche. */
@@ -36,7 +37,9 @@ export interface Dependance {
   /** Vrai si au moins une option a été rapprochée. */
   readonly resolu: boolean;
   /** La question porte elle-même la référence, ou l'hérite d'une voisine de même nom. */
-  readonly origine: 'ecrite' | 'heritee';
+  /** La question porte elle-même la référence, l'hérite d'une voisine de même nom, ou la
+   *  reçoit de la table relue à la main (`dependances-explicites.json`). */
+  readonly origine: 'ecrite' | 'heritee' | 'explicite';
 }
 
 // Mots qui qualifient la réponse attendue, pas son sujet.
@@ -99,6 +102,22 @@ function deriver(banque: readonly QuestionV3[]) {
     const candidates = motsNom.length === 0 ? [] : ecrites.filter((e) => e.branche === q.branche && motsNom.every((m) => e.racines.has(m)));
     const dep = parNom.get(`${q.branche}|${sp[1].toLowerCase()}|${nomHeritier}`) ?? (candidates.length === 1 ? candidates[0].dep : undefined);
     if (dep && dep.selecteur !== q.id) parQuestion.set(q.id, { ...dep, origine: 'heritee' });
+  }
+  // ── LA TABLE EXPLICITE PRIME. Quand le nom d'un axe ne se retrouve dans aucune option
+  //    (« Pratiquant », « Fan/acheteur »), le rapprochement se fait à la main, question par
+  //    question, sur ce que chaque énoncé présume — jamais un axe entier d'un coup. Une option
+  //    que la table nomme et que la banque ne porte plus fait tout échouer : on ne sert pas une
+  //    dépendance dont une moitié a disparu.
+  for (const e of (explicites as { dependances: { question: string; selecteur: string; options: string[]; suppose: string }[] }).dependances) {
+    const q = parId.get(e.question), cible = parId.get(e.selecteur);
+    if (!q || !cible) throw new Error(`dépendance explicite sur une question absente de la banque : ${e.question} ← ${e.selecteur}`);
+    const retenues = e.options.map((lib) => {
+      const o = cible.options.find((x) => x.libelle === lib);
+      if (!o) throw new Error(`« ${lib} » n'est plus une option de ${e.selecteur} — la dépendance de ${e.question} est à relire`);
+      return o;
+    });
+    parQuestion.set(q.id, { selecteur: e.selecteur, options: retenues.map((o) => clef(o.libelle)), cles: retenues.map(cleOption),
+      sujet: `présume ${e.suppose}`, resolu: true, origine: 'explicite' });
   }
   return parQuestion;
 }

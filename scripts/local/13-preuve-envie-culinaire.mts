@@ -40,7 +40,7 @@ const aucuneDerive = (r: Awaited<ReturnType<typeof relire>>, nom: string) => {
   const c = await compteLocal('envie-1');
   const texte = 'J’ai très envie de ramen tonkotsu en ce moment, surtout le soir';
   await dicter([{ exprime_envie: true, details: ['ramen tonkotsu'], periode: 'en ce moment, surtout le soir', contraintes_declarees: [] }]);
-  const res = await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: Q, texte });
+  const res = await enregistrerReponseOuverte(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: Q, texte });
   const r = await relire(c); montrer(r);
   v.verifier(r.faits.some((f) => f.fact_type === `discovery.${Q}` && f.value === texte), '1 : le verbatim est conservé, mot pour mot');
   const envie = r.faits.find((f) => f.fact_type === 'food.current_craving');
@@ -57,7 +57,7 @@ const aucuneDerive = (r: Awaited<ReturnType<typeof relire>>, nom: string) => {
   const texte = 'Une bonne pizza napolitaine';
   await dicter([{ exprime_envie: true, details: ['pizza napolitaine', 'cuisine italienne en général'], periode: 'tous les vendredis',
     contraintes_declarees: ['sans doute intolérante au lactose', 'végétarienne'] }]);
-  const res = await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: Q, texte });
+  const res = await enregistrerReponseOuverte(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: Q, texte });
   const r = await relire(c); montrer(r);
   const envie = r.faits.find((f) => f.fact_type === 'food.current_craving');
   v.verifier(envie?.value === 'pizza napolitaine', '2 : seul le détail présent dans la réponse est gardé', envie?.value);
@@ -73,7 +73,7 @@ const aucuneDerive = (r: Awaited<ReturnType<typeof relire>>, nom: string) => {
   const c = await compteLocal('envie-3');
   const texte = 'Envie d’un pad thaï. Par contre je suis allergique aux cacahuètes.';
   await dicter([{ exprime_envie: true, details: ['pad thaï'], contraintes_declarees: ['je suis allergique aux cacahuètes'] }]);
-  await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: Q, texte });
+  await enregistrerReponseOuverte(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: Q, texte });
   const r = await relire(c); montrer(r);
   v.verifier(r.faits.some((f) => f.fact_type === 'food.current_craving' && f.value === 'pad thaï'), '3 : l’envie est écrite');
   v.verifier(r.ouvert.length === 1 && r.ouvert[0].subject_label === 'je suis allergique aux cacahuètes', '3 : la contrainte déclarée est conservée dans les mots de la personne');
@@ -89,7 +89,7 @@ const aucuneDerive = (r: Awaited<ReturnType<typeof relire>>, nom: string) => {
   for (const texte of ['Aucune envie particulière', 'Non', 'Pas en ce moment', 'rien de spécial', 'Je préfère ne pas répondre']) {
     const c = await compteLocal('envie-4');
     await dicter([]);                                    // si le modèle était appelé, l'essai échouerait
-    const res = await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: Q, texte });
+    const res = await enregistrerReponseOuverte(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: Q, texte });
     const r = await relire(c);
     v.verifier(!r.faits.some((f) => f.fact_type === 'food.current_craving') && r.ouvert.length === 0 && r.preuves.length === 0 && !res.extractionEnAttente,
       `4 : « ${texte} » ne crée aucune envie`, JSON.stringify(r.faits));
@@ -97,7 +97,7 @@ const aucuneDerive = (r: Awaited<ReturnType<typeof relire>>, nom: string) => {
   }
   v.verifier((await etatModele()).appels === avant, '4 : le modèle n’a pas été appelé une seule fois');
   let refusVide = ''; const c = await compteLocal('envie-4');
-  try { await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: Q, texte: '   ' }); } catch (e) { refusVide = (e as Error).message; }
+  try { await enregistrerReponseOuverte(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: Q, texte: '   ' }); } catch (e) { refusVide = (e as Error).message; }
   const r = await relire(c);
   v.verifier(refusVide !== '' && r.faits.length === 0 && r.sources.length === 0, '4 : une réponse vide n’écrit rien du tout', refusVide);
 }
@@ -108,7 +108,7 @@ const aucuneDerive = (r: Awaited<ReturnType<typeof relire>>, nom: string) => {
   const c = await compteLocal('envie-5');
   const texte = 'Des gyozas maison ce week-end';
   await panne(true);
-  const res = await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: Q, texte });
+  const res = await enregistrerReponseOuverte(c.client as never, { acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: Q, texte });
   let r = await relire(c); montrer(r);
   v.verifier(res.verbatimEcrit && res.extractionEnAttente, '5 : le service signale que la lecture reste à faire');
   v.verifier(r.faits.length === 1 && r.faits[0].value === texte, '5 : pendant la panne, le verbatim est en base — et lui seul');

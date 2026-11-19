@@ -11,8 +11,9 @@ import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
 import { clef, type EtatDiscovery } from './conditions';
 import { SELECTEURS } from './dependances';
 import { poolDe } from './coexistence';
-import { ALIAS_BRANCHES, BRANCHES_DU_DOMAINE, branchesDuDomaineJournal } from './branches';
+import { ALIAS_BRANCHES, SOUS_PARTIES, TAGS_ATTENDUS, memeSujet, ouvertParCategorie, ouvertParDomaineJournal } from './correspondances';
 import { BANQUE } from './banque';
+import { produireDepuisOption } from './produire';
 
 /* ────────────────────────────────────────────────────────────────────────────
  * LA PROFONDEUR D'UNE BRANCHE.
@@ -41,8 +42,27 @@ export const FAIT_SUJET_ABORDE = 'discovery.sujet_aborde';
  */
 export const FAIT_PROJET = 'discovery.projet';
 const BRANCHES_BANQUE = new Set(BANQUE.map((q) => q.branche));
-const DOMAINE_DE_LA_BRANCHE = new Map<string, string>();
-for (const [domaine, brs] of BRANCHES_DU_DOMAINE) for (const b of brs) DOMAINE_DE_LA_BRANCHE.set(b, domaine);
+/** La personne a demandé qu'on ne lui pose plus de questions sur ce sujet. `value` = la branche. */
+export const FAIT_SUJET_REFUSE = 'discovery.sujet_refuse';
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * « TRÈS PEU DE PLACE » — les contrats qui disent une faible place ACTUELLE.
+ *
+ * Vingt options de la banque portent ces mots sur une question de place (« Quelle place la
+ * lecture occupe-t-elle réellement dans ta vie ? »). Leur valeur, telle que le journal la
+ * conserve, est relevée ici ; rien d'autre n'est tenu pour une faible place — ni « ce n'est pas
+ * mon truc » (une appréciation), ni « rarement » (une fréquence).
+ * ──────────────────────────────────────────────────────────────────────────── */
+const PLACES_FAIBLES = new Set<string>();
+const PLACE_DU_DOMAINE = new Map<string, Set<string>>();
+for (const q of BANQUE) for (const o of q.options) {
+  if (o.attribut !== 'domain_importance' || !/^tr[èe]s peu de place/i.test(o.libelle)) continue;
+  const p = produireDepuisOption(q, o);
+  if (p.type !== 'evidence') continue;
+  const domaine = String(o.domaine ?? q.branche);
+  PLACES_FAIBLES.add(`${domaine}|${String((p.evidence as { preferenceValue?: unknown }).preferenceValue ?? '')}`);
+  PLACE_DU_DOMAINE.set(q.branche, new Set([...(PLACE_DU_DOMAINE.get(q.branche) ?? []), domaine]));
+}
 export interface Projet { readonly id: string; readonly type: 'achat' | 'sejour'; readonly branche: string; readonly objet: string; readonly debut: string; readonly fin?: string }
 /** Lit la valeur d'un fait de projet. `null` si elle n'en est pas une : rien n'est deviné. */
 export function lireProjet(valeur: string): Projet | null {
@@ -116,10 +136,21 @@ export async function lireEtat(
   const attributsConnus = new Set<string>();
   const branchesOuvertes = new Set<string>();
   const nePasCreuser = new Set<string>();
+  const placeFaible = new Set<string>();
 
+  const questionsSignalees = new Set<string>();
+  // Les branches qu'un INTÉRÊT a ouvertes : c'est à elles que « un seul domaine visible »
+  // s'applique (les deux générations, la branche de la refonte de même nom).
+  const ouvertesParInteret = new Set<string>();
   if (portrait) {
-    // Un INTÉRÊT consolidé ouvre son sujet ET sa branche. C'est le terrain dont une
-    // question Discovery a besoin pour ne pas sortir de nulle part.
+    // UN INTÉRÊT OUVRE CE QUE LA TABLE EXPLICITE DIT QU'IL OUVRE, et rien d'autre.
+    //   · son sujet ou son libellé EST le nom d'une branche (« lecture », « voyage ») ;
+    //   · c'est une catégorie de l'onboarding : la table dit quelles branches elle ouvre —
+    //     pas toutes celles qui lui ressemblent (« Mode & beauté » n'ouvre ni les sacs ni les
+    //     montres) — et, pour « Vin & spiritueux », quelle seule sous-partie ;
+    //   · il porte un domaine parent du journal : la table le traduit (`books_literature` →
+    //     reading, reading2).
+    // Ouvrir une branche permet de poser ses questions. Cela n'écrit aucune préférence.
     for (const i of portrait.interests) {
       const parent = i.parent_domain ? clef(String(i.parent_domain)) : null;
       for (const k of [clef(String(i.subject)), clef(i.subjectLabel)]) {
@@ -130,29 +161,19 @@ export async function lireEtat(
         //    parent n'ouvre donc que ce domaine ; son sujet reste un tag, rien de plus.
         if (parent) continue;
         branchesOuvertes.add(k);
-        // Le sujet d'un intérêt est un DOMAINE ou un LIBELLÉ ; les questions, elles, sont
-        // rangées par identifiant de branche. On ouvre donc aussi les branches que ce nom
-        // désigne (table dérivée de la banque) et celles dont c'est le domaine principal.
-        for (const b of ALIAS_BRANCHES.get(k) ?? []) branchesOuvertes.add(b);
-        for (const b of BRANCHES_DU_DOMAINE.get(k) ?? []) branchesOuvertes.add(b);
+        for (const b of ALIAS_BRANCHES.get(k) ?? []) ouvertesParInteret.add(b);
+        const o = ouvertParCategorie(k);
+        for (const b of o.branches) ouvertesParInteret.add(b);
+        for (const q of o.questions) questionsSignalees.add(q);
       }
       if (parent) {
         branchesOuvertes.add(parent);
-        // Le domaine parent vient du vocabulaire du JOURNAL ; le pont le traduit vers les
-        // branches de la banque (`books_literature` → reading, reading2).
-        for (const b of branchesDuDomaineJournal(parent)) branchesOuvertes.add(b);
+        const o = ouvertParDomaineJournal(parent);
+        for (const b of o.branches) ouvertesParInteret.add(b);
+        for (const q of o.questions) questionsSignalees.add(q);
       }
     }
-    // ── LE DOMAINE DE LA BANQUE, EN TAG. Les questions de la refonte (« CRE- », « FOO- »,
-    //    « THE- »…) s'ouvrent sur `INTEREST.<domaine>=positive`, avec le nom que la BANQUE donne
-    //    au domaine (`creativity`, `food`, `live_performance`). L'intérêt, lui, est écrit sous
-    //    son sujet (« art », « cuisine », « reliure »). Sans ce pont, treize branches restaient
-    //    fermées à quelqu'un dont l'intérêt ouvrait pourtant la branche voisine du même domaine.
-    //    Un intérêt qui ouvre une branche est un intérêt pour le domaine de cette branche.
-    for (const b of branchesOuvertes) {
-      const domaine = DOMAINE_DE_LA_BRANCHE.get(b);
-      if (domaine) tags.set(`INTEREST.${domaine}`, 'positive');
-    }
+    for (const b of ouvertesParInteret) for (const v of memeSujet(b)) branchesOuvertes.add(v);
     for (const c of portrait.contexts) {
       tags.set(`CONTEXT.${clef(String(c.construct))}`, 'positive');
       // « `CONTEXT.x.present=true` » : la présence d'un signal, quelle que soit sa valeur.
@@ -174,18 +195,18 @@ export async function lireEtat(
       // « `PREFERENCE.x.y.present=true` » : une préférence existe sur ce chemin.
       tags.set(`${String(p.path)}.present`, 'true');
     }
-    // ── LE DERNIER MOT SUR UN DOMAINE. Quelqu'un coche « Sport » à l'inscription, puis répond
-    //    « Très peu » à « Quelle place le sport occupe-t-il dans ta vie ? ». La case cochée
-    //    reste au journal — elle a été dite — mais la réponse la plus récente sur la PLACE du
-    //    domaine est un rejet : on cesse de proposer d'initiative les questions de ce domaine.
-    //    Seule sa propre démarche (« explorer ce sujet ») les rouvre.
+    // ── UNE FAIBLE PLACE N'EST PAS UN REFUS (décision du 19 nov.). La première version
+    //    lisait « Très peu de place » comme un rejet du domaine et cessait d'y poser des
+    //    questions. Cette réponse décrit la place ACTUELLE du domaine : elle ne dit ni que la
+    //    personne ne l'aime pas, ni qu'elle ne veut pas l'explorer, ni qu'elle refuse qu'on lui
+    //    en parle. Elle ne ferme donc rien. Elle fait seulement passer les autres sujets
+    //    d'abord (voir `placeFaible` dans la sélection). Seul un refus EXPLICITE de la personne
+    //    (« ne plus me questionner là-dessus ») arrête les questions d'un sujet.
     for (const p of portrait.preferences) {
       const segments = String(p.path).split('.');
       if (segments.length !== 3 || segments[2] !== 'domain_importance') continue;
-      const detail = p.valuesDetail ?? [];
-      if (detail.find((d) => d.value === p.value)?.polarity !== 'rejet') continue;
-      nePasCreuser.add(clef(segments[1]));
-      for (const br of BRANCHES_DU_DOMAINE.get(clef(segments[1])) ?? []) nePasCreuser.add(br);
+      if (!PLACES_FAIBLES.has(`${segments[1]}|${String(p.value)}`)) continue;
+      for (const b of BRANCHES_BANQUE) if (PLACE_DU_DOMAINE.get(b)?.has(segments[1])) placeFaible.add(poolDe(b));
     }
     for (const g of portrait.guardrails) {
       const segments = String(g.code).split('.');           // <domaine>.<attribut>.<valeur>
@@ -201,6 +222,7 @@ export async function lireEtat(
   const optionsChoisies = new Map<string, Set<string>>();
   let dernierePosee: string | undefined; let dernierMoment = '';
   const reponsesParBranche = new Map<string, number>();
+  const repondues = new Set<string>();
   try {
     const { data, error } = await client
       .from('profile_completion')
@@ -220,6 +242,7 @@ export async function lireEtat(
       }
       if (l.is_filled || l.last_asked_at) dejaPosees.add(l.question_key);
       if (l.is_filled) {
+        repondues.add(l.question_key);
         const b = BRANCHE_PAR_QUESTION.get(l.question_key);
         if (b) reponsesParBranche.set(b, (reponsesParBranche.get(b) ?? 0) + 1);
       }
@@ -229,6 +252,40 @@ export async function lireEtat(
     // questions déjà vues. On le signale, et l'appelant doit s'abstenir plutôt que risquer
     // de resservir la même question à quelqu'un.
     manques.push(`progression illisible (${e instanceof Error ? e.message : String(e)}) — risque de reposer une question déjà vue`);
+  }
+
+  // ── 2 bis. LE JOURNAL FAIT FOI SUR CE QUI A ÉTÉ RÉPONDU. La progression est écrite APRÈS
+  //       la connaissance : une panne entre les deux laisse une réponse au journal et aucune
+  //       trace dans la progression. Sans cette lecture, la question revenait — ou, pire, une
+  //       question de tri répondue ne désignait plus sa sous-partie. Une réponse écrite au
+  //       journal est une question posée, et les options cochées se relisent sur sa source.
+  try {
+    const lire = async (type: string) => {
+      const { data, error } = await (client as never as {
+        from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): Promise<{ data: unknown[] | null; error: { message: string } | null }> } } };
+      }).from('knowledge_sources').select('question_code, option_ref, ts, about_id').eq('user_id', opts.userId).eq('source_type', type);
+      if (error) throw new Error(error.message);
+      return (data ?? []) as { question_code: string | null; option_ref: string | null; ts: string; about_id: string }[];
+    };
+    const [fermees, ouvertes] = await Promise.all([lire('discovery_closed'), lire('discovery_open')]);
+    const dernier = new Map<string, { ts: string; option_ref: string | null }>();
+    for (const x of [...fermees, ...ouvertes]) {
+      if (x.about_id !== opts.userId || !x.question_code) continue;
+      const id = x.question_code.replace(/^discovery\./, '');
+      if (!BRANCHE_PAR_QUESTION.has(id)) continue;
+      const d = dernier.get(id);
+      if (!d || new Date(x.ts).getTime() > new Date(d.ts).getTime()) dernier.set(id, { ts: x.ts, option_ref: x.option_ref });
+    }
+    for (const [id, d] of dernier) {
+      if (!dejaPosees.has(id) || !repondues.has(id)) {
+        const b = BRANCHE_PAR_QUESTION.get(id);
+        if (b && !repondues.has(id)) reponsesParBranche.set(b, (reponsesParBranche.get(b) ?? 0) + 1);
+      }
+      dejaPosees.add(id); repondues.add(id);
+      if (SELECTEURS.has(id) && d.option_ref) optionsChoisies.set(id, new Set(d.option_ref.split(',').filter(Boolean)));
+    }
+  } catch (e) {
+    manques.push(`progression illisible (réponses du journal : ${e instanceof Error ? e.message : String(e)}) — risque de reposer une question déjà vue`);
   }
 
   // ── 3 bis. LES SUJETS QUE LA PERSONNE A CHOISI D'EXPLORER, ou abordés d'elle-même.
@@ -259,6 +316,9 @@ export async function lireEtat(
         // la branche, et l'identifiant est gardé tel que la banque l'écrit.
         for (const b of BRANCHES_BANQUE) if (b === f.value || poolDe(b) === poolDe(f.value)) sujetsChoisis.add(b);
       }
+      // UN REFUS EXPLICITE est le seul acte qui arrête les questions d'un sujet. Il vaut pour
+      // le sujet entier (ses deux générations), et il se retire comme il s'est posé.
+      if (f.fact_type === FAIT_SUJET_REFUSE) for (const b of memeSujet(f.value)) nePasCreuser.add(b);
       if (f.fact_type === FAIT_PROJET) {
         const p = lireProjet(f.value);
         // Un séjour terminé n'ouvre plus ses questions : la date de fin passée suffit, sans
@@ -271,10 +331,17 @@ export async function lireEtat(
     // Choisir d'explorer un sujet, c'est OUVRIR sa branche : aucune ouverture n'est plus
     // nette que celle-là. Les questions ordinaires de la branche en bénéficient aussi.
     for (const b of sujetsChoisis) branchesOuvertes.add(b);
+    // Explorer un sujet l'ouvre en entier : la branche de la refonte de même nom s'ouvre avec.
+    for (const b of [...sujetsChoisis]) if (BRANCHES_BANQUE.has(b)) for (const v of memeSujet(b)) { branchesOuvertes.add(v); sujetsChoisis.add(v); }
     projetsLus = projets;
   } catch (e) {
     manques.push(`sujets choisis illisibles (${e instanceof Error ? e.message : String(e)}) — les questions sensibles restent fermées`);
   }
+
+  // ── LE TAG QU'UNE BRANCHE DE LA REFONTE ATTEND (`INTEREST.creativity=positive` sur « CRE- »).
+  //    Ses propres conditions le nomment ; il est vrai quand cette branche est ouverte — par un
+  //    intérêt ou par la démarche de la personne. Lu dans les conditions, jamais déduit.
+  for (const b of branchesOuvertes) for (const t of TAGS_ATTENDUS.get(b) ?? []) tags.set(t, 'positive');
 
   // ── 3. LA PROFONDEUR ATTEINTE, branche par branche. Une branche jamais ouverte n'a
   //       pas de niveau : elle est absente de la table, et les portes « Niveau … » ferment.
@@ -310,7 +377,7 @@ export async function lireEtat(
       // ouvrirait des questions sur une supposition.
       contextesConnus: new Set(), contextesActifs: new Set(),
       sujetsChoisis, optionsChoisies, ...(projetsLus ? { projets: projetsLus } : {}), ...(dernierePosee ? { dernierePosee } : {}),
-      aliasBranches: ALIAS_BRANCHES,
+      aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES, questionsSignalees, placeFaible,
     },
     manques,
   };

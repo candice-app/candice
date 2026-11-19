@@ -4,8 +4,8 @@ src/lib/discovery/open-v3/coexistence.json. Vérifie l'empreinte du classeur ava
 s'arrête sur toute décision qu'il ne connaît pas : une règle inconnue ne se devine pas."""
 import openpyxl, json, hashlib, sys, os
 ICI = os.path.dirname(os.path.abspath(__file__)); RACINE = os.path.join(ICI, '..', '..')
-F = os.path.join(RACINE, 'docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_3.xlsx')
-SHA = '1b326ff4ea28d83cc8880e8451d30acff7d31a93962f8c73d3a738fdc5093425'
+F = os.path.join(RACINE, 'docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_4.xlsx')
+SHA = '5a66c613db82797d336534a679e513321cbbdbf7bf20cfd12102c4f84cf28eca'
 sha = hashlib.sha256(open(F, 'rb').read()).hexdigest()
 if sha != SHA: sys.exit(f'empreinte du classeur inattendue : {sha}')
 rows = list(openpyxl.load_workbook(F, read_only=True)['13_COEXISTENCE_GENERATIONS'].iter_rows(values_only=True))

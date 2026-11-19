@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import type { NextQuestionResult, DiscoveryQuestion, QuestionOption } from "@/lib/discovery/engine";
 
 interface Props {
@@ -470,40 +471,76 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
   const [loading, setLoading] = useState(false);
   const [intro, setIntro] = useState(mode === "full" && !skipIntro);
 
+  const [erreur, setErreur] = useState<string | null>(null);
+  const router = useRouter();
+
+  // Le serveur propose de nouveau : lot expiré, ou question qui n'est plus d'actualité.
+  async function reprendre() {
+    try {
+      const r = await fetch(`/api/discovery/lot?mode=${current?.mode ?? mode}`, { cache: "no-store" });
+      if (!r.ok) { setErreur("Les questions ne sont pas disponibles pour le moment."); return; }
+      const d = await r.json() as { next: NextQuestionResult | null };
+      if (d.next) { setCurrent(d.next); setErreur(null); } else { setCurrent(null); setDone(true); }
+    } catch {
+      setErreur("Connexion interrompue. Réessaie dans un instant.");
+    }
+  }
+
   async function handleAnswer(answer: string | string[] | Record<string, unknown>, skip = false) {
     if (!current || loading) return;
     setLoading(true);
+    setErreur(null);
 
     try {
       const res = await fetch("/api/discovery/answer", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // Le lot signé par le serveur, renvoyé tel quel : c'est lui qui dit quelles questions
+        // ont été proposées. Renvoyer la même requête ne compte pas deux fois.
         body: JSON.stringify({
-          // Levier 1 : à la 1re réponse sessionId est null → on envoie le
-          // contexte (lot déterministe + position + mode) pour que la session
-          // naisse côté serveur maintenant, pas au rendu du GET.
-          sessionId: current.sessionId,
-          pendingKeys: current.pendingKeys,
-          currentIndex: current.currentIndex,
-          mode: current.mode ?? mode,
+          jeton: current.jeton,
           questionKey: current.question.question_key,
           answer: skip ? null : answer,
           skip,
         }),
       });
-      const data = await res.json() as { next: NextQuestionResult | null; done: boolean };
-      if (data.done || !data.next) {
-        setDone(true);
-        setCurrent(null);
+      if (res.ok) {
+        const data = await res.json() as { next: NextQuestionResult | null; done: boolean };
+        if (data.done || !data.next) { setDone(true); setCurrent(null); } else setCurrent(data.next);
+      } else if (res.status === 409) {
+        // La question n'est plus posée (lot expiré, condition devenue fausse, déjà traitée) :
+        // rien n'a été enregistré pour cette requête, et le serveur choisit de nouveau.
+        await reprendre();
       } else {
-        setCurrent(data.next);
+        // RIEN N'A ÉTÉ ENREGISTRÉ. On le dit, et la question reste à l'écran avec sa réponse :
+        // afficher « terminé » ici ferait croire à la personne que sa réponse est gardée.
+        const d = await res.json().catch(() => null) as { error?: string } | null;
+        setErreur(res.status === 503
+          ? "Ta réponse n'a pas pu être enregistrée. Tu peux la renvoyer."
+          : (d?.error ? `Réponse refusée : ${d.error}.` : "Réponse refusée."));
       }
     } catch {
-      // fallback: go to done state
-      setDone(true);
+      setErreur("Connexion interrompue : ta réponse n'est pas partie. Tu peux la renvoyer.");
     } finally {
       setLoading(false);
     }
+  }
+
+  // « NE PLUS ME QUESTIONNER LÀ-DESSUS » : le seul acte qui arrête les questions d'un sujet.
+  // Il ne dit rien de ce que la personne aime ; il se retire depuis « Explorer un sujet ».
+  async function refuserLeSujet() {
+    if (!current || loading) return;
+    setLoading(true); setErreur(null);
+    try {
+      const r = await fetch("/api/discovery/sujet", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ branche: current.question.dimension, refuse: true }),
+      });
+      if (!r.ok) setErreur("Ce choix n'a pas pu être enregistré. Rien n'a changé.");
+      else { await reprendre(); router.refresh(); }
+    } catch {
+      setErreur("Connexion interrompue. Rien n'a changé.");
+    } finally { setLoading(false); }
   }
 
   function handleQuickFromIntro() {
@@ -583,6 +620,12 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
         {question.question_text}
       </h2>
 
+      {erreur && (
+        <p role="alert" style={{ marginTop: 14, fontSize: 13, fontWeight: 300, color: "var(--ink-2)", lineHeight: 1.5 }}>
+          {erreur}
+        </p>
+      )}
+
       {/* Zone de réponse à hauteur réservée (P1.7) */}
       <div style={{ minHeight: 280 }}>
       {question.question_key === "practical.dietary" ? (
@@ -600,6 +643,7 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
         />
       ) : question.question_type === "text" ? (
         <TextQuestion
+          key={question.question_key}
           question={question}
           onAnswer={v => handleAnswer(v)}
           onSkip={() => handleAnswer("", true)}
@@ -607,6 +651,7 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
         />
       ) : (
         <ChipsQuestion
+          key={question.question_key}
           question={question}
           onAnswer={v => handleAnswer(v)}
           onSkip={() => handleAnswer([], true)}
@@ -614,6 +659,14 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
         />
       )}
       </div>
+      {sectionLabel && (
+        <button type="button" onClick={refuserLeSujet} disabled={loading} style={{
+          marginTop: 18, padding: "10px 0", minHeight: 44, background: "none", border: "none",
+          fontSize: 12, fontWeight: 300, color: "var(--ink-3)", textDecoration: "underline", cursor: "pointer",
+        }}>
+          Ne plus me poser de questions sur ce sujet
+        </button>
+      )}
     </div>
   );
 }

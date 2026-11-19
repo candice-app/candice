@@ -40,7 +40,7 @@ async function poster(chemin: string, corps: unknown): Promise<string | null> {
   }
 }
 
-export default function DiscoveryPortes({ sujets, projets }: { sujets: Sujet[]; projets: ProjetEnCours[] }) {
+export default function DiscoveryPortes({ sujets, projets, refuses = [] }: { sujets: Sujet[]; projets: ProjetEnCours[]; refuses?: { branche: string; libelle: string }[] }) {
   const router = useRouter();
   const [occupe, setOccupe] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -89,6 +89,24 @@ export default function DiscoveryPortes({ sujets, projets }: { sujets: Sujet[]; 
             </button>
           ))}
         </div>
+        {refuses.length > 0 && (
+          <div style={{ marginTop: 18 }}>
+            <p style={{ ...texte, marginBottom: 8 }}>
+              Tu as demandé à ne plus être questionnée sur&nbsp;:
+            </p>
+            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+              {refuses.map((r) => (
+                <li key={r.branche} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, padding: "6px 0" }}>
+                  <span style={{ fontSize: 14, fontWeight: 300, color: "var(--ink)" }}>{r.libelle}</span>
+                  <button type="button" disabled={occupe} onClick={() => agir("/api/discovery/sujet", { branche: r.branche, refuse: false })}
+                    style={{ minHeight: 44, padding: "0 4px", background: "none", border: "none", fontSize: 13, fontWeight: 300, color: "var(--pine)", textDecoration: "underline", cursor: "pointer" }}>
+                    Accepter de nouveau
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </section>
 
       <section style={carte} aria-labelledby="portes-projets">

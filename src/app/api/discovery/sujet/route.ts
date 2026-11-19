@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { declarerSujet, ReponseInvalideError } from "@/lib/discovery/open-v3/service";
+import { declarerSujet, refuserSujet, ReponseInvalideError } from "@/lib/discovery/open-v3/service";
 
 // « JE VEUX EXPLORER CE SUJET » — et son retrait.
 //
@@ -17,13 +17,18 @@ export async function POST(req: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  let body: { branche?: unknown; choisi?: unknown };
+  // Deux actes, jamais les deux à la fois : `choisi` (explorer ce sujet / y renoncer) ou
+  // `refuse` (ne plus être questionnée sur ce sujet / l'accepter de nouveau).
+  let body: { branche?: unknown; choisi?: unknown; refuse?: unknown };
   try { body = await req.json(); } catch { return NextResponse.json({ error: "corps illisible" }, { status: 400 }); }
-  if (typeof body.branche !== "string" || typeof body.choisi !== "boolean") {
-    return NextResponse.json({ error: "branche (texte) et choisi (vrai/faux) requis" }, { status: 400 });
+  const aChoisi = typeof body.choisi === "boolean", aRefuse = typeof body.refuse === "boolean";
+  if (typeof body.branche !== "string" || aChoisi === aRefuse) {
+    return NextResponse.json({ error: "branche (texte) et un seul de : choisi, refuse (vrai/faux)" }, { status: 400 });
   }
   try {
-    const r = await declarerSujet(supabase as never, { userId: user.id, branche: body.branche, choisi: body.choisi });
+    const r = aRefuse
+      ? await refuserSujet(supabase as never, { userId: user.id, branche: body.branche, refuse: body.refuse as boolean })
+      : await declarerSujet(supabase as never, { userId: user.id, branche: body.branche, choisi: body.choisi as boolean });
     return NextResponse.json({ ok: true, etat: r.etat });
   } catch (e) {
     if (e instanceof ReponseInvalideError) return NextResponse.json({ error: e.message }, { status: 400 });

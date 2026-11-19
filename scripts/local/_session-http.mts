@@ -28,3 +28,17 @@ export async function poster(chemin: string, cookie: string | null, corps: unkno
   try { json = JSON.parse(texte); } catch { /* pas du JSON */ }
   return { status: r.status, json, texte };
 }
+
+/** Le lot que le SERVEUR propose maintenant : la première question et le jeton signé. */
+export async function obtenirLot(cookie: string, mode: 'quick' | 'full' = 'full') {
+  const r = await poster(`/api/discovery/lot?mode=${mode}`, cookie, null, 'GET');
+  if (r.status !== 200) throw new Error(`lot refusé : ${r.status} ${r.texte.slice(0, 200)}`);
+  const next = (r.json as { next: null | { jeton: string; question: { question_key: string; question_type: string; options: { value: string; label: string }[] | null } } }).next;
+  return next;
+}
+/** Répond à une question d'un lot. Rend le statut, le motif de refus et la question suivante. */
+export async function repondre(cookie: string | null, corps: { jeton?: unknown; questionKey?: unknown; answer?: unknown; skip?: boolean } & Record<string, unknown>) {
+  const r = await poster('/api/discovery/answer', cookie, corps);
+  const j = (r.json ?? {}) as { next?: { jeton: string; question: { question_key: string; question_type: string; options: { value: string; label: string }[] | null } } | null; done?: boolean; motif?: string; error?: string };
+  return { status: r.status, motif: j.motif, next: j.next ?? null, done: j.done === true, erreur: j.error };
+}
