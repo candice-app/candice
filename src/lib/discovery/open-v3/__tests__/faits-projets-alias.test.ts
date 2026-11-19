@@ -3,7 +3,7 @@ import { fausseBase } from '../../../knowledge/__tests__/fausse-base';
 import { BANQUE, question } from '../banque';
 import { produireDepuisOption, PREFIXE_FAIT } from '../produire';
 import { cleOption } from '../cle-option';
-import { enregistrerReponseFermee, enregistrerReponseOuverte, estAliasMasque, optionCanonique, FAIT_REPONSE_DE_PROJET } from '../service';
+import { enregistrerReponseFermee, enregistrerReponseOuverte, estAliasMasque, optionCanonique, FAIT_REPONSE_DE_PROJET, connaissancesDuProjet } from '../service';
 import { motifDExclusion, requiertProjet, aParametre } from '../selection';
 import { ALIAS_BRANCHES, SOUS_PARTIES } from '../correspondances';
 import type { EtatDiscovery } from '../conditions';
@@ -58,19 +58,39 @@ describe('une réponse de niveau C appartient à son projet, pas à la personne 
     expect(requiertProjet(question('craft.0615')!)).toBeNull();
     expect(qC).toBeDefined();
   });
-  it('rattachée au projet : un fait, AUCUNE preuve — rien qui puisse devenir une préférence générale', async () => {
+  it('rattachée au projet : la preuve garde son contrat, mais dans la PORTÉE du projet — elle n’entre dans aucune lecture générale', async () => {
     const o = qC.options.find((x) => produireDepuisOption(qC, x).type === 'evidence')!;
-    const sans = fausseBase(); await enregistrerReponseFermee(sans.client, { userId: U, questionId: qC.id, clesOptions: [cleOption(o)], acteId: 'lot-1' });
-    expect((sans.tables.knowledge_evidences ?? []).length).toBeGreaterThan(0);     // sans projet, l'option écrirait une preuve
+    const attendu = produireDepuisOption(qC, o); if (attendu.type !== 'evidence') throw new Error('contrat attendu');
     const b = fausseBase();
     const r = await enregistrerReponseFermee(b.client, { userId: U, questionId: qC.id, clesOptions: [cleOption(o)], acteId: 'lot-1', projet });
-    expect(r).toMatchObject({ preuvesEcrites: 0, faitsEcrits: 1 });
-    expect(b.tables.knowledge_evidences ?? []).toHaveLength(0);
-    const f = b.tables.knowledge_facts[0];
-    expect(f.fact_type).toBe(FAIT_REPONSE_DE_PROJET);
-    expect(f.context).toBe(`projet:${projet.id}`);
-    expect(JSON.parse(String(f.value))).toMatchObject({ projet: projet.id, question: qC.id, option: cleOption(o), contrat: { voie: 'HSG_EVIDENCE' } });
+    expect(r.preuvesEcrites).toBeGreaterThan(0);
+    const e = b.tables.knowledge_evidences[0];
+    // Le sens structuré est celui du contrat ; seule la portée change.
+    expect(e).toMatchObject({ target_family: attendu.evidence.target_family, target_construct: attendu.evidence.target_construct, context: `projet:${projet.id}`, assertion_status: 'explicit' });
+    expect((b.tables.knowledge_facts ?? []).filter((f) => f.fact_type === FAIT_REPONSE_DE_PROJET)).toEqual([]);
     expect(b.tables.knowledge_sources[0].branch_id).toBe(`projet:${projet.id}`);
+    // Lecture générale : rien. Lecture du projet : la preuve, structurée.
+    const { readJournalEvidences } = await import('../../../knowledge/read-journal');
+    expect(await readJournalEvidences(b.client, { userId: U, aboutId: U })).toEqual([]);
+    const duProjet = await connaissancesDuProjet(b.client, { userId: U, projetId: projet.id });
+    expect(duProjet.preuves).toHaveLength(r.preuvesEcrites);
+    expect(await connaissancesDuProjet(b.client, { userId: U, projetId: '22222222-2222-4222-8222-222222222222' })).toMatchObject({ preuves: [], faits: [] });
+  });
+  it('un paramètre d’action, qui n’écrit rien hors projet, est un fait DU projet', async () => {
+    const qP = BANQUE.find((q) => q.forme === 'single' && requiertProjet(q) && q.options.some((o) => { const p = produireDepuisOption(q, o); return p.type === 'rien' && p.motif === 'action_interface'; }))!;
+    const o = qP.options.find((x) => { const p = produireDepuisOption(qP, x); return p.type === 'rien' && p.motif === 'action_interface'; })!;
+    const pr: Projet = { ...projet, branche: qP.branche };
+    const b = fausseBase();
+    await enregistrerReponseFermee(b.client, { userId: U, questionId: qP.id, clesOptions: [cleOption(o)], acteId: 'lot-1', projet: pr });
+    const f = b.tables.knowledge_facts.filter((x) => x.fact_type === 'discovery.parametre_de_projet');
+    expect(f).toHaveLength(1);
+    expect(f[0].context).toBe(`projet:${pr.id}`);
+    expect(JSON.parse(String(f[0].value))).toMatchObject({ projet: pr.id, question: qP.id, libelle: o.libelle });
+    expect((await connaissancesDuProjet(b.client, { userId: U, projetId: pr.id })).faits).toHaveLength(1);
+    // Hors projet, la même option n'écrit rien.
+    const sans = fausseBase();
+    await enregistrerReponseFermee(sans.client, { userId: U, questionId: qP.id, clesOptions: [cleOption(o)], acteId: 'lot-1' });
+    expect(sans.tables.knowledge_facts ?? []).toEqual([]);
   });
   it('réponse ouverte de projet : la phrase est gardée, rattachée, et aucun modèle n’est appelé', async () => {
     const ouverte = BANQUE.find((q) => q.forme === 'open' && requiertProjet(q) && q.id !== 'food2.0882A' && (q.inferences_interdites || q.options.some((o) => o.inferences_interdites)))!;

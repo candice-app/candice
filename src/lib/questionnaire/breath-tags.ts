@@ -153,6 +153,8 @@ export interface SocleFact {
   readonly factType: string;
   readonly value: string;
   readonly assertionStatus: string | null; // 'explicit' | 'inferred' | null
+  /** Portée du fait (`projet:<id>` : il ne vaut que pour ce projet). */
+  readonly context?: string | null;
   readonly sourceId: string | null; // knowledge_sources.id (colonne `source`) — traçabilité à l'affirmation (ligne 4) ; null = trou de source
 }
 
@@ -164,13 +166,13 @@ export interface SocleFact {
 export async function readSocleFacts(client: TagsReadClient, userId: string, opts: { discovery?: 'sans' | 'seulement' } = {}): Promise<SocleFact[]> {
   const { data, error } = await client
     .from('knowledge_facts')
-    .select('fact_type, value, visibility_derived, assertion_status, superseded_at, source')
+    .select('fact_type, value, visibility_derived, assertion_status, superseded_at, source, context')
     .eq('user_id', userId)
     // Les FACTs portent la même double identité : détenteur et personne décrite. Sans ce
     // filtre, un fait d'un proche serait nommé dans la prose du pilote.
     .eq('about_id', userId);
   if (error) throw new BreathReadError(`knowledge_facts read: ${error.message}`);
-  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null; source?: string | null };
+  type Row = { fact_type: string; value: string; visibility_derived: string; assertion_status: string | null; superseded_at?: string | null; source?: string | null; context?: string | null };
   // superseded_at non null = FACT corrigé (remplacé) → exclu de la prose, comme les evidences (§48septies).
   // LES FAITS DU DISCOVERY NE SONT PAS DES FAITS DU SOCLE. Sous `discovery.*` vivent les phrases
   // entières des réponses ouvertes, les réponses attachées à un projet, les choix de sujets et
@@ -182,7 +184,7 @@ export async function readSocleFacts(client: TagsReadClient, userId: string, opt
   return ((data ?? []) as Row[])
     .filter((r) => r.fact_type.startsWith('discovery.') === (mode === 'seulement'))
     .filter((r) => r.visibility_derived !== 'internal_only' && !r.superseded_at)
-    .map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status, sourceId: r.source ?? null }));
+    .map((r) => ({ factType: r.fact_type, value: r.value, assertionStatus: r.assertion_status, sourceId: r.source ?? null, context: r.context ?? null }));
 }
 
 /**

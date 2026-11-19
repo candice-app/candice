@@ -1,6 +1,6 @@
 {
- "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_4.xlsx",
- "sha256_classeur": "5a66c613db82797d336534a679e513321cbbdbf7bf20cfd12102c4f84cf28eca",
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_5.xlsx",
+ "sha256_classeur": "70469c254fede8b8baa21959c8131a16322d3b675b3882d0afde35104ac6d535",
  "lignes": 1009,
  "traduites": 998,
  "indecidables": 11,
@@ -4735,7 +4735,7 @@
    "cle": "consumption.disruptor.prix_au_dela_du_seuil_acceptable",
    "question": "consumption.0244",
    "option": "r1",
-   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "enonce": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
    "libelle": "Prix trop élevé",
    "domaine": "consumption",
    "attribut": "disruptor",
@@ -4750,15 +4750,15 @@
     "service"
    ],
    "refus": "écarté par la réponse « Prix trop élevé »",
-   "contexte": "question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? » (domaine consumption, niveau A)",
-   "critere": "À la question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? », la personne a répondu « Prix trop élevé ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "contexte": "question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? » (domaine consumption, niveau A)",
+   "critere": "À la question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? », la personne a répondu « Prix trop élevé ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {
    "cle": "consumption.disruptor.recours_au_credit_ou_a_l_endettement",
    "question": "consumption.0244",
    "option": "r2",
-   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "enonce": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
    "libelle": "Dette",
    "domaine": "consumption",
    "attribut": "disruptor",
@@ -4773,15 +4773,15 @@
     "service"
    ],
    "refus": "écarté par la réponse « Dette »",
-   "contexte": "question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? » (domaine consumption, niveau A)",
-   "critere": "À la question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? », la personne a répondu « Dette ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "contexte": "question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? » (domaine consumption, niveau A)",
+   "critere": "À la question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? », la personne a répondu « Dette ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {
    "cle": "consumption.disruptor.encombrement",
    "question": "consumption.0244",
    "option": "r3",
-   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "enonce": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
    "libelle": "Encombrement",
    "domaine": "consumption",
    "attribut": "disruptor",
@@ -4796,15 +4796,15 @@
     "service"
    ],
    "refus": "écarté par la réponse « Encombrement »",
-   "contexte": "question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? » (domaine consumption, niveau A)",
-   "critere": "À la question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? », la personne a répondu « Encombrement ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "contexte": "question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? » (domaine consumption, niveau A)",
+   "critere": "À la question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? », la personne a répondu « Encombrement ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {
    "cle": "consumption.disruptor.qualite_faible",
    "question": "consumption.0244",
    "option": "r4",
-   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "enonce": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
    "libelle": "Mauvaise qualité",
    "domaine": "consumption",
    "attribut": "disruptor",
@@ -4819,15 +4819,15 @@
     "service"
    ],
    "refus": "écarté par la réponse « Mauvaise qualité »",
-   "contexte": "question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? » (domaine consumption, niveau A)",
-   "critere": "À la question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? », la personne a répondu « Mauvaise qualité ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "contexte": "question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? » (domaine consumption, niveau A)",
+   "critere": "À la question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? », la personne a répondu « Mauvaise qualité ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {
    "cle": "consumption.disruptor.objet_sans_usage_reel",
    "question": "consumption.0244",
    "option": "r5",
-   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "enonce": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
    "libelle": "Objet inutile",
    "domaine": "consumption",
    "attribut": "disruptor",
@@ -4842,15 +4842,15 @@
     "service"
    ],
    "refus": "écarté par la réponse « Objet inutile »",
-   "contexte": "question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? » (domaine consumption, niveau A)",
-   "critere": "À la question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? », la personne a répondu « Objet inutile ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "contexte": "question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? » (domaine consumption, niveau A)",
+   "critere": "À la question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? », la personne a répondu « Objet inutile ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {
    "cle": "consumption.disruptor.bon_ou_carte_cadeau_impersonnel",
    "question": "consumption.0244",
    "option": "r6",
-   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "enonce": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
    "libelle": "Bon impersonnel",
    "domaine": "consumption",
    "attribut": "disruptor",
@@ -4865,15 +4865,15 @@
     "service"
    ],
    "refus": "écarté par la réponse « Bon impersonnel »",
-   "contexte": "question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? » (domaine consumption, niveau A)",
-   "critere": "À la question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? », la personne a répondu « Bon impersonnel ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "contexte": "question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? » (domaine consumption, niveau A)",
+   "critere": "À la question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? », la personne a répondu « Bon impersonnel ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {
    "cle": "consumption.disruptor.cadeau_non_echangeable",
    "question": "consumption.0244",
    "option": "r7",
-   "enonce": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "enonce": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
    "libelle": "Impossible à échanger",
    "domaine": "consumption",
    "attribut": "disruptor",
@@ -4888,8 +4888,8 @@
     "service"
    ],
    "refus": "écarté par la réponse « Impossible à échanger »",
-   "contexte": "question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? » (domaine consumption, niveau A)",
-   "critere": "À la question « Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ? », la personne a répondu « Impossible à échanger ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "contexte": "question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? » (domaine consumption, niveau A)",
+   "critere": "À la question « Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ? », la personne a répondu « Impossible à échanger ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {

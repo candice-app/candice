@@ -18,6 +18,7 @@ import { memeSujet } from './correspondances';
 import { analyserCondition } from './conditions';
 import { BANQUE } from './banque';
 import { createFact } from '@/lib/knowledge/fact';
+import { contexteDeProjet } from '@/lib/knowledge/read-journal';
 import { factId } from '@/lib/knowledge-write/ids';
 import { supersedeSources } from '@/lib/knowledge-write/supersede';
 import { createSourceRecord } from '@/lib/knowledge/sources';
@@ -112,6 +113,8 @@ export async function prochainesQuestionsPour(
 
 /** Une réponse donnée pour un projet en cours. `value` = JSON { projet, question, option, contrat }. */
 export const FAIT_REPONSE_DE_PROJET = 'discovery.reponse_de_projet';
+/** Un paramètre d'action répondu pour un projet (« pour cet achat… ») : il vit et s'éteint avec lui. */
+export const FAIT_PARAMETRE_DE_PROJET = 'discovery.parametre_de_projet';
 
 const ALIAS = new Map<string, string>((aliasOptions as { alias: { question: string; rang_canonique: string; rang_alias: string }[] }).alias
   .map((a) => [`${a.question}|r${a.rang_alias}`, `r${a.rang_canonique}`] as [string, string]));
@@ -270,16 +273,18 @@ export async function enregistrerReponseFermee(
     //    comme une préférence, elle compterait un jour pour un goût général. Elle est gardée comme
     //    un FAIT rattaché au projet, avec le contrat exact de l'option, et n'entre dans aucune
     //    consolidation. Clos, le projet garde ses réponses ; elles n'ouvrent ni n'interdisent rien.
-    if (input.projet) {
-      if (p.type === 'rien' && p.motif !== 'connaissance_ouverte' && p.motif !== 'contrat_incomplet') { sansEmission.push({ option: o.libelle, motif: p.motif }); continue; }
-      const valeur = JSON.stringify({
-        projet: input.projet.id, type: input.projet.type, branche: input.projet.branche, question: q.id, option: cleOption(o), libelle: o.libelle,
-        contrat: { voie: o.voie, ...(o.famille ? { famille: o.famille } : {}), ...(o.domaine ? { domaine: o.domaine } : {}), ...(o.attribut ? { attribut: o.attribut } : {}),
-          ...(o.valeur ? { valeur: o.valeur } : {}), ...(o.polarite ? { polarite: o.polarite } : {}), ...(o.severite ? { severite: o.severite } : {}) },
-      });
-      facts.push(createFact({ about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, FAIT_REPONSE_DE_PROJET, `${q.id}:${cleOption(o)}`),
-        fact_type: FAIT_REPONSE_DE_PROJET, value: valeur, context: `projet:${input.projet.id}`, source: sourceId, timestamp,
-        confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' }));
+    // ── UNE RÉPONSE DONNÉE POUR UN PROJET GARDE SON SENS, DANS LA PORTÉE DU PROJET. Le contrat de
+    //    l'option s'écrit tel quel — préférence, garde-fou, fait — et son `context` porte le
+    //    projet : les lecteurs généraux l'écartent (read-journal.ts), le lecteur du projet la
+    //    retrouve structurée. Un PARAMÈTRE D'ACTION (« pour cet achat, un budget de… »), qui
+    //    n'écrit rien hors projet, est ici un fait du projet : c'est sa seule raison d'être.
+    const contexte = input.projet ? contexteDeProjet(input.projet.id) : undefined;
+    if (input.projet && p.type === 'rien') {
+      if (p.motif !== 'action_interface') { sansEmission.push({ option: o.libelle, motif: p.motif }); continue; }
+      facts.push(createFact({ about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, FAIT_PARAMETRE_DE_PROJET, `${q.id}:${cleOption(o)}`),
+        fact_type: FAIT_PARAMETRE_DE_PROJET, context: contexte,
+        value: JSON.stringify({ projet: input.projet.id, question: q.id, option: cleOption(o), libelle: o.libelle, ...(o.attribut ? { attribut: o.attribut } : {}), ...(o.valeur ? { valeur: o.valeur } : {}) }),
+        source: sourceId, timestamp, confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' }));
       continue;
     }
     if (p.type === 'fait') {
@@ -287,13 +292,17 @@ export async function enregistrerReponseFermee(
         fact_type: p.fait.factType,
         // La valeur du contrat, avec sa polarité et sa stabilité : un fait « sous condition » ou
         // « temporaire » ne doit pas se relire comme un fait acquis.
-        value: JSON.stringify({ valeur: p.fait.valeur, ...(p.fait.polarite ? { polarite: p.fait.polarite } : {}), ...(p.fait.stabilite ? { stabilite: p.fait.stabilite } : {}), question: q.id, libelle: o.libelle }),
+        value: JSON.stringify({ valeur: p.fait.valeur, ...(p.fait.polarite ? { polarite: p.fait.polarite } : {}), ...(p.fait.stabilite ? { stabilite: p.fait.stabilite } : {}), question: q.id, libelle: o.libelle,
+          ...(input.projet ? { projet: input.projet.id } : {}) }),
+        ...(contexte ? { context: contexte } : {}),
         source: sourceId, timestamp, confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' }));
       continue;
     }
     if (p.type === 'rien') { sansEmission.push({ option: o.libelle, motif: p.motif }); continue; }
     for (const e of [p.evidence, ...(p.autres ?? [])]) evidences.push({
       ...e,
+      // Dans un projet, le contexte EST le projet : c'est lui qui borne la portée de la preuve.
+      ...(contexte ? { context: contexte } : {}),
       about, ownerId: asUserId(input.userId),
       // ⚠ L'IDENTITÉ D'UNE PREUVE EST CELLE DE L'OPTION COCHÉE, pas seulement celle de sa cible.
       //    Dans une réponse multiple, plusieurs options visent la MÊME cible avec des valeurs
@@ -786,6 +795,27 @@ export async function sujetsRefusesPar(client: ClientSujets, input: { readonly u
  * questions de niveau C de son domaine ; terminé ou annulé, il ne les ouvre plus.
  * ──────────────────────────────────────────────────────────────────────────── */
 const BRANCHES_CONNUES = new Set(BANQUE.map((q) => q.branche));
+
+/**
+ * CE QUI A ÉTÉ DIT POUR UN PROJET, sous sa forme structurée : les preuves (préférences,
+ * garde-fous) que leur contrat prévoit, et les faits et paramètres d'action. C'est le SEUL
+ * lecteur qui les rend ; tous les lecteurs généraux les écartent.
+ */
+export async function connaissancesDuProjet(
+  client: ClientSujets, input: { readonly userId: string; readonly projetId: string },
+): Promise<{ readonly preuves: readonly Evidence[]; readonly faits: readonly { readonly type: string; readonly valeur: unknown }[] }> {
+  const { readJournalEvidences, contexteDeProjet: ctx } = await import('@/lib/knowledge/read-journal');
+  const preuves = await readJournalEvidences(client as never, { userId: input.userId, aboutId: input.userId, projet: input.projetId });
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { fact_type: string; value: string; context: string | null; about_id: string }[] | null; error: { message: string } | null }> } } };
+  };
+  const { data, error } = await lecture.from('knowledge_facts').select('fact_type, value, context, about_id').eq('user_id', input.userId).is('superseded_at', null);
+  if (error) throw new Error(`lecture des faits du projet impossible : ${error.message}`);
+  const faits = (data ?? []).filter((f) => f.about_id === input.userId && f.context === ctx(input.projetId) && (f.fact_type.startsWith('discovery.fait.') || f.fact_type === FAIT_PARAMETRE_DE_PROJET))
+    .map((f) => { let valeur: unknown = f.value; try { valeur = JSON.parse(f.value); } catch { /* valeur brute */ } return { type: f.fact_type, valeur }; });
+  return { preuves, faits };
+}
 
 /** Ouvre un projet. Refuse une branche inconnue de la banque et un objet vide. */
 export async function ouvrirProjet(

@@ -8,7 +8,7 @@ import { BANQUE, question } from '../../src/lib/discovery/open-v3/banque.ts';
 import { cleOption } from '../../src/lib/discovery/open-v3/cle-option.ts';
 import { produireDepuisOption } from '../../src/lib/discovery/open-v3/produire.ts';
 import { requiertProjet } from '../../src/lib/discovery/open-v3/selection.ts';
-import { enregistrerReponseFermee, enregistrerReponseOuverte, ouvrirProjet, rejouerLecturesEnAttente } from '../../src/lib/discovery/open-v3/service.ts';
+import { enregistrerReponseFermee, enregistrerReponseOuverte, ouvrirProjet, rejouerLecturesEnAttente, connaissancesDuProjet } from '../../src/lib/discovery/open-v3/service.ts';
 import { clarificationsOuvertes, repondreClarification, declarerAnimal, entitesConnues } from '../../src/lib/discovery/open-v3/destinations-ecriture.ts';
 import { lirePortrait } from '../../src/lib/knowledge/portrait.ts';
 import { faitsDiscoveryPourPortrait } from '../../src/lib/discovery/open-v3/faits-portrait.ts';
@@ -114,10 +114,13 @@ const seg = (declencheur: string, passage: string, attitude: string, plus: Recor
   const o = qC.options.find((x) => produireDepuisOption(qC, x).type === 'evidence')!;
   const { projet } = await ouvrirProjet(c.client as never, { userId: c.userId, type: requiertProjet(qC) === 'sejour' ? 'sejour' : 'achat', branche: 'craft', objet: 'Un vase pour le salon' });
   await enregistrerReponseFermee(c.client as never, { userId: c.userId, questionId: qC.id, clesOptions: [cleOption(o)], acteId: acte(), projet });
-  const f = (await faits(c)).filter((x) => x.fact_type === 'discovery.reponse_de_projet');
-  v.verifier(f.length === 1 && f[0].context === `projet:${projet.id}`, `5 : ${qC.id} → un fait rattaché au projet`, JSON.stringify(f));
-  v.verifier((await preuves(c)).length === 0, '5 : aucune préférence générale n’en est tirée');
+  const { data: ev } = await c.client.from('knowledge_evidences').select('target_family,target_construct,context').eq('user_id', c.userId);
+  v.verifier(ev!.length >= 1 && ev!.every((e) => e.context === `projet:${projet.id}`), `5 : ${qC.id} → la preuve du contrat est écrite, dans la portée du projet`, JSON.stringify(ev));
+  const portrait = await lirePortrait(c.client as never, { userId: c.userId });
+  v.verifier(portrait.nbPreuves === 0, '5 : le portrait général ne la lit pas — aucune préférence générale n’en est tirée', String(portrait.nbPreuves));
+  const duProjet = await connaissancesDuProjet(c.client as never, { userId: c.userId, projetId: projet.id });
+  v.verifier(duProjet.preuves.length === ev!.length, '5 : le lecteur du projet la rend, structurée');
   const rendu = faitsDiscoveryPourPortrait(await readSocleFacts(c.client as never, c.userId, { discovery: 'seulement' }));
-  v.verifier(rendu.lignes.length === 0 && rendu.ecartes.reponsesDeProjet === 1, '5 : le portrait ne la reçoit pas comme connaissance générale');
+  v.verifier(rendu.lignes.length === 0, '5 : rien du projet n’est rendu au portrait comme fait général');
 }
 v.bilan();

@@ -158,8 +158,17 @@ export function requiertProjet(q: QuestionV3): 'achat' | 'sejour' | 'tout' | nul
   return null;
 }
 
+/**
+ * UNE QUESTION D'ORIENTATION demande la place d'un domaine, ou ouvre sa branche : elle sert à
+ * savoir SI le domaine concerne la personne, pas à le détailler. Critère lu sur la ligne du
+ * référentiel : une option mesure `domain_importance`, ou la condition est une ouverture de branche.
+ */
+export function estQuestionDOrientation(q: QuestionV3): boolean {
+  return /^ouverture branche/i.test(q.condition_emission ?? '') || q.options.some((o) => o.attribut === 'domain_importance');
+}
+
 export type MotifDExclusion =
-  | 'deja_posee' | 'sterile' | 'parametre_non_resolu' | 'archivee' | 'domaine_ecarte' | 'fermee' | 'indecidable'
+  | 'deja_posee' | 'sterile' | 'parametre_non_resolu' | 'archivee' | 'domaine_ecarte' | 'orientation_seulement' | 'fermee' | 'indecidable'
   | `coexistence_${Exclude<VerdictCoexistence, { poser: true }>['motif']}`;
 
 /**
@@ -188,6 +197,10 @@ export function motifDExclusion(
   // UN DOMAINE QUE LA PERSONNE A ÉCARTÉ n'est plus proposé d'initiative. Sa propre démarche
   // (« explorer ce sujet ») est la seule chose qui passe outre.
   if (etat.nePasCreuser.has(q.branche) && !etat.sujetsChoisis?.has(q.branche)) return 'domaine_ecarte';
+  // UNE CATÉGORIE COMPOSITE N'OUVRE QUE L'ORIENTATION. « Tech & jeux » ne dit pas si la personne
+  // joue aux jeux vidéo, aux jeux de société, ou ni l'un ni l'autre : seules les questions qui
+  // le lui demandent sont posées. Les autres attendent sa réponse, ou sa propre démarche.
+  if (etat.orientationSeulement?.has(q.branche) && !estQuestionDOrientation(q)) return 'orientation_seulement';
   const verdict = verdictDe(q, etat, partage);
   if (verdict === 'fermer') return 'fermee';
   if (verdict === 'indecidable') return 'indecidable';

@@ -7,6 +7,7 @@
 //   3. Recalcul : « Très peu de place » pour le sport, en cours de session — la question de
 //      sport suivante n'est pas servie, et n'est pas marquée posée.
 //   4. Contre-exemples : rien de coché ; question hors banque ; compte d'un autre.
+import { estQuestionDOrientation } from '../../src/lib/discovery/open-v3/selection.ts';
 import { compteLocal, verificateur } from './_compte-local.mts';
 import { cookiesDe, poster, obtenirLot, repondre } from './_session-http.mts';
 import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-interests.ts';
@@ -100,37 +101,39 @@ console.log('\n══ 2. Explorer un sujet');
 // ── 3. « TRÈS PEU DE PLACE » N'EST PAS UN REFUS ; LE REFUS EST UN ACTE (décision du 19 nov.)
 console.log('\n══ 3. Faible place, refus explicite, recalcul');
 {
+  // Une catégorie SIMPLE (« Bien-être ») : elle ouvre pleinement sa branche.
+  const BR = 'wellbeing';
   const c = await compteLocal('portes-nature'); const cookie = await cookiesDe(c.email, c.motDePasse);
-  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'nature', label: 'Nature & jardinage' }], timestamp: ts() });
-  const avant = (await admissibles(c)).filter((q) => q.branche === 'nature').map((q) => q.id);
-  v.verifier(avant.includes('nature.0210') && avant.includes('nature.0211'), `« Nature » cochée : ${avant.length} questions de nature admissibles`);
-  v.verifier(!(await admissibles(c)).some((q) => q.branche === 'garden'), '« Nature & jardinage » n’ouvre pas le jardinage (arbitrage en attente, dit dans la table)');
-  // Le serveur propose ; on répond à ce qu'il propose.
+  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'bienetre', label: 'Bien-être' }], timestamp: ts() });
+  const Q1 = BANQUE.find((q) => q.branche === BR && /^Quelle place /.test(q.enonce))!;
+  const avant = (await admissibles(c)).filter((q) => q.branche === BR).map((q) => q.id);
+  v.verifier(avant.includes(Q1.id) && avant.length > 1, `« Bien-être » cochée : ${avant.length} questions de bien-être admissibles`);
   let lot = await obtenirLot(cookie);
-  v.verifier(lot?.question.question_key === 'nature.0210', 'la première question proposée est celle de la place de la nature', lot?.question.question_key);
-  v.verifier(question('nature.0210')!.enonce === 'Quelle place la nature et le plein air occupent-ils réellement dans ta vie ?', 'son énoncé est celui de la révision éditoriale');
-  const r5 = question('nature.0210')!.options.find((o) => o.libelle === 'Très peu de place')!;
-  const r = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'nature.0210', answer: [`r${r5.rang}`] });
-  v.verifier(r.status === 200 && r.next?.question.question_key === 'nature.0211', 'elle répond « Très peu de place » : la question de nature suivante RESTE posée — une faible place n’interdit rien', `suivante = ${r.next?.question.question_key}`);
-  const pref = (await c.client.from('knowledge_evidences').select('target_construct, polarity, strength').eq('user_id', c.userId).eq('target_construct', 'PREFERENCE.nature.domain_importance')).data ?? [];
+  v.verifier(lot?.question.question_key === Q1.id, 'la première question proposée est celle de la place du bien-être', lot?.question.question_key);
+  v.verifier(Q1.enonce === 'Quelle place le bien-être et le repos occupent-ils réellement dans ta vie ?', 'son énoncé est celui de la révision éditoriale');
+  const r5 = Q1.options.find((o) => o.libelle === 'Très peu de place')!;
+  const r = await repondre(cookie, { jeton: lot!.jeton, questionKey: Q1.id, answer: [`r${r5.rang}`] });
+  const Q2 = r.next?.question.question_key ?? '';
+  v.verifier(r.status === 200 && question(Q2)?.branche === BR, 'elle répond « Très peu de place » : la question de bien-être suivante RESTE posée — une faible place n’interdit rien', `suivante = ${Q2}`);
+  const pref = (await c.client.from('knowledge_evidences').select('target_construct, polarity, strength').eq('user_id', c.userId).like('target_construct', 'PREFERENCE.%.domain_importance')).data ?? [];
   v.verifier(pref.length === 1 && pref[0].polarity === 'absence_de_critere' && pref[0].strength !== 'weak', 'au journal : une faible place, ni rejet ni preuve « faible »', JSON.stringify(pref));
   const e1 = await etatDe(c);
-  v.verifier(e1.placeFaible?.has('nature') === true && !e1.nePasCreuser.has('nature'), 'l’état retient une place faible, et aucun refus');
-  v.verifier((await admissibles(c)).some((q) => q.branche === 'nature'), 'les questions de nature restent admissibles');
+  v.verifier(e1.placeFaible?.has(BR) === true && !e1.nePasCreuser.has(BR), 'l’état retient une place faible, et aucun refus');
+  v.verifier((await admissibles(c)).some((q) => q.branche === BR), 'les questions de bien-être restent admissibles');
   const interet = (await c.client.from('knowledge_evidences').select('target_construct').eq('user_id', c.userId).eq('target_family', 'INTEREST')).data ?? [];
-  v.verifier(interet.some((x) => x.target_construct === 'nature'), 'réponse contradictoire : la case cochée et la faible place sont conservées toutes deux');
+  v.verifier(interet.length >= 1, 'réponse contradictoire : la case cochée et la faible place sont conservées toutes deux');
 
   // LE REFUS EXPLICITE : le seul acte qui arrête les questions du sujet.
   const n0 = await preuves(c);
-  const refus = await poster('/api/discovery/sujet', cookie, { branche: 'nature', refuse: true });
-  v.verifier(refus.status === 200 && (await preuves(c)) === n0, 'elle demande à ne plus être questionnée sur la nature : acte enregistré, aucune préférence écrite');
-  v.verifier(!(await admissibles(c)).some((q) => q.branche === 'nature'), 'plus aucune question de nature n’est admissible');
-  const apresRefus = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'nature.0211', answer: [`r${question('nature.0211')!.options[0].rang}`] });
-  v.verifier(apresRefus.status === 409 && apresRefus.motif === 'conditions_non_tenues' && (await preuves(c)) === n0, 'la question de nature restée à l’écran est refusée, rien n’est écrit', `HTTP ${apresRefus.status} ${apresRefus.motif}`);
-  v.verifier(!(await etatDe(c)).dejaPosees.has('nature.0211'), 'la question refusée n’est pas marquée posée');
-  const reprise = await poster('/api/discovery/sujet', cookie, { branche: 'nature', refuse: false });
-  v.verifier(reprise.status === 200 && (await admissibles(c)).some((q) => q.branche === 'nature'), 'elle accepte de nouveau : les questions redeviennent admissibles');
-  const double = await poster('/api/discovery/sujet', cookie, { branche: 'nature', refuse: true, choisi: true });
+  const refus = await poster('/api/discovery/sujet', cookie, { branche: BR, refuse: true });
+  v.verifier(refus.status === 200 && (await preuves(c)) === n0, 'elle demande à ne plus être questionnée sur le bien-être : acte enregistré, aucune préférence écrite');
+  v.verifier(!(await admissibles(c)).some((q) => q.branche === BR), 'plus aucune question de bien-être n’est admissible');
+  const apresRefus = await repondre(cookie, { jeton: lot!.jeton, questionKey: Q2, answer: [`r${question(Q2)!.options[0].rang}`] });
+  v.verifier(apresRefus.status === 409 && apresRefus.motif === 'conditions_non_tenues' && (await preuves(c)) === n0, 'la question de bien-être restée à l’écran est refusée, rien n’est écrit', `HTTP ${apresRefus.status} ${apresRefus.motif}`);
+  v.verifier(!(await etatDe(c)).dejaPosees.has(Q2), 'la question refusée n’est pas marquée posée');
+  const reprise = await poster('/api/discovery/sujet', cookie, { branche: BR, refuse: false });
+  v.verifier(reprise.status === 200 && (await admissibles(c)).some((q) => q.branche === BR), 'elle accepte de nouveau : les questions redeviennent admissibles');
+  const double = await poster('/api/discovery/sujet', cookie, { branche: BR, refuse: true, choisi: true });
   v.verifier(double.status === 400, 'refuser et choisir dans la même requête est refusé (400)');
 
   // Non-réponse : passer une question n'écrit rien et elle ne revient pas.
@@ -155,5 +158,27 @@ console.log('\n══ 4. Donnée inaccessible');
   const cb = await cookiesDe(b.email, b.motDePasse);
   const liste = await poster('/api/discovery/projet', cb, null, 'GET');
   v.verifier(((liste.json as { projets: unknown[] }).projets ?? []).length === 0, 'la route des projets ne rend que ceux de l’appelant');
+}
+// ── CATÉGORIE COMPOSITE (décision du 19 nov., 09h31) : « Nature & jardinage » annonce deux familles
+//    et n'en prouve aucune. Seules les questions d'orientation sont posées, jusqu'au signal propre.
+console.log('\n══ Catégorie composite : orientation seulement');
+{
+  const c = await compteLocal('portes-composite'); const cookie = await cookiesDe(c.email, c.motDePasse);
+  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'nature', label: 'Nature & jardinage' }], timestamp: ts() });
+  const n0 = await preuves(c);
+  const adm = (await admissibles(c)).filter((q) => q.branche === 'nature' || q.branche === 'garden');
+  v.verifier(adm.length > 0 && adm.every(estQuestionDOrientation), `seules des questions d’orientation sont admissibles en nature et en jardinage (${adm.map((q) => q.id).join(', ')})`);
+  v.verifier(adm.some((q) => q.branche === 'garden') && adm.some((q) => q.branche === 'nature'), 'les deux familles annoncées ont leur question d’orientation');
+  v.verifier((await preuves(c)) === n0, 'cette ouverture n’écrit aucune connaissance');
+  const lot = await obtenirLot(cookie);
+  const q1 = question(lot!.question.question_key)!;
+  v.verifier(estQuestionDOrientation(q1), 'la première question proposée est une question d’orientation', q1.id);
+  const positive = q1.options.find((o) => o.polarite === 'positive')!;
+  const r = await repondre(cookie, { jeton: lot!.jeton, questionKey: q1.id, answer: [`r${positive.rang}`] });
+  v.verifier(r.status === 200, `elle répond « ${positive.libelle} » à « ${q1.enonce} »`);
+  const apres = await admissibles(c);
+  v.verifier(apres.some((q) => q.branche === q1.branche && !estQuestionDOrientation(q)), `réponse positive : les questions spécialisées de « ${q1.branche} » s’ouvrent`);
+  const autre = q1.branche === 'nature' ? 'garden' : 'nature';
+  v.verifier(apres.filter((q) => q.branche === autre).every(estQuestionDOrientation), `l’autre famille (« ${autre} ») reste à l’orientation : rien ne la prouve`);
 }
 v.bilan();

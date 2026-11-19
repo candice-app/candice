@@ -90,6 +90,9 @@ export async function readResolvedEvidences(
   // SUPERSESSION (§48septies) : une evidence CORRIGÉE (superseded_at non null) est REMPLACÉE — exclue de
   // toute restitution, AVANT même la préséance. Le journal la garde ; aucun lecteur ne la rend.
   rows = rows.filter((r) => !r.superseded_at);
+  // Une preuve dite POUR un projet précis (`context` = `projet:<id>`) n'est pas une connaissance
+  // générale : aucun lecteur de ce portail ne la rend (voir read-journal.ts).
+  rows = rows.filter((r) => !(typeof r.context === 'string' && r.context.startsWith('projet:')));
   if (opts.contexts) {
     const set = new Set(opts.contexts);
     rows = rows.filter((r) => set.has(r.context));

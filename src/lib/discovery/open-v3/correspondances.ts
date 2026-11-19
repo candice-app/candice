@@ -102,20 +102,22 @@ for (const q of BANQUE) for (const c of analyserCondition(q.condition_emission).
 export const TAGS_ATTENDUS: ReadonlyMap<string, ReadonlySet<string>> = tags;
 
 // ── 4. CE QU'UNE CATÉGORIE D'ONBOARDING, OU UN DOMAINE LU DANS UN TEXTE LIBRE, OUVRE.
-interface Ouverture { branches: string[]; statut: string; signaux?: { question: string }[] }
+interface Ouverture { branches: string[]; statut: string; signaux?: { question: string }[]; orientation?: string[] }
 const O = ouvertures as unknown as {
   categories_onboarding: (Ouverture & { id: string; libelle: string })[];
   domaines_journal: (Ouverture & { journal: string })[];
   questions_qui_presument_l_alcool: { questions: { question: string; raison: string }[] };
 };
 const verifier = (o: Ouverture, qui: string) => {
-  for (const b of o.branches) if (!EXISTE.has(b)) throw new Error(`ouvertures-explicites.json : ${qui} ouvre « ${b} », absente de la banque`);
+  for (const b of [...o.branches, ...(o.orientation ?? [])]) if (!EXISTE.has(b)) throw new Error(`ouvertures-explicites.json : ${qui} ouvre « ${b} », absente de la banque`);
   for (const s of o.signaux ?? []) if (!BANQUE.some((q) => q.id === s.question)) throw new Error(`ouvertures-explicites.json : ${qui} signale « ${s.question} », absente de la banque`);
 };
 const parCategorie = new Map<string, Ouverture>(); const parJournal = new Map<string, Ouverture>();
 for (const c of O.categories_onboarding) { verifier(c, c.id); if (c.statut === 'etablie') { parCategorie.set(clef(c.id), c); parCategorie.set(clef(c.libelle), c); } }
 for (const d of O.domaines_journal) { verifier(d, d.journal); if (d.statut === 'etablie') { parJournal.set(clef(d.journal), d); parJournal.set(clef(d.journal).replace(/_/g, ' '), d); } }
-const rendre = (o: Ouverture | undefined) => ({ branches: o?.branches ?? [], questions: (o?.signaux ?? []).map((s) => s.question) });
+// `orientation` : branches qu'une catégorie COMPOSITE (« Mode & beauté », « Tech & jeux ») n'ouvre
+// que pour leurs questions d'orientation. Elle annonce plusieurs familles et n'en prouve aucune.
+const rendre = (o: Ouverture | undefined) => ({ branches: o?.branches ?? [], questions: (o?.signaux ?? []).map((s) => s.question), orientation: o?.orientation ?? [] });
 /** Ce qu'ouvre un intérêt écrit sous ce sujet (identifiant de catégorie ou libellé). */
 export const ouvertParCategorie = (sujet: string) => rendre(parCategorie.get(clef(sujet)));
 /** Ce qu'ouvre un domaine parent du journal (`books_literature`). */

@@ -84,9 +84,10 @@ describe('ce qu’une catégorie de l’onboarding ouvre — et ce qu’elle n�
     const lot = prochainesQuestions(e, { combien: 6 }).choix.map((c) => c.question.branche);
     expect(lot.length).toBeLessThanOrEqual(2);
   });
-  it('« Ciné & séries » ouvre le cinéma ET les séries', () => {
-    const b = branchesDe(aCoche('cinema'));
-    for (const x of ['cinema2', 'series2']) expect(b.has(x), x).toBe(true);
+  it('« Ciné & séries » annonce le cinéma ET les séries, pour leurs questions d’orientation (catégorie composite, décision de 09h31)', () => {
+    const o = ouvertParCategorie('cinema');
+    expect(o.branches).toEqual([]);
+    for (const x of ['cinema', 'cinema2', 'series', 'series2']) expect(o.orientation, x).toContain(x);
   });
   it('« Vin & spiritueux » n’ouvre que la question sur le vin — pas le reste des boissons', () => {
     const e = aCoche('vin');
@@ -158,12 +159,24 @@ describe('« très peu de place » n’est ni un rejet ni un refus', () => {
 });
 
 describe('révision éditoriale : plus aucun énoncé au gabarit mal formé n’est servi', () => {
-  it('les 90 énoncés corrigés se lisent ; les 5 isolés sont nommés', () => {
+  it('les 90 énoncés corrigés se lisent ; les 5 de « consommation et valeur » sont réécrits autour du rapport aux objets (révision 5)', () => {
     expect(question('reading.0106')!.enonce).toBe('Quelle place la lecture occupe-t-elle réellement dans ta vie ?');
     expect(question('series.0086')!.enonce).toBe('Quelle place les séries occupent-elles réellement dans ta vie ?');
     expect(question('sport.0184')!.enonce).toBe('Qu’est-ce que tu recherches d’abord dans le sport et l’activité physique ?');
-    const restants = BANQUE.filter((q) => /culture — |occupe-t-il réellement dans ta vie/.test(q.enonce) && !/^Quelle place (le|l’)/.test(q.enonce)).map((q) => q.id);
-    expect(restants).toEqual(['consumption.0242']);
-    expect(BANQUE.filter((q) => /consommation et valeur/.test(q.enonce)).map((q) => q.id).sort()).toEqual(['consumption.0242', 'consumption.0243', 'consumption.0244', 'consumption.0245', 'consumption.0246']);
+    expect(BANQUE.filter((q) => /culture — |occupe-t-il réellement dans ta vie/.test(q.enonce) && !/^Quelle place (le|l’)/.test(q.enonce))).toEqual([]);
+    expect(BANQUE.filter((q) => /consommation et valeur/.test(q.enonce))).toEqual([]);
+    expect(question('consumption.0242')!.enonce).toBe('Quelle place le choix de tes objets occupe-t-il réellement dans ta vie ?');
+    expect(question('consumption.0243')!.enonce).toBe('Quand tu choisis un objet, qu’est-ce que tu recherches d’abord ?');
+    expect(question('consumption.0244')!.enonce).toBe('Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?');
+    // Options et contrats inchangés : seule la phrase a été réécrite.
+    expect(question('consumption.0243')!.options.map((o) => o.libelle)).toEqual(['Qualité', 'Durée de vie', 'Design', 'Utilité', 'Histoire', 'Marque', 'Fabrication', 'Émotion']);
+  });
+  it('« faible place » n’est pas un rejet, au-delà des dix-neuf questions à gabarit (révision 5)', () => {
+    const pol = (id: string, libelle: string) => question(id)!.options.find((o) => o.libelle === libelle)!.polarite;
+    expect(pol('comics.0414', 'J’en lis très peu')).toBe('absence_de_critere');
+    expect(pol('THE-01', 'Presque jamais')).toBe('absence_de_critere');
+    expect(pol('LEA-01', 'Assez peu de place dans ma vie')).toBe('absence_de_critere');
+    // Un rapport déclaré (« ce n'est pas mon truc ») n'est pas une mesure de place : non corrigé, à arbitrer.
+    expect(pol('sportp.0503', 'Ce n’est pas vraiment mon truc')).toBe('rejet');
   });
 });

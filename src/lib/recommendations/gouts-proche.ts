@@ -20,6 +20,7 @@
 //      inspirée par ces déclarations par une formule qui n'en dit rien et n'invente aucune
 //      autre raison (engine.ts).
 import { isSelfDeclaredAct, type SourceType } from '../knowledge/sources';
+import { estContexteDeProjet } from '../knowledge/read-journal';
 import { TYPE_USAGE, USAGE_GOUTS } from '../consent/usage-profil';
 export { USAGE_GOUTS };
 import { question as questionParId } from '../discovery/open-v3/banque';
@@ -66,7 +67,8 @@ export async function lireGoutsDuProche(
     .select('source_id, target_family, target_construct, subject_label, entity_label, relation, preference_value, polarity, stability, assertion_status, raw_information, context')
     .eq('user_id', proche).eq('about_kind', 'account').eq('about_id', proche).is('superseded_at', null);
   if (eJ) return REFUS('lecture_impossible');
-  const utiles = (lignes ?? []).filter((l) => ['INTEREST', 'ENTITY', 'PREFERENCE'].includes(String(l.target_family)));
+  // Une préférence dite POUR un projet précis n'est pas un goût général.
+  const utiles = (lignes ?? []).filter((l) => !estContexteDeProjet(l.context)).filter((l) => ['INTEREST', 'ENTITY', 'PREFERENCE'].includes(String(l.target_family)));
   if (utiles.length === 0) return { autorise: true, motif: 'autorise', gouts: [], ecartes: {} };
   const { data: sources, error: eS } = await admin.from('knowledge_sources').select('id, source_type, question_code, ts').in('id', [...new Set(utiles.map((l) => String(l.source_id)))]);
   if (eS) return REFUS('lecture_impossible');

@@ -14,6 +14,8 @@ import { poolDe } from './coexistence';
 import { ALIAS_BRANCHES, SOUS_PARTIES, TAGS_ATTENDUS, memeSujet, ouvertParCategorie, ouvertParDomaineJournal } from './correspondances';
 import { BANQUE } from './banque';
 import { produireDepuisOption } from './produire';
+import { estQuestionDOrientation } from './selection';
+import { cleOption } from './cle-option';
 
 /* ────────────────────────────────────────────────────────────────────────────
  * LA PROFONDEUR D'UNE BRANCHE.
@@ -142,6 +144,8 @@ export async function lireEtat(
   // Les branches qu'un INTÉRÊT a ouvertes : c'est à elles que « un seul domaine visible »
   // s'applique (les deux générations, la branche de la refonte de même nom).
   const ouvertesParInteret = new Set<string>();
+  // Branches qu'une catégorie composite n'ouvre que pour leurs questions d'orientation.
+  const enOrientation = new Set<string>();
   if (portrait) {
     // UN INTÉRÊT OUVRE CE QUE LA TABLE EXPLICITE DIT QU'IL OUVRE, et rien d'autre.
     //   · son sujet ou son libellé EST le nom d'une branche (« lecture », « voyage ») ;
@@ -160,16 +164,21 @@ export async function lireEtat(
         //    « Enfants », qui parle de ses propres enfants. Un intérêt qui porte un domaine
         //    parent n'ouvre donc que ce domaine ; son sujet reste un tag, rien de plus.
         if (parent) continue;
+        const o = ouvertParCategorie(k);
+        // UNE CATÉGORIE COMPOSITE N'EST PAS UN INTÉRÊT POUR UNE BRANCHE, même quand elle porte le
+        // nom de l'une d'elles (« nature », « tech ») : elle n'ouvre que l'orientation.
+        if (o.orientation.length > 0) { for (const b of o.orientation) enOrientation.add(b); for (const q of o.questions) questionsSignalees.add(q); continue; }
         branchesOuvertes.add(k);
         for (const b of ALIAS_BRANCHES.get(k) ?? []) ouvertesParInteret.add(b);
-        const o = ouvertParCategorie(k);
         for (const b of o.branches) ouvertesParInteret.add(b);
+        for (const b of o.orientation) enOrientation.add(b);
         for (const q of o.questions) questionsSignalees.add(q);
       }
       if (parent) {
-        branchesOuvertes.add(parent);
         const o = ouvertParDomaineJournal(parent);
+        if (o.orientation.length === 0) branchesOuvertes.add(parent);
         for (const b of o.branches) ouvertesParInteret.add(b);
+        for (const b of o.orientation) enOrientation.add(b);
         for (const q of o.questions) questionsSignalees.add(q);
       }
     }
@@ -220,6 +229,9 @@ export async function lireEtat(
   //       écartée par la personne ne revient pas lui être resservie.
   const dejaPosees = new Set<string>();
   const optionsChoisies = new Map<string, Set<string>>();
+  // La dernière réponse fermée à chaque question (clés d'options) : sert à savoir si une question
+  // d'orientation a reçu une réponse positive.
+  const dernieresReponses = new Map<string, Set<string>>();
   let dernierePosee: string | undefined; let dernierMoment = '';
   const reponsesParBranche = new Map<string, number>();
   const repondues = new Set<string>();
@@ -283,6 +295,7 @@ export async function lireEtat(
       }
       dejaPosees.add(id); repondues.add(id);
       if (SELECTEURS.has(id) && d.option_ref) optionsChoisies.set(id, new Set(d.option_ref.split(',').filter(Boolean)));
+      if (d.option_ref) dernieresReponses.set(id, new Set(d.option_ref.split(',').filter(Boolean)));
     }
   } catch (e) {
     manques.push(`progression illisible (réponses du journal : ${e instanceof Error ? e.message : String(e)}) — risque de reposer une question déjà vue`);
@@ -368,6 +381,21 @@ export async function lireEtat(
     manques.push(`rapport à l'alcool inconnu (${e instanceof Error ? e.message : String(e)}) — les questions alcool restent fermées`);
   }
 
+  // ── ORIENTATION SEULEMENT (décision du 19 nov.). Une branche annoncée par une catégorie
+  //    composite, et que RIEN D'AUTRE n'ouvre (ni un intérêt propre, ni un autre domaine, ni la
+  //    démarche de la personne), ne s'ouvre que pour ses questions d'orientation.
+  const orientationSeulement = new Set<string>();
+  //    LE SIGNAL PROPRE le plus direct : la personne a répondu POSITIVEMENT à une question
+  //    d'orientation de cette famille (« Quelle place les jeux vidéo… — Un intérêt régulier »).
+  const orienteePositivement = (b: string) => BANQUE.some((q) => memeSujet(b).includes(q.branche) && estQuestionDOrientation(q)
+    && q.options.some((o) => o.polarite === 'positive' && dernieresReponses.get(q.id)?.has(cleOption(o))));
+  for (const b of enOrientation) {
+    // (Le tag `INTEREST.<branche>` ne compte pas : la catégorie composite « nature » le pose
+    //  elle-même, sous le même nom que la branche.)
+    if (branchesOuvertes.has(b) || sujetsChoisis.has(b)) continue;
+    branchesOuvertes.add(b);
+    if (!orienteePositivement(b)) orientationSeulement.add(b);
+  }
   return {
     etat: {
       tags, nePasCreuser, branchesOuvertes, niveauParBranche,
@@ -377,7 +405,7 @@ export async function lireEtat(
       // ouvrirait des questions sur une supposition.
       contextesConnus: new Set(), contextesActifs: new Set(),
       sujetsChoisis, optionsChoisies, ...(projetsLus ? { projets: projetsLus } : {}), ...(dernierePosee ? { dernierePosee } : {}),
-      aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES, questionsSignalees, placeFaible,
+      aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES, questionsSignalees, placeFaible, orientationSeulement,
     },
     manques,
   };

@@ -1,5 +1,5 @@
 {
- "version": "2026-11-19.1",
+ "version": "2026-11-19.2",
  "note": "Table FIGÉE. Ce qu’une catégorie d’onboarding ou un domaine lu dans un texte libre OUVRE. Ouvrir une branche permet de poser ses questions : cela n’écrit aucune préférence. Une ligne « hypothese » n’ouvre rien.",
  "categories_onboarding": [
   {
@@ -61,15 +61,18 @@
   {
    "id": "cinema",
    "libelle": "Ciné & séries",
-   "branches": [
+   "branches": [],
+   "statut": "etablie",
+   "source": "décision d’Estelle du 19 nov. (09h31, catégories composites)",
+   "justification": "Catégorie COMPOSITE : elle annonce plusieurs familles et ne prouve une préférence pour aucune. Elle ouvre les questions d’ORIENTATION de chacune (place du domaine, ouverture de branche) ; les questions spécialisées attendent un signal propre à la famille. Aucune connaissance n’est écrite du fait de cette ouverture.",
+   "source_precedente": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; décision d’Estelle du 19 nov. (correspondances d’exploration)",
+   "orientation": [
     "cinema",
     "cinema2",
     "series",
     "series2"
    ],
-   "statut": "etablie",
-   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; décision d’Estelle du 19 nov. (correspondances d’exploration)",
-   "justification": "Règles écrites : « Cinéma sélectionné », « Séries sélectionnées ou citées ». La catégorie nomme les deux ; Estelle valide d’explorer le cinéma et les séries depuis « Ciné & séries ». La coexistence des générations (onglet 13) décide ensuite quelles questions se posent."
+   "composite": true
   },
   {
    "id": "art",
@@ -105,13 +108,10 @@
   {
    "id": "mode",
    "libelle": "Mode & beauté",
-   "branches": [
-    "fashion",
-    "fashion2"
-   ],
+   "branches": [],
    "statut": "etablie",
-   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
-   "justification": "Règle écrite : « Mode sélectionnée ».",
+   "source": "décision d’Estelle du 19 nov. (09h31, catégories composites)",
+   "justification": "Catégorie COMPOSITE : elle annonce plusieurs familles et ne prouve une préférence pour aucune. Elle ouvre les questions d’ORIENTATION de chacune (place du domaine, ouverture de branche) ; les questions spécialisées attendent un signal propre à la famille. Aucune connaissance n’est écrite du fait de cette ouverture.",
    "non_ouvertes": [
     {
      "branche": "beauty2",
@@ -134,43 +134,62 @@
      "branche": "watch",
      "raison": "« Ne pas ouvrir automatiquement parce que la personne aime le luxe ou la mode. »"
     }
-   ]
+   ],
+   "source_precedente": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "orientation": [
+    "fashion",
+    "fashion2",
+    "beauty",
+    "beauty2"
+   ],
+   "composite": true
   },
   {
    "id": "tech",
    "libelle": "Tech & jeux",
-   "branches": [
-    "tech",
-    "tech2",
-    "games"
-   ],
+   "branches": [],
    "statut": "etablie",
-   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
-   "justification": "La catégorie porte le nom officiel de la branche (« Tech »). Règle écrite de Jeux de société : « Jeux ou tech sélectionnés ».",
+   "source": "décision d’Estelle du 19 nov. (09h31, catégories composites)",
+   "justification": "Catégorie COMPOSITE : elle annonce plusieurs familles et ne prouve une préférence pour aucune. Elle ouvre les questions d’ORIENTATION de chacune (place du domaine, ouverture de branche) ; les questions spécialisées attendent un signal propre à la famille. Aucune connaissance n’est écrite du fait de cette ouverture.",
    "non_ouvertes": [
     {
      "branche": "gaming2",
      "raison": "L’ouverture de Gaming porte « NE JAMAIS ouvrir par défaut ». À DÉCIDER : « jeux », dans « Tech & jeux », désigne-t-il aussi les jeux vidéo ?",
      "a_decider": true
     }
-   ]
+   ],
+   "source_precedente": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "orientation": [
+    "tech",
+    "tech2",
+    "gaming",
+    "gaming2",
+    "Gaming",
+    "Jeux de société",
+    "games"
+   ],
+   "composite": true
   },
   {
    "id": "nature",
    "libelle": "Nature & jardinage",
-   "branches": [
-    "nature"
-   ],
+   "branches": [],
    "statut": "etablie",
-   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
-   "justification": "La catégorie porte le nom officiel de la branche historique (« Nature »).",
+   "source": "décision d’Estelle du 19 nov. (09h31, catégories composites)",
+   "justification": "Catégorie COMPOSITE : elle annonce plusieurs familles et ne prouve une préférence pour aucune. Elle ouvre les questions d’ORIENTATION de chacune (place du domaine, ouverture de branche) ; les questions spécialisées attendent un signal propre à la famille. Aucune connaissance n’est écrite du fait de cette ouverture.",
    "non_ouvertes": [
     {
      "branche": "garden",
      "raison": "La catégorie nomme le jardinage, mais le garde-fou de Jardinage & plantes écrit « ne pas ouvrir parce qu’elle aime la nature ou les fleurs ». À DÉCIDER : « Nature & jardinage » ouvre-t-elle le jardinage ?",
      "a_decider": true
     }
-   ]
+   ],
+   "source_precedente": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) »",
+   "orientation": [
+    "nature",
+    "garden"
+   ],
+   "composite": true
   },
   {
    "id": "bienetre",
@@ -275,9 +294,16 @@
   {
    "journal": "jewelry_watches",
    "branches": [],
-   "statut": "hypothese",
-   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
-   "justification": "Le domaine du journal réunit bijoux et montres ; un bijou cité n’ouvre pas les montres, et l’inverse. Rien ne dit lequel des deux a été évoqué."
+   "statut": "etablie",
+   "source": "décision d’Estelle du 19 nov. (09h31, catégories composites)",
+   "justification": "Catégorie COMPOSITE : elle annonce plusieurs familles et ne prouve une préférence pour aucune. Elle ouvre les questions d’ORIENTATION de chacune (place du domaine, ouverture de branche) ; les questions spécialisées attendent un signal propre à la famille. Aucune connaissance n’est écrite du fait de cette ouverture.",
+   "source_precedente": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "orientation": [
+    "jewelry",
+    "watch",
+    "Montres"
+   ],
+   "composite": true
   },
   {
    "journal": "design_decor",
@@ -320,15 +346,18 @@
   },
   {
    "journal": "cinema_series",
-   "branches": [
+   "branches": [],
+   "statut": "etablie",
+   "source": "décision d’Estelle du 19 nov. (09h31, catégories composites)",
+   "justification": "Catégorie COMPOSITE : elle annonce plusieurs familles et ne prouve une préférence pour aucune. Elle ouvre les questions d’ORIENTATION de chacune (place du domaine, ouverture de branche) ; les questions spécialisées attendent un signal propre à la famille. Aucune connaissance n’est écrite du fait de cette ouverture.",
+   "source_precedente": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
+   "orientation": [
     "cinema",
     "cinema2",
     "series",
     "series2"
    ],
-   "statut": "etablie",
-   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A (feuille « Branches » de la Banque V1.1), colonne « Conditions d’ouverture (niveau A) » ; vocabulaire des domaines du dictionnaire HSG",
-   "justification": "Le domaine du journal porte les deux noms, comme la catégorie « Ciné & séries » : même décision du 19 nov. À relire : le classeur écrit aussi « Ne pas ouvrir automatiquement [les séries] depuis le cinéma »."
+   "composite": true
   },
   {
    "journal": "books_literature",

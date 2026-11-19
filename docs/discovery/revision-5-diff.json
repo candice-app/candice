@@ -1,0 +1,576 @@
+{
+ "source": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_4.xlsx",
+ "source_sha256": "5a66c613db82797d336534a679e513321cbbdbf7bf20cfd12102c4f84cf28eca",
+ "revision": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_5.xlsx",
+ "revision_sha256": "70469c254fede8b8baa21959c8131a16322d3b675b3882d0afde35104ac6d535",
+ "cellules_modifiees": 11,
+ "par_bloc": {
+  "H": 5,
+  "I": 6
+ },
+ "bloc_H_options_des_cinq_questions": [
+  {
+   "question_id": "consumption.0242",
+   "option": "Une vraie passion",
+   "attribut": "domain_importance",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0242",
+   "option": "Un intérêt régulier",
+   "attribut": "domain_importance",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0242",
+   "option": "Un plaisir occasionnel",
+   "attribut": "domain_importance",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0242",
+   "option": "Surtout un moment partagé",
+   "attribut": "companions",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0242",
+   "option": "Très peu de place",
+   "attribut": "domain_importance",
+   "polarite": "absence_de_critere"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Qualité",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Durée de vie",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Design",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Utilité",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Histoire",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Marque",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Fabrication",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0243",
+   "option": "Émotion",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Prix trop élevé",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Dette",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Encombrement",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Mauvaise qualité",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Objet inutile",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Bon impersonnel",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Impossible à échanger",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Valeurs incompatibles",
+   "attribut": "disruptor",
+   "polarite": "rejet"
+  },
+  {
+   "question_id": "consumption.0245",
+   "option": "",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  },
+  {
+   "question_id": "consumption.0246",
+   "option": "",
+   "attribut": "value_sought",
+   "polarite": "positive"
+  }
+ ],
+ "bloc_H_options_isolees_non_modifiees": [
+  {
+   "question_id": "consumption.0242",
+   "option": "Surtout un moment partagé",
+   "cellule": "D5425",
+   "pourquoi": "dit avec qui l'on choisit ou achète (contrat : `companions`), pas un rapport aux objets ; se lit comme une sortie shopping, que la branche ne doit pas mesurer."
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Dette",
+   "cellule": "D5440",
+   "pourquoi": "dit comment un achat est financé (contrat : recours au crédit ou à l'endettement), pas ce qui gâche un objet ; touche à la situation financière de la personne."
+  },
+  {
+   "question_id": "consumption.0244",
+   "option": "Valeurs incompatibles",
+   "cellule": "D5446",
+   "pourquoi": "compatible seulement si l'on entend « un objet contraire à mes valeurs » ; le contrat dit « valeurs incompatibles, non nommées ». À surveiller : ne doit pas devenir une mesure de valeurs morales générales."
+  }
+ ],
+ "bloc_I_corrigees": [
+  {
+   "question_id": "LEA-01",
+   "enonce": "En ce moment, quelle place accordes-tu au fait d’apprendre de nouvelles choses ?",
+   "option": "Assez peu de place dans ma vie"
+  },
+  {
+   "question_id": "THE-01",
+   "enonce": "Quelle place les spectacles vivants occupent-ils actuellement dans ta vie ?",
+   "option": "Rarement"
+  },
+  {
+   "question_id": "THE-01",
+   "enonce": "Quelle place les spectacles vivants occupent-ils actuellement dans ta vie ?",
+   "option": "Presque jamais"
+  },
+  {
+   "question_id": "comics.0414",
+   "enonce": "Quelle place la BD, les comics ou les mangas occupent-ils dans ta vie ?",
+   "option": "J’en lis très peu"
+  },
+  {
+   "question_id": "theatre2.1363",
+   "enonce": "Les spectacles vivants occupent aujourd’hui…",
+   "option": "Rarement"
+  },
+  {
+   "question_id": "theatre2.1363",
+   "enonce": "Les spectacles vivants occupent aujourd’hui…",
+   "option": "Presque jamais"
+  }
+ ],
+ "bloc_I_non_corrigees_a_arbitrer": [
+  {
+   "question_id": "CRE-01",
+   "enonce": "Aujourd’hui, quel rapport entretiens-tu avec les activités créatives ?",
+   "option": "Ce n’est pas vraiment un univers important pour moi",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "JDS-01",
+   "enonce": "En ce moment, quelle place occupent les jeux de société dans ta vie ?",
+   "option": "Ce n’est pas vraiment mon truc",
+   "pourquoi": "la réponse ne dit pas une place faible : elle dit un rapport (désintérêt, gêne, souhait)"
+  },
+  {
+   "question_id": "animals.2132",
+   "enonce": "Pour toi, vivre avec un animal est…",
+   "option": "Pas une priorité",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "animals.2143",
+   "enonce": "Te vois-tu toujours vivre avec un animal ?",
+   "option": "Non",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "beauty2.1287",
+   "enonce": "Prendre soin de toi représente plutôt…",
+   "option": "Seulement quand c’est nécessaire",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "beauty2.1287",
+   "enonce": "Prendre soin de toi représente plutôt…",
+   "option": "Très peu de place dans ma vie",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "celebration.0811",
+   "enonce": "Quand quelque chose d’important t’arrive, tu aimes généralement…",
+   "option": "Le vivre simplement",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "celebration.0811",
+   "enonce": "Quand quelque chose d’important t’arrive, tu aimes généralement…",
+   "option": "Passer rapidement à la suite",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "family.1812",
+   "enonce": "Le lien familial crée-t-il des obligations particulières ?",
+   "option": "Non, le lien de naissance ne suffit pas",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "food2.0856",
+   "enonce": "Qu’est-ce qui te fait le plus plaisir autour de la nourriture ?",
+   "option": "Je suis assez peu gourmand(e)",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "food2.0857",
+   "enonce": "Tu te reconnais plutôt dans quelle phrase ?",
+   "option": "Je cuisine surtout par nécessité",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "food2.0874",
+   "enonce": "Tu aimes recevoir chez toi ?",
+   "option": "Pas vraiment",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "games.0946",
+   "enonce": "Les jeux de société, pour toi, c’est plutôt…",
+   "option": "Ce n’est pas vraiment mon truc",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "garden.0557",
+   "enonce": "Les plantes et le jardinage, pour toi, c’est plutôt…",
+   "option": "Ce n’est pas vraiment mon univers",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "garden.0586",
+   "enonce": "Une plante ou un arbre choisi pour symboliser un moment important…",
+   "option": "Ne m’attire pas",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "home2.1259",
+   "enonce": "Ton chez-toi est avant tout…",
+   "option": "Un lieu où je passe finalement peu de temps",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "home2.1265",
+   "enonce": "Tu aimes recevoir chez toi…",
+   "option": "Rarement",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "home2.1265",
+   "enonce": "Tu aimes recevoir chez toi…",
+   "option": "Presque jamais",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "hosting.2041",
+   "enonce": "Recevoir des proches à la maison est pour toi…",
+   "option": "Fatigant",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "live.0474",
+   "enonce": "Quelle place occupent les spectacles vivants dans ta vie ?",
+   "option": "Ce n’est pas vraiment mon univers",
+   "pourquoi": "la réponse ne dit pas une place faible : elle dit un rapport (désintérêt, gêne, souhait)"
+  },
+  {
+   "question_id": "money.1575",
+   "enonce": "Quelles dépenses repousses-tu facilement ?",
+   "option": "Les vêtements",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "money.1575",
+   "enonce": "Quelles dépenses repousses-tu facilement ?",
+   "option": "Les voyages",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "money.1575",
+   "enonce": "Quelles dépenses repousses-tu facilement ?",
+   "option": "La technologie",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "money.1575",
+   "enonce": "Quelles dépenses repousses-tu facilement ?",
+   "option": "La voiture",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "money.1575",
+   "enonce": "Quelles dépenses repousses-tu facilement ?",
+   "option": "Les loisirs",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "money.1575",
+   "enonce": "Quelles dépenses repousses-tu facilement ?",
+   "option": "La beauté",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "museum.0698",
+   "enonce": "Les musées et expositions, pour toi, c’est…",
+   "option": "Pas vraiment mon univers",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "museum.0711",
+   "enonce": "En voyage, les musées…",
+   "option": "Sont réservés aux incontournables",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "museum.0711",
+   "enonce": "En voyage, les musées…",
+   "option": "Sont rarement ma priorité",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "philovie.1656",
+   "enonce": "La trace que tu laisses derrière toi est-elle importante ?",
+   "option": "Peu",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "photo.0668",
+   "enonce": "La photographie, pour toi, c’est plutôt…",
+   "option": "Ce n’est pas vraiment mon univers",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "spirit.0727",
+   "enonce": "L’intériorité, la spiritualité ou les pratiques de recentrage, pour toi, c’est…",
+   "option": "Quelque chose qui ne me parle pas",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "sportp.0503",
+   "enonce": "Quelle place le sport occupe-t-il dans ta vie aujourd’hui ?",
+   "option": "Ce n’est pas vraiment mon truc",
+   "pourquoi": "la réponse ne dit pas une place faible : elle dit un rapport (désintérêt, gêne, souhait)"
+  },
+  {
+   "question_id": "tech2.1313",
+   "enonce": "La technologie représente plutôt…",
+   "option": "J’aimerais y passer moins de temps",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "tech2.1313",
+   "enonce": "La technologie représente plutôt…",
+   "option": "Je m’y intéresse très peu",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "travel.0065",
+   "enonce": "Tu es plus sensible…",
+   "option": "Le lieu compte peu",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "travel.0068",
+   "enonce": "Un spa ou une piscine dans l’hôtel, pour toi…",
+   "option": "Cela ne m’intéresse pas",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "travel2.0915",
+   "enonce": "Dans un voyage, l’hébergement…",
+   "option": "Est principalement un endroit où dormir",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "wellbeing.0224",
+   "enonce": "Pour te détendre, un massage ou un soin corporel…",
+   "option": "Ne m’intéresse pas",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "wellbeing.0225",
+   "enonce": "Un moment de bien-être, tu le préfères…",
+   "option": "Je ne suis pas attiré(e) par ce type d’expérience",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  },
+  {
+   "question_id": "work2.1337",
+   "enonce": "Aujourd’hui, le travail représente surtout…",
+   "option": "Quelque chose dont j’aimerais qu’il prenne moins de place",
+   "pourquoi": "l'énoncé ne demande pas la place du domaine"
+  }
+ ],
+ "note": "Seul l'onglet 0_FICHE_CANONIQUE est écrit, comme aux révisions 1 à 4 : c'est lui que l'import lit.",
+ "diff": [
+  {
+   "bloc": "H",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D5421",
+   "question_id": "consumption.0242",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quelle place consommation et valeur occupe-t-il réellement dans ta vie ?",
+   "apres": "Quelle place le choix de tes objets occupe-t-il réellement dans ta vie ?",
+   "decision": "Décision du 19 nov. : la branche porte sur le rapport aux objets, à leur choix et à leur valeur pour la personne — ni amour du shopping, ni valeurs morales générales. Énoncé réécrit autour de ce sens ; options et contrats inchangés."
+  },
+  {
+   "bloc": "H",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D5428",
+   "question_id": "consumption.0243",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce que tu recherches d’abord dans consommation et valeur ?",
+   "apres": "Quand tu choisis un objet, qu’est-ce que tu recherches d’abord ?",
+   "decision": "Décision du 19 nov. : la branche porte sur le rapport aux objets, à leur choix et à leur valeur pour la personne — ni amour du shopping, ni valeurs morales générales. Énoncé réécrit autour de ce sens ; options et contrats inchangés."
+  },
+  {
+   "bloc": "H",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D5438",
+   "question_id": "consumption.0244",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à consommation et valeur ?",
+   "apres": "Qu’est-ce qui peut le plus facilement te gâcher un objet, acheté ou reçu ?",
+   "decision": "Décision du 19 nov. : la branche porte sur le rapport aux objets, à leur choix et à leur valeur pour la personne — ni amour du shopping, ni valeurs morales générales. Énoncé réécrit autour de ce sens ; options et contrats inchangés."
+  },
+  {
+   "bloc": "H",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D5448",
+   "question_id": "consumption.0245",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans consommation et valeur ?",
+   "apres": "Quel objet, ou quel souvenir lié à un objet, représente le mieux ce que tu aimes trouver dans les choses que tu choisis ?",
+   "decision": "Décision du 19 nov. : la branche porte sur le rapport aux objets, à leur choix et à leur valeur pour la personne — ni amour du shopping, ni valeurs morales générales. Énoncé réécrit autour de ce sens ; options et contrats inchangés."
+  },
+  {
+   "bloc": "H",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "D5451",
+   "question_id": "consumption.0246",
+   "colonne": "ÉNONCÉ / RÉPONSE",
+   "avant": "Qu’aimerais-tu découvrir ou vivre davantage autour de consommation et valeur ?",
+   "apres": "Dans ta façon de choisir les objets qui t’entourent, qu’aimerais-tu découvrir ou vivre davantage ?",
+   "decision": "Décision du 19 nov. : la branche porte sur le rapport aux objets, à leur choix et à leur valeur pour la personne — ni amour du shopping, ni valeurs morales générales. Énoncé réécrit autour de ce sens ; options et contrats inchangés."
+  },
+  {
+   "bloc": "I",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P1113",
+   "question_id": "LEA-01",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. (extension) : la question mesure la place actuelle du domaine et la réponse dit une place faible — ni dégoût, ni refus d'en parler. Polarité `rejet` → `absence_de_critere`, comme pour les dix-neuf questions à gabarit.",
+   "option": "Assez peu de place dans ma vie",
+   "enonce": "En ce moment, quelle place accordes-tu au fait d’apprendre de nouvelles choses ?"
+  },
+  {
+   "bloc": "I",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P1611",
+   "question_id": "THE-01",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. (extension) : la question mesure la place actuelle du domaine et la réponse dit une place faible — ni dégoût, ni refus d'en parler. Polarité `rejet` → `absence_de_critere`, comme pour les dix-neuf questions à gabarit.",
+   "option": "Rarement",
+   "enonce": "Quelle place les spectacles vivants occupent-ils actuellement dans ta vie ?"
+  },
+  {
+   "bloc": "I",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P1612",
+   "question_id": "THE-01",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. (extension) : la question mesure la place actuelle du domaine et la réponse dit une place faible — ni dégoût, ni refus d'en parler. Polarité `rejet` → `absence_de_critere`, comme pour les dix-neuf questions à gabarit.",
+   "option": "Presque jamais",
+   "enonce": "Quelle place les spectacles vivants occupent-ils actuellement dans ta vie ?"
+  },
+  {
+   "bloc": "I",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P5153",
+   "question_id": "comics.0414",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. (extension) : la question mesure la place actuelle du domaine et la réponse dit une place faible — ni dégoût, ni refus d'en parler. Polarité `rejet` → `absence_de_critere`, comme pour les dix-neuf questions à gabarit.",
+   "option": "J’en lis très peu",
+   "enonce": "Quelle place la BD, les comics ou les mangas occupent-ils dans ta vie ?"
+  },
+  {
+   "bloc": "I",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P19079",
+   "question_id": "theatre2.1363",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. (extension) : la question mesure la place actuelle du domaine et la réponse dit une place faible — ni dégoût, ni refus d'en parler. Polarité `rejet` → `absence_de_critere`, comme pour les dix-neuf questions à gabarit.",
+   "option": "Rarement",
+   "enonce": "Les spectacles vivants occupent aujourd’hui…"
+  },
+  {
+   "bloc": "I",
+   "onglet": "0_FICHE_CANONIQUE",
+   "cellule": "P19080",
+   "question_id": "theatre2.1363",
+   "colonne": "polarité",
+   "avant": "rejet",
+   "apres": "absence_de_critere",
+   "decision": "Décision du 19 nov. (extension) : la question mesure la place actuelle du domaine et la réponse dit une place faible — ni dégoût, ni refus d'en parler. Polarité `rejet` → `absence_de_critere`, comme pour les dix-neuf questions à gabarit.",
+   "option": "Presque jamais",
+   "enonce": "Les spectacles vivants occupent aujourd’hui…"
+  }
+ ]
+}

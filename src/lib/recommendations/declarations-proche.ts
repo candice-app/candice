@@ -34,6 +34,7 @@
 // quitte jamais le serveur.
 import type { JournalRejection } from './rejection-match';
 import { isSelfDeclaredAct, type SourceType } from '../knowledge/sources';
+import { estContexteDeProjet } from '../knowledge/read-journal';
 import { gardeFouDe, type GardeFouStructure } from './garde-fous-discovery';
 
 /** Portée de consentement : « mes déclarations peuvent ÉCARTER des idées me concernant ».
@@ -128,12 +129,13 @@ export async function lireRejetsDuProche(
   //      ici ; le filtre de PROVENANCE ne peut pas l'être, source_type vivant sur la source.
   const { data: lignes, error: eJournal } = await admin
     .from('knowledge_evidences')
-    .select('source_id, target_family, target_construct, entity_label, relation, severity, assertion_status, raw_information')
+    .select('source_id, target_family, target_construct, entity_label, relation, severity, assertion_status, raw_information, context')
     .eq('user_id', procheUserId).eq('about_kind', 'account')
     .is('superseded_at', null);
   if (eJournal) return REFUS('lecture_impossible');
 
-  const candidates = (lignes ?? []).filter((l) =>
+  // Un refus dit POUR un projet précis ne vaut que pour ce projet : il n'écarte rien en général.
+  const candidates = (lignes ?? []).filter((l) => !estContexteDeProjet(l.context)).filter((l) =>
     l.target_family === 'GUARDRAIL' || (l.target_family === 'ENTITY' && (l.relation === 'DISLIKE' || l.relation === 'AVOID')));
   if (candidates.length === 0) return { autorise: true, motif: 'autorise', rejets: [], gardeFous: [], ecartesSansDeclaration: {} };
 

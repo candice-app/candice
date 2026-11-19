@@ -27,9 +27,9 @@ import argparse, collections, hashlib, json, pathlib, re, sys, datetime
 
 VERSION = "importer-open-v3 / 3"
 RACINE = pathlib.Path(__file__).resolve().parents[2]
-CLASSEUR = RACINE / "docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_4.xlsx"
+CLASSEUR = RACINE / "docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_5.xlsx"
 SORTIE = RACINE / "src/lib/discovery/open-v3"
-SHA_ATTENDU = "5a66c613db82797d336534a679e513321cbbdbf7bf20cfd12102c4f84cf28eca"
+SHA_ATTENDU = "70469c254fede8b8baa21959c8131a16322d3b675b3882d0afde35104ac6d535"
 
 # ── Vocabulaires du JOURNAL. Lus dans le code, jamais recopiés à la main : une copie
 #    diverge, et la divergence ne se verrait qu'en production.

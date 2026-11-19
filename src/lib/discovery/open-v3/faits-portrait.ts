@@ -17,8 +17,9 @@
  */
 import { question as questionParId } from './banque';
 import { PREFIXE_FAIT } from './produire';
+import { estContexteDeProjet } from '@/lib/knowledge/read-journal';
 
-export interface FaitLu { readonly factType: string; readonly value: string; readonly assertionStatus: string | null }
+export interface FaitLu { readonly factType: string; readonly value: string; readonly assertionStatus: string | null; readonly context?: string | null }
 export interface FaitsPourPortrait {
   readonly lignes: readonly string[];
   readonly ecartes: { readonly verbatims: number; readonly reponsesDeProjet: number; readonly illisibles: number; readonly auDelaDuPlafond: number };
@@ -36,7 +37,8 @@ export function faitsDiscoveryPourPortrait(faits: readonly FaitLu[]): FaitsPourP
   // Un groupe = une même chose dite (même fait, même valeur). Plusieurs polarités = contradiction.
   const groupes = new Map<string, { enonce: string; libelle: string; polarites: Set<string>; lu: boolean }>();
   for (const f of faits) {
-    if (f.factType === FAIT_DE_PROJET) { reponsesDeProjet++; continue; }
+    // Tout ce qui a été dit POUR un projet reste dans le projet : fait structuré ou paramètre d'action.
+    if (f.factType === FAIT_DE_PROJET || f.factType === 'discovery.parametre_de_projet' || estContexteDeProjet(f.context)) { reponsesDeProjet++; continue; }
     if (!f.factType.startsWith(PREFIXE_FAIT)) { if (f.factType.startsWith('discovery.')) verbatims++; continue; }
     let v: { valeur?: unknown; polarite?: unknown; question?: unknown; libelle?: unknown; sens?: unknown };
     try { v = JSON.parse(f.value); } catch { illisibles++; continue; }

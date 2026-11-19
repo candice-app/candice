@@ -130,15 +130,31 @@ function rowToEvidence(r: Row, sourceType: SourceType, ts: string): Evidence {
  * consolidation. N'applique AUCUNE préséance (la consolidation agrège). Exclut les evidences
  * supersédées (§48septies) comme le fait le portail d'affichage.
  */
+/**
+ * LA PORTÉE D'UN PROJET. Le journal n'a pas de colonne « portée » : une preuve dite POUR un
+ * achat ou un séjour précis porte le projet dans son `context` (`projet:<identifiant>`). Elle
+ * garde tout son sens structuré — famille, cible, valeur, polarité — mais elle n'est PAS une
+ * connaissance générale sur la personne : « pour cet achat, plutôt un petit format » ne dit pas
+ * qu'elle préfère les petits formats.
+ *
+ * Tout lecteur GÉNÉRAL (portrait, état du Discovery, refus et goûts lus pour un proche) doit
+ * donc écarter ces lignes ; seul un lecteur qui travaille POUR ce projet les demande. Le défaut
+ * est l'exclusion : un lecteur qui oublie de choisir ne généralise rien.
+ */
+export const PREFIXE_CONTEXTE_PROJET = 'projet:';
+export const contexteDeProjet = (projetId: string) => `${PREFIXE_CONTEXTE_PROJET}${projetId}`;
+export const estContexteDeProjet = (context: unknown): boolean => typeof context === 'string' && context.startsWith(PREFIXE_CONTEXTE_PROJET);
+
 export async function readJournalEvidences(
   client: Client,
-  opts: { userId: string; aboutId?: string },
+  opts: { userId: string; aboutId?: string; /** `<identifiant>` : les seules preuves de CE projet. Absent : jamais celles d'un projet. */ projet?: string },
 ): Promise<Evidence[]> {
   const data = await toutesLesLignes(() => {
     const q = client.from('knowledge_evidences').select(JOURNAL_EVIDENCE_COLUMNS).eq('user_id', opts.userId);
     return opts.aboutId ? q.eq('about_id', opts.aboutId) : q;
   }, 'knowledge_evidences read');
-  const rows: Row[] = data.filter((r: Row) => !r.superseded_at);
+  const rows: Row[] = data.filter((r: Row) => !r.superseded_at)
+    .filter((r: Row) => (opts.projet ? r.context === contexteDeProjet(opts.projet) : !estContexteDeProjet(r.context)));
   if (rows.length === 0) return [];
 
   const ids: string[] = [...new Set(rows.map((r: Row) => String(r.source_id)))];

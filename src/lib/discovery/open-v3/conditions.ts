@@ -81,6 +81,8 @@ export interface EtatDiscovery {
    * `ouvertures-explicites.json`. Aucune réponse n'est écrite à la place de la personne.
    */
   readonly questionsSignalees?: ReadonlySet<string>;
+  /** Branches ouvertes pour leurs seules questions d'orientation (catégorie composite). */
+  readonly orientationSeulement?: ReadonlySet<string>;
   /** Domaines dont la personne a dit qu'ils tiennent « très peu de place » aujourd'hui. Ce
    *  n'est ni un rejet ni un refus : leurs questions restent posables, après celles des autres. */
   readonly placeFaible?: ReadonlySet<string>;
