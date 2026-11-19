@@ -1,0 +1,35 @@
+Preuves du paquet du 20 nov. (bis) — copie de travail exécutée dans le conteneur, pile Supabase locale, comptes de test séparés.
+Aucune clé réelle ; faux modèle derrière le relais observateur ; aucune migration ; rien en production.
+
+Typage (tsc --noEmit, src)                      : 0 erreur
+Typage des scripts 34, 37, 39                    : 0 erreur
+Tests (vitest)                                   : 108 fichiers, 1333 tests, 0 en échec
+  dont destinations.test.ts (lecteur v5)         : 166 tests
+  dont lecteurs-observes.test.ts (nouveau)       : 6 tests
+  dont activites.test.ts                         : 10 tests
+Construction (next build)                        : réussie
+Épreuve du lanceur (tests-lanceur.sh)            : 7 scénarios conformes
+
+Scripts locaux :
+15-parcours-dix-comptes             : 208 passées, 0 en échec
+18-preuve-consentements             : 75 passées, 0 en échec
+30-preuve-portes-niveau-c-recalcul  : 53 passées, 0 en échec
+32-preuve-route-fermee-et-actes     : 32 passées, 0 en échec
+33-preuve-faits-destinations-projets: 35 passées, 0 en échec
+35-preuve-decisions-19nov           : 45 passées, 0 en échec
+36-preuve-huit-destinations         : 15 passées, 0 en échec
+38-preuve-prenoms-partage           : 7 passées, 0 en échec
+39-rejeu-persiste-decisions         : 56 passées, 0 en échec (dont ACT.2b/2c : niveau et fréquence fermés malgré une pratique déclarée)
+37 simulé, parcours entier          : 29 passées, 0 en échec ; statut « acheve », étape « fin » ; rendu brut du lecteur présent au rapport
+37 simulé, relais coupé en cours    : sortie 1 ; rapport écrit avec statut « interrompu », étape « 1–2 sélection et réponses », motif d'arrêt
+
+Transitions de migrations :
+A × 122 18/0 · B × 120 18/0 · B × 122 18/0 · B × 117 18/0 · B × 117 sans 121/122 18/0 · A × 117 17/0
+
+Couverture du référentiel (2 407 questions) :
+implémentées : condition d'origine 1694, lecture établie 291, ouverture sur démarche 55
+fermées : par le produit 3 (activity.0282, 0283 : décision 9 ; 0285), garde de sensibilité 125
+retirées 115 · en arbitrage hors banque 6
+ouvertes : 24 hypothèses + 94 non implémentées (54 décisions, 23 données, 17 prérequis, 0 clause) = 118
+
+NON ÉTABLI par ces preuves : la lecture du vrai modèle (scripts 34 et 37 réels, à rejouer), et la conformité au Discovery décidé (118 questions ouvertes).

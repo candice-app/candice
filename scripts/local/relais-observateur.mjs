@@ -3,12 +3,14 @@
 // « L'absence du mot "céramique" dans la réponse ne prouve pas l'absence de transmission au
 // modèle. » Ce relais se place entre l'application locale et le modèle : il transmet chaque
 // requête telle quelle, rend la réponse telle quelle, et garde en mémoire CE QUI A ÉTÉ ENVOYÉ
-// (consigne système, messages, nom de l'outil) et LE STATUT HTTP rendu par le modèle.
+// (consigne système, messages, nom de l'outil), LE STATUT HTTP rendu par le modèle, et l'entrée
+// de l'outil qu'il a rendue (tool_use) — pour qu'un résultat vide se lise à sa cause.
 //
 //   L'application est lancée avec ANTHROPIC_BASE_URL=http://127.0.0.1:8789 ; le relais transmet à
 //   RELAIS_AMONT (par défaut https://api.anthropic.com ; en essai simulé, le faux modèle :8787).
 //
-//   GET  /__etat   { amont, appels, recus: [{ n, outil, modele, statut, systeme, messages }] }
+//   GET  /__etat   { amont, appels, recus: [{ n, outil, modele, statut, systeme, messages, reponse }] }
+//                  reponse : l'entrée de l'outil rendue par le modèle (tool_use), jamais un en-tête
 //   POST /__raz    vide la mémoire
 //
 // SÉCURITÉ, structurelle :
@@ -53,6 +55,12 @@ createServer(async (req, res) => {
     const amont = await fetch(new URL(req.url, AMONT), { method: 'POST', headers: entetes, body: corps });
     trace.statut = amont.status;
     const retour = Buffer.from(await amont.arrayBuffer());
+    // Ce que le modèle a RENDU (20 nov.) : seulement l'entrée de son outil (données fictives) ; aucun en-tête.
+    try {
+      const r = JSON.parse(retour.toString('utf8'));
+      const outils = (r?.content ?? []).filter((b) => b?.type === 'tool_use').map((b) => ({ nom: b.name, entree: b.input }));
+      trace.reponse = outils.length ? outils : (r?.type === 'error' ? { erreur: r?.error?.type ?? 'erreur' } : null);
+    } catch { trace.reponse = 'réponse illisible (non JSON)'; }
     const sortie = {};
     amont.headers.forEach((v, k) => { if (!SAUT.has(k.toLowerCase()) && k.toLowerCase() !== 'content-encoding') sortie[k] = v; });
     res.writeHead(amont.status, sortie); res.end(retour);

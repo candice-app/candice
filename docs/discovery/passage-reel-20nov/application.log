@@ -1,0 +1,47 @@
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://127.0.0.1:3100
+- Network:       http://127.0.0.1:3100
+- Environments: .env.local
+✓ Ready in 200ms
+✓ Running next.config.ts took 68ms
+- Experiments (use with caution):
+  · staleTimes
+
+ GET / 200 in 271ms (next.js: 38ms, proxy.ts: 131ms, application-code: 102ms)
+ GET / 200 in 29ms (next.js: 0.9ms, proxy.ts: 5ms, application-code: 23ms)
+ POST /api/discovery/sujet 200 in 269ms (next.js: 110ms, proxy.ts: 18ms, application-code: 141ms)
+ GET /api/discovery/lot?mode=full 200 in 108ms (next.js: 24ms, proxy.ts: 3ms, application-code: 81ms)
+ POST /api/discovery/answer 200 in 103ms (next.js: 35ms, proxy.ts: 2ms, application-code: 65ms)
+ POST /api/discovery/answer 200 in 41ms (next.js: 0.9ms, proxy.ts: 5ms, application-code: 35ms)
+ POST /api/discovery/answer 200 in 43ms (next.js: 1.0ms, proxy.ts: 3ms, application-code: 39ms)
+ POST /api/discovery/answer 200 in 27ms (next.js: 1.4ms, proxy.ts: 3ms, application-code: 23ms)
+ GET /api/discovery/lot?mode=full 200 in 56ms (next.js: 1.3ms, proxy.ts: 4ms, application-code: 51ms)
+ POST /api/discovery/answer 200 in 48ms (next.js: 1.0ms, proxy.ts: 4ms, application-code: 43ms)
+ POST /api/discovery/answer 200 in 75ms (next.js: 0.8ms, proxy.ts: 3ms, application-code: 72ms)
+ POST /api/discovery/answer 200 in 49ms (next.js: 1.3ms, proxy.ts: 3ms, application-code: 44ms)
+ POST /api/discovery/answer 200 in 33ms (next.js: 1.3ms, proxy.ts: 4ms, application-code: 28ms)
+ GET /api/discovery/lot?mode=full 200 in 70ms (next.js: 1.4ms, proxy.ts: 4ms, application-code: 65ms)
+ POST /api/discovery/answer 200 in 67ms (next.js: 0.9ms, proxy.ts: 2ms, application-code: 64ms)
+ POST /api/discovery/answer 200 in 41ms (next.js: 1.0ms, proxy.ts: 2ms, application-code: 38ms)
+ POST /api/discovery/answer 200 in 24ms (next.js: 1.4ms, proxy.ts: 3ms, application-code: 20ms)
+ GET /api/discovery/lot?mode=full 200 in 57ms (next.js: 1.0ms, proxy.ts: 3ms, application-code: 53ms)
+ POST /api/discovery/answer 200 in 57ms (next.js: 1.2ms, proxy.ts: 2ms, application-code: 53ms)
+ POST /api/discovery/answer 200 in 25ms (next.js: 1.2ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /api/discovery/lot?mode=full 200 in 58ms (next.js: 1.0ms, proxy.ts: 3ms, application-code: 54ms)
+ POST /api/discovery/answer 200 in 53ms (next.js: 0.9ms, proxy.ts: 2ms, application-code: 50ms)
+ POST /api/discovery/answer 200 in 25ms (next.js: 1.0ms, proxy.ts: 3ms, application-code: 21ms)
+ GET /api/discovery/lot?mode=full 200 in 57ms (next.js: 1.2ms, proxy.ts: 3ms, application-code: 53ms)
+ POST /api/discovery/answer 200 in 67ms (next.js: 0.9ms, proxy.ts: 2ms, application-code: 64ms)
+ POST /api/discovery/answer 200 in 23ms (next.js: 1.0ms, proxy.ts: 3ms, application-code: 19ms)
+ GET /api/discovery/lot?mode=full 200 in 54ms (next.js: 1.0ms, proxy.ts: 3ms, application-code: 50ms)
+ POST /api/discovery/answer 200 in 49ms (next.js: 0.9ms, proxy.ts: 2ms, application-code: 46ms)
+ POST /api/discovery/answer 200 in 22ms (next.js: 0.9ms, proxy.ts: 3ms, application-code: 18ms)
+ GET /api/discovery/lot?mode=full 200 in 54ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 51ms)
+ POST /api/discovery/answer 200 in 45ms (next.js: 0.8ms, proxy.ts: 2.0ms, application-code: 42ms)
+[discovery] destinations : segments non écrits learning2.1459 [
+  'SUJET_DECLARE:ecarte:portee_limitee',
+  'SUJET_DECLARE:ecarte:portee_limitee',
+  'SUJET_DECLARE:ecarte:non_affirme'
+]
+ POST /api/discovery/answer 200 in 3.8s (next.js: 1.0ms, proxy.ts: 2ms, application-code: 3.8s)
+[?25h

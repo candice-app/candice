@@ -1,0 +1,164 @@
+{
+ "date": "2026-11-19T23:13:22.535Z",
+ "commit": "4cfb4d14d965cb05f6162957a1223431e26723f2",
+ "modifications_non_commitees_dans_src": false,
+ "version_du_lecteur": 4,
+ "modele_destinations": "claude-sonnet-4-6",
+ "mode": "reel",
+ "amont": "https://api.anthropic.com",
+ "nature": "parcours complet EXÉCUTÉ avec le VRAI modèle",
+ "parcours": [
+  {
+   "cle": "learning2.1437",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1438",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-04",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-06",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1439",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1440",
+   "acte": "réponse",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-05",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-14",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1441",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1442",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-15",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0235",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0236",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0237",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0238",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0240",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0241",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1456",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1457",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1458",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1459",
+   "acte": "réponse",
+   "statut": 200
+  }
+ ],
+ "lecture_observee": [
+  {
+   "statut": 200,
+   "modele": "claude-sonnet-4-6",
+   "outil": "segments"
+  }
+ ],
+ "arret": "lecture sans preuve inférée de la céramique : parcours interrompu avant la recommandation",
+ "journal_de_B": [
+  {
+   "famille": "INTEREST",
+   "libelle": "Astronomie",
+   "statut": "explicit",
+   "polarite": "positive"
+  }
+ ],
+ "resultats_par_cas": [
+  {
+   "libelle": "1 : B choisit d’explorer l’apprentissage (HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : les deux questions ont été SERVIES par le serveur et répondues (21 actes, tous HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : la lecture de la réponse libre est partie au modèle, statut 200",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : ce que le modèle des destinations a reçu contient la réponse libre, telle qu’écrite",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : B relit son journal sous sa session (1 preuves)",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « Astronomie » : un intérêt EXPLICITE (sa déclaration)",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « la céramique japonaise » : un intérêt LU PAR MODÈLE (inféré), réellement écrit — condition du cas négatif 4b",
+   "conforme": false,
+   "detail": "[]"
+  }
+ ]
+}

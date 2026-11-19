@@ -37,9 +37,15 @@ describe('le prérequis exact de chaque question', () => {
     expect(activitePour('activity.0281', aime, new Map())?.libelle).toBe('la céramique ou la poterie');
     for (const id of ['activity.0282', 'activity.0283', 'activity.0284']) expect(activitePour(id, aime, new Map()), id).toBeNull();
   });
-  it('pratiquer ouvre le niveau, la fréquence et « progresser… ou continuer », pas « ce que tu aimes »', () => {
-    for (const id of ['activity.0282', 'activity.0283', 'activity.0284']) expect(activitePour(id, pratique, new Map())?.id, id).toBe('activite:sport_practice:escalade');
+  it('pratiquer ouvre « progresser… ou continuer », pas « ce que tu aimes »', () => {
+    expect(activitePour('activity.0284', pratique, new Map())?.id).toBe('activite:sport_practice:escalade');
     expect(activitePour('activity.0281', pratique, new Map())).toBeNull();
+  });
+  it('niveau et fréquence restent FERMÉS (décision 9) : leur réouverture est une révision proposée, non appliquée', () => {
+    for (const id of ['activity.0282', 'activity.0283']) {
+      expect(prerequisDActivite(id), id).toBeNull();
+      expect(activitePour(id, [...aime, ...pratique], new Map()), id).toBeNull();
+    }
   });
   it('le matériel reste fermé : pratiquer ne démontre pas un équipement', () => {
     expect(prerequisDActivite('activity.0285')).toBeNull();
@@ -47,8 +53,8 @@ describe('le prérequis exact de chaque question', () => {
   });
   it('une question posée pour une activité ne l’est plus pour elle, mais l’est pour une autre', () => {
     const deux = activitesDeclarees(reponses(['sportp.0504', 'Escalade'], ['sportp.0504', 'Yoga']));
-    const posees = new Map([['activity.0283', new Set(['activite:sport_practice:escalade'])]]);
-    expect(activitePour('activity.0283', deux, posees)?.id).toBe('activite:sport_practice:yoga');
+    const posees = new Map([['activity.0284', new Set(['activite:sport_practice:escalade'])]]);
+    expect(activitePour('activity.0284', deux, posees)?.id).toBe('activite:sport_practice:yoga');
   });
   it('sans réponse, aucune activité : la question n’est pas proposée', () => {
     expect(activitesDeclarees(rien)).toEqual([]);

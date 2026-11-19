@@ -387,7 +387,7 @@ describe('lecteur v4 : codes de déclencheurs et variantes typographiques', asyn
     for (const d of ds) expect(c).not.toContain(`- ${d.declencheur} :`);
     const brut = decoderDeclencheurs({ segments: [{ declencheur: 'C1', passage: 'x' }, { declencheur: 'SUJET_DECLARED', passage: 'y' }, { declencheur: ds[0].declencheur, passage: 'z' }] }, ds) as { segments: { declencheur: string }[] };
     expect(brut.segments.map((s) => s.declencheur)).toEqual([ds[0].declencheur, 'SUJET_DECLARED', ds[0].declencheur]);
-    expect(VERSION_LECTURE).toBe(4);
+    expect(VERSION_LECTURE).toBe(5);
   });
   it('un code inconnu ou un nom déformé reste écarté (« declencheur_inconnu »)', () => {
     const e = examinerSegments('la géologie', decoderDeclencheurs({ segments: [{ declencheur: 'SUJET_DECLARED', passage: 'la géologie', attitude: 'interet', affirme: true, personne: 'soi', temps: 'actuel' }] }, ds), ds);
@@ -403,5 +403,119 @@ describe('lecteur v4 : codes de déclencheurs et variantes typographiques', asyn
   it('seules ces variantes passent : une lettre différente reste une copie inexacte', () => {
     expect(positionExacte('j’adore cet établissement', "j'adore cet etablissement")).toBeNull();
     expect(positionExacte('Les thermes', 'les thermes')).toBeNull();
+  });
+});
+
+/* ── Lecteur v5 (20 nov.) : les découpages RÉELLEMENT rendus au deuxième passage ───────────────
+ * Chaque correction a ses cas positifs ET ses contre-exemples : aucune protection n'est affaiblie. */
+describe('lecteur v5 : période ≠ portée (sujet-present)', () => {
+  const T = 'En ce moment la géologie, et un peu l’histoire des cartes anciennes.';
+  const geo = (plus: Seg = {}) => seg('SUJET_DECLARE', 'la géologie', 'interet', plus);
+  it.each([
+    ['En ce moment la géologie.', 'En ce moment', 'retenu'], ['Moi, la géologie, en ce moment.', 'en ce moment', 'retenu'], ['Actuellement la géologie.', 'Actuellement', 'retenu'],
+    ['Moi, la géologie, depuis peu.', 'depuis peu', 'retenu'], ['Un peu la géologie.', 'Un peu', 'retenu'],
+    ['Moi, la géologie pour le travail.', 'pour le travail', 'portee_limitee'], ['Moi, la géologie au travail.', 'au travail', 'portee_limitee'],
+    ['Moi, la géologie pour les enfants.', 'pour les enfants', 'portee_limitee'], ['Moi, la géologie, en ce moment au travail.', 'en ce moment au travail', 'portee_limitee'],
+  ])('« %s », limite « %s » → %s', (texte, limite, attendu) => {
+    expect(issue('learning2.1459', texte, geo({ limite }))).toBe(attendu);
+  });
+  it('les autres protections restent entières, même avec une période', () => {
+    expect(issue('learning2.1459', 'En ce moment la géologie, si j’ai le temps.', geo({ limite: 'En ce moment', condition: 'si j’ai le temps' }))).toBe('sous_condition');
+    expect(issue('learning2.1459', 'En ce moment la géologie ne m’intéresse pas.', geo({ limite: 'En ce moment' }))).toBe('negation_dans_la_proposition');
+    expect(issue('learning2.1459', 'En ce moment ma fille adore la géologie.', geo({ limite: 'En ce moment' }))).toBe('autre_personne_dans_la_proposition');
+    expect(issue('learning2.1459', 'En ce moment la géologie.', geo({ limite: 'En ce moment', personne: 'autre' }))).toBe('autre_personne');
+    expect(issue('learning2.1459', 'En ce moment la géologie.', geo({ limite: 'En ce moment', affirme: false }))).toBe('non_affirme');
+  });
+  it('le découpage réel écrit DEUX intérêts au bon sujet, stabilité contextual', async () => {
+    const b = fausseBase();
+    await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'learning2.1459', texte: T, acteId: 'lot-1',
+      lecteur: lecteur(geo({ limite: 'En ce moment' }), seg('SUJET_DECLARE', 'l’histoire des cartes anciennes', 'interet', { limite: 'un peu' })) });
+    expect(preuves(b).map((e) => [e.target_family, e.raw_information, e.stability])).toEqual([
+      ['INTEREST', 'la géologie', 'contextual'], ['INTEREST', 'l’histoire des cartes anciennes', 'contextual']]);
+  });
+});
+
+describe('lecteur v5 : l’attitude peut être DANS le passage (oeuvre-appreciee)', () => {
+  const oeuvre = (passage: string, plus: Seg = {}) => seg('OEUVRE_RESOLUE_APPRECIEE', passage, 'appreciation', { cible: 'referent', relation: 'LOVE', identite: { nature: 'oeuvre', nom: 'Blacksad' }, ...plus });
+  it.each([
+    // les deux découpages réels, positifs
+    ['J’adore Blacksad.', 'Blacksad', 'retenu'],
+    ['J’adore Blacksad.', 'J’adore Blacksad', 'retenu'],
+    ['J’adore Blacksad.', 'J\'adore Blacksad', 'retenu'],
+    // contre-exemples, dans les deux découpages
+    ['J’adore le dessin de Blacksad.', 'Blacksad', 'appreciation_d_un_aspect'],
+    ['J’adore le dessin de Blacksad.', 'J’adore le dessin de Blacksad', 'appreciation_d_un_aspect'],
+    ['Je n’ai pas aimé Blacksad.', 'Blacksad', 'negation_dans_la_proposition'],
+    ['Je n’ai pas aimé Blacksad.', 'Je n’ai pas aimé Blacksad', 'negation_dans_la_proposition'],
+    ['Je n’adore pas Blacksad.', 'Je n’adore pas Blacksad', 'negation_dans_la_proposition'],
+    ['Mon fils adore Blacksad.', 'Mon fils adore Blacksad', 'autre_personne_dans_la_proposition'],
+    // l'imparfait n'est pas lu comme une appréciation présente : refusé (motif : attitude non explicite)
+    ['J’adorais Blacksad, plus maintenant.', 'J’adorais Blacksad', 'attitude_non_explicite'],
+    ['Blacksad, Akira.', 'Blacksad, Akira', 'attitude_non_explicite'],
+  ])('« %s » découpé « %s » → %s', (texte, passage, attendu) => {
+    const r = issue('comics.0422', texte, oeuvre(passage));
+    expect(attendu === 'retenu' ? r : r === 'retenu' ? 'retenu' : 'refuse').toBe(attendu === 'retenu' ? 'retenu' : 'refuse');
+    if (attendu !== 'retenu') expect(r, `motif de « ${passage} »`).toBe(attendu);
+  });
+  it('le nom déclaré doit être dans la réponse, à la lettre', () => {
+    expect(issue('comics.0422', 'J’adore Blacksad.', oeuvre('J’adore Blacksad', { identite: { nature: 'oeuvre', nom: 'Black Sad' } }))).toBe('precision_inexacte');
+  });
+});
+
+describe('lecteur v5 : une technique n’est pas une matière (rejet-technique-style)', () => {
+  const T = 'Je n’aime vraiment pas le macramé, et le style shabby chic me hérisse.';
+  it.each([
+    ['SEGMENT_MATIERE', 'le macramé', 'classification_contredite'],
+    ['SEGMENT_TECHNIQUE', 'le macramé', 'retenu'],
+    ['SEGMENT_STYLE', 'le style shabby chic', 'retenu'],
+  ])('%s « %s » → %s', (d, p, attendu) => { expect(issue('CRE-06', T, seg(d, p, 'rejet'))).toBe(attendu); });
+  it('et réciproquement ; une matière reste une matière ; un mot ambigu reste au modèle', () => {
+    expect(issue('CRE-06', 'Je n’aime vraiment pas travailler le plastique.', seg('SEGMENT_TECHNIQUE', 'le plastique', 'rejet'))).toBe('classification_contredite');
+    expect(issue('CRE-06', 'Je n’aime vraiment pas travailler le plastique.', seg('SEGMENT_MATIERE', 'le plastique', 'rejet'))).toBe('retenu');
+    expect(issue('CRE-06', 'Je déteste la céramique.', seg('SEGMENT_MATIERE', 'la céramique', 'rejet'))).toBe('retenu');
+    expect(issue('CRE-06', 'Je déteste la céramique.', seg('SEGMENT_TECHNIQUE', 'la céramique', 'rejet'))).toBe('retenu');
+  });
+  it('le découpage réel fautif n’écrit AUCUNE matière, et rien n’est traduit en technique d’office', async () => {
+    const b = fausseBase();
+    const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'CRE-06', texte: T, acteId: 'lot-1',
+      lecteur: lecteur(seg('SEGMENT_MATIERE', 'le macramé', 'rejet'), seg('SEGMENT_STYLE', 'le style shabby chic', 'rejet')) });
+    expect(preuves(b).map((e) => [String(e.target_construct).split('.').pop(), e.preference_value, e.polarity])).toEqual([['aesthetic_universe', 'le style shabby chic', 'rejet']]);
+    expect(r.destinations!.releve.some((l) => l.motif === 'classification_contredite')).toBe(true);
+  });
+  it('le bon découpage écrit type_preference et aesthetic_universe, en rejet, undetermined', async () => {
+    const b = fausseBase();
+    await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'CRE-06', texte: T, acteId: 'lot-1',
+      lecteur: lecteur(seg('SEGMENT_TECHNIQUE', 'le macramé', 'rejet'), seg('SEGMENT_STYLE', 'le style shabby chic', 'rejet')) });
+    expect(preuves(b).map((e) => [String(e.target_construct).split('.').pop(), e.preference_value, e.polarity, e.stability])).toEqual([
+      ['type_preference', 'le macramé', 'rejet', 'undetermined'], ['aesthetic_universe', 'le style shabby chic', 'rejet', 'undetermined']]);
+  });
+});
+
+describe('lecteur v5 : un épisode décrit n’est pas un épisode identifié', async () => {
+  const { nomDecritUnSujet } = await import('../destinations');
+  const ep = (passage: string, nom: string) => seg('REFERENT_RESOLU', passage, 'referent', { temps: 'passe_revolu', identite: { nature: 'episode', nom, rattachement: 'Transfert' } });
+  it.each([
+    ['L’épisode de Transfert sur la disparition de Lucie m’a bouleversée.', 'la disparition de Lucie', true],
+    ['L’épisode de Transfert à propos de la disparition de Lucie.', 'la disparition de Lucie', true],
+    ['L’épisode de Transfert où Lucie disparaît.', 'Lucie disparaît', true],
+    ['L’épisode de Transfert consacré à Lucie.', 'Lucie', true],
+    ['L’épisode 12 de Transfert.', '12', false],
+    ['L’épisode « La disparition de Lucie » de Transfert.', 'La disparition de Lucie', false],
+    ['L’épisode intitulé La disparition de Lucie, dans Transfert.', 'La disparition de Lucie', false],
+  ])('« %s », nom « %s » : sujet décrit = %s', (texte, nom, attendu) => { expect(nomDecritUnSujet(texte, nom)).toBe(attendu); });
+  it('le cas réel : clarification, aucun fait d’épisode, aucune appréciation ; le verbatim reste entier', async () => {
+    const b = fausseBase(); const T = 'L’épisode de Transfert sur la disparition de Lucie m’a bouleversée.';
+    const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'podcast.0467', texte: T, acteId: 'lot-1',
+      lecteur: lecteur(ep('L’épisode de Transfert sur la disparition de Lucie', 'la disparition de Lucie')) });
+    expect(r.destinations).toMatchObject({ faits: 0, preuves: 0, clarifications: 1 });
+    expect(faits(b).some((f) => String(f.fact_type).includes('episode'))).toBe(false);
+    expect(b.tables.knowledge_facts.some((f) => f.fact_type === 'discovery.podcast.0467' && f.value === T)).toBe(true);
+  });
+  it('un titre ou un numéro déclaré reste identifié', async () => {
+    for (const [T, passage, nom] of [['L’épisode 12 de Transfert m’a marquée.', 'L’épisode 12 de Transfert', '12'], ['L’épisode « La disparition de Lucie » de Transfert m’a marquée.', 'L’épisode « La disparition de Lucie » de Transfert', 'La disparition de Lucie']]) {
+      const b = fausseBase();
+      const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'podcast.0467', texte: T, acteId: 'lot-1', lecteur: lecteur(ep(passage, nom)) });
+      expect(r.destinations, T).toMatchObject({ faits: 1, clarifications: 0 });
+    }
   });
 });

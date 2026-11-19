@@ -1,0 +1,107 @@
+clé présente : oui (jamais affichée) · commit 4cfb4d14d965cb05f6162957a1223431e26723f2 · lecteur v4 · modèles : destinations claude-sonnet-4-6, extracteur libre claude-sonnet-4-6, qualification claude-sonnet-4-6
+
+[discovery] destinations : segments non écrits learning2.1459 [
+  'SUJET_DECLARE:ecarte:portee_limitee',
+  'SUJET_DECLARE:ecarte:portee_limitee'
+]
+✗ sujet-present          deux intérêts (géologie, histoire des cartes), stabilité contextual
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits learning2.1459 [ 'SUJET_DECLARE:ecarte:non_affirme' ]
+✓ sujet-nie              rien (négation)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits learning2.1459 [ 'SUJET_DECLARE:ecarte:autre_personne' ]
+✓ sujet-autre-personne   rien (autre personne)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits learning2.1459 [ 'SUJET_DECLARE:ecarte:attitude_non_conforme' ]
+✓ sujet-passe            rien (passé)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits learning2.1459 [ 'SUJET_DECLARE:ecarte:temps_non_conforme' ]
+✓ sujet-condition        rien (condition)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits learning2.1459 [ 'SUJET_DECLARE:ecarte:non_affirme' ]
+✓ sujet-ironie           rien (ironie dite)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+✓ rejet-technique-style  deux rejets (technique, style), stabilité undetermined
+    observé : {"preuves":["PREFERENCE:PREFERENCE.creativity.aesthetic_universe [rejet] (undetermined)","PREFERENCE:PREFERENCE.creativity.material_preference [rejet] (undetermined)"],"faits":[],"ouvertes":[]}
+✓ rejet-inverse          rien (aucun rejet dit)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits comics.0422 [ 'OEUVRE_RESOLUE_APPRECIEE:ecarte:attitude_non_explicite' ]
+✓ auteur-et-titre        un fait auteur (Moebius) ; le titre écrit comme référent ou mis en clarification, jamais inventé
+    observé : {"preuves":[],"faits":["discovery.fait.comics.auteur_ou_dessinateur_mentionne={\"valeur\":\"Tout ce que fait Moebius\",\"libelle\":\"Tout ce que fait Moebius\",\"quest"],"ouvertes":[]}
+[discovery] destinations : segments non écrits comics.0422 [ 'AUTEUR_MENTIONNE:ecarte:non_affirme' ]
+✓ auteur-nie             rien (négation)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+✓ projection             un fait de projection
+    observé : {"preuves":[],"faits":["discovery.fait.daily.journee_ideale={\"valeur\":\"j'aimerais prendre un mois entier pour marcher jusqu'à Compostelle\",\""],"ouvertes":[]}
+✓ projection-autre       rien (autre personne)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+✓ rejet-matiere          un rejet de matière, undetermined
+    observé : {"preuves":["PREFERENCE:PREFERENCE.creativity.material_preference [rejet] (undetermined)"],"faits":[],"ouvertes":[]}
+✓ matiere-aimee          rien (aucun rejet)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits comics.0422 [ 'OEUVRE_RESOLUE_APPRECIEE:ecarte:attitude_non_explicite' ]
+✗ oeuvre-appreciee       œuvre non résolue en base vide → clarification, aucune œuvre inventée
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits comics.0422 [ 'AUTEUR_MENTIONNE:ecarte:non_affirme' ]
+✓ auteur-mentionne       rien d’appréciation (mention ou rien)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits drinks.2102 [ 'PROJECTION_DECLAREE:ecarte:precision_inexacte' ]
+✓ boisson-projection     un fait de projection (ni habitude ni goût)
+    observé : {"preuves":[],"faits":["discovery.fait.drinks.moment_ideal_boisson={\"valeur\":\"Un verre de vin nature sur une terrasse à Lisbonne, au coucher du sol"],"ouvertes":[]}
+✓ boisson-autre          rien (autre personne)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits pets.0403 [ 'SOUHAIT_AVEC_IDENTIFIANT:clarification:aucun_animal_declare' ]
+✓ souhait-animal         aucun animal déclaré en base → pas de souhait écrit sans identifiant
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+✓ souhait-animal-autre   rien (animal d’une autre personne)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+✗ episode                épisode non résolu en base vide → clarification ; aucune appréciation écrite sur un référent inconnu
+    observé : {"preuves":[],"faits":["discovery.fait.podcast.episode_marquant={\"valeur\":\"la disparition de Lucie — Transfert\",\"libelle\":\"la disparition de Luc"],"ouvertes":[]}
+✓ episode-nie            rien
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits sensory2.1482 [ 'RELATION_EXPLICITE_DISTINCTE:ecarte:attitude_non_explicite' ]
+✓ lieu-bien-etre         lieu non résolu → clarification ou référent ; aucune préférence générale inventée
+    observé : {"preuves":[],"faits":["discovery.fait.sensory.lieu_de_bien_etre={\"valeur\":\"Les thermes de Bagnères-de-Bigorre — Bagnères-de-Bigorre\",\"libelle\":\""],"ouvertes":[]}
+[discovery] destinations : segments non écrits sensory2.1482 [ 'RELATION_EXPLICITE_DISTINCTE:ecarte:temps_non_conforme' ]
+✓ cible-aspect-lieu      aucune relation envers l’établissement (l’appréciation porte sur le silence)
+    observé : {"preuves":[],"faits":["discovery.fait.sensory.lieu_de_bien_etre={\"valeur\":\"Les thermes de Bagnères — Bagnères-de-Bigorre\",\"libelle\":\"Les thermes"],"ouvertes":[]}
+✓ cible-referent-lieu    relation LOVE/LIKE envers le lieu, écrite ou en attente de sa clarification
+    observé : {"preuves":["ENTITY:lieu:lieu:thermes de bagnères|bagnères-de-bigorre (undetermined)"],"faits":["discovery.fait.sensory.lieu_de_bien_etre={\"valeur\":\"thermes de Bagnères — Bagnères-de-Bigorre\",\"libelle\":\"thermes de Bagn"],"ouvertes":[]}
+[discovery] destinations : segments non écrits podcast.0467 [ 'RELATION_EXPLICITE_DISTINCTE:ecarte:temps_non_conforme' ]
+✓ cible-aspect-episode   aucune relation envers l’épisode
+    observé : {"preuves":[],"faits":["discovery.fait.podcast.episode_marquant={\"valeur\":\"épisode 12 — Transfert\",\"libelle\":\"épisode 12 — Transfert\",\"question\""],"ouvertes":[]}
+[discovery] destinations : segments non écrits comics.0422 [ 'OEUVRE_RESOLUE_APPRECIEE:ecarte:attitude_non_explicite' ]
+✓ cible-aspect-oeuvre    aucune relation envers Blacksad
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits sensory2.1482 [
+  'REFERENT_RESOLU:ecarte:autre_personne',
+  'RELATION_EXPLICITE_DISTINCTE:ecarte:autre_personne'
+]
+✓ lieu-autre             rien (autre personne)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+✓ lieu-ideal             des éléments voulus : au moins un ESTHÉTIQUE et au moins un SENSORIEL
+    observé : {"preuves":["PREFERENCE:PREFERENCE.sensory.aesthetic_universe (undetermined)","PREFERENCE:PREFERENCE.sensory.aesthetic_universe (undetermined)","PREFERENCE:PREFERENCE.sensory.sensory_preference (undetermined)"],"faits":[],"ouvertes":[]}
+[discovery] destinations : segments non écrits sensory2.1487 [
+  'ELEMENT_ESTHETIQUE:ecarte:non_affirme',
+  'ELEMENT_SENSORIEL:ecarte:non_affirme'
+]
+✓ lieu-ideal-nie         aucune présence voulue écrite (ce sont des refus)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]}
+✗ envie                  une envie, à proposer au Carnet (rien ajouté d’office)
+    observé : {"preuves":[],"faits":[],"ouvertes":[]} — LECTURE EN ATTENTE (le modèle n’a pas répondu)
+✗ pas-envie              aucune envie
+    observé : {"preuves":[],"faits":[],"ouvertes":[]} — LECTURE EN ATTENTE (le modèle n’a pas répondu)
+✓ cible-recit-aspect-lieu        LOVE absente
+    observé : {"entites":[]}
+✓ cible-recit-referent-marque    LOVE ecrite
+    observé : {"entites":["Patagonia:LOVE"]}
+✓ cible-recit-aspect-destination WANT_TO_VISIT absente
+    observé : {"entites":[]}
+✓ cible-recit-referent-destination WANT_TO_VISIT ecrite
+    observé : {"entites":["Japon:WANT_TO_VISIT"]}
+✓ cible-recit-aspect-auteur      LOVE absente
+    observé : {"entites":[]}
+✓ D1-qualification      baskets rétrogradées · parfum cuir écarté · portefeuille et livre compatibles
+    observé : {"verdict":{"Un livre de cuisine japonaise":"compatible_verifiee","Un portefeuille en cuir pleine fleur":"compatible_verifiee","Une paire de baskets en toile":"retrogradee"},"ecartees":["Un parfum boisé aux notes de cuir"]}
+
+33/38 conformes. Rapport : docs/discovery/essai-extracteur-reel.json

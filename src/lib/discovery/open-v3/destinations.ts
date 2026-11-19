@@ -40,7 +40,9 @@ import { ENTITY_RELATIONS, type EntityRelation } from '@/lib/knowledge/vocabular
 // la montée de version garantit seulement qu'une lecture locale v2 serait relue sous la règle actuelle.
 // v4 (20 nov.) : déclencheurs présentés par code ; variantes typographiques d'un même caractère
 // tolérées dans la copie. Corrige les écarts du premier passage réel (19 nov., 31/38).
-export const VERSION_LECTURE = 4;
+// v5 (20 nov., deuxième passage réel) : période ≠ portée ; attitude lue aussi dans le passage ;
+// technique ≠ matière ; épisode décrit ≠ épisode identifié.
+export const VERSION_LECTURE = 5;
 
 export interface Destination {
   readonly question: string; readonly rang: string; readonly declencheur: string; readonly signification: string;
@@ -209,7 +211,7 @@ export type MotifRefus =
   | 'attitude_non_conforme' | 'non_affirme' | 'autre_personne' | 'temps_non_conforme' | 'sous_condition' | 'portee_limitee'
   | 'negation_dans_la_proposition' | 'appreciation_dans_la_proposition' | 'sens_incertain' | 'attitude_non_explicite'
   | 'passe_dans_la_proposition' | 'condition_dans_la_proposition' | 'autre_personne_dans_la_proposition' | 'relation_hors_vocabulaire'
-  | 'cible_non_declaree' | 'appreciation_d_un_aspect' | 'cible_indeterminee';
+  | 'cible_non_declaree' | 'appreciation_d_un_aspect' | 'cible_indeterminee' | 'classification_contredite';
 
 /** Le sens que les MOTS de la proposition donnent au passage. */
 export type SensLexical = 'positif' | 'negatif' | 'incertain' | 'nu' | 'nie_nu';
@@ -256,6 +258,39 @@ export interface Examen {
 }
 const chaine = (v: unknown): string | undefined => (typeof v === 'string' && v.trim().length > 0 ? v.trim() : undefined);
 
+/* ── 20 nov., après le deuxième passage réel ──────────────────────────────────────────────────
+ * UNE PÉRIODE N'EST PAS UNE PORTÉE. « En ce moment la géologie » : le vrai modèle rend
+ * limite = « En ce moment » ; la destination veut précisément une stabilité contextuelle. Une
+ * limite qui n'est QU'un repère de temps ou d'intensité ne restreint pas la portée (« au travail »,
+ * « pour les enfants » la restreignent, et restent refusées). Liste fermée : tout le reste refuse.
+ */
+const PERIODE_OU_INTENSITE = /^(?:en ce moment|en ce moment-ci|actuellement|ces temps-ci|ces derniers temps|dernièrement|dernierement|récemment|recemment|depuis peu|depuis quelque temps|depuis quelques mois|cette année|cette annee|ces jours-ci|aujourd'hui|ponctuellement|de temps en temps|parfois|un peu|beaucoup|surtout|vraiment|en particulier)$/;
+export const limiteDePortee = (limite: string | undefined): boolean => !!limite && !PERIODE_OU_INTENSITE.test(bas(limite).replace(/[.,;:!?]+$/, '').trim());
+
+/* UNE TECHNIQUE N'EST PAS UNE MATIÈRE (et réciproquement). Au passage réel, « le macramé » a été
+ * rangé en matière. Les deux lexiques ne servent qu'à REFUSER un classement qu'ils contredisent ;
+ * un mot qu'ils ne connaissent pas reste au jugement du modèle. Aucune traduction d'office. Les mots
+ * qui sont l'un ET l'autre (céramique, teinture, fil) n'y figurent pas : ils ne prouvent rien. */
+const TECHNIQUES = /(?<!\p{L})(?:macram[ée]|poterie|tricot|crochet|broderie|couture|tissage|punch needle|patchwork|quilting|vannerie|marqueterie|tournage|modelage|sculpture|gravure|s[ée]rigraphie|reliure|calligraphie|lettering|aquarelle|peinture|dessin|illustration|collage|mosa[iï]que|origami|scrapbooking|bijouterie|photographie|soufflage|vitrail|émaillage|emaillage|ébénisterie|ebenisterie|menuiserie|cartonnage|feutrage|dentelle)(?!\p{L})/u;
+const MATIERES = /(?<!\p{L})(?:lin|laine|coton|soie|cuir|daim|bois|m[ée]tal|acier|laiton|cuivre|verre|plastique|r[ée]sine|papier|carton|argile|gr[èe]s|porcelaine|fa[iï]ence|pierre|marbre|b[ée]ton|osier|rotin|bambou|li[èe]ge|velours|polyester|nylon|synth[ée]tique|tissu|perle|perles)(?!\p{L})/u;
+const classementContredit = (declencheur: string, passage: string): boolean => {
+  const t = bas(passage);
+  if (declencheur === 'SEGMENT_MATIERE') return TECHNIQUES.test(t) && !MATIERES.test(t);
+  if (declencheur === 'SEGMENT_TECHNIQUE') return MATIERES.test(t) && !TECHNIQUES.test(t);
+  return false;
+};
+
+/* UN ÉPISODE DÉCRIT N'EST PAS UN ÉPISODE IDENTIFIÉ. « L'épisode de Transfert SUR la disparition de
+ * Lucie » nomme son sujet, pas son titre ni son numéro : la réponse ne démontre pas une identité
+ * unique. Le nom déclaré est lu dans le texte : précédé d'une tournure de sujet, il ne résout rien
+ * (clarification) ; le verbatim reste entier. */
+const TOURNURE_DE_SUJET = /(?<!\p{L})(?:sur|à propos de|a propos de|au sujet de|consacr[ée]e? à|consacr[ée]e? a|qui parle de|qui parlait de|où|ou il est question de|où il est question de|dont le sujet est|autour de)\s*$/u;
+export function nomDecritUnSujet(texte: string, nom: string): boolean {
+  const t = bas(texte), n = bas(nom).trim();
+  for (let i = t.indexOf(n); i >= 0; i = t.indexOf(n, i + 1)) if (TOURNURE_DE_SUJET.test(t.slice(Math.max(0, i - 40), i))) return true;
+  return false;
+}
+
 export function examinerSegments(texte: string, brut: unknown, destinations: readonly Destination[]): Examen {
   const retenus: SegmentExamine[] = []; const ecartes: { declencheur: string; passage: string; motif: MotifRefus }[] = [];
   const parDeclencheur = new Map(destinations.map((d) => [d.declencheur, d]));
@@ -284,7 +319,8 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
     if (ex.attitude !== 'mention' && s.personne !== 'soi') { refuser('autre_personne'); continue; }
     if (!ex.temps.includes(temps)) { refuser('temps_non_conforme'); continue; }
     if (ex.contreExamen && chaine(s.condition)) { refuser('sous_condition'); continue; }
-    if (ex.contreExamen && chaine(s.limite)) { refuser('portee_limitee'); continue; }
+    if (ex.contreExamen && limiteDePortee(chaine(s.limite))) { refuser('portee_limitee'); continue; }
+    if (classementContredit(declencheur, passage)) { refuser('classification_contredite'); continue; }
     let relation: EntityRelation | undefined;
     if (d.famille === 'ENTITY') {
       const voulue = d.relation && !d.relation.startsWith('<') ? d.relation : chaine(s.relation);
@@ -296,9 +332,16 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
     const p = propositionDe(texte, pos.debut, pos.fin);
     // Un second segment (« J'ai adoré ») porte lui-même l'attitude : il est lu avec ses propres mots.
     const avant = ex.secondSegment ? `${p.avant}${bas(passage)}` : p.avant, apres = p.apres;
-    const sens = sensLexical(avant, apres);
+    // Le passage peut porter lui-même l'attitude (« J'adore Blacksad », découpage réel du 20 nov.).
+    // Ses mots sont lus À PART, puis combinés de façon à ne jamais assouplir : une négation, d'où
+    // qu'elle vienne, l'emporte ; l'incertitude ensuite ; le positif seulement s'il est le seul dit.
+    const sensHors = sensLexical(avant, apres);
+    const sensPassage = ex.secondSegment ? 'nu' as SensLexical : sensLexical(bas(passage), '');
+    const sens: SensLexical = [sensHors, sensPassage].find((x) => x === 'negatif' || x === 'nie_nu')
+      ?? [sensHors, sensPassage].find((x) => x === 'incertain')
+      ?? [sensHors, sensPassage].find((x) => x === 'positif') ?? sensHors;
     if (ex.contreExamen) {
-      const prop = `${avant} ${apres}`;
+      const prop = ex.secondSegment ? `${avant} ${apres}` : `${avant} ${bas(passage)} ${apres}`;
       // Une relation NÉGATIVE ou NEUTRE envers un référent se prouve par ses propres mots.
       const relNegative = relation === 'DISLIKE' || relation === 'AVOID';
       if (relation === 'NEUTRAL') {
@@ -312,7 +355,7 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
         if (sens === 'incertain') { refuser('sens_incertain'); continue; }
         if (ex.explicite && sens !== 'positif') { refuser('attitude_non_explicite'); continue; }
       }
-      if (ex.negationGenerale && NEG_GENERALE.test(avant)) { refuser('negation_dans_la_proposition'); continue; }
+      if (ex.negationGenerale && (NEG_GENERALE.test(avant) || (!ex.secondSegment && NEG_GENERALE.test(bas(passage))))) { refuser('negation_dans_la_proposition'); continue; }
       if (!ex.autruiAdmis && AUTRUI.test(prop.replace(IMPERSONNEL, ' '))) { refuser('autre_personne_dans_la_proposition'); continue; }
       if (estAuPasse(prop)) { refuser('passe_dans_la_proposition'); continue; }
       if (CONDITION.test(prop)) { refuser('condition_dans_la_proposition'); continue; }
@@ -325,12 +368,19 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
       if (!ex.secondSegment && ex.resolution) {
         // Le passage NOMME le référent : l'appréciation doit porter sur lui (« J'adore Blacksad »),
         // pas sur un de ses aspects (« J'adore le dessin de Blacksad »).
+        // Le référent est son NOM déclaré, pas le passage : un passage trop large (« J'adore le dessin
+        // de Blacksad ») ne doit pas faire passer l'objet du verbe pour le référent.
         const nomDeclare = chaine((s.identite as Record<string, unknown> | undefined)?.nom);
-        const lu = cibleLexicale(texte, pos.debut, pos.fin, ex.resolution, { debut: pos.debut, fin: pos.fin, ...(nomDeclare ? { nom: nomDeclare } : {}) });
+        const ref = nomDeclare ? positionExacte(texte, nomDeclare) : pos;
+        if (!ref) { refuser('precision_inexacte'); continue; }
+        const lu = cibleLexicale(texte, pos.debut, pos.fin, ex.resolution, { debut: ref.debut, fin: ref.fin, ...(nomDeclare ? { nom: nomDeclare } : {}) });
         if (lu.cible !== 'referent') { refuser(lu.cible === 'aspect' ? 'appreciation_d_un_aspect' : 'cible_indeterminee'); continue; }
       }
     }
     const nature = chaine(idBrute?.nature) as NatureIdentite | undefined;
+    // Un épisode dont le « nom » décrit le sujet n'est pas identifié : il passe en clarification.
+    if (nature === 'episode' && chaine(idBrute?.nom) && nomDecritUnSujet(texte, chaine(idBrute?.nom)!) && idBrute)
+      idBrute.ambigu = `le nom donné décrit le sujet de l’épisode, pas son titre ni son numéro`;
     const identite: IdentiteDeclaree | undefined = idBrute && nature
       ? { nature, ...(chaine(idBrute.nom) ? { nom: chaine(idBrute.nom)! } : {}), ...(chaine(idBrute.rattachement) ? { rattachement: chaine(idBrute.rattachement)! } : {}),
           ...(chaine(idBrute.ambigu) ? { ambigu: chaine(idBrute.ambigu)! } : {}) }
@@ -446,10 +496,11 @@ POUR CHAQUE PASSAGE, déclare ce que la phrase en dit :
 - personne : soi (la personne qui répond) · autre (son mari, son enfant, un ami…) · indetermine.
 - temps : actuel · passe_revolu (« avant j'aimais… ») · futur_ou_souhait · hypothetique · indetermine.
 - condition : le passage exact de la condition, s'il y en a une (« sauf si c'est fait main ») ; sinon null.
-- limite : le passage exact qui restreint la portée (« pour les enfants », « au travail ») ; sinon null.
+- limite : le passage exact qui restreint la portée (« pour les enfants », « au travail ») ; sinon null. Un repère de temps (« en ce moment », « depuis peu ») n'est PAS une limite : il se déclare dans « temps ». Une intensité (« un peu », « surtout ») non plus.
 - relation (entités seulement) : ${ENTITY_RELATIONS.join(', ')} — seulement si la phrase l'exprime par ses mots. Un comportement (« je l'ai réécouté trois fois », « j'y retourne souvent ») n'est PAS une appréciation. « M'a marqué » non plus.
 - cible (entités seulement, obligatoire avec relation) : referent si l'appréciation porte sur le référent LUI-MÊME (« j'adore cet endroit », « j'ai adoré Blacksad », « je l'ai adoré ») ; aspect si elle porte sur une de ses parties ou qualités (« j'y ai adoré le silence », « j'adore le dessin de Blacksad », « la voix de l'animatrice »). Une appréciation d'un aspect n'est JAMAIS une relation envers le référent : déclare aspect, et ne la transporte pas sur lui.
-- identite (œuvre, épisode, lieu, animal) : nature ; nom (titre de l'œuvre ; titre ou numéro de l'épisode ; nom du lieu ; nom de l'animal) ; rattachement (auteur ; émission ; localité ; espèce). Si la réponse ne permet pas de savoir de quoi il s'agit exactement, laisse nom vide et dis pourquoi dans « ambigu ».
+- Une technique (macramé, poterie, tricot, broderie, couture) n'est pas une matière (lin, laine, bois, cuir, plastique) : range chaque passage sous le déclencheur qui le nomme exactement ; dans le doute, ne le rends pas.
+- identite (œuvre, épisode, lieu, animal) : nature ; nom (titre de l'œuvre ; titre ou numéro de l'épisode ; nom du lieu ; nom de l'animal) ; rattachement (auteur ; émission ; localité ; espèce). Pour un épisode, « nom » est son titre ou son numéro tels qu'écrits ; un SUJET décrit (« sur la disparition de Lucie ») n'est pas un nom : laisse nom vide et dis-le dans « ambigu ». Si la réponse ne permet pas de savoir de quoi il s'agit exactement, laisse nom vide et dis pourquoi dans « ambigu ».
 
 Si rien ne satisfait un déclencheur, ne rends rien pour lui. Dans le doute, ne rends rien.
 INTERDICTIONS : ${barriere || 'ne déduis rien que la personne n’a pas écrit.'}`;

@@ -49,7 +49,7 @@ const { admin } = pileLocale();
 if (MODE === 'reel') exigerProcessusLocal(3100);
 else console.log('mode simulé : contrôle lsof du processus de l’application non exigé (aucune clé réelle en jeu).');
 
-type Trace = { n: number; outil: string | null; modele: string | null; statut: number | string | null; systeme: string; messages: { role: string; contenu: string }[] };
+type Trace = { n: number; outil: string | null; modele: string | null; statut: number | string | null; systeme: string; messages: { role: string; contenu: string }[]; reponse?: unknown };
 const etatRelais = async (): Promise<{ amont: string; appels: number; recus: Trace[] }> => {
   const r = await fetch(`${RELAIS}/__etat`);
   if (!r.ok) throw new Error(`relais illisible : HTTP ${r.status}`);
@@ -77,8 +77,29 @@ catch {
   COMMIT = 'copie de travail non versionnée (mode simulé)'; MODIFIE = true;
 }
 console.log(`commit ${COMMIT}${MODIFIE ? ' (+ modifications non commitées dans src)' : ''} · lecteur v${VERSION_LECTURE} · modèle des destinations ${MODELE_DESTINATIONS} · mode ${MODE}`);
-const rapport: Record<string, unknown> = { date: new Date().toISOString(), commit: COMMIT, modifications_non_commitees_dans_src: MODIFIE, version_du_lecteur: VERSION_LECTURE, modele_destinations: MODELE_DESTINATIONS, mode: MODE, amont,
-  nature: MODE === 'simule' ? 'parcours complet EXÉCUTÉ, modèle SIMULÉ (plomberie seulement)' : 'parcours complet EXÉCUTÉ avec le VRAI modèle' };
+const rapport: Record<string, unknown> = { date: new Date().toISOString(), commit: COMMIT, modifications_non_commitees_dans_src: MODIFIE, version_du_lecteur: VERSION_LECTURE, modele_destinations: MODELE_DESTINATIONS, mode: MODE, amont };
+// 20 nov. (revue, point 6) : le rapport dit s'il est allé AU BOUT, et jusqu'où. « nature » n'annonce plus
+// un parcours exécuté quand il s'est arrêté. Toute sortie — arrêt voulu, exception — écrit le rapport.
+const ETAPES = ['0 comptes', '1–2 sélection et réponses', '3 persistance et relecture', '4a sans autorisation', '4b accord', '4c retrait', 'fin'] as const;
+let etape: (typeof ETAPES)[number] = '0 comptes';
+const avancer = (e: (typeof ETAPES)[number]) => { etape = e; };
+function ecrireRapport(statut: 'acheve' | 'interrompu'): void {
+  rapport.statut = statut;
+  rapport.etape_atteinte = etape;
+  rapport.etapes_prevues = ETAPES;
+  rapport.nature = `parcours ${statut === 'acheve' ? 'ACHEVÉ (toutes les étapes, consentement et retrait compris)' : `INTERROMPU à l’étape « ${etape} » — consentement et retrait NON éprouvés au-delà`}, modèle ${MODE === 'simule' ? 'SIMULÉ (plomberie seulement)' : 'RÉEL'}`;
+  rapport.resultats_par_cas = v.resultats;
+  try { writeFileSync(`docs/discovery/parcours-complet-${MODE}.json`, JSON.stringify(rapport, null, 1)); }
+  catch (e) { console.error(`ÉCHEC — rapport non écrit : ${e instanceof Error ? e.message : 'erreur'}`); process.exit(3); }
+}
+const interrompre = (e: unknown) => {
+  rapport.arret = (e instanceof Error ? e.message : String(e)).replace(/sk-ant-[A-Za-z0-9_-]+/g, '[clé masquée]');
+  console.error(`ARRÊT — ${rapport.arret}`);
+  ecrireRapport('interrompu');
+  v.bilan(); console.log(`Parcours INTERROMPU à l’étape « ${etape} ».`); process.exit(1);
+};
+process.on('uncaughtException', interrompre);
+process.on('unhandledRejection', interrompre);
 const plier = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[’`]/g, "'");
 const lu = <T,>(r: { data: T | null; error: { message: string } | null }, quoi: string): T => {
   if (r.error) throw new Error(`lecture impossible (${quoi}) : ${r.error.message}`);
@@ -92,6 +113,7 @@ const cP = await cookiesDe(P.email, P.motDePasse), cB = await cookiesDe(B.email,
 console.log('Fiche créée par le pilote sous sa session (RLS) ; le lien de compte est posé à la main, comme aux scripts 18 et 35.');
 
 // ═══ 1–2. Sélection et réponses, par les routes ═══
+avancer('1–2 sélection et réponses');
 console.log('\n1–2. Sélection par le serveur, réponses avec le jeton signé');
 const TEXTE_LIBRE = 'En ce moment la céramique japonaise, et un peu l’histoire des cartes anciennes. La chimie ne m’intéresse pas.';
 const sujet = await poster('/api/discovery/sujet', cB, { branche: 'learning2', choisi: true });
@@ -129,9 +151,12 @@ v.verifier(fermee && libre, `2 : les deux questions ont été SERVIES par le ser
 const lecture = (await etatRelais()).recus.filter((t) => t.outil === 'segments');
 v.verifier(lecture.length >= 1 && lecture.every((t) => t.statut === 200), '2 : la lecture de la réponse libre est partie au modèle, statut 200', JSON.stringify(lecture.map((t) => t.statut)));
 v.verifier(lecture.some((t) => t.messages.some((m) => m.contenu.includes('céramique japonaise'))), '2 : ce que le modèle des destinations a reçu contient la réponse libre, telle qu’écrite');
-rapport.lecture_observee = lecture.map((t) => ({ statut: t.statut, modele: t.modele, outil: t.outil }));
+// Ce que le modèle a RENDU (revue, point 1) : l'entrée de son outil, telle que le relais l'a reçue.
+rapport.lecture_observee = lecture.map((t) => ({ statut: t.statut, modele: t.modele, outil: t.outil, rendu_par_le_modele: t.reponse ?? null }));
+console.log('     rendu brut du lecteur :', JSON.stringify(lecture.map((t) => t.reponse ?? null)));
 
 // ═══ 3. Persistance et relecture ═══
+avancer('3 persistance et relecture');
 console.log('\n3. Persistance et relecture');
 type Ev = { id: string; source_id: string; target_family: string; subject_label: string | null; entity_label: string | null; preference_value: string | null; raw_information: string | null; polarity: string | null; assertion_status: string | null };
 const journalDeB = async () => lu(await admin.from('knowledge_evidences').select('id, source_id, target_family, subject_label, entity_label, preference_value, raw_information, polarity, assertion_status')
@@ -150,9 +175,8 @@ if (ceram.length === 0) {
   console.error('ARRÊT — la lecture n’a pas écrit la céramique : le cas négatif 4b ne prouverait rien.');
   rapport.arret = 'lecture sans preuve inférée de la céramique : parcours interrompu avant la recommandation';
   rapport.journal_de_B = journal.map((e) => ({ famille: e.target_family, libelle: libelle(e), statut: e.assertion_status, polarite: e.polarity }));
-  rapport.resultats_par_cas = v.resultats;
-  try { writeFileSync(`docs/discovery/parcours-complet-${MODE}.json`, JSON.stringify(rapport, null, 1)); } catch (e) { console.error(`ÉCHEC — rapport non écrit : ${e instanceof Error ? e.message : 'erreur'}`); process.exit(3); }
-  v.bilan(); process.exit(1);
+  ecrireRapport('interrompu');
+  v.bilan(); console.log(`Parcours INTERROMPU à l’étape « ${etape} ».`); process.exit(1);
 }
 v.verifier(!journal.some((e) => plier(libelle(e)).includes('chimie') && e.polarity !== 'rejet'), '3 : « la chimie » (niée) n’est écrite comme aucun intérêt');
 const portrait = await lirePortrait(B.client as never, { userId: B.userId });
@@ -202,6 +226,7 @@ const reco = async () => lu(await P.client.from('contact_recommendations').selec
   { ideas: { title: string; justification: string }[]; portees_proche: string[]; proche_compte: string | null; a_recalculer: boolean } | null;
 const gouts = async () => { const g = await lireGoutsDuProche(admin as never, { piloteId: P.userId, contactId: k.id }); if (g.motif === 'lecture_impossible') throw new Error('lecture des goûts impossible — rien ne peut être conclu'); return g; };
 
+avancer('4a sans autorisation');
 console.log('\n4a. Sans autorisation');
 let g = await gouts();
 v.verifier(!g.autorise && g.motif === 'aucun_consentement', '4a : la lecture des goûts (même fonction que la route) refuse : aucun consentement — pas une erreur', g.motif);
@@ -210,6 +235,7 @@ v.verifier(a.retrouves.length === 0 && a.ligneGouts === null, '4a : AUCUNE donn�
 let r0 = await reco();
 v.verifier(!!r0 && r0.portees_proche.length === 0 && r0.proche_compte === null, '4a : la recommandation enregistrée ne déclare aucune donnée de B', JSON.stringify(r0 && { portees: r0.portees_proche }));
 
+avancer('4b accord');
 console.log('\n4b. B accorde reco:gouts depuis sa session');
 const acc = await poster('/api/consent/exclusions', cB, { contactId: k.id, action: 'autoriser', portee: 'reco:gouts' });
 v.verifier(acc.status === 200 && (acc.json as { actif?: boolean }).actif === true, '4b : accord donné (HTTP 200, actif)', `HTTP ${acc.status}`);
@@ -232,6 +258,7 @@ const titresB = (r1?.ideas ?? []).map((i) => i.title);
 const journalP = lu(await P.client.from('attention_log').select('id, attention_title, portees_proche').eq('contact_id', k.id).eq('status', 'proposed'), 'idées proposées') as { id: string; attention_title: string; portees_proche: string[] }[];
 v.verifier(journalP.some((l) => l.portees_proche.includes('reco:gouts')), '4b : les idées proposées portent la même provenance');
 
+avancer('4c retrait');
 console.log('\n4c. B retire reco:gouts');
 const ret = await poster('/api/consent/exclusions', cB, { contactId: k.id, action: 'retirer', portee: 'reco:gouts' });
 v.verifier(ret.status === 200 && (ret.json as { actif?: boolean }).actif === false, '4c : retrait (HTTP 200, inactif)', `HTTP ${ret.status}`);
@@ -250,10 +277,9 @@ const r2 = await reco();
 v.verifier(!!r2 && r2.portees_proche.length === 0 && r2.proche_compte === null, '4c : la nouvelle recommandation ne déclare aucune donnée de B');
 
 rapport.generations = [a.obs, b.obs, c.obs];
-rapport.resultats_par_cas = v.resultats;
 const fichier = `docs/discovery/parcours-complet-${MODE}.json`;
 rapport.modeles_observes_au_relais = [...new Set([a, b, c].flatMap((x) => x.obs.appels.map((y) => y.modele)).concat((rapport.lecture_observee as { modele: string | null }[]).map((y) => y.modele)))];
-try { writeFileSync(fichier, JSON.stringify(rapport, null, 1)); }
-catch (e) { console.error(`ÉCHEC — rapport non écrit : ${e instanceof Error ? e.message : 'erreur'}`); process.exit(3); }
+avancer('fin');
+ecrireRapport('acheve');
 console.log(`\nRapport : ${fichier} — ${rapport.nature}. Aucune clé, aucun en-tête n’y figure.`);
 v.bilan();

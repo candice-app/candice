@@ -673,18 +673,6 @@
    ],
    "pourquoi": "« Qu’est-ce que tu aimes le plus dans {activité} ? » présume qu’elle l’aime : un attrait déclaré. Une pratique seule ne prouve pas qu’elle l’aime."
   },
-  "activity.0282": {
-   "modes": [
-    "pratique"
-   ],
-   "pourquoi": "« Quel est ton niveau aujourd’hui ? » présume une pratique (la question demande le niveau ; elle ne le suppose pas). Aimer ne suffit pas."
-  },
-  "activity.0283": {
-   "modes": [
-    "pratique"
-   ],
-   "pourquoi": "« À quelle fréquence le pratiques-tu réellement ? » présume une pratique. Aimer ne suffit pas."
-  },
   "activity.0284": {
    "modes": [
     "pratique"
@@ -693,6 +681,24 @@
   }
  },
  "fermees": {
+  "activity.0282": "fermée par la décision 9 (« Quel est ton niveau aujourd’hui ? ») ; réouverture sous pratique déclarée proposée, en attente de validation",
+  "activity.0283": "fermée par la décision 9 (« À quelle fréquence le pratiques-tu réellement ? ») ; réouverture sous pratique déclarée proposée, en attente de validation",
   "activity.0285": "« du matériel qu’il ne faudrait surtout pas choisir à ta place » présume une pratique ÉQUIPÉE ; pratiquer ne démontre pas un équipement, et aucune réponse ne le déclare"
+ },
+ "revisions_proposees_non_appliquees": {
+  "activity.0282": {
+   "modes": [
+    "pratique"
+   ],
+   "revise": "décision 9",
+   "pourquoi": "la question demande le niveau, elle ne le suppose pas ; une pratique DÉCLARÉE établit son prérequis. Aimer ne suffit pas."
+  },
+  "activity.0283": {
+   "modes": [
+    "pratique"
+   ],
+   "revise": "décision 9",
+   "pourquoi": "« pratiques-tu réellement » présume une pratique ; une pratique DÉCLARÉE l’établit. Aimer ne suffit pas."
+  }
  }
 }

@@ -107,28 +107,6 @@
    ]
   },
   {
-   "question": "activity.0282",
-   "origine": "Entité {activité} détectée et importante",
-   "lue": "Entité déclarée pour cette question",
-   "statut": "etablie",
-   "critere": "référent d'activité déclaré, mode pratique (activités, 20 nov.)",
-   "justification": "« Quel est ton niveau aujourd’hui ? » présume une pratique (la question demande le niveau ; elle ne le suppose pas). Aimer ne suffit pas. — sources : sportp.0504.",
-   "non_repris": [
-    "« importante » : aucun score ; une réponse déclarée, du mode que la question présume"
-   ]
-  },
-  {
-   "question": "activity.0283",
-   "origine": "Entité {activité} détectée et importante",
-   "lue": "Entité déclarée pour cette question",
-   "statut": "etablie",
-   "critere": "référent d'activité déclaré, mode pratique (activités, 20 nov.)",
-   "justification": "« À quelle fréquence le pratiques-tu réellement ? » présume une pratique. Aimer ne suffit pas. — sources : sportp.0504.",
-   "non_repris": [
-    "« importante » : aucun score ; une réponse déclarée, du mode que la question présume"
-   ]
-  },
-  {
    "question": "activity.0284",
    "origine": "Entité {activité} détectée et importante",
    "lue": "Entité déclarée pour cette question",
@@ -3022,6 +3000,20 @@
    "origine": "POSÉE SEULEMENT si THE-06A vaut accord conditionnel ou faible, ET si l’information n’est pas déjà connue par une autre branche",
    "statut": "sans_lecture",
    "manque": "ses options ne sont pas écrites (« à écrire à partir des types réellement proposés par le catalogue ») : une question sans réponses possibles ne peut pas être servie"
+  },
+  {
+   "question": "activity.0282",
+   "origine": "Entité {activité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "fermée par la décision 9 (« Quel est ton niveau aujourd’hui ? ») ; réouverture sous pratique déclarée proposée, en attente de validation",
+   "decision": "fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement"
+  },
+  {
+   "question": "activity.0283",
+   "origine": "Entité {activité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "fermée par la décision 9 (« À quelle fréquence le pratiques-tu réellement ? ») ; réouverture sous pratique déclarée proposée, en attente de validation",
+   "decision": "fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement"
   },
   {
    "question": "activity.0285",

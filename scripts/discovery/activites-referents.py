@@ -57,12 +57,19 @@ EXCLUES = {
 # Le prérequis EXACT de chaque question qui prend {activité} — ou une activité pour objet.
 QUESTIONS = {
  'activity.0281': (['attrait'], '« Qu’est-ce que tu aimes le plus dans {activité} ? » présume qu’elle l’aime : un attrait déclaré. Une pratique seule ne prouve pas qu’elle l’aime.'),
- 'activity.0282': (['pratique'], '« Quel est ton niveau aujourd’hui ? » présume une pratique (la question demande le niveau ; elle ne le suppose pas). Aimer ne suffit pas.'),
- 'activity.0283': (['pratique'], '« À quelle fréquence le pratiques-tu réellement ? » présume une pratique. Aimer ne suffit pas.'),
  'activity.0284': (['pratique'], '« … ou simplement continuer comme aujourd’hui ? » présume une pratique actuelle. Une envie d’essayer n’est pas une pratique actuelle.'),
 }
 FERMEES = {
+ # 20 nov. (revue) : fermées par la DÉCISION 9 ; elles le restent. Leur réouverture sous pratique déclarée est
+ # une RÉVISION PRODUIT proposée (voir PROPOSEES), qui n'est pas appliquée sans validation explicite d'Estelle.
+ 'activity.0282': 'fermée par la décision 9 (« Quel est ton niveau aujourd’hui ? ») ; réouverture sous pratique déclarée proposée, en attente de validation',
+ 'activity.0283': 'fermée par la décision 9 (« À quelle fréquence le pratiques-tu réellement ? ») ; réouverture sous pratique déclarée proposée, en attente de validation',
  'activity.0285': '« du matériel qu’il ne faudrait surtout pas choisir à ta place » présume une pratique ÉQUIPÉE ; pratiquer ne démontre pas un équipement, et aucune réponse ne le déclare',
+}
+# Révisions PROPOSÉES, non exécutées : le code ne lit pas cette table.
+PROPOSEES = {
+ 'activity.0282': {'modes': ['pratique'], 'revise': 'décision 9', 'pourquoi': 'la question demande le niveau, elle ne le suppose pas ; une pratique DÉCLARÉE établit son prérequis. Aimer ne suffit pas.'},
+ 'activity.0283': {'modes': ['pratique'], 'revise': 'décision 9', 'pourquoi': '« pratiques-tu réellement » présume une pratique ; une pratique DÉCLARÉE l’établit. Aimer ne suffit pas.'},
 }
 def slug(s):
     s = unicodedata.normalize('NFD', s.lower()); s = ''.join(c for c in s if unicodedata.category(c) != 'Mn')
@@ -86,6 +93,7 @@ out = {
  'sources': {k: {'mode': m, 'pourquoi': p} for k, (m, p) in SOURCES.items()},
  'exclues': EXCLUES, 'options': options,
  'questions': {k: {'modes': m, 'pourquoi': p} for k, (m, p) in QUESTIONS.items()}, 'fermees': FERMEES,
+ 'revisions_proposees_non_appliquees': PROPOSEES,
 }
 for k in list(QUESTIONS) + list(FERMEES) + list(SOURCES) + list(EXCLUES): assert k in Q, k
 s = json.dumps(out, ensure_ascii=False, indent=1)

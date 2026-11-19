@@ -1,0 +1,16 @@
+commit 4cfb4d14d965cb05f6162957a1223431e26723f2 · lecteur v4 · modèle des destinations claude-sonnet-4-6 · mode reel
+Fiche créée par le pilote sous sa session (RLS) ; le lien de compte est posé à la main, comme aux scripts 18 et 35.
+
+1–2. Sélection par le serveur, réponses avec le jeton signé
+  ✓ 1 : B choisit d’explorer l’apprentissage (HTTP 200)
+  ✓ 2 : les deux questions ont été SERVIES par le serveur et répondues (21 actes, tous HTTP 200)
+  ✓ 2 : la lecture de la réponse libre est partie au modèle, statut 200
+  ✓ 2 : ce que le modèle des destinations a reçu contient la réponse libre, telle qu’écrite
+
+3. Persistance et relecture
+  ✓ 3 : B relit son journal sous sa session (1 preuves)
+  ✓ 3 : « Astronomie » : un intérêt EXPLICITE (sa déclaration)
+  ✗ 3 : « la céramique japonaise » : un intérêt LU PAR MODÈLE (inféré), réellement écrit — condition du cas négatif 4b — []
+ARRÊT — la lecture n’a pas écrit la céramique : le cas négatif 4b ne prouverait rien.
+
+6 vérifications passées, 1 en échec.

@@ -461,7 +461,7 @@ export interface ResultatOuverte {
   /** Questions de l'onglet 17 : ce que leurs destinations ont écrit, et ce qui est resté au verbatim. */
   readonly destinations?: ResultatDestinations;
   /** `food2.0882A` seulement : ce que le contrat dédié a écrit. */
-  readonly envie?: { readonly ecrite: boolean; readonly contraintes: number; readonly ecartes: readonly string[] };
+  readonly envie?: { readonly ecrite: boolean; readonly contraintes: number; readonly ecartes: readonly string[]; readonly luParLeModele?: boolean };
 }
 
 /** Questions ouvertes qui ont un contrat propre, et ne passent PAS par l'extraction générale. */
@@ -480,6 +480,8 @@ export async function enregistrerReponseOuverte(
     readonly projet?: Projet;
     /** Lecteur de segments (onglet 17). Ne se passe qu'en essai ; par défaut, le modèle. */
     readonly lecteur?: LecteurDeSegments;
+    /** Le lecteur de l'envie culinaire (food2.0882A), injectable pour l'observer. Par défaut : le vrai modèle. */
+    readonly lecteurEnvie?: (texte: string) => Promise<unknown>;
     readonly timestamp?: string;
     /** D9 : l'entité pour laquelle la question est posée. Le verbatim lui est rattaché, comme à un
      *  projet : aucune connaissance générale n'en est tirée. */
@@ -559,7 +561,7 @@ export async function enregistrerReponseOuverte(
   //       verbatim, et il est SIGNALÉ : `extractionEnAttente` dit qu'il faudra rejouer.
   try {
     if (q.id === CONTRAT_ENVIE_CULINAIRE) {
-      const envie = await ecrireEnvieCulinaire(client, { userId: input.userId, texte, verbatimSourceId, timestamp });
+      const envie = await ecrireEnvieCulinaire(client, { userId: input.userId, texte, verbatimSourceId, timestamp, ...(input.lecteurEnvie ? { lecteur: input.lecteurEnvie } : {}) });
       return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, envie, timestamp };
     }
     // Les questions de l'onglet 17 ont un contrat de destinations : lui seul décide de ce qui s'écrit.
@@ -597,8 +599,8 @@ export function sourceLectureEnvie(verbatimSourceId: string): string {
 
 async function ecrireEnvieCulinaire(
   client: WriteClient,
-  input: { userId: string; texte: string; verbatimSourceId: string; timestamp: string },
-): Promise<{ ecrite: boolean; contraintes: number; ecartes: readonly string[] }> {
+  input: { userId: string; texte: string; verbatimSourceId: string; timestamp: string; lecteur?: (texte: string) => Promise<unknown> },
+): Promise<{ ecrite: boolean; contraintes: number; ecartes: readonly string[]; luParLeModele: boolean }> {
   const { estAbsenceDEnvie, lireEnvieParModele, validerLecture, FAIT_ENVIE_CULINAIRE } = await import('./envie-culinaire');
   const about = accountAbout(asUserId(input.userId));
   const ownerId = asUserId(input.userId);
@@ -607,12 +609,13 @@ async function ecrireEnvieCulinaire(
   const dejaLue = await (client as unknown as {
     from(t: string): { select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: unknown }> } } };
   }).from('knowledge_sources').select('id').eq('id', sourceId).maybeSingle();
-  if (dejaLue.data) return { ecrite: false, contraintes: 0, ecartes: [] };
+  if (dejaLue.data) return { ecrite: false, contraintes: 0, ecartes: [], luParLeModele: false };
 
   // Un refus, une réponse vide, « aucune envie particulière » : décidé ICI, sans modèle.
-  const lecture = estAbsenceDEnvie(input.texte)
+  const absence = estAbsenceDEnvie(input.texte);
+  const lecture = absence
     ? { exprimeEnvie: false, details: [], contraintes: [], ecartes: [] as string[] }
-    : validerLecture(input.texte, await lireEnvieParModele(input.texte));   // LÈVE si le modèle est en panne
+    : validerLecture(input.texte, (await (input.lecteur ?? lireEnvieParModele)(input.texte)) as Parameters<typeof validerLecture>[1]);   // LÈVE si le modèle est en panne
 
   const source = createSourceRecord({
     about, ownerId, id: sourceId, sourceType: 'extraction_inferred',
@@ -645,7 +648,7 @@ async function ecrireEnvieCulinaire(
     timestamp: input.timestamp, confidence: 'low', assertionStatus: 'inferred', sensitive: true,
   }));
   await persistKnowledge(client, { source, facts, openKnowledge });
-  return { ecrite: facts.length > 0, contraintes: openKnowledge.length, ecartes: lecture.ecartes };
+  return { ecrite: facts.length > 0, contraintes: openKnowledge.length, ecartes: lecture.ecartes, luParLeModele: !absence };
 }
 
 /**

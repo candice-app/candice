@@ -1,12 +1,11 @@
 {
- "date": "2026-11-19T23:05:34.855Z",
+ "date": "2026-11-19T23:36:46.988Z",
  "commit": "copie de travail non versionnée (mode simulé)",
  "modifications_non_commitees_dans_src": true,
- "version_du_lecteur": 4,
+ "version_du_lecteur": 5,
  "modele_destinations": "claude-sonnet-4-6",
  "mode": "simule",
  "amont": "http://127.0.0.1:8787",
- "nature": "parcours complet EXÉCUTÉ, modèle SIMULÉ (plomberie seulement)",
  "parcours": [
   {
    "cle": "learning2.1437",
@@ -118,7 +117,46 @@
   {
    "statut": 200,
    "modele": "claude-sonnet-4-6",
-   "outil": "segments"
+   "outil": "segments",
+   "rendu_par_le_modele": [
+    {
+     "nom": "segments",
+     "entree": {
+      "segments": [
+       {
+        "declencheur": "SUJET_DECLARE",
+        "passage": "la céramique japonaise",
+        "attitude": "interet",
+        "affirme": true,
+        "personne": "soi",
+        "temps": "actuel",
+        "condition": null,
+        "limite": null
+       },
+       {
+        "declencheur": "SUJET_DECLARE",
+        "passage": "l’histoire des cartes anciennes",
+        "attitude": "interet",
+        "affirme": true,
+        "personne": "soi",
+        "temps": "actuel",
+        "condition": null,
+        "limite": null
+       },
+       {
+        "declencheur": "SUJET_DECLARE",
+        "passage": "La chimie",
+        "attitude": "interet",
+        "affirme": true,
+        "personne": "soi",
+        "temps": "actuel",
+        "condition": null,
+        "limite": null
+       }
+      ]
+     }
+    }
+   ]
   }
  ],
  "journal_de_B": [
@@ -196,6 +234,21 @@
    "ligne_des_gouts": null
   }
  ],
+ "modeles_observes_au_relais": [
+  "claude-sonnet-4-6"
+ ],
+ "statut": "acheve",
+ "etape_atteinte": "fin",
+ "etapes_prevues": [
+  "0 comptes",
+  "1–2 sélection et réponses",
+  "3 persistance et relecture",
+  "4a sans autorisation",
+  "4b accord",
+  "4c retrait",
+  "fin"
+ ],
+ "nature": "parcours ACHEVÉ (toutes les étapes, consentement et retrait compris), modèle SIMULÉ (plomberie seulement)",
  "resultats_par_cas": [
   {
    "libelle": "1 : B choisit d’explorer l’apprentissage (HTTP 200)",
@@ -313,8 +366,5 @@
    "libelle": "4c : la nouvelle recommandation ne déclare aucune donnée de B",
    "conforme": true
   }
- ],
- "modeles_observes_au_relais": [
-  "claude-sonnet-4-6"
  ]
 }

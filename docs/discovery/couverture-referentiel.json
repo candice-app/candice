@@ -1,14 +1,14 @@
 {
- "date": "2026-11-19T23:00:31.871Z",
+ "date": "2026-11-19T23:31:04.381Z",
  "referentiel": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_8.xlsx",
  "methode": "clause évaluée par conditions.ts dans l’état vide lu en base (compte neuf, pile locale) et dans un état ouvert ; indécidable dans les deux = non implémentée",
  "questions": 2407,
  "resume": {
   "en_arbitrage_hors_banque": 6,
   "fermee_par_garde_de_sensibilite": 125,
-  "fermee_par_le_produit": 1,
+  "fermee_par_le_produit": 3,
   "implementee_condition_d_origine": 1694,
-  "implementee_lecture_etablie": 293,
+  "implementee_lecture_etablie": 291,
   "non_implementee": 94,
   "non_implementee_hypothese": 24,
   "ouverte_sur_demarche": 55,
@@ -16,7 +16,7 @@
  },
  "clauses": {
   "total": 2778,
-  "indecidables": 154
+  "indecidables": 156
  },
  "non_implementees_par_nature": {
   "prerequis_metier_absent": 17,
@@ -4009,15 +4009,14 @@
    "niveau": "B",
    "forme": "open",
    "condition_origine": "Entité {activité} détectée et importante",
-   "condition_evaluee": "Entité déclarée pour cette question",
    "clauses": [
     {
-     "clause": "{\"type\":\"entite\"}",
-     "statut": "evaluee"
+     "clause": "{\"type\":\"prose\",\"texte\":\"Entité {activité} détectée et importante\"}",
+     "statut": "indecidable"
     }
    ],
-   "statut": "implementee_lecture_etablie",
-   "justification": "référent d'activité déclaré, mode pratique (activités, 20 nov.)"
+   "statut": "fermee_par_le_produit",
+   "justification": "fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement — fermée par la décision 9 (« Quel est ton niveau aujourd’hui ? ») ; réouverture sous pratique déclarée proposée, en attente de validation"
   },
   {
    "id": "activity.0283",
@@ -4026,15 +4025,14 @@
    "niveau": "B",
    "forme": "open",
    "condition_origine": "Entité {activité} détectée et importante",
-   "condition_evaluee": "Entité déclarée pour cette question",
    "clauses": [
     {
-     "clause": "{\"type\":\"entite\"}",
-     "statut": "evaluee"
+     "clause": "{\"type\":\"prose\",\"texte\":\"Entité {activité} détectée et importante\"}",
+     "statut": "indecidable"
     }
    ],
-   "statut": "implementee_lecture_etablie",
-   "justification": "référent d'activité déclaré, mode pratique (activités, 20 nov.)"
+   "statut": "fermee_par_le_produit",
+   "justification": "fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement — fermée par la décision 9 (« À quelle fréquence le pratiques-tu réellement ? ») ; réouverture sous pratique déclarée proposée, en attente de validation"
   },
   {
    "id": "activity.0284",

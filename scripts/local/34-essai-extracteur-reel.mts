@@ -34,8 +34,14 @@ try {
   MODIFIE = execSync('git status --porcelain -- src', { encoding: 'utf8' }).trim().length > 0;
 } catch { console.error('ARRÊT — commit testé illisible (git).'); process.exit(2); }
 // Ce que le modèle a RÉELLEMENT rendu, cas par cas (codes déjà traduits en déclencheurs).
+// DEUX lecteurs, observés chacun : celui des destinations (onglet 17) et celui de l'envie culinaire
+// (food2.0882A, contrat propre). L'instrumentation est tenue À PART du statut que rend le service :
+// une panne se lit dans ce statut ; l'instrumentation dit seulement quel lecteur a été appelé.
 let brutModele: unknown = null, appelsModele = 0;
 const lecteurObserve: typeof lireSegmentsParModele = async (...a) => { appelsModele++; brutModele = await lireSegmentsParModele(...a); return brutModele; };
+const { lireEnvieParModele } = await import('../../src/lib/discovery/open-v3/envie-culinaire.ts');
+let brutEnvie: unknown = null, appelsEnvie = 0;
+const lecteurEnvieObserve = async (t: string) => { appelsEnvie++; brutEnvie = await lireEnvieParModele(t); return brutEnvie; };
 
 if (!process.env.ANTHROPIC_API_KEY) { console.error('ARRÊT — aucune clé dans l’environnement. Voir l’en-tête du script.'); process.exit(2); }
 if (process.env.ANTHROPIC_BASE_URL && /127\.0\.0\.1|localhost/.test(process.env.ANTHROPIC_BASE_URL)) {
@@ -51,7 +57,13 @@ const resume = (b: Base) => ({
   preuves: preuves(b).map((e) => `${e.target_family}:${e.subject_label ?? e.target_construct}${e.polarity && e.polarity !== 'positive' ? ` [${e.polarity}]` : ''}${e.stability ? ` (${e.stability})` : ''}`),
   faits: faits(b).map((f) => `${f.fact_type}=${String(f.value).slice(0, 80)}`),
   ouvertes: ouvertes(b).map((o) => String(o.subject_label ?? o.subject)),
+  // La correspondance exacte : attribut, valeur, polarité, stabilité — pas seulement un compte.
+  attributs: preuves(b).map((e) => ({ attribut: String(e.target_construct ?? ''), valeur: String(e.preferenceValue ?? e.preference_value ?? e.subjectLabel ?? e.subject_label ?? ''), polarite: String(e.polarity ?? 'positive'), stabilite: String(e.stability ?? '') })),
 });
+type Attr = ReturnType<typeof resume>['attributs'][number];
+const sans = (x: string) => x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const a = (r: ReturnType<typeof resume>, attribut: RegExp, valeur: RegExp, polarite: string, stabilite: string) =>
+  r.attributs.filter((x: Attr) => attribut.test(x.attribut) && valeur.test(sans(x.valeur)) && x.polarite === polarite && x.stabilite === stabilite).length === 1;
 const contient = (liste: string[], mot: string) => liste.some((x) => x.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').includes(mot));
 
 type Ligne = { declencheur: string; issue: string; motif?: string };
@@ -61,7 +73,7 @@ const RIEN = (r: ReturnType<typeof resume>) => r.preuves.length === 0 && r.faits
 const CAS: Cas[] = [
   // ── Onglet 17, learning2.1459 « Quels sujets t’intéressent ponctuellement ? » ───────────────
   { id: 'sujet-present', question: 'learning2.1459', texte: 'En ce moment la géologie, et un peu l’histoire des cartes anciennes.',
-    attendu: 'deux intérêts (géologie, histoire des cartes), stabilité contextual', juger: (r) => contient(r.preuves, 'geologie') && contient(r.preuves, 'cartes') && r.preuves.every((p) => p.includes('contextual')) },
+    attendu: 'deux intérêts (géologie, histoire des cartes), stabilité contextual', juger: (r) => r.attributs.length === 2 && contient(r.preuves, 'geologie') && contient(r.preuves, 'cartes') && r.attributs.every((x: Attr) => x.stabilite === 'contextual' && x.polarite === 'positive') },
   { id: 'sujet-nie', question: 'learning2.1459', texte: 'La géologie ne m’intéresse pas du tout, contrairement à ce qu’on croit.', attendu: 'rien (négation)', juger: RIEN },
   { id: 'sujet-autre-personne', question: 'learning2.1459', texte: 'Mon frère est passionné de géologie, moi je l’écoute.', attendu: 'rien (autre personne)', juger: RIEN },
   { id: 'sujet-passe', question: 'learning2.1459', texte: 'J’adorais la géologie quand j’étais petite.', attendu: 'rien (passé)', juger: RIEN },
@@ -69,7 +81,10 @@ const CAS: Cas[] = [
   { id: 'sujet-ironie', question: 'learning2.1459', texte: 'La géologie, passionnant, vraiment… je plaisante.', attendu: 'rien (ironie dite)', juger: RIEN },
   // ── Onglet 17, CRE-06 « une technique, un style ou une matière que tu n’aimes vraiment pas » ─
   { id: 'rejet-technique-style', question: 'CRE-06', texte: 'Je n’aime vraiment pas le macramé, et le style shabby chic me hérisse.',
-    attendu: 'deux rejets (technique, style), stabilité undetermined', juger: (r) => r.preuves.length >= 2 && r.preuves.every((p) => p.includes('[rejet]') && p.includes('undetermined')) },
+    // 20 nov. : l'ancien jugement comptait deux rejets ; le passage réel a rangé le macramé en MATIÈRE et
+    // le cas passait. Exigé désormais : la correspondance exacte, et zéro matière inventée.
+    attendu: 'macramé → type_preference [rejet] ; shabby chic → aesthetic_universe [rejet] ; stabilité undetermined ; aucune matière',
+    juger: (r) => r.attributs.length === 2 && a(r, /type_preference$/, /macrame/, 'rejet', 'undetermined') && a(r, /aesthetic_universe$/, /shabby/, 'rejet', 'undetermined') && !r.attributs.some((x: Attr) => /material_preference$/.test(x.attribut)) },
   { id: 'rejet-inverse', question: 'CRE-06', texte: 'Franchement j’adore le macramé, je n’ai rien contre aucune technique.', attendu: 'rien (aucun rejet dit)', juger: RIEN },
   // ── Onglet 17, comics.0422 « titres, auteurs » ───────────────────────────────────────────────
   { id: 'auteur-et-titre', question: 'comics.0422', texte: 'Tout ce que fait Moebius, et la série Blacksad.',
@@ -100,7 +115,11 @@ const CAS: Cas[] = [
   { id: 'souhait-animal-autre', question: 'pets.0403', texte: 'Le chien de ma voisine aurait besoin d’un manteau.', attendu: 'rien (animal d’une autre personne)', juger: RIEN },
   // podcast.0467 #1 épisode référent · #2 appréciation distincte du même épisode.
   { id: 'episode', question: 'podcast.0467', texte: 'L’épisode de Transfert sur la disparition de Lucie m’a bouleversée.', attendu: 'épisode non résolu en base vide → clarification ; aucune appréciation écrite sur un référent inconnu',
-    juger: (_r, brut) => ((brut as { destinations?: { clarifications: number } }).destinations?.clarifications ?? 0) >= 1 },
+    // Attendu INCHANGÉ (revue du 20 nov.) : la réponse décrit le SUJET de l'épisode, elle ne donne ni son
+    // titre ni son numéro ; une identité unique n'est pas démontrée. Clarification, aucun fait d'épisode
+    // qui prétendrait l'avoir identifié, aucune appréciation. Le verbatim reste entier (vérifié à part).
+    juger: (r, brut) => ((brut as { destinations?: { clarifications: number } }).destinations?.clarifications ?? 0) >= 1
+      && !r.faits.some((f) => f.startsWith('discovery.fait.podcast.episode_marquant')) && !r.preuves.some((p) => p.startsWith('ENTITY')) },
   { id: 'episode-nie', question: 'podcast.0467', texte: 'Aucun, je n’écoute pas de podcasts.', attendu: 'rien', juger: RIEN },
   // sensory2.1482 #1 lieu référent · #2 appréciation distincte.
   { id: 'lieu-bien-etre', question: 'sensory2.1482', texte: 'Les thermes de Bagnères-de-Bigorre, pour la chaleur de l’eau et le silence.', attendu: 'lieu non résolu → clarification ou référent ; aucune préférence générale inventée',
@@ -127,20 +146,32 @@ const CAS: Cas[] = [
   { id: 'pas-envie', question: 'food2.0882A', texte: 'Rien de particulier, je mange de tout.', attendu: 'aucune envie', juger: (_r, brut) => (brut as { envie?: { ecrite: boolean } }).envie?.ecrite !== true },
 ];
 
-const resultats: { id: string; question: string; texte: string; attendu: string; observe: unknown; conforme: boolean; erreur?: string }[] = [];
+const resultats: { id: string; question: string; texte: string; attendu: string; observe: unknown; conforme: boolean; erreur?: string; [k: string]: unknown }[] = [];
 let n = 0;
 for (const c of CAS) {
   const b = fausseBase();
   const userId = `00000000-0000-4000-8000-${String(++n).padStart(12, '0')}`;
   try {
-    brutModele = null; const avant = appelsModele;
-    const brut = await enregistrerReponseOuverte(b.client, { userId, questionId: c.question, texte: c.texte, acteId: `essai-${c.id}`, lecteur: lecteurObserve } as never);
+    brutModele = null; brutEnvie = null; const avantD = appelsModele, avantE = appelsEnvie;
+    const brut = await enregistrerReponseOuverte(b.client, { userId, questionId: c.question, texte: c.texte, acteId: `essai-${c.id}`, lecteur: lecteurObserve, lecteurEnvie: lecteurEnvieObserve } as never);
     const r = resume(b);
-    // Une lecture en attente, ou une lecture sans appel au modèle, est une PANNE : jamais « rien à extraire ».
-    const enAttente = (brut as { extractionEnAttente?: boolean }).extractionEnAttente === true || appelsModele === avant || brutModele === null;
-    const conforme = !enAttente && c.juger(r, brut);
-    resultats.push({ id: c.id, question: c.question, texte: c.texte, attendu: c.attendu, observe: { ...r, extractionEnAttente: enAttente, releve: (brut as { destinations?: { releve: unknown } }).destinations?.releve }, rendu_par_le_modele: brutModele, conforme });
-    console.log(`${conforme ? '✓' : '✗'} ${c.id.padEnd(22)} ${c.attendu}\n    observé : ${JSON.stringify(r)}${enAttente ? ' — LECTURE EN ATTENTE (le modèle n’a pas répondu)' : ''}`);
+    const service = brut as { extractionEnAttente?: boolean; verbatimEcrit?: boolean; envie?: { ecrite: boolean; luParLeModele?: boolean } };
+    // Ce que le SERVICE dit, tel quel.
+    const statutService = { verbatimEcrit: service.verbatimEcrit === true, extractionEnAttente: service.extractionEnAttente === true, ...(service.envie ? { envie: service.envie } : {}) };
+    // Ce que l'INSTRUMENTATION a vu, lecteur par lecteur.
+    const instrumentation = { lecteur_destinations: { appels: appelsModele - avantD, rendu: brutModele !== null }, lecteur_envie: { appels: appelsEnvie - avantE, rendu: brutEnvie !== null } };
+    // Une panne n'est jamais « rien à extraire ». Elle se lit : (1) dans le statut du service ; (2) dans un
+    // lecteur ATTENDU qui n'a pas rendu. Le lecteur attendu dépend du contrat : celui des destinations pour
+    // l'onglet 17 ; celui de l'envie pour food2.0882A, SAUF absence d'envie décidée sans modèle (luParLeModele=false),
+    // qui est un traitement légitime et doit alors n'avoir fait AUCUN appel.
+    const estEnvie = c.question === 'food2.0882A';
+    const lecteurManquant = estEnvie
+      ? (service.envie?.luParLeModele === true ? !(instrumentation.lecteur_envie.appels === 1 && instrumentation.lecteur_envie.rendu) : instrumentation.lecteur_envie.appels !== 0 || !service.envie)
+      : !(instrumentation.lecteur_destinations.appels === 1 && instrumentation.lecteur_destinations.rendu);
+    const panne = statutService.extractionEnAttente || !statutService.verbatimEcrit || lecteurManquant;
+    const conforme = !panne && c.juger(r, brut);
+    resultats.push({ id: c.id, question: c.question, texte: c.texte, attendu: c.attendu, observe: { ...r, releve: (brut as { destinations?: { releve: unknown } }).destinations?.releve }, statut_du_service: statutService, instrumentation, panne, rendu_par_le_modele: estEnvie ? brutEnvie : brutModele, conforme });
+    console.log(`${conforme ? '✓' : '✗'} ${c.id.padEnd(22)} ${c.attendu}\n    observé : ${JSON.stringify(r)}${panne ? ` — PANNE OU LECTEUR NON OBSERVÉ (service ${JSON.stringify(statutService)}, instrumentation ${JSON.stringify(instrumentation)})` : ''}`);
   } catch (e) {
     resultats.push({ id: c.id, question: c.question, texte: c.texte, attendu: c.attendu, observe: null, conforme: false, erreur: e instanceof Error ? e.message.replace(/sk-ant-[A-Za-z0-9_-]+/g, '[clé masquée]') : 'erreur' });
     console.log(`✗ ${c.id} : erreur ${resultats.at(-1)!.erreur}`);

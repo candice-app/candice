@@ -4,15 +4,15 @@ Généré par `scripts/discovery/couverture-referentiel.mts` le 2026-11-19. Dét
 
 Méthode : chaque clause de chaque condition est évaluée par le vrai évaluateur du moteur, dans l’état réellement lu en base pour un compte neuf, puis dans un état où tout est déclaré. Une clause indécidable dans les deux n’est pas implémentée. « Fermée par le produit » ne s’emploie que lorsqu’une décision ou le référentiel la prévoit, et la cite.
 
-**2407 questions** (2286 actives, 6 en arbitrage, 115 retirées) · **2778 clauses** évaluées, dont **154** indécidables.
+**2407 questions** (2286 actives, 6 en arbitrage, 115 retirées) · **2778 clauses** évaluées, dont **156** indécidables.
 
 | Statut | Questions |
 |---|---|
 | en_arbitrage_hors_banque | 6 |
 | fermee_par_garde_de_sensibilite | 125 |
-| fermee_par_le_produit | 1 |
+| fermee_par_le_produit | 3 |
 | implementee_condition_d_origine | 1694 |
-| implementee_lecture_etablie | 293 |
+| implementee_lecture_etablie | 291 |
 | non_implementee | 94 |
 | non_implementee_hypothese | 24 |
 | ouverte_sur_demarche | 55 |
@@ -58,6 +58,8 @@ Méthode : chaque clause de chaque condition est évaluée par le vrai évaluate
 
 ## fermee_par_le_produit
 
+- **activity.0282** — fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement — fermée par la décision 9 (« Quel est ton niveau aujourd’hui ? ») ; réouverture sous pratique déclarée proposée, en attente de validation
+- **activity.0283** — fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement — fermée par la décision 9 (« À quelle fréquence le pratiques-tu réellement ? ») ; réouverture sous pratique déclarée proposée, en attente de validation
 - **activity.0285** — fermée par le produit — prérequis non établi (activités, 20 nov.) : pratiquer ne démontre pas un équipement — « du matériel qu’il ne faudrait surtout pas choisir à ta place » présume une pratique ÉQUIPÉE ; pratiquer ne démontre pas un équipement, et aucune réponse ne le déclare
 
 ## fermee_par_garde_de_sensibilite
