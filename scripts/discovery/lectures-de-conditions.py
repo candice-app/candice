@@ -71,10 +71,12 @@ def H(ids, manque, choix):
     for i in ([ids] if isinstance(ids, str) else ids):
         assert i in Q, i
         sans[i] = {'question': i, 'origine': cond(i), 'statut': 'hypothese', 'manque': manque, 'choix': choix}
-def S(ids, manque):
+def S(ids, manque, decision=None):
+    # `decision` : la fermeture est VOULUE par une décision d'Estelle (citée) — à ne pas confondre avec
+    # une condition que le moteur ne sait pas encore constater (19 nov., 19h56).
     for i in ([ids] if isinstance(ids, str) else ids):
         assert i in Q, i
-        sans[i] = {'question': i, 'origine': cond(i), 'statut': 'sans_lecture', 'manque': manque}
+        sans[i] = {'question': i, 'origine': cond(i), 'statut': 'sans_lecture', 'manque': manque, **({'decision': decision} if decision else {})}
 
 NUM = 'question citée par son numéro'
 CAT = 'catégorie choisie à la question de tri de la branche'
@@ -351,7 +353,7 @@ ENT = json.load(open(R / 'src/lib/discovery/open-v3/entites-de-questions.json'))
 for i, l in ENT['questions'].items():
     E(i, 'Entité déclarée pour cette question', 'entité déclarée avec une relation que la question présume (D9)',
       f"{l['pourquoi']} — relations admises : {', '.join(l['relations'])}.", ['« importante » : aucun score ; une relation déclarée, choisie question par question'])
-for i, pourquoi in ENT['fermees'].items(): S(i, pourquoi)
+for i, pourquoi in ENT['fermees'].items(): S(i, pourquoi, 'fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit')
 
 # ═════ 7. SANS LECTURE — le moteur ne sait pas le constater ═══════════════════════════════════
 RECO = 'une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne'

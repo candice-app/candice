@@ -4,6 +4,12 @@
 réellement servi n'est pas confirmé. Le contrôle en lecture seule (`etat-production-lecture-seule.sql`)
 reste la première étape.
 
+**Ce que le contrôle SQL prouve, et ce qu'il ne prouve pas** (correction du 19 nov., 19h56) : il confirme
+l'état du SCHÉMA — migrations présentes, empreinte de la garde, clés étrangères, politiques. Il ne
+confirme PAS le commit servi : une base ne sait pas quel code tourne. La preuve du déploiement est
+séparée : chez l'hébergeur, le commit du déploiement en production et son statut, relevés par Estelle.
+Tant qu'elle n'est pas faite, on écrit « commit servi non confirmé ».
+
 | Étape | Action | Code qui tourne | Rejoué localement |
 |---|---|---|---|
 | 0 | Contrôle lecture seule de la production | A (non confirmé) | — |

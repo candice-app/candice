@@ -23,6 +23,7 @@ import { persistKnowledge, type WriteClient } from './persist';
 import { evidenceId, openKnowledgeId } from './ids';
 import { JOURNAL_VERSION_STAMP } from '../knowledge/version';
 import type { Evidence, OpenKnowledge, EntityRelation } from '../knowledge';
+import { cibleDUneEntite } from '../knowledge/cible-appreciation';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -55,6 +56,7 @@ const TOOL = {
             relationship: { type: 'string', enum: [...INTEREST_RELATIONSHIPS], description: "INTEREST : DEGRÉ D'ENGAGEMENT, et seulement s'il est établi par les propos — casual (occasionnel), curious (curieux), enthusiast (passionné amateur), passion, expert. LAISSE VIDE si l'intérêt est établi mais pas son degré : l'absence est une information juste, jamais un degré faible." },
             entityType: { type: 'string', enum: ['brand', 'place', 'restaurant', 'hotel', 'product', 'food', 'drink', 'book', 'film_series', 'music', 'artist', 'destination', 'event', 'person'], description: 'ENTITY : sous-type exact' },
             relation: { type: 'string', enum: [...ENTITY_RELATIONS], description: 'ENTITY : relation explicitement exprimée envers la chose ; laisse vide pour une simple mention' },
+            cible: { type: 'string', enum: ['referent', 'aspect'], description: "ENTITY avec relation (obligatoire) : referent si la relation porte sur la chose ELLE-MÊME (« j'adore Patagonia », « j'aimerais aller au Japon ») ; aspect si elle porte sur une de ses parties ou qualités (« j'adore l'ambiance du Café de Flore », « la cuisine du Japon »). Une appréciation d'un aspect n'est JAMAIS une relation envers la chose : déclare aspect." },
             relation_label: { type: 'string', description: 'OTHER : la nature du lien, en mots (ex. « passion », « collectionne »)' },
             sensitive: { type: 'boolean', description: 'true si l\'unité touche la SANTÉ, une allergie/intolérance, une situation/traitement MÉDICAL, une grossesse, ou une ADRESSE (même implicite). Dans le doute, true.' },
           },
@@ -66,7 +68,7 @@ const TOOL = {
   },
 };
 
-interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: InterestRelationship; entityType?: string; relation?: EntityRelation; relation_label?: string; sensitive?: boolean; }
+interface Unit { family: 'INTEREST' | 'ENTITY' | 'OTHER'; label: string; parentDomain?: string; relationship?: InterestRelationship; entityType?: string; relation?: EntityRelation; cible?: string; relation_label?: string; sensitive?: boolean; }
 
 export interface ExtractResult {
   readonly evidences: readonly Evidence[];
@@ -204,7 +206,9 @@ function degreCanonique(v: string | undefined): InterestRelationship | undefined
         subjectLabel: label, ...(u.parentDomain ? { parent_domain: normalizeLabel(u.parentDomain) } : {}),
         ...(degreCanonique(u.relationship) ? { relationship: degreCanonique(u.relationship) } : {}), strength: 'moderate' } as Evidence);
     } else if (u.family === 'ENTITY' && u.relation && ENTITY_RELATIONS.includes(u.relation)
-      && (!input.relationsAdmises || input.relationsAdmises.includes(u.relation))) {
+      && (!input.relationsAdmises || input.relationsAdmises.includes(u.relation))
+      // La cible (19 nov., 19h56) : le modèle dit « la chose elle-même », ET les mots le vérifient.
+      && u.cible === 'referent' && cibleDUneEntite(text, label).cible === 'referent') {
       evidences.push({ ...common, evidence_id: evidenceId(sourceId, `ENTITY:${normalizeLabel(label)}`), raw_information: label,
         target_family: 'ENTITY', entity_id: asEntityId(normalizeLabel(label)), target_construct: asEntityId(normalizeLabel(label)),
         entityLabel: label, entityType: normalizeLabel(u.entityType ?? 'unknown'), relation: u.relation, strength: 'moderate' } as Evidence);
@@ -212,7 +216,7 @@ function degreCanonique(v: string | undefined): InterestRelationship | undefined
       // §27.6 : conservé en connaissance ouverte, verbatim, jamais jeté.
       openKnowledge.push(createOpenKnowledge({
         about: input.about, ownerId: input.ownerId, open_knowledge_id: openKnowledgeId(sourceId, normalizeLabel(label)),
-        type: 'descriptive', subject: asSubjectId(normalizeLabel(label)), subjectLabel: label, relation: u.relation_label ?? 'évoqué',
+        type: 'descriptive', subject: asSubjectId(normalizeLabel(label)), subjectLabel: label, relation: u.relation_label ?? (u.family === 'ENTITY' && u.relation ? `${u.relation.toLowerCase()}, cible non établie` : 'évoqué'),
         context: 'GLOBAL', source: sourceId, timestamp: input.timestamp, confidence: 'low', assertionStatus: 'inferred',
         // Sensibilité jugée par le MODÈLE (zéro appel de plus) ; le lexique dans createOpenKnowledge est la 2e couche.
         ...(u.sensitive ? { sensitive: true } : {}),

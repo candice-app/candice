@@ -19,8 +19,8 @@ const entree = (extra: Record<string, unknown> = {}) => ({
 
 describe('le contrat d’une question ouverte borne ce qui s’écrit (onglet 9)', () => {
   beforeEach(() => { lecture.units = [
-    { family: 'ENTITY', label: 'cuir verni', entityType: 'product', relation: 'AVOID' },
-    { family: 'ENTITY', label: 'daim', entityType: 'product', relation: 'LIKE' },
+    { family: 'ENTITY', label: 'cuir verni', entityType: 'product', relation: 'AVOID', cible: 'referent' },
+    { family: 'ENTITY', label: 'daim', entityType: 'product', relation: 'LIKE', cible: 'referent' },
   ]; });
 
   it('une question négative n’admet que DISLIKE et AVOID', () => {

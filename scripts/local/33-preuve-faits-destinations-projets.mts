@@ -83,7 +83,7 @@ const seg = (declencheur: string, passage: string, attitude: string, plus: Recor
 }
 { console.log('\n4 bis. Onglet 17 — une œuvre, un auteur ; puis la même œuvre citée de nouveau : un seul référent');
   const c = await compteLocal('faits-4b');
-  await dicter([{ segments: [seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Blacksad' } }), seg('AUTEUR_MENTIONNE', 'Moebius', 'mention')] }]);
+  await dicter([{ segments: [seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), seg('AUTEUR_MENTIONNE', 'Moebius', 'mention')] }]);
   await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: 'comics.0422', texte: 'J’adore Blacksad, et tout Moebius.', acteId: acte() });
   const { data: p } = await c.client.from('knowledge_evidences').select('target_family,entity_id,entity_label,entity_type,relation,stability').eq('user_id', c.userId);
   v.verifier(p!.length === 1 && p![0].entity_id === 'oeuvre:bande_dessinee:blacksad' && p![0].relation === 'LIKE' && p![0].stability === 'undetermined', '4 bis : l’œuvre a une identité propre et une relation LIKE', JSON.stringify(p));
@@ -94,7 +94,7 @@ const seg = (declencheur: string, passage: string, attitude: string, plus: Recor
 }
 { console.log('\n4 ter. Onglet 17 — un épisode sans émission : clarification ; un animal : déclaré, puis choisi');
   const c = await compteLocal('faits-4c');
-  await dicter([{ segments: [seg('REFERENT_RESOLU', 'L’épisode 12', 'referent', { temps: 'passe_revolu', identite: { nature: 'episode', nom: '12' } }), seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { relation: 'LOVE' })] }]);
+  await dicter([{ segments: [seg('REFERENT_RESOLU', 'L’épisode 12', 'referent', { temps: 'passe_revolu', identite: { nature: 'episode', nom: '12' } }), seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { cible: 'referent', relation: 'LOVE' })] }]);
   const r = await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: 'podcast.0467', texte: 'L’épisode 12. J’ai adoré.', acteId: acte() });
   v.verifier(r.destinations?.clarifications === 1 && (await preuves(c)).length === 0, '4 ter : rien n’est écrit, une clarification est ouverte');
   const [cl] = await clarificationsOuvertes(c.client as never, { userId: c.userId });

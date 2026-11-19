@@ -2981,19 +2981,22 @@
    "question": "activity.0282",
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
-   "manque": "« ton niveau aujourd'hui » présume une PRATIQUE ; aucune relation d'entité ne l'établit (aimer n'est pas pratiquer)"
+   "manque": "« ton niveau aujourd'hui » présume une PRATIQUE ; aucune relation d'entité ne l'établit (aimer n'est pas pratiquer)",
+   "decision": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit"
   },
   {
    "question": "activity.0283",
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
-   "manque": "« le pratiques-tu réellement » présume une pratique ; même manque"
+   "manque": "« le pratiques-tu réellement » présume une pratique ; même manque",
+   "decision": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit"
   },
   {
    "question": "activity.0285",
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
-   "manque": "« du matériel » présume une pratique équipée ; même manque"
+   "manque": "« du matériel » présume une pratique équipée ; même manque",
+   "decision": "fermée par le produit — décision 9 (19 nov., 18h54) : la question présume une pratique qu’aucune relation d’entité n’établit"
   },
   {
    "question": "animals.2147",

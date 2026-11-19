@@ -150,6 +150,8 @@ export async function POST(req: NextRequest) {
   const declarations = await lireRejetsDuProche(admin as never, { piloteId: user.id, contactId });
   // Ses goûts déclarés, seulement sous l'autorisation qui nomme cet usage (`reco:gouts`).
   const gouts = await lireGoutsDuProche(admin as never, { piloteId: user.id, contactId });
+  // Une lecture impossible n'est pas « aucun goût » : elle est dite (la génération reste fermée à ses données).
+  if (gouts.motif === 'lecture_impossible') console.error('[recommendations/generate] goûts du proche illisibles : aucun n’est transmis');
   if (gouts.autorise) console.info('[recommendations/generate] goûts du proche', { transmis: gouts.gouts.length, ecartes: gouts.ecartes });
 
   // La situation actuelle du proche, réduite au minimum nécessaire. Lue avec le client de

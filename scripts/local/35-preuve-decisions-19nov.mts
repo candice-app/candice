@@ -171,7 +171,7 @@ rf = await svc.enregistrerReponseFermee(F.client as never, { userId: F.userId, q
 const { data: som } = await admin.from('knowledge_facts').select('visibility_derived, ts').eq('source', rf.sourceId);
 v.verifier(som?.length === 1 && som[0].visibility_derived === 'internal_only' && !!som[0].ts, 'F6 : SOM-01 → état daté, interne (jamais au portrait ni à un tiers)', JSON.stringify(som));
 const cF = await cookiesDe(F.email, F.motDePasse);
-await dicter([{ units: [{ family: 'ENTITY', label: 'Patagonia', entityType: 'brand', relation: 'LOVE' }] }]);
+await dicter([{ units: [{ family: 'ENTITY', label: 'Patagonia', entityType: 'brand', relation: 'LOVE', cible: 'referent' }] }]);
 r = await poster('/api/discovery/recit', cF, { texte: 'J’adore Patagonia.' });
 let eF = (await lireEtat(F.client as never, { userId: F.userId })).etat;
 const ent = eF.entiteParQuestion?.get('brand.0268');

@@ -19,7 +19,7 @@ import { randomUUID } from 'node:crypto';
 import type { QuestionV3 } from './banque';
 import { question as questionParId } from './banque';
 import {
-  DESTINATIONS_PAR_QUESTION, MEDIUM_PAR_QUESTION, VERSION_LECTURE, cleNom, examinerSegments, exigenceDe, idEntite, lireSegmentsParModele, resoudre,
+  DESTINATIONS_PAR_QUESTION, MEDIUM_PAR_QUESTION, VERSION_LECTURE, cibleLexicale, cleNom, examinerSegments, exigenceDe, idEntite, lireSegmentsParModele, resoudre,
   type Destination, type EntiteConnue, type NatureIdentite, type Resolution, type SegmentExamine,
 } from './destinations';
 import { PREFIXE_FAIT } from './produire';
@@ -249,6 +249,13 @@ export async function ecrireDestinations(
     for (const s of examen.retenus.filter((x) => x.declencheur === d.declencheur)) {
       // Le segment doit être DISTINCT de celui qui nomme le référent, et le référent sans équivoque.
       const distincts = referents.filter((r) => s.fin <= r.segment.debut || s.debut >= r.segment.fin);
+      // Épreuve 4 : l'appréciation porte-t-elle sur le référent LUI-MÊME ? « J'y ai adoré le silence » : non.
+      const nature = exigenceDe(d)!.resolution!;
+      const ref = referents.length === 1 ? referents[0].segment : clarifs.length === 1 ? clarifs[0].valeur.segment : null;
+      if (ref && d.famille === 'ENTITY') {
+        const lu = cibleLexicale(input.texte, s.debut, s.fin, nature, { debut: ref.debut, fin: ref.fin, nom: ref.passage });
+        if (lu.cible !== 'referent') { noter(d, s, 'non_ecrit', lu.cible === 'aspect' ? 'appreciation_d_un_aspect' : 'cible_indeterminee'); continue; }
+      }
       if (referents.length === 1 && distincts.length === 1) { ajouter(ecrituresPour(c, d, s, referents[0].entite)); noter(d, s, 'ecrit'); continue; }
       if (referents.length === 0 && clarifs.length === 1) { clarifs[0].valeur.enAttente.push({ rang: d.rang, segment: { passage: s.passage, debut: s.debut, fin: s.fin, attitude: s.attitude, ...(s.relation ? { relation: s.relation } : {}) } }); noter(d, s, 'clarification', 'referent_en_attente'); continue; }
       noter(d, s, 'non_ecrit', referents.length === 0 ? 'referent_non_resolu' : distincts.length === 0 ? 'segment_non_distinct' : 'referent_indetermine');

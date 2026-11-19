@@ -73,6 +73,13 @@ export interface Resultat {
  * LE VERDICT D'UNE QUESTION : sa propre condition, ET celle de la question qui ouvre sa
  * sous-partie quand elle n'en porte que le nom. « Fermer » l'emporte, puis « non résolu ».
  */
+/** Le contexte dans lequel la condition d'une question est évaluée (exporté pour la couverture). */
+export function contexteDEvaluation(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyMap<string, number> = PARTAGE_BANQUE) {
+  const vise = informationVisee(q, partage);
+  const dep = DEPENDANCES.get(q.id);
+  const dependance = dep && etat.questionsSignalees?.has(q.id) ? { ...dep, signalee: true } : dep;
+  return { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance, presumeAlcool: PRESUMENT_L_ALCOOL.has(q.id), questionId: q.id };
+}
 export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyMap<string, number> = PARTAGE_BANQUE): Verdict {
   const vise = informationVisee(q, partage);
   // La LECTURE établie de la condition quand le référentiel l'écrit en prose (lectures.ts).
@@ -81,10 +88,7 @@ export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyM
   // portent ou non la consigne dans leur condition (la sous-branche « Vin » ne la porte pas).
   const presumeAlcool = PRESUMENT_L_ALCOOL.has(q.id);
   if (presumeAlcool && etat.sansAlcool) return 'fermer';
-  const dep = DEPENDANCES.get(q.id);
-  const dependance = dep && etat.questionsSignalees?.has(q.id) ? { ...dep, signalee: true } : dep;
-  const propre = evaluerCondition(analyse, etat,
-    { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance, presumeAlcool, questionId: q.id });
+  const propre = evaluerCondition(analyse, etat, contexteDEvaluation(q, etat, partage));
   if (propre === 'fermer') return 'fermer';
   // ── UNE QUESTION DE NIVEAU C EXIGE « UN OBJET, UNE ACTION OU UNE OCCASION NOMMÉS » (politique
   //    de saturation du référentiel), quelle que soit la façon dont sa condition est écrite.

@@ -35,7 +35,10 @@ import { ENTITY_RELATIONS, type EntityRelation } from '@/lib/knowledge/vocabular
 
 /** Change quand ce module sait écrire une destination qu'il ne savait pas écrire : les lectures
  *  faites sous une version antérieure peuvent alors être reprises (destinations-ecriture.ts). */
-export const VERSION_LECTURE = 2;
+// v3 (19 nov., 19h56) : épreuve de la cible — une appréciation d'un aspect n'est plus transportée sur
+// le référent. Aucune lecture v2 n'existe en production (le code servi ne contient pas ce lecteur) ;
+// la montée de version garantit seulement qu'une lecture locale v2 serait relue sous la règle actuelle.
+export const VERSION_LECTURE = 3;
 
 export interface Destination {
   readonly question: string; readonly rang: string; readonly declencheur: string; readonly signification: string;
@@ -146,11 +149,60 @@ export function estAuPasse(proposition: string): boolean {
 const CONDITION = /(\bsi (?:je|j'|c'|on|le|la|les|l'|un|une|ça|cela|elle|il|tu)|\bs'il|\bs'ils|sauf si|à condition|a condition|à moins|a moins|tant que|seulement (?:si|quand|pour|en)|uniquement|\bquand (?:c'|il|elle|je|j'|on)|\blorsqu)/;
 const NIE_NU = /(\bpas|\bsauf|\bhormis|\bexcepté|\bni|\bsans|\baucune?|\bjamais de|\bsurtout pas(?: de| d')?)\s+(?:(?:le|la|les|du|des|de la|de|un|une)\s+|l'|d')?$/;
 
+/* ────────────────────────────────────────────────────────────────────────────
+ * ÉPREUVE 4 — LA CIBLE DE L'APPRÉCIATION (19 nov., 19h56).
+ * « Une appréciation ne doit pas changer de cible pendant l'extraction. » « J'y ai adoré le silence »
+ * porte sur le silence, pas sur les thermes : aucune relation n'est écrite envers le lieu. Le modèle
+ * déclare la cible ; les MOTS la vérifient. Les deux doivent dire « le référent lui-même ».
+ * ──────────────────────────────────────────────────────────────────────────── */
+export type CibleLexicale = 'referent' | 'aspect' | 'indeterminee';
+const VERBE_D_APPRECIATION = /(?<![\p{L}])(?:ador\p{L}*|aim\p{L}*|appr[ée]ci\p{L}*|d[ée]test\p{L}*|kiff\p{L}*|raffol\p{L}*|pr[ée]f[èée]r\p{L}*|hais|ha[ïi]\p{L}*)/gu;
+const ADVERBES_EN_TETE = /^(?:(?:beaucoup|vraiment|surtout|tellement|bien|trop|toujours|énormément|enormement|aussi|particulièrement|particulierement|absolument|carrément|carrement|pas|plus|jamais|vraiment pas|du tout)\s+)+/;
+/** Les mots qui désignent le référent LUI-MÊME, par nature (« cet endroit », « l'épisode »). */
+const DESIGNATEURS: Readonly<Record<NatureIdentite, RegExp>> = {
+  lieu: /^(?:endroit|lieu|établissement|etablissement|coin|adresse|hôtel|hotel|spa|thermes?|restaurant|resto|musée|musee|ville|village|plage|maison|café|cafe|bar|parc|jardin|site|hammam|bain|bains)\b/,
+  episode: /^(?:épisode|episode|émission|emission|numéro|numero|podcast)\b/,
+  oeuvre: /^(?:livre|album|bd|bande dessinée|bande dessinee|série|serie|œuvre|oeuvre|roman|tome|film|titre|volume)\b/,
+  animal: /^(?:animal|chat|chien|bête|bete)\b/,
+};
+/** Ce que la phrase apprécie, d'après ses mots : le référent lui-même, un de ses aspects, ou on ne sait pas.
+ *  `referent` : la position du passage qui nomme le référent dans la réponse (s'il est dans la même phrase),
+ *  et son nom déclaré. `debut`/`fin` : le segment qui porte l'appréciation. */
+export function cibleLexicale(texte: string, debut: number, fin: number, nature: NatureIdentite,
+  referent: { debut?: number; fin?: number; nom?: string } = {}): { cible: CibleLexicale; objet?: string } {
+  const t = bas(texte);
+  let g = 0, d = t.length;
+  for (const m of t.matchAll(/[.!?\n]/g)) { const a = m.index!; if (a < debut) g = a + 1; else if (a >= fin) { d = a; break; } }
+  const phrase = t.slice(g, d);
+  const nom = referent.nom ? bas(referent.nom).trim() : undefined;
+  const verdicts: { cible: CibleLexicale; objet?: string }[] = [];
+  for (const m of phrase.matchAll(VERBE_D_APPRECIATION)) {
+    const debutVerbe = g + m.index!, finVerbe = debutVerbe + m[0].length;
+    // La proposition de ce verbe : depuis la dernière coupure (, : ; —) jusqu'à la prochaine.
+    const gauche = t.slice(g, debutVerbe), droite = t.slice(finVerbe, d);
+    const clauseAvant = gauche.slice(Math.max(gauche.lastIndexOf(','), gauche.lastIndexOf(':'), gauche.lastIndexOf(';'), gauche.lastIndexOf('—')) + 1);
+    const finObjet = droite.search(/[,:;—]/);
+    const brut = finObjet < 0 ? droite : droite.slice(0, finObjet);
+    const objet = brut.trimStart().replace(ADVERBES_EN_TETE, '').trim();
+    const debutObjet = finVerbe + (brut.length - brut.trimStart().length) + (brut.trimStart().length - brut.trimStart().replace(ADVERBES_EN_TETE, '').length);
+    const enY = /(?:^|\s|')y(?:\s|$)|\bj'y\b|\bm'y\b|\bn'y\b|\bs'y\b/.test(clauseAvant);
+    if (objet.length === 0) { verdicts.push({ cible: enY ? 'indeterminee' : 'referent' }); continue; }
+    const commenceAuReferent = referent.debut !== undefined && referent.fin !== undefined && debutObjet >= referent.debut && debutObjet < referent.fin;
+    if (commenceAuReferent || (nom && nom.length > 0 && objet.startsWith(nom))) { verdicts.push({ cible: 'referent', objet }); continue; }
+    const designe = /^(?:(?:cette|cet|ces|ce|les|le|la)\s+|l')(.*)$/.exec(objet);
+    if (!enY && designe && DESIGNATEURS[nature].test(designe[1])) { verdicts.push({ cible: 'referent', objet }); continue; }
+    verdicts.push({ cible: 'aspect', objet });
+  }
+  if (verdicts.some((v) => v.cible === 'referent')) return verdicts.find((v) => v.cible === 'referent')!;
+  return verdicts.find((v) => v.cible === 'aspect') ?? { cible: 'indeterminee' };
+}
+
 export type MotifRefus =
   | 'copie_inexacte' | 'declencheur_inconnu' | 'precision_inexacte'
   | 'attitude_non_conforme' | 'non_affirme' | 'autre_personne' | 'temps_non_conforme' | 'sous_condition' | 'portee_limitee'
   | 'negation_dans_la_proposition' | 'appreciation_dans_la_proposition' | 'sens_incertain' | 'attitude_non_explicite'
-  | 'passe_dans_la_proposition' | 'condition_dans_la_proposition' | 'autre_personne_dans_la_proposition' | 'relation_hors_vocabulaire';
+  | 'passe_dans_la_proposition' | 'condition_dans_la_proposition' | 'autre_personne_dans_la_proposition' | 'relation_hors_vocabulaire'
+  | 'cible_non_declaree' | 'appreciation_d_un_aspect' | 'cible_indeterminee';
 
 /** Le sens que les MOTS de la proposition donnent au passage. */
 export type SensLexical = 'positif' | 'negatif' | 'incertain' | 'nu' | 'nie_nu';
@@ -257,6 +309,19 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
       if (!ex.autruiAdmis && AUTRUI.test(prop.replace(IMPERSONNEL, ' '))) { refuser('autre_personne_dans_la_proposition'); continue; }
       if (estAuPasse(prop)) { refuser('passe_dans_la_proposition'); continue; }
       if (CONDITION.test(prop)) { refuser('condition_dans_la_proposition'); continue; }
+    }
+    if (relation) {
+      // 4 — la cible : le modèle la déclare, les mots la vérifient (épreuve 4).
+      const cible = chaine(s.cible);
+      if (cible === 'aspect') { refuser('appreciation_d_un_aspect'); continue; }
+      if (cible !== 'referent') { refuser('cible_non_declaree'); continue; }
+      if (!ex.secondSegment && ex.resolution) {
+        // Le passage NOMME le référent : l'appréciation doit porter sur lui (« J'adore Blacksad »),
+        // pas sur un de ses aspects (« J'adore le dessin de Blacksad »).
+        const nomDeclare = chaine((s.identite as Record<string, unknown> | undefined)?.nom);
+        const lu = cibleLexicale(texte, pos.debut, pos.fin, ex.resolution, { debut: pos.debut, fin: pos.fin, ...(nomDeclare ? { nom: nomDeclare } : {}) });
+        if (lu.cible !== 'referent') { refuser(lu.cible === 'aspect' ? 'appreciation_d_un_aspect' : 'cible_indeterminee'); continue; }
+      }
     }
     const nature = chaine(idBrute?.nature) as NatureIdentite | undefined;
     const identite: IdentiteDeclaree | undefined = idBrute && nature
@@ -375,6 +440,7 @@ POUR CHAQUE PASSAGE, déclare ce que la phrase en dit :
 - condition : le passage exact de la condition, s'il y en a une (« sauf si c'est fait main ») ; sinon null.
 - limite : le passage exact qui restreint la portée (« pour les enfants », « au travail ») ; sinon null.
 - relation (entités seulement) : ${ENTITY_RELATIONS.join(', ')} — seulement si la phrase l'exprime par ses mots. Un comportement (« je l'ai réécouté trois fois », « j'y retourne souvent ») n'est PAS une appréciation. « M'a marqué » non plus.
+- cible (entités seulement, obligatoire avec relation) : referent si l'appréciation porte sur le référent LUI-MÊME (« j'adore cet endroit », « j'ai adoré Blacksad », « je l'ai adoré ») ; aspect si elle porte sur une de ses parties ou qualités (« j'y ai adoré le silence », « j'adore le dessin de Blacksad », « la voix de l'animatrice »). Une appréciation d'un aspect n'est JAMAIS une relation envers le référent : déclare aspect, et ne la transporte pas sur lui.
 - identite (œuvre, épisode, lieu, animal) : nature ; nom (titre de l'œuvre ; titre ou numéro de l'épisode ; nom du lieu ; nom de l'animal) ; rattachement (auteur ; émission ; localité ; espèce). Si la réponse ne permet pas de savoir de quoi il s'agit exactement, laisse nom vide et dis pourquoi dans « ambigu ».
 
 Si rien ne satisfait un déclencheur, ne rends rien pour lui. Dans le doute, ne rends rien.
@@ -390,7 +456,7 @@ export async function lireSegmentsParModele(enonce: string, texte: string, desti
         attitude: { type: 'string', enum: ['rejet', 'interet', 'appreciation', 'presence_voulue', 'souhait', 'projection', 'mention', 'referent', 'autre'] },
         affirme: { type: 'boolean' }, personne: { type: 'string', enum: ['soi', 'autre', 'indetermine'] },
         temps: { type: 'string', enum: ['actuel', 'passe_revolu', 'futur_ou_souhait', 'hypothetique', 'indetermine'] },
-        condition: { type: ['string', 'null'] }, limite: { type: ['string', 'null'] }, relation: { type: 'string', enum: [...ENTITY_RELATIONS] },
+        condition: { type: ['string', 'null'] }, limite: { type: ['string', 'null'] }, relation: { type: 'string', enum: [...ENTITY_RELATIONS] }, cible: { type: 'string', enum: ['referent', 'aspect'] },
         identite: { type: 'object', properties: { nature: { type: 'string', enum: ['oeuvre', 'episode', 'lieu', 'animal'] }, nom: { type: 'string' }, rattachement: { type: 'string' }, ambigu: { type: 'string' } }, required: ['nature'] },
       }, required: ['declencheur', 'passage', 'attitude', 'affirme', 'personne', 'temps'] } } },
       required: ['segments'] } }],

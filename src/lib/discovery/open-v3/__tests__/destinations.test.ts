@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { fausseBase } from '../../../knowledge/__tests__/fausse-base';
 import { enregistrerReponseOuverte, rejouerLecturesEnAttente, sourceLectureDestinations } from '../service';
-import { couvertureDestinations, DESTINATIONS_PAR_QUESTION, examinerSegments, positionExacte, resoudre, sensLexical, propositionDe, VERSION_LECTURE, type EntiteConnue } from '../destinations';
+import { cibleLexicale, couvertureDestinations, DESTINATIONS_PAR_QUESTION, examinerSegments, positionExacte, resoudre, sensLexical, propositionDe, VERSION_LECTURE, type EntiteConnue } from '../destinations';
 import { clarificationsOuvertes, declarerAnimal, repondreClarification, FAIT_ENTITE, FAIT_LECTURE } from '../destinations-ecriture';
 
 const U = '00000000-0000-4000-8000-0000000000d7';
@@ -83,11 +83,17 @@ describe('épreuves 2 et 3 — chaque destination, ses cas probants, négatifs e
     ['learning2.1459', 'La géologie.', seg('SUJET_DECLARE', 'la geologie', 'interet'), 'copie_inexacte'],
     ['learning2.1459', 'Je n’aime pas l’histoire mais la géologie me fascine.', seg('SUJET_DECLARE', 'la géologie', 'interet'), 'retenu'],
     // comics.0422 — œuvre appréciée EXPLICITEMENT ; auteur seulement mentionné.
-    ['comics.0422', 'J’adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'retenu'],
-    ['comics.0422', 'Blacksad, Akira.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'attitude_non_explicite'],
-    ['comics.0422', 'Je n’ai pas aimé Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'negation_dans_la_proposition'],
-    ['comics.0422', 'Mon fils adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'autre_personne_dans_la_proposition'],
-    ['comics.0422', 'J’adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Black Sad' } }), 'precision_inexacte'],
+    ['comics.0422', 'J’adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'retenu'],
+    ['comics.0422', 'Blacksad, Akira.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'attitude_non_explicite'],
+    ['comics.0422', 'Je n’ai pas aimé Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'negation_dans_la_proposition'],
+    ['comics.0422', 'Mon fils adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'autre_personne_dans_la_proposition'],
+    ['comics.0422', 'J’adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Black Sad' } }), 'precision_inexacte'],
+    // 19 nov., 19h56 — la CIBLE : une appréciation d'un aspect ne devient pas une relation envers l'œuvre.
+    ['comics.0422', 'J’adore le dessin de Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'appreciation_d_un_aspect'],
+    ['comics.0422', 'Ce que j’adore dans Blacksad, c’est le dessin.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'appreciation_d_un_aspect'],
+    ['comics.0422', 'J’adore Blacksad, surtout le dessin.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'retenu'],
+    ['comics.0422', 'J’adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'aspect', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'appreciation_d_un_aspect'],
+    ['comics.0422', 'J’adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Blacksad' } }), 'cible_non_declaree'],
     ['comics.0422', 'Je n’aime pas Moebius.', seg('AUTEUR_MENTIONNE', 'Moebius', 'mention'), 'retenu'],
     ['comics.0422', 'Tout Moebius.', seg('AUTEUR_MENTIONNE', 'Mœbius', 'mention'), 'copie_inexacte'],
     // drinks.2102, time.1566 — une PROJECTION : la négation y est du contenu, pas un démenti.
@@ -105,17 +111,20 @@ describe('épreuves 2 et 3 — chaque destination, ses cas probants, négatifs e
     // podcast.0467 — un épisode RÉFÉRENT ; une relation dite par un SECOND segment.
     ['podcast.0467', 'L’épisode 12 de Transfert m’a marquée.', seg('REFERENT_RESOLU', 'L’épisode 12 de Transfert', 'referent', { temps: 'passe_revolu', identite: { nature: 'episode', nom: '12', rattachement: 'Transfert' } }), 'retenu'],
     ['podcast.0467', 'Aucun épisode ne m’a marquée.', seg('REFERENT_RESOLU', 'épisode', 'referent', { affirme: false }), 'non_affirme'],
-    ['podcast.0467', 'L’épisode 12 de Transfert. J’ai adoré.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { relation: 'LOVE' }), 'retenu'],
-    ['podcast.0467', 'L’épisode 12 de Transfert. Je l’ai réécouté trois fois.', seg('RELATION_EXPLICITE_DISTINCTE', 'Je l’ai réécouté trois fois', 'appreciation', { relation: 'LIKE' }), 'attitude_non_explicite'],
-    ['podcast.0467', 'L’épisode 12 de Transfert. Je n’ai pas aimé.', seg('RELATION_EXPLICITE_DISTINCTE', 'Je n’ai pas aimé', 'appreciation', { relation: 'LIKE' }), 'negation_dans_la_proposition'],
-    ['podcast.0467', 'L’épisode 12 de Transfert. Je n’ai pas aimé.', seg('RELATION_EXPLICITE_DISTINCTE', 'Je n’ai pas aimé', 'appreciation', { relation: 'DISLIKE' }), 'retenu'],
-    ['podcast.0467', 'L’épisode 12 de Transfert. J’ai adoré.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { relation: 'ADORE' }), 'relation_hors_vocabulaire'],
+    ['podcast.0467', 'L’épisode 12 de Transfert. J’ai adoré.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { cible: 'referent', relation: 'LOVE' }), 'retenu'],
+    ['podcast.0467', 'L’épisode 12 de Transfert. Je l’ai réécouté trois fois.', seg('RELATION_EXPLICITE_DISTINCTE', 'Je l’ai réécouté trois fois', 'appreciation', { cible: 'referent', relation: 'LIKE' }), 'attitude_non_explicite'],
+    ['podcast.0467', 'L’épisode 12 de Transfert. Je n’ai pas aimé.', seg('RELATION_EXPLICITE_DISTINCTE', 'Je n’ai pas aimé', 'appreciation', { cible: 'referent', relation: 'LIKE' }), 'negation_dans_la_proposition'],
+    ['podcast.0467', 'L’épisode 12 de Transfert. Je n’ai pas aimé.', seg('RELATION_EXPLICITE_DISTINCTE', 'Je n’ai pas aimé', 'appreciation', { cible: 'referent', relation: 'DISLIKE' }), 'retenu'],
+    ['podcast.0467', 'L’épisode 12 de Transfert. J’ai adoré.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { cible: 'referent', relation: 'ADORE' }), 'relation_hors_vocabulaire'],
+    ['podcast.0467', 'L’épisode 12 de Transfert. J’ai adoré la voix de l’invitée.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré la voix de l’invitée', 'appreciation', { cible: 'aspect', relation: 'LOVE' }), 'appreciation_d_un_aspect'],
     // sensory2.1482 — un lieu RÉFÉRENT ; une relation dite par un SECOND segment.
     ['sensory2.1482', 'Les thermes de Vals, pour le silence.', seg('REFERENT_RESOLU', 'Les thermes de Vals', 'referent', { temps: 'passe_revolu', identite: { nature: 'lieu', nom: 'Les thermes de Vals' } }), 'retenu'],
     ['sensory2.1482', 'Aucun lieu en particulier.', seg('REFERENT_RESOLU', 'lieu', 'referent', { affirme: false }), 'non_affirme'],
-    ['sensory2.1482', 'Les thermes de Vals. J’y retourne souvent.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’y retourne souvent', 'appreciation', { relation: 'LOVE' }), 'attitude_non_explicite'],
-    ['sensory2.1482', 'Les thermes de Vals. J’adore cet endroit.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’adore cet endroit', 'appreciation', { relation: 'LOVE' }), 'retenu'],
-    ['sensory2.1482', 'Les thermes de Vals. Mon mari adore cet endroit.', seg('RELATION_EXPLICITE_DISTINCTE', 'adore cet endroit', 'appreciation', { relation: 'LOVE' }), 'autre_personne_dans_la_proposition'],
+    ['sensory2.1482', 'Les thermes de Vals. J’y retourne souvent.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’y retourne souvent', 'appreciation', { cible: 'referent', relation: 'LOVE' }), 'attitude_non_explicite'],
+    ['sensory2.1482', 'Les thermes de Vals. J’adore cet endroit.', seg('RELATION_EXPLICITE_DISTINCTE', 'J’adore cet endroit', 'appreciation', { cible: 'referent', relation: 'LOVE' }), 'retenu'],
+    ['sensory2.1482', 'Les thermes de Bagnères : j’y ai adoré le silence.', seg('RELATION_EXPLICITE_DISTINCTE', 'j’y ai adoré le silence', 'appreciation', { cible: 'aspect', relation: 'LOVE' }), 'appreciation_d_un_aspect'],
+    ['sensory2.1482', 'Les thermes de Bagnères : j’y ai adoré le silence.', seg('RELATION_EXPLICITE_DISTINCTE', 'j’y ai adoré le silence', 'appreciation', { relation: 'LOVE' }), 'cible_non_declaree'],
+    ['sensory2.1482', 'Les thermes de Vals. Mon mari adore cet endroit.', seg('RELATION_EXPLICITE_DISTINCTE', 'adore cet endroit', 'appreciation', { cible: 'referent', relation: 'LOVE' }), 'autre_personne_dans_la_proposition'],
     // sensory2.1487 — des éléments VOULUS dans un lieu idéal.
     ['sensory2.1487', 'Il faudrait absolument des plantes et du bois clair.', seg('ELEMENT_ESTHETIQUE', 'du bois clair', 'presence_voulue', { temps: 'hypothetique' }), 'retenu'],
     ['sensory2.1487', 'Des plantes, surtout pas de néons.', seg('ELEMENT_ESTHETIQUE', 'néons', 'presence_voulue', { temps: 'hypothetique' }), 'negation_dans_la_proposition'],
@@ -180,6 +189,69 @@ describe('la résolution d’un référent — jamais inventée, jamais sur une 
   });
 });
 
+describe('épreuve 4 — la cible de l’appréciation, lue dans les mots (19 nov., 19h56)', () => {
+  const lire = (texte: string, segment: string, nature: 'lieu' | 'episode' | 'oeuvre', ref: string) => {
+    const s = positionExacte(texte, segment)!, r = positionExacte(texte, ref)!;
+    return cibleLexicale(texte, s.debut, s.fin, nature, { debut: r.debut, fin: r.fin, nom: ref }).cible;
+  };
+  it.each([
+    ['Les thermes de Bagnères : j’y ai adoré le silence.', 'j’y ai adoré le silence', 'lieu', 'Les thermes de Bagnères', 'aspect'],
+    ['Les thermes de Bagnères : j’adore cet établissement.', 'j’adore cet établissement', 'lieu', 'Les thermes de Bagnères', 'referent'],
+    ['Les thermes de Bagnères, je les adore.', 'je les adore', 'lieu', 'Les thermes de Bagnères', 'referent'],
+    ['Les thermes de Vals. J’adore cette lumière.', 'J’adore cette lumière', 'lieu', 'Les thermes de Vals', 'aspect'],
+    ['Les thermes de Vals. J’y adore cet endroit du bassin.', 'J’y adore cet endroit du bassin', 'lieu', 'Les thermes de Vals', 'aspect'],
+    ['Les thermes de Vals. J’ai adoré y aller en hiver.', 'J’ai adoré y aller en hiver', 'lieu', 'Les thermes de Vals', 'aspect'],
+    ['L’épisode 12 de Transfert. J’ai adoré.', 'J’ai adoré', 'episode', 'L’épisode 12 de Transfert', 'referent'],
+    ['L’épisode 12 de Transfert. J’ai adoré la voix de l’invitée.', 'J’ai adoré la voix de l’invitée', 'episode', 'L’épisode 12 de Transfert', 'aspect'],
+    ['L’épisode 12 de Transfert. J’ai adoré cet épisode.', 'J’ai adoré cet épisode', 'episode', 'L’épisode 12 de Transfert', 'referent'],
+    ['L’épisode 12 de Transfert. Je n’ai pas aimé la fin.', 'Je n’ai pas aimé la fin', 'episode', 'L’épisode 12 de Transfert', 'aspect'],
+    ['L’épisode 12 de Transfert. Je n’ai pas aimé.', 'Je n’ai pas aimé', 'episode', 'L’épisode 12 de Transfert', 'referent'],
+    ['Blacksad. J’adore les dialogues de Canales.', 'J’adore les dialogues de Canales', 'oeuvre', 'Blacksad', 'aspect'],
+    ['Les thermes de Vals : un coup de cœur.', 'un coup de cœur', 'lieu', 'Les thermes de Vals', 'indeterminee'],
+  ] as const)('« %s » (segment « %s ») → %s', (texte, segment, nature, ref, attendu) => {
+    expect(lire(texte, segment, nature, ref)).toBe(attendu);
+  });
+});
+
+describe('la cible ne change pas pendant l’écriture', () => {
+  const lieu = (texte: string, segment: string, cible = 'referent') => lecteur(
+    seg('REFERENT_RESOLU', 'Les thermes de Bagnères', 'referent', { temps: 'passe_revolu', identite: { nature: 'lieu', nom: 'Les thermes de Bagnères', rattachement: 'Bagnères' } }),
+    seg('RELATION_EXPLICITE_DISTINCTE', segment, 'appreciation', { cible, relation: 'LOVE' }));
+  it('« j’y ai adoré le silence » : AUCUNE relation envers l’établissement, même si le modèle dit « referent » ; le relevé dit pourquoi', async () => {
+    const b = fausseBase();
+    const texte = 'Les thermes de Bagnères à Bagnères : j’y ai adoré le silence.';
+    const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'sensory2.1482', texte, acteId: 'lot-1', lecteur: lieu(texte, 'j’y ai adoré le silence') });
+    expect(preuves(b).some((e) => e.target_family === 'ENTITY' && e.relation)).toBe(false);
+    expect(r.destinations!.releve).toContainEqual(expect.objectContaining({ declencheur: 'RELATION_EXPLICITE_DISTINCTE', issue: 'non_ecrit', motif: 'appreciation_d_un_aspect' }));
+  });
+  it('« j’adore cet établissement » : la relation LOVE est écrite envers le lieu identifié', async () => {
+    const b = fausseBase();
+    const texte = 'Les thermes de Bagnères à Bagnères : j’adore cet établissement.';
+    await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'sensory2.1482', texte, acteId: 'lot-1', lecteur: lieu(texte, 'j’adore cet établissement') });
+    const ent = preuves(b).filter((e) => e.target_family === 'ENTITY');
+    expect(ent).toHaveLength(1);
+    expect(ent[0]).toMatchObject({ relation: 'LOVE' });
+  });
+  it('en attente de clarification, un aspect n’est pas mis en attente : la précision n’écrit que le référent', async () => {
+    const b = fausseBase();
+    const texte = 'L’épisode 12. J’ai adoré la voix de l’invitée.';
+    const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'podcast.0467', texte, acteId: 'lot-1',
+      lecteur: lecteur(seg('REFERENT_RESOLU', 'L’épisode 12', 'referent', { temps: 'passe_revolu', identite: { nature: 'episode', nom: '12' } }),
+        seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré la voix de l’invitée', 'appreciation', { cible: 'referent', relation: 'LOVE' })) });
+    expect(r.destinations!.clarifications).toBe(1);
+    const [c] = await clarificationsOuvertes(b.client, { userId: U });
+    const fin = await repondreClarification(b.client, { userId: U, clarificationId: c.id, reponse: { nom: '12', rattachement: 'Transfert' } });
+    expect(fin).toMatchObject({ etat: 'ecrite' });
+    expect(preuves(b).some((e) => e.target_family === 'ENTITY' && e.relation)).toBe(false);
+  });
+  it('une œuvre : « J’adore le dessin de Blacksad » n’écrit aucune relation envers Blacksad', async () => {
+    const b = fausseBase();
+    await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'comics.0422', texte: 'J’adore le dessin de Blacksad.', acteId: 'lot-1',
+      lecteur: lecteur(seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } })) });
+    expect(preuves(b).some((e) => e.target_family === 'ENTITY')).toBe(false);
+  });
+});
+
 describe('ce qui s’écrit, de bout en bout', () => {
   it('« …que tu n’aimes vraiment pas ? » : une préférence en rejet, de stabilité NON ÉTABLIE, rôle secondaire, sans veto', async () => {
     const b = fausseBase();
@@ -208,7 +280,7 @@ describe('ce qui s’écrit, de bout en bout', () => {
   it('une œuvre appréciée : un référent au registre, avec sa provenance, et une relation LIKE — rien envers l’auteur', async () => {
     const b = fausseBase();
     await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'comics.0422', texte: 'J’adore Blacksad, et tout Moebius.', acteId: 'lot-1',
-      lecteur: lecteur(seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { identite: { nature: 'oeuvre', nom: 'Blacksad' } }), seg('AUTEUR_MENTIONNE', 'Moebius', 'mention')) });
+      lecteur: lecteur(seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', identite: { nature: 'oeuvre', nom: 'Blacksad' } }), seg('AUTEUR_MENTIONNE', 'Moebius', 'mention')) });
     const registre = b.tables.knowledge_facts.filter((f) => f.fact_type === FAIT_ENTITE);
     expect(registre).toHaveLength(1);
     expect(JSON.parse(String(registre[0].value))).toMatchObject({ id: 'oeuvre:bande_dessinee:blacksad', nom: 'Blacksad', provenance: { question: 'comics.0422', passage: { debut: 8, fin: 16 } } });
@@ -220,7 +292,7 @@ describe('ce qui s’écrit, de bout en bout', () => {
   it('un épisode sans son émission : rien n’est écrit, une clarification s’ouvre ; la personne précise, et le fait s’écrit avec la relation en attente', async () => {
     const b = fausseBase();
     const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'podcast.0467', texte: 'L’épisode 12. J’ai adoré.', acteId: 'lot-1',
-      lecteur: lecteur(seg('REFERENT_RESOLU', 'L’épisode 12', 'referent', { temps: 'passe_revolu', identite: { nature: 'episode', nom: '12' } }), seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { relation: 'LOVE' })) });
+      lecteur: lecteur(seg('REFERENT_RESOLU', 'L’épisode 12', 'referent', { temps: 'passe_revolu', identite: { nature: 'episode', nom: '12' } }), seg('RELATION_EXPLICITE_DISTINCTE', 'J’ai adoré', 'appreciation', { cible: 'referent', relation: 'LOVE' })) });
     expect(r.destinations).toMatchObject({ preuves: 0, faits: 0, clarifications: 1 });
     const ouvertes = await clarificationsOuvertes(b.client, { userId: U });
     expect(ouvertes).toHaveLength(1);
