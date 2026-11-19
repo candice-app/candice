@@ -8,7 +8,10 @@ import DiscoveryClarifications, { type ClarificationAffichee } from "./Discovery
 import { clarificationsOuvertes } from "@/lib/discovery/open-v3/destinations-ecriture";
 import DiscoveryEnvie from "./DiscoveryEnvie";
 import { envieAProposer } from "@/lib/discovery/open-v3/envie-carnet";
-import { sujetsExplorables, sujetsChoisisPar, sujetsRefusesPar, projetsEnCours } from "@/lib/discovery/open-v3/service";
+import { sujetsExplorables, sujetsChoisisPar, sujetsRefusesPar, projetsEnCours, situationsDeclarees, ENTREE_QUOTIDIEN } from "@/lib/discovery/open-v3/service";
+import { ENTREE_LARGE } from "@/lib/discovery/open-v3/entree";
+import DiscoveryEntree from "./DiscoveryEntree";
+import type { Quotidien } from "./DiscoveryPortes";
 import { libelleBranche } from "@/lib/discovery/open-v3/correspondances";
 import { proposerLot } from "@/lib/discovery/open-v3/reponse";
 import type { NextQuestionResult } from "@/lib/discovery/engine";
@@ -53,15 +56,19 @@ export default async function DiscoveryPage({
   // ── LES DEUX PORTES QUE LA PERSONNE OUVRE ELLE-MÊME : explorer un sujet, déclarer un achat
   //    ou un séjour en préparation. Une lecture qui échoue n'affiche pas un état supposé : les
   //    portes ne sont alors pas rendues, et l'erreur est tracée.
-  let portes: { sujets: { branche: string; libelle: string; choisi: boolean }[]; projets: Awaited<ReturnType<typeof projetsEnCours>>; refuses: { branche: string; libelle: string }[] } | null = null;
+  let portes: { sujets: { branche: string; libelle: string; choisi: boolean }[]; projets: Awaited<ReturnType<typeof projetsEnCours>>; refuses: { branche: string; libelle: string }[]; quotidien: Quotidien } | null = null;
   try {
-    const [choisis, projets, refuses] = await Promise.all([
+    const [choisis, projets, refuses, situations] = await Promise.all([
       sujetsChoisisPar(supabase as never, { userId }), projetsEnCours(supabase as never, { userId }), sujetsRefusesPar(supabase as never, { userId }),
+      situationsDeclarees(supabase as never, { userId }),
     ]);
     portes = {
       sujets: sujetsExplorables().map((s) => ({ ...s, choisi: choisis.includes(s.branche) })), projets,
       // Un sujet mis de côté s'affiche sous son nom ; sans nom lisible, sous rien — jamais sous son identifiant.
       refuses: refuses.map((b) => ({ branche: b, libelle: libelleBranche(b) ?? "" })).filter((x) => x.libelle),
+      // D2 : l'entrée « Ton quotidien », facultative ; ce qui a été déclaré y est relu tel quel.
+      quotidien: { enonce: ENTREE_QUOTIDIEN.enonce, aide: ENTREE_QUOTIDIEN.aide, aucune: ENTREE_QUOTIDIEN.aucune,
+        options: ENTREE_QUOTIDIEN.options.map((o) => ({ ...o })), declarees: Object.fromEntries(situations) },
     };
   } catch (e) {
     console.error("[discovery] portes illisibles", e);
@@ -86,10 +93,14 @@ export default async function DiscoveryPage({
         {/* C4 : une section ciblée (nudge, CTA) ouvre DIRECTEMENT sa question */}
         {/* `key` : après un choix de sujet ou de projet, la page est relue et le parcours repart
             de la question que le moteur choisit maintenant. */}
-        <DiscoveryFlow key={initial?.question.question_key ?? "aucune"} initial={initial} mode={mode} skipIntro={!!sectionKey} />
+        {/* D13 : rien en attente → une entrée large (choisir, raconter, passer), jamais un « merci »
+            pour une réponse qui n'a pas eu lieu, ni un parcours vide. */}
+        {initial === null && !sectionKey
+          ? <DiscoveryEntree textes={{ ...ENTREE_LARGE }} sujetsDisponibles={!!portes && portes.sujets.length > 0} />
+          : <DiscoveryFlow key={initial?.question.question_key ?? "aucune"} initial={initial} mode={mode} skipIntro={!!sectionKey} />}
         {!sectionKey && <DiscoveryEnvie envie={envie} />}
         {!sectionKey && <DiscoveryClarifications clarifications={clarifications} />}
-        {portes && !sectionKey && <DiscoveryPortes sujets={portes.sujets} projets={[...portes.projets]} refuses={portes.refuses} />}
+        {portes && !sectionKey && <DiscoveryPortes sujets={portes.sujets} projets={[...portes.projets]} refuses={portes.refuses} quotidien={portes.quotidien} />}
       </div>
     </DashboardShell>
   );

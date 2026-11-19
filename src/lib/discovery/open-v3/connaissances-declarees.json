@@ -1,0 +1,12 @@
+{
+ "version": "2026-11-19.D8",
+ "note": "Décision D8 d'Estelle (19 nov., 17h43). Questions FERMÉES dont l'option est une CONNAISSANCE OUVERTE DÉCLARÉE : le libellé coché est gardé mot pour mot (formulation), avec sa source (provenance), sous une relation qui dit ce que la question demandait — et rien d'autre : ni DRIVER, ni NEED, ni goût, ni priorité morale. Deux réponses de même libellé à deux questions différentes ne sont JAMAIS fusionnées : la relation et la portée les distinguent. Le référentiel porte le même contrat (révision 7, bloc M). learning2.1455 n'est pas ici : c'est un FAIT déclaré, écrit par le chemin des faits.",
+ "questions": {
+  "dreams.2004": { "relation": "raison pour laquelle ce projet compte", "portee": "projet", "projet_de": "dreams.1997",
+                   "interdits": "aucun DRIVER, aucun NEED, aucun goût général : la raison vaut pour CE projet" },
+  "philovie.1636": { "relation": "ce qui donne l'impression d'avancer dans la bonne direction", "portee": "globale",
+                     "interdits": "ni DRIVER ni priorité morale ; formulation et provenance gardées" },
+  "values.1910": { "relation": "situation ou activité qui motive", "portee": "globale",
+                   "interdits": "ni priorité morale ni DRIVER" }
+ }
+}

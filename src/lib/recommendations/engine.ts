@@ -4,6 +4,7 @@ import type { AttentionDim } from '@/lib/attention/scoring';
 import { vetoEnfreint } from './veto-text';
 import { candidateRejectedBy } from './rejection-match';
 import { appliquerGardeFous, CATEGORIES_D_IDEE } from './garde-fous-discovery';
+import { qualificateurParModele } from './qualifier-idees';
 import { citeUneDeclaration, JUSTIFICATION_NEUTRE } from './gouts-proche';
 import type {
   RecoInput, RecoIdea, BlindSpotInsight, ContactRecommendations,
@@ -452,11 +453,13 @@ Respecte strictement les filtres durs. Ancre chaque idée sur un signal nommé. 
         ideas = ideas.filter((idea) => candidateRejectedBy(`${idea.title} ${idea.justification}`, rejets) === null);
       }
 
-      // Les garde-fous du Discovery : périmètre vérifié sur les champs DÉCLARÉS de l'idée,
-      // critère rendu par un juge. Jamais un mot partagé. Sans juge, rien n'est écarté.
+      // Les garde-fous du Discovery (D1) : l'idée est DÉCRITE sur une taxonomie publique — le
+      // qualificateur ne reçoit aucun refus — puis comparée ICI, champ à champ, dans le périmètre
+      // de chaque garde-fou. Une restriction HARD non vérifiée écarte l'idée ; une préférence
+      // SOFT atteinte la rétrograde. Jamais un mot partagé.
       const gardeFous = input.gardeFousDuProche ?? [];
       if (gardeFous.length > 0) {
-        const r = await appliquerGardeFous(ideas, gardeFous, input.jugeGardeFous);
+        const r = await appliquerGardeFous(ideas, gardeFous, input.qualifierIdees ?? qualificateurParModele);
         ideas = r.gardees;
         console.info('[recommendations] garde-fous du Discovery', r.bilan);   // des comptes, aucun libellé
       }

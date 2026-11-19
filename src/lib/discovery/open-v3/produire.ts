@@ -29,6 +29,8 @@
 //                 le veto — `isRejection` filtre sur la FAMILLE, pas sur le code.
 // ─────────────────────────────────────────────────────────────────────────────────────
 import sensEnRevue from './sens-en-revue.json';
+import connaissancesDeclarees from './connaissances-declarees.json';
+import rolesDeService from './roles-de-service.json';
 import type { OptionV3, QuestionV3 } from './banque';
 
 /** Ce qu'une option produit, ou la raison pour laquelle elle ne produit rien. */
@@ -40,6 +42,9 @@ export type Production =
   /** Un FAIT déclaré (« Quels sports pratiques-tu réellement ? » → vélo) : ce que la personne
    *  fait, possède ou subit, tel que le contrat l'écrit. Ni goût, ni degré, ni trait. */
   | { readonly type: 'fait'; readonly fait: FaitBrut }
+  /** Une CONNAISSANCE OUVERTE DÉCLARÉE (D8) : le libellé coché, tel quel, sous la relation que la
+   *  question demandait. `portee: 'projet'` : rattachée au projet que nomme `projetDe`. */
+  | { readonly type: 'ouverte'; readonly ouverte: { readonly libelle: string; readonly relation: string; readonly portee: 'globale' | 'projet'; readonly projetDe?: string; readonly domaine: string } }
   | { readonly type: 'rien'; readonly motif: MotifNonEcriture; readonly detail: string };
 
 export interface FaitBrut {
@@ -53,6 +58,9 @@ export interface FaitBrut {
 /** Préfixe des faits déclarés par une option du Discovery. */
 export const PREFIXE_FAIT = 'discovery.fait.';
 
+/** D11 : acteur, bénéficiaire et contexte d'une préférence de service, tels que l'énoncé les établit. */
+export const ROLES_DE_SERVICE = (rolesDeService as { questions: Record<string, { acteur: string; beneficiaire: string; contexte: string }> }).questions;
+const DECLAREES = (connaissancesDeclarees as { questions: Record<string, { relation: string; portee: 'globale' | 'projet'; projet_de?: string }> }).questions;
 const SENS_EN_REVUE: ReadonlyMap<string, ReadonlySet<string>> = new Map((sensEnRevue as { lignes: { question: string; attributs: string[] }[] }).lignes.map((l) => [l.question, new Set(l.attributs)]));
 
 export type MotifNonEcriture =
@@ -190,7 +198,13 @@ export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
     case 'NO_EMISSION':   return rien('contrat_sans_emission', o.libelle);
     case 'ACTION_PARAMETER': return rien('action_interface', o.libelle);
     case 'DISCOVERY_STATE':  return rien('etat_parcours', o.libelle);
-    case 'OPEN_KNOWLEDGE':   return rien('connaissance_ouverte', o.libelle);
+    case 'OPEN_KNOWLEDGE': {
+      // D8 : seules les questions dont la destination a été DÉCIDÉE écrivent leur option comme
+      // connaissance ouverte. Les autres options fermées en OPEN_KNOWLEDGE restent sans émission.
+      const d = DECLAREES[q.id];
+      if (!d || !o.libelle.trim()) return rien('connaissance_ouverte', o.libelle);
+      return { type: 'ouverte', ouverte: { libelle: o.libelle, relation: d.relation, portee: d.portee, ...(d.projet_de ? { projetDe: d.projet_de } : {}), domaine: o.domaine ?? q.branche } };
+    }
     case 'FACT': {
       // LES 600 OPTIONS DE FAIT. La première version les renvoyait à un « producteur de faits »
       // qui n'existait pas : cocher « Vélo » à « Quels sports pratiques-tu réellement
@@ -274,6 +288,10 @@ export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
           ...base,
           target_construct: `PREFERENCE.${assainir(domaine)}.${assainir(o.attribut)}`,
           preferenceValue: valeur,
+          // M2 (D11) : qui agit, pour qui, dans quel contexte — « non_etabli » quand l'énoncé ne le dit
+          // pas. Jamais un acteur choisi à la place de la personne (« être prévenu(e) »).
+          ...(o.attribut === 'service_preference' && ROLES_DE_SERVICE[q.id] ? { behaviorContext: JSON.stringify({
+            acteur: ROLES_DE_SERVICE[q.id].acteur, beneficiaire: ROLES_DE_SERVICE[q.id].beneficiaire, contexte: ROLES_DE_SERVICE[q.id].contexte }) } : {}),
         },
       };
     }

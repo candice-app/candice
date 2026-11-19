@@ -1,18 +1,19 @@
-// LE RÉGLAGE DE THIBAUD — « écarter certaines idées pour moi ».
+// LE RÉGLAGE DU PROCHE — ce qu'un pilote peut utiliser de ses données pour lui trouver des idées.
 //
-// C'est LE PROCHE qui ouvre ce réglage, depuis son espace, jamais le pilote qui le demande.
-// Si le pilote demandait l'autorisation, un refus serait visible : le proche paierait
-// socialement le fait de dire non, et son silence lui-même deviendrait une information.
-// Le pilote n'apprend donc jamais si le réglage est actif. C'est la seule disposition où
-// « la comparaison reste privée » tient complètement.
+// C'est LE PROCHE qui ouvre ce réglage, depuis son espace (/moi/idees), jamais le pilote qui le
+// demande. Si le pilote demandait l'autorisation, un refus serait visible : le proche paierait
+// socialement le fait de dire non, et son silence lui-même deviendrait une information. Le pilote
+// n'apprend donc jamais si le réglage est actif.
 //
-// Un accord DISTINCT par personne : on n'autorise pas « tout le monde » d'un coup.
+// Un accord DISTINCT par personne et par portée : on n'autorise pas « tout le monde » d'un coup.
+//
+// AUCUN CLIENT PRIVILÉGIÉ (19 nov.). L'écriture passe par `regler_usage` (migration 121), appelée
+// dans la session du proche : la fonction vérifie que la fiche est la sienne, et la garde de la base
+// (migration 117) atteste elle-même qui accorde. Fonction absente : 503, jamais un repli.
 import { NextResponse, type NextRequest } from 'next/server';
 import { createClient } from '@/utils/supabase/server';
-import { createAdminClient } from '@/utils/supabase/admin';
-import { accorder, retirer, type EtatConsentement } from '@/lib/consent/portees';
 import { PORTEE_EXCLUSIONS_RECO } from '@/lib/recommendations/declarations-proche';
-import { estUsageValide, TYPE_USAGE } from '@/lib/consent/usage-profil';
+import { estUsageValide } from '@/lib/consent/usage-profil';
 
 export async function POST(req: NextRequest) {
   const supabase = await createClient();
@@ -24,68 +25,21 @@ export async function POST(req: NextRequest) {
   if (!contactId || (action !== 'autoriser' && action !== 'retirer')) {
     return NextResponse.json({ error: 'contactId et action requis' }, { status: 400 });
   }
-  // La portée réglée : par défaut « écarter certaines idées » ; sinon UN usage de données par
-  // la recommandation (une allergie précise, le régime…). Une portée inconnue est refusée :
-  // on n'écrit pas dans un consentement un mot que personne ne sait lire.
+  // La portée réglée : par défaut « écarter certaines idées » ; sinon UN usage de données par la
+  // recommandation. Une portée inconnue est refusée ici, et de nouveau par la base.
   const portee = porteeDemandee ?? PORTEE_EXCLUSIONS_RECO;
   if (portee !== PORTEE_EXCLUSIONS_RECO && !estUsageValide(portee)) {
     return NextResponse.json({ error: 'portée inconnue' }, { status: 400 });
   }
 
-  const admin = createAdminClient();
-
-  // La fiche doit être CELLE DE LA PERSONNE QUI DEMANDE. Sans ce contrôle, n'importe qui
-  // pourrait accorder — ou retirer — un consentement au nom d'un autre.
-  const { data: contact, error: eC } = await admin
-    .from('contacts').select('id, user_id, proche_user_id')
-    .eq('id', contactId).eq('proche_user_id', user.id).maybeSingle();
-  if (eC) return NextResponse.json({ error: 'lecture impossible' }, { status: 500 });
-  if (!contact) return NextResponse.json({ error: 'fiche introuvable' }, { status: 404 });
-
-  const piloteId = contact.user_id as string;
-  const { data: existante, error: eK } = await admin
-    .from('contact_consents').select('id, scope, status, granted_by')
-    .eq('pilote_id', piloteId).eq('contact_id', contactId).eq('proche_user_id', user.id)
-    .eq('kind', TYPE_USAGE).eq('status', 'active').maybeSingle();
-  if (eK) return NextResponse.json({ error: 'lecture impossible' }, { status: 500 });
-
-  // ON N'HÉRITE PAS D'UNE PORTÉE DONT L'ACCORD N'EST PAS ÉTABLI. Si la ligne existante n'a pas
-  // été accordée par CETTE personne (ligne historique, ou écrite par le serveur sans preuve),
-  // ses portées d'usage ne sont pas reprises : l'accord donné maintenant, pour UNE chose, ne
-  // doit pas en couvrir d'autres que la personne n'a jamais validées.
-  const accordEtabli = existante?.granted_by === user.id;
-  const porteesReprises = ((existante?.scope as string[] | undefined) ?? [])
-    .filter((p) => accordEtabli && (p === PORTEE_EXCLUSIONS_RECO || estUsageValide(p)));
-  const avant: EtatConsentement | null = existante
-    ? { scope: porteesReprises, status: existante.status as EtatConsentement['status'] }
-    : null;
-  // Le retrait porte sur CETTE portée seulement : si la même ligne couvre d'autres usages,
-  // ils sont préservés (voir portees.ts).
-  const apres = action === 'autoriser'
-    ? accorder(avant, portee)
-    : retirer(avant, portee);
-
-  if (existante) {
-    const { error } = await admin.from('contact_consents').update({
-      scope: apres.scope, status: apres.status,
-      responded_at: new Date().toISOString(),
-      ...(action === 'autoriser' ? { consented_at: new Date().toISOString() } : {}),
-      // LA PREUVE : c'est CETTE personne, dont l'identité vient d'être vérifiée, qui accorde.
-      granted_by: user.id, granted_at: new Date().toISOString(),
-    }).eq('id', existante.id);
-    if (error) return NextResponse.json({ error: 'enregistrement impossible' }, { status: 500 });
-  } else if (action === 'autoriser') {
-    const { error } = await admin.from('contact_consents').insert({
-      pilote_id: piloteId, contact_id: contactId, proche_user_id: user.id,
-      kind: TYPE_USAGE, requested_by: user.id,
-      status: 'active', scope: apres.scope,
-      responded_at: new Date().toISOString(), consented_at: new Date().toISOString(),
-      granted_by: user.id,
-    });
-    if (error) return NextResponse.json({ error: 'enregistrement impossible' }, { status: 500 });
+  const { data, error } = await (supabase as unknown as {
+    rpc(f: string, a: Record<string, unknown>): Promise<{ data: string[] | null; error: { message: string; code?: string } | null }>;
+  }).rpc('regler_usage', { p_contact: contactId, p_portee: portee, p_accorder: action === 'autoriser' });
+  if (error) {
+    if (/fiche introuvable/.test(error.message)) return NextResponse.json({ error: 'fiche introuvable' }, { status: 404 });
+    if (/portée inconnue/.test(error.message)) return NextResponse.json({ error: 'portée inconnue' }, { status: 400 });
+    console.error('[consent/exclusions] réglage impossible', error.code ?? '', error.message);
+    return NextResponse.json({ error: 'enregistrement impossible' }, { status: 503 });
   }
-  // Retrait sans ligne existante : rien à faire, et surtout pas une ligne « revoked »
-  // fabriquée pour l'occasion, qui laisserait croire qu'un accord a existé.
-
-  return NextResponse.json({ actif: apres.scope.includes(portee) });
+  return NextResponse.json({ actif: (data ?? []).includes(portee) });
 }

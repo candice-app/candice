@@ -99,6 +99,9 @@ export default async function PartagePage() {
           Tu choisis ce qui est visible AVANT d&apos;envoyer le lien — et tu peux
           tout retirer à tout moment.
         </p>
+        <Link href="/moi/idees" style={{ display: "block", fontSize: 13.5, fontWeight: 300, color: "var(--pine)", textDecoration: "underline", marginBottom: 20, minHeight: 44, lineHeight: "44px" }}>
+          Ce que tes proches peuvent utiliser pour te trouver des idées →
+        </Link>
 
         {questionnaireComplete ? (
           <PartageClient allergies={elementsAllergies(((profileRaw as { practical_info?: unknown } | null)?.practical_info ?? null) as never)} />

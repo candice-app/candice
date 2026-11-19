@@ -197,29 +197,82 @@ H(['bags.0388', 'shoes.0357', 'watch.0327'], '« seconde main / vintage envisag�
   ['(a) consumption2.1188 hors « Je préfère du neuf » et « Je préfère éviter » (rapport général à la seconde main)', '(b) pour l’achat en préparation : le moteur ne connaît pas cette caractéristique d’un achat'])
 H('garden.0583', '« si la personne jardine réellement » : aucune réponse ne dit « je jardine ».',
   ['(a) garden.0557 : « Une vraie passion » ou « J’aime jardiner quand j’ai un espace extérieur »', '(b) garden.0558 : un jardin ou un potager déclaré', '(c) les deux'])
-H(['aesthetic.1966', 'aesthetic.1967', 'aesthetic.1968', 'aesthetic.1969'], '« Niveau B avancé Esthétique » : aucun seuil écrit.',
-  ['(a) niveau B atteint dans la branche (les questions suivent les autres B)', '(b) un nombre de réponses B à fixer', '(c) seulement si « le profil mérite d’être précisé » : critère à écrire'])
-H(['relation2.0787', 'relation2.0788', 'relation2.0789', 'relation2.0790', 'daily2.1130', 'daily2.1131', 'daily2.1132'],
-  'Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.',
-  ['(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)', '(b) une donnée de situation de l’onboarding à désigner', '(c) laisser fermé'])
-H(['daily2.1134', 'daily2.1135', 'daily2.1136', 'daily2.1137'], 'Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).',
-  ['(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants', '(b) une question d’entrée sur le foyer', '(c) laisser fermé'])
-H(['daily2.1138', 'daily2.1139'], '« à ouvrir si télétravail ou activité à domicile » : aucune question ne le recueille.', ['(a) une question d’entrée', '(b) laisser fermé'])
-H(['relation2.0802', 'relation2.0803', 'relation2.0804'], 'Relations professionnelles : les énoncés présument une vie professionnelle (« Au travail, qu’est-ce qui te touche ? »).',
-  ['(a) branche work2 ouverte comme preuve', '(b) traiter comme un thème du niveau B (tout le monde a un contexte professionnel)', '(c) laisser fermé'])
+# ═════ D5 — « avancé » et « après les 6 axes » : aucun seuil chiffré inventé ════════════════════
+# Esthétique : « Niveau B avancé » n’a pas de seuil écrit. RÈGLE PROPOSÉE, question par question
+# (dossier D5, à valider) : chaque question d’arbitrage s’ouvre au niveau B APRÈS la question
+# qu’elle approfondit — elle affine une réponse, elle ne vient pas avant.
+REPONDUE = lambda sel: opt(sel, *[o['libelle'] for o in Q[sel]['options']])
+D5 = 'règle proposée D5 (approfondit une réponse déjà donnée)'
+for i, ref, pourquoi in [
+    ('aesthetic.1966', 'aesthetic.1965', '« beau ou pratique » arbitre après « est-ce important que tes vêtements, ta maison… »'),
+    ('aesthetic.1967', 'aesthetic.1953', '« parfaitement beau, singulier, une histoire… » affine « quand tu trouves quelque chose beau, qu’est-ce qui te séduit »'),
+    ('aesthetic.1968', 'aesthetic.1956', '« le prestige augmente-t-il l’attrait » prolonge 1956, la question marquée « pont Signature de valeur »'),
+    ('aesthetic.1969', 'aesthetic.1961', '« rester fidèle ou renouveler » prolonge « intemporel, actuel, dans l’air du temps »'),
+]:
+    E(i, f'Niveau B aesthetic ET {REPONDUE(ref)}', D5, pourquoi + ' (réponse quelconque à ' + ref + ').',
+      ['« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée'])
+# ═════ SITUATION DE VIE DÉCLARÉE — décision D2 d’Estelle (19 nov.) ════════════════════════════
+# « Réutilise une déclaration explicite, autorisée et suffisamment actuelle […]. Sinon, propose une
+# question d’entrée facultative et neutre. Ne déduis pas couple, parentalité ou activité
+# professionnelle à partir d’un intérêt, d’un âge ou d’une réponse concernant quelqu’un d’autre. »
+# Aucune question de l’onboarding ne recueille ces situations (vérifié) : la déclaration vient de
+# l’entrée « Ton quotidien » (service.ts, ENTREE_QUOTIDIEN), où cocher vaut aussi accord pour en
+# parler. Le niveau B de la question est gardé ; « travel2.0890 “Avec mes enfants” » N’EST PAS une
+# preuve d’enfants au quotidien (voyager avec des enfants ne dit pas qu’ils sont les siens).
+D2 = 'situation déclarée par la personne (D2)'
+for ids, br, sit, pourquoi in [
+    (['relation2.0787', 'relation2.0788', 'relation2.0789', 'relation2.0790'], 'relation2', 'couple', '« uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension » : « Une vie de couple » cochée dit les deux.'),
+    (['daily2.1130', 'daily2.1131', 'daily2.1132'], 'daily2', 'couple', '« Couple au quotidien » : une vie de couple déclarée.'),
+    (['daily2.1134', 'daily2.1135', 'daily2.1136', 'daily2.1137'], 'daily2', 'enfants_au_quotidien', '« Famille et enfants au quotidien » : les énoncés présument des enfants ; « Des enfants dans mon quotidien » déclaré.'),
+    (['daily2.1138', 'daily2.1139'], 'daily2', 'travail_a_domicile', '« à ouvrir si télétravail ou activité à domicile » : « Travailler depuis chez moi » déclaré.'),
+    (['relation2.0802', 'relation2.0803', 'relation2.0804'], 'relation2', 'activite_professionnelle', '« Relations professionnelles » : les énoncés présument une vie professionnelle ; « Une activité professionnelle » déclarée.'),
+]:
+    E(ids, f'Niveau B {br} ET Situation déclarée : {sit}', D2, pourquoi,
+      ['tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire'])
 H(['work2.1356', 'work2.1357'], '« si concerné » (management ; activité créative) : aucune réponse ne le dit.', ['(a) une question de rôle dans work2', '(b) work2.1357 : craft.0614 « Je pratique moi-même… »', '(c) laisser fermé'])
 H('home2.1280', '« Mobilier — SEULEMENT si pertinent (projet, déménagement, rénovation) ».', ['(a) « Achat concret » dans la branche', '(b) laisser fermé'])
 H('home2.1278', '« Art mural : pont avec la branche Art / Musées » : un pont, pas une règle.', ['(a) Niveau B home2 (thème)', '(b) Niveau B home2 ET branche Art ou Musées ouverte'])
 H('dreams.2012', '« si le projet est un voyage » : le moteur ne sait pas de quel genre est le rêve.', ['(a) une option « voyage » à une question de dreams à désigner', '(b) « Séjour concret »'])
 H('resonance.1536', '« Territoire Le courage / L’accomplissement » : pas de numéro.', ['(a) resonance.1526 : « Les exploits humains », « Les parcours de résilience », « Les rêves accomplis »', '(b) Niveau B resonance (thème)'])
-H('value.1522', '« uniquement après les 6 axes » : quels axes ?', ['(a) six questions de la branche value à désigner', '(b) niveau B atteint'])
+# value.1522 « uniquement après les 6 axes » : la branche Signature de valeur ouvre sur SIX questions
+# de niveau A (value.1516 à value.1521, « Branche Signature de valeur ouverte ») — ce sont les six
+# axes. Prérequis métier traduit tel quel : les six ont reçu une réponse, et le niveau B est atteint.
+E('value.1522', 'Niveau B value ET ' + ' ET '.join(REPONDUE(f'value.{n}') for n in range(1516, 1522)), 'prérequis écrit traduit (D5)',
+  '« après les 6 axes » : les six questions A de la branche (1516 à 1521), toutes répondues.')
 H('travel2.0944', '« Niveau C, réservation offerte » : offerte à qui ?', ['(a) « Cadeau concret » (elle offre)', '(b) « Séjour concret » (on lui offre)'])
 H(['sleep.0595'], '« matières uniquement si literie/linge de maison est une piste concrète » : vise des options (matières), pas la question.',
   ['(a) Niveau B sleep, et les options de matière masquées hors achat', '(b) Niveau B sleep ET Achat concret'])
 H('sleep.0613', '« Tout objet coûteux ou très personnel (matelas, oreiller, couette) » : achat ou cadeau ?', ['(a) « Achat concret »', '(b) « Achat concret » OU « Cadeau concret »'])
-H(['travel2.%04d' % n for n in range(915, 927)] + ['travel2.0927'] + [q['id'] for q in qs if q['branche'] == 'travel2' and 'Hôtellerie' in q['condition_emission'] and q['id'] not in ('travel2.%04d' % n for n in range(915, 928))],
-  'Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.',
-  ['(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »', '(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »', '(c) les deux'])
+# ═════ HÔTELLERIE — décision D3 d’Estelle (19 nov.) ═══════════════════════════════════════════
+# « Un intérêt pertinent ou une démarche volontaire peut ouvrir l’orientation ; un séjour en
+# préparation ouvre les questions utiles à ce séjour ; les détails propres à un projet restent
+# rattachés à ce projet. Ne rends pas un projet obligatoire pour toute question générale, ni un
+# intérêt général suffisant pour toutes les questions de réservation. » Et : « un endroit où
+# dormir » ne veut pas dire « aucun besoin pratique ».
+#   · ORIENTATION (0915) : la branche Voyage ouverte (un intérêt, ou le sujet choisi) OU un séjour
+#     en préparation ;
+#   · GOÛT (le genre d’hébergement, l’âme, le prestige, le souvenir) : une réponse à 0915 qui donne
+#     une place à l’hébergement — tout sauf « Est principalement un endroit où dormir » ;
+#   · BESOINS PRATIQUES (défauts, literie, chambre, salle de bain) : TOUTE réponse à 0915, ou un
+#     séjour en préparation ;
+#   · UTILES À UN SÉJOUR (taille, accompagnement, petit-déjeuner, spa, atmosphère) : le goût, ou un
+#     séjour en préparation ;
+#   · RÉSERVATION (niveau C, 0936-0942) : inchangées, toujours un séjour concret — l’intérêt seul
+#     n’y suffit pas.
+# Le niveau B écrit (« Niveau B Hôtellerie ») reste exigé hors séjour ; Hôtellerie est la branche travel2.
+D3 = 'décision D3 (hôtellerie : exploration générale ≠ préparation)'
+H915 = lambda *exclus: sauf('travel2.0915', *exclus) if exclus else opt('travel2.0915', *[o['libelle'] for o in Q['travel2.0915']['options']])
+GOUT = H915('Est principalement un endroit où dormir')
+TOUTE = H915()
+E('travel2.0915', 'Branche travel2 ouverte OU Séjour concret', D3, 'Orientation : un intérêt pour le voyage (ou le sujet choisi), ou un séjour en préparation.')
+E(['travel2.0916', 'travel2.0917', 'travel2.0918'], GOUT, D3, 'Goût pour l’hébergement : une réponse à 0915 qui lui donne une place.',
+  ['« Est principalement un endroit où dormir » : ne dit pas un goût pour l’hébergement'])
+E(['travel2.0919', 'travel2.0920'], TOUTE + ' OU Séjour concret', D3, 'Besoin pratique, ou attitude face à un séjour offert : vaut quelle que soit la place de l’hébergement (« un endroit où dormir » ne dit pas l’absence de besoins).')
+E(['travel2.0924', 'travel2.0925', 'travel2.0926'], 'Niveau B travel2 ET ' + TOUTE + ' OU Séjour concret', D3, 'Besoin pratique (chambre, salle de bain, sommeil) : toute réponse à 0915 au niveau B, ou un séjour en préparation.')
+E(['travel2.0921', 'travel2.0922', 'travel2.0927', 'travel2.0929', 'travel2.0930'], 'Niveau B travel2 ET ' + GOUT + ' OU Séjour concret', D3, 'Utile à un séjour : le goût au niveau B, ou un séjour en préparation (« selon le séjour envisagé », 0921).',
+  ['« Est principalement un endroit où dormir » hors séjour : ces préférences de confort ne sont pas un besoin pratique'])
+E(['travel2.0923', 'travel2.0928', 'travel2.0931', 'travel2.0933', 'travel2.0934', 'travel2.0935'], 'Niveau B travel2 ET ' + GOUT, D3, 'Goût au niveau B ; un séjour en préparation seul ne suffit pas (question générale, pas de préparation).',
+  ['« Séjour concret » seul : une préparation ne rend pas pertinent un goût général non déclaré'])
 H('fragrance2.1154', '« après 1153 — paramétrique {parfum} » : 1153 est une question ouverte ; il faut le parfum nommé.', ['(a) le parfum résolu par la lecture de 1153 (référent nommé)', '(b) laisser fermé'])
 H('value.1523', '« paramétrique par catégorie (1522) » : « cette exigence » désigne UNE catégorie de 1522.', ['(a) une fois par catégorie cochée, la catégorie affichée', '(b) seulement si une seule catégorie est cochée'])
 H(['photo.0685'], '« photo smartphone dominante (0673) » : 0673 est à choix multiple, la dominance ne se lit pas.', ['(a) « Mon téléphone » seul coché', '(b) « Mon téléphone » coché'])
@@ -236,10 +289,49 @@ ED('causes.1941', opt('causes.1918', 'Le patrimoine', 'Les savoir-faire'), NUM, 
 ED('drinks.2106', 'Niveau C drinks — sensitivity: MOYENNE', 'consigne, pas condition', '« question CONTEXTUELLE » dit comment ranger la réponse. La démarche reste exigée.')
 H('causes.1942', '« Niveau C Causes — recommandation contextuelle » : posée pendant une recommandation (chez le pilote) ou pour un projet de la personne ?',
   ['(a) Niveau C de la branche, pour une préparation de la personne', '(b) jamais dans le Discovery : question du pilote'])
-H(['CRE-15', 'CRE-18'], 'L’énoncé porte sur la CÉRAMIQUE ; la condition ne demande qu’un intérêt pour la création. La lire telle quelle poserait la question de la céramique à quelqu’un qui peint.',
-  ['(a) exiger un intérêt déclaré pour la céramique (option céramique de la branche Arts & créatif)', '(b) suivre le texte (intérêt pour la création)'])
-H('CRE-16', 'Même énoncé centré sur la céramique ; la condition admet l’intérêt général OU l’intérêt céramique écrit par CRE-15.', ['(a) seulement l’intérêt céramique', '(b) suivre le texte'])
-H('CHS-13', 'L’énoncé porte sur les TALONS ; la condition admet un intérêt général pour les chaussures.', ['(a) exiger shoes.0332 « Escarpins » ou l’intérêt talons écrit par CHS-12', '(b) suivre le texte'])
+# ═════ 6 ter. CÉRAMIQUE ET TALONS — décision D4 d’Estelle (19 nov.) ═══════════════════════════
+# « Une question qui présume une pratique, un usage ou un goût précis exige le signal correspondant.
+# Un intérêt pour la création ne suffit pas à présumer la céramique ; les chaussures ne suffisent pas
+# à présumer le port de talons. » Le signal est demandé à une question d’orientation qui existe déjà
+# (craft.0615 « Quels univers créatifs… t’attirent vraiment ? », shoes.0341 « Concernant la hauteur,
+# tu portes volontiers… ») ; aucune réponse n’est fabriquée. Les gardes du texte (ne pas creuser,
+# information manquante, pertinence) sont recopiées telles quelles.
+GARDES = lambda dom, info=True: f' ; ET `DO_NOT_PROBE.{dom}!=true`' + (' ; ET information manquante' if info else '') + ' ; ET score de pertinence suffisant'
+# Une question À RÉPONSE LIBRE ne nomme aucun attribut : « information manquante » n’y est pas
+# évaluable (conditions.ts la laisse indécidable). L’information y manque exactement tant que la
+# question n’a pas été posée, ce que la sélection garantit déjà (`dejaPosees`) : la clause n’ajoute
+# rien et n’est pas reprise — c’est écrit dans `non_repris`.
+LIBRE = '« information manquante » : question à réponse libre, sans attribut nommé ; l’information manque tant que la question n’a pas été posée, ce que la sélection garantit'
+CERAMIQUE = opt('craft.0615', 'Céramique ou poterie')
+PRATIQUER = opt('craft.0614', PRATIQUE, 'J’aimerais apprendre ou reprendre une pratique')
+D4 = 'décision D4 (signal correspondant au présupposé)'
+E(['CRE-15', 'CRE-18'], CERAMIQUE + GARDES('creativity', False), D4,
+  'L’énoncé présume un goût pour la céramique : « Céramique ou poterie » à craft.0615.',
+  ['« INTEREST.creativity=positive » seul : un intérêt pour la création ne présume pas la céramique (D4)', LIBRE])
+E('CRE-16', CERAMIQUE + ' ET ' + PRATIQUER + GARDES('creativity', False), D4,
+  'L’énoncé présume un goût pour la céramique ET l’envie de pratiquer (« créer », « pratiquer ») : « Céramique ou poterie » à craft.0615 et, à craft.0614, la pratique déclarée ou l’envie d’apprendre.',
+  ['« INTEREST.creativity=positive » seul (D4)', '« ceramics_interest produit par CRE-15 » : une réponse libre, qui ne dit pas en elle-même l’envie de pratiquer', LIBRE])
+E('CRE-17', CERAMIQUE + ' ET ' + PRATIQUER + GARDES('creativity'), D4,
+  'Même présupposé que CRE-16 (« pratiquer la céramique ») ; le niveau C, lui, reste exigé par la règle de la question (un projet du domaine).',
+  ['« INTEREST.creativity=positive » seul (D4)', '« ceramics_goal produit par CRE-16 » : une réponse libre, qui ne dit pas en elle-même l’envie de pratiquer'])
+E('CHS-13', opt('shoes.0341', 'Un petit talon', 'Un talon moyen', 'Un talon haut') + GARDES('shoe', False), D4,
+  'L’énoncé présume le port de talons : un talon déclaré à shoes.0341.',
+  ['« INTEREST.shoe=positive » seul : aimer les chaussures ne présume pas les talons (D4)', '« heel_interest produit par CHS-12 » : CHS-12 n’existe pas dans la banque', '« Cela dépend du modèle », « Une plateforme » : ne disent pas un talon', LIBRE])
+
+# ═════ D5 — RÉUSSITE : l’axe choisi à success.1711 ouvre ses questions ═════════════════════════
+# « Ouvre l’axe choisi à success.1711 comme un sujet que la personne souhaite développer. Ne déduis
+# pas qu’il s’agit d’une priorité actuelle ou d’un trait établi. Les restrictions sensibles
+# s’appliquent toujours. » Les questions « Niveau B Réussite — axe X » s’ouvrent au niveau B si X
+# est coché à 1711 ; une question sensible n’est pas lue (sa garde reste entière).
+AXES = {'Statut': 'Le statut', 'Liberté': 'La liberté', 'Impact': 'L’impact', 'Création': 'La création', 'Sécurité': 'La sécurité',
+        'Reconnaissance': 'La reconnaissance', 'Maîtrise': 'La maîtrise', 'Temps disponible': 'Le temps disponible', 'Transmission': 'La transmission'}
+AXES_LUS = []
+for q in qs:
+    m = re.match(r'^Niveau B Réussite — axe ([^—(]+?)\s*(?:—|\(|$)', cond(q['id']))
+    if not m or SENSIBLE.search(cond(q['id'])): continue
+    E(q['id'], f"Niveau B success ET {opt('success.1711', AXES[m.group(1).strip()])}", 'axe choisi à success.1711 (D5)',
+      f"« axe {m.group(1).strip()} » : « {AXES[m.group(1).strip()]} » coché à success.1711 — un sujet à développer, ni priorité ni trait.")
+    AXES_LUS.append(q['id'])
 
 # ═════ 7. SANS LECTURE — le moteur ne sait pas le constater ═══════════════════════════════════
 RECO = 'une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne'
@@ -313,7 +405,7 @@ MOTIFS_RESTANTS = [
   (r'après (le séjour|un événement)', 'une préparation TERMINÉE : le moteur ne connaît que les préparations en cours'),
   (r'compte(nt)? réellement|réellement important|est important|sont importants|amateurs|lecteurs réguliers|écoute beaucoup|charge élevée|passionnée?|suffisamment de signaux|animal est important|apprécie les pierres|fonctionnalité est importante', 'un seuil d’importance ou d’intensité que le référentiel ne chiffre pas'),
   (r'IGNORÉE si non pertinente|si pertinent|si concerné|FACULTATIVE', 'le critère de pertinence n’est pas écrit'),
-  (r'Sous-branche Famille', 'Famille au quotidien (branche daily2) : voir l’hypothèse « présument des enfants »'),
+  (r'Sous-branche Famille', 'Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)'),
   (r'^Axe Pratiquant', 'paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)'),
 ]
 for i in cibles:

@@ -86,6 +86,35 @@ for (const c of CAS) {
     console.log(`✗ ${c.id} : erreur ${resultats.at(-1)!.erreur}`);
   }
 }
+// ═══ D1 — LA QUALIFICATION DES IDÉES PAR LE VRAI MODÈLE (décision du 19 nov.) ═══
+// Le modèle reçoit des idées FICTIVES et la taxonomie publique — jamais un refus. La comparaison aux
+// garde-fous se fait ensuite ici, côté serveur. Attendus : les chaussures rétrogradées par un refus
+// SOFT « pas de chaussures » ; l'idée en cuir écartée par un refus HARD « pas de cuir » ; le livre de
+// cuisine compatible ; et la consigne envoyée identique quels que soient les refus.
+{
+  const { appliquerGardeFous } = await import('../../src/lib/recommendations/garde-fous-discovery.ts');
+  const { qualificateurParModele } = await import('../../src/lib/recommendations/qualifier-idees.ts');
+  const { gardeFouDe } = await import('../../src/lib/recommendations/garde-fous-discovery.ts');
+  const refus = [gardeFouDe('CHS-01', 'Je préfère qu’on ne m’offre pas de chaussures')].filter((g): g is NonNullable<typeof g> => g !== null);
+  if (refus.length !== 1) throw new Error('garde-fou CHS-01 introuvable dans la matrice');
+  const idees = [
+    { title: 'Une paire de baskets en toile', justification: 'Des baskets légères pour l’été.', canal: 'cadeau' },
+    { title: 'Un livre de cuisine japonaise', justification: 'Un beau livre de recettes.', canal: 'cadeau' },
+    { title: 'Un portefeuille en cuir pleine fleur', justification: 'Un portefeuille en cuir tanné végétal.', canal: 'cadeau' },
+  ];
+  try {
+    const r = await appliquerGardeFous(idees, refus, qualificateurParModele);
+    const verdict = Object.fromEntries(r.gardees.map((i) => [i.title, i.compatibilite]));
+    const ecartees = idees.map((i) => i.title).filter((t) => !(t in verdict));
+    const conforme = verdict['Une paire de baskets en toile'] === 'retrogradee' && verdict['Un livre de cuisine japonaise'] === 'compatible_verifiee';
+    resultats.push({ id: 'D1-qualification', question: 'garde-fous', texte: idees.map((i) => i.title).join(' · '), attendu: 'baskets rétrogradées (refus SOFT), livre compatible', observe: { verdict, ecartees, bilan: r.bilan } as never, conforme });
+    console.log(`${conforme ? '✓' : '✗'} D1-qualification      baskets rétrogradées, livre compatible\n    observé : ${JSON.stringify({ verdict, ecartees })}`);
+  } catch (e) {
+    resultats.push({ id: 'D1-qualification', question: 'garde-fous', texte: '', attendu: 'qualification', observe: null, conforme: false, erreur: e instanceof Error ? e.message.replace(/sk-ant-[A-Za-z0-9_-]+/g, '[clé masquée]') : 'erreur' });
+    console.log(`✗ D1-qualification : erreur ${resultats.at(-1)!.erreur}`);
+  }
+}
+
 const ok = resultats.filter((r) => r.conforme).length;
 writeFileSync('docs/discovery/essai-extracteur-reel.json', JSON.stringify({
   date: new Date().toISOString(), modele_destinations: MODELE_DESTINATIONS, cas: resultats.length, conformes: ok,

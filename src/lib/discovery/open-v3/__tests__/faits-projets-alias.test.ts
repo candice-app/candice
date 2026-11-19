@@ -39,7 +39,8 @@ describe('les options de fait écrivent un FAIT, tel que le contrat le dit', () 
       if (p.type === 'fait') { ecrites++; expect(p.fait.valeur).not.toMatch(/\{.*\}/); } else incompletes.push(`${q.id}:${cleOption(o)}`);
     }
     // 600 dans les 2 225 questions d'origine, 158 dans les 56 questions activées par la révision 6.
-    expect(ecrites + incompletes.length).toBe(758);
+    // + 11 le 19 nov. (D8) : learning2.1455 « ce qui déclenche l'envie d'apprendre » devient un fait déclaré.
+    expect(ecrites + incompletes.length).toBe(769);
     expect(ecrites).toBeGreaterThan(560);
     // Ce qui reste incomplet est listé dans l'état, pas avalé.
     expect(incompletes.length).toBeLessThan(40);
@@ -119,5 +120,66 @@ describe('alias d’options (onglet 6) et énoncés à paramètre', () => {
     const parametrees = BANQUE.filter(aParametre);
     expect(parametrees.length).toBe(24);
     for (const q of parametrees) expect(motifDExclusion(q, tout), q.id).not.toBeNull();
+  });
+});
+
+describe('D8 : les motivations ont une destination, et ne se fusionnent pas', async () => {
+  const { produireDepuisOption } = await import('../produire');
+  const { question: q } = await import('../banque');
+  const p = (id: string, l: string) => produireDepuisOption(q(id)!, q(id)!.options.find((o) => o.libelle === l)!);
+  it('dreams.2004 : connaissance ouverte rattachée au projet de dreams.1997, ni DRIVER ni goût', () => {
+    const r = p('dreams.2004', 'Apprendre');
+    expect(r.type).toBe('ouverte');
+    if (r.type === 'ouverte') expect(r.ouverte).toMatchObject({ libelle: 'Apprendre', portee: 'projet', projetDe: 'dreams.1997', relation: 'raison pour laquelle ce projet compte' });
+  });
+  it('philovie.1636 et values.1910 : connaissances ouvertes globales, formulation gardée, relations distinctes', () => {
+    const a = p('philovie.1636', 'Apprendre'), b = p('values.1910', 'Tu apprends');
+    expect(a.type).toBe('ouverte'); expect(b.type).toBe('ouverte');
+    if (a.type === 'ouverte' && b.type === 'ouverte') {
+      expect(a.ouverte.libelle).toBe('Apprendre');
+      expect(a.ouverte.relation).not.toBe(b.ouverte.relation);
+      expect(a.ouverte.portee).toBe('globale');
+    }
+    // « Apprendre » à dreams.2004 et à philovie.1636 : même mot, deux portées — jamais une seule connaissance.
+    const c = p('dreams.2004', 'Apprendre');
+    if (a.type === 'ouverte' && c.type === 'ouverte') expect([a.ouverte.portee, a.ouverte.relation]).not.toEqual([c.ouverte.portee, c.ouverte.relation]);
+  });
+  it('learning2.1455 : un fait déclaré ; « Une discussion », « Une rencontre » n’écrivent aucun intérêt pour des personnes', () => {
+    for (const l of ['Une discussion', 'Une rencontre', 'Un livre']) {
+      const r = p('learning2.1455', l);
+      expect(r.type, l).toBe('fait');
+      if (r.type === 'fait') expect(r.fait.factType).toBe('discovery.fait.learning.declencheur_d_apprentissage');
+    }
+  });
+  it('plus aucune ligne n’est « en revue » ; les autres options fermées en connaissance ouverte restent sans émission', () => {
+    expect(p('bond.1680', 'De la responsabilité')).toMatchObject({ type: 'rien', motif: 'connaissance_ouverte' });
+  });
+});
+
+describe('D11 (M2) : acteur, bénéficiaire, contexte — établis ou explicitement inconnus', async () => {
+  const { produireDepuisOption, ROLES_DE_SERVICE } = await import('../produire');
+  const { question: q, BANQUE: B } = await import('../banque');
+  const roles = (id: string, l: string) => {
+    const r = produireDepuisOption(q(id)!, q(id)!.options.find((o) => o.libelle === l)!);
+    return r.type === 'evidence' && r.evidence.behaviorContext ? JSON.parse(r.evidence.behaviorContext) : null;
+  };
+  it('chaque question à préférence de service a sa ligne, et chaque préférence de service porte ses rôles', () => {
+    // Les 249 PRÉFÉRENCES de service ; les 21 options rangées GUARDRAIL ou BEHAVIOR sous le même
+    // attribut ne sont pas des préférences « qui fait quoi pour qui » (M2) et suivent leur famille.
+    for (const x of B) for (const o of x.options) if (o.attribut === 'service_preference' && o.famille === 'PREFERENCE') {
+      expect(ROLES_DE_SERVICE[x.id], x.id).toBeTruthy();
+      const r = produireDepuisOption(x, o);
+      if (r.type === 'evidence') expect(r.evidence.behaviorContext, `${x.id} ${o.libelle}`).toBeTruthy();
+    }
+  });
+  it('« être prévenu(e) » : la personne est la bénéficiaire, qui prévient reste non établi', () => {
+    expect(roles('daily2.1120', 'Quelques jours avant')).toEqual({ acteur: 'non_etabli', beneficiaire: 'la_personne', contexte: 'Pour les choses importantes' });
+  });
+  it('« qu’un proche… » : l’acteur est un proche ; « autour de ce projet » : le projet nommé à dreams.1997', () => {
+    expect(roles('daily2.1143', 'M’accompagne')).toMatchObject({ acteur: 'proche', beneficiaire: 'la_personne' });
+    expect(roles('dreams.1999', 'M’encourage simplement')).toEqual({ acteur: 'non_etabli', beneficiaire: 'la_personne', contexte: 'projet_de:dreams.1997' });
+  });
+  it('quand elle organise, le bénéficiaire n’est pas présumé', () => {
+    const r = ROLES_DE_SERVICE['celebav.2175']; expect(r.beneficiaire).toBe('non_etabli');
   });
 });

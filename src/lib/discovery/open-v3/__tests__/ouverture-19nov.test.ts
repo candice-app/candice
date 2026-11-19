@@ -239,7 +239,13 @@ describe('niveau C : la règle vaut pour la question, pas seulement pour une phr
     const { verdictDe } = await import('../selection');
     const q = question('CRE-17')!;
     expect(q.niveau).toBe('C');
-    const creation = etat({ tags: new Map([['INTEREST.creativity', 'positive']]), branchesOuvertes: new Set([q.branche]) });
+    // D4 : la céramique et l'envie de pratiquer sont déclarées ; reste la règle du niveau C.
+    const ceramique = new Map([
+      ['craft.0615', new Set(question('craft.0615')!.options.filter((o) => o.libelle === 'Céramique ou poterie').map(cleOption))],
+      ['craft.0614', new Set(question('craft.0614')!.options.filter((o) => o.libelle === 'J’aimerais apprendre ou reprendre une pratique').map(cleOption))],
+    ]);
+    const creation = etat({ tags: new Map([['INTEREST.creativity', 'positive']]), branchesOuvertes: new Set([q.branche]), optionsChoisies: ceramique });
+    expect(verdictDe(q, { ...creation, optionsChoisies: new Map(), projets: new Map([[q.branche, new Set(['achat' as const])]]) })).toBe('fermer'); // sans céramique : D4
     expect(verdictDe(q, creation)).toBe('indecidable');                                   // projets non lus : on ne sait pas
     expect(verdictDe(q, { ...creation, projets: new Map() })).toBe('fermer');             // lus, aucun
     expect(verdictDe(q, { ...creation, projets: new Map([[q.branche, new Set(['achat' as const])]]) })).toBe('ouvrir');

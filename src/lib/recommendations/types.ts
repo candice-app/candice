@@ -72,7 +72,8 @@ export interface RecoInput {
   /** Garde-fous du Discovery, structurés. N'entrent dans AUCUN prompt de génération. */
   gardeFousDuProche?: readonly import('./garde-fous-discovery').GardeFouStructure[];
   /** Le juge du critère. Absent : aucun garde-fou du Discovery n'écarte d'idée (voir garde-fous-discovery.ts). */
-  jugeGardeFous?: import('./garde-fous-discovery').JugeDeGardeFous;
+  /** Qualifie les idées sur la taxonomie publique (D1). Par défaut, le modèle ; les essais en injectent un. */
+  qualifierIdees?: import('./garde-fous-discovery').QualificateurIdees;
 
   // Context
   importantDates: { label: string; date: string }[];

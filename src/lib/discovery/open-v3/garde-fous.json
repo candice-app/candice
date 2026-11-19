@@ -1,6 +1,6 @@
 {
- "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_6.xlsx",
- "sha256_classeur": "27d46cbca9b7497ed769e2842ee309f2807704bd9d5d43aa798afab36febc145",
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_7.xlsx",
+ "sha256_classeur": "79e76afd6e50b2289f3a988809d823ce2d86268bf12e7a34ac3f25a0047f6eba",
  "lignes": 1031,
  "traduites": 1020,
  "indecidables": 11,
@@ -58,7 +58,7 @@
    "question": "CHS-01",
    "option": "r6",
    "enonce": "Recevoir des chaussures en cadeau te ferait-il plaisir ?",
-   "libelle": "Je préfère qu’on ne m’offre pas de chaussures  → GUARDRAIL cadeau de cette catégorie (pas désintérêt pour la catégorie)",
+   "libelle": "Je préfère qu’on ne m’offre pas de chaussures",
    "domaine": "shoe",
    "attribut": "gift_openness",
    "code": "cadeau_chaussures_refuse",
@@ -68,9 +68,9 @@
    "canaux": [
     "cadeau"
    ],
-   "refus": "écarté par la réponse « Je préfère qu’on ne m’offre pas de chaussures  → GUARDRAIL cadeau de cette catégorie (pas désintérêt pour la catégorie) »",
+   "refus": "écarté par la réponse « Je préfère qu’on ne m’offre pas de chaussures »",
    "contexte": "question « Recevoir des chaussures en cadeau te ferait-il plaisir ? » (domaine shoe)",
-   "critere": "À la question « Recevoir des chaussures en cadeau te ferait-il plaisir ? », la personne a répondu « Je préfère qu’on ne m’offre pas de chaussures  → GUARDRAIL cadeau de cette catégorie (pas désintérêt pour la catégorie) ». La proposition est-elle ce qu’elle a ainsi écarté ?",
+   "critere": "À la question « Recevoir des chaussures en cadeau te ferait-il plaisir ? », la personne a répondu « Je préfère qu’on ne m’offre pas de chaussures ». La proposition est-elle ce qu’elle a ainsi écarté ?",
    "statut": "traduit"
   },
   {

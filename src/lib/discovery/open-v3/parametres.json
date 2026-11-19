@@ -1,5 +1,5 @@
 {
- "version": "2026-11-19.1",
+ "version": "2026-11-19.D10",
  "note": "Table FIGÉE des paramètres d’énoncé. Un paramètre n’est rempli que depuis sa source autorisée ; sans valeur établie, la question n’est pas proposée. Rien n’est rempli par supposition.",
  "parametres": [
   {
@@ -13,7 +13,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -27,7 +27,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -41,7 +41,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -55,7 +55,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -69,7 +69,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -83,7 +83,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -97,7 +97,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -111,7 +111,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -125,7 +125,7 @@
    "contexte": "la préparation en cours de genre « occasion », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {
@@ -139,7 +139,7 @@
    "contexte": "la préparation en cours de genre « experience », dans le domaine de la question, déclarée et nommée par la personne",
    "validite": "tant que la préparation est en cours (ni close, ni date de fin passée)",
    "plusieurs_valeurs": "la préparation la plus récente du domaine ; les autres ne reçoivent pas la question",
-   "repetition": "une fois : la progression ne sait pas encore reposer la même question pour une autre préparation (limite connue)",
+   "repetition": "une fois PAR PRÉPARATION (D10, 19 nov.) : reposée pour une nouvelle préparation du même genre ; l'historique de la précédente reste rattaché à elle",
    "sans_valeur": "question non proposée"
   },
   {

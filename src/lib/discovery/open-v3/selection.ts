@@ -32,6 +32,7 @@ import { genreQuiRemplit, valeurDuParametre } from './parametres';
 import { PROJET_PAR_CONTEXTE, type TypeDeProjet } from './conditions';
 import { DEPENDANCES, TETES_DE_SOUS_PARTIE } from './dependances';
 import { analyseDe, aUneLecture } from './lectures';
+import { appartenance } from './equivalences';
 import { OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import { PRESUMENT_L_ALCOOL } from './correspondances';
 import { coexistence, estPrioritaire, poolDe, type VerdictCoexistence } from './coexistence';
@@ -113,7 +114,7 @@ function sterile(q: QuestionV3): boolean {
   if (q.forme === 'open') return false; // le verbatim est conservé, donc on apprend
   return !q.options.some((o) => {
     const p = produireDepuisOption(q, o);
-    return p.type === 'evidence' || p.type === 'fait' || p.motif === 'connaissance_ouverte';
+    return p.type === 'evidence' || p.type === 'fait' || p.type === 'ouverte' || p.motif === 'connaissance_ouverte';
   });
 }
 
@@ -159,8 +160,16 @@ export function requiertProjet(q: QuestionV3): TypeDeProjet | 'tout' | null {
   // Un énoncé à paramètre appartient à la préparation qui remplit son paramètre.
   const genre = genreQuiRemplit(q);
   if (genre) return genre;
-  const clauses = analyseDe(q).clauses;
-  const contexte = clauses.find((c) => c.type === 'contexte' && PROJET_PAR_CONTEXTE[c.libelle]);
+  const analyse = analyseDe(q);
+  const clauses = analyse.clauses;
+  // UNE PRÉPARATION N'EST REQUISE QUE SI LA QUESTION NE PEUT PAS S'OUVRIR SANS ELLE : un groupe dont
+  // CHAQUE alternative nomme la préparation. « Réponse à travel2.0915 : … OU Séjour concret » (D3) se
+  // pose aussi hors séjour ; sa réponse, phrasée en général, reste une connaissance générale.
+  const exigee = analyse.groupes.flatMap((g) => {
+    const parAlt = g.map((alt) => alt.find((c) => c.type === 'contexte' && PROJET_PAR_CONTEXTE[c.libelle]));
+    return parAlt.every(Boolean) ? [parAlt[0]!] : [];
+  });
+  const contexte = exigee[0];
   if (contexte && contexte.type === 'contexte') return PROJET_PAR_CONTEXTE[contexte.libelle];
   if (q.niveau === 'C' && !clauses.some((c) => c.type === 'tag' && c.chemin.startsWith('CONTEXT.'))) return 'tout';
   return null;
@@ -177,6 +186,7 @@ export function estQuestionDOrientation(q: QuestionV3): boolean {
 
 export type MotifDExclusion =
   | 'deja_posee' | 'sterile' | 'parametre_non_resolu' | 'archivee' | 'domaine_ecarte' | 'orientation_seulement' | 'fermee' | 'indecidable'
+  | 'intention_renseignee' | 'intention_canonique_d_abord'
   | `coexistence_${Exclude<VerdictCoexistence, { poser: true }>['motif']}`;
 
 /**
@@ -190,12 +200,29 @@ export type MotifDExclusion =
  * `ignorerDejaPosee` : au moment où la personne répond, la question lui a par définition déjà
  * été posée. Tout le reste est rejugé.
  */
+/**
+ * D10 — « Progression par (question, préparation) pour les questions propres à une préparation.
+ * Une nouvelle préparation ne doit ni effacer l'historique, ni reposer une connaissance générale
+ * encore valable. » Une question qui EXIGE une préparation est « déjà posée » si elle l'a été pour
+ * la préparation en cours (la plus récente du domaine et du genre) ; les questions générales, elles,
+ * restent posées une fois. Sans lecture des préparations, on garde la règle stricte (une fois).
+ */
+function dejaPoseePourCeQuiCompte(q: QuestionV3, etat: EtatDiscovery): boolean {
+  const besoin = requiertProjet(q);
+  if (!besoin || !etat.projetsCourants || !etat.poseesParProjet) return etat.dejaPosees.has(q.id);
+  const pool = poolDe(q.branche);
+  const courant = [...etat.projetsCourants].filter(([k]) => k.startsWith(`${pool}|`) && (besoin === 'tout' || k === `${pool}|${besoin}`))
+    .map(([, v]) => v).sort((a, b) => (a.debut < b.debut ? 1 : -1))[0];
+  if (!courant) return etat.dejaPosees.has(q.id);
+  return etat.poseesParProjet.get(q.id)?.has(courant.id) ?? false;
+}
+
 export function motifDExclusion(
   q: QuestionV3, etat: EtatDiscovery,
   opts: { readonly partage?: ReadonlyMap<string, number>; readonly ignorerDejaPosee?: boolean } = {},
 ): MotifDExclusion | null {
   const partage = opts.partage ?? PARTAGE_BANQUE;
-  if (!opts.ignorerDejaPosee && etat.dejaPosees.has(q.id)) return 'deja_posee';
+  if (!opts.ignorerDejaPosee && dejaPoseePourCeQuiCompte(q, etat)) return 'deja_posee';
   if (sterile(q)) return 'sterile';
   // UN ÉNONCÉ À PARAMÈTRE (« À quelle fréquence pratiques-tu {activité} ? ») ne se sert pas tant
   // que rien ne remplit le paramètre : on n'affiche jamais une accolade à la personne.
@@ -214,6 +241,17 @@ export function motifDExclusion(
   const verdict = verdictDe(q, etat, partage);
   if (verdict === 'fermer') return 'fermee';
   if (verdict === 'indecidable') return 'indecidable';
+  // ── UNE SEULE QUESTION PAR INTENTION (D7, equivalences.ts). Renseignée si un membre IDENTIQUE
+  //    a une réponse ; une question non canonique attend que la canonique ne soit ni répondue
+  //    ni posable. Une ancienne réponse à échelle différente ne dispense pas de la canonique.
+  const a = appartenance(q.id);
+  if (a) {
+    if (a.identiques.some((id) => id !== q.id && etat.dejaPosees.has(id))) return 'intention_renseignee';
+    if (!a.canonique) {
+      const canon = BANQUE.find((x) => x.id === a.groupe.canonique)!;
+      if (etat.dejaPosees.has(canon.id) || motifDExclusion(canon, etat, { partage }) === null) return 'intention_canonique_d_abord';
+    }
+  }
   // ── COEXISTENCE DES GÉNÉRATIONS (onglet 13). Une question historique que le référentiel
   //    a remplacée n'est plus proposée d'initiative ; celle qu'il garde « distincte et
   //    conditionnée » attend que la nouvelle ait été posée, qu'une information manque

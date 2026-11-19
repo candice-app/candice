@@ -229,6 +229,10 @@ export interface PreferenceEvidence extends EvidenceBase {
   readonly target_construct: PreferencePath;
   readonly preferenceValue: string;
   readonly strength: EvidenceStrength;
+  /** M2 (décision D11) : pour une préférence de service, `{"acteur","beneficiaire","contexte"}` en
+   *  JSON — ce que l'énoncé établit, « non_etabli » sinon. Écrit dans `behavior_context` (aucune
+   *  contrainte de forme ne l'interdit à PREFERENCE). Absent pour les autres préférences. */
+  readonly behaviorContext?: string;
 }
 
 /** Union discriminée de toutes les evidences (par `target_family` / `target_construct`). */

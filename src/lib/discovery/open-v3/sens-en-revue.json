@@ -1,10 +1,5 @@
 {
- "version": "2026-11-19.1",
- "note": "Réponses dont le SENS n'est pas établi. Décision d'Estelle du 18 nov. (n° 8) : l'accord de reclassement DRIVER → PREFERENCE ne couvrait ni les motivations de vie ni les aides à l'apprentissage ; revue distincte demandée (docs/discovery/dossiers-19nov.md). Tant que la destination de chaque ligne n'est pas validée, ces réponses n'écrivent RIEN : ne rien retenir vaut mieux que retenir sous une forme que personne n'a approuvée.",
- "lignes": [
-  { "question": "dreams.2004", "attributs": ["value_sought"], "nature": "motivation de vie (11 réponses)" },
-  { "question": "philovie.1636", "attributs": ["value_sought"], "nature": "motivation de vie (12 réponses)" },
-  { "question": "values.1910", "attributs": ["value_sought"], "nature": "motivation de vie (8 réponses)" },
-  { "question": "learning2.1455", "attributs": ["facilitator"], "nature": "aide à l'apprentissage (11 réponses)" }
- ]
+ "version": "2026-11-19.D8",
+ "note": "Réponses dont le SENS n'est pas établi. Décision d'Estelle du 18 nov. (n° 8) : l'accord de reclassement DRIVER → PREFERENCE ne couvrait ni les motivations de vie ni les aides à l'apprentissage ; revue distincte demandée (docs/discovery/dossiers-19nov.md). Tant que la destination de chaque ligne n'est pas validée, ces réponses n'écrivent RIEN : ne rien retenir vaut mieux que retenir sous une forme que personne n'a approuvée. — 19 nov., 17h43 : les quatre lignes ont reçu leur destination (décision D8 ; révision 7, bloc M ; connaissances-declarees.json). Plus aucune ligne en revue.",
+ "lignes": []
 }

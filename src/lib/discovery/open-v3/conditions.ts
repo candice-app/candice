@@ -111,7 +111,23 @@ export interface EtatDiscovery {
   /** La dernière question à laquelle la personne a répondu (ou qu'elle a passée). Sert à ne
    *  pas enchaîner une question historique juste après celle qui la remplace. */
   readonly dernierePosee?: string;
+  /**
+   * SITUATION DE VIE DÉCLARÉE (décision D2 du 19 nov.) : ce que la personne a dit elle-même de son
+   * quotidien — vie de couple, enfants au quotidien, travail depuis chez soi, activité professionnelle. `true` : elle l'a
+   * déclaré ; `false` : elle a dit qu'aucune de ces situations ne la concerne. ABSENTE de la table :
+   * on ne sait pas, et on ne le déduit de rien (ni d'un intérêt, ni d'un âge, ni d'une réponse sur
+   * quelqu'un d'autre). Table absente : non lue, la condition est indécidable.
+   */
+  readonly situations?: ReadonlyMap<string, boolean>;
+  /** D10 : la préparation en cours la plus récente, par « <pool>|<genre> ». Absente : non lue. */
+  readonly projetsCourants?: ReadonlyMap<string, { readonly id: string; readonly debut: string }>;
+  /** D10 : question → préparations pour lesquelles elle a déjà été répondue ou passée. */
+  readonly poseesParProjet?: ReadonlyMap<string, ReadonlySet<string>>;
 }
+
+/** Les situations de vie que des conditions du référentiel présument, et rien d'autre. */
+export const SITUATIONS_DE_VIE = ['couple', 'enfants_au_quotidien', 'travail_a_domicile', 'activite_professionnelle'] as const;
+export type SituationDeVie = typeof SITUATIONS_DE_VIE[number];
 
 export type Clause =
   | { readonly type: 'tag'; readonly chemin: string; readonly operateur: '=' | '!='; readonly valeur: string }
@@ -131,6 +147,9 @@ export type Clause =
    *  dans le référentiel. `cles` : l'identité des options, résolue contre la banque au chargement ;
    *  absente, la clause est indécidable. */
   | { readonly type: 'reponse'; readonly selecteur: string; readonly libelles: readonly string[]; readonly cles?: readonly string[] }
+  /** « Situation déclarée : couple » (D2) : la personne a déclaré elle-même cette situation.
+   *  N'apparaît que dans une LECTURE de condition. */
+  | { readonly type: 'situation'; readonly situation: SituationDeVie }
   | { readonly type: 'prose'; readonly texte: string };
 
 /** LES MARQUES DE SENSIBILITÉ DU RÉFÉRENTIEL. Il en écrit TROIS niveaux — « sensitivity:
@@ -243,6 +262,10 @@ const MOTIFS: ReadonlyArray<{ re: RegExp; lire: (m: RegExpMatchArray) => Clause 
   },
   // ── Formulations en prose, récurrentes et mécaniques ────────────────────────
   { re: /^information manquante$/i, lire: () => ({ type: 'information_manquante' }) },
+  {
+    re: /^situation d[ée]clar[ée]e\s*:\s*(couple|enfants_au_quotidien|travail_a_domicile|activite_professionnelle)$/i,
+    lire: (m) => ({ type: 'situation', situation: m[1].toLowerCase() as SituationDeVie }),
+  },
   // « connaissance correspondante manquante » : la même porte, dite autrement par le
   // référentiel dans ses conditions à alternatives.
   { re: /^connaissance correspondante manquante$/i, lire: () => ({ type: 'information_manquante' }) },
@@ -600,6 +623,11 @@ function evaluerClause(
       // fermait toute la cuisine à quelqu'un qui ne boit pas. Elle protège les questions QUI
       // PRÉSUMENT une consommation d'alcool — et celles-là seulement (décision du 19 nov.).
       return etat.sansAlcool && contexte.presumeAlcool ? 'fermer' : 'ouvrir';
+    case 'situation':
+      // D2 : seule une déclaration de la personne ouvre. Sans déclaration, la question n'est pas
+      // posée (on ne présume pas un couple ou des enfants) ; l'entrée « Ton quotidien » le lui propose.
+      if (!etat.situations) return 'indecidable';
+      return etat.situations.get(c.situation) === true ? 'ouvrir' : 'fermer';
     case 'contexte': {
       // « Achat concret », « séjour concret » : un projet de ce type, en cours, dans le domaine
       // de la question. L'intérêt pour le voyage ne crée pas un séjour.

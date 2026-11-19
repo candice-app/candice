@@ -176,7 +176,25 @@ describe('révision éditoriale : plus aucun énoncé au gabarit mal formé n’
     expect(pol('comics.0414', 'J’en lis très peu')).toBe('absence_de_critere');
     expect(pol('THE-01', 'Presque jamais')).toBe('absence_de_critere');
     expect(pol('LEA-01', 'Assez peu de place dans ma vie')).toBe('absence_de_critere');
-    // Un rapport déclaré (« ce n'est pas mon truc ») n'est pas une mesure de place : non corrigé, à arbitrer.
-    expect(pol('sportp.0503', 'Ce n’est pas vraiment mon truc')).toBe('rejet');
+  });
+  it('D6 (révision 7) : la réponse est lue avec son énoncé — faible place, appréciation négative, souhait de réduire', () => {
+    const pol = (id: string, libelle: string) => question(id)!.options.find((o) => o.libelle === libelle)!.polarite;
+    // « Quelle place le sport occupe-t-il… ? » demande une place : la note de la révision 5 était fausse.
+    expect(pol('sportp.0503', 'Ce n’est pas vraiment mon truc')).toBe('absence_de_critere');
+    expect(pol('JDS-01', 'Ce n’est pas vraiment mon truc')).toBe('absence_de_critere');
+    expect(pol('live.0474', 'Ce n’est pas vraiment mon univers')).toBe('absence_de_critere');
+    expect(pol('travel2.0915', 'Est principalement un endroit où dormir')).toBe('absence_de_critere');
+    // « Les jeux de société, pour toi, c'est plutôt… » demande un rapport : appréciation négative, polarité négative du journal.
+    expect(pol('games.0946', 'Ce n’est pas vraiment mon truc')).toBe('rejet');
+    expect(pol('photo.0668', 'Ce n’est pas vraiment mon univers')).toBe('rejet');
+    expect(pol('tech2.1313', 'J’aimerais y passer moins de temps')).toBe('souhait');
+    expect(pol('tech2.1313', 'Je m’y intéresse très peu')).toBe('absence_de_critere');
+    // Aucune de ces réponses n'est un garde-fou de cadeau, ni un refus de poursuivre.
+    for (const [id, l] of [['games.0946', 'Ce n’est pas vraiment mon truc'], ['photo.0668', 'Ce n’est pas vraiment mon univers'], ['sportp.0503', 'Ce n’est pas vraiment mon truc']] as const) {
+      expect(question(id)!.options.find((o) => o.libelle === l)!.famille).not.toBe('GUARDRAIL');
+    }
+  });
+  it('aucun libellé affiché ne porte une note de rédaction (« → GUARDRAIL », « → réponse neutre »)', () => {
+    expect(BANQUE.flatMap((q) => q.options.filter((o) => /→/.test(o.libelle)).map((o) => `${q.id} ${o.libelle}`))).toEqual([]);
   });
 });

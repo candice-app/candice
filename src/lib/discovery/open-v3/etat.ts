@@ -8,7 +8,7 @@
 // sens de marche : une lecture qui échoue doit faire poser MOINS de questions, jamais plus.
 // On ne remplit donc aucun champ « par défaut optimiste ».
 import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
-import { clef, TYPES_DE_PROJET, type EtatDiscovery, type TypeDeProjet } from './conditions';
+import { clef, TYPES_DE_PROJET, SITUATIONS_DE_VIE, type EtatDiscovery, type TypeDeProjet, type SituationDeVie } from './conditions';
 export type { TypeDeProjet };
 import { SELECTEURS } from './dependances';
 import { SELECTEURS_DE_LECTURE } from './lectures';
@@ -48,6 +48,18 @@ export const FAIT_PROJET = 'discovery.projet';
 const BRANCHES_BANQUE = new Set(BANQUE.map((q) => q.branche));
 /** La personne a demandé qu'on ne lui pose plus de questions sur ce sujet. `value` = la branche. */
 export const FAIT_SUJET_REFUSE = 'discovery.sujet_refuse';
+/**
+ * UNE SITUATION DE VIE DÉCLARÉE par la personne (décision D2) : `value` = « <situation>=oui » ou
+ * « <situation>=non » (situations : `SITUATIONS_DE_VIE`). Écrite par l'entrée facultative « Ton
+ * quotidien », sous son identité ; la remplacer supersède l'ancienne. Une situation non cochée
+ * n'est PAS écrite « non » : seule la réponse « aucune de ces situations » le dit.
+ */
+export const FAIT_SITUATION = 'discovery.situation_de_vie';
+export function lireSituation(valeur: string): { situation: SituationDeVie; vraie: boolean } | null {
+  const m = /^([a-z_]+)=(oui|non)$/.exec(valeur.trim());
+  if (!m || !(SITUATIONS_DE_VIE as readonly string[]).includes(m[1])) return null;
+  return { situation: m[1] as SituationDeVie, vraie: m[2] === 'oui' };
+}
 
 /* ────────────────────────────────────────────────────────────────────────────
  * « TRÈS PEU DE PLACE » — les contrats qui disent une faible place ACTUELLE.
@@ -230,6 +242,8 @@ export async function lireEtat(
   // ── 2. LES QUESTIONS DÉJÀ POSÉES. Posées, pas seulement répondues : une question
   //       écartée par la personne ne revient pas lui être resservie.
   const dejaPosees = new Set<string>();
+  /** D10 : question → préparations POUR lesquelles elle a déjà été répondue ou passée. */
+  const poseesParProjet = new Map<string, Set<string>>();
   const optionsChoisies = new Map<string, Set<string>>();
   // La dernière réponse fermée à chaque question (clés d'options) : sert à savoir si une question
   // d'orientation a reçu une réponse positive.
@@ -255,6 +269,9 @@ export async function lireEtat(
         optionsChoisies.set(l.question_key, new Set((Array.isArray(v) ? v : [v]).filter((x): x is string => typeof x === 'string')));
       }
       if (l.is_filled || l.last_asked_at) dejaPosees.add(l.question_key);
+      // D10 : un passage donné POUR une préparation ne vaut que pour elle.
+      const pj = !l.is_filled && l.answer_data && typeof l.answer_data === 'object' ? (l.answer_data as { projet?: unknown }).projet : undefined;
+      if (typeof pj === 'string') poseesParProjet.set(l.question_key, new Set([...(poseesParProjet.get(l.question_key) ?? []), pj]));
       if (l.is_filled) {
         repondues.add(l.question_key);
         const b = BRANCHE_PAR_QUESTION.get(l.question_key);
@@ -277,9 +294,9 @@ export async function lireEtat(
     const lire = async (type: string) => {
       const { data, error } = await (client as never as {
         from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): Promise<{ data: unknown[] | null; error: { message: string } | null }> } } };
-      }).from('knowledge_sources').select('question_code, option_ref, ts, about_id').eq('user_id', opts.userId).eq('source_type', type);
+      }).from('knowledge_sources').select('question_code, option_ref, ts, about_id, branch_id').eq('user_id', opts.userId).eq('source_type', type);
       if (error) throw new Error(error.message);
-      return (data ?? []) as { question_code: string | null; option_ref: string | null; ts: string; about_id: string }[];
+      return (data ?? []) as { question_code: string | null; option_ref: string | null; ts: string; about_id: string; branch_id?: string | null }[];
     };
     const [fermees, ouvertes] = await Promise.all([lire('discovery_closed'), lire('discovery_open')]);
     const dernier = new Map<string, { ts: string; option_ref: string | null }>();
@@ -287,6 +304,8 @@ export async function lireEtat(
       if (x.about_id !== opts.userId || !x.question_code) continue;
       const id = x.question_code.replace(/^discovery\./, '');
       if (!BRANCHE_PAR_QUESTION.has(id)) continue;
+      // D10 : une réponse rattachée à une préparation (`branch_id = projet:<id>`) est posée POUR elle.
+      if (x.branch_id?.startsWith('projet:')) poseesParProjet.set(id, new Set([...(poseesParProjet.get(id) ?? []), x.branch_id.slice('projet:'.length)]));
       const d = dernier.get(id);
       if (!d || new Date(x.ts).getTime() > new Date(d.ts).getTime()) dernier.set(id, { ts: x.ts, option_ref: x.option_ref });
     }
@@ -316,8 +335,10 @@ export async function lireEtat(
   // Les projets en cours. `undefined` tant que la lecture n'a pas réussi : « on ne sait pas »
   // n'est pas « il n'y en a pas », et les conditions qui en dépendent restent non résolues.
   let projetsLus: Map<string, Set<TypeDeProjet>> | undefined;
+  let situationsLues: Map<string, boolean> | undefined;
+  const situations = new Map<string, boolean>();
   const projets = new Map<string, Set<TypeDeProjet>>();
-  const objetsDeProjet = new Map<string, { objet: string; debut: string }>();
+  const objetsDeProjet = new Map<string, { objet: string; debut: string; id: string }>();
   const maintenant = new Date().toISOString();
   try {
     const { data, error } = await (client as never as {
@@ -335,6 +356,7 @@ export async function lireEtat(
       // UN REFUS EXPLICITE est le seul acte qui arrête les questions d'un sujet. Il vaut pour
       // le sujet entier (ses deux générations), et il se retire comme il s'est posé.
       if (f.fact_type === FAIT_SUJET_REFUSE) for (const b of memeSujet(f.value)) nePasCreuser.add(b);
+      if (f.fact_type === FAIT_SITUATION) { const l = lireSituation(f.value); if (l) situations.set(l.situation, l.vraie); }
       if (f.fact_type === FAIT_PROJET) {
         const p = lireProjet(f.value);
         // Un séjour terminé n'ouvre plus ses questions : la date de fin passée suffit, sans
@@ -344,7 +366,7 @@ export async function lireEtat(
         projets.set(pool, new Set([...(projets.get(pool) ?? []), p.type]));
         // Plusieurs préparations du même genre dans le même domaine : la plus récente.
         const cle = `${pool}|${p.type}`; const vu = objetsDeProjet.get(cle);
-        if (!vu || p.debut > vu.debut) objetsDeProjet.set(cle, { objet: p.objet, debut: p.debut });
+        if (!vu || p.debut > vu.debut) objetsDeProjet.set(cle, { objet: p.objet, debut: p.debut, id: p.id });
       }
     }
     // Choisir d'explorer un sujet, c'est OUVRIR sa branche : aucune ouverture n'est plus
@@ -353,6 +375,7 @@ export async function lireEtat(
     // Explorer un sujet l'ouvre en entier : la branche de la refonte de même nom s'ouvre avec.
     for (const b of [...sujetsChoisis]) if (BRANCHES_BANQUE.has(b)) for (const v of memeSujet(b)) { branchesOuvertes.add(v); sujetsChoisis.add(v); }
     projetsLus = projets;
+    situationsLues = situations;
   } catch (e) {
     manques.push(`sujets choisis illisibles (${e instanceof Error ? e.message : String(e)}) — les questions sensibles restent fermées`);
   }
@@ -418,9 +441,10 @@ export async function lireEtat(
       // restent indécidables, donc fermées. Les remplir sans savoir ce qu'ils désignent
       // ouvrirait des questions sur une supposition.
       contextesConnus: new Set(), contextesActifs: new Set(),
-      sujetsChoisis, optionsChoisies, ...(projetsLus ? { projets: projetsLus } : {}), ...(dernierePosee ? { dernierePosee } : {}),
+      sujetsChoisis, optionsChoisies, ...(projetsLus ? { projets: projetsLus } : {}), ...(situationsLues ? { situations: situationsLues } : {}), ...(dernierePosee ? { dernierePosee } : {}),
       aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES, questionsSignalees, placeFaible, orientationSeulement,
       objetsDeProjet: new Map([...objetsDeProjet].map(([k, v]) => [k, v.objet] as const)),
+      ...(projetsLus ? { projetsCourants: new Map([...objetsDeProjet].map(([k, v]) => [k, { id: v.id, debut: v.debut }] as const)), poseesParProjet } : {}),
     },
     manques,
   };

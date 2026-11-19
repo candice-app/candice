@@ -177,7 +177,7 @@ export function evidenceToRow(e: Evidence, about: AboutRef): KnowledgeEvidenceRo
         relation: e.relation,
       };
     case 'PREFERENCE':
-      return { ...base, strength: e.strength, preference_path: e.target_construct, preference_value: e.preferenceValue };
+      return { ...base, strength: e.strength, preference_path: e.target_construct, preference_value: e.preferenceValue, behavior_context: e.behaviorContext ?? null };
     case 'BEHAVIOR':
       return { ...base, strength: e.strength, behavior_context: e.behaviorContext, pattern: e.pattern };
     case 'GUARDRAIL':

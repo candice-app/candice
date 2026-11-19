@@ -10,12 +10,11 @@ import { compteLocal, verificateur } from './_compte-local.mts';
 import { question } from '../../src/lib/discovery/open-v3/banque.ts';
 import { cleOption, enregistrerReponseFermee } from '../../src/lib/discovery/open-v3/service.ts';
 import { lirePortrait } from '../../src/lib/knowledge/portrait.ts';
-import sensEnRevue from '../../src/lib/discovery/open-v3/sens-en-revue.json' with { type: 'json' };
 
 // DÉCISION N° 8 (19 nov.) : les motivations de vie et les aides à l'apprentissage ont été reclassées
 // sans que l'accord les couvre ; tant que leur sens n'est pas établi, elles n'écrivent RIEN, et le
 // motif est rendu. Le script le vérifie au lieu d'attendre une préférence.
-const EN_REVUE = new Set((sensEnRevue as { lignes: { question: string }[] }).lignes.map((l) => l.question));
+const D8 = new Set(['dreams.2004', 'philovie.1636', 'values.1910', 'learning2.1455']);   // décision D8 (sens-en-revue.json est vide depuis)
 
 // Les 162 lignes reclassées, avec leur ligne dans l'onglet 0_FICHE_CANONIQUE.
 const reclassees: { ligne: number; q: string; libelle: string }[] =
@@ -40,10 +39,13 @@ for (const [qid, libelles] of cibles) {
     const r = await enregistrerReponseFermee(c.client as never, {
       acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: qid, clesOptions: [cleOption(o)],
     });
-    if (EN_REVUE.has(qid)) {
+    // DÉCISION D8 (19 nov., 17h43) : les quatre questions « en revue » ont reçu leur destination —
+    // connaissance ouverte (dreams.2004, philovie.1636, values.1910) ou fait déclaré (learning2.1455).
+    // Elles n'écrivent AUCUNE preuve (ni DRIVER, ni value_sought) : une connaissance, ou un fait.
+    if (D8.has(qid)) {
       nEnRevue++;
-      if (r.preuvesEcrites === 0 && JSON.stringify(r.sansEmission).includes('sens_en_revue')) nEnRevueMuettes++;
-      else console.log(`  ✗ ${qid} « ${o.libelle} » (sens en revue) : ${r.preuvesEcrites} preuve(s)`);
+      if (r.preuvesEcrites === 0 && ((r.connaissancesOuvertes ?? 0) + r.faitsEcrits) === 1) nEnRevueMuettes++;
+      else console.log(`  ✗ ${qid} « ${o.libelle} » (D8) : ${r.preuvesEcrites} preuve(s), ${r.connaissancesOuvertes ?? 0} connaissance(s), ${r.faitsEcrits} fait(s)`);
       continue;
     }
     if (r.preuvesEcrites === 1) nEcrites++;
@@ -55,7 +57,7 @@ console.log(`\noptions reclassées : ${nOptions} dans la banque active, ${nHorsB
 // 148 ce matin ; la révision 6 a rendu actives des questions qui étaient en arbitrage. Aucune ligne
 // reclassée ne doit se perdre : celles de la banque active + celles des questions encore en arbitrage.
 v.verifier(nOptions + nHorsBanque === reclassees.length - (reclassees.length - [...cibles.values()].reduce((n, s) => n + s.size, 0)), 'toutes les options reclassées sont retrouvées (banque active ou arbitrage)', `${nOptions} actives + ${nHorsBanque} en arbitrage`);
-v.verifier(nEnRevue > 0 && nEnRevueMuettes === nEnRevue, 'décision n° 8 : les options dont le sens est en revue n’écrivent rien, motif rendu', `${nEnRevueMuettes}/${nEnRevue}`);
+v.verifier(nEnRevue === 42 && nEnRevueMuettes === nEnRevue, 'décision D8 : les 42 options des quatre questions écrivent une connaissance ouverte ou un fait, jamais une preuve', `${nEnRevueMuettes}/${nEnRevue}`);
 v.verifier(nEcrites === nOptions - nEnRevue, 'chaque autre option a produit exactement une preuve', `${nEcrites}/${nOptions - nEnRevue}`);
 
 // ── RELECTURE EN BASE, par le client du compte (donc à travers la RLS).

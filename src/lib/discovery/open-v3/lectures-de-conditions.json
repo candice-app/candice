@@ -1,8 +1,115 @@
 {
  "version": "2026-11-19.2",
  "note": "Lectures des conditions en prose, relues. Seules les lignes « etablie » sont exécutées. Une lecture n’ouvre jamais plus que le texte. La condition d’origine est recopiée : si le classeur change, la lecture est refusée au chargement.",
- "source": "Conditions de la banque active (classeur Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_6.xlsx) ; options des questions citées ; sens des options de craft.0614 fixés par Estelle le 19 nov.",
+ "source": "Conditions de la banque active (classeur Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_7.xlsx) ; options des questions citées ; sens des options de craft.0614 fixés par Estelle le 19 nov.",
  "lectures": [
+  {
+   "question": "CHS-13",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.shoe=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.shoe.heel_interest.present=true` — produit par CHS-12 ; ET `DO_NOT_PROBE.shoe!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "lue": "Réponse à shoes.0341 : Un petit talon | Un talon moyen | Un talon haut ; ET `DO_NOT_PROBE.shoe!=true` ; ET score de pertinence suffisant",
+   "statut": "etablie",
+   "critere": "décision D4 (signal correspondant au présupposé)",
+   "justification": "L’énoncé présume le port de talons : un talon déclaré à shoes.0341.",
+   "non_repris": [
+    "« INTEREST.shoe=positive » seul : aimer les chaussures ne présume pas les talons (D4)",
+    "« heel_interest produit par CHS-12 » : CHS-12 n’existe pas dans la banque",
+    "« Cela dépend du modèle », « Une plateforme » : ne disent pas un talon",
+    "« information manquante » : question à réponse libre, sans attribut nommé ; l’information manque tant que la question n’a pas été posée, ce que la sélection garantit"
+   ]
+  },
+  {
+   "question": "CRE-15",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "lue": "Réponse à craft.0615 : Céramique ou poterie ; ET `DO_NOT_PROBE.creativity!=true` ; ET score de pertinence suffisant",
+   "statut": "etablie",
+   "critere": "décision D4 (signal correspondant au présupposé)",
+   "justification": "L’énoncé présume un goût pour la céramique : « Céramique ou poterie » à craft.0615.",
+   "non_repris": [
+    "« INTEREST.creativity=positive » seul : un intérêt pour la création ne présume pas la céramique (D4)",
+    "« information manquante » : question à réponse libre, sans attribut nommé ; l’information manque tant que la question n’a pas été posée, ce que la sélection garantit"
+   ]
+  },
+  {
+   "question": "CRE-16",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.creativity.ceramics_interest.present=true` — produit par CRE-15 ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "lue": "Réponse à craft.0615 : Céramique ou poterie ET Réponse à craft.0614 : Je pratique moi-même une ou plusieurs activités créatives | J’aimerais apprendre ou reprendre une pratique ; ET `DO_NOT_PROBE.creativity!=true` ; ET score de pertinence suffisant",
+   "statut": "etablie",
+   "critere": "décision D4 (signal correspondant au présupposé)",
+   "justification": "L’énoncé présume un goût pour la céramique ET l’envie de pratiquer (« créer », « pratiquer ») : « Céramique ou poterie » à craft.0615 et, à craft.0614, la pratique déclarée ou l’envie d’apprendre.",
+   "non_repris": [
+    "« INTEREST.creativity=positive » seul (D4)",
+    "« ceramics_interest produit par CRE-15 » : une réponse libre, qui ne dit pas en elle-même l’envie de pratiquer",
+    "« information manquante » : question à réponse libre, sans attribut nommé ; l’information manque tant que la question n’a pas été posée, ce que la sélection garantit"
+   ]
+  },
+  {
+   "question": "CRE-17",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.creativity.ceramics_goal.present=true` — produit par CRE-16 ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "lue": "Réponse à craft.0615 : Céramique ou poterie ET Réponse à craft.0614 : Je pratique moi-même une ou plusieurs activités créatives | J’aimerais apprendre ou reprendre une pratique ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant",
+   "statut": "etablie",
+   "critere": "décision D4 (signal correspondant au présupposé)",
+   "justification": "Même présupposé que CRE-16 (« pratiquer la céramique ») ; le niveau C, lui, reste exigé par la règle de la question (un projet du domaine).",
+   "non_repris": [
+    "« INTEREST.creativity=positive » seul (D4)",
+    "« ceramics_goal produit par CRE-16 » : une réponse libre, qui ne dit pas en elle-même l’envie de pratiquer"
+   ]
+  },
+  {
+   "question": "CRE-18",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "lue": "Réponse à craft.0615 : Céramique ou poterie ; ET `DO_NOT_PROBE.creativity!=true` ; ET score de pertinence suffisant",
+   "statut": "etablie",
+   "critere": "décision D4 (signal correspondant au présupposé)",
+   "justification": "L’énoncé présume un goût pour la céramique : « Céramique ou poterie » à craft.0615.",
+   "non_repris": [
+    "« INTEREST.creativity=positive » seul : un intérêt pour la création ne présume pas la céramique (D4)",
+    "« information manquante » : question à réponse libre, sans attribut nommé ; l’information manque tant que la question n’a pas été posée, ce que la sélection garantit"
+   ]
+  },
+  {
+   "question": "aesthetic.1966",
+   "origine": "Niveau B avancé Esthétique — arbitrages, uniquement si le profil mérite d’être précisé",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1965 : Oui, énormément | Oui, dans l’ensemble | J’aime plusieurs univers différents | Non, chaque domaine est indépendant | Je n’y ai jamais vraiment pensé",
+   "statut": "etablie",
+   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
+   "justification": "« beau ou pratique » arbitre après « est-ce important que tes vêtements, ta maison… » (réponse quelconque à aesthetic.1965).",
+   "non_repris": [
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+   ]
+  },
+  {
+   "question": "aesthetic.1967",
+   "origine": "Niveau B avancé Esthétique",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1953 : La ligne générale | Les proportions | La couleur | La matière | Les détails | L’originalité | L’élégance | L’histoire | L’harmonie de l’ensemble | Le caractère",
+   "statut": "etablie",
+   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
+   "justification": "« parfaitement beau, singulier, une histoire… » affine « quand tu trouves quelque chose beau, qu’est-ce qui te séduit » (réponse quelconque à aesthetic.1953).",
+   "non_repris": [
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+   ]
+  },
+  {
+   "question": "aesthetic.1968",
+   "origine": "Niveau B avancé Esthétique — ponts Signature de valeur et Rapport à l’argent",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1956 : Les objets parfaitement exécutés | Les objets simples et précis | Les légères irrégularités | Les traces du temps | Les objets volontairement bruts | Cela dépend de l’histoire de l’objet",
+   "statut": "etablie",
+   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
+   "justification": "« le prestige augmente-t-il l’attrait » prolonge 1956, la question marquée « pont Signature de valeur » (réponse quelconque à aesthetic.1956).",
+   "non_repris": [
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+   ]
+  },
+  {
+   "question": "aesthetic.1969",
+   "origine": "Niveau B avancé Esthétique",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1961 : Très intemporel | Actuel mais durable | Dans l’air du temps | Très marqué par une époque | Singulier, même s’il risque de dater",
+   "statut": "etablie",
+   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
+   "justification": "« rester fidèle ou renouveler » prolonge « intemporel, actuel, dans l’air du temps » (réponse quelconque à aesthetic.1961).",
+   "non_repris": [
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+   ]
+  },
   {
    "question": "bags.0377",
    "origine": "Sous-branche : catégorie Sac à main / petit sac choisie",
@@ -365,6 +472,105 @@
    "critere": "question citée par son numéro",
    "justification": "« temps pour soi valorisé (1128) » : toute réponse sauf celle qui dit ne pas le rechercher. « Très rarement » dit qu’elle en a peu, pas qu’elle n’y tient pas.",
    "non_repris": []
+  },
+  {
+   "question": "daily2.1130",
+   "origine": "Sous-branche Couple au quotidien : ne remplace pas Relation — fonctionnement CONCRET uniquement — ⚠ recouvre relation2 sous-branche Couple (merge final)",
+   "lue": "Niveau B daily2 ET Situation déclarée : couple",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Couple au quotidien » : une vie de couple déclarée.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1131",
+   "origine": "Sous-branche Couple au quotidien",
+   "lue": "Niveau B daily2 ET Situation déclarée : couple",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Couple au quotidien » : une vie de couple déclarée.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1132",
+   "origine": "Sous-branche Couple au quotidien",
+   "lue": "Niveau B daily2 ET Situation déclarée : couple",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Couple au quotidien » : une vie de couple déclarée.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1134",
+   "origine": "Sous-branche Famille et enfants au quotidien",
+   "lue": "Niveau B daily2 ET Situation déclarée : enfants_au_quotidien",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Famille et enfants au quotidien » : les énoncés présument des enfants ; « Des enfants dans mon quotidien » déclaré.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1135",
+   "origine": "Sous-branche Famille",
+   "lue": "Niveau B daily2 ET Situation déclarée : enfants_au_quotidien",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Famille et enfants au quotidien » : les énoncés présument des enfants ; « Des enfants dans mon quotidien » déclaré.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1136",
+   "origine": "Sous-branche Famille",
+   "lue": "Niveau B daily2 ET Situation déclarée : enfants_au_quotidien",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Famille et enfants au quotidien » : les énoncés présument des enfants ; « Des enfants dans mon quotidien » déclaré.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1137",
+   "origine": "Sous-branche Famille",
+   "lue": "Niveau B daily2 ET Situation déclarée : enfants_au_quotidien",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Famille et enfants au quotidien » : les énoncés présument des enfants ; « Des enfants dans mon quotidien » déclaré.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1138",
+   "origine": "Sous-branche Travail à domicile : à ouvrir si télétravail ou activité à domicile",
+   "lue": "Niveau B daily2 ET Situation déclarée : travail_a_domicile",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« à ouvrir si télétravail ou activité à domicile » : « Travailler depuis chez moi » déclaré.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "daily2.1139",
+   "origine": "Sous-branche Travail à domicile",
+   "lue": "Niveau B daily2 ET Situation déclarée : travail_a_domicile",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« à ouvrir si télétravail ou activité à domicile » : « Travailler depuis chez moi » déclaré.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
   },
   {
    "question": "daily2.1140",
@@ -1451,6 +1657,50 @@
    "non_repris": []
   },
   {
+   "question": "relation2.0787",
+   "origine": "Sous-branche Couple : uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension",
+   "lue": "Niveau B relation2 ET Situation déclarée : couple",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension » : « Une vie de couple » cochée dit les deux.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "relation2.0788",
+   "origine": "Sous-branche Couple",
+   "lue": "Niveau B relation2 ET Situation déclarée : couple",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension » : « Une vie de couple » cochée dit les deux.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "relation2.0789",
+   "origine": "Sous-branche Couple",
+   "lue": "Niveau B relation2 ET Situation déclarée : couple",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension » : « Une vie de couple » cochée dit les deux.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "relation2.0790",
+   "origine": "Sous-branche Couple",
+   "lue": "Niveau B relation2 ET Situation déclarée : couple",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension » : « Une vie de couple » cochée dit les deux.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
    "question": "relation2.0797",
    "origine": "Sous-branche Famille",
    "lue": "Niveau B relation2",
@@ -1476,6 +1726,39 @@
    "critere": "regroupement éditorial",
    "justification": "« Sous-branche Famille » (branche Relation) : moments et rôle en famille, sans présumer d’enfants ni de foyer.",
    "non_repris": []
+  },
+  {
+   "question": "relation2.0802",
+   "origine": "Sous-branche Relations professionnelles : ne JAMAIS confondre proximité professionnelle et intimité personnelle",
+   "lue": "Niveau B relation2 ET Situation déclarée : activite_professionnelle",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Relations professionnelles » : les énoncés présument une vie professionnelle ; « Une activité professionnelle » déclarée.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "relation2.0803",
+   "origine": "Sous-branche Relations professionnelles",
+   "lue": "Niveau B relation2 ET Situation déclarée : activite_professionnelle",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Relations professionnelles » : les énoncés présument une vie professionnelle ; « Une activité professionnelle » déclarée.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
+  },
+  {
+   "question": "relation2.0804",
+   "origine": "Sous-branche Relations professionnelles",
+   "lue": "Niveau B relation2 ET Situation déclarée : activite_professionnelle",
+   "statut": "etablie",
+   "critere": "situation déclarée par la personne (D2)",
+   "justification": "« Relations professionnelles » : les énoncés présument une vie professionnelle ; « Une activité professionnelle » déclarée.",
+   "non_repris": [
+    "tout indice indirect (intérêt, âge, réponse sur un proche, branche ouverte) : D2 interdit de le déduire"
+   ]
   },
   {
    "question": "resonance.1532",
@@ -1786,6 +2069,231 @@
    "non_repris": []
   },
   {
+   "question": "success.1716",
+   "origine": "Niveau B Réussite — axe Statut",
+   "lue": "Niveau B success ET Réponse à success.1711 : Le statut",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Statut » : « Le statut » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1717",
+   "origine": "Niveau B Réussite — axe Statut",
+   "lue": "Niveau B success ET Réponse à success.1711 : Le statut",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Statut » : « Le statut » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1718",
+   "origine": "Niveau B Réussite — axe Statut (exemples : beau bureau, objet de qualité, voiture, maison, vêtement, montre, voyage, cercle, diplôme, trophée)",
+   "lue": "Niveau B success ET Réponse à success.1711 : Le statut",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Statut » : « Le statut » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1720",
+   "origine": "Niveau B Réussite — axe Liberté — croise philovie.1646",
+   "lue": "Niveau B success ET Réponse à success.1711 : La liberté",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Liberté » : « La liberté » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1721",
+   "origine": "Niveau B Réussite — axe Liberté",
+   "lue": "Niveau B success ET Réponse à success.1711 : La liberté",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Liberté » : « La liberté » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1722",
+   "origine": "Niveau B Réussite — axe Liberté",
+   "lue": "Niveau B success ET Réponse à success.1711 : La liberté",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Liberté » : « La liberté » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1723",
+   "origine": "Niveau B Réussite — axe Impact",
+   "lue": "Niveau B success ET Réponse à success.1711 : L’impact",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Impact » : « L’impact » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1724",
+   "origine": "Niveau B Réussite — axe Impact",
+   "lue": "Niveau B success ET Réponse à success.1711 : L’impact",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Impact » : « L’impact » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1725",
+   "origine": "Niveau B Réussite — axe Impact",
+   "lue": "Niveau B success ET Réponse à success.1711 : L’impact",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Impact » : « L’impact » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1726",
+   "origine": "Niveau B Réussite — axe Création",
+   "lue": "Niveau B success ET Réponse à success.1711 : La création",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Création » : « La création » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1727",
+   "origine": "Niveau B Réussite — axe Création",
+   "lue": "Niveau B success ET Réponse à success.1711 : La création",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Création » : « La création » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1728",
+   "origine": "Niveau B Réussite — axe Création",
+   "lue": "Niveau B success ET Réponse à success.1711 : La création",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Création » : « La création » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1729",
+   "origine": "Niveau B Réussite — axe Sécurité",
+   "lue": "Niveau B success ET Réponse à success.1711 : La sécurité",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Sécurité » : « La sécurité » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1731",
+   "origine": "Niveau B Réussite — axe Sécurité",
+   "lue": "Niveau B success ET Réponse à success.1711 : La sécurité",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Sécurité » : « La sécurité » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1732",
+   "origine": "Niveau B Réussite — axe Reconnaissance",
+   "lue": "Niveau B success ET Réponse à success.1711 : La reconnaissance",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Reconnaissance » : « La reconnaissance » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1733",
+   "origine": "Niveau B Réussite — axe Reconnaissance — croise work2.1354 et celebration.0832",
+   "lue": "Niveau B success ET Réponse à success.1711 : La reconnaissance",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Reconnaissance » : « La reconnaissance » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1736",
+   "origine": "Niveau B Réussite — axe Maîtrise — croise learning2",
+   "lue": "Niveau B success ET Réponse à success.1711 : La maîtrise",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Maîtrise » : « La maîtrise » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1737",
+   "origine": "Niveau B Réussite — axe Maîtrise",
+   "lue": "Niveau B success ET Réponse à success.1711 : La maîtrise",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Maîtrise » : « La maîtrise » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1738",
+   "origine": "Niveau B Réussite — axe Maîtrise",
+   "lue": "Niveau B success ET Réponse à success.1711 : La maîtrise",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Maîtrise » : « La maîtrise » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1739",
+   "origine": "Niveau B Réussite — axe Maîtrise",
+   "lue": "Niveau B success ET Réponse à success.1711 : La maîtrise",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Maîtrise » : « La maîtrise » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1740",
+   "origine": "Niveau B Réussite — axe Temps disponible — croise time.1553",
+   "lue": "Niveau B success ET Réponse à success.1711 : Le temps disponible",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Temps disponible » : « Le temps disponible » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1741",
+   "origine": "Niveau B Réussite — axe Temps disponible",
+   "lue": "Niveau B success ET Réponse à success.1711 : Le temps disponible",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Temps disponible » : « Le temps disponible » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1743",
+   "origine": "Niveau B Réussite — axe Transmission — croise legacy",
+   "lue": "Niveau B success ET Réponse à success.1711 : La transmission",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Transmission » : « La transmission » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1744",
+   "origine": "Niveau B Réussite — axe Transmission",
+   "lue": "Niveau B success ET Réponse à success.1711 : La transmission",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Transmission » : « La transmission » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1745",
+   "origine": "Niveau B Réussite — axe Transmission",
+   "lue": "Niveau B success ET Réponse à success.1711 : La transmission",
+   "statut": "etablie",
+   "critere": "axe choisi à success.1711 (D5)",
+   "justification": "« axe Transmission » : « La transmission » coché à success.1711 — un sujet à développer, ni priorité ni trait.",
+   "non_repris": []
+  },
+  {
    "question": "success.1746",
    "origine": "Niveau C Réussite : expériences concrètes",
    "lue": "Niveau C success",
@@ -1842,6 +2350,181 @@
    ]
   },
   {
+   "question": "travel2.0915",
+   "origine": "Ouverture branche Hôtellerie (distincte du voyage — voir onglet Branches)",
+   "lue": "Branche travel2 ouverte OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Orientation : un intérêt pour le voyage (ou le sujet choisi), ou un séjour en préparation.",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0916",
+   "origine": "Branche Hôtellerie ouverte",
+   "lue": "Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût pour l’hébergement : une réponse à 0915 qui lui donne une place.",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » : ne dit pas un goût pour l’hébergement"
+   ]
+  },
+  {
+   "question": "travel2.0917",
+   "origine": "Branche Hôtellerie ouverte",
+   "lue": "Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût pour l’hébergement : une réponse à 0915 qui lui donne une place.",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » : ne dit pas un goût pour l’hébergement"
+   ]
+  },
+  {
+   "question": "travel2.0918",
+   "origine": "Branche Hôtellerie ouverte",
+   "lue": "Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût pour l’hébergement : une réponse à 0915 qui lui donne une place.",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » : ne dit pas un goût pour l’hébergement"
+   ]
+  },
+  {
+   "question": "travel2.0919",
+   "origine": "Branche Hôtellerie ouverte",
+   "lue": "Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Est principalement un endroit où dormir | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Besoin pratique, ou attitude face à un séjour offert : vaut quelle que soit la place de l’hébergement (« un endroit où dormir » ne dit pas l’absence de besoins).",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0920",
+   "origine": "Branche Hôtellerie ouverte",
+   "lue": "Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Est principalement un endroit où dormir | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Besoin pratique, ou attitude face à un séjour offert : vaut quelle que soit la place de l’hébergement (« un endroit où dormir » ne dit pas l’absence de besoins).",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0921",
+   "origine": "Niveau B Hôtellerie (3 à 5 questions max selon le séjour envisagé)",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Utile à un séjour : le goût au niveau B, ou un séjour en préparation (« selon le séjour envisagé », 0921).",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » hors séjour : ces préférences de confort ne sont pas un besoin pratique"
+   ]
+  },
+  {
+   "question": "travel2.0922",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Utile à un séjour : le goût au niveau B, ou un séjour en préparation (« selon le séjour envisagé », 0921).",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » hors séjour : ces préférences de confort ne sont pas un besoin pratique"
+   ]
+  },
+  {
+   "question": "travel2.0923",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût au niveau B ; un séjour en préparation seul ne suffit pas (question générale, pas de préparation).",
+   "non_repris": [
+    "« Séjour concret » seul : une préparation ne rend pas pertinent un goût général non déclaré"
+   ]
+  },
+  {
+   "question": "travel2.0924",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Est principalement un endroit où dormir | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Besoin pratique (chambre, salle de bain, sommeil) : toute réponse à 0915 au niveau B, ou un séjour en préparation.",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0925",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Est principalement un endroit où dormir | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Besoin pratique (chambre, salle de bain, sommeil) : toute réponse à 0915 au niveau B, ou un séjour en préparation.",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0926",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Est principalement un endroit où dormir | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Besoin pratique (chambre, salle de bain, sommeil) : toute réponse à 0915 au niveau B, ou un séjour en préparation.",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0927",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Utile à un séjour : le goût au niveau B, ou un séjour en préparation (« selon le séjour envisagé », 0921).",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » hors séjour : ces préférences de confort ne sont pas un besoin pratique"
+   ]
+  },
+  {
+   "question": "travel2.0928",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût au niveau B ; un séjour en préparation seul ne suffit pas (question générale, pas de préparation).",
+   "non_repris": [
+    "« Séjour concret » seul : une préparation ne rend pas pertinent un goût général non déclaré"
+   ]
+  },
+  {
+   "question": "travel2.0929",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Utile à un séjour : le goût au niveau B, ou un séjour en préparation (« selon le séjour envisagé », 0921).",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » hors séjour : ces préférences de confort ne sont pas un besoin pratique"
+   ]
+  },
+  {
+   "question": "travel2.0930",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour OU Séjour concret",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Utile à un séjour : le goût au niveau B, ou un séjour en préparation (« selon le séjour envisagé », 0921).",
+   "non_repris": [
+    "« Est principalement un endroit où dormir » hors séjour : ces préférences de confort ne sont pas un besoin pratique"
+   ]
+  },
+  {
+   "question": "travel2.0931",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût au niveau B ; un séjour en préparation seul ne suffit pas (question générale, pas de préparation).",
+   "non_repris": [
+    "« Séjour concret » seul : une préparation ne rend pas pertinent un goût général non déclaré"
+   ]
+  },
+  {
    "question": "travel2.0932",
    "origine": "À poser si séjour familial",
    "lue": "Réponse à travel2.0890 : Avec mes enfants",
@@ -1849,6 +2532,39 @@
    "critere": "réponse qui le dit",
    "justification": "« si séjour familial », et l’énoncé porte sur « un hôtel avec enfants » : « Avec mes enfants » à travel2.0890.",
    "non_repris": []
+  },
+  {
+   "question": "travel2.0933",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût au niveau B ; un séjour en préparation seul ne suffit pas (question générale, pas de préparation).",
+   "non_repris": [
+    "« Séjour concret » seul : une préparation ne rend pas pertinent un goût général non déclaré"
+   ]
+  },
+  {
+   "question": "travel2.0934",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût au niveau B ; un séjour en préparation seul ne suffit pas (question générale, pas de préparation).",
+   "non_repris": [
+    "« Séjour concret » seul : une préparation ne rend pas pertinent un goût général non déclaré"
+   ]
+  },
+  {
+   "question": "travel2.0935",
+   "origine": "Niveau B Hôtellerie",
+   "lue": "Niveau B travel2 ET Réponse à travel2.0915 : Est une partie essentielle de l’expérience | Compte beaucoup | Doit surtout être confortable et bien situé | Est secondaire si la destination est exceptionnelle | Cela dépend complètement du type de séjour",
+   "statut": "etablie",
+   "critere": "décision D3 (hôtellerie : exploration générale ≠ préparation)",
+   "justification": "Goût au niveau B ; un séjour en préparation seul ne suffit pas (question générale, pas de préparation).",
+   "non_repris": [
+    "« Séjour concret » seul : une préparation ne rend pas pertinent un goût général non déclaré"
+   ]
   },
   {
    "question": "travel2.0936",
@@ -1863,6 +2579,15 @@
     "surprise à sécuriser",
     "rêve devenu projet actif"
    ]
+  },
+  {
+   "question": "value.1522",
+   "origine": "Niveau B Signature de valeur : uniquement après les 6 axes",
+   "lue": "Niveau B value ET Réponse à value.1516 : Le moins cher | Le meilleur rapport qualité-prix | Le meilleur produit | Celui qui durera le plus longtemps ET Réponse à value.1517 : Acheter facilement | Comprendre exactement ce que j’achète ET Réponse à value.1518 : Aux grandes marques | Aux enseignes spécialisées | Aux artisans | Aux producteurs ET Réponse à value.1519 : Une grande maison reconnue | Un objet fabriqué par un artisan passionné ET Réponse à value.1520 : Acheter souvent | Acheter moins mais mieux | Cela dépend ET Réponse à value.1521 : Du produit lui-même | De l’histoire qu’il raconte",
+   "statut": "etablie",
+   "critere": "prérequis écrit traduit (D5)",
+   "justification": "« après les 6 axes » : les six questions A de la branche (1516 à 1521), toutes répondues.",
+   "non_repris": []
   },
   {
    "question": "watch.0309",
@@ -1971,46 +2696,6 @@
    "manque": "questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas"
   },
   {
-   "question": "CHS-13",
-   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.shoe=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.shoe.heel_interest.present=true` — produit par CHS-12 ; ET `DO_NOT_PROBE.shoe!=true` ; ET information manquante ; ET score de pertinence suffisant.",
-   "statut": "hypothese",
-   "manque": "L’énoncé porte sur les TALONS ; la condition admet un intérêt général pour les chaussures.",
-   "choix": [
-    "(a) exiger shoes.0332 « Escarpins » ou l’intérêt talons écrit par CHS-12",
-    "(b) suivre le texte"
-   ]
-  },
-  {
-   "question": "CRE-15",
-   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
-   "statut": "hypothese",
-   "manque": "L’énoncé porte sur la CÉRAMIQUE ; la condition ne demande qu’un intérêt pour la création. La lire telle quelle poserait la question de la céramique à quelqu’un qui peint.",
-   "choix": [
-    "(a) exiger un intérêt déclaré pour la céramique (option céramique de la branche Arts & créatif)",
-    "(b) suivre le texte (intérêt pour la création)"
-   ]
-  },
-  {
-   "question": "CRE-16",
-   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.creativity.ceramics_interest.present=true` — produit par CRE-15 ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
-   "statut": "hypothese",
-   "manque": "Même énoncé centré sur la céramique ; la condition admet l’intérêt général OU l’intérêt céramique écrit par CRE-15.",
-   "choix": [
-    "(a) seulement l’intérêt céramique",
-    "(b) suivre le texte"
-   ]
-  },
-  {
-   "question": "CRE-18",
-   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
-   "statut": "hypothese",
-   "manque": "L’énoncé porte sur la CÉRAMIQUE ; la condition ne demande qu’un intérêt pour la création. La lire telle quelle poserait la question de la céramique à quelqu’un qui peint.",
-   "choix": [
-    "(a) exiger un intérêt déclaré pour la céramique (option céramique de la branche Arts & créatif)",
-    "(b) suivre le texte (intérêt pour la création)"
-   ]
-  },
-  {
    "question": "JWL-TAILLE-01",
    "origine": "DÉCLENCHEUR : une recommandation de BAGUE est en préparation ET la taille n’est pas déjà connue",
    "statut": "sans_lecture",
@@ -2087,50 +2772,6 @@
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
    "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "aesthetic.1966",
-   "origine": "Niveau B avancé Esthétique — arbitrages, uniquement si le profil mérite d’être précisé",
-   "statut": "hypothese",
-   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
-   "choix": [
-    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
-    "(b) un nombre de réponses B à fixer",
-    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
-   ]
-  },
-  {
-   "question": "aesthetic.1967",
-   "origine": "Niveau B avancé Esthétique",
-   "statut": "hypothese",
-   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
-   "choix": [
-    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
-    "(b) un nombre de réponses B à fixer",
-    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
-   ]
-  },
-  {
-   "question": "aesthetic.1968",
-   "origine": "Niveau B avancé Esthétique — ponts Signature de valeur et Rapport à l’argent",
-   "statut": "hypothese",
-   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
-   "choix": [
-    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
-    "(b) un nombre de réponses B à fixer",
-    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
-   ]
-  },
-  {
-   "question": "aesthetic.1969",
-   "origine": "Niveau B avancé Esthétique",
-   "statut": "hypothese",
-   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
-   "choix": [
-    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
-    "(b) un nombre de réponses B à fixer",
-    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
-   ]
   },
   {
    "question": "animals.2147",
@@ -2291,103 +2932,6 @@
    "origine": "Entité {entité} détectée et importante",
    "statut": "sans_lecture",
    "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "daily2.1130",
-   "origine": "Sous-branche Couple au quotidien : ne remplace pas Relation — fonctionnement CONCRET uniquement — ⚠ recouvre relation2 sous-branche Couple (merge final)",
-   "statut": "hypothese",
-   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
-   "choix": [
-    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
-    "(b) une donnée de situation de l’onboarding à désigner",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1131",
-   "origine": "Sous-branche Couple au quotidien",
-   "statut": "hypothese",
-   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
-   "choix": [
-    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
-    "(b) une donnée de situation de l’onboarding à désigner",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1132",
-   "origine": "Sous-branche Couple au quotidien",
-   "statut": "hypothese",
-   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
-   "choix": [
-    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
-    "(b) une donnée de situation de l’onboarding à désigner",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1134",
-   "origine": "Sous-branche Famille et enfants au quotidien",
-   "statut": "hypothese",
-   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
-   "choix": [
-    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
-    "(b) une question d’entrée sur le foyer",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1135",
-   "origine": "Sous-branche Famille",
-   "statut": "hypothese",
-   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
-   "choix": [
-    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
-    "(b) une question d’entrée sur le foyer",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1136",
-   "origine": "Sous-branche Famille",
-   "statut": "hypothese",
-   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
-   "choix": [
-    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
-    "(b) une question d’entrée sur le foyer",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1137",
-   "origine": "Sous-branche Famille",
-   "statut": "hypothese",
-   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
-   "choix": [
-    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
-    "(b) une question d’entrée sur le foyer",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1138",
-   "origine": "Sous-branche Travail à domicile : à ouvrir si télétravail ou activité à domicile",
-   "statut": "hypothese",
-   "manque": "« à ouvrir si télétravail ou activité à domicile » : aucune question ne le recueille.",
-   "choix": [
-    "(a) une question d’entrée",
-    "(b) laisser fermé"
-   ]
-  },
-  {
-   "question": "daily2.1139",
-   "origine": "Sous-branche Travail à domicile",
-   "statut": "hypothese",
-   "manque": "« à ouvrir si télétravail ou activité à domicile » : aucune question ne le recueille.",
-   "choix": [
-    "(a) une question d’entrée",
-    "(b) laisser fermé"
-   ]
   },
   {
    "question": "destination.0286",
@@ -2745,93 +3289,16 @@
    "manque": "savoir qu’un proche vit loin : donnée du carnet du pilote, pas du Discovery"
   },
   {
-   "question": "relation2.0787",
-   "origine": "Sous-branche Couple : uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension",
-   "statut": "hypothese",
-   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
-   "choix": [
-    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
-    "(b) une donnée de situation de l’onboarding à désigner",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "relation2.0788",
-   "origine": "Sous-branche Couple",
-   "statut": "hypothese",
-   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
-   "choix": [
-    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
-    "(b) une donnée de situation de l’onboarding à désigner",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "relation2.0789",
-   "origine": "Sous-branche Couple",
-   "statut": "hypothese",
-   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
-   "choix": [
-    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
-    "(b) une donnée de situation de l’onboarding à désigner",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "relation2.0790",
-   "origine": "Sous-branche Couple",
-   "statut": "hypothese",
-   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
-   "choix": [
-    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
-    "(b) une donnée de situation de l’onboarding à désigner",
-    "(c) laisser fermé"
-   ]
-  },
-  {
    "question": "relation2.0800",
    "origine": "Sous-branche Famille",
    "statut": "sans_lecture",
-   "manque": "Famille au quotidien (branche daily2) : voir l’hypothèse « présument des enfants »"
+   "manque": "Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)"
   },
   {
    "question": "relation2.0801",
    "origine": "Sous-branche Famille",
    "statut": "sans_lecture",
-   "manque": "Famille au quotidien (branche daily2) : voir l’hypothèse « présument des enfants »"
-  },
-  {
-   "question": "relation2.0802",
-   "origine": "Sous-branche Relations professionnelles : ne JAMAIS confondre proximité professionnelle et intimité personnelle",
-   "statut": "hypothese",
-   "manque": "Relations professionnelles : les énoncés présument une vie professionnelle (« Au travail, qu’est-ce qui te touche ? »).",
-   "choix": [
-    "(a) branche work2 ouverte comme preuve",
-    "(b) traiter comme un thème du niveau B (tout le monde a un contexte professionnel)",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "relation2.0803",
-   "origine": "Sous-branche Relations professionnelles",
-   "statut": "hypothese",
-   "manque": "Relations professionnelles : les énoncés présument une vie professionnelle (« Au travail, qu’est-ce qui te touche ? »).",
-   "choix": [
-    "(a) branche work2 ouverte comme preuve",
-    "(b) traiter comme un thème du niveau B (tout le monde a un contexte professionnel)",
-    "(c) laisser fermé"
-   ]
-  },
-  {
-   "question": "relation2.0804",
-   "origine": "Sous-branche Relations professionnelles",
-   "statut": "hypothese",
-   "manque": "Relations professionnelles : les énoncés présument une vie professionnelle (« Au travail, qu’est-ce qui te touche ? »).",
-   "choix": [
-    "(a) branche work2 ouverte comme preuve",
-    "(b) traiter comme un thème du niveau B (tout le monde a un contexte professionnel)",
-    "(c) laisser fermé"
-   ]
+   "manque": "Famille (branche relation2) : aucune règle d’ouverture écrite pour cette sous-partie ; ses énoncés ne présument pas d’enfants, ils ne relèvent donc pas de la situation déclarée (D2)"
   },
   {
    "question": "relation2.0805",
@@ -2934,226 +3401,6 @@
    "manque": "savoir qu’un animal voyage avec la personne : aucune question ne le recueille"
   },
   {
-   "question": "travel2.0915",
-   "origine": "Ouverture branche Hôtellerie (distincte du voyage — voir onglet Branches)",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0916",
-   "origine": "Branche Hôtellerie ouverte",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0917",
-   "origine": "Branche Hôtellerie ouverte",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0918",
-   "origine": "Branche Hôtellerie ouverte",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0919",
-   "origine": "Branche Hôtellerie ouverte",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0920",
-   "origine": "Branche Hôtellerie ouverte",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0921",
-   "origine": "Niveau B Hôtellerie (3 à 5 questions max selon le séjour envisagé)",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0922",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0923",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0924",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0925",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0926",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0927",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0928",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0929",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0930",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0931",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0933",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0934",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
-   "question": "travel2.0935",
-   "origine": "Niveau B Hôtellerie",
-   "statut": "hypothese",
-   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
-   "choix": [
-    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
-    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
-    "(c) les deux"
-   ]
-  },
-  {
    "question": "travel2.0943",
    "origine": "À poser seulement si plusieurs catégories de chambre sont comparées",
    "statut": "sans_lecture",
@@ -3174,16 +3421,6 @@
    "origine": "Niveau C, après le séjour",
    "statut": "sans_lecture",
    "manque": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours"
-  },
-  {
-   "question": "value.1522",
-   "origine": "Niveau B Signature de valeur : uniquement après les 6 axes",
-   "statut": "hypothese",
-   "manque": "« uniquement après les 6 axes » : quels axes ?",
-   "choix": [
-    "(a) six questions de la branche value à désigner",
-    "(b) niveau B atteint"
-   ]
   },
   {
    "question": "value.1523",

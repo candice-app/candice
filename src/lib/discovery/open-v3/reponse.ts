@@ -204,7 +204,9 @@ export async function traiterReponse(
   //    lui que la réponse est rattachée. Plusieurs projets en cours dans le domaine : le plus
   //    récent. Aucun : la question n'aurait pas dû être posée — refus, rien n'est écrit.
   let projet: Projet | undefined;
-  const besoin = skip ? null : requiertProjet(q);
+  // D10 : un passage aussi appartient à la préparation — passer « pour ce séjour » ne vaut pas
+  // pour le suivant. Le projet est donc cherché pour un passage, sans être exigé.
+  const besoin = requiertProjet(q);
   if (besoin && !renvoi) {
     try {
       const enCours = (await projetsEnCours(client, { userId: input.userId }))
@@ -215,7 +217,7 @@ export async function traiterReponse(
       console.error('[discovery/reponse] projets illisibles', e);
       return refus(503, 'etat_illisible', 'la réponse n’a pas pu être vérifiée — rien n’est enregistré');
     }
-    if (!projet) return refus(409, 'conditions_non_tenues', 'cette question n’est plus d’actualité — recharge la page');
+    if (!projet && !skip) return refus(409, 'conditions_non_tenues', 'cette question n’est plus d’actualité — recharge la page');
   }
 
   // ═════════ À PARTIR D'ICI ON ÉCRIT. Tout ce qui précède n'a fait que lire.
@@ -243,7 +245,7 @@ export async function traiterReponse(
   //    Un échec ici n'efface pas la connaissance ; le journal fait foi (voir etat.ts), et le
   //    renvoi de la requête la répare.
   const { error: eProg } = await marquerProgression(client, input.userId, q.id, skip
-    ? { is_filled: false, answer_data: null, answered_at: null, last_asked_at: instant, skipped_count: 1, status: 'skipped' }
+    ? { is_filled: false, answer_data: projet ? { projet: projet.id } : null, answered_at: null, last_asked_at: instant, skipped_count: 1, status: 'skipped' }
     : { is_filled: true, answer_data: q.forme === 'open' ? texte : cles, answered_at: instant, last_asked_at: instant, status: 'answered' });
   if (eProg) console.error('[discovery/reponse] progression non écrite (le journal fait foi)', q.id, eProg.message);
 

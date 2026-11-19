@@ -42,7 +42,15 @@ async function poster(chemin: string, corps: unknown): Promise<string | null> {
   }
 }
 
-export default function DiscoveryPortes({ sujets, projets, refuses = [] }: { sujets: Sujet[]; projets: ProjetEnCours[]; refuses?: { branche: string; libelle: string }[] }) {
+/** L'entrée facultative « Ton quotidien » (D2) : son texte vient du serveur (service.ts). */
+export interface Quotidien {
+  enonce: string; aide: string; aucune: string;
+  options: { situation: string; libelle: string }[];
+  /** Ce que la personne a déclaré : `true` coché, `false` « aucune ». Vide : rien déclaré. */
+  declarees: Record<string, boolean>;
+}
+
+export default function DiscoveryPortes({ sujets, projets, refuses = [], quotidien = null }: { sujets: Sujet[]; projets: ProjetEnCours[]; refuses?: { branche: string; libelle: string }[]; quotidien?: Quotidien | null }) {
   const router = useRouter();
   const [occupe, setOccupe] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
@@ -51,6 +59,10 @@ export default function DiscoveryPortes({ sujets, projets, refuses = [] }: { suj
   const [objet, setObjet] = useState("");
   const [fin, setFin] = useState("");
   const libelle = (b: string) => sujets.find((s) => s.branche === b)?.libelle ?? "";
+  const declarees = quotidien?.declarees ?? {};
+  const [coches, setCoches] = useState<string[]>(Object.entries(declarees).filter(([, v]) => v).map(([k]) => k));
+  const [aucune, setAucune] = useState(Object.keys(declarees).length > 0 && Object.values(declarees).every((v) => v === false));
+  const [modifier, setModifier] = useState(Object.keys(declarees).length === 0);
 
   async function agir(chemin: string, corps: unknown, apres?: () => void) {
     if (occupe) return;
@@ -110,6 +122,54 @@ export default function DiscoveryPortes({ sujets, projets, refuses = [] }: { suj
           </div>
         )}
       </section>
+
+      {quotidien && (
+        <section style={carte} aria-labelledby="portes-quotidien">
+          <h2 id="portes-quotidien" style={titre}>Ton quotidien</h2>
+          <p style={texte}>{quotidien.enonce}</p>
+          {!modifier ? (
+            <p style={{ ...texte, marginBottom: 0 }}>
+              {aucune ? quotidien.aucune : quotidien.options.filter((o) => coches.includes(o.situation)).map((o) => o.libelle).join(" · ")}
+              {" — "}
+              <button type="button" onClick={() => setModifier(true)}
+                style={{ background: "none", border: "none", padding: 0, fontSize: 13, color: "var(--pine)", cursor: "pointer", textDecoration: "underline" }}>
+                Modifier
+              </button>
+            </p>
+          ) : (
+            <form onSubmit={(e) => { e.preventDefault(); agir("/api/discovery/situation", { coches: aucune ? [] : coches, aucune }, () => setModifier(false)); }}>
+              <fieldset style={{ border: "none", padding: 0, margin: "0 0 12px" }}>
+                <legend style={{ fontSize: 13, color: "var(--ink-2)", marginBottom: 8 }}>{quotidien.aide}</legend>
+                {quotidien.options.map((o) => (
+                  <label key={o.situation} style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, fontSize: 14, fontWeight: 300, color: "var(--ink)" }}>
+                    <input type="checkbox" checked={!aucune && coches.includes(o.situation)} disabled={occupe}
+                      onChange={(e) => { setAucune(false); setCoches((c) => e.target.checked ? [...c, o.situation] : c.filter((x) => x !== o.situation)); }} />
+                    {o.libelle}
+                  </label>
+                ))}
+                <label style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, fontSize: 14, fontWeight: 300, color: "var(--ink)" }}>
+                  <input type="checkbox" checked={aucune} disabled={occupe} onChange={(e) => { setAucune(e.target.checked); if (e.target.checked) setCoches([]); }} />
+                  {quotidien.aucune}
+                </label>
+              </fieldset>
+              <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                <button type="submit" disabled={occupe || (!aucune && coches.length === 0 && Object.keys(declarees).length === 0)} style={{
+                  padding: "13px 20px", borderRadius: 12, border: "none", background: "var(--pine)",
+                  fontSize: 14, fontWeight: 400, color: "var(--canvas)", cursor: occupe ? "default" : "pointer",
+                }}>
+                  {occupe ? "Enregistrement…" : "Enregistrer"}
+                </button>
+                {Object.keys(declarees).length > 0 && (
+                  <button type="button" onClick={() => setModifier(false)}
+                    style={{ background: "none", border: "none", padding: 0, fontSize: 13, color: "var(--ink-2)", cursor: "pointer", textDecoration: "underline" }}>
+                    Annuler
+                  </button>
+                )}
+              </div>
+            </form>
+          )}
+        </section>
+      )}
 
       <section style={carte} aria-labelledby="portes-projets">
         <h2 id="portes-projets" style={titre}>Un achat ou un séjour en préparation</h2>

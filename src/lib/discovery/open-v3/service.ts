@@ -13,10 +13,11 @@ import { randomUUID } from 'node:crypto';
 import { question as questionParId, type OptionV3, type QuestionV3 } from './banque';
 import { prochainesQuestions, type Choix } from './selection';
 import { produireDepuisOption } from './produire';
-import { lireEtat, FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE, FAIT_SUJET_REFUSE, FAIT_PROJET, lireProjet, type Projet } from './etat';
+import { lireEtat, FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE, FAIT_SUJET_REFUSE, FAIT_PROJET, FAIT_SITUATION, lireSituation, lireProjet, type Projet } from './etat';
 import { memeSujet } from './correspondances';
 import { enonceRempli } from './parametres';
-import type { EtatDiscovery, TypeDeProjet } from './conditions';
+import type { EtatDiscovery, TypeDeProjet, SituationDeVie } from './conditions';
+import { SITUATIONS_DE_VIE } from './conditions';
 import { analyserCondition } from './conditions';
 import { BANQUE } from './banque';
 import { createFact } from '@/lib/knowledge/fact';
@@ -39,6 +40,10 @@ import type { Evidence } from '@/lib/knowledge/evidence';
  * ──────────────────────────────────────────────────────────────────────────── */
 export { cleOption } from './cle-option';
 import { cleOption } from './cle-option';
+import { createOpenKnowledge } from '@/lib/knowledge/open-knowledge';
+import { openKnowledgeId } from '@/lib/knowledge-write/ids';
+import { asSubjectId } from '@/lib/knowledge/identity';
+import { normalizeLabel } from '@/lib/knowledge/normalize';
 import { relationsAdmises, OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import aliasOptions from './alias-options.json';
 import { DESTINATIONS_PAR_QUESTION } from './destinations';
@@ -179,6 +184,8 @@ export interface ResultatReponse {
   readonly preuvesEcrites: number;
   /** Faits écrits : options de fait, ou réponses rattachées à un projet. */
   readonly faitsEcrits: number;
+  /** Connaissances ouvertes déclarées écrites (D8). Absent : aucune. */
+  readonly connaissancesOuvertes?: number;
   /** Options retenues qui n'ont rien produit, avec le motif. Jamais silencieux. */
   readonly sansEmission: readonly { readonly option: string; readonly motif: string }[];
 }
@@ -195,6 +202,12 @@ export interface ResultatReponse {
  * modifié ou d'un référentiel qui a bougé sous nos pieds : dans les deux cas, écrire une
  * partie de la réponse serait pire que n'écrire rien.
  */
+/** D11 : le projet amont que nomment les rôles d'une préférence de service (« projet_de:dreams.1997 »). */
+function projetAmontDesRoles(e: { readonly target_family: string; readonly target_construct: string; readonly behaviorContext?: string }): string | undefined {
+  if (e.target_family !== 'PREFERENCE' || !e.target_construct.endsWith('.service_preference') || !e.behaviorContext) return undefined;
+  try { return (JSON.parse(e.behaviorContext) as { contexte?: string }).contexte?.match(/^projet_de:(.+)$/)?.[1]; } catch { return undefined; }
+}
+
 export async function enregistrerReponseFermee(
   client: WriteClient,
   input: {
@@ -268,9 +281,33 @@ export async function enregistrerReponseFermee(
 
   const evidences: Evidence[] = [];
   const facts: ReturnType<typeof createFact>[] = [];
+  const ouvertes: ReturnType<typeof createOpenKnowledge>[] = [];
   const sansEmission: { option: string; motif: string }[] = [];
+  // D8 : le projet auquel une raison se rattache (« Pourquoi CE projet compte-t-il ? ») est la
+  // dernière réponse à la question qui le nomme. Introuvable : la raison est gardée « projet non
+  // identifié » — jamais rattachée à la personne en général.
+  const projetDe = new Map<string, string>();
   for (const o of choisies) {
     const p = produireDepuisOption(q, o);
+    // D8 et D11 : « ce projet » désigne le projet nommé à une question amont (dreams.1997).
+    const amont = p.type === 'ouverte' ? p.ouverte.projetDe
+      : p.type === 'evidence' ? projetAmontDesRoles(p.evidence) : undefined;
+    if (amont && !projetDe.has(amont)) {
+      const nomme = (await sourcesDeLaQuestion(client, input.userId, 'discovery_open', amont)).sort((a, b) => (a.ts < b.ts ? 1 : -1))[0];
+      projetDe.set(amont, contexteDeProjet(`${amont}:${nomme?.id ?? 'non_identifie'}`));
+    }
+  }
+  for (const o of choisies) {
+    const p = produireDepuisOption(q, o);
+    if (p.type === 'ouverte') {
+      const ctx = input.projet ? contexteDeProjet(input.projet.id) : p.ouverte.portee === 'projet' ? projetDe.get(p.ouverte.projetDe!)! : 'GLOBAL';
+      ouvertes.push(createOpenKnowledge({
+        about, ownerId: asUserId(input.userId), open_knowledge_id: openKnowledgeId(sourceId, `${q.id}:${cleOption(o)}`),
+        type: 'descriptive', subject: asSubjectId(normalizeLabel(o.libelle)), subjectLabel: o.libelle, relation: p.ouverte.relation,
+        context: ctx, source: sourceId, timestamp, confidence: 'high', assertionStatus: 'explicit',
+      }));
+      continue;
+    }
     // ── UNE RÉPONSE DONNÉE POUR UN PROJET APPARTIENT AU PROJET (décision n° 4). « Pour cet achat,
     //    plutôt un petit format » ne dit pas que la personne préfère les petits formats : écrite
     //    comme une préférence, elle compterait un jour pour un goût général. Elle est gardée comme
@@ -302,10 +339,13 @@ export async function enregistrerReponseFermee(
       continue;
     }
     if (p.type === 'rien') { sansEmission.push({ option: o.libelle, motif: p.motif }); continue; }
+    // D11 : une préférence de service « autour de ce projet » appartient au projet nommé en amont.
+    const amont = projetAmontDesRoles(p.evidence);
+    const contexteAmont = !contexte && amont ? projetDe.get(amont) : undefined;
     for (const e of [p.evidence, ...(p.autres ?? [])]) evidences.push({
       ...e,
       // Dans un projet, le contexte EST le projet : c'est lui qui borne la portée de la preuve.
-      ...(contexte ? { context: contexte } : {}),
+      ...(contexte ? { context: contexte } : contexteAmont ? { context: contexteAmont } : {}),
       about, ownerId: asUserId(input.userId),
       // ⚠ L'IDENTITÉ D'UNE PREUVE EST CELLE DE L'OPTION COCHÉE, pas seulement celle de sa cible.
       //    Dans une réponse multiple, plusieurs options visent la MÊME cible avec des valeurs
@@ -340,7 +380,7 @@ export async function enregistrerReponseFermee(
   // mieux vaut la reposer que perdre la réponse en interdisant de la reposer.
   // LA SOURCE EST ÉCRITE MÊME SANS PREUVE : l'acte a eu lieu, et c'est elle qui permet de
   // reconnaître son renvoi. Une réponse dont aucune option n'émet reste un acte.
-  const issue = await persistKnowledge(client, { source, evidences, facts });
+  const issue = await persistKnowledge(client, { source, evidences, facts, openKnowledge: ouvertes });
   // LE DERNIER MOT COMPTE, et un seul. On relit APRÈS avoir écrit : deux actes arrivés en même
   // temps se voient alors l'un l'autre, et les deux requêtes concluent pareil.
   await reconcilierDernierMot(client, input.userId, 'discovery_closed', q.id, sourceId, timestamp);
@@ -351,7 +391,7 @@ export async function enregistrerReponseFermee(
   // la base n'en écrit qu'une (identifiants dérivés). Celle dont l'écriture a été absorbée
   // n'a pas créé l'acte : elle le dit, pour que rien ne se compte deux fois.
   if (issue === 'replayed') return { sourceId, preuvesEcrites: 0, faitsEcrits: 0, sansEmission, timestamp, dejaFaite: true };
-  return { sourceId, preuvesEcrites: evidences.length, faitsEcrits: facts.length, sansEmission, timestamp };
+  return { sourceId, preuvesEcrites: evidences.length, faitsEcrits: facts.length, ...(ouvertes.length ? { connaissancesOuvertes: ouvertes.length } : {}), sansEmission, timestamp };
 }
 
 /**
@@ -779,6 +819,87 @@ export async function refuserSujet(
 }
 
 /** Les sujets que la personne a mis de côté (vivants), par identifiant de branche. */
+/* ────────────────────────────────────────────────────────────────────────────
+ * « TON QUOTIDIEN » — la situation de vie, déclarée par la personne (décision D2).
+ *
+ * Des questions présument un couple, des enfants au quotidien, une activité professionnelle ou un
+ * travail depuis chez soi. On ne
+ * le déduit jamais : ni d'un intérêt, ni d'un âge, ni d'une réponse sur quelqu'un d'autre. On
+ * reprend ce que la personne a DÉCLARÉ — aucune question de l'onboarding ne le demande (vérifié le
+ * 19 nov.), le journal le reçoit donc d'ici — et sinon on le lui propose, facultativement.
+ *
+ *   · chaque situation cochée s'écrit « <situation>=oui » ;
+ *   · « aucune de ces situations » s'écrit « =non » pour chacune ;
+ *   · une situation NON cochée n'écrit rien : ne pas cocher n'est pas dire non ;
+ *   · déclarer de nouveau remplace la déclaration précédente (supersession : l'historique reste) ;
+ *   · retirer tout (`coches: []`, `aucune: false`) revient à ne rien avoir déclaré.
+ * ──────────────────────────────────────────────────────────────────────────── */
+export async function situationsDeclarees(client: ClientSujets, input: { readonly userId: string }): Promise<ReadonlyMap<SituationDeVie, boolean>> {
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { fact_type: string; value: string; about_id: string }[] | null; error: { message: string } | null }> } } };
+  };
+  const { data, error } = await lecture.from('knowledge_facts').select('fact_type, value, about_id').eq('user_id', input.userId).is('superseded_at', null);
+  if (error) throw new Error(`lecture de la situation impossible : ${error.message}`);
+  const m = new Map<SituationDeVie, boolean>();
+  for (const f of data ?? []) if (f.about_id === input.userId && f.fact_type === FAIT_SITUATION) { const l = lireSituation(f.value); if (l) m.set(l.situation, l.vraie); }
+  return m;
+}
+
+export async function declarerSituations(
+  client: ClientSujets,
+  input: { readonly userId: string; readonly coches: readonly string[]; readonly aucune: boolean; readonly timestamp?: string },
+): Promise<{ readonly etat: 'declare' | 'retire' | 'inchange'; readonly situations: ReadonlyMap<SituationDeVie, boolean> }> {
+  const inconnues = input.coches.filter((c) => !(SITUATIONS_DE_VIE as readonly string[]).includes(c));
+  if (inconnues.length > 0) throw new ReponseInvalideError(`situation inconnue : ${inconnues.join(', ')}`);
+  if (input.aucune && input.coches.length > 0) throw new ReponseInvalideError('« aucune de ces situations » ne se coche pas avec une situation');
+  const voulues = new Map<SituationDeVie, boolean>(input.aucune
+    ? SITUATIONS_DE_VIE.map((x) => [x, false] as const)
+    : [...new Set(input.coches)].map((x) => [x as SituationDeVie, true] as const));
+  const timestamp = input.timestamp ?? new Date().toISOString();
+  const about = accountAbout(asUserId(input.userId));
+  const lecture = client as unknown as {
+    from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
+      Promise<{ data: { source: string; fact_type: string; value: string; about_id: string }[] | null; error: { message: string } | null }> } } };
+  };
+  const { data, error } = await lecture.from('knowledge_facts').select('source, fact_type, value, about_id').eq('user_id', input.userId).is('superseded_at', null);
+  if (error) throw new Error(`lecture de la situation impossible : ${error.message}`);
+  const vivants = (data ?? []).filter((f) => f.about_id === input.userId && f.fact_type === FAIT_SITUATION);
+  const actuelles = new Map<SituationDeVie, boolean>();
+  for (const f of vivants) { const l = lireSituation(f.value); if (l) actuelles.set(l.situation, l.vraie); }
+  const memes = actuelles.size === voulues.size && [...voulues].every(([k, v]) => actuelles.get(k) === v);
+  if (memes) return { etat: 'inchange', situations: actuelles };
+
+  const sourceId = randomUUID();
+  const reponse = input.aucune ? 'Aucune de ces situations' : [...voulues.keys()].join(', ') || '(retrait)';
+  const source = createSourceRecord({
+    about, ownerId: asUserId(input.userId), id: sourceId, sourceType: 'user_declaration',
+    questionCode: voulues.size === 0 ? `${FAIT_SITUATION}.retrait` : FAIT_SITUATION,
+    questionText: ENTREE_QUOTIDIEN.enonce, answerText: reponse, timestamp,
+  });
+  const facts = [...voulues].map(([k, v]) => createFact({
+    about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, FAIT_SITUATION, k),
+    fact_type: FAIT_SITUATION, value: `${k}=${v ? 'oui' : 'non'}`, source: sourceId, timestamp,
+    confidence: 'high', user_confirmed: true, assertionStatus: 'explicit',
+  }));
+  await persistKnowledge(client, { source, facts });
+  if (vivants.length > 0) await supersedeSources(client as never, { oldSourceIds: [...new Set(vivants.map((f) => f.source))], newSourceId: sourceId, timestamp });
+  return { etat: voulues.size === 0 ? 'retire' : 'declare', situations: voulues };
+}
+
+/** Le texte EXACT de l'entrée facultative « Ton quotidien » (proposé dans le dossier D2). */
+export const ENTREE_QUOTIDIEN = {
+  enonce: 'Certaines questions ne concernent que certaines situations du quotidien. Lesquelles font partie de ta vie aujourd’hui ?',
+  aide: 'Facultatif. Ce que tu coches ouvre seulement les questions sur ce sujet ; tu peux le changer quand tu veux. Rien d’autre n’en est déduit.',
+  options: [
+    { situation: 'couple' as const, libelle: 'Une vie de couple' },
+    { situation: 'enfants_au_quotidien' as const, libelle: 'Des enfants dans mon quotidien' },
+    { situation: 'activite_professionnelle' as const, libelle: 'Une activité professionnelle' },
+    { situation: 'travail_a_domicile' as const, libelle: 'Travailler depuis chez moi' },
+  ],
+  aucune: 'Aucune de ces situations',
+} as const;
+
 export async function sujetsRefusesPar(client: ClientSujets, input: { readonly userId: string }): Promise<readonly string[]> {
   const lecture = client as unknown as {
     from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):

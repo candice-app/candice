@@ -1,0 +1,897 @@
+{
+ "version": "2026-11-19.D11",
+ "note": "« Écris l'acteur, le bénéficiaire et le contexte quand ils sont établis ; une valeur inconnue reste\ninconnue. Pour « être prévenu », ne choisis pas un acteur à la place de la personne ; une\nclarification pourra compléter ce point à l'usage. »",
+ "questions": {
+  "CEL-03": {
+   "enonce": "Pour {occasion}, qu’aimerais-tu surtout ressentir ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "paramètre d’énoncé : la préparation qui le remplit"
+   }
+  },
+  "CEL-04": {
+   "enonce": "Pour {occasion}, quelles attentions te toucheraient particulièrement ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "paramètre d’énoncé : la préparation qui le remplit"
+   }
+  },
+  "CEL-05": {
+   "enonce": "Pour {occasion}, quelle place aimerais-tu laisser à la surprise ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "paramètre d’énoncé : la préparation qui le remplit"
+   }
+  },
+  "THE-06A": {
+   "enonce": "Recevoir un spectacle en cadeau, pour toi, c’est plutôt…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Recevoir »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "THE-05": {
+   "enonce": "Recevoir des places de spectacle te ferait-il plaisir ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Recevoir »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "beauty2.1307": {
+   "enonce": "Pour tes cheveux, qu’est-ce qui compte le plus ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Pour tes cheveux",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« tes »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "celebav.2155": {
+   "enonce": "Pour une occasion importante, tu préfères…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Pour une occasion importante",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Ne rien savoir du tout », « Tout savoir à l’avance » : c’est elle que la surprise vise",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "celebav.2161": {
+   "enonce": "Aimes-tu attendre une célébration et te réjouir à l’avance ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "celebav.2173": {
+   "enonce": "Quand une occasion compte vraiment, tu es prêt(e) à…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Quand une occasion compte vraiment",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« tu es prêt(e) à… » : elle agit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "celebav.2175": {
+   "enonce": "Comment trouves-tu généralement tes idées ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« comment trouves-tu tes idées » : elle cherche",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "celebav.2191": {
+   "enonce": "Ce que tu aimerais déléguer…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ce que tu aimerais déléguer » : l’organisation qu’elle porte",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "celebav.2192": {
+   "enonce": "Ton niveau de contrôle souhaité…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ton niveau de contrôle » sur ce qu’elle organise",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "celebav.2198": {
+   "enonce": "Quel rôle souhaites-tu garder ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« quel rôle souhaites-tu garder » : elle organise",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "change.1770": {
+   "enonce": "Dans un changement important, quel niveau de contrôle as-tu besoin de conserver ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Dans un changement important",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "cinema2.0989": {
+   "enonce": "Quand quelqu’un te recommande un film, tu préfères…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Quand quelqu’un te recommande un film",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "cinema2.1001": {
+   "enonce": "Un abonnement cinéma ou plateforme…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "collection.2033": {
+   "enonce": "Autour de ta collection, tu apprécies…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Autour de ta collection",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ta »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "collection.2035": {
+   "enonce": "Y a-t-il une pièce qui manque vraiment à ta collection aujourd’hui ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ta »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "consumption2.1213": {
+   "enonce": "Quels signes montrent qu’une envie est vraiment sérieuse chez toi ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« toi »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "consumption2.1218": {
+   "enonce": "Pour cette référence précise, tu accepterais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "consumption2.1220": {
+   "enonce": "Pour cet objet, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "consumption2.1223": {
+   "enonce": "Si cet objet ne te convenait finalement pas, tu serais à l’aise pour…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "consumption2.1225": {
+   "enonce": "Partager une wishlist…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "craft.0666": {
+   "enonce": "Pour une œuvre ou une pièce artisanale importante, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Une vraie surprise », « Recevoir une participation » : c’est elle qui reçoit l’œuvre",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "daily2.1120": {
+   "enonce": "Pour les choses importantes, tu préfères généralement être prévenu(e)…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Pour les choses importantes",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit (« être prévenu(e) » : D11)",
+    "beneficiaire": "« être prévenu(e) » : c’est elle qui est prévenue (qui prévient reste non établi, D11)",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "daily2.1132": {
+   "enonce": "Pour organiser un moment à deux, tu préférerais que l’autre…",
+   "acteur": "partenaire",
+   "beneficiaire": "la_personne",
+   "contexte": "Pour organiser un moment à deux",
+   "fondement": {
+    "acteur": "« l’autre » (moment à deux)",
+    "beneficiaire": "« que l’autre »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "daily2.1143": {
+   "enonce": "Pour cette situation précise, tu préférerais qu’un proche…",
+   "acteur": "proche",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "« un proche »",
+    "beneficiaire": "« qu’un proche »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "dreams.1999": {
+   "enonce": "Autour de ce projet, tu aimerais plutôt qu’on…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "projet_de:dreams.1997",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« qu’on »",
+    "contexte": "« ce projet » : le projet nommé à dreams.1997"
+   }
+  },
+  "dreams.2006": {
+   "enonce": "Autour de ce projet, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "projet_de:dreams.1997",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "« ce projet » : le projet nommé à dreams.1997"
+   }
+  },
+  "dreams.2015": {
+   "enonce": "Jusqu’où quelqu’un pourrait-il t’aider sans empiéter sur ton projet ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« t’ »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "dreams.2018": {
+   "enonce": "Si ce projet changeait ou n’aboutissait pas, tu préférerais qu’on…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "projet_de:dreams.1997",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« qu’on »",
+    "contexte": "« ce projet » : le projet nommé à dreams.1997"
+   }
+  },
+  "energy.1597": {
+   "enonce": "Une surprise est plutôt…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "fashion2.1100": {
+   "enonce": "Autour de ton dressing, qu’est-ce qui t’aiderait le plus ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Autour de ton dressing",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ton »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "fashion2.1109": {
+   "enonce": "Pour recevoir cette pièce sereinement, il faudrait…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« recevoir »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "fragrance2.1148": {
+   "enonce": "Recevoir un parfum en cadeau serait…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Recevoir »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "fragrance2.1158": {
+   "enonce": "Quand tu découvres un parfum…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Quand tu découvres un parfum",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "fragrance2.1170": {
+   "enonce": "Pour un parfum tu préfères…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "fragrance2.1171": {
+   "enonce": "Si ton parfum préféré n’était pas disponible…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ton »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "games.0962": {
+   "enonce": "Recevoir un jeu de société en cadeau, c’est…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Recevoir »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "gaming2.1392": {
+   "enonce": "Recevoir un cadeau lié au gaming te semblerait…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Recevoir »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "gaming2.1412": {
+   "enonce": "Pour ce jeu, tu préfères…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "garden.0574": {
+   "enonce": "Pour une plante d’intérieur, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Pour une plante d’intérieur",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "garden.0585": {
+   "enonce": "Autour des plantes ou du jardin, quel service pourrait réellement te soulager ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "home2.1284": {
+   "enonce": "Pour un objet maison, tu préfères…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "humor2.1436": {
+   "enonce": "Tu préfères une surprise…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "jewelry.0306": {
+   "enonce": "Pour ce type de bijou, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "joys.1892": {
+   "enonce": "Une petite surprise sans occasion…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "joys.1895": {
+   "enonce": "Une petite attention de ce type, tu l’apprécierais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "legacy.1514": {
+   "enonce": "Quel degré de formalisation ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« quel degré de formalisation » : sa transmission, à d’autres",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "live.0489": {
+   "enonce": "Pour un spectacle tu préfères…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Pour un spectacle tu préfères",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "memory.0756": {
+   "enonce": "Les photos anciennes (les tiennes, celles de ta famille)…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ta »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "memory.0759": {
+   "enonce": "Raconter ou écouter les histoires de famille…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "memory.0768": {
+   "enonce": "Pour une attention liée à tes souvenirs, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« tes »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "mental.1851": {
+   "enonce": "Y a-t-il des choses que tu préfères continuer à gérer toi-même ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« toi »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "mental.1858": {
+   "enonce": "Tu apprécies qu’on…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« qu’on »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "music2.1027": {
+   "enonce": "Quel équipement améliorerait réellement ton écoute ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ton »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "philoconso.1631": {
+   "enonce": "Quel niveau de surprise ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "photo.0687": {
+   "enonce": "Pour un album ou un livre photo, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Pour un album ou un livre photo",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "photo.0688": {
+   "enonce": "En voyage ou en famille, la photo pour toi c’est…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "En voyage ou en famille",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« pour toi »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "photo.0691": {
+   "enonce": "Pour ce matériel, quelles informations sont indispensables ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "podcast.0468": {
+   "enonce": "Si quelqu’un te préparait une sélection de podcasts, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "podcast.0470": {
+   "enonce": "Après un épisode très intéressant, tu aimerais plutôt…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "reading2.1242": {
+   "enonce": "Quand tu choisis un livre, tu fais surtout confiance…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Quand tu choisis un livre",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "reading2.1258": {
+   "enonce": "Si ce livre est indisponible…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "relation2.0790": {
+   "enonce": "Dans ton couple, une surprise idéale serait plutôt…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Dans ton couple",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ton »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "sensory2.1492": {
+   "enonce": "Peut-on te surprendre sur cette expérience, ou vaut-il mieux rester proche de tes repères habituels ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "series2.1045": {
+   "enonce": "Concernant les spoilers…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Concernant les spoilers",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "shoes.0350": {
+   "enonce": "Pour une chaussure technique, quelle précision est indispensable ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "Pour une chaussure technique",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "shoes.0352": {
+   "enonce": "Pour cette paire, quelle information de taille est la plus fiable ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "sportp.0527": {
+   "enonce": "Pour cet équipement, quelle information est indispensable ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "theatre2.1367": {
+   "enonce": "Recevoir des places pour un spectacle te semblerait…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Recevoir »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "time.1568": {
+   "enonce": "Souhaites-tu tout planifier ou garder de la place pour l’imprévu ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "time.1570": {
+   "enonce": "Une journée très remplie te convient-elle davantage lorsque tu l’as choisie toi-même ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "travel2.0889": {
+   "enonce": "Si quelqu’un organisait un séjour pour toi, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Si quelqu’un organisait un séjour pour toi",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« pour toi »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "travel2.0901": {
+   "enonce": "Pour voyager avec ton animal, qu’est-ce qui est indispensable ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Pour voyager avec ton animal",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« ton »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "travel2.0914": {
+   "enonce": "Dans un séjour organisé, combien de temps libre te faut-il pour rester bien ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "Dans un séjour organisé",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "complément de l’énoncé, tel quel"
+   }
+  },
+  "travel2.0920": {
+   "enonce": "Recevoir une nuit ou un séjour à l’hôtel, pour toi, ce serait…",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "non_precise",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« Recevoir »",
+    "contexte": "aucun contexte dans l’énoncé"
+   }
+  },
+  "travel2.0941": {
+   "enonce": "Pour ce voyage ou cet hôtel, tu préférerais…",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "travel2.0942": {
+   "enonce": "Pour ce séjour précis, quel rythme te ferait le plus de bien ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "la_personne",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "« te »",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "travel2.0944": {
+   "enonce": "Pour une réservation offerte, quelle flexibilité est nécessaire ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  },
+  "work2.1361": {
+   "enonce": "Quel niveau de surprise ?",
+   "acteur": "non_etabli",
+   "beneficiaire": "non_etabli",
+   "contexte": "preparation",
+   "fondement": {
+    "acteur": "l’énoncé ne nomme pas qui agit",
+    "beneficiaire": "l’énoncé ne désigne pas qui reçoit",
+    "contexte": "question de niveau C : la préparation en cours, écrite à la réponse"
+   }
+  }
+ }
+}

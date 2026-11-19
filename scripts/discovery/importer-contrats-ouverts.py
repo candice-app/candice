@@ -4,8 +4,8 @@ du classeur officiel (révision 3) vers src/lib/discovery/open-v3/contrats-ouver
 Vérifie l'empreinte, et s'arrête sur une relation, un statut ou une polarité qu'il ne connaît pas."""
 import openpyxl, json, hashlib, sys, os, re
 ICI = os.path.dirname(os.path.abspath(__file__)); RACINE = os.path.join(ICI, '..', '..')
-F = os.path.join(RACINE, 'docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_6.xlsx')
-SHA = '27d46cbca9b7497ed769e2842ee309f2807704bd9d5d43aa798afab36febc145'
+F = os.path.join(RACINE, 'docs/discovery/Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_7.xlsx')
+SHA = '79e76afd6e50b2289f3a988809d823ce2d86268bf12e7a34ac3f25a0047f6eba'
 if hashlib.sha256(open(F, 'rb').read()).hexdigest() != SHA: sys.exit('empreinte du classeur inattendue')
 wb = openpyxl.load_workbook(F, read_only=True)
 REL = {'LOVE', 'LIKE', 'CURIOUS', 'WANT_TO_TRY', 'WANT_TO_OWN', 'WANT_TO_VISIT', 'NEUTRAL', 'DISLIKE', 'AVOID'}

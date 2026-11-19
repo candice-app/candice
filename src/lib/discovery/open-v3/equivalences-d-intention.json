@@ -1,0 +1,154 @@
+{
+ "version": "2026-11-19.d7",
+ "note": "Décision D7 d'Estelle (19 nov., 17h43) : une seule question par intention, objet et portée déjà renseignés ; la version canonique actuelle d'abord ; une ancienne réponse ne vaut que si l'équivalence est établie. Chaque groupe est déclaré ici, à la main, après comparaison de l'énoncé, de l'objet, de la portée ET des options — jamais sur la seule ressemblance des libellés. « identique » : mêmes options, au mot près (vérifié au chargement) ; la réponse à l'une vaut réponse à l'autre. « echelle_differente » : même intention, même objet, mais des options qui ne se correspondent pas une à une ; l'ancienne n'est plus posée, et sa réponse ne dispense PAS de la canonique. Une réponse « identique » évite de reposer la question ; elle n’est jamais recopiée dans l’autre : chaque réponse est écrite par le contrat de SA question.",
+ "hors_table": "Paires examinées et laissées distinctes, parce que l'objet ou la portée diffère : art.0128 (l'art en général) / museum.0698 (les musées) ; theatre.0098 (le théâtre) / theatre2.1363 (les spectacles vivants) ; music.0116 (place) / music2.1004 (ce qu'elle apporte) ; home.0173 (maison et décoration) / home2.1259 (ce qu'est le chez-soi) ; food.0021 (place) / food2.0856 (plaisirs) ; wellbeing.0218 (bien-être et repos) / beauty2.1287 (prendre soin de soi) ; nature.0210 / garden.0557. travel.0051 / travel2.0886 relève déjà de l'onglet 13 (KEEP_DISTINCT_CONDITIONED).",
+ "groupes": [
+  {
+   "intention": "place des jeux vidéo",
+   "canonique": "GAM-01",
+   "membres": [
+    {
+     "id": "gaming2.1388",
+     "equivalence": "identique",
+     "justification": "même objet, même portée (aujourd'hui), cinq options identiques"
+    },
+    {
+     "id": "gaming.0202",
+     "equivalence": "echelle_differente",
+     "justification": "même objet et portée ; échelle générique (passion / intérêt / plaisir occasionnel…) sans correspondance une à une avec la fréquence de jeu"
+    }
+   ]
+  },
+  {
+   "intention": "place de l'humour",
+   "canonique": "HUM-01",
+   "membres": [
+    {
+     "id": "humor2.1414",
+     "equivalence": "identique",
+     "justification": "même objet, cinq options identiques"
+    },
+    {
+     "id": "humor.0136",
+     "equivalence": "echelle_differente",
+     "justification": "échelle générique ; « Surtout un moment partagé » n'a pas d'équivalent"
+    }
+   ]
+  },
+  {
+   "intention": "place des spectacles vivants",
+   "canonique": "THE-01",
+   "membres": [
+    {
+     "id": "theatre2.1363",
+     "equivalence": "identique",
+     "justification": "même objet (les spectacles vivants), cinq options identiques"
+    }
+   ]
+  },
+  {
+   "intention": "place de l'apprentissage",
+   "canonique": "LEA-01",
+   "membres": [
+    {
+     "id": "learning2.1437",
+     "equivalence": "identique",
+     "justification": "même objet, cinq options identiques"
+    },
+    {
+     "id": "learning.0235",
+     "equivalence": "echelle_differente",
+     "justification": "« l'apprentissage et la curiosité » ; échelle générique"
+    }
+   ]
+  },
+  {
+   "intention": "place des jeux de société",
+   "canonique": "JDS-01",
+   "membres": [
+    {
+     "id": "games.0946",
+     "equivalence": "identique",
+     "justification": "même objet (les jeux de société), mêmes six options. Les énoncés diffèrent (« quelle place » / « pour toi, c’est plutôt… ») : la réponse donnée à l’une suffit pour ne pas reposer l’autre, mais chacune reste LUE avec son propre énoncé (D6) — « Ce n’est pas vraiment mon truc » est une faible place à JDS-01, une appréciation négative à games.0946. Rien n’est fusionné."
+    }
+   ]
+  },
+  {
+   "intention": "rapport aux activités créatives",
+   "canonique": "CRE-01",
+   "membres": [
+    {
+     "id": "craft.0614",
+     "equivalence": "identique",
+     "justification": "mêmes sept options ; « dans cet univers » désigne les activités créatives. Les sens des options fixés par Estelle pour craft.0614 valent pour CRE-01"
+    }
+   ]
+  },
+  {
+   "intention": "plaisirs autour de la nourriture",
+   "canonique": "FOO-01",
+   "membres": [
+    {
+     "id": "food2.0856",
+     "equivalence": "identique",
+     "justification": "mêmes sept options"
+    }
+   ]
+  },
+  {
+   "intention": "place du sport",
+   "canonique": "sportp.0503",
+   "membres": [
+    {
+     "id": "sport.0183",
+     "equivalence": "echelle_differente",
+     "justification": "« le sport et l'activité physique » / « le sport » : même objet ; échelle générique sans « J'aimerais m'y remettre » ni « par périodes »"
+    }
+   ]
+  },
+  {
+   "intention": "place de la beauté et des soins",
+   "canonique": "beauty2.1287",
+   "membres": [
+    {
+     "id": "beauty.0155",
+     "equivalence": "echelle_differente",
+     "justification": "« la beauté et les soins » / « prendre soin de toi » : même objet ; échelles différentes"
+    }
+   ]
+  },
+  {
+   "intention": "place des vêtements et du style",
+   "canonique": "fashion2.1058",
+   "membres": [
+    {
+     "id": "fashion.0143",
+     "equivalence": "echelle_differente",
+     "justification": "même objet ; l'échelle canonique distingue confort, pratique, belles pièces"
+    }
+   ]
+  },
+  {
+   "intention": "place de la technologie",
+   "canonique": "tech2.1313",
+   "membres": [
+    {
+     "id": "tech.0195",
+     "equivalence": "echelle_differente",
+     "justification": "« technologie et innovation » / « technologie » ; échelles différentes"
+    }
+   ]
+  },
+  {
+   "intention": "place du travail",
+   "canonique": "work2.1337",
+   "membres": [
+    {
+     "id": "work.0227",
+     "equivalence": "echelle_differente",
+     "justification": "même objet ; l'échelle canonique distingue revenus, projets, souhait de réduire"
+    }
+   ]
+  }
+ ]
+}
