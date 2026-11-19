@@ -1,10 +1,10 @@
 {
  "genere_par": "importer-open-v3 / 3",
- "genere_le": "2026-11-19T09:06:06+00:00",
- "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_5.xlsx",
- "sha256_classeur": "70469c254fede8b8baa21959c8131a16322d3b675b3882d0afde35104ac6d535",
- "questions_actives": 2225,
- "questions_en_arbitrage": 68,
+ "genere_le": "2026-11-19T09:30:59+00:00",
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_6.xlsx",
+ "sha256_classeur": "27d46cbca9b7497ed769e2842ee309f2807704bd9d5d43aa798afab36febc145",
+ "questions_actives": 2281,
+ "questions_en_arbitrage": 12,
  "questions_retirees": 114,
  "options_totales": 16200,
  "normalisations": {

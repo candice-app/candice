@@ -28,6 +28,7 @@
 //                 refus garde sa portée exacte, sa sévérité déclarée, et continue d'armer
 //                 le veto — `isRejection` filtre sur la FAMILLE, pas sur le code.
 // ─────────────────────────────────────────────────────────────────────────────────────
+import sensEnRevue from './sens-en-revue.json';
 import type { OptionV3, QuestionV3 } from './banque';
 
 /** Ce qu'une option produit, ou la raison pour laquelle elle ne produit rien. */
@@ -52,9 +53,13 @@ export interface FaitBrut {
 /** Préfixe des faits déclarés par une option du Discovery. */
 export const PREFIXE_FAIT = 'discovery.fait.';
 
+const SENS_EN_REVUE: ReadonlyMap<string, ReadonlySet<string>> = new Map((sensEnRevue as { lignes: { question: string; attributs: string[] }[] }).lignes.map((l) => [l.question, new Set(l.attributs)]));
+
 export type MotifNonEcriture =
   /** Le contrat dit explicitement de ne rien écrire. Ce n'est pas un défaut. */
   | 'contrat_sans_emission'
+  /** Le sens de la réponse est en revue (sens-en-revue.json) : rien n'est écrit tant qu'il n'est pas validé. */
+  | 'sens_en_revue'
   /** Une action d'interface (ouvrir un champ libre), pas une connaissance. */
   | 'action_interface'
   /** Un état du parcours, pas une connaissance sur la personne. */
@@ -178,6 +183,8 @@ function assainir(s: string): string {
 export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
   const rien = (motif: MotifNonEcriture, detail: string): Production =>
     ({ type: 'rien', motif, detail });
+  // Motivations de vie et aides à l'apprentissage : leur reclassement n'a pas été approuvé.
+  if (o.attribut && SENS_EN_REVUE.get(q.id)?.has(o.attribut)) return rien('sens_en_revue', o.libelle);
 
   switch (o.voie) {
     case 'NO_EMISSION':   return rien('contrat_sans_emission', o.libelle);

@@ -10,6 +10,12 @@ import { compteLocal, verificateur } from './_compte-local.mts';
 import { question } from '../../src/lib/discovery/open-v3/banque.ts';
 import { cleOption, enregistrerReponseFermee } from '../../src/lib/discovery/open-v3/service.ts';
 import { lirePortrait } from '../../src/lib/knowledge/portrait.ts';
+import sensEnRevue from '../../src/lib/discovery/open-v3/sens-en-revue.json' with { type: 'json' };
+
+// DÉCISION N° 8 (19 nov.) : les motivations de vie et les aides à l'apprentissage ont été reclassées
+// sans que l'accord les couvre ; tant que leur sens n'est pas établi, elles n'écrivent RIEN, et le
+// motif est rendu. Le script le vérifie au lieu d'attendre une préférence.
+const EN_REVUE = new Set((sensEnRevue as { lignes: { question: string }[] }).lignes.map((l) => l.question));
 
 // Les 162 lignes reclassées, avec leur ligne dans l'onglet 0_FICHE_CANONIQUE.
 const reclassees: { ligne: number; q: string; libelle: string }[] =
@@ -22,7 +28,7 @@ for (const l of reclassees) {
   if (!cibles.has(l.q)) cibles.set(l.q, new Set());
   cibles.get(l.q)!.add(l.libelle);
 }
-let nOptions = 0, nEcrites = 0, nHorsBanque = 0;
+let nOptions = 0, nEcrites = 0, nHorsBanque = 0, nEnRevue = 0, nEnRevueMuettes = 0;
 const attendus: { q: string; libelle: string; chemin: string; valeur: string }[] = [];
 for (const [qid, libelles] of cibles) {
   const q = question(qid);
@@ -34,14 +40,23 @@ for (const [qid, libelles] of cibles) {
     const r = await enregistrerReponseFermee(c.client as never, {
       acteId: globalThis.crypto.randomUUID(), userId: c.userId, questionId: qid, clesOptions: [cleOption(o)],
     });
+    if (EN_REVUE.has(qid)) {
+      nEnRevue++;
+      if (r.preuvesEcrites === 0 && JSON.stringify(r.sansEmission).includes('sens_en_revue')) nEnRevueMuettes++;
+      else console.log(`  ✗ ${qid} « ${o.libelle} » (sens en revue) : ${r.preuvesEcrites} preuve(s)`);
+      continue;
+    }
     if (r.preuvesEcrites === 1) nEcrites++;
     else console.log(`  ✗ ${qid} « ${o.libelle} » : ${JSON.stringify(r.sansEmission)}`);
     attendus.push({ q: qid, libelle: o.libelle, chemin: `PREFERENCE.${o.domaine}.${o.attribut}`, valeur: '' });
   }
 }
 console.log(`\noptions reclassées : ${nOptions} dans la banque active, ${nHorsBanque} dans des questions en arbitrage (fermées).`);
-v.verifier(nOptions === 148, '148 options reclassées sont dans la banque active', `${nOptions}`);
-v.verifier(nEcrites === nOptions, 'chaque option a produit exactement une preuve', `${nEcrites}/${nOptions}`);
+// 148 ce matin ; la révision 6 a rendu actives des questions qui étaient en arbitrage. Aucune ligne
+// reclassée ne doit se perdre : celles de la banque active + celles des questions encore en arbitrage.
+v.verifier(nOptions + nHorsBanque === reclassees.length - (reclassees.length - [...cibles.values()].reduce((n, s) => n + s.size, 0)), 'toutes les options reclassées sont retrouvées (banque active ou arbitrage)', `${nOptions} actives + ${nHorsBanque} en arbitrage`);
+v.verifier(nEnRevue > 0 && nEnRevueMuettes === nEnRevue, 'décision n° 8 : les options dont le sens est en revue n’écrivent rien, motif rendu', `${nEnRevueMuettes}/${nEnRevue}`);
+v.verifier(nEcrites === nOptions - nEnRevue, 'chaque autre option a produit exactement une preuve', `${nEcrites}/${nOptions - nEnRevue}`);
 
 // ── RELECTURE EN BASE, par le client du compte (donc à travers la RLS).
 const { data: lignes, error } = await c.client.from('knowledge_evidences')
@@ -51,7 +66,7 @@ if (error) throw error;
 const fam: Record<string, number> = {};
 for (const l of lignes!) fam[l.target_family] = (fam[l.target_family] ?? 0) + 1;
 console.log('relu en base :', lignes!.length, 'preuves', fam);
-v.verifier(lignes!.length === nOptions, 'autant de preuves relues que d’options répondues', `${lignes!.length}`);
+v.verifier(lignes!.length === nOptions - nEnRevue, 'autant de preuves relues que d’options qui écrivent', `${lignes!.length}`);
 v.verifier(lignes!.every((l) => l.target_family === 'PREFERENCE'), 'toutes de famille PREFERENCE');
 v.verifier(!lignes!.some((l) => ['DRIVER', 'NEED', 'PROFILE'].includes(l.target_family)), 'aucun DRIVER, aucun NEED, aucun trait PROFILE');
 v.verifier(lignes!.every((l) => /^PREFERENCE\.[a-z0-9_]+\.(value_sought|facilitator)$/.test(l.target_construct)),

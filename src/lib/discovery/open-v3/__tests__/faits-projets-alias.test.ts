@@ -38,7 +38,8 @@ describe('les options de fait écrivent un FAIT, tel que le contrat le dit', () 
       const p = produireDepuisOption(q, o);
       if (p.type === 'fait') { ecrites++; expect(p.fait.valeur).not.toMatch(/\{.*\}/); } else incompletes.push(`${q.id}:${cleOption(o)}`);
     }
-    expect(ecrites + incompletes.length).toBe(600);
+    // 600 dans les 2 225 questions d'origine, 158 dans les 56 questions activées par la révision 6.
+    expect(ecrites + incompletes.length).toBe(758);
     expect(ecrites).toBeGreaterThan(560);
     // Ce qui reste incomplet est listé dans l'état, pas avalé.
     expect(incompletes.length).toBeLessThan(40);

@@ -16,7 +16,9 @@ import { useRouter } from "next/navigation";
 // pas croire qu'un choix a été enregistré quand il ne l'a pas été.
 
 export interface Sujet { branche: string; libelle: string; choisi: boolean }
-export interface ProjetEnCours { id: string; type: "achat" | "sejour"; branche: string; objet: string; fin?: string }
+type Genre = "achat" | "sejour" | "occasion" | "sortie" | "cadeau" | "apprentissage" | "attention" | "experience";
+const GENRES: [Genre, string][] = [["achat", "Un achat"], ["sejour", "Un séjour"], ["occasion", "Une occasion ou un repas"], ["sortie", "Une sortie"], ["cadeau", "Un cadeau à offrir"], ["apprentissage", "Un apprentissage"], ["attention", "Une attention pour quelqu’un"], ["experience", "Une expérience à vivre"]];
+export interface ProjetEnCours { id: string; type: Genre; branche: string; objet: string; fin?: string }
 
 const carte: React.CSSProperties = {
   marginTop: 28, padding: "20px 20px 18px", borderRadius: 14,
@@ -44,7 +46,7 @@ export default function DiscoveryPortes({ sujets, projets, refuses = [] }: { suj
   const router = useRouter();
   const [occupe, setOccupe] = useState(false);
   const [erreur, setErreur] = useState<string | null>(null);
-  const [type, setType] = useState<"achat" | "sejour">("achat");
+  const [type, setType] = useState<Genre>("achat");
   const [branche, setBranche] = useState(sujets[0]?.branche ?? "");
   const [objet, setObjet] = useState("");
   const [fin, setFin] = useState("");
@@ -120,7 +122,7 @@ export default function DiscoveryPortes({ sujets, projets, refuses = [] }: { suj
             {projets.map((p) => (
               <li key={p.id} style={{ padding: "12px 0", borderTop: "0.5px solid rgba(23,62,49,.12)" }}>
                 <div style={{ fontSize: 14, color: "var(--ink)" }}>
-                  {p.type === "achat" ? "Achat" : "Séjour"} · {p.objet}
+                  {(GENRES.find(([g]) => g === p.type)?.[1] ?? "").replace(/^Une? /, "").replace(/^./, (x) => x.toUpperCase())} · {p.objet}
                 </div>
                 <div style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-2)", marginTop: 2 }}>
                   {libelle(p.branche)}{p.fin ? ` · jusqu’au ${new Date(p.fin).toLocaleDateString("fr-FR")}` : ""}
@@ -143,14 +145,13 @@ export default function DiscoveryPortes({ sujets, projets, refuses = [] }: { suj
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            if (!objet.trim() || !branche) { setErreur("Dis de quel achat ou de quel séjour il s’agit."); return; }
+            if (!objet.trim() || !branche) { setErreur("Dis de quoi il s’agit, en quelques mots."); return; }
             agir("/api/discovery/projet", { action: "ouvrir", type, branche, objet: objet.trim(), ...(fin ? { fin: new Date(`${fin}T23:59:59`).toISOString() } : {}) }, () => { setObjet(""); setFin(""); });
           }}
         >
           <label style={{ display: "block", fontSize: 13, color: "var(--ink-2)", marginBottom: 4 }} htmlFor="projet-type">Ce que tu prépares</label>
-          <select id="projet-type" value={type} onChange={(e) => setType(e.target.value === "sejour" ? "sejour" : "achat")} style={champ}>
-            <option value="achat">Un achat</option>
-            <option value="sejour">Un séjour</option>
+          <select id="projet-type" value={type} onChange={(e) => setType((GENRES.find(([g]) => g === e.target.value)?.[0]) ?? "achat")} style={champ}>
+            {GENRES.map(([g, l]) => <option key={g} value={g}>{l}</option>)}
           </select>
           <label style={{ display: "block", fontSize: 13, color: "var(--ink-2)", marginBottom: 4 }} htmlFor="projet-branche">Le sujet</label>
           <select id="projet-branche" value={branche} onChange={(e) => setBranche(e.target.value)} style={champ}>

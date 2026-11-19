@@ -1,0 +1,11 @@
+{
+ "Sophie": { "food2.0859": ["r2", "r7"], "reading2.1235": ["r5", "r1"], "reading2.1237": ["r2"], "food.0023": ["r2"] },
+ "Camille": { "nature.0211": ["r1", "r2"], "nature.0212": ["r5"], "sport.0185": ["r2", "r5", "r6"], "sport.0189": ["r2"] },
+ "Inès": { "food2.0859": ["r8", "r7"], "reading2.1235": ["r7"], "reading2.1237": ["r3"], "food.0021": ["r4", "r6"] },
+ "Léa": { "travel2.0888": ["r4"], "travel2.0889": ["r3"], "art.0130": ["r1", "r2"], "art.0133": ["r1", "r6", "r8"], "craft.0617": ["r3"], "craft.0618": ["r2", "r7"] },
+ "Manon": { "home2.1261": ["r3"], "home2.1262": ["r4", "r14", "r15"] },
+ "Clara": { "reading2.1235": ["r7"], "reading2.1237": ["r3"], "art.0130": ["r3", "r7"], "art.0133": ["r1", "r6", "r10"], "museum.0700": ["r6", "r7"], "museum.0701": ["r4"] },
+ "Nour": { "food2.0859": ["r6", "r12"], "food.0021": ["r3", "r1"] },
+ "Jeanne": { "reading2.1235": ["r1"], "reading2.1237": ["r2"] },
+ "Yasmina": { "travel2.0888": ["r3"], "travel2.0889": ["r7"], "sensory.0264": ["r2"], "sensory.0267": ["r3"], "wellbeing.0220": ["r6"], "wellbeing.0223": ["r3", "r10"] }
+}

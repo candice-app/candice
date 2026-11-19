@@ -15,6 +15,8 @@ import { prochainesQuestions, type Choix } from './selection';
 import { produireDepuisOption } from './produire';
 import { lireEtat, FAIT_SUJET_CHOISI, FAIT_SUJET_ABORDE, FAIT_SUJET_REFUSE, FAIT_PROJET, lireProjet, type Projet } from './etat';
 import { memeSujet } from './correspondances';
+import { enonceRempli } from './parametres';
+import type { EtatDiscovery, TypeDeProjet } from './conditions';
 import { analyserCondition } from './conditions';
 import { BANQUE } from './banque';
 import { createFact } from '@/lib/knowledge/fact';
@@ -66,7 +68,7 @@ export interface QuestionAServir {
   readonly motif: string;
 }
 
-function aServir(c: Choix): QuestionAServir {
+function aServir(c: Choix, etat: Pick<EtatDiscovery, 'objetsDeProjet'> = {}): QuestionAServir {
   const q = c.question;
   const type = q.forme === 'open' ? 'text'
     : q.forme === 'single' ? 'chips_single' : 'chips_multi';
@@ -76,7 +78,8 @@ function aServir(c: Choix): QuestionAServir {
     // Le nom que la personne lit : celui du référentiel, ou celui de l'autre génération du
     // même domaine. Jamais l'identifiant technique.
     libelle: libelleBranche(q.branche) ?? libelleDuPool(q.branche),
-    question_text: q.enonce,
+    // Un énoncé à paramètre est servi REMPLI, depuis sa source autorisée — ou n'est pas servi.
+    question_text: enonceRempli(q, etat),
     question_type: type,
     options: type === 'text' ? null : q.options.filter((o) => !estAliasMasque(q.id, o)).map((o) => ({ label: o.libelle, value: cleOption(o) })),
     locked_text: true,
@@ -108,7 +111,7 @@ export async function prochainesQuestionsPour(
   }
   const r = prochainesQuestions(etat, { combien: opts.combien ?? 1 });
   if (manques.length > 0) console.warn('[discovery] état incomplet', manques);
-  return { questions: r.choix.map(aServir), diagnostic: r.diagnostic, manques };
+  return { questions: r.choix.map((c) => aServir(c, etat)), diagnostic: r.diagnostic, manques };
 }
 
 /** Une réponse donnée pour un projet en cours. `value` = JSON { projet, question, option, contrat }. */
@@ -820,7 +823,7 @@ export async function connaissancesDuProjet(
 /** Ouvre un projet. Refuse une branche inconnue de la banque et un objet vide. */
 export async function ouvrirProjet(
   client: ClientSujets,
-  input: { readonly userId: string; readonly type: 'achat' | 'sejour'; readonly branche: string; readonly objet: string;
+  input: { readonly userId: string; readonly type: TypeDeProjet; readonly branche: string; readonly objet: string;
            readonly fin?: string; readonly timestamp?: string },
 ): Promise<{ readonly projet: Projet }> {
   if (!BRANCHES_CONNUES.has(input.branche)) throw new ReponseInvalideError(`« ${input.branche} » n'est pas une branche de la banque`);

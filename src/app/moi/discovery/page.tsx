@@ -6,6 +6,8 @@ import DiscoveryFlow from "./DiscoveryFlow";
 import DiscoveryPortes from "./DiscoveryPortes";
 import DiscoveryClarifications, { type ClarificationAffichee } from "./DiscoveryClarifications";
 import { clarificationsOuvertes } from "@/lib/discovery/open-v3/destinations-ecriture";
+import DiscoveryEnvie from "./DiscoveryEnvie";
+import { envieAProposer } from "@/lib/discovery/open-v3/envie-carnet";
 import { sujetsExplorables, sujetsChoisisPar, sujetsRefusesPar, projetsEnCours } from "@/lib/discovery/open-v3/service";
 import { libelleBranche } from "@/lib/discovery/open-v3/correspondances";
 import { proposerLot } from "@/lib/discovery/open-v3/reponse";
@@ -74,6 +76,10 @@ export default async function DiscoveryPage({
     console.error("[discovery] clarifications illisibles", e);
   }
 
+  // ── L'ENVIE À PROPOSER AU CARNET (décision n° 5) : proposée, jamais ajoutée d'office.
+  let envie: { id: string; titre: string } | null = null;
+  try { envie = await envieAProposer(supabase as never, { userId }); } catch (e) { console.error("[discovery] envie illisible", e); }
+
   return (
     <DashboardShell>
       <div className="content-col" data-page-ready="discovery">
@@ -81,6 +87,7 @@ export default async function DiscoveryPage({
         {/* `key` : après un choix de sujet ou de projet, la page est relue et le parcours repart
             de la question que le moteur choisit maintenant. */}
         <DiscoveryFlow key={initial?.question.question_key ?? "aucune"} initial={initial} mode={mode} skipIntro={!!sectionKey} />
+        {!sectionKey && <DiscoveryEnvie envie={envie} />}
         {!sectionKey && <DiscoveryClarifications clarifications={clarifications} />}
         {portes && !sectionKey && <DiscoveryPortes sujets={portes.sujets} projets={[...portes.projets]} refuses={portes.refuses} />}
       </div>

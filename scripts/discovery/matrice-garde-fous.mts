@@ -44,6 +44,9 @@ const PERIMETRE: Record<string, { canaux: Canal[]; cible: string }> = {
   service_preference: { canaux: ['service', 'experience', 'cadeau'], cible: 'la manière dont une attention est organisée pour cette personne' },
   support_mode: { canaux: ['message', 'appel', 'en_personne', 'service'], cible: 'la manière de soutenir cette personne' },
   facilitator: { canaux: ['service', 'experience'], cible: 'une aide proposée à cette personne' },
+  // Onglet 14 : « domaine que la personne déclare vouloir protéger d’un sacrifice durable dans un projet de réussite ».
+  // Contrainte forte DANS CETTE SEULE PORTÉE : aucune interdiction de domaine hors de ce projet.
+  protected_domain: { canaux: TOUS, cible: 'toute proposition qui demande à cette personne de sacrifier ce domaine pour un projet de réussite' },
 };
 const GENERIQUE = /^\(|^autres?$|^cela dépend$|^ça dépend$/i;
 

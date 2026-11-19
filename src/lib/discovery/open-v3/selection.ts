@@ -28,7 +28,10 @@
 // même état doit donner deux fois la même question, sinon aucun test ne vaut rien et aucun
 // parcours n'est reproductible.
 // ─────────────────────────────────────────────────────────────────────────────────────
+import { genreQuiRemplit, valeurDuParametre } from './parametres';
+import { PROJET_PAR_CONTEXTE, type TypeDeProjet } from './conditions';
 import { DEPENDANCES, TETES_DE_SOUS_PARTIE } from './dependances';
+import { analyseDe, aUneLecture } from './lectures';
 import { OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import { PRESUMENT_L_ALCOOL } from './correspondances';
 import { coexistence, estPrioritaire, poolDe, type VerdictCoexistence } from './coexistence';
@@ -70,7 +73,8 @@ export interface Resultat {
  */
 export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyMap<string, number> = PARTAGE_BANQUE): Verdict {
   const vise = informationVisee(q, partage);
-  const analyse = analyserCondition(q.condition_emission);
+  // La LECTURE établie de la condition quand le référentiel l'écrit en prose (lectures.ts).
+  const analyse = analyseDe(q);
   // « NE BOIT PAS » protège les questions qui présument une consommation d'alcool, qu'elles
   // portent ou non la consigne dans leur condition (la sous-branche « Vin » ne la porte pas).
   const presumeAlcool = PRESUMENT_L_ALCOOL.has(q.id);
@@ -90,12 +94,13 @@ export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyM
     if (!etat.projets) return 'indecidable';
     if ((etat.projets.get(poolDe(q.branche))?.size ?? 0) === 0) return 'fermer';
   }
-  const idTete = TETES_DE_SOUS_PARTIE.get(q.id);
+  // Une lecture établie est la lecture COMPLÈTE de la question : elle n'hérite plus d'une tête.
+  const idTete = aUneLecture(q) ? undefined : TETES_DE_SOUS_PARTIE.get(q.id);
   const tete = idTete ? PAR_ID.get(idTete) : undefined;
   if (!tete) return propre;
   // La condition de tête est évaluée pour ce qu'elle exige de la PERSONNE ; « information
   // manquante » et le reste de ce qui tient à la question elle-même restent jugés ci-dessus.
-  const heritee = evaluerCondition(analyserCondition(tete.condition_emission), etat,
+  const heritee = evaluerCondition(analyseDe(tete), etat,
     { branche: tete.branche, pool: poolDe(tete.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance: DEPENDANCES.get(tete.id) });
   if (heritee === 'fermer') return 'fermer';
   return propre === 'indecidable' || heritee === 'indecidable' ? 'indecidable' : 'ouvrir';
@@ -150,10 +155,13 @@ export const aParametre = (q: QuestionV3): boolean => /\{[^}]+\}/.test(q.enonce)
  * ou une occasion nommés »), ou sa condition nomme un achat ou un séjour concret. Sa réponse
  * appartient alors à ce projet, pas à la personne en général.
  */
-export function requiertProjet(q: QuestionV3): 'achat' | 'sejour' | 'tout' | null {
-  const clauses = analyserCondition(q.condition_emission).clauses;
-  const contexte = clauses.find((c) => c.type === 'contexte' && (c.libelle === 'achat concret' || c.libelle === 'sejour concret'));
-  if (contexte && contexte.type === 'contexte') return contexte.libelle === 'achat concret' ? 'achat' : 'sejour';
+export function requiertProjet(q: QuestionV3): TypeDeProjet | 'tout' | null {
+  // Un énoncé à paramètre appartient à la préparation qui remplit son paramètre.
+  const genre = genreQuiRemplit(q);
+  if (genre) return genre;
+  const clauses = analyseDe(q).clauses;
+  const contexte = clauses.find((c) => c.type === 'contexte' && PROJET_PAR_CONTEXTE[c.libelle]);
+  if (contexte && contexte.type === 'contexte') return PROJET_PAR_CONTEXTE[contexte.libelle];
   if (q.niveau === 'C' && !clauses.some((c) => c.type === 'tag' && c.chemin.startsWith('CONTEXT.'))) return 'tout';
   return null;
 }
@@ -191,7 +199,9 @@ export function motifDExclusion(
   if (sterile(q)) return 'sterile';
   // UN ÉNONCÉ À PARAMÈTRE (« À quelle fréquence pratiques-tu {activité} ? ») ne se sert pas tant
   // que rien ne remplit le paramètre : on n'affiche jamais une accolade à la personne.
-  if (aParametre(q)) return 'parametre_non_resolu';
+  // Il se sert quand sa SOURCE AUTORISÉE donne une valeur (parametres.ts) : une préparation en
+  // cours, nommée par la personne. Sinon : non proposée.
+  if (aParametre(q) && valeurDuParametre(q, etat) === null) return 'parametre_non_resolu';
   // Une question ouverte que le référentiel a archivée (onglet 9) n'est jamais servie.
   if (OUVERTES_ARCHIVEES.has(q.id)) return 'archivee';
   // UN DOMAINE QUE LA PERSONNE A ÉCARTÉ n'est plus proposé d'initiative. Sa propre démarche

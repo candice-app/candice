@@ -1,0 +1,770 @@
+{
+ "Sophie": {
+  "admissibles": 66,
+  "bilan": {
+   "fermer": 2023,
+   "indecidable": 175,
+   "ouvrir": 66,
+   "deja_posee": 10,
+   "coexistence_nouvelle_pas_encore_posee": 6,
+   "coexistence_remplacee": 1
+  },
+  "branches": [
+   "cuisine",
+   "cuisine & gastronomie",
+   "reading",
+   "food gastronomy",
+   "marcher seule en ville avec podcast",
+   "marcher seule en ville avec un podcast",
+   "books literature",
+   "lecture",
+   "food",
+   "food2",
+   "Food & Gastronomie",
+   "reading2",
+   "grd_schedule_disruption",
+   "food & gastronomie"
+  ],
+  "questions": [
+   {
+    "cle": "food.0025",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut te faire refuser un plat, même bien préparé ?",
+    "options": [
+     "r1=Une texture",
+     "r2=Un ingrédient précis",
+     "r3=Trop d’épices",
+     "r4=Trop de gras",
+     "r5=Trop de sucre",
+     "r6=Les mélanges sucré-salé",
+     "r7=Le cru",
+     "r8=Les abats",
+     "r9=Les produits de la mer",
+     "r10=Les aliments fermentés",
+     "r11=Autre"
+    ]
+   },
+   {
+    "cle": "food.0027",
+    "type": "chips_single",
+    "texte": "Quel niveau d’épices te convient ?",
+    "options": [
+     "r1=Pas épicé",
+     "r2=Très légèrement",
+     "r3=Modérément",
+     "r4=Bien relevé",
+     "r5=Très épicé"
+    ]
+   },
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   },
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   }
+  ]
+ },
+ "Camille": {
+  "admissibles": 19,
+  "bilan": {
+   "fermer": 2075,
+   "indecidable": 177,
+   "deja_posee": 10,
+   "ouvrir": 19
+  },
+  "branches": [
+   "sport_practice",
+   "sport fitness",
+   "sport",
+   "bricolage",
+   "sportp",
+   "nature",
+   "grd_poor_execution",
+   "garden"
+  ],
+  "questions": [
+   {
+    "cle": "nature.0215",
+    "type": "chips_multi",
+    "texte": "Dans quel environnement te sens-tu le mieux ?",
+    "options": [
+     "r1=Montagne",
+     "r2=Forêt",
+     "r3=Campagne",
+     "r4=Mer ou océan",
+     "r5=Lac ou rivière",
+     "r6=Désert",
+     "r7=Jungle",
+     "r8=Parc urbain",
+     "r9=Chez moi"
+    ]
+   },
+   {
+    "cle": "nature.0216",
+    "type": "chips_single",
+    "texte": "Dans la nature, tu préfères…",
+    "options": [
+     "r1=Être actif(ve)",
+     "r2=Contempler et me reposer",
+     "r3=Photographier",
+     "r4=Partager un repas ou un moment",
+     "r5=Un peu de tout"
+    ]
+   },
+   {
+    "cle": "sport.0191",
+    "type": "chips_single",
+    "texte": "Recevoir du matériel de sport, c’est…",
+    "options": [
+     "r1=Une très bonne idée",
+     "r2=Possible si la référence est exacte",
+     "r3=Risqué car je suis exigeant(e)",
+     "r4=Je préfère une expérience ou un bon",
+     "r5=À éviter"
+    ]
+   },
+   {
+    "cle": "sportp.0506",
+    "type": "chips_single",
+    "texte": "Recevoir quelque chose lié au sport, pour toi, ce serait…",
+    "options": [
+     "r1=Une excellente idée",
+     "r2=Une bonne idée si c’est adapté à ma pratique",
+     "r3=Oui pour une expérience ou une inscription",
+     "r4=Oui pour de la récupération ou du confort",
+     "r5=Possible seulement avec une référence précise",
+     "r6=Risqué : je préfère choisir mon matériel",
+     "r7=Je préfère éviter les cadeaux liés au sport"
+    ]
+   },
+   {
+    "cle": "sportp.0507",
+    "type": "text",
+    "texte": "Y a-t-il quelque chose qu’il faudrait absolument éviter dans une attention liée au sport ?",
+    "options": []
+   },
+   {
+    "cle": "sport.0186",
+    "type": "text",
+    "texte": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans le sport et l’activité physique ?",
+    "options": []
+   }
+  ]
+ },
+ "Inès": {
+  "admissibles": 66,
+  "bilan": {
+   "fermer": 2023,
+   "indecidable": 175,
+   "ouvrir": 66,
+   "deja_posee": 10,
+   "coexistence_nouvelle_pas_encore_posee": 6,
+   "coexistence_remplacee": 1
+  },
+  "branches": [
+   "lecture",
+   "food",
+   "books literature",
+   "cuisine",
+   "cuisine & gastronomie",
+   "reading",
+   "reading2",
+   "food2",
+   "Food & Gastronomie",
+   "grd_public_exposure",
+   "food & gastronomie"
+  ],
+  "questions": [
+   {
+    "cle": "food.0023",
+    "type": "chips_single",
+    "texte": "À table, tu es plutôt…",
+    "options": [
+     "r1=Toujours partant(e) pour découvrir",
+     "r2=Curieux(se), mais avec quelques limites",
+     "r3=Fidèle à mes cuisines préférées",
+     "r4=Très attaché(e) à mes habitudes",
+     "r5=Cela dépend du contexte"
+    ]
+   },
+   {
+    "cle": "food.0025",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut te faire refuser un plat, même bien préparé ?",
+    "options": [
+     "r1=Une texture",
+     "r2=Un ingrédient précis",
+     "r3=Trop d’épices",
+     "r4=Trop de gras",
+     "r5=Trop de sucre",
+     "r6=Les mélanges sucré-salé",
+     "r7=Le cru",
+     "r8=Les abats",
+     "r9=Les produits de la mer",
+     "r10=Les aliments fermentés",
+     "r11=Autre"
+    ]
+   },
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   },
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   }
+  ]
+ },
+ "Léa": {
+  "admissibles": 44,
+  "bilan": {
+   "fermer": 2058,
+   "ouvrir": 44,
+   "indecidable": 153,
+   "deja_posee": 12,
+   "coexistence_nouvelle_pas_encore_posee": 6,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "craftsmanship",
+   "art",
+   "voyage",
+   "creativity",
+   "craft",
+   "Arts visuels & pratiques créatives",
+   "travel",
+   "travel2",
+   "grd_too_intimate",
+   "grd_sentimental_overload"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0890",
+    "type": "chips_multi",
+    "texte": "Avec qui aimes-tu le plus voyager ?",
+    "options": [
+     "r1=En couple",
+     "r2=En famille",
+     "r3=Avec mes enfants",
+     "r4=Avec des amis",
+     "r5=Avec un seul ami proche",
+     "r6=Seul(e)",
+     "r7=En petit groupe",
+     "r8=En voyage organisé",
+     "r9=Cela dépend complètement du voyage"
+    ]
+   },
+   {
+    "cle": "travel2.0891",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher un voyage pour toi ?",
+    "options": [
+     "r1=Un mauvais hébergement",
+     "r2=Un programme trop chargé",
+     "r3=Trop de transports",
+     "r4=Un manque d’organisation",
+     "r5=Trop de rigidité",
+     "r6=La foule",
+     "r7=Le bruit",
+     "r8=La chaleur",
+     "r9=Le froid",
+     "r10=Une mauvaise nourriture",
+     "r11=Le manque de confort",
+     "r12=Le manque d’authenticité",
+     "r13=Des dépenses imprévues",
+     "r14=Voyager avec les mauvaises personnes",
+     "r15=Ne pas avoir assez de temps seul(e)",
+     "r16=Des activités imposées",
+     "r17=Autre"
+    ]
+   },
+   {
+    "cle": "art.0131",
+    "type": "text",
+    "texte": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans l’art, les musées et les expositions ?",
+    "options": []
+   },
+   {
+    "cle": "craft.0616",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui te plaît le plus dans ces univers ?",
+    "options": [
+     "r1=Créer de mes mains",
+     "r2=Apprendre une technique",
+     "r3=M’exprimer",
+     "r4=Me détendre",
+     "r5=Photographier ou conserver des souvenirs",
+     "r6=Décorer mon intérieur",
+     "r7=Découvrir le travail d’artistes",
+     "r8=Posséder un objet unique",
+     "r9=Soutenir un artisan",
+     "r10=Collectionner",
+     "r11=Partager une activité",
+     "r12=Offrir ce que j’ai créé"
+    ]
+   },
+   {
+    "cle": "sensory.0261",
+    "type": "text",
+    "texte": "Quelles couleurs te font naturellement du bien ?",
+    "options": []
+   },
+   {
+    "cle": "sensory.0262",
+    "type": "text",
+    "texte": "Quelles couleurs n’aimes-tu presque jamais porter ou avoir chez toi ?",
+    "options": []
+   }
+  ]
+ },
+ "Manon": {
+  "admissibles": 23,
+  "bilan": {
+   "fermer": 2076,
+   "indecidable": 177,
+   "ouvrir": 23,
+   "coexistence_nouvelle_pas_encore_posee": 1,
+   "deja_posee": 4
+  },
+  "branches": [
+   "deco",
+   "deco & maison",
+   "brocantes",
+   "home",
+   "home2",
+   "grd_poor_execution"
+  ],
+  "questions": [
+   {
+    "cle": "home2.1263",
+    "type": "chips_multi",
+    "texte": "Quel style te ressemble réellement ?",
+    "options": [
+     "r1=Minimaliste",
+     "r2=Scandinave",
+     "r3=Japandi",
+     "r4=Contemporain",
+     "r5=Classique",
+     "r6=Bohème",
+     "r7=Industriel",
+     "r8=Vintage",
+     "r9=Campagne",
+     "r10=Coloré",
+     "r11=Éclectique",
+     "r12=Hôtel chic",
+     "r13=Maison de famille",
+     "r14=Je ne sais pas"
+    ]
+   },
+   {
+    "cle": "home2.1264",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui fait presque toujours un mauvais cadeau pour la maison ?",
+    "options": [
+     "r1=Les bibelots",
+     "r2=Les objets encombrants",
+     "r3=Les cadres",
+     "r4=Les plantes",
+     "r5=Les bougies",
+     "r6=Les diffuseurs",
+     "r7=Les objets humoristiques",
+     "r8=Les couleurs imposées",
+     "r9=Les matières que je n’aime pas",
+     "r10=Les objets difficiles à entretenir",
+     "r11=Les gadgets",
+     "r12=Les objets sans utilité",
+     "r13=Les objets très personnels",
+     "r14=Autre"
+    ]
+   }
+  ]
+ },
+ "Clara": {
+  "admissibles": 40,
+  "bilan": {
+   "fermer": 2051,
+   "indecidable": 177,
+   "deja_posee": 12,
+   "ouvrir": 40,
+   "coexistence_nouvelle_pas_encore_posee": 1
+  },
+  "branches": [
+   "art",
+   "reading",
+   "museum",
+   "lecture",
+   "papeteries",
+   "reading2",
+   "grd_poor_execution"
+  ],
+  "questions": [
+   {
+    "cle": "museum.0702",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui pourrait gâcher une visite pour toi ?",
+    "options": [
+     "r1=La foule",
+     "r2=Devoir faire la queue",
+     "r3=Une visite trop longue",
+     "r4=Un audioguide imposé",
+     "r5=Une visite trop rapide avec quelqu’un de pressé",
+     "r6=Un sujet qui ne m’intéresse pas",
+     "r7=Des espaces bruyants",
+     "r8=Une visite guidée obligatoire",
+     "r9=Y aller seul(e)",
+     "r10=Y aller accompagné(e)",
+     "r11=Rien de particulier"
+    ]
+   },
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   },
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   },
+   {
+    "cle": "art.0131",
+    "type": "text",
+    "texte": "Quel souvenir ou exemple représente le mieux ce que tu aimes dans l’art, les musées et les expositions ?",
+    "options": []
+   },
+   {
+    "cle": "art.0134",
+    "type": "chips_single",
+    "texte": "Tu préfères visiter…",
+    "options": [
+     "r1=Librement, à mon rythme",
+     "r2=Avec un guide",
+     "r3=Avec un audio-guide",
+     "r4=Avec quelqu’un qui connaît bien le sujet",
+     "r5=Rapidement, en sélectionnant quelques œuvres"
+    ]
+   },
+   {
+    "cle": "museum.0703",
+    "type": "chips_single",
+    "texte": "Ta visite idéale ressemble plutôt à…",
+    "options": [
+     "r1=Longue et approfondie",
+     "r2=Ciblée sur une partie précise",
+     "r3=Libre, au fil des salles",
+     "r4=Guidée par un passionné",
+     "r5=Avec un audioguide à mon rythme",
+     "r6=Courte mais intense",
+     "r7=Combinée avec un café ou un déjeuner"
+    ]
+   }
+  ]
+ },
+ "Nour": {
+  "admissibles": 44,
+  "bilan": {
+   "fermer": 2050,
+   "indecidable": 175,
+   "ouvrir": 44,
+   "deja_posee": 6,
+   "coexistence_nouvelle_pas_encore_posee": 5,
+   "coexistence_remplacee": 1
+  },
+  "branches": [
+   "cuisine",
+   "cuisine & gastronomie",
+   "food",
+   "food2",
+   "Food & Gastronomie",
+   "grd_schedule_disruption",
+   "food & gastronomie"
+  ],
+  "questions": [
+   {
+    "cle": "food.0023",
+    "type": "chips_single",
+    "texte": "À table, tu es plutôt…",
+    "options": [
+     "r1=Toujours partant(e) pour découvrir",
+     "r2=Curieux(se), mais avec quelques limites",
+     "r3=Fidèle à mes cuisines préférées",
+     "r4=Très attaché(e) à mes habitudes",
+     "r5=Cela dépend du contexte"
+    ]
+   },
+   {
+    "cle": "food.0025",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut te faire refuser un plat, même bien préparé ?",
+    "options": [
+     "r1=Une texture",
+     "r2=Un ingrédient précis",
+     "r3=Trop d’épices",
+     "r4=Trop de gras",
+     "r5=Trop de sucre",
+     "r6=Les mélanges sucré-salé",
+     "r7=Le cru",
+     "r8=Les abats",
+     "r9=Les produits de la mer",
+     "r10=Les aliments fermentés",
+     "r11=Autre"
+    ]
+   }
+  ]
+ },
+ "Alice": {
+  "admissibles": 0,
+  "bilan": {
+   "fermer": 2104,
+   "indecidable": 177
+  },
+  "branches": [
+   "grd_public_exposure"
+  ],
+  "questions": []
+ },
+ "Jeanne": {
+  "admissibles": 22,
+  "bilan": {
+   "fermer": 2077,
+   "indecidable": 177,
+   "ouvrir": 22,
+   "coexistence_nouvelle_pas_encore_posee": 1,
+   "deja_posee": 4
+  },
+  "branches": [
+   "reading",
+   "lecture",
+   "reading2"
+  ],
+  "questions": [
+   {
+    "cle": "reading.0108",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher une expérience liée à la lecture ?",
+    "options": [
+     "r1=Style trop lourd",
+     "r2=Rythme lent",
+     "r3=Sujet trop sombre",
+     "r4=Livre trop long",
+     "r5=Personnages peu crédibles",
+     "r6=Trop théorique",
+     "r7=Fin décevante",
+     "r8=Effet de mode"
+    ]
+   },
+   {
+    "cle": "reading.0111",
+    "type": "chips_multi",
+    "texte": "Quels livres te donnent le plus envie ?",
+    "options": [
+     "r1=Romans contemporains",
+     "r2=Classiques",
+     "r3=Policiers ou thrillers",
+     "r4=Fantasy",
+     "r5=Science-fiction",
+     "r6=Romance",
+     "r7=Romans historiques",
+     "r8=Biographies",
+     "r9=Essais",
+     "r10=Psychologie",
+     "r11=Développement personnel",
+     "r12=Histoire",
+     "r13=Société ou politique",
+     "r14=Poésie",
+     "r15=Beaux livres",
+     "r16=Livres pratiques"
+    ]
+   }
+  ]
+ },
+ "Yasmina": {
+  "admissibles": 36,
+  "bilan": {
+   "fermer": 2068,
+   "indecidable": 151,
+   "deja_posee": 12,
+   "coexistence_nouvelle_pas_encore_posee": 6,
+   "ouvrir": 36,
+   "coexistence_remplacee": 8
+  },
+  "branches": [
+   "bienetre",
+   "bien-etre",
+   "wellbeing",
+   "voyage",
+   "travel",
+   "travel2",
+   "grd_public_exposure",
+   "sensory"
+  ],
+  "questions": [
+   {
+    "cle": "travel2.0891",
+    "type": "chips_multi",
+    "texte": "Qu’est-ce qui peut le plus facilement gâcher un voyage pour toi ?",
+    "options": [
+     "r1=Un mauvais hébergement",
+     "r2=Un programme trop chargé",
+     "r3=Trop de transports",
+     "r4=Un manque d’organisation",
+     "r5=Trop de rigidité",
+     "r6=La foule",
+     "r7=Le bruit",
+     "r8=La chaleur",
+     "r9=Le froid",
+     "r10=Une mauvaise nourriture",
+     "r11=Le manque de confort",
+     "r12=Le manque d’authenticité",
+     "r13=Des dépenses imprévues",
+     "r14=Voyager avec les mauvaises personnes",
+     "r15=Ne pas avoir assez de temps seul(e)",
+     "r16=Des activités imposées",
+     "r17=Autre"
+    ]
+   },
+   {
+    "cle": "travel.0051",
+    "type": "chips_multi",
+    "texte": "Quand tu voyages, qu’est-ce que tu recherches d’abord ?",
+    "options": [
+     "r1=Découvrir un lieu",
+     "r2=Me reposer",
+     "r3=Bien manger",
+     "r4=Voir de beaux paysages",
+     "r5=Comprendre une culture",
+     "r6=Vivre une aventure",
+     "r7=Passer du temps avec mes proches",
+     "r8=Être dépaysé(e)",
+     "r9=Être choyé(e)"
+    ]
+   },
+   {
+    "cle": "wellbeing.0224",
+    "type": "chips_single",
+    "texte": "Pour te détendre, un massage ou un soin corporel…",
+    "options": [
+     "r1=Me ferait très plaisir",
+     "r2=Oui, avec un praticien bien choisi",
+     "r3=Seulement avec une personne du même genre",
+     "r4=Peut me mettre mal à l’aise",
+     "r5=Ne m’intéresse pas"
+    ]
+   },
+   {
+    "cle": "wellbeing.0225",
+    "type": "chips_single",
+    "texte": "Un moment de bien-être, tu le préfères…",
+    "options": [
+     "r1=Seul(e)",
+     "r2=En couple",
+     "r3=Avec un proche",
+     "r4=Cela dépend du soin",
+     "r5=Je ne suis pas attiré(e) par ce type d’expérience"
+    ]
+   },
+   {
+    "cle": "sensory.0265",
+    "type": "chips_single",
+    "texte": "Quelle lumière te met le plus à l’aise ?",
+    "options": [
+     "r1=Beaucoup de lumière naturelle",
+     "r2=Lumière douce et tamisée",
+     "r3=Lumière vive",
+     "r4=Bougies ou éclairage chaleureux",
+     "r5=Je n’y suis pas sensible"
+    ]
+   }
+  ]
+ }
+}

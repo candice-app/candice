@@ -1,0 +1,663 @@
+{
+ "decision_3": {
+  "colonne": "condition d’émission (onglet 0_FICHE_CANONIQUE)",
+  "axes": {
+   "Statut": [
+    "success.1716",
+    "success.1717",
+    "success.1718"
+   ],
+   "Liberté": [
+    "success.1720",
+    "success.1721",
+    "success.1722"
+   ],
+   "Impact": [
+    "success.1723",
+    "success.1724",
+    "success.1725"
+   ],
+   "Création": [
+    "success.1726",
+    "success.1727",
+    "success.1728"
+   ],
+   "Sécurité": [
+    "success.1729",
+    "success.1730",
+    "success.1731"
+   ],
+   "Reconnaissance": [
+    "success.1732",
+    "success.1733"
+   ],
+   "Maîtrise": [
+    "success.1736",
+    "success.1737",
+    "success.1738",
+    "success.1739"
+   ],
+   "Temps disponible": [
+    "success.1740",
+    "success.1741"
+   ],
+   "Transmission": [
+    "success.1743",
+    "success.1744",
+    "success.1745"
+   ]
+  },
+  "selecteur_propose": {
+   "question": "success.1711",
+   "enonce": "Aujourd’hui, quelle dimension de la réussite aimerais-tu davantage développer ?",
+   "option_par_axe": {
+    "Statut": "Le statut",
+    "Liberté": "La liberté",
+    "Impact": "L’impact",
+    "Création": "La création",
+    "Sécurité": "La sécurité",
+    "Reconnaissance": "La reconnaissance",
+    "Maîtrise": "La maîtrise",
+    "Temps disponible": "Le temps disponible",
+    "Transmission": "La transmission"
+   }
+  }
+ },
+ "decision_8": {
+  "lignes": [
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Me prouver quelque chose",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Me sentir plus libre",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Créer",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Apprendre",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Changer de vie",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Vivre une expérience forte",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Partager avec quelqu’un",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Me reconnecter à une ancienne envie",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Réaliser un rêve d’enfance",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Être fier ou fière de moi",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "dreams.2004",
+    "enonce": "Pourquoi ce projet compte-t-il autant pour toi ?",
+    "reponse": "Transmettre",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "projects",
+    "ecrit_aujourd_hui": "PREFERENCE.projects.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Construire quelque chose",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Apprendre",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Aider",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Créer",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Me dépasser",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "M’occuper des personnes que j’aime",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Découvrir",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Être reconnu(e)",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Gagner en liberté",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Trouver davantage d’équilibre",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Laisser une trace",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "philovie.1636",
+    "enonce": "Qu’est-ce qui te donne le plus l’impression d’avancer dans la bonne direction ?",
+    "reponse": "Profiter davantage du présent",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "philosophy",
+    "ecrit_aujourd_hui": "PREFERENCE.philosophy.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu apprends",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu aides",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu construis",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu crées",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu explores",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu transmets",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu gagnes",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "values.1910",
+    "enonce": "Tu es le plus motivé(e) lorsque…",
+    "reponse": "Tu résous un problème",
+    "nature": "motivation",
+    "attribut": "value_sought",
+    "domaine": "values",
+    "ecrit_aujourd_hui": "PREFERENCE.values.value_sought"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Une discussion",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Un problème concret",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Une rencontre",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Un livre",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Un podcast",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Une vidéo",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Un voyage",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Une émotion",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Un projet",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Une actualité",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   },
+   {
+    "question": "learning2.1455",
+    "enonce": "Qu’est-ce qui déclenche le plus souvent ton envie d’apprendre ?",
+    "reponse": "Le hasard",
+    "nature": "aide",
+    "attribut": "facilitator",
+    "domaine": "learning",
+    "ecrit_aujourd_hui": "PREFERENCE.learning.facilitator"
+   }
+  ],
+  "propositions": {
+   "dreams.2004": {
+    "portee": "le projet ou le rêve dont la personne parle (« ce projet ») — pas sa vie en général",
+    "destination": "connaissance ouverte « raison pour laquelle ce projet compte », rattachée à ce projet ; ni DRIVER, ni NEED, ni préférence générale"
+   },
+   "philovie.1636": {
+    "portee": "sa vie en général, déclarée",
+    "destination": "connaissance ouverte de type « priorité de vie » (même traitement que la question « moteurs » de l’onboarding, décision du 5 oct.) ; ni DRIVER, ni NEED"
+   },
+   "values.1910": {
+    "portee": "sa vie en général, déclarée",
+    "destination": "connaissance ouverte de type « priorité de vie » ; ni DRIVER, ni NEED"
+   },
+   "learning2.1455": {
+    "portee": "sa façon d’apprendre",
+    "destination": "fait déclaré « ce qui déclenche l’envie d’apprendre » dans le domaine de l’apprentissage ; aucune préférence sur des personnes (« une discussion », « une rencontre » décrivent un déclencheur, pas un goût pour quelqu’un)"
+   }
+  },
+  "equivalents": {
+   "créer": [
+    "dreams.2004",
+    "philovie.1636"
+   ],
+   "apprendre": [
+    "dreams.2004",
+    "philovie.1636"
+   ]
+  }
+ },
+ "arbitrages": [
+  {
+   "id": "CRE-11",
+   "enonce": "Tu préfères pratiquer…",
+   "branche": "Arts visuels & pratiques créatives",
+   "statut": "ARBITRAGE EN ATTENTE — 2 réponse(s)",
+   "meme_enonce_que": [
+    "craft.0623",
+    "sportp.0510"
+   ],
+   "reponses_sans_contrat": [],
+   "lecture": "doublon d’une question active",
+   "points": []
+  },
+  {
+   "id": "SOM-01",
+   "enonce": "En ce moment, comment te sens-tu par rapport à ton sommeil et à ton repos ?",
+   "branche": "Sommeil",
+   "statut": "ARBITRAGE EN ATTENTE — 7 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "bond.1685",
+   "enonce": "Qu’est-ce qui te montre qu’une personne respecte réellement tes limites ?",
+   "branche": "bond",
+   "statut": "ARBITRAGE EN ATTENTE — 5 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "causes.1919",
+   "enonce": "Ces causes te touchent surtout parce qu’elles sont liées…",
+   "branche": "causes",
+   "statut": "ARBITRAGE EN ATTENTE — 9 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "children.2081",
+   "enonce": "Quel âge ?",
+   "branche": "children",
+   "statut": "ARBITRAGE EN ATTENTE — 1 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "energy.1605",
+   "enonce": "Quand tu portes beaucoup de responsabilités, qu’est-ce qui disparaît en premier ?",
+   "branche": "energy",
+   "statut": "ARBITRAGE EN ATTENTE — 6 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "flowers.2126",
+   "enonce": "Quel message souhaites-tu transmettre ?",
+   "branche": "flowers",
+   "statut": "ARBITRAGE EN ATTENTE — 4 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "garden.0573",
+   "enonce": "Quand une plante ne va pas bien…",
+   "branche": "garden",
+   "statut": "ARBITRAGE EN ATTENTE — 3 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "learning2.1445",
+   "enonce": "Tu t’intéresses facilement à…",
+   "branche": "learning2",
+   "statut": "ARBITRAGE EN ATTENTE — 3 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "relation.0015",
+   "enonce": "Dans une période difficile, à quelle fréquence apprécies-tu qu’on prenne de tes nouvelles ?",
+   "branche": "relation",
+   "statut": "ARBITRAGE EN ATTENTE — 5 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "repair.0847",
+   "enonce": "Les petits désaccords du quotidien…",
+   "branche": "repair",
+   "statut": "ARBITRAGE EN ATTENTE — 3 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  },
+  {
+   "id": "sport.0188",
+   "enonce": "Quels sports pratiques-tu vraiment aujourd’hui ?",
+   "branche": "sport",
+   "statut": "ARBITRAGE EN ATTENTE — 1 réponse(s)",
+   "meme_enonce_que": [],
+   "reponses_sans_contrat": [],
+   "lecture": "aucun point écrit sur les réponses",
+   "points": []
+  }
+ ],
+ "matrice_attributs": {
+  "attributs_de_la_matrice": 39,
+  "attributs_utilises_par_la_banque": 39,
+  "utilises_absents_de_la_matrice": {},
+  "de_la_matrice_jamais_utilises": []
+ },
+ "registre_m1_m9": [
+  {
+   "decision": "M1",
+   "sujet": "gift_format donneur/receveur",
+   "application_declaree": "celebav.2169 requalifiée en annexe A ; celebav.2179 r1–r4 passées en FACT ; time.1565 r1–r6 vérifiées sans changement ; hosting.2052 recible sur gift_format avec role=give.",
+   "verification": "conforme sur 4 ligne(s)"
+  },
+  {
+   "decision": "M2",
+   "sujet": "service_preference",
+   "application_declaree": "Aucune ligne requalifiée : la définition est étendue dans la matrice de convention. Les réglages de service jugés généraux par le §7 reçoivent une validité sans échéance.",
+   "verification": "conforme sur 32 ligne(s) — mais le registre rend OBLIGATOIRES l’acteur (Candice, proche, prestataire), le bénéficiaire et le contexte : aucune de ces lignes ne les porte, et le producteur ne les écrit pas. Le sens « qui doit assister » n’est donc pas conservé à l’écriture."
+  },
+  {
+   "decision": "M3",
+   "sujet": "posture financière",
+   "application_declaree": "Appliquée par les décisions nominatives de l’annexe A.",
+   "verification": "conforme sur 4 ligne(s)"
+  },
+  {
+   "decision": "M4",
+   "sujet": "horizon d’un projet",
+   "application_declaree": "dreams.2002 r1–r6 et les autres horizons de l’annexe A passés en FACT à clé.",
+   "verification": "conforme sur 6 ligne(s)"
+  },
+  {
+   "decision": "M5",
+   "sujet": "tonalité émotionnelle d’une attention",
+   "application_declaree": "REM-11 r1–r8 vérifiées sans changement.",
+   "verification": "conforme sur 8 ligne(s)"
+  },
+  {
+   "decision": "M6",
+   "sujet": "rythme souhaité",
+   "application_declaree": "time.1549 r1–r4 et travel2.0897 r1–r6 requalifiées ; travel2.0897 r7 préservée ; daily2.1113 reste FACT ; time.1555 r1–r3 alignées par le §5.",
+   "verification": "conforme sur 10 ligne(s)"
+  },
+  {
+   "decision": "M7",
+   "sujet": "affect d’une situation",
+   "application_declaree": "philovie.1648 r1–r5 passées en FACT à clé ; r6 préservée ; change.1766, mental.1845 et work2.1353 traitées en annexe A.",
+   "verification": "conforme sur 5 ligne(s)"
+  },
+  {
+   "decision": "M8",
+   "sujet": "rôle dans l’humour",
+   "application_declaree": "Appliquée par la décision nominative de l’annexe A.",
+   "verification": "conforme sur 4 ligne(s)"
+  },
+  {
+   "decision": "M9",
+   "sujet": "écoute attentive",
+   "application_declaree": "joys.1893 r1 → active_listening ; bond.1669 r3 → availability_when_needed ; bond.1669 r8 → notice_distress.",
+   "verification": "conforme sur 3 ligne(s)"
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+ "Sophie": {
+  "food2.0856": ["r3", "r9", "r2"], "food2.0857": ["r2"], "reading2.1232": ["r2"], "reading2.1233": ["r1", "r6", "r10"],
+  "FOO-04": ["r2", "r1"],
+  "FOO-07": {"texte": "Les petits bistrots où le plat du jour a mijoté toute la matinée.", "units": [{"family": "OTHER", "label": "petits bistrots", "relation_label": "style de restaurant qui lui fait plaisir"}, {"family": "OTHER", "label": "plats mijotés", "relation_label": "ce qu’elle aime y trouver"}]}
+ },
+ "Camille": {
+  "garden.0557": ["r7"], "nature.0210": ["r2"], "sport.0183": ["r1"], "sport.0184": ["r4", "r6", "r8"], "sportp.0503": ["r1"], "sportp.0505": ["r3", "r4", "r6", "r9"]
+ },
+ "Inès": {
+  "food2.0856": ["r9", "r11", "r2"], "food2.0857": ["r5"], "reading2.1232": ["r1"], "reading2.1233": ["r3", "r5", "r10"], "FOO-04": ["r3", "r1"],
+  "FOO-07": {"texte": "Des petites tables calmes, où l’on s’entend parler. Les salons de thé aussi.", "units": [{"family": "OTHER", "label": "petites tables calmes", "relation_label": "style de restaurant qui lui fait plaisir"}, {"family": "OTHER", "label": "salons de thé", "relation_label": "style de lieu qui lui fait plaisir"}]}
+ },
+ "Léa": {
+  "travel2.0886": ["r2", "r3", "r14"], "travel2.0887": ["r8", "r7", "r18"], "art.0128": ["r2"], "art.0129": ["r1", "r5"],
+  "craft.0614": ["r2"], "craft.0615": ["r19"]
+ },
+ "Manon": { "home2.1259": ["r5"], "home2.1260": ["r11", "r2", "r10"] },
+ "Clara": {
+  "reading2.1232": ["r1"], "reading2.1233": ["r3", "r4", "r5"], "art.0128": ["r1"], "art.0129": ["r4", "r1", "r3"], "museum.0698": ["r1"], "museum.0699": ["r1", "r9", "r14"]
+ },
+ "Nour": {
+  "food2.0856": ["r2", "r6"], "food2.0857": ["r5"], "FOO-04": ["r1", "r7"],
+  "FOO-07": {"texte": "Ceux où on peut rester des heures sans qu’on nous apporte l’addition.", "units": [{"family": "OTHER", "label": "restaurants où l’on peut s’attarder", "relation_label": "style de restaurant qui lui fait plaisir"}]}
+ },
+ "Jeanne": { "reading2.1232": ["r2"], "reading2.1233": ["r2", "r5"] },
+ "Yasmina": {
+  "travel2.0886": ["r5", "r13"], "travel2.0887": ["r12"], "wellbeing.0218": ["r3"], "wellbeing.0219": ["r3", "r1"],
+  "sensory.0261": {"texte": "Le bleu nuit, et le blanc.", "units": [{"family": "OTHER", "label": "bleu nuit", "relation_label": "couleur qui lui fait du bien"}, {"family": "OTHER", "label": "blanc", "relation_label": "couleur qui lui fait du bien"}]},
+  "sensory.0262": {"texte": "Le jaune moutarde.", "units": [{"family": "OTHER", "label": "jaune moutarde", "relation_label": "couleur qu’elle n’aime presque jamais porter ou avoir chez elle"}]}
+ }
+}

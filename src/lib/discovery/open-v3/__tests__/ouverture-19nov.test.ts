@@ -156,7 +156,8 @@ describe('deux générations d’une branche : un seul pool, la nouvelle d’abo
   });
   it('chaque question nommée par l’onglet existe dans la banque, sauf celles qu’elle a retirées', () => {
     const absentes = [...REMPLACEMENTS].filter(([a, r]) => !question(a) || !question(r.nouvelle)).map(([a]) => a);
-    expect(absentes).toEqual(['series.0094']);
+    // `series.0094` était tenue en arbitrage ; la révision 6 l'a activée (arbitrage déjà écrit au classeur).
+    expect(absentes).toEqual([]);
   });
 });
 
@@ -183,7 +184,7 @@ describe('les protections ne se desserrent pas', () => {
     expect(prochainesQuestions(e, { combien: 50 }).choix.map((c) => c.question.id)).not.toContain('art.0128');
   });
   it('une question retirée de la banque active n’existe pas pour le moteur', () => {
-    expect(question('series.0094')).toBeUndefined();
+    expect(question('CRE-11')).toBeUndefined();   // toujours en arbitrage : absente de la banque active
   });
   it('« Ouverture branche X (voir onglet Branches) » : la question d’entrée se pose quand la branche est ouverte, jamais par défaut', () => {
     // La règle est dans la feuille Branches de la Banque V1.1 ; sa part exécutable : le domaine

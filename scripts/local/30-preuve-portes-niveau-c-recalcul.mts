@@ -8,6 +8,7 @@
 //      sport suivante n'est pas servie, et n'est pas marquée posée.
 //   4. Contre-exemples : rien de coché ; question hors banque ; compte d'un autre.
 import { estQuestionDOrientation } from '../../src/lib/discovery/open-v3/selection.ts';
+import { enonceRempli, valeurDuParametre } from '../../src/lib/discovery/open-v3/parametres.ts';
 import { compteLocal, verificateur } from './_compte-local.mts';
 import { cookiesDe, poster, obtenirLot, repondre } from './_session-http.mts';
 import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-interests.ts';
@@ -141,9 +142,10 @@ console.log('\n══ 3. Faible place, refus explicite, recalcul');
   const cle = lot!.question.question_key;
   const passe = await repondre(cookie, { jeton: lot!.jeton, questionKey: cle, skip: true });
   v.verifier(passe.status === 200 && await preuves(c) === n0 && (await etatDe(c)).dejaPosees.has(cle), 'non-réponse : la question passée n’écrit rien et ne revient pas', cle);
-  // Question retirée de la banque : absente du moteur, donc d'aucun lot — refusée, rien d'écrit.
-  const archivee = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'series.0094', answer: ['r1'] });
-  v.verifier(question('series.0094') === undefined && archivee.status === 403 && await preuves(c) === n0, 'question retirée de la banque : refusée, aucune preuve écrite', `HTTP ${archivee.status} ${archivee.motif}`);
+  // Question absente de la banque active (CRE-11 est restée en arbitrage — series.0094, l'exemple
+  // d'avant, a été rendue active par la révision 6) : d'aucun lot — refusée, rien d'écrit.
+  const archivee = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'CRE-11', answer: ['r1'] });
+  v.verifier(question('CRE-11') === undefined && archivee.status === 403 && await preuves(c) === n0, 'question retirée de la banque : refusée, aucune preuve écrite', `HTTP ${archivee.status} ${archivee.motif}`);
 }
 
 // ── 4. DONNÉE INACCESSIBLE : le compte d'un autre
@@ -180,5 +182,20 @@ console.log('\n══ Catégorie composite : orientation seulement');
   v.verifier(apres.some((q) => q.branche === q1.branche && !estQuestionDOrientation(q)), `réponse positive : les questions spécialisées de « ${q1.branche} » s’ouvrent`);
   const autre = q1.branche === 'nature' ? 'garden' : 'nature';
   v.verifier(apres.filter((q) => q.branche === autre).every(estQuestionDOrientation), `l’autre famille (« ${autre} ») reste à l’orientation : rien ne la prouve`);
+}
+// ── PARAMÈTRES D'ÉNONCÉ : remplis par une préparation en cours, déclarée par la personne.
+console.log('\n══ Paramètre d’énoncé et genres de préparation');
+{
+  const c = await compteLocal('portes-parametre'); const cookie = await cookiesDe(c.email, c.motDePasse);
+  const q = question('FOO-08')!;
+  v.verifier(valeurDuParametre(q, await etatDe(c)) === null, 'sans occasion en cours, « Pour {occasion}… » n’a pas de valeur : la question n’est pas proposée');
+  const refuse = await poster('/api/discovery/projet', cookie, { action: 'ouvrir', type: 'caprice', branche: q.branche, objet: 'x' });
+  v.verifier(refuse.status === 400, 'un genre de préparation inconnu est refusé (400)', String(refuse.status));
+  const n0 = await preuves(c);
+  const ouvre = await poster('/api/discovery/projet', cookie, { action: 'ouvrir', type: 'occasion', branche: q.branche, objet: 'Les 40 ans de Thibaud' });
+  v.verifier(ouvre.status === 200 && (await preuves(c)) === n0, 'elle déclare une occasion à préparer : acte enregistré, aucune préférence écrite', String(ouvre.status));
+  const e = await etatDe(c);
+  v.verifier(enonceRempli(q, e) === 'Pour les 40 ans de Thibaud, qu’est-ce qui compte le plus dans le choix d’un restaurant ?', 'l’énoncé est rempli par l’objet qu’elle a nommé', (() => { try { return enonceRempli(q, e); } catch (x) { return String(x); } })());
+  v.verifier(valeurDuParametre(question('brand.0268')!, e) === null, 'un paramètre dont la source n’est pas établie reste vide, même avec une préparation en cours');
 }
 v.bilan();

@@ -20,6 +20,25 @@
 // pour qu'on sache exactement ce qui reste à écrire.
 
 /** Ce que le moteur sait de la personne au moment de choisir une question. */
+/** Les genres de préparation qu'une personne peut déclarer en cours. Chacun est NOMMÉ par le
+ *  référentiel dans ses conditions (« achat concret », « sortie concrète », « cadeau en préparation »…). */
+export const TYPES_DE_PROJET = ['achat', 'sejour', 'occasion', 'sortie', 'cadeau', 'apprentissage', 'attention', 'experience'] as const;
+export type TypeDeProjet = (typeof TYPES_DE_PROJET)[number];
+/** Phrase exacte du référentiel → libellé de contexte. Table FIGÉE : rien n'y entre par ressemblance. */
+export const FRAGMENTS_DE_PROJET: Readonly<Record<string, string>> = {
+  'Achat concret uniquement': 'achat concret', 'Uniquement pour un achat concret': 'achat concret',
+  'Événement concret': 'occasion en cours', 'CONTEXT.celebration.current_occasion={occasion}': 'occasion en cours',
+  'Sortie concrète': 'sortie en cours',
+  'Cadeau concret': 'cadeau en cours', 'Cadeau en préparation': 'cadeau en cours',
+  'Apprentissage concret': 'apprentissage en cours',
+  'Attention concrète': 'attention en cours', 'Attention concrète en préparation': 'attention en cours',
+  'Expérience préparée — donnée contextuelle': 'experience en cours',
+};
+export const PROJET_PAR_CONTEXTE: Readonly<Record<string, TypeDeProjet>> = {
+  'achat concret': 'achat', 'sejour concret': 'sejour', 'occasion en cours': 'occasion', 'sortie en cours': 'sortie', 'cadeau en cours': 'cadeau',
+  'apprentissage en cours': 'apprentissage', 'attention en cours': 'attention', 'experience en cours': 'experience',
+};
+
 export interface EtatDiscovery {
   /** Tags du journal, forme « FAMILLE.chemin » → valeur consolidée. Lu, jamais supposé. */
   readonly tags: ReadonlyMap<string, string>;
@@ -66,7 +85,10 @@ export interface EtatDiscovery {
    * sait pas lire les projets : les conditions qui en dépendent sont non résolues. Présent et
    * vide = aucun projet en cours : elles sont fausses.
    */
-  readonly projets?: ReadonlyMap<string, ReadonlySet<'achat' | 'sejour'>>;
+  readonly projets?: ReadonlyMap<string, ReadonlySet<TypeDeProjet>>;
+  /** L'objet nommé du projet en cours le plus récent, par `<pool>|<genre>` : c'est lui qui remplit
+   *  le paramètre d'un énoncé (« Pour {occasion}… »). */
+  readonly objetsDeProjet?: ReadonlyMap<string, string>;
   /**
    * CE QUI OUVRE UNE SOUS-PARTIE dont le référentiel ne nomme pas la question de tri : la règle
    * écrite pour sa branche (table figée `correspondances.json`). `niveau_B_du_parent` : la
@@ -104,6 +126,11 @@ export type Clause =
   | { readonly type: 'pas_si_sans_alcool' }
   | { readonly type: 'contexte'; readonly libelle: string }
   | { readonly type: 'domaines_actifs'; readonly noms: readonly string[] }
+  /** « Réponse à live.0475 : Festival | Spectacle de danse » : la personne a choisi l'une de ces
+   *  options à cette question. N'apparaît que dans une LECTURE de condition (lectures.ts), jamais
+   *  dans le référentiel. `cles` : l'identité des options, résolue contre la banque au chargement ;
+   *  absente, la clause est indécidable. */
+  | { readonly type: 'reponse'; readonly selecteur: string; readonly libelles: readonly string[]; readonly cles?: readonly string[] }
   | { readonly type: 'prose'; readonly texte: string };
 
 /** LES MARQUES DE SENSIBILITÉ DU RÉFÉRENTIEL. Il en écrit TROIS niveaux — « sensitivity:
@@ -190,6 +217,14 @@ function sansNotes(frag: string): string {
 
 /** Table EXPLICITE des formes reconnues. Rien n'est reconnu qui ne soit ici. */
 const MOTIFS: ReadonlyArray<{ re: RegExp; lire: (m: RegExpMatchArray) => Clause | null }> = [
+  // EN PREMIER : un libellé d'option peut finir comme un autre motif (« … actifs »).
+  // « Réponse à live.0475 : Festival | Spectacle de danse ». Écrite par une LECTURE de condition
+  // (lectures-de-conditions.json), jamais par le référentiel. Le séparateur des options est
+  // « | » : ni « ou » ni « , », qui figurent dans des libellés.
+  {
+    re: /^r[ée]ponse à ([A-Za-z0-9_-]+\.[A-Za-z0-9_-]+)\s*:\s*(.+)$/i,
+    lire: (m) => ({ type: 'reponse', selecteur: m[1], libelles: m[2].split(/\s*\|\s*/).map((x) => x.trim()).filter(Boolean) }),
+  },
   // ── Expressions machine, entre accents graves dans le référentiel ───────────
   {
     re: /^([A-Z_]+(?:\.[A-Za-z0-9_]+)+)\s*(!?=)\s*([A-Za-z0-9_{}]+)$/,
@@ -256,6 +291,14 @@ const MOTIFS: ReadonlyArray<{ re: RegExp; lire: (m: RegExpMatchArray) => Clause 
     re: /^achat concret$/i,
     lire: () => ({ type: 'contexte', libelle: 'achat concret' }),
   },
+  // LES AUTRES PRÉPARATIONS QUE LE RÉFÉRENTIEL NOMME. Même règle que « achat concret » : la
+  // question ne se pose que pour une préparation EN COURS, déclarée et nommée par la personne.
+  // Correspondance EXACTE, phrase par phrase : un fragment qui ajoute une condition (« budget
+  // engagé », « multi-dates », « artiste identifié »…) n'est pas lu ici et reste non résolu.
+  ...Object.entries(FRAGMENTS_DE_PROJET).map(([texte, libelle]) => ({
+    re: new RegExp(`^${texte.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i'),
+    lire: () => ({ type: 'contexte' as const, libelle }),
+  })),
   // « Niveau C, séjour concret » : le niveau C exigeant déjà un projet, la phrase demande
   // que ce projet soit un séjour.
   {
@@ -278,6 +321,10 @@ function lireSujet(frag: string): { clause: Clause; inconnue?: string } | null {
   // Un fragment peut être une expression entre accents graves, seule ou enrobée.
   const atome = frag.match(/^`([^`]+)`$/);
   const sujet = atome ? atome[1] : frag.replace(/`/g, '');
+  // Les phrases de préparation en cours passent AVANT les motifs généraux : l'une d'elles a la
+  // forme d'un tag (`CONTEXT.celebration.current_occasion={occasion}`) qu'aucun tag ne sait lire.
+  const preparation = Object.entries(FRAGMENTS_DE_PROJET).find(([texte]) => texte.toLowerCase() === sujet.toLowerCase());
+  if (preparation) return { clause: { type: 'contexte', libelle: preparation[1] } };
   for (const { re, lire } of MOTIFS) {
     const m = sujet.match(re);
     if (m) {
@@ -433,6 +480,14 @@ function evaluerClause(
   contexte: ContexteQuestion,
 ): Verdict {
   switch (c.type) {
+    case 'reponse': {
+      // Options non résolues contre la banque : on ne sait pas ce qu'il faut avoir répondu.
+      if (!c.cles || c.cles.length === 0) return 'indecidable';
+      // Pas de réponse à la question source : la condition est connue, et fausse pour l'instant.
+      const choisies = etat.optionsChoisies?.get(c.selecteur);
+      if (!choisies) return 'fermer';
+      return c.cles.some((k) => choisies.has(k)) ? 'ouvrir' : 'fermer';
+    }
     case 'prose':
       return 'indecidable';
     case 'tag': {
@@ -548,7 +603,7 @@ function evaluerClause(
     case 'contexte': {
       // « Achat concret », « séjour concret » : un projet de ce type, en cours, dans le domaine
       // de la question. L'intérêt pour le voyage ne crée pas un séjour.
-      const type = c.libelle === 'achat concret' ? 'achat' : c.libelle === 'sejour concret' ? 'sejour' : null;
+      const type = PROJET_PAR_CONTEXTE[c.libelle] ?? null;
       if (type) {
         if (!etat.projets) return 'indecidable';
         return etat.projets.get(contexte.pool ?? contexte.branche)?.has(type) ? 'ouvrir' : 'fermer';

@@ -5,8 +5,9 @@
 // les réponses de tri) : ce qui reste fermé ou non résolu là ne dépend pas de la personne.
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { BANQUE, MANIFESTE } from '../../src/lib/discovery/open-v3/banque.ts';
-import { analyserCondition, type EtatDiscovery } from '../../src/lib/discovery/open-v3/conditions.ts';
+import { analyserCondition, TYPES_DE_PROJET, type EtatDiscovery } from '../../src/lib/discovery/open-v3/conditions.ts';
 import { verdictDe, aParametre } from '../../src/lib/discovery/open-v3/selection.ts';
+import { analyseDe, aUneLecture, NON_LUES, SELECTEURS_DE_LECTURE } from '../../src/lib/discovery/open-v3/lectures.ts';
 import { couvertureDestinations } from '../../src/lib/discovery/open-v3/destinations.ts';
 import { ALIAS_BRANCHES, SOUS_PARTIES, TAGS_ATTENDUS, HYPOTHESES } from '../../src/lib/discovery/open-v3/correspondances.ts';
 import { DEPENDANCES, TETES_DE_SOUS_PARTIE, SELECTEURS } from '../../src/lib/discovery/open-v3/dependances.ts';
@@ -22,8 +23,9 @@ const tout: EtatDiscovery = {
   niveauParBranche: new Map([...noms].map((n) => [n, 'C'] as const)), dejaPosees: new Set(), attributsConnus: new Set(), sansAlcool: false,
   contextesConnus: new Set(), contextesActifs: new Set(), aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES,
   sujetsChoisis: new Set(BANQUE.map((q) => q.branche)),
-  projets: new Map([...new Set(BANQUE.map((q) => poolDe(q.branche)))].map((p) => [p, new Set(['achat', 'sejour'] as const)] as const)),
-  optionsChoisies: new Map(BANQUE.filter((q) => SELECTEURS.has(q.id)).map((q) => [q.id, new Set(q.options.map(cleOption))] as const)),
+  projets: new Map([...new Set(BANQUE.map((q) => poolDe(q.branche)))].map((p) => [p, new Set(TYPES_DE_PROJET)] as const)),
+  objetsDeProjet: new Map([...new Set(BANQUE.map((q) => poolDe(q.branche)))].flatMap((p) => TYPES_DE_PROJET.map((t) => [`${p}|${t}`, 'une préparation'] as const))),
+  optionsChoisies: new Map(BANQUE.filter((q) => SELECTEURS.has(q.id) || SELECTEURS_DE_LECTURE.has(q.id)).map((q) => [q.id, new Set(q.options.map(cleOption))] as const)),
 };
 const sansProjet: EtatDiscovery = { ...tout, projets: new Map() };
 const sansDemarche: EtatDiscovery = { ...tout, sujetsChoisis: new Set() };
@@ -32,7 +34,7 @@ const sansTri: EtatDiscovery = { ...tout, optionsChoisies: new Map() };
 const cat = new Map<string, string[]>();
 const ranger = (c: string, id: string) => cat.set(c, [...(cat.get(c) ?? []), id]);
 for (const q of BANQUE) {
-  const a = analyserCondition(q.condition_emission);
+  const a = analyseDe(q);
   const sterile = !q.options.some((o) => o.voie === 'OPEN_KNOWLEDGE' || produireDepuisOption(q, o).type !== 'rien') && q.forme !== 'open';
   const v = verdictDe(q, tout);
   if (OUVERTES_ARCHIVEES.has(q.id)) ranger('archivee_par_le_referentiel', q.id);

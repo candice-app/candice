@@ -7,10 +7,13 @@ import { compteLocal, verificateur } from './_compte-local.mts';
 import { BANQUE, question } from '../../src/lib/discovery/open-v3/banque.ts';
 import { cleOption } from '../../src/lib/discovery/open-v3/cle-option.ts';
 import { produireDepuisOption } from '../../src/lib/discovery/open-v3/produire.ts';
-import { requiertProjet } from '../../src/lib/discovery/open-v3/selection.ts';
+import { requiertProjet, motifDExclusion, verdictDe } from '../../src/lib/discovery/open-v3/selection.ts';
+import { lireEtat } from '../../src/lib/discovery/open-v3/etat.ts';
+import { produireInteretsOnboarding } from '../../src/lib/questionnaire/produce-interests.ts';
 import { enregistrerReponseFermee, enregistrerReponseOuverte, ouvrirProjet, rejouerLecturesEnAttente, connaissancesDuProjet } from '../../src/lib/discovery/open-v3/service.ts';
 import { clarificationsOuvertes, repondreClarification, declarerAnimal, entitesConnues } from '../../src/lib/discovery/open-v3/destinations-ecriture.ts';
 import { lirePortrait } from '../../src/lib/knowledge/portrait.ts';
+import { envieAProposer, repondreEnvieAuCarnet } from '../../src/lib/discovery/open-v3/envie-carnet.ts';
 import { faitsDiscoveryPourPortrait } from '../../src/lib/discovery/open-v3/faits-portrait.ts';
 import { readSocleFacts } from '../../src/lib/questionnaire/breath-tags.ts';
 
@@ -122,5 +125,43 @@ const seg = (declencheur: string, passage: string, attitude: string, plus: Recor
   v.verifier(duProjet.preuves.length === ev!.length, '5 : le lecteur du projet la rend, structurée');
   const rendu = faitsDiscoveryPourPortrait(await readSocleFacts(c.client as never, c.userId, { discovery: 'seulement' }));
   v.verifier(rendu.lignes.length === 0, '5 : rien du projet n’est rendu au portrait comme fait général');
+}
+{ console.log('\n6. Décision n° 5 — l’envie culinaire est PROPOSÉE au Carnet d’envies, jamais ajoutée d’office');
+  const c = await compteLocal('faits-6');
+  await dicter([{ exprime_envie: true, details: ['ramen tonkotsu'], periode: 'en ce moment', contraintes_declarees: [] }]);
+  await enregistrerReponseOuverte(c.client as never, { userId: c.userId, questionId: 'food2.0882A', texte: 'J’ai très envie de ramen tonkotsu en ce moment', acteId: acte() });
+  const carnet = async () => (await c.client.from('my_wishlist_items').select('title,source_trace').eq('user_id', c.userId)).data ?? [];
+  const e = await envieAProposer(c.client as never, { userId: c.userId });
+  v.verifier(e?.titre === 'ramen tonkotsu' && (await carnet()).length === 0, '6 : l’envie est à proposer ; le Carnet est vide', JSON.stringify(e));
+  const r = await repondreEnvieAuCarnet(c.client as never, { userId: c.userId, envieId: e!.id, ajouter: true });
+  const apres = await carnet();
+  v.verifier(r.etat === 'ajoutee' && apres.length === 1 && apres[0].title === 'ramen tonkotsu' && apres[0].source_trace === 'declared', '6 : sur sa confirmation, un article du Carnet dans ses mots', JSON.stringify(apres));
+  v.verifier((await envieAProposer(c.client as never, { userId: c.userId })) === null, '6 : la proposition ne revient pas');
+}
+{ console.log('\n7. Catégorie composite « Nature & jardinage » : répondre NON à l’orientation n’ouvre pas le jardinage (relevé en rejouant Camille)');
+  const c = await compteLocal('faits-7');
+  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'nature', label: 'Nature & jardinage' }], timestamp: new Date().toISOString() });
+  const q57 = question('garden.0557')!, specialisee = question('garden.0558')!;
+  const repondre57 = (libelle: string) => enregistrerReponseFermee(c.client as never, { userId: c.userId, questionId: q57.id, clesOptions: [cleOption(q57.options.find((o) => o.libelle === libelle)!)], acteId: acte() });
+  let e = (await lireEtat(c.client as never, { userId: c.userId })).etat;
+  v.verifier(motifDExclusion(specialisee, e) === 'orientation_seulement', '7 : avant toute réponse, seule l’orientation est ouverte', String(motifDExclusion(specialisee, e)));
+  await repondre57('Ce n’est pas vraiment mon univers');
+  e = (await lireEtat(c.client as never, { userId: c.userId })).etat;
+  v.verifier(motifDExclusion(specialisee, e) === 'orientation_seulement', '7 : « Ce n’est pas vraiment mon univers » n’ouvre pas les questions spécialisées', String(motifDExclusion(specialisee, e)));
+  await repondre57('Une vraie passion');
+  e = (await lireEtat(c.client as never, { userId: c.userId })).etat;
+  v.verifier(motifDExclusion(specialisee, e) !== 'orientation_seulement' && verdictDe(specialisee, e) === 'ouvrir', '7 : « Une vraie passion » (réponse positive) les ouvre');
+}
+{ console.log('\n8. Lectures des conditions : « Si festivals appréciés (0475) » s’ouvre sur la réponse « Festival », pas sur « Concert »');
+  const c = await compteLocal('faits-8');
+  await produireInteretsOnboarding(c.client as never, { userId: c.userId, categories: [{ id: 'musique', label: 'Musique' }], timestamp: new Date().toISOString() });
+  const q75 = question('live.0475')!, q86 = question('live.0486')!;
+  const cocher = (...l: string[]) => enregistrerReponseFermee(c.client as never, { userId: c.userId, questionId: q75.id, clesOptions: l.map((x) => cleOption(q75.options.find((o) => o.libelle === x)!)), acteId: acte() });
+  await cocher('Concert');
+  let e = (await lireEtat(c.client as never, { userId: c.userId })).etat;
+  v.verifier(verdictDe(q86, e) === 'fermer', '8 : « Concert » seul : la question des festivals reste fermée', verdictDe(q86, e));
+  await cocher('Concert', 'Festival');
+  e = (await lireEtat(c.client as never, { userId: c.userId })).etat;
+  v.verifier(verdictDe(q86, e) === 'ouvrir', '8 : « Festival » coché : elle s’ouvre — la réponse est relue en base (journal), pas supposée', verdictDe(q86, e));
 }
 v.bilan();

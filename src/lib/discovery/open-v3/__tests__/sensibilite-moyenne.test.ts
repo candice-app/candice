@@ -30,7 +30,8 @@ const toutOuvert = (sujetsChoisis: string[] = []): EtatDiscovery => {
 
 describe('les 32 questions de sensibilité moyenne', () => {
   it('elles sont 32, et toutes portent le mode d’ouverture écrit par la révision 3', () => {
-    expect(moyennes.length).toBe(32);
+    // 32 dans la banque d'origine ; 2 de plus parmi les questions activées par la révision 6.
+    expect(moyennes.length).toBe(34);
     for (const q of moyennes) {
       const c = analyserCondition(q.condition_emission);
       expect(c.sensible, q.id).toBe(true);
@@ -64,7 +65,7 @@ describe('les 32 questions de sensibilité moyenne', () => {
     // Celles qui ne s'ouvrent pas ne sont pas refusées par la sensibilité : leur condition
     // d'origine porte un nom de branche ou un fragment encore à résoudre (registre).
     expect(restantes.every((r) => r.v === 'indecidable')).toBe(true);
-    expect(ouvertes.length).toBe(30);
+    expect(ouvertes.length).toBe(32);
     expect(restantes.map((r) => r.id).sort()).toEqual(['drinks.2106', 'joys.1893']);
   });
 

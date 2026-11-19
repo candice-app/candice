@@ -1269,6 +1269,22 @@
    "justification": "Partie de « sleep » (Sommeil) : ses questions y sont rangées. Le classeur la fait dépendre d’un choix ou d’une circonstance qu’il ne rattache à aucune question lisible : elle reste non résolue."
   },
   {
+   "nom": ": voyage/famille",
+   "emplois": {
+    "photo": 1
+   },
+   "exemple": "Sous-branche : voyage/famille (0669)",
+   "type": "sous_partie",
+   "branches": [
+    "photo"
+   ],
+   "statut": "etablie",
+   "critere": "appartenance",
+   "ouverture": "dependance",
+   "source": "banque du classeur officiel (colonne « branche » des 1 question(s)) ; Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A, colonne « Conditions niveau B »",
+   "justification": "Partie de « photo » (Photographie) : ses questions y sont rangées. Elle s’ouvre sur la réponse que le classeur désigne (voir dependances.ts)."
+  },
+  {
    "nom": ": webtoon apprecie",
    "emplois": {
     "comics": 1
@@ -1526,7 +1542,7 @@
   {
    "nom": "animaux philosophie",
    "emplois": {
-    "animals": 19
+    "animals": 20
    },
    "exemple": "Branche Animaux philosophie ouverte",
    "type": "branche",
@@ -1604,7 +1620,7 @@
   {
    "nom": "argent",
    "emplois": {
-    "money": 8
+    "money": 12
    },
    "exemple": "Branche Argent ouverte",
    "type": "branche",
@@ -1758,7 +1774,7 @@
   {
    "nom": "axe 2 — comment j’aime celebrer les autres",
    "emplois": {
-    "celebav": 16
+    "celebav": 18
    },
    "exemple": "AXE 2 — Comment j’aime célébrer les autres (offert) — niveau A",
    "type": "branche",
@@ -1769,7 +1785,7 @@
    "critere": "appartenance",
    "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille B (nom officiel de la branche) ; conditions du classeur officiel",
    "regroupement": "comment j’aime celebrer les autres",
-   "justification": "Axe de « celebav » (Célébration avancée) : la feuille Branches écrit que cette branche « sépare strictement trois axes », et les 16 questions de celui-ci y sont rangées. « comment j’aime celebrer les autres » est un titre de regroupement ou une note de rédaction : il ne conditionne pas l’ouverture (décision n° 3 du 18 nov.)."
+   "justification": "Axe de « celebav » (Célébration avancée) : la feuille Branches écrit que cette branche « sépare strictement trois axes », et les 18 questions de celui-ci y sont rangées. « comment j’aime celebrer les autres » est un titre de regroupement ou une note de rédaction : il ne conditionne pas l’ouverture (décision n° 3 du 18 nov.)."
   },
   {
    "nom": "axe 3 — rapport a l’organisation",
@@ -2237,7 +2253,7 @@
   {
    "nom": "changement",
    "emplois": {
-    "change": 31
+    "change": 32
    },
    "exemple": "Branche Changement ouverte",
    "type": "branche",
@@ -2316,9 +2332,9 @@
   {
    "nom": "charge mentale",
    "emplois": {
-    "mental": 14
+    "mental": 16
    },
-   "exemple": "Branche Charge mentale ouverte — croise daily2.1114 et energy.1593",
+   "exemple": "Ouverture branche Charge mentale (voir onglet Branches) — NOUVELLE BRANCHE. ⚠ Cette branche ne doit JAMAIS ressembler à un questionnaire sur le burn-out ou la santé mentale. Elle parle UNIQUEMENT de f",
    "type": "branche",
    "branches": [
     "mental"
@@ -2879,9 +2895,9 @@
   {
    "nom": "daily",
    "emplois": {
-    "daily2": 20
+    "daily2": 21
    },
-   "exemple": "Branche Daily ouverte",
+   "exemple": "Ouverture branche Daily (voir onglet Branches). ⚠ REFONTE : remplace à terme daily.* V1 (8 q) — merge final. Délimitation : Charge mentale = ce que la personne porte/voudrait déléguer · Rituels = ce q",
    "type": "branche",
    "branches": [
     "daily",
@@ -2960,7 +2976,7 @@
   {
    "nom": "durabilite, provenance & valeurs",
    "emplois": {
-    "consumption2": 3
+    "consumption2": 4
    },
    "exemple": "Sous-branche Durabilité, provenance & valeurs",
    "type": "sous_partie",
@@ -2970,7 +2986,7 @@
    "statut": "etablie",
    "critere": "appartenance",
    "ouverture": "non_resolue",
-   "source": "banque du classeur officiel (colonne « branche » des 3 question(s)) ; Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A, colonne « Conditions niveau B »",
+   "source": "banque du classeur officiel (colonne « branche » des 4 question(s)) ; Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A, colonne « Conditions niveau B »",
    "justification": "Partie de « consumption2 » (Consommation (refonte)) : ses questions y sont rangées. Le classeur la fait dépendre d’un choix ou d’une circonstance qu’il ne rattache à aucune question lisible : elle reste non résolue."
   },
   {
@@ -3019,6 +3035,22 @@
    "critere": "condition_en_prose",
    "source": "conditions du classeur officiel",
    "justification": "« energie » désigne « energy » (Rapport à l’énergie), mais « le niveau c passe par des recits » est une condition que le moteur ne sait pas rendre vraie ou fausse. 1 question(s) : energy.1609."
+  },
+  {
+   "nom": "entrepreneuriat — uniquement si concerne",
+   "emplois": {
+    "work2": 1
+   },
+   "exemple": "Sous-branche Entrepreneuriat — UNIQUEMENT si concerné — sensitivity: HIGH",
+   "type": "sous_partie",
+   "branches": [
+    "work2"
+   ],
+   "statut": "etablie",
+   "critere": "appartenance",
+   "ouverture": "non_resolue",
+   "source": "banque du classeur officiel (colonne « branche » des 1 question(s)) ; Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille A, colonne « Conditions niveau B »",
+   "justification": "Partie de « work2 » (Travail (refonte)) : ses questions y sont rangées. Le classeur la fait dépendre d’un choix ou d’une circonstance qu’il ne rattache à aucune question lisible : elle reste non résolue."
   },
   {
    "nom": "essais : si essai lu",
@@ -3087,7 +3119,7 @@
    "nom": "famille",
    "emplois": {
     "daily2": 3,
-    "family": 35,
+    "family": 40,
     "relation2": 5
    },
    "exemple": "Sous-branche Famille",
@@ -3147,6 +3179,38 @@
    "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille B (nom officiel de la branche) ; conditions du classeur officiel",
    "regroupement": "optionnel et conversationnel. ne jamais demander de raconter toute son histoire familiale",
    "justification": "« famille » porte exactement les mots du nom officiel de « family » (Rapport à la famille). « optionnel et conversationnel. ne jamais demander de raconter toute son histoire familiale » est un titre de regroupement ou une note de rédaction : il ne conditionne pas l’ouverture (décision n° 3 du 18 nov.)."
+  },
+  {
+   "nom": "famille — reponse libre egalement possible",
+   "emplois": {
+    "family": 1
+   },
+   "exemple": "Niveau B Famille — réponse libre également possible",
+   "type": "branche",
+   "branches": [
+    "family"
+   ],
+   "statut": "etablie",
+   "critere": "nom",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille B (nom officiel de la branche) ; conditions du classeur officiel",
+   "regroupement": "reponse libre egalement possible",
+   "justification": "« famille » porte exactement les mots du nom officiel de « family » (Rapport à la famille). « reponse libre egalement possible » est un titre de regroupement ou une note de rédaction : il ne conditionne pas l’ouverture (décision n° 3 du 18 nov.)."
+  },
+  {
+   "nom": "famille — sensitivity: high — sous-question volontairement large, jamais de detail douloureux exige",
+   "emplois": {
+    "family": 1
+   },
+   "exemple": "Niveau B Famille — sensitivity: HIGH — sous-question volontairement LARGE, jamais de détail douloureux exigé",
+   "type": "branche",
+   "branches": [
+    "family"
+   ],
+   "statut": "etablie",
+   "critere": "nom",
+   "source": "Candice_Referentiel_Enrichi_Architecture_HSG_V2.xlsx, feuille B (nom officiel de la branche) ; conditions du classeur officiel",
+   "regroupement": "sensitivity: high — sous-question volontairement large, jamais de detail douloureux exige",
+   "justification": "« famille » porte exactement les mots du nom officiel de « family » (Rapport à la famille). « sensitivity: high — sous-question volontairement large, jamais de detail douloureux exige » est un titre de regroupement ou une note de rédaction : il ne conditionne pas l’ouverture (décision n° 3 du 18 nov.)."
   },
   {
    "nom": "fan/acheteur",
@@ -3230,7 +3294,7 @@
   {
    "nom": "food",
    "emplois": {
-    "food2": 11
+    "food2": 12
    },
    "exemple": "Ouverture branche Food (voir onglet Branches). ⚠ REFONTE : remplace à terme food.* V1 (30 q) — merge final avec tout en base.",
    "type": "branche",
@@ -3395,7 +3459,7 @@
    "nom": "humour",
    "emplois": {
     "humor": 7,
-    "humor2": 16
+    "humor2": 17
    },
    "exemple": "Intérêt humour sélectionné ou détecté",
    "type": "branche",
@@ -3624,7 +3688,7 @@
    "nom": "lecture",
    "emplois": {
     "reading": 10,
-    "reading2": 14
+    "reading2": 17
    },
    "exemple": "Intérêt lecture sélectionné ou détecté",
    "type": "branche",
@@ -3704,7 +3768,7 @@
   {
    "nom": "les valeurs",
    "emplois": {
-    "values": 16
+    "values": 17
    },
    "exemple": "Ouverture branche Les valeurs (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐⭐. ⚠ NE PAS CONFONDRE avec « Signature de valeur » (value.*) qui porte sur les critères d’achat.",
    "type": "branche",
@@ -3747,6 +3811,22 @@
    "critere": "condition_en_prose",
    "source": "conditions du classeur officiel",
    "justification": "« les valeurs » désigne « values » (Les valeurs), mais « tres rarement, uniquement lorsqu’une recommandation semble entrer en tension avec une valeur importante » est une condition que le moteur ne sait pas rendre vraie ou fausse. 1 question(s) : values.1916."
+  },
+  {
+   "nom": "les valeurs — uniquement en cas de tension detectee",
+   "emplois": {
+    "values": 1
+   },
+   "exemple": "Niveau C Les valeurs — uniquement en cas de tension détectée",
+   "type": "branche",
+   "branches": [],
+   "candidates": [
+    "values"
+   ],
+   "statut": "hypothese",
+   "critere": "condition_en_prose",
+   "source": "conditions du classeur officiel",
+   "justification": "« les valeurs » désigne « values » (Les valeurs), mais « uniquement en cas de tension detectee » est une condition que le moteur ne sait pas rendre vraie ou fausse. 1 question(s) : values.1917."
   },
   {
    "nom": "linge de maison : si categorie choisie",
@@ -3942,7 +4022,7 @@
   {
    "nom": "mode",
    "emplois": {
-    "fashion2": 15
+    "fashion2": 17
    },
    "exemple": "Ouverture branche Mode (voir onglet Branches) — ⚠ MERGE FINAL : remplace fashion V1 (12 q). Chaussures, bijoux, montres et sacs restent dans leurs branches spécialisées, données croisées avec le style",
    "type": "branche",
@@ -4075,7 +4155,7 @@
   {
    "nom": "mode — tendances & identite",
    "emplois": {
-    "fashion2": 2
+    "fashion2": 3
    },
    "exemple": "Niveau B Mode — tendances & identité",
    "type": "branche",
@@ -4463,6 +4543,23 @@
    "justification": "Nom que le classeur donne à la branche historique « fragrance » dans ses conditions (« Branche Parfum et odeurs ouverte »). Son premier terme est le nom officiel (« Parfum ») ; la suite le développe sans le conditionner. Toutes ses questions sont dans « fragrance »."
   },
   {
+   "nom": "parfum — seulement en auto-reponse",
+   "emplois": {
+    "fragrance2": 1
+   },
+   "exemple": "Niveau B Parfum — SEULEMENT en auto-réponse (self-only, askable_about_other=false)",
+   "type": "branche",
+   "branches": [],
+   "candidates": [
+    "fragrance",
+    "fragrance2"
+   ],
+   "statut": "hypothese",
+   "critere": "condition_en_prose",
+   "source": "conditions du classeur officiel",
+   "justification": "« parfum » désigne « fragrance » (Parfum (V1 — à remplacer au merge)) et « fragrance2 » (Parfum (refonte)), mais « seulement en auto-reponse » est une condition que le moteur ne sait pas rendre vraie ou fausse. 1 question(s) : fragrance2.1164."
+  },
+  {
    "nom": "parfum, apres 1153 — question parametrique {parfum}",
    "emplois": {
     "fragrance2": 1
@@ -4514,7 +4611,7 @@
   {
    "nom": "petites joies",
    "emplois": {
-    "joys": 12
+    "joys": 13
    },
    "exemple": "Ouverture branche Petites joies (voir onglet Branches) — NOUVELLE BRANCHE. Peut s’ouvrir presque pour tout le monde, mais APRÈS le questionnaire initial et de manière LÉGÈRE.",
    "type": "branche",
@@ -4672,7 +4769,7 @@
   {
    "nom": "philosophie de vie",
    "emplois": {
-    "philovie": 27
+    "philovie": 30
    },
    "exemple": "Ouverture branche Philosophie de vie (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐⭐, niveau 4 « moteurs profonds ». ⚠ Ne doit JAMAIS arriver trop tôt avec une question massive. Mauvaise entrée : « qu",
    "type": "branche",
@@ -4815,9 +4912,9 @@
   {
    "nom": "podcasts",
    "emplois": {
-    "podcast": 20
+    "podcast": 21
    },
-   "exemple": "Branche Podcasts ouverte",
+   "exemple": "Ouverture branche Podcasts (voir onglet Branches)",
    "type": "branche",
    "branches": [
     "podcast"
@@ -5049,7 +5146,7 @@
   {
    "nom": "rapport au lien",
    "emplois": {
-    "bond": 33
+    "bond": 36
    },
    "exemple": "Ouverture branche Rapport au lien (voir onglet Branches) — NOUVELLE BRANCHE ⭐⭐⭐⭐⭐, niveau 4 « moteurs profonds ».",
    "type": "branche",
@@ -5204,6 +5301,23 @@
    "justification": "« relation » est l’identifiant de la branche."
   },
   {
+   "nom": "relation : jamais une exploration generale — uniquement quand une attention doit etre recommandee dans une relation precise",
+   "emplois": {
+    "relation2": 1
+   },
+   "exemple": "Niveau C Relation : jamais une exploration générale — uniquement quand une attention doit être recommandée dans une relation précise",
+   "type": "branche",
+   "branches": [],
+   "candidates": [
+    "relation",
+    "relation2"
+   ],
+   "statut": "hypothese",
+   "critere": "condition_en_prose",
+   "source": "conditions du classeur officiel",
+   "justification": "« relation » désigne « relation » (Réception des attentions, mots, gestes, services et relation) et « relation2 » (Relation (refonte V2)), mais « jamais une exploration generale — uniquement quand une attention doit etre recommandee dans une relation precise » est une condition que le moteur ne sait pas rendre vraie ou fausse. 1 question(s) : relation2.0805."
+  },
+  {
    "nom": "relation — self-only : a poser uniquement en reponse directe, jamais au pilote",
    "emplois": {
     "relation2": 1
@@ -5318,7 +5432,7 @@
   {
    "nom": "reussite",
    "emplois": {
-    "success": 13
+    "success": 15
    },
    "exemple": "Branche Réussite ouverte",
    "type": "branche",
@@ -5525,7 +5639,7 @@
   {
    "nom": "reves",
    "emplois": {
-    "dreams": 17
+    "dreams": 18
    },
    "exemple": "Branche Rêves ouverte",
    "type": "branche",
@@ -5728,7 +5842,7 @@
   {
    "nom": "sensoriel",
    "emplois": {
-    "sensory2": 13
+    "sensory2": 14
    },
    "exemple": "Niveau B Sensoriel (voir onglet Branches)",
    "type": "branche",
@@ -5790,7 +5904,7 @@
   {
    "nom": "series",
    "emplois": {
-    "series": 11,
+    "series": 12,
     "series2": 21
    },
    "exemple": "Intérêt séries sélectionné ou détecté",
@@ -5841,7 +5955,7 @@
   {
    "nom": "signature de valeur",
    "emplois": {
-    "value": 7
+    "value": 8
    },
    "exemple": "Ouverture branche Signature de valeur (voir onglet Branches) — NOUVELLE BRANCHE, couche transversale. COUCHE TRANSVERSALE : ne pas poser 30 questions — découvrir où la personne place naturellement le ",
    "type": "branche",
@@ -6286,7 +6400,7 @@
   {
    "nom": "temps",
    "emplois": {
-    "time": 16
+    "time": 18
    },
    "exemple": "Branche Temps ouverte",
    "type": "branche",
@@ -6448,7 +6562,7 @@
   {
    "nom": "travail",
    "emplois": {
-    "work2": 15
+    "work2": 17
    },
    "exemple": "Ouverture branche Travail (voir onglet Branches) — ⚠ MERGE FINAL : remplace work V1 (8 q). Ouvrir si : travaille, étudiante, entrepreneure, indépendante, retraitée active (adapter les formulations).",
    "type": "branche",
@@ -6513,7 +6627,7 @@
   {
    "nom": "travail et carriere",
    "emplois": {
-    "work": 7
+    "work": 8
    },
    "exemple": "Branche travail et carrière ouverte par le questionnaire initial ou un texte libre",
    "type": "branche",

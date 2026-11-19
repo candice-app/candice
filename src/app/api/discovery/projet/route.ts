@@ -1,3 +1,4 @@
+import { TYPES_DE_PROJET, type TypeDeProjet } from "@/lib/discovery/open-v3/conditions";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { ouvrirProjet, cloreProjet, projetsEnCours, ReponseInvalideError } from "@/lib/discovery/open-v3/service";
@@ -33,11 +34,11 @@ export async function POST(req: Request) {
   try { body = await req.json(); } catch { return NextResponse.json({ error: "corps illisible" }, { status: 400 }); }
   try {
     if (body.action === "ouvrir") {
-      if ((body.type !== "achat" && body.type !== "sejour") || typeof body.branche !== "string" || typeof body.objet !== "string"
+      if (typeof body.type !== "string" || !(TYPES_DE_PROJET as readonly string[]).includes(body.type) || typeof body.branche !== "string" || typeof body.objet !== "string"
         || (body.fin !== undefined && typeof body.fin !== "string")) {
-        return NextResponse.json({ error: "type (achat ou sejour), branche et objet requis" }, { status: 400 });
+        return NextResponse.json({ error: `type (${TYPES_DE_PROJET.join(", ")}), branche et objet requis` }, { status: 400 });
       }
-      const r = await ouvrirProjet(supabase as never, { userId: user.id, type: body.type, branche: body.branche, objet: body.objet, ...(body.fin ? { fin: body.fin } : {}) });
+      const r = await ouvrirProjet(supabase as never, { userId: user.id, type: body.type as TypeDeProjet, branche: body.branche, objet: body.objet, ...(body.fin ? { fin: body.fin } : {}) });
       return NextResponse.json({ ok: true, projet: r.projet });
     }
     if (body.action === "clore") {

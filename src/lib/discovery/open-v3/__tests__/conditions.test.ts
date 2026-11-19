@@ -167,8 +167,11 @@ describe('la lecture est plus stricte que le texte, jamais plus permissive', () 
   });
 
   it('un paramètre entre accolades n’est pas comparé à une constante', () => {
-    const c = analyserCondition('`CONTEXT.celebration.current_occasion={occasion}`');
-    expect(c.lisible).toBe(false); // on ne fait pas semblant de savoir ce que vaut {occasion}
+    // Aucune constante n'est comparée à {occasion}. La SEULE expression de cette forme que le
+    // moteur lit est celle de la table des préparations : « une occasion est en cours » (elle
+    // remplira le paramètre). Toute autre expression à accolades reste non lue.
+    expect(analyserCondition('`CONTEXT.celebration.current_occasion={occasion}`').clauses).toEqual([{ type: 'contexte', libelle: 'occasion en cours' }]);
+    expect(analyserCondition('`CONTEXT.celebration.budget={montant}`').lisible).toBe(false);
   });
 });
 

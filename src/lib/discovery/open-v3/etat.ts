@@ -8,8 +8,10 @@
 // sens de marche : une lecture qui échoue doit faire poser MOINS de questions, jamais plus.
 // On ne remplit donc aucun champ « par défaut optimiste ».
 import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
-import { clef, type EtatDiscovery } from './conditions';
+import { clef, TYPES_DE_PROJET, type EtatDiscovery, type TypeDeProjet } from './conditions';
+export type { TypeDeProjet };
 import { SELECTEURS } from './dependances';
+import { SELECTEURS_DE_LECTURE } from './lectures';
 import { poolDe } from './coexistence';
 import { ALIAS_BRANCHES, SOUS_PARTIES, TAGS_ATTENDUS, memeSujet, ouvertParCategorie, ouvertParDomaineJournal } from './correspondances';
 import { BANQUE } from './banque';
@@ -65,12 +67,12 @@ for (const q of BANQUE) for (const o of q.options) {
   PLACES_FAIBLES.add(`${domaine}|${String((p.evidence as { preferenceValue?: unknown }).preferenceValue ?? '')}`);
   PLACE_DU_DOMAINE.set(q.branche, new Set([...(PLACE_DU_DOMAINE.get(q.branche) ?? []), domaine]));
 }
-export interface Projet { readonly id: string; readonly type: 'achat' | 'sejour'; readonly branche: string; readonly objet: string; readonly debut: string; readonly fin?: string }
+export interface Projet { readonly id: string; readonly type: TypeDeProjet; readonly branche: string; readonly objet: string; readonly debut: string; readonly fin?: string }
 /** Lit la valeur d'un fait de projet. `null` si elle n'en est pas une : rien n'est deviné. */
 export function lireProjet(valeur: string): Projet | null {
   try {
     const p = JSON.parse(valeur) as Partial<Projet>;
-    if (typeof p.id !== 'string' || (p.type !== 'achat' && p.type !== 'sejour') || typeof p.branche !== 'string'
+    if (typeof p.id !== 'string' || !(TYPES_DE_PROJET as readonly unknown[]).includes(p.type) || typeof p.branche !== 'string'
       || typeof p.objet !== 'string' || !p.objet.trim() || typeof p.debut !== 'string') return null;
     if (p.fin !== undefined && typeof p.fin !== 'string') return null;
     return p as Projet;
@@ -248,7 +250,7 @@ export async function lireEtat(
       // Ce que la personne a répondu aux questions qui font le tri d'une sous-partie
       // (« Sous-branche : manga apprécié (0415) ») : l'identité des options, telle que la
       // progression la conserve. Une réponse passée ou vide ne désigne rien.
-      if (l.is_filled && SELECTEURS.has(l.question_key) && l.answer_data != null) {
+      if (l.is_filled && (SELECTEURS.has(l.question_key) || SELECTEURS_DE_LECTURE.has(l.question_key)) && l.answer_data != null) {
         const v = l.answer_data;
         optionsChoisies.set(l.question_key, new Set((Array.isArray(v) ? v : [v]).filter((x): x is string => typeof x === 'string')));
       }
@@ -294,7 +296,7 @@ export async function lireEtat(
         if (b && !repondues.has(id)) reponsesParBranche.set(b, (reponsesParBranche.get(b) ?? 0) + 1);
       }
       dejaPosees.add(id); repondues.add(id);
-      if (SELECTEURS.has(id) && d.option_ref) optionsChoisies.set(id, new Set(d.option_ref.split(',').filter(Boolean)));
+      if ((SELECTEURS.has(id) || SELECTEURS_DE_LECTURE.has(id)) && d.option_ref) optionsChoisies.set(id, new Set(d.option_ref.split(',').filter(Boolean)));
       if (d.option_ref) dernieresReponses.set(id, new Set(d.option_ref.split(',').filter(Boolean)));
     }
   } catch (e) {
@@ -313,8 +315,9 @@ export async function lireEtat(
   const sujetsChoisis = new Set<string>();
   // Les projets en cours. `undefined` tant que la lecture n'a pas réussi : « on ne sait pas »
   // n'est pas « il n'y en a pas », et les conditions qui en dépendent restent non résolues.
-  let projetsLus: Map<string, Set<'achat' | 'sejour'>> | undefined;
-  const projets = new Map<string, Set<'achat' | 'sejour'>>();
+  let projetsLus: Map<string, Set<TypeDeProjet>> | undefined;
+  const projets = new Map<string, Set<TypeDeProjet>>();
+  const objetsDeProjet = new Map<string, { objet: string; debut: string }>();
   const maintenant = new Date().toISOString();
   try {
     const { data, error } = await (client as never as {
@@ -339,6 +342,9 @@ export async function lireEtat(
         if (!p || (p.fin && p.fin < maintenant)) continue;
         const pool = poolDe(p.branche);
         projets.set(pool, new Set([...(projets.get(pool) ?? []), p.type]));
+        // Plusieurs préparations du même genre dans le même domaine : la plus récente.
+        const cle = `${pool}|${p.type}`; const vu = objetsDeProjet.get(cle);
+        if (!vu || p.debut > vu.debut) objetsDeProjet.set(cle, { objet: p.objet, debut: p.debut });
       }
     }
     // Choisir d'explorer un sujet, c'est OUVRIR sa branche : aucune ouverture n'est plus
@@ -359,6 +365,9 @@ export async function lireEtat(
   // ── 3. LA PROFONDEUR ATTEINTE, branche par branche. Une branche jamais ouverte n'a
   //       pas de niveau : elle est absente de la table, et les portes « Niveau … » ferment.
   const niveauParBranche = new Map<string, 'A' | 'B' | 'C'>();
+  // Ce qui était ouvert AVANT de compter les réponses : un intérêt, une catégorie, un garde-fou,
+  // la démarche. Une branche où la personne a seulement RÉPONDU n'y figure pas (voir § orientation).
+  const ouvertesAvantReponses = new Set(branchesOuvertes);
   for (const b of branchesOuvertes) niveauParBranche.set(b, profondeur(reponsesParBranche.get(b) ?? 0));
   for (const [b, n] of reponsesParBranche) {
     niveauParBranche.set(clef(b), profondeur(n));
@@ -392,7 +401,12 @@ export async function lireEtat(
   for (const b of enOrientation) {
     // (Le tag `INTEREST.<branche>` ne compte pas : la catégorie composite « nature » le pose
     //  elle-même, sous le même nom que la branche.)
-    if (branchesOuvertes.has(b) || sujetsChoisis.has(b)) continue;
+    // ⚠ AVOIR RÉPONDU N'EST PAS UN SIGNAL D'OUVERTURE. Toute branche où la personne a répondu
+    //    passe pour ouverte (étape 3) : répondre « Ce n'est pas vraiment mon univers » à la
+    //    question d'orientation du jardinage ouvrait ainsi tout le jardinage (relevé le 19 nov.
+    //    en rejouant Camille). Seule une ouverture ANTÉRIEURE aux réponses compte ici ; une
+    //    réponse ne compte que si elle est positive (`orienteePositivement`).
+    if (ouvertesAvantReponses.has(b) || sujetsChoisis.has(b)) continue;
     branchesOuvertes.add(b);
     if (!orienteePositivement(b)) orientationSeulement.add(b);
   }
@@ -406,6 +420,7 @@ export async function lireEtat(
       contextesConnus: new Set(), contextesActifs: new Set(),
       sujetsChoisis, optionsChoisies, ...(projetsLus ? { projets: projetsLus } : {}), ...(dernierePosee ? { dernierePosee } : {}),
       aliasBranches: ALIAS_BRANCHES, reglesSousParties: SOUS_PARTIES, questionsSignalees, placeFaible, orientationSeulement,
+      objetsDeProjet: new Map([...objetsDeProjet].map(([k, v]) => [k, v.objet] as const)),
     },
     manques,
   };

@@ -1,0 +1,3307 @@
+{
+ "version": "2026-11-19.2",
+ "note": "Lectures des conditions en prose, relues. Seules les lignes « etablie » sont exécutées. Une lecture n’ouvre jamais plus que le texte. La condition d’origine est recopiée : si le classeur change, la lecture est refusée au chargement.",
+ "source": "Conditions de la banque active (classeur Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_6.xlsx) ; options des questions citées ; sens des options de craft.0614 fixés par Estelle le 19 nov.",
+ "lectures": [
+  {
+   "question": "bags.0377",
+   "origine": "Sous-branche : catégorie Sac à main / petit sac choisie",
+   "lue": "Réponse à bags.0360 : Un sac à main | Un petit sac ou une pochette",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Sac à main / petit sac choisie » : la catégorie à bags.0360 (« Quel type de sac… »).",
+   "non_repris": []
+  },
+  {
+   "question": "bags.0378",
+   "origine": "Sous-branche : catégorie Cabas choisie",
+   "lue": "Réponse à bags.0360 : Un cabas",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Cabas choisie » : la catégorie à bags.0360 (« Quel type de sac… »).",
+   "non_repris": []
+  },
+  {
+   "question": "bags.0379",
+   "origine": "Sous-branche : catégorie Sac à dos choisie",
+   "lue": "Réponse à bags.0360 : Un sac à dos",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Sac à dos choisie » : la catégorie à bags.0360 (« Quel type de sac… »).",
+   "non_repris": []
+  },
+  {
+   "question": "bags.0380",
+   "origine": "Sous-branche : catégorie Sac ordinateur choisie",
+   "lue": "Réponse à bags.0360 : Un sac ordinateur",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Sac ordinateur choisie » : la catégorie à bags.0360 (« Quel type de sac… »).",
+   "non_repris": []
+  },
+  {
+   "question": "bags.0381",
+   "origine": "Sous-branche : catégorie Voyage/valise choisie",
+   "lue": "Réponse à bags.0360 : Un sac de voyage ou un week-end | Une valise",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Voyage/valise choisie » : la catégorie à bags.0360 (« Quel type de sac… »).",
+   "non_repris": []
+  },
+  {
+   "question": "bags.0382",
+   "origine": "Sous-branche : catégorie Petite maroquinerie choisie",
+   "lue": "Réponse à bags.0360 : Un portefeuille | Un porte-cartes | Une trousse ou un petit accessoire",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Petite maroquinerie choisie » : la catégorie à bags.0360 (« Quel type de sac… »).",
+   "non_repris": []
+  },
+  {
+   "question": "bags.0383",
+   "origine": "Niveau C Sacs : modèle réel, achat par un proche, budget important, contrainte bloquante, passion",
+   "lue": "Niveau C bags ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« modèle réel » : un modèle précis en vue, donc un achat.",
+   "non_repris": [
+    "achat par un proche",
+    "budget important",
+    "contrainte bloquante",
+    "passion"
+   ]
+  },
+  {
+   "question": "bags.0384",
+   "origine": "À poser uniquement pour un achat",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« pour un achat » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "beauty2.1308",
+   "origine": "Niveau C Beauté : uniquement lorsqu’un cadeau est envisagé",
+   "lue": "Niveau C beauty2 ET Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« cadeau est envisagé » → Cadeau concret",
+   "non_repris": []
+  },
+  {
+   "question": "bond.1700",
+   "origine": "Niveau C Rapport au lien : part d’EXPÉRIENCES CONCRÈTES, car les personnes idéalisent souvent leur manière d’être en relation",
+   "lue": "Niveau C bond",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« part d’EXPÉRIENCES CONCRÈTES, car les personnes idéalisent souvent leur manière d’être en relation » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "causes.1936",
+   "origine": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Territoire Le vivant : si océans/biodiversité coché (1918)",
+   "lue": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Réponse à causes.1918 : La protection des océans | La biodiversité",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si océans/biodiversité coché (1918) ». La démarche reste exigée.",
+   "non_repris": [],
+   "demarche": true
+  },
+  {
+   "question": "causes.1937",
+   "origine": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Territoire Le vivant : si animaux coché — PONT avec la branche Animaux",
+   "lue": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Réponse à causes.1918 : La protection des animaux",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si animaux coché » (causes.1918). La démarche reste exigée.",
+   "non_repris": [],
+   "demarche": true
+  },
+  {
+   "question": "causes.1941",
+   "origine": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Territoire Le patrimoine : si patrimoine/savoir-faire coché — ponts Transmission, Esthétique, Rapport aux souvenirs",
+   "lue": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Réponse à causes.1918 : Le patrimoine | Les savoir-faire",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si patrimoine/savoir-faire coché » (causes.1918). La démarche reste exigée.",
+   "non_repris": [],
+   "demarche": true
+  },
+  {
+   "question": "celebav.2193",
+   "origine": "Niveau C Célébration avancée : quand une célébration est en préparation. RÈGLE : Candice doit interroger LES TROIS DIMENSIONS (reçu, offert, organisation).",
+   "lue": "Niveau C celebav ET Événement concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« célébration est en préparation » → Événement concret",
+   "non_repris": [
+    "offert",
+    "organisation)."
+   ]
+  },
+  {
+   "question": "celebration.0826",
+   "origine": "Niveau C Célébration : seulement lorsqu’un événement arrive",
+   "lue": "Niveau C celebration ET Événement concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« événement arrive » → Événement concret",
+   "non_repris": []
+  },
+  {
+   "question": "cinema2.0998",
+   "origine": "Niveau C Cinéma : passion ou attention concrète",
+   "lue": "Niveau C cinema2 ET Attention concrète",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« attention concrète » → Attention concrète",
+   "non_repris": [
+    "passion"
+   ]
+  },
+  {
+   "question": "collection.2036",
+   "origine": "Niveau C Collection : achat concret ou collection experte",
+   "lue": "Niveau C collection ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat concret » → Achat concret",
+   "non_repris": [
+    "collection experte"
+   ]
+  },
+  {
+   "question": "comics.0436",
+   "origine": "Avant d’offrir un tome ou une intégrale",
+   "lue": "Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Avant d’offrir » → Cadeau concret",
+   "non_repris": [
+    "une intégrale"
+   ]
+  },
+  {
+   "question": "comics.0442",
+   "origine": "Achat concret ou attention importante",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat concret » → Achat concret",
+   "non_repris": [
+    "attention importante"
+   ]
+  },
+  {
+   "question": "consumption2.1193",
+   "origine": "Sous-branche Durabilité, provenance & valeurs",
+   "lue": "Niveau B consumption2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Durabilité, provenance & valeurs » : un thème du niveau B ; aucun énoncé ne présume un achat ou une situation.",
+   "non_repris": []
+  },
+  {
+   "question": "consumption2.1194",
+   "origine": "Sous-branche Durabilité, provenance & valeurs",
+   "lue": "Niveau B consumption2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Durabilité, provenance & valeurs » : un thème du niveau B ; aucun énoncé ne présume un achat ou une situation.",
+   "non_repris": []
+  },
+  {
+   "question": "consumption2.1195",
+   "origine": "Sous-branche Durabilité, provenance & valeurs",
+   "lue": "Niveau B consumption2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Durabilité, provenance & valeurs » : un thème du niveau B ; aucun énoncé ne présume un achat ou une situation.",
+   "non_repris": []
+  },
+  {
+   "question": "consumption2.1196",
+   "origine": "Sous-branche Durabilité, provenance & valeurs",
+   "lue": "Niveau B consumption2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Durabilité, provenance & valeurs » : un thème du niveau B ; aucun énoncé ne présume un achat ou une situation.",
+   "non_repris": []
+  },
+  {
+   "question": "consumption2.1201",
+   "origine": "Sous-branche Abonnements, box & services récurrents",
+   "lue": "Niveau B consumption2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Abonnements, box & services récurrents » : la question demande l’avis, elle ne présume rien.",
+   "non_repris": []
+  },
+  {
+   "question": "consumption2.1202",
+   "origine": "Sous-branche Abonnements : si le principe est accepté (1201)",
+   "lue": "Réponse à consumption2.1201 : Est une excellente idée | Me plaît s’il correspond à une habitude existante | Me plaît s’il est limité dans le temps | Me convient si je n’ai rien à résilier",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si le principe est accepté (1201) » : les quatre réponses qui l’acceptent (1203 et 1204 appartiennent à la même sous-partie).",
+   "non_repris": [
+    "« Peut devenir une contrainte », « Risque de faire doublon » : des réserves, pas une acceptation"
+   ]
+  },
+  {
+   "question": "consumption2.1203",
+   "origine": "Sous-branche Abonnements",
+   "lue": "Réponse à consumption2.1201 : Est une excellente idée | Me plaît s’il correspond à une habitude existante | Me plaît s’il est limité dans le temps | Me convient si je n’ai rien à résilier",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si le principe est accepté (1201) » : les quatre réponses qui l’acceptent (1203 et 1204 appartiennent à la même sous-partie).",
+   "non_repris": [
+    "« Peut devenir une contrainte », « Risque de faire doublon » : des réserves, pas une acceptation"
+   ]
+  },
+  {
+   "question": "consumption2.1204",
+   "origine": "Sous-branche Abonnements",
+   "lue": "Réponse à consumption2.1201 : Est une excellente idée | Me plaît s’il correspond à une habitude existante | Me plaît s’il est limité dans le temps | Me convient si je n’ai rien à résilier",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si le principe est accepté (1201) » : les quatre réponses qui l’acceptent (1203 et 1204 appartiennent à la même sous-partie).",
+   "non_repris": [
+    "« Peut devenir une contrainte », « Risque de faire doublon » : des réserves, pas une acceptation"
+   ]
+  },
+  {
+   "question": "consumption2.1214",
+   "origine": "Niveau C Consommation : uniquement quand un produit ou une dépense précise est envisagé",
+   "lue": "Niveau C consumption2 ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« produit ou une dépense précise » → Achat concret",
+   "non_repris": [
+    "uniquement quand un produit",
+    "une dépense précise est envisagé"
+   ]
+  },
+  {
+   "question": "consumption2.1216",
+   "origine": "Achat concret — options générées selon la catégorie",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat concret » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "consumption2.1229",
+   "origine": "Sous-branche Achats pour les autres : la manière dont une personne OFFRE révèle aussi son rapport à la consommation",
+   "lue": "Niveau B consumption2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Achats pour les autres : la manière dont une personne OFFRE… » : la suite est une raison d’être, pas une condition.",
+   "non_repris": []
+  },
+  {
+   "question": "consumption2.1231",
+   "origine": "Sous-branche Achats pour les autres",
+   "lue": "Niveau B consumption2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Achats pour les autres : la manière dont une personne OFFRE… » : la suite est une raison d’être, pas une condition.",
+   "non_repris": []
+  },
+  {
+   "question": "craft.0645",
+   "origine": "Niveau C Pratiquant : passion ou achat concret",
+   "lue": "Niveau C craft ET Réponse à craft.0614 : Je pratique moi-même une ou plusieurs activités créatives ET Achat concret",
+   "statut": "etablie",
+   "critere": "axe défini par Estelle",
+   "justification": "« Niveau C Pratiquant : passion ou achat concret ».",
+   "non_repris": [
+    "« passion » : aucun seuil écrit"
+   ]
+  },
+  {
+   "question": "craft.0646",
+   "origine": "Achat technique concret",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat technique » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "craft.0647",
+   "origine": "Niveau C Pratiquant",
+   "lue": "Niveau C craft ET Réponse à craft.0614 : Je pratique moi-même une ou plusieurs activités créatives",
+   "statut": "etablie",
+   "critere": "axe défini par Estelle",
+   "justification": "« Niveau C Pratiquant » : niveau C de la branche, pratique déclarée à craft.0614.",
+   "non_repris": []
+  },
+  {
+   "question": "craft.0663",
+   "origine": "Niveau C Achat : achat concret",
+   "lue": "Niveau C craft ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« Niveau C Achat : achat concret » : l’axe « Achat » est l’achat lui-même.",
+   "non_repris": []
+  },
+  {
+   "question": "craft.0667",
+   "origine": "Transversal aux deux axes",
+   "lue": "Réponse à craft.0614 : Je pratique moi-même une ou plusieurs activités créatives | J’aime surtout regarder et découvrir | J’achète parfois des œuvres ou des objets artisanaux | Je collectionne certains objets ou artistes | J’aime les beaux objets, sans être particulièrement connaisseur",
+   "statut": "etablie",
+   "critere": "axe défini par Estelle",
+   "justification": "« Transversal aux deux axes » : Pratiquant OU Fan/acheteur (mêmes options que les questions de ces axes).",
+   "non_repris": []
+  },
+  {
+   "question": "daily2.1129",
+   "origine": "À poser si le temps pour soi est valorisé (1128)",
+   "lue": "Réponse à daily2.1128 : Oui, régulièrement | Oui, mais trop peu | Surtout le week-end | Seulement si je le planifie | Très rarement | Cela dépend des périodes",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« temps pour soi valorisé (1128) » : toute réponse sauf celle qui dit ne pas le rechercher. « Très rarement » dit qu’elle en a peu, pas qu’elle n’y tient pas.",
+   "non_repris": []
+  },
+  {
+   "question": "daily2.1140",
+   "origine": "Niveau C Daily : uniquement quand une attention est réellement envisagée dans une période précise",
+   "lue": "Niveau C daily2 ET Attention concrète",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« attention est réellement envisagée » → Attention concrète",
+   "non_repris": []
+  },
+  {
+   "question": "daily2.1145",
+   "origine": "Niveau C Daily, après 1144",
+   "lue": "Niveau C daily2 ET Réponse à daily2.1144 : Une matinée | Une pause déjeuner | Une fin d’après-midi | Une soirée | Une nuit | Quelques heures le week-end | Une journée",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« après 1144 » : un créneau a été désigné ; « ce temps » de l’énoncé est ce créneau.",
+   "non_repris": []
+  },
+  {
+   "question": "dreams.2013",
+   "origine": "Niveau C Rêves : projet concret",
+   "lue": "Niveau C dreams",
+   "statut": "etablie",
+   "critere": "toute préparation en cours du domaine",
+   "justification": "« projet concret » : le niveau C exige déjà une préparation en cours dans le domaine, quel qu’en soit le genre.",
+   "non_repris": []
+  },
+  {
+   "question": "drinks.2106",
+   "origine": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C Boissons — question CONTEXTUELLE, sensitivity: MOYENNE",
+   "lue": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau C drinks — sensitivity: MOYENNE",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« question CONTEXTUELLE » dit comment ranger la réponse. La démarche reste exigée.",
+   "non_repris": [],
+   "demarche": true
+  },
+  {
+   "question": "energy.1609",
+   "origine": "Niveau C Énergie : le niveau C passe par des RÉCITS",
+   "lue": "Niveau C energy",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« le niveau C passe par des RÉCITS » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1069",
+   "origine": "Niveau B Mode — FACULTATIVE, uniquement en auto-réponse, askable_about_other = FALSE",
+   "lue": "Niveau B fashion2",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« FACULTATIVE, uniquement en auto-réponse, askable_about_other = FALSE » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1083",
+   "origine": "À poser si le style évolue (1082)",
+   "lue": "Réponse à fashion2.1082 : Est en train d’évoluer",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« le style évolue (1082) » : la seule réponse qui le dit au présent.",
+   "non_repris": [
+    "« Est devenu plus simple / affirmé » (évolution passée) et « Ne reflète pas encore qui je suis » ne sont pas repris"
+   ]
+  },
+  {
+   "question": "fashion2.1085",
+   "origine": "Niveau B Mode — habitudes d’achat",
+   "lue": "Niveau B fashion2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Niveau B Mode — habitudes d’achat » : intitulé d’un groupe de questions, sans critère.",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1086",
+   "origine": "Niveau B Mode — habitudes d’achat",
+   "lue": "Niveau B fashion2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Niveau B Mode — habitudes d’achat » : intitulé d’un groupe de questions, sans critère.",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1087",
+   "origine": "Niveau B Mode — habitudes d’achat",
+   "lue": "Niveau B fashion2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Niveau B Mode — habitudes d’achat » : intitulé d’un groupe de questions, sans critère.",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1088",
+   "origine": "Niveau B Mode — habitudes d’achat",
+   "lue": "Niveau B fashion2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Niveau B Mode — habitudes d’achat » : intitulé d’un groupe de questions, sans critère.",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1089",
+   "origine": "Niveau B Mode — habitudes d’achat",
+   "lue": "Niveau B fashion2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Niveau B Mode — habitudes d’achat » : intitulé d’un groupe de questions, sans critère.",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1090",
+   "origine": "Niveau B Mode — habitudes d’achat",
+   "lue": "Niveau B fashion2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Niveau B Mode — habitudes d’achat » : intitulé d’un groupe de questions, sans critère.",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1091",
+   "origine": "Sous-branche : manteaux/vestes (catégorie choisie ou achat concret)",
+   "lue": "Réponse à fashion2.1060 : Un beau manteau ou une veste",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : manteaux/vestes (catégorie choisie ou achat concret) » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": [
+    "« ou achat concret » : la catégorie d’un achat en préparation n’est pas connue du moteur"
+   ]
+  },
+  {
+   "question": "fashion2.1092",
+   "origine": "Sous-branche : mailles/pulls",
+   "lue": "Réponse à fashion2.1060 : Une maille ou un pull",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : mailles/pulls » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1093",
+   "origine": "Sous-branche : chemises/blouses",
+   "lue": "Réponse à fashion2.1060 : Une chemise ou une blouse",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : chemises/blouses » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1094",
+   "origine": "Sous-branche : robes",
+   "lue": "Réponse à fashion2.1060 : Une robe",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : robes » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1095",
+   "origine": "Sous-branche : jeans",
+   "lue": "Réponse à fashion2.1060 : Un jean",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : jeans » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1096",
+   "origine": "Sous-branche : pantalons",
+   "lue": "Réponse à fashion2.1060 : Un pantalon",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : pantalons » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1097",
+   "origine": "Sous-branche : vêtements de sport",
+   "lue": "Réponse à fashion2.1060 : Un vêtement de sport",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : vêtements de sport » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1098",
+   "origine": "Sous-branche : homewear/pyjamas",
+   "lue": "Réponse à fashion2.1060 : Un vêtement d’intérieur | Un pyjama",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : homewear/pyjamas » : la catégorie à fashion2.1060 (« Quels vêtements aurais-tu plaisir à recevoir ? »).",
+   "non_repris": []
+  },
+  {
+   "question": "fashion2.1102",
+   "origine": "Niveau C Mode : vêtement précis, achat réel d’un proche, pièce chère, taille incertaine, passion, événement concret",
+   "lue": "Niveau C fashion2 ET Événement concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« événement concret » → Événement concret",
+   "non_repris": [
+    "vêtement précis",
+    "achat réel d’un proche",
+    "pièce chère",
+    "taille incertaine",
+    "passion"
+   ]
+  },
+  {
+   "question": "fashion2.1111",
+   "origine": "Niveau C Mode, événement concret",
+   "lue": "Niveau C fashion2 ET Événement concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« événement concret » → Événement concret",
+   "non_repris": []
+  },
+  {
+   "question": "food.0021",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0022",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0023",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0024",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0025",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0026",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0027",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0028",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0029",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0031",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0032",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0033",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0034",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0035",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0036",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0037",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0038",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0039",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0040",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0041",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0042",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0043",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0044",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0045",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0046",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0047",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0048",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food.0050",
+   "origine": "Cuisine/gastronomie active ; ne jamais afficher les questions alcool si la personne ne boit pas",
+   "lue": "Branche food ouverte ; Ne jamais afficher les questions alcool si la personne ne boit pas",
+   "statut": "etablie",
+   "critere": "nom de domaine",
+   "justification": "« Cuisine/gastronomie active » : la branche food (dont c’est le nom). La consigne « ne boit pas » est conservée telle quelle.",
+   "non_repris": []
+  },
+  {
+   "question": "food2.0872",
+   "origine": "Sous-branche Boissons",
+   "lue": "Niveau B food2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Boissons » : thème du niveau B. La question ne présume pas l’alcool.",
+   "non_repris": []
+  },
+  {
+   "question": "food2.0873",
+   "origine": "Sous-branche Boissons : si café/thé apprécié (0872)",
+   "lue": "Réponse à food2.0872 : Café | Espresso | Cappuccino | Matcha | Thé",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si café/thé apprécié (0872) » (le matcha est un thé).",
+   "non_repris": []
+  },
+  {
+   "question": "food2.0875",
+   "origine": "Sous-branche Recevoir : si la personne aime recevoir (0874)",
+   "lue": "Réponse à food2.0874 : Beaucoup | Oui",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si la personne aime recevoir (0874) ».",
+   "non_repris": [
+    "« Occasionnellement » ne dit pas qu’elle aime recevoir"
+   ]
+  },
+  {
+   "question": "food2.0876",
+   "origine": "Sous-branche Souvenirs",
+   "lue": "Niveau B food2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Souvenirs ».",
+   "non_repris": []
+  },
+  {
+   "question": "food2.0877",
+   "origine": "Sous-branche Souvenirs",
+   "lue": "Niveau B food2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Souvenirs ».",
+   "non_repris": []
+  },
+  {
+   "question": "fragrance2.1164",
+   "origine": "Niveau B Parfum — SEULEMENT en auto-réponse (self-only, askable_about_other=false)",
+   "lue": "Niveau B fragrance2",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« SEULEMENT en auto-réponse (self-only, askable_about_other=false) » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "fragrance2.1167",
+   "origine": "Niveau C Parfum : uniquement lors d’un achat",
+   "lue": "Niveau C fragrance2 ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« lors d’un achat » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "gaming2.1408",
+   "origine": "Sous-branche Réalité virtuelle — UNIQUEMENT si intérêt (1390/1404)",
+   "lue": "Réponse à gaming2.1404 : Une expérience VR",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« UNIQUEMENT si intérêt (1390/1404) » : seule gaming2.1404 porte la réalité virtuelle.",
+   "non_repris": []
+  },
+  {
+   "question": "gaming2.1409",
+   "origine": "Niveau C Gaming : uniquement lorsqu’un achat est envisagé",
+   "lue": "Niveau C gaming2 ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat est envisagé » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "garden.0565",
+   "origine": "Seulement si une plante concrète est envisagée ou si l’information manque",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« plante concrète est envisagée » → Achat concret",
+   "non_repris": [
+    "si l’information manque"
+   ]
+  },
+  {
+   "question": "garden.0575",
+   "origine": "Sous-branche Fleurs & bouquets : à ouvrir si la personne aime les fleurs, INDÉPENDAMMENT du jardinage",
+   "lue": "Réponse à garden.0560 : Les fleurs | Les bouquets",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« si la personne aime les fleurs » : « Les fleurs » ou « Les bouquets » à garden.0560.",
+   "non_repris": [
+    "« INDÉPENDAMMENT du jardinage » : aucune question hors de la branche ne dit qu’on aime les fleurs ; la lecture est plus étroite que le texte"
+   ]
+  },
+  {
+   "question": "garden.0577",
+   "origine": "Sous-branche : jardin paysager (0560 / espace jardin en 0558)",
+   "lue": "Réponse à garden.0560 : Les jardins paysagers OU Réponse à garden.0558 : Un petit jardin | Un grand jardin",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« jardin paysager (0560 / espace jardin en 0558) » : l’un ou l’autre.",
+   "non_repris": []
+  },
+  {
+   "question": "garden.0579",
+   "origine": "Niveau C Jardinage : achat précis, plante vivante, aménagement, passion, atelier, plante rare, cadeau premium",
+   "lue": "Niveau C garden ET Achat concret OU Niveau C garden ET Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat précis » → Achat concret ; « cadeau pre » → Cadeau concret",
+   "non_repris": [
+    "plante vivante",
+    "aménagement",
+    "passion",
+    "atelier",
+    "plante rare"
+   ]
+  },
+  {
+   "question": "garden.0580",
+   "origine": "Achat concret d’une plante",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat concret » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "home2.1281",
+   "origine": "Niveau C Maison : uniquement lors d’un achat",
+   "lue": "Niveau C home2 ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« lors d’un achat » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "humor2.1432",
+   "origine": "Niveau C Humour : uniquement lorsqu’une attention est envisagée",
+   "lue": "Niveau C humor2 ET Attention concrète",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« attention est envisagée » → Attention concrète",
+   "non_repris": []
+  },
+  {
+   "question": "jewelry.0292",
+   "origine": "Branche Bijoux ouverte + jewelry.0291 non fermante",
+   "lue": "Branche jewelry ouverte ET Réponse à jewelry.0291 : Une excellente idée | Une bonne idée si la personne connaît bien mes goûts | Une bonne idée seulement pour une occasion importante | Plutôt risqué, je préfère généralement choisir",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« jewelry.0291 non fermante » : toute réponse sauf le refus. Sans réponse à 0291, la question attend (0291 est de même niveau et posée d’abord).",
+   "non_repris": []
+  },
+  {
+   "question": "joys.1890",
+   "origine": "Niveau B Petites joies — SEULEMENT si nourriture ou boisson choisie (1883)",
+   "lue": "Niveau B joys ET Réponse à joys.1883 : La nourriture ou une boisson",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« SEULEMENT si nourriture ou boisson choisie (1883) ».",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1456",
+   "origine": "Cartouche ADN d’apprentissage — 2. Style de curiosité",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1457",
+   "origine": "Cartouche ADN d’apprentissage — 3. Cycle d’apprentissage",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1458",
+   "origine": "Cartouche ADN d’apprentissage — 5. Sujets racines",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1459",
+   "origine": "Cartouche ADN d’apprentissage — 6. Sujets satellites",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1460",
+   "origine": "Cartouche ADN d’apprentissage — 7. Apprentissages actifs — donnée TEMPORAIRE",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1461",
+   "origine": "Cartouche ADN d’apprentissage — 8. Apprentissages futurs",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1463",
+   "origine": "Cartouche ADN d’apprentissage — 11. Seuil de nouveauté",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1464",
+   "origine": "Cartouche ADN d’apprentissage — 12. Accélérateurs",
+   "lue": "Branche learning2 ouverte",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Cartouche ADN d’apprentissage — N. … » : le numéro d’une question dans un bloc ; « donnée TEMPORAIRE » est une consigne de rangement.",
+   "non_repris": []
+  },
+  {
+   "question": "learning2.1465",
+   "origine": "Niveau C Learning : uniquement lorsqu’un apprentissage est envisagé",
+   "lue": "Niveau C learning2 ET Apprentissage concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« apprentissage est envisagé » → Apprentissage concret",
+   "non_repris": []
+  },
+  {
+   "question": "legacy.1511",
+   "origine": "Niveau C Transmission : lorsqu’un cadeau ou une expérience de transmission est envisagé",
+   "lue": "Niveau C legacy ET Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« cadeau ou une expérience de transmission est envisagé » → Cadeau concret",
+   "non_repris": [
+    "lorsqu’un cadeau",
+    "une expérience de transmission est envisagé"
+   ]
+  },
+  {
+   "question": "legacy.1512",
+   "origine": "Cadeau de transmission",
+   "lue": "Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« Cadeau de transmission » : un cadeau en préparation dans la branche Transmission.",
+   "non_repris": []
+  },
+  {
+   "question": "legacy.1513",
+   "origine": "Cadeau de transmission",
+   "lue": "Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« Cadeau de transmission » : un cadeau en préparation dans la branche Transmission.",
+   "non_repris": []
+  },
+  {
+   "question": "legacy.1514",
+   "origine": "Cadeau de transmission",
+   "lue": "Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« Cadeau de transmission » : un cadeau en préparation dans la branche Transmission.",
+   "non_repris": []
+  },
+  {
+   "question": "legacy.1515",
+   "origine": "Cadeau de transmission",
+   "lue": "Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« Cadeau de transmission » : un cadeau en préparation dans la branche Transmission.",
+   "non_repris": []
+  },
+  {
+   "question": "live.0486",
+   "origine": "Si festivals appréciés (0475)",
+   "lue": "Réponse à live.0475 : Festival",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« festivals appréciés / festival envisagé (0475) » : « Festival » coché à live.0475.",
+   "non_repris": []
+  },
+  {
+   "question": "live.0487",
+   "origine": "Uniquement si danse appréciée (0475)",
+   "lue": "Réponse à live.0475 : Spectacle de danse | Ballet",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« danse appréciée (0475) » : « Spectacle de danse », et « Ballet », qui en est un.",
+   "non_repris": []
+  },
+  {
+   "question": "live.0490",
+   "origine": "Sous-branche : festival envisagé (0475/0486)",
+   "lue": "Réponse à live.0475 : Festival",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« festivals appréciés / festival envisagé (0475) » : « Festival » coché à live.0475.",
+   "non_repris": []
+  },
+  {
+   "question": "live.0492",
+   "origine": "Sous-branche : danse appréciée (0475/0487)",
+   "lue": "Réponse à live.0475 : Spectacle de danse | Ballet",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« danse appréciée (0475) » : « Spectacle de danse », et « Ballet », qui en est un.",
+   "non_repris": []
+  },
+  {
+   "question": "live.0495",
+   "origine": "Niveau C Live : passion, achat concret, anniversaire, événement",
+   "lue": "Niveau C live ET Achat concret OU Niveau C live ET Événement concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat concret » → Achat concret ; « anniversaire » → Événement concret",
+   "non_repris": [
+    "passion",
+    "événement"
+   ]
+  },
+  {
+   "question": "live.0499",
+   "origine": "Achat concret multi-dates",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat concret » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "mental.1860",
+   "origine": "Niveau C Charge mentale : seulement si contexte — donnée TEMPORAIRE",
+   "lue": "Niveau C mental",
+   "statut": "etablie",
+   "critere": "toute préparation en cours du domaine",
+   "justification": "« seulement si contexte — donnée TEMPORAIRE » : le niveau C exige déjà une préparation en cours dans le domaine, quel qu’en soit le genre.",
+   "non_repris": []
+  },
+  {
+   "question": "museum.0718",
+   "origine": "Sous-branche : immersif (0699)",
+   "lue": "Réponse à museum.0699 : Expositions immersives",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« immersif (0699) ».",
+   "non_repris": []
+  },
+  {
+   "question": "museum.0719",
+   "origine": "Niveau C Musées : passion ou attention concrète",
+   "lue": "Niveau C museum ET Attention concrète",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« attention concrète » → Attention concrète",
+   "non_repris": [
+    "passion"
+   ]
+  },
+  {
+   "question": "music2.1017",
+   "origine": "À poser si vinyle actif (1016)",
+   "lue": "Réponse à music2.1016 : Vinyles",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« vinyle actif (1016) » : « Vinyles » coché à music2.1016.",
+   "non_repris": []
+  },
+  {
+   "question": "music2.1025",
+   "origine": "Niveau C Musique : passion ou attention concrète",
+   "lue": "Niveau C music2 ET Attention concrète",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« attention concrète » → Attention concrète",
+   "non_repris": [
+    "passion"
+   ]
+  },
+  {
+   "question": "music2.1030",
+   "origine": "Croisement Musique ↔ Cinéma : à poser si la musique de film compte (1005)",
+   "lue": "Réponse à music2.1005 : Musique de film",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« la musique de film compte (1005) » : « Musique de film » cochée.",
+   "non_repris": []
+  },
+  {
+   "question": "pets.0392",
+   "origine": "Animal présent (animals.0391)",
+   "lue": "Réponse à pets.0391 : J’ai un ou plusieurs animaux | Les animaux font vraiment partie de ma famille",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« Animal présent (pets.0391) » : les deux réponses qui disent un animal à soi.",
+   "non_repris": [
+    "« Les animaux sont une véritable passion » ne dit pas qu’elle en a un"
+   ]
+  },
+  {
+   "question": "pets.0393",
+   "origine": "Animal présent",
+   "lue": "Réponse à pets.0391 : J’ai un ou plusieurs animaux | Les animaux font vraiment partie de ma famille",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« Animal présent (pets.0391) » : les deux réponses qui disent un animal à soi.",
+   "non_repris": [
+    "« Les animaux sont une véritable passion » ne dit pas qu’elle en a un"
+   ]
+  },
+  {
+   "question": "pets.0394",
+   "origine": "Animal présent",
+   "lue": "Réponse à pets.0391 : J’ai un ou plusieurs animaux | Les animaux font vraiment partie de ma famille",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« Animal présent (pets.0391) » : les deux réponses qui disent un animal à soi.",
+   "non_repris": [
+    "« Les animaux sont une véritable passion » ne dit pas qu’elle en a un"
+   ]
+  },
+  {
+   "question": "pets.0395",
+   "origine": "Animal présent + cadeau animal non refusé",
+   "lue": "Réponse à pets.0391 : J’ai un ou plusieurs animaux | Les animaux font vraiment partie de ma famille ET Réponse à pets.0394 : J’adorerais | Oui de temps en temps | Pourquoi pas",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« Animal présent + cadeau animal non refusé » : un animal (pets.0391) ET pets.0394 hors des deux refus.",
+   "non_repris": []
+  },
+  {
+   "question": "pets.0403",
+   "origine": "Niveau C Animaux : passion animaux, cadeau concret ou espèce spécifique",
+   "lue": "Niveau C pets ET Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« cadeau concret » → Cadeau concret",
+   "non_repris": [
+    "passion animaux",
+    "espèce spécifique"
+   ]
+  },
+  {
+   "question": "pets.0404",
+   "origine": "Générée uniquement pour les chiens (espèce = chien)",
+   "lue": "Réponse à pets.0392 : Chien",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« Générée uniquement pour les chiens » : « Chien » à pets.0392 (« Quels animaux partagent ta vie ? »).",
+   "non_repris": [
+    "« Plusieurs espèces » ne dit pas lesquelles"
+   ]
+  },
+  {
+   "question": "pets.0405",
+   "origine": "Générée uniquement pour les chats (espèce = chat)",
+   "lue": "Réponse à pets.0392 : Chat",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« Générée uniquement pour les chats » : « Chat » à pets.0392.",
+   "non_repris": [
+    "« Plusieurs espèces » ne dit pas lesquelles"
+   ]
+  },
+  {
+   "question": "pets.0407",
+   "origine": "Niveau C Animaux, avant cadeau matériel",
+   "lue": "Niveau C pets ET Cadeau concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« cadeau matériel » → Cadeau concret",
+   "non_repris": []
+  },
+  {
+   "question": "philovie.1660",
+   "origine": "Niveau C Philosophie de vie : le niveau C part de RÉCITS CONCRETS, jamais d’un questionnaire philosophique",
+   "lue": "Niveau C philovie",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« le niveau C part de RÉCITS CONCRETS, jamais d’un questionnaire philosophique » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "photo.0686",
+   "origine": "Sous-branche : impression & albums (0677)",
+   "lue": "Réponse à photo.0677 : Je les imprime | Je crée des albums | Je les encadre",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« impression & albums (0677) ».",
+   "non_repris": []
+  },
+  {
+   "question": "photo.0687",
+   "origine": "Sous-branche impression & albums",
+   "lue": "Réponse à photo.0677 : Je les imprime | Je crée des albums | Je les encadre",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« impression & albums (0677) ».",
+   "non_repris": []
+  },
+  {
+   "question": "photo.0689",
+   "origine": "Sous-branche : matériel expert (niveau confirmé+ en 0675)",
+   "lue": "Réponse à photo.0675 : Confirmé(e) | Expert(e) | Professionnel(le) ou semi-pro",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« niveau confirmé+ en 0675 ».",
+   "non_repris": []
+  },
+  {
+   "question": "photo.0690",
+   "origine": "Niveau C Photographie : passion, achat concret, projet",
+   "lue": "Niveau C photo ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat concret » → Achat concret",
+   "non_repris": [
+    "passion",
+    "projet"
+   ]
+  },
+  {
+   "question": "photo.0691",
+   "origine": "Achat matériel concret",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat matériel concret » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "photo.0695",
+   "origine": "Achat concret d’un objet photo personnalisé",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat concret » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "podcast.0463",
+   "origine": "Sous-branche : true crime/enquête apprécié (0445/0446)",
+   "lue": "Réponse à podcast.0445 : True crime OU Réponse à podcast.0446 : Une enquête",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« true crime/enquête apprécié (0445/0446) ».",
+   "non_repris": []
+  },
+  {
+   "question": "podcast.0464",
+   "origine": "Sous-branche : fiction audio appréciée (0445/0446)",
+   "lue": "Réponse à podcast.0445 : Fiction audio OU Réponse à podcast.0446 : Une fiction audio",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« fiction audio appréciée (0445/0446) ».",
+   "non_repris": []
+  },
+  {
+   "question": "podcast.0465",
+   "origine": "Sous-branche : humour apprécié (0445/0446)",
+   "lue": "Réponse à podcast.0445 : Humour OU Réponse à podcast.0446 : Un format humoristique",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« humour apprécié (0445/0446) ».",
+   "non_repris": []
+  },
+  {
+   "question": "reading2.1254",
+   "origine": "Niveau C Lecture : seulement lorsqu’un livre est envisagé",
+   "lue": "Niveau C reading2 ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« livre est envisagé » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "relation2.0779",
+   "origine": "Niveau B Relation — SELF-ONLY : à poser uniquement en réponse directe, JAMAIS au pilote (askable_about_other=false)",
+   "lue": "Niveau B relation2",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« SELF-ONLY : à poser uniquement en réponse directe, JAMAIS au pilote (askable_about_other=false) » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "relation2.0797",
+   "origine": "Sous-branche Famille",
+   "lue": "Niveau B relation2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Famille » (branche Relation) : moments et rôle en famille, sans présumer d’enfants ni de foyer.",
+   "non_repris": []
+  },
+  {
+   "question": "relation2.0798",
+   "origine": "Sous-branche Famille",
+   "lue": "Niveau B relation2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Famille » (branche Relation) : moments et rôle en famille, sans présumer d’enfants ni de foyer.",
+   "non_repris": []
+  },
+  {
+   "question": "relation2.0799",
+   "origine": "Sous-branche Famille",
+   "lue": "Niveau B relation2",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« Sous-branche Famille » (branche Relation) : moments et rôle en famille, sans présumer d’enfants ni de foyer.",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1532",
+   "origine": "Territoire Le vivant : si sensibilité aux animaux détectée (1526) — pont Animaux",
+   "lue": "Réponse à resonance.1526 : Les animaux",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« sensibilité aux animaux détectée (1526) ».",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1533",
+   "origine": "Territoire Le vivant : si sensibilité aux enfants détectée (1526)",
+   "lue": "Réponse à resonance.1526 : Les enfants",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« sensibilité aux enfants détectée (1526) ».",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1534",
+   "origine": "Territoire La transmission : si sensibilité détectée (1526)",
+   "lue": "Réponse à resonance.1526 : Les personnes âgées",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« si sensibilité détectée (1526) » : l’énoncé porte sur les personnes âgées, l’option du même nom.",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1535",
+   "origine": "Territoire La transmission : si sensibilité aux savoir-faire — ponts Signature de valeur et Learning",
+   "lue": "Réponse à resonance.1526 : Les artisans et les savoir-faire",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« sensibilité aux savoir-faire » (territoire de resonance.1526, comme ses voisines numérotées).",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1544",
+   "origine": "Niveau C Résonance : lors de la création d’une expérience",
+   "lue": "Niveau C resonance ET Expérience préparée — donnée contextuelle",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« création d’une expérience » → Expérience préparée — donnée contextuelle",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1545",
+   "origine": "Création d’expérience",
+   "lue": "Expérience préparée — donnée contextuelle",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Création d’expérience » → Expérience préparée — donnée contextuelle",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1546",
+   "origine": "Création d’expérience",
+   "lue": "Expérience préparée — donnée contextuelle",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Création d’expérience » → Expérience préparée — donnée contextuelle",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1547",
+   "origine": "Création d’expérience",
+   "lue": "Expérience préparée — donnée contextuelle",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Création d’expérience » → Expérience préparée — donnée contextuelle",
+   "non_repris": []
+  },
+  {
+   "question": "resonance.1548",
+   "origine": "Création d’expérience",
+   "lue": "Expérience préparée — donnée contextuelle",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Création d’expérience » → Expérience préparée — donnée contextuelle",
+   "non_repris": []
+  },
+  {
+   "question": "rituals.1879",
+   "origine": "Niveau C Rituels : contexte concret",
+   "lue": "Niveau C rituals",
+   "statut": "etablie",
+   "critere": "toute préparation en cours du domaine",
+   "justification": "« contexte concret » : le niveau C exige déjà une préparation en cours dans le domaine, quel qu’en soit le genre.",
+   "non_repris": []
+  },
+  {
+   "question": "sensory2.1490",
+   "origine": "Niveau C Sensoriel — donnée CONTEXTUELLE",
+   "lue": "Niveau C sensory2",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« donnée CONTEXTUELLE » dit comment ranger la réponse, pas quand poser.",
+   "non_repris": []
+  },
+  {
+   "question": "sensory2.1491",
+   "origine": "Niveau C Sensoriel — donnée contextuelle",
+   "lue": "Niveau C sensory2",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« donnée contextuelle » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "series2.1053",
+   "origine": "Niveau C Séries : passion ou contexte concret",
+   "lue": "Niveau C series2",
+   "statut": "etablie",
+   "critere": "toute préparation en cours du domaine",
+   "justification": "« passion ou contexte concret » : le niveau C exige déjà une préparation en cours dans le domaine, quel qu’en soit le genre.",
+   "non_repris": []
+  },
+  {
+   "question": "shoes.0341",
+   "origine": "Uniquement si la catégorie le justifie : escarpins, bottes, bottines, sandales, chaussures habillées",
+   "lue": "Réponse à shoes.0332 : Escarpins | Bottes | Bottines | Sandales | Chaussures habillées",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Uniquement si la catégorie le justifie : escarpins, bottes, bottines, sandales, chaussures habillées » : ces catégories à shoes.0332.",
+   "non_repris": []
+  },
+  {
+   "question": "shoes.0347",
+   "origine": "Sous-branche : catégorie Sneakers choisie",
+   "lue": "Réponse à shoes.0332 : Sneakers",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Sneakers choisie » : la catégorie à shoes.0332 (« Quels types de chaussures portes-tu… »).",
+   "non_repris": []
+  },
+  {
+   "question": "shoes.0348",
+   "origine": "Sous-branche : catégorie Bottes/Bottines choisie",
+   "lue": "Réponse à shoes.0332 : Bottes | Bottines",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Bottes/Bottines choisie » : la catégorie à shoes.0332 (« Quels types de chaussures portes-tu… »).",
+   "non_repris": []
+  },
+  {
+   "question": "shoes.0349",
+   "origine": "Sous-branche : catégorie Habillée choisie",
+   "lue": "Réponse à shoes.0332 : Chaussures habillées",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Habillée choisie » : la catégorie à shoes.0332 (« Quels types de chaussures portes-tu… »).",
+   "non_repris": []
+  },
+  {
+   "question": "shoes.0350",
+   "origine": "Sous-branche : catégorie Technique/Sport choisie",
+   "lue": "Réponse à shoes.0332 : Chaussures de sport | Chaussures de randonnée ou outdoor",
+   "statut": "etablie",
+   "critere": "catégorie choisie à la question de tri de la branche",
+   "justification": "« Sous-branche : catégorie Technique/Sport choisie » : la catégorie à shoes.0332 (« Quels types de chaussures portes-tu… »).",
+   "non_repris": []
+  },
+  {
+   "question": "shoes.0351",
+   "origine": "Niveau C Chaussures : paire précise, achat par un proche, budget important, passion, contrainte technique bloquante",
+   "lue": "Niveau C shoes ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« paire précise » : un achat.",
+   "non_repris": [
+    "achat par un proche",
+    "budget important",
+    "passion",
+    "contrainte"
+   ]
+  },
+  {
+   "question": "sleep.0604",
+   "origine": "Sous-branche : literie importante (0596/0603)",
+   "lue": "Réponse à sleep.0596 : La fermeté du matelas | Le confort de l’oreiller | La fraîcheur | Le maintien du dos ou de la nuque | La douceur des draps | La taille du lit | L’absence de mouvement de l’autre personne | Le poids de la couette OU Réponse à sleep.0603 : Un bel oreiller | Du linge de lit",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« literie importante (0596/0603) » : un critère de literie nommé, ou une attention de literie souhaitée.",
+   "non_repris": []
+  },
+  {
+   "question": "sleep.0605",
+   "origine": "Sous-branche : odeurs et sommeil",
+   "lue": "Niveau B sleep",
+   "statut": "etablie",
+   "critere": "regroupement éditorial",
+   "justification": "« odeurs et sommeil » : thème, aucune présomption.",
+   "non_repris": []
+  },
+  {
+   "question": "sleep.0606",
+   "origine": "Sous-branche : voyage et décalage (si voyage actif)",
+   "lue": "Niveau B sleep ; Branche travel ouverte OU Branche travel2 ouverte",
+   "statut": "etablie",
+   "critere": "texte littéral",
+   "justification": "« Sous-branche : voyage et décalage (si voyage actif) » : une partie du niveau B de Sommeil, ET le domaine voyage ouvert. (Une première lecture omettait la branche Sommeil et ouvrait plus que le texte : relevé en rejouant Yasmina.)",
+   "non_repris": []
+  },
+  {
+   "question": "sleep.0608",
+   "origine": "Niveau C Sommeil : objet literie envisagé, nuit/séjour à réserver, besoin précis, fatigue importante, univers confort apprécié",
+   "lue": "Niveau C sleep ET Séjour concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« nuit/séjour à réserver » → Séjour concret",
+   "non_repris": [
+    "objet literie envisagé",
+    "besoin précis",
+    "fatigue importante",
+    "univers confort apprécié"
+   ]
+  },
+  {
+   "question": "sleep.0610",
+   "origine": "Nuit ou séjour de récupération envisagé",
+   "lue": "Séjour concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« séjour de récupération envisagé » → Séjour concret",
+   "non_repris": [
+    "Nuit"
+   ]
+  },
+  {
+   "question": "sportp.0524",
+   "origine": "Sous-branche : sport collectif pratiqué (0504)",
+   "lue": "Réponse à sportp.0504 : Football | Rugby | Basket | Handball | Volleyball",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« sport collectif pratiqué (0504) » : les sports collectifs de la liste.",
+   "non_repris": []
+  },
+  {
+   "question": "sportp.0526",
+   "origine": "Niveau C Sport pratiqué : passion, achat technique, compétition, stage, expérience concrète",
+   "lue": "Niveau C sportp ET Achat concret OU Niveau C sportp ET Expérience préparée — donnée contextuelle",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat technique » → Achat concret ; « expérience concrète » → Expérience préparée — donnée contextuelle",
+   "non_repris": [
+    "passion",
+    "compétition",
+    "stage"
+   ]
+  },
+  {
+   "question": "sportp.0527",
+   "origine": "Achat technique concret",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat technique » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "sportw.0542",
+   "origine": "Uniquement si merchandising sportif accepté (0541)",
+   "lue": "Réponse à sportw.0541 : Maillot officiel",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« merchandising sportif accepté (0541) », et l’énoncé porte sur un maillot : « Maillot officiel » coché.",
+   "non_repris": [
+    "les autres objets dérivés acceptés ne disent rien d’un maillot"
+   ]
+  },
+  {
+   "question": "sportw.0549",
+   "origine": "Sous-branche : F1/sports mécaniques suivis (0532)",
+   "lue": "Réponse à sportw.0532 : Formule 1 | Moto",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« F1/sports mécaniques suivis (0532) ».",
+   "non_repris": []
+  },
+  {
+   "question": "sportw.0551",
+   "origine": "Niveau C Sport spectateur : passion ou achat concret",
+   "lue": "Niveau C sportw ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat concret » → Achat concret",
+   "non_repris": [
+    "passion"
+   ]
+  },
+  {
+   "question": "sportw.0552",
+   "origine": "Achat concret de billets",
+   "lue": "Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« Achat concret » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "success.1711",
+   "origine": "Branche Réussite ouverte — donnée DATÉE",
+   "lue": "Branche success ouverte",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« donnée DATÉE » dit comment ranger la réponse.",
+   "non_repris": []
+  },
+  {
+   "question": "success.1746",
+   "origine": "Niveau C Réussite : expériences concrètes",
+   "lue": "Niveau C success",
+   "statut": "etablie",
+   "critere": "consigne, pas condition",
+   "justification": "« expériences concrètes » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
+   "non_repris": []
+  },
+  {
+   "question": "tech2.1331",
+   "origine": "Sous-branche Création — UNIQUEMENT si pertinent (1316 : impression 3D, robotique, drones)",
+   "lue": "Réponse à tech2.1316 : Impression 3D | Robotique | Drones",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« UNIQUEMENT si pertinent (1316 : impression 3D, robotique, drones) ».",
+   "non_repris": []
+  },
+  {
+   "question": "tech2.1332",
+   "origine": "Niveau C Tech : uniquement lorsqu’un achat est envisagé",
+   "lue": "Niveau C tech2 ET Achat concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« achat est envisagé » → Achat concret",
+   "non_repris": []
+  },
+  {
+   "question": "theatre2.1383",
+   "origine": "Niveau C Théâtre : uniquement lorsqu’une sortie est envisagée",
+   "lue": "Niveau C theatre2 ET Sortie concrète",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« sortie est envisagée » → Sortie concrète",
+   "non_repris": []
+  },
+  {
+   "question": "time.1567",
+   "origine": "Niveau C Temps : uniquement lorsqu’une expérience est préparée — donnée CONTEXTUELLE",
+   "lue": "Niveau C time ET Expérience préparée — donnée contextuelle",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« expérience est préparée » → Expérience préparée — donnée contextuelle",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0900",
+   "origine": "À poser seulement si la personne voyage avec des enfants",
+   "lue": "Réponse à travel2.0890 : Avec mes enfants",
+   "statut": "etablie",
+   "critere": "réponse qui le dit",
+   "justification": "« si la personne voyage avec des enfants » : « Avec mes enfants » à travel2.0890.",
+   "non_repris": [
+    "« En famille » ne dit pas qu’il y a des enfants"
+   ]
+  },
+  {
+   "question": "travel2.0932",
+   "origine": "À poser si séjour familial",
+   "lue": "Réponse à travel2.0890 : Avec mes enfants",
+   "statut": "etablie",
+   "critere": "réponse qui le dit",
+   "justification": "« si séjour familial », et l’énoncé porte sur « un hôtel avec enfants » : « Avec mes enfants » à travel2.0890.",
+   "non_repris": []
+  },
+  {
+   "question": "travel2.0936",
+   "origine": "Niveau C : destination envisagée · proche qui veut réserver · budget significatif · surprise à sécuriser · rêve devenu projet actif",
+   "lue": "Niveau C travel2 ET Séjour concret",
+   "statut": "etablie",
+   "critere": "préparation nommée",
+   "justification": "« destination envisagée » : un séjour en préparation.",
+   "non_repris": [
+    "proche qui veut réserver",
+    "budget significatif",
+    "surprise à sécuriser",
+    "rêve devenu projet actif"
+   ]
+  },
+  {
+   "question": "watch.0309",
+   "origine": "Branche Montres ouverte + 0308 non fermante",
+   "lue": "Branche watch ouverte ET Réponse à watch.0308 : Une excellente idée | Une belle idée pour une occasion importante | Une bonne idée si la personne connaît très bien mes goûts | Assez risqué : j’aimerais choisir parmi plusieurs modèles | Je préférerais donner une référence précise",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« 0308 non fermante » : toute réponse sauf le refus.",
+   "non_repris": []
+  },
+  {
+   "question": "watch.0317",
+   "origine": "Seulement si intérêt horloger manifesté ou si le choix concret l’exige",
+   "lue": "Intérêt watch sélectionné ou détecté OU Achat concret",
+   "statut": "etablie",
+   "critere": "texte littéral",
+   "justification": "« Seulement si intérêt horloger manifesté ou si le choix concret l’exige ».",
+   "non_repris": []
+  },
+  {
+   "question": "work2.1341",
+   "origine": "Branche Travail ouverte : si attention professionnelle acceptée (1340)",
+   "lue": "Branche work2 ouverte ET Réponse à work2.1340 : Oui énormément | Oui selon le contexte | Seulement certains cadeaux",
+   "statut": "etablie",
+   "critere": "question citée par son numéro",
+   "justification": "« attention professionnelle acceptée (1340) » : les trois réponses d’acceptation.",
+   "non_repris": [
+    "« Peu » et « Pas vraiment » ne sont pas une acceptation"
+   ]
+  },
+  {
+   "question": "work2.1358",
+   "origine": "Niveau C Travail : uniquement lorsqu’un événement approche",
+   "lue": "Niveau C work2 ET Événement concret",
+   "statut": "etablie",
+   "critere": "préparation en cours nommée par le texte",
+   "justification": "« événement approche » → Événement concret",
+   "non_repris": []
+  }
+ ],
+ "non_lues": [
+  {
+   "question": "CEL-01",
+   "origine": "Tags ENTRANTS — ouvrir si `context.important_dates` ou `INTEREST.celebration=positive` ET préférence d’occasions inconnue ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "« dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère"
+  },
+  {
+   "question": "CEL-02",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.current_occasion={occasion}` ET format inconnu ET absence du refus de célébrer cette occasion ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "CEL-03",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.current_occasion={occasion}` ET besoin de départager plusieurs formats ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "CEL-04",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.current_occasion={occasion}` ET `PREFERENCE.celebration.attentions` inconnue pour cette occasion ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "CEL-05",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.current_occasion={occasion}` ET surprise envisagée ET degré inconnu ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "CEL-06",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.current_occasion={occasion}` ET exposition publique envisagée ET confort inconnu ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "CEL-07",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.current_occasion={occasion}` ET projet concret présentant un risque de limite inconnue ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "CEL-08",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.celebration.ritual=positive` OU `CONTEXT.celebration.current_occasion={occasion}` ET recherche de tradition ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "CEL-09",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.celebration=positive` ET approfondissement libre expressément pertinent ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "« dates importantes » et « approfondissement expressément pertinent » : aucune source ni critère"
+  },
+  {
+   "question": "CEL-10",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.organizing_for_other=true` ET style de don inconnu ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas"
+  },
+  {
+   "question": "CEL-11",
+   "origine": "Tags ENTRANTS — ouvrir si `CONTEXT.celebration.organizing=true` ET signe de besoin d’aide ou d’arbitrage ; ET `DO_NOT_PROBE.celebration!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "questions de célébration : l’occasion en cours est un paramètre (parametres.json), et « format inconnu », « surprise envisagée », « exposition publique envisagée », « besoin d’aide » sont des caractéristiques d’une préparation que la déclaration ne recueille pas"
+  },
+  {
+   "question": "CHS-13",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.shoe=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.shoe.heel_interest.present=true` — produit par CHS-12 ; ET `DO_NOT_PROBE.shoe!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "hypothese",
+   "manque": "L’énoncé porte sur les TALONS ; la condition admet un intérêt général pour les chaussures.",
+   "choix": [
+    "(a) exiger shoes.0332 « Escarpins » ou l’intérêt talons écrit par CHS-12",
+    "(b) suivre le texte"
+   ]
+  },
+  {
+   "question": "CRE-15",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "hypothese",
+   "manque": "L’énoncé porte sur la CÉRAMIQUE ; la condition ne demande qu’un intérêt pour la création. La lire telle quelle poserait la question de la céramique à quelqu’un qui peint.",
+   "choix": [
+    "(a) exiger un intérêt déclaré pour la céramique (option céramique de la branche Arts & créatif)",
+    "(b) suivre le texte (intérêt pour la création)"
+   ]
+  },
+  {
+   "question": "CRE-16",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) OU `PREFERENCE.creativity.ceramics_interest.present=true` — produit par CRE-15 ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "hypothese",
+   "manque": "Même énoncé centré sur la céramique ; la condition admet l’intérêt général OU l’intérêt céramique écrit par CRE-15.",
+   "choix": [
+    "(a) seulement l’intérêt céramique",
+    "(b) suivre le texte"
+   ]
+  },
+  {
+   "question": "CRE-18",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "hypothese",
+   "manque": "L’énoncé porte sur la CÉRAMIQUE ; la condition ne demande qu’un intérêt pour la création. La lire telle quelle poserait la question de la céramique à quelqu’un qui peint.",
+   "choix": [
+    "(a) exiger un intérêt déclaré pour la céramique (option céramique de la branche Arts & créatif)",
+    "(b) suivre le texte (intérêt pour la création)"
+   ]
+  },
+  {
+   "question": "JWL-TAILLE-01",
+   "origine": "DÉCLENCHEUR : une recommandation de BAGUE est en préparation ET la taille n’est pas déjà connue",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "JWL-TAILLE-02",
+   "origine": "DÉCLENCHEUR : une recommandation de COLLIER est en préparation ET la longueur n’est pas connue",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "JWL-TAILLE-03",
+   "origine": "DÉCLENCHEUR : une recommandation de BRACELET est en préparation ET l’ajustement n’est pas connu",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "JWL-TAILLE-04",
+   "origine": "DÉCLENCHEUR : une recommandation de BOUCLES D’OREILLES est en préparation",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "JWL-TAILLE-05",
+   "origine": "DÉCLENCHEUR : une recommandation de BOUCLES D’OREILLES est en préparation ET l’information n’est pas connue",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "REM-09",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.resonance=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.resonance!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "statut": "sans_lecture",
+   "manque": "tag `INTEREST.resonance` de la refonte : la correspondance avec la branche historique n’est pas établie"
+  },
+  {
+   "question": "THE-06A",
+   "origine": "INTEREST.live_performance positif, direct ou confirmé",
+   "statut": "sans_lecture",
+   "manque": "la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)"
+  },
+  {
+   "question": "THE-06B",
+   "origine": "POSÉE SEULEMENT si THE-06A vaut accord conditionnel ou faible, ET si l’information n’est pas déjà connue par une autre branche",
+   "statut": "sans_lecture",
+   "manque": "la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)"
+  },
+  {
+   "question": "activity.0281",
+   "origine": "Entité {activité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "activity.0282",
+   "origine": "Entité {activité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "activity.0283",
+   "origine": "Entité {activité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "activity.0284",
+   "origine": "Entité {activité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "activity.0285",
+   "origine": "Entité {activité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "aesthetic.1966",
+   "origine": "Niveau B avancé Esthétique — arbitrages, uniquement si le profil mérite d’être précisé",
+   "statut": "hypothese",
+   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
+   "choix": [
+    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
+    "(b) un nombre de réponses B à fixer",
+    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
+   ]
+  },
+  {
+   "question": "aesthetic.1967",
+   "origine": "Niveau B avancé Esthétique",
+   "statut": "hypothese",
+   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
+   "choix": [
+    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
+    "(b) un nombre de réponses B à fixer",
+    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
+   ]
+  },
+  {
+   "question": "aesthetic.1968",
+   "origine": "Niveau B avancé Esthétique — ponts Signature de valeur et Rapport à l’argent",
+   "statut": "hypothese",
+   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
+   "choix": [
+    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
+    "(b) un nombre de réponses B à fixer",
+    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
+   ]
+  },
+  {
+   "question": "aesthetic.1969",
+   "origine": "Niveau B avancé Esthétique",
+   "statut": "hypothese",
+   "manque": "« Niveau B avancé Esthétique » : aucun seuil écrit.",
+   "choix": [
+    "(a) niveau B atteint dans la branche (les questions suivent les autres B)",
+    "(b) un nombre de réponses B à fixer",
+    "(c) seulement si « le profil mérite d’être précisé » : critère à écrire"
+   ]
+  },
+  {
+   "question": "animals.2147",
+   "origine": "Niveau C Animaux philosophie : recommandation en préparation",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "bags.0368",
+   "origine": "À poser seulement si la fonctionnalité est importante",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "bags.0374",
+   "origine": "Niveau B Sacs, rapport à la marque ambigu",
+   "statut": "sans_lecture",
+   "manque": "« rapport à la marque ambigu » : aucun critère écrit"
+  },
+  {
+   "question": "bags.0388",
+   "origine": "Si seconde main/vintage envisagé",
+   "statut": "hypothese",
+   "manque": "« seconde main / vintage envisagé » : envisagé où ?",
+   "choix": [
+    "(a) consumption2.1188 hors « Je préfère du neuf » et « Je préfère éviter » (rapport général à la seconde main)",
+    "(b) pour l’achat en préparation : le moteur ne connaît pas cette caractéristique d’un achat"
+   ]
+  },
+  {
+   "question": "bags.0389",
+   "origine": "Niveau C Sacs, personnalisation envisagée",
+   "statut": "sans_lecture",
+   "manque": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+  },
+  {
+   "question": "bags.0390",
+   "origine": "Achat concret, budget engagé",
+   "statut": "hypothese",
+   "manque": "« Achat concret, budget engagé » : le budget d’un achat n’est pas connu du moteur ; lire « Achat concret » seul ouvrirait plus.",
+   "choix": [
+    "(a) ajouter le budget à la déclaration d’un achat",
+    "(b) accepter « Achat concret » seul"
+   ]
+  },
+  {
+   "question": "beauty2.1298",
+   "origine": "Niveau B Beauté — question IGNORÉE si non pertinente",
+   "statut": "sans_lecture",
+   "manque": "le critère de pertinence n’est pas écrit"
+  },
+  {
+   "question": "brand.0268",
+   "origine": "Entité {marque} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "brand.0269",
+   "origine": "Entité {marque} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "brand.0270",
+   "origine": "Entité {marque} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "brand.0271",
+   "origine": "Entité {marque} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "brand.0272",
+   "origine": "Entité {marque} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "causes.1942",
+   "origine": "sensitivity: HIGH — OUVERTURE SUR DÉMARCHE EXPLICITE : la personne choisit d'explorer ce sujet ou l'aborde spontanément ; un score de pertinence seul ne l'ouvre pas. L'intérêt pour une cause ne permet de déduire aucune appartenance politique, religieuse ou associative. ║ Niveau C Causes — recommandation contextuelle. RÈGLE : ne JAMAIS partir directement de la cause, valider d’abord LE RÔLE qu’elle doit jouer.",
+   "statut": "hypothese",
+   "manque": "« Niveau C Causes — recommandation contextuelle » : posée pendant une recommandation (chez le pilote) ou pour un projet de la personne ?",
+   "choix": [
+    "(a) Niveau C de la branche, pour une préparation de la personne",
+    "(b) jamais dans le Discovery : question du pilote"
+   ]
+  },
+  {
+   "question": "celebration.0816",
+   "origine": "Niveau B Célébration : seulement si les célébrations comptent réellement",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "cinema2.0985",
+   "origine": "Niveau B Cinéma — à poser seulement si le cinéma est réellement important",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "cinema2.0991",
+   "origine": "Niveau B Cinéma — donnée contextuelle pour moments difficiles (lien preparatory, règles K3)",
+   "statut": "sans_lecture",
+   "manque": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+  },
+  {
+   "question": "comics.0435",
+   "origine": "Niveau C BD/comics/mangas : passionné, compléter une collection, titre précis, édition spéciale, anti-doublon, expérience liée",
+   "statut": "sans_lecture",
+   "manque": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+  },
+  {
+   "question": "comics.0438",
+   "origine": "Si occasion envisagée",
+   "statut": "hypothese",
+   "manque": "« Si occasion envisagée » a deux sens en BD.",
+   "choix": [
+    "(a) seconde main : réponse à une question « d’occasion » (aucune en BD : il faudrait la désigner)",
+    "(b) un événement en préparation (« Événement concret »)"
+   ]
+  },
+  {
+   "question": "craft.0620",
+   "origine": "Axe Pratiquant, par pratique déclarée",
+   "statut": "sans_lecture",
+   "manque": "paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)"
+  },
+  {
+   "question": "craft.0622",
+   "origine": "Axe Pratiquant",
+   "statut": "sans_lecture",
+   "manque": "paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)"
+  },
+  {
+   "question": "creator.0277",
+   "origine": "Entité {entité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "creator.0278",
+   "origine": "Entité {entité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "creator.0279",
+   "origine": "Entité {entité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "creator.0280",
+   "origine": "Entité {entité} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "daily2.1130",
+   "origine": "Sous-branche Couple au quotidien : ne remplace pas Relation — fonctionnement CONCRET uniquement — ⚠ recouvre relation2 sous-branche Couple (merge final)",
+   "statut": "hypothese",
+   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
+   "choix": [
+    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
+    "(b) une donnée de situation de l’onboarding à désigner",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1131",
+   "origine": "Sous-branche Couple au quotidien",
+   "statut": "hypothese",
+   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
+   "choix": [
+    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
+    "(b) une donnée de situation de l’onboarding à désigner",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1132",
+   "origine": "Sous-branche Couple au quotidien",
+   "statut": "hypothese",
+   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
+   "choix": [
+    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
+    "(b) une donnée de situation de l’onboarding à désigner",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1134",
+   "origine": "Sous-branche Famille et enfants au quotidien",
+   "statut": "hypothese",
+   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
+   "choix": [
+    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
+    "(b) une question d’entrée sur le foyer",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1135",
+   "origine": "Sous-branche Famille",
+   "statut": "hypothese",
+   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
+   "choix": [
+    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
+    "(b) une question d’entrée sur le foyer",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1136",
+   "origine": "Sous-branche Famille",
+   "statut": "hypothese",
+   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
+   "choix": [
+    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
+    "(b) une question d’entrée sur le foyer",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1137",
+   "origine": "Sous-branche Famille",
+   "statut": "hypothese",
+   "manque": "Famille au quotidien : les énoncés présument des enfants (« les devoirs », « garder les enfants »).",
+   "choix": [
+    "(a) travel2.0890 « Avec mes enfants » comme preuve d’enfants",
+    "(b) une question d’entrée sur le foyer",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1138",
+   "origine": "Sous-branche Travail à domicile : à ouvrir si télétravail ou activité à domicile",
+   "statut": "hypothese",
+   "manque": "« à ouvrir si télétravail ou activité à domicile » : aucune question ne le recueille.",
+   "choix": [
+    "(a) une question d’entrée",
+    "(b) laisser fermé"
+   ]
+  },
+  {
+   "question": "daily2.1139",
+   "origine": "Sous-branche Travail à domicile",
+   "statut": "hypothese",
+   "manque": "« à ouvrir si télétravail ou activité à domicile » : aucune question ne le recueille.",
+   "choix": [
+    "(a) une question d’entrée",
+    "(b) laisser fermé"
+   ]
+  },
+  {
+   "question": "destination.0286",
+   "origine": "Entité {destination} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "destination.0287",
+   "origine": "Entité {destination} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "destination.0288",
+   "origine": "Entité {destination} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "destination.0289",
+   "origine": "Entité {destination} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "destination.0290",
+   "origine": "Entité {destination} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "dreams.2012",
+   "origine": "Sous-branche Voyage rêvé : si le projet est un voyage — croise travel2",
+   "statut": "hypothese",
+   "manque": "« si le projet est un voyage » : le moteur ne sait pas de quel genre est le rêve.",
+   "choix": [
+    "(a) une option « voyage » à une question de dreams à désigner",
+    "(b) « Séjour concret »"
+   ]
+  },
+  {
+   "question": "fashion2.1105",
+   "origine": "Achat concret UNIQUEMENT, avec consentement — askable_about_other = FALSE",
+   "statut": "hypothese",
+   "manque": "« Achat concret UNIQUEMENT, avec consentement » : quel consentement ?",
+   "choix": [
+    "(a) celui de répondre (le Discovery est toujours la personne elle-même) : « Achat concret »",
+    "(b) un consentement dédié à recueillir"
+   ]
+  },
+  {
+   "question": "flowers.2125",
+   "origine": "Niveau C Fleurs : recommandation en préparation",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "food2.0861",
+   "origine": "Niveau B Food, sous-branche Cuisine : seulement si la food est importante",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "food2.0878",
+   "origine": "Niveau C Food : seulement si pertinent",
+   "statut": "sans_lecture",
+   "manque": "le critère de pertinence n’est pas écrit"
+  },
+  {
+   "question": "fragrance2.1153",
+   "origine": "Niveau B Parfum : seulement pour les amateurs",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "fragrance2.1154",
+   "origine": "Niveau B Parfum, après 1153 — question paramétrique {parfum}",
+   "statut": "hypothese",
+   "manque": "« après 1153 — paramétrique {parfum} » : 1153 est une question ouverte ; il faut le parfum nommé.",
+   "choix": [
+    "(a) le parfum résolu par la lecture de 1153 (référent nommé)",
+    "(b) laisser fermé"
+   ]
+  },
+  {
+   "question": "games.0968",
+   "origine": "Niveau C Jeux : passionné, jeu précis, groupe identifié, risque de doublon, collection",
+   "statut": "sans_lecture",
+   "manque": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+  },
+  {
+   "question": "garden.0582",
+   "origine": "Niveau C Jardinage, avant plante vivante",
+   "statut": "sans_lecture",
+   "manque": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+  },
+  {
+   "question": "garden.0583",
+   "origine": "À poser seulement si la personne jardine réellement",
+   "statut": "hypothese",
+   "manque": "« si la personne jardine réellement » : aucune réponse ne dit « je jardine ».",
+   "choix": [
+    "(a) garden.0557 : « Une vraie passion » ou « J’aime jardiner quand j’ai un espace extérieur »",
+    "(b) garden.0558 : un jardin ou un potager déclaré",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "home2.1278",
+   "origine": "Sous-branche Art mural : pont avec la branche Art / Musées",
+   "statut": "hypothese",
+   "manque": "« Art mural : pont avec la branche Art / Musées » : un pont, pas une règle.",
+   "choix": [
+    "(a) Niveau B home2 (thème)",
+    "(b) Niveau B home2 ET branche Art ou Musées ouverte"
+   ]
+  },
+  {
+   "question": "home2.1280",
+   "origine": "Sous-branche Mobilier — SEULEMENT si pertinent (projet, déménagement, rénovation)",
+   "statut": "hypothese",
+   "manque": "« Mobilier — SEULEMENT si pertinent (projet, déménagement, rénovation) ».",
+   "choix": [
+    "(a) « Achat concret » dans la branche",
+    "(b) laisser fermé"
+   ]
+  },
+  {
+   "question": "hosting.2059",
+   "origine": "Niveau C Hospitalité : uniquement lorsqu’une recommandation est préparée",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "jewelry.0298",
+   "origine": "Si symbolique, personnalisé, histoire ou CAD_S élevé",
+   "statut": "sans_lecture",
+   "manque": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+  },
+  {
+   "question": "jewelry.0299",
+   "origine": "Uniquement si la personne apprécie les pierres ou si une recommandation en comporte",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "jewelry.0301",
+   "origine": "Seulement si le standing, le luxe ou une maison premium apparaît",
+   "statut": "sans_lecture",
+   "manque": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+  },
+  {
+   "question": "jewelry.0302",
+   "origine": "Si CAD_S, nostalgie ou héritage ressort",
+   "statut": "sans_lecture",
+   "manque": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+  },
+  {
+   "question": "jewelry.0303",
+   "origine": "Niveau C Bijoux : proche en recherche réelle, wishlist, passion, hésitation entre recos proches, ou information technique bloquante",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "jewelry.0305",
+   "origine": "Niveau C Bijoux, hésitation entre recommandations proches",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "jewelry.0306",
+   "origine": "Lorsque la recommandation est chère ou très personnelle",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "joys.1893",
+   "origine": "OUVERTURE SUR DÉMARCHE EXPLICITE (sensibilité moyenne) : la personne choisit d'explorer ce sujet ou l'aborde spontanément, et la relance reste dans ce contexte ; un score de pertinence seul ne l'ouvre pas ; un refus ou un changement de sujet arrête ces relances. ║ Niveau B Petites joies — question préparatoire (preparatory) — sensitivity: MOYENNE",
+   "statut": "sans_lecture",
+   "manque": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+  },
+  {
+   "question": "learning2.1462",
+   "origine": "Cartouche ADN d’apprentissage — 9. Formats idéaux — question PARAMÉTRIQUE {sujet}",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (parametres.json)"
+  },
+  {
+   "question": "live.0496",
+   "origine": "Achat concret, artiste adoré identifié",
+   "statut": "hypothese",
+   "manque": "« Achat concret, artiste adoré identifié » : l’artiste n’est pas connu du moteur.",
+   "choix": [
+    "(a) « Achat concret » seul",
+    "(b) Achat concret ET une réponse qui nomme un artiste"
+   ]
+  },
+  {
+   "question": "live.0498",
+   "origine": "Niveau C Live, budget premium envisagé",
+   "statut": "sans_lecture",
+   "manque": "« budget premium » : le budget d’une préparation n’est pas recueilli"
+  },
+  {
+   "question": "live.0501",
+   "origine": "Niveau C Live, après un événement vécu",
+   "statut": "sans_lecture",
+   "manque": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours"
+  },
+  {
+   "question": "mental.1850",
+   "origine": "Niveau B Charge mentale : seulement si charge élevée",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "money.1589",
+   "origine": "Niveau C Argent : uniquement lorsqu’une recommandation est préparée — donnée contextuelle",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "money.1590",
+   "origine": "Recommandation en préparation — donnée contextuelle",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "museum.0721",
+   "origine": "Niveau C Musées, budget premium",
+   "statut": "sans_lecture",
+   "manque": "« budget premium » : le budget d’une préparation n’est pas recueilli"
+  },
+  {
+   "question": "music2.1019",
+   "origine": "Niveau B Musique — question à caractère préventif (preparatory), règles K3",
+   "statut": "sans_lecture",
+   "manque": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+  },
+  {
+   "question": "pets.0396",
+   "origine": "Niveau B Animaux : seulement si l’animal est important",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "pets.0406",
+   "origine": "Niveau C Animaux, avant recommandation concrète",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "pets.0409",
+   "origine": "Niveau C Animaux, avant recommandation concrète",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "pets.0411",
+   "origine": "Niveau B Animaux (cas particulier 2), si souvenirs importants",
+   "statut": "sans_lecture",
+   "manque": "« si souvenirs importants » : aucun critère écrit"
+  },
+  {
+   "question": "philovie.1667",
+   "origine": "Niveau C Philosophie de vie — À POSER SEULEMENT après avoir accumulé suffisamment de signaux",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "photo.0685",
+   "origine": "Sous-branche : photo smartphone dominante (0673)",
+   "statut": "hypothese",
+   "manque": "« photo smartphone dominante (0673) » : 0673 est à choix multiple, la dominance ne se lit pas.",
+   "choix": [
+    "(a) « Mon téléphone » seul coché",
+    "(b) « Mon téléphone » coché"
+   ]
+  },
+  {
+   "question": "photo.0696",
+   "origine": "Niveau C Photographie, matériel expert",
+   "statut": "sans_lecture",
+   "manque": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+  },
+  {
+   "question": "place.0273",
+   "origine": "Entité {lieu} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "place.0274",
+   "origine": "Entité {lieu} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "place.0275",
+   "origine": "Entité {lieu} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "place.0276",
+   "origine": "Entité {lieu} détectée et importante",
+   "statut": "sans_lecture",
+   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+  },
+  {
+   "question": "podcast.0466",
+   "origine": "Niveau C Podcasts : passionné, abonnement/expérience envisagé, sélection personnalisée, événement live, matériel audio, contexte émotionnel exigeant",
+   "statut": "sans_lecture",
+   "manque": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+  },
+  {
+   "question": "podcast.0471",
+   "origine": "Niveau C Podcasts, abonnement envisagé",
+   "statut": "sans_lecture",
+   "manque": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+  },
+  {
+   "question": "podcast.0472",
+   "origine": "À poser seulement si la personne écoute beaucoup",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "podcast.0473",
+   "origine": "Niveau C Podcasts — question à caractère préventif (preparatory), règles K3",
+   "statut": "sans_lecture",
+   "manque": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+  },
+  {
+   "question": "reading2.1238",
+   "origine": "Niveau B Lecture : seulement pour les lecteurs réguliers",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "reading2.1251",
+   "origine": "Sous-branche Essais : si essai lu (1238)",
+   "statut": "hypothese",
+   "manque": "« si essai lu (1238) » : reading2.1238 n’a pas d’option « Essai ».",
+   "choix": [
+    "(a) « Philosophie », « Sciences humaines », « Psychologie », « Histoire », « Économie », « Vulgarisation scientifique »",
+    "(b) ajouter « Essais » aux options de 1238"
+   ]
+  },
+  {
+   "question": "relation2.0786",
+   "origine": "À poser si un proche vit loin ou si les contacts sont rares",
+   "statut": "sans_lecture",
+   "manque": "savoir qu’un proche vit loin : donnée du carnet du pilote, pas du Discovery"
+  },
+  {
+   "question": "relation2.0787",
+   "origine": "Sous-branche Couple : uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension",
+   "statut": "hypothese",
+   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
+   "choix": [
+    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
+    "(b) une donnée de situation de l’onboarding à désigner",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "relation2.0788",
+   "origine": "Sous-branche Couple",
+   "statut": "hypothese",
+   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
+   "choix": [
+    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
+    "(b) une donnée de situation de l’onboarding à désigner",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "relation2.0789",
+   "origine": "Sous-branche Couple",
+   "statut": "hypothese",
+   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
+   "choix": [
+    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
+    "(b) une donnée de situation de l’onboarding à désigner",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "relation2.0790",
+   "origine": "Sous-branche Couple",
+   "statut": "hypothese",
+   "manque": "Couple : « uniquement si un partenaire existe ET si la personne accepte d’enrichir cette dimension ». Le moteur ne connaît pas la situation de couple.",
+   "choix": [
+    "(a) une question d’entrée « Souhaites-tu parler de ta vie de couple ? » (oui = les deux conditions)",
+    "(b) une donnée de situation de l’onboarding à désigner",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "relation2.0800",
+   "origine": "Sous-branche Famille",
+   "statut": "sans_lecture",
+   "manque": "Famille au quotidien (branche daily2) : voir l’hypothèse « présument des enfants »"
+  },
+  {
+   "question": "relation2.0801",
+   "origine": "Sous-branche Famille",
+   "statut": "sans_lecture",
+   "manque": "Famille au quotidien (branche daily2) : voir l’hypothèse « présument des enfants »"
+  },
+  {
+   "question": "relation2.0802",
+   "origine": "Sous-branche Relations professionnelles : ne JAMAIS confondre proximité professionnelle et intimité personnelle",
+   "statut": "hypothese",
+   "manque": "Relations professionnelles : les énoncés présument une vie professionnelle (« Au travail, qu’est-ce qui te touche ? »).",
+   "choix": [
+    "(a) branche work2 ouverte comme preuve",
+    "(b) traiter comme un thème du niveau B (tout le monde a un contexte professionnel)",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "relation2.0803",
+   "origine": "Sous-branche Relations professionnelles",
+   "statut": "hypothese",
+   "manque": "Relations professionnelles : les énoncés présument une vie professionnelle (« Au travail, qu’est-ce qui te touche ? »).",
+   "choix": [
+    "(a) branche work2 ouverte comme preuve",
+    "(b) traiter comme un thème du niveau B (tout le monde a un contexte professionnel)",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "relation2.0804",
+   "origine": "Sous-branche Relations professionnelles",
+   "statut": "hypothese",
+   "manque": "Relations professionnelles : les énoncés présument une vie professionnelle (« Au travail, qu’est-ce qui te touche ? »).",
+   "choix": [
+    "(a) branche work2 ouverte comme preuve",
+    "(b) traiter comme un thème du niveau B (tout le monde a un contexte professionnel)",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "relation2.0805",
+   "origine": "Niveau C Relation : jamais une exploration générale — uniquement quand une attention doit être recommandée dans une relation précise",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "resonance.1536",
+   "origine": "Territoire Le courage / L’accomplissement",
+   "statut": "hypothese",
+   "manque": "« Territoire Le courage / L’accomplissement » : pas de numéro.",
+   "choix": [
+    "(a) resonance.1526 : « Les exploits humains », « Les parcours de résilience », « Les rêves accomplis »",
+    "(b) Niveau B resonance (thème)"
+   ]
+  },
+  {
+   "question": "series2.1046",
+   "origine": "Niveau B Séries — donnée contextuelle pour moments de fatigue (lien preparatory, règles K3)",
+   "statut": "sans_lecture",
+   "manque": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+  },
+  {
+   "question": "shoes.0354",
+   "origine": "Niveau C, hésitation entre recommandations proches",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "shoes.0355",
+   "origine": "Pour bottes, outdoor, voyage et sport",
+   "statut": "sans_lecture",
+   "manque": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+  },
+  {
+   "question": "shoes.0357",
+   "origine": "Si seconde main/vintage envisagé",
+   "statut": "hypothese",
+   "manque": "« seconde main / vintage envisagé » : envisagé où ?",
+   "choix": [
+    "(a) consumption2.1188 hors « Je préfère du neuf » et « Je préfère éviter » (rapport général à la seconde main)",
+    "(b) pour l’achat en préparation : le moteur ne connaît pas cette caractéristique d’un achat"
+   ]
+  },
+  {
+   "question": "sleep.0595",
+   "origine": "Niveau B Sommeil ; matières uniquement si literie/linge de maison est une piste concrète",
+   "statut": "hypothese",
+   "manque": "« matières uniquement si literie/linge de maison est une piste concrète » : vise des options (matières), pas la question.",
+   "choix": [
+    "(a) Niveau B sleep, et les options de matière masquées hors achat",
+    "(b) Niveau B sleep ET Achat concret"
+   ]
+  },
+  {
+   "question": "sleep.0607",
+   "origine": "Sous-branche parents : à ouvrir SEULEMENT si la personne parle elle-même de fatigue familiale",
+   "statut": "sans_lecture",
+   "manque": "« SEULEMENT si la personne parle elle-même de fatigue familiale » : une démarche dans un texte libre, que rien ne détecte aujourd’hui"
+  },
+  {
+   "question": "sleep.0612",
+   "origine": "Niveau C Sommeil — question à caractère préventif (preparatory), règles K3",
+   "statut": "sans_lecture",
+   "manque": "les « règles K3 » des questions préventives : introuvables dans toutes les sources consultées"
+  },
+  {
+   "question": "sleep.0613",
+   "origine": "Tout objet coûteux ou très personnel (matelas, oreiller, couette)",
+   "statut": "hypothese",
+   "manque": "« Tout objet coûteux ou très personnel (matelas, oreiller, couette) » : achat ou cadeau ?",
+   "choix": [
+    "(a) « Achat concret »",
+    "(b) « Achat concret » OU « Cadeau concret »"
+   ]
+  },
+  {
+   "question": "sportw.0553",
+   "origine": "Niveau C Sport spectateur, budget premium",
+   "statut": "sans_lecture",
+   "manque": "« budget premium » : le budget d’une préparation n’est pas recueilli"
+  },
+  {
+   "question": "sportw.0556",
+   "origine": "Niveau C Sport spectateur, après un événement",
+   "statut": "sans_lecture",
+   "manque": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours"
+  },
+  {
+   "question": "travel.0060B",
+   "origine": "FACULTATIVE. Posée seulement si la connaissance est utile à une recommandation en cours et n’est pas déjà connue",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "travel2.0901",
+   "origine": "À poser si un animal voyage avec la personne — croise la branche Animaux",
+   "statut": "sans_lecture",
+   "manque": "savoir qu’un animal voyage avec la personne : aucune question ne le recueille"
+  },
+  {
+   "question": "travel2.0915",
+   "origine": "Ouverture branche Hôtellerie (distincte du voyage — voir onglet Branches)",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0916",
+   "origine": "Branche Hôtellerie ouverte",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0917",
+   "origine": "Branche Hôtellerie ouverte",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0918",
+   "origine": "Branche Hôtellerie ouverte",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0919",
+   "origine": "Branche Hôtellerie ouverte",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0920",
+   "origine": "Branche Hôtellerie ouverte",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0921",
+   "origine": "Niveau B Hôtellerie (3 à 5 questions max selon le séjour envisagé)",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0922",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0923",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0924",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0925",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0926",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0927",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0928",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0929",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0930",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0931",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0933",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0934",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0935",
+   "origine": "Niveau B Hôtellerie",
+   "statut": "hypothese",
+   "manque": "Branche Hôtellerie : la feuille Branches dit « hébergement cité », que le moteur ne constate pas.",
+   "choix": [
+    "(a) un séjour en préparation (« Séjour concret ») — l’énoncé 0921 dit « selon le séjour envisagé »",
+    "(b) travel2.0915 (« Dans un voyage, l’hébergement… ») hors « Est principalement un endroit où dormir »",
+    "(c) les deux"
+   ]
+  },
+  {
+   "question": "travel2.0943",
+   "origine": "À poser seulement si plusieurs catégories de chambre sont comparées",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "travel2.0944",
+   "origine": "Niveau C, réservation offerte",
+   "statut": "hypothese",
+   "manque": "« Niveau C, réservation offerte » : offerte à qui ?",
+   "choix": [
+    "(a) « Cadeau concret » (elle offre)",
+    "(b) « Séjour concret » (on lui offre)"
+   ]
+  },
+  {
+   "question": "travel2.0945",
+   "origine": "Niveau C, après le séjour",
+   "statut": "sans_lecture",
+   "manque": "une préparation TERMINÉE : le moteur ne connaît que les préparations en cours"
+  },
+  {
+   "question": "value.1522",
+   "origine": "Niveau B Signature de valeur : uniquement après les 6 axes",
+   "statut": "hypothese",
+   "manque": "« uniquement après les 6 axes » : quels axes ?",
+   "choix": [
+    "(a) six questions de la branche value à désigner",
+    "(b) niveau B atteint"
+   ]
+  },
+  {
+   "question": "value.1523",
+   "origine": "Niveau B Signature de valeur — paramétrique par catégorie (1522)",
+   "statut": "hypothese",
+   "manque": "« paramétrique par catégorie (1522) » : « cette exigence » désigne UNE catégorie de 1522.",
+   "choix": [
+    "(a) une fois par catégorie cochée, la catégorie affichée",
+    "(b) seulement si une seule catégorie est cochée"
+   ]
+  },
+  {
+   "question": "values.1916",
+   "origine": "Niveau C Les valeurs — TRÈS RAREMENT, uniquement lorsqu’une recommandation semble entrer en TENSION avec une valeur importante",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION (côté pilote) — le Discovery de la personne ne la voit pas"
+  },
+  {
+   "question": "values.1917",
+   "origine": "Niveau C Les valeurs — uniquement en cas de tension détectée",
+   "statut": "sans_lecture",
+   "manque": "une tension entre une recommandation et une valeur : côté recommandation, pas Discovery"
+  },
+  {
+   "question": "watch.0319",
+   "origine": "Lorsque le rapport à la marque reste ambigu",
+   "statut": "sans_lecture",
+   "manque": "« rapport à la marque ambigu » : aucun critère écrit"
+  },
+  {
+   "question": "watch.0320",
+   "origine": "Niveau B Montres, occasion marquante pressentie",
+   "statut": "sans_lecture",
+   "manque": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+  },
+  {
+   "question": "watch.0321",
+   "origine": "Uniquement si une montre connectée est utilisée ou souhaitée",
+   "statut": "sans_lecture",
+   "manque": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+  },
+  {
+   "question": "watch.0322",
+   "origine": "Si la personne valorise le symbole, l’histoire ou les objets à transmettre",
+   "statut": "sans_lecture",
+   "manque": "un signal « symbolique / histoire / standing » ou un score « CAD_S » qu’aucune source ne définit"
+  },
+  {
+   "question": "watch.0323",
+   "origine": "Niveau C Montres : passionné, achat réel d’un proche, budget significatif, références à départager, caractéristique technique conditionnant l’usage",
+   "statut": "sans_lecture",
+   "manque": "contextes de niveau C (« passionné », « jeu précis », « abonnement envisagé », « avant plante vivante », « occasion pressentie », « achat réel d’un proche ») qu’aucune préparation déclarée ne porte en toutes lettres"
+  },
+  {
+   "question": "watch.0325",
+   "origine": "Seulement si les modèles comparés diffèrent sur ce point",
+   "statut": "sans_lecture",
+   "manque": "une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne"
+  },
+  {
+   "question": "watch.0326",
+   "origine": "Pour une personne passionnée",
+   "statut": "sans_lecture",
+   "manque": "un seuil d’importance ou d’intensité que le référentiel ne chiffre pas"
+  },
+  {
+   "question": "watch.0327",
+   "origine": "Si vintage évoqué ou envisagé",
+   "statut": "hypothese",
+   "manque": "« seconde main / vintage envisagé » : envisagé où ?",
+   "choix": [
+    "(a) consumption2.1188 hors « Je préfère du neuf » et « Je préfère éviter » (rapport général à la seconde main)",
+    "(b) pour l’achat en préparation : le moteur ne connaît pas cette caractéristique d’un achat"
+   ]
+  },
+  {
+   "question": "watch.0328",
+   "origine": "Si sport, eau, voyage ou quotidien intensif",
+   "statut": "sans_lecture",
+   "manque": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+  },
+  {
+   "question": "watch.0329",
+   "origine": "Niveau C Montres, avant un choix mécanique",
+   "statut": "sans_lecture",
+   "manque": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
+  },
+  {
+   "question": "watch.0330",
+   "origine": "Achat concret, budget engagé",
+   "statut": "hypothese",
+   "manque": "« Achat concret, budget engagé » : le budget d’un achat n’est pas connu du moteur ; lire « Achat concret » seul ouvrirait plus.",
+   "choix": [
+    "(a) ajouter le budget à la déclaration d’un achat",
+    "(b) accepter « Achat concret » seul"
+   ]
+  },
+  {
+   "question": "work2.1356",
+   "origine": "Sous-branche Management — si concerné",
+   "statut": "hypothese",
+   "manque": "« si concerné » (management ; activité créative) : aucune réponse ne le dit.",
+   "choix": [
+    "(a) une question de rôle dans work2",
+    "(b) work2.1357 : craft.0614 « Je pratique moi-même… »",
+    "(c) laisser fermé"
+   ]
+  },
+  {
+   "question": "work2.1357",
+   "origine": "Sous-branche Créatif — si concerné — croise Arts créatifs",
+   "statut": "hypothese",
+   "manque": "« si concerné » (management ; activité créative) : aucune réponse ne le dit.",
+   "choix": [
+    "(a) une question de rôle dans work2",
+    "(b) work2.1357 : craft.0614 « Je pratique moi-même… »",
+    "(c) laisser fermé"
+   ]
+  }
+ ]
+}

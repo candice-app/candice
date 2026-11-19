@@ -7,19 +7,9 @@
   ],
   "preuves": [
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "reading.disruptor.thematique_sombre",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sensory.type_preference",
-    "preference_value": "ambiance_sonore=musique_douce",
+    "target_construct": "PREFERENCE.food.value_sought",
+    "preference_value": "plaisir_de_bien_cuisiner",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -28,8 +18,87 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sensory.disruptor",
-    "preference_value": "foule=fatigue rapide",
+    "target_construct": "PREFERENCE.food.value_sought",
+    "preference_value": "plaisirs_simples",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.value_sought",
+    "preference_value": "partage_du_repas",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.domain_importance",
+    "preference_value": "aime_cuisiner_quand_le_temps_le_permet",
+    "polarity": "condition",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "reading",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.domain_importance",
+    "preference_value": "regulier",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=s'évader",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=se détendre",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=ralentir",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_antipattern",
+    "preference_value": "les_gadgets_de_cuisine",
     "polarity": "rejet",
     "strength": "moderate",
     "stability": "evolving",
@@ -37,178 +106,33 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_ATTENTIVENESS",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "SOCIAL_ENERGY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.style",
-    "preference_value": "expressive",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_ATTENTIVENESS",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "written",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "cuisine",
+    "target_construct": "PREFERENCE.food.gift_antipattern",
+    "preference_value": "les_coffrets_trop_generiques",
+    "polarity": "rejet",
     "strength": "moderate",
     "stability": "evolving",
-    "confidence": "high",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_ATTENTIVENESS",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_RHYTHM_RESPECT",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_format",
+    "preference_value": "petit_bistrot_exceptionnel",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "BEHAVIOR",
-    "target_construct": "stress_response:withdraw_seek_calm",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_REFLECTIVENESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "decision_process:wait_for_inner_clarity",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_STRUCTURE",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "GRD_SCHEDULE_DISRUPTION",
-    "severity": "HARD",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_format",
+    "preference_value": "marche_local",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_RHYTHM_RESPECT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "conflict_response:pause_before_responding",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "emotional_expression:with_trusted_few",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_AUTHENTICITY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SIMPLICITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_AUTHENTICITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_SEEN_UNDERSTOOD",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
@@ -286,98 +210,183 @@
     "assertion_status": "inferred"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "les_personnes_presentes",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ATTENTIVENESS",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "le_temps_qu_on_prend",
-    "polarity": "positive",
+    "target_family": "NEED",
+    "target_construct": "NEED_RHYTHM_RESPECT",
     "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "la_simplicite",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "target_family": "BEHAVIOR",
+    "target_construct": "stress_response:withdraw_seek_calm",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.domain_importance",
-    "preference_value": "aime_cuisiner_quand_le_temps_le_permet",
-    "polarity": "condition",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_REFLECTIVENESS",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.gift_format",
-    "preference_value": "petit_bistrot_exceptionnel",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "target_family": "BEHAVIOR",
+    "target_construct": "decision_process:wait_for_inner_clarity",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.gift_format",
-    "preference_value": "marche_local",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.gift_format",
-    "preference_value": "pique_nique",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_STRUCTURE",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
     "target_family": "GUARDRAIL",
-    "target_construct": "food.gift_antipattern.gadgets_de_cuisine",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "target_construct": "GRD_SCHEDULE_DISRUPTION",
+    "severity": "HARD",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "food.gift_antipattern.coffrets_trop_generiques",
-    "polarity": "rejet",
-    "severity": "SOFT",
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ATTENTIVENESS",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "SOCIAL_ENERGY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.style",
+    "preference_value": "expressive",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ATTENTIVENESS",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "written",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "cuisine",
     "strength": "moderate",
     "stability": "evolving",
-    "confidence": "medium",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_RHYTHM_RESPECT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "conflict_response:pause_before_responding",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "emotional_expression:with_trusted_few",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_AUTHENTICITY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SIMPLICITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_AUTHENTICITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_SEEN_UNDERSTOOD",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
     "target_family": "CONTEXT",
-    "target_construct": "usage_context.moment_de_lecture_le_matin",
+    "target_construct": "usage_context.moment_de_lecture_le_week_end",
     "polarity": "absence_de_critere",
     "strength": "moderate",
     "stability": "evolving",
@@ -386,7 +395,7 @@
    },
    {
     "target_family": "CONTEXT",
-    "target_construct": "usage_context.moment_de_lecture_le_week_end",
+    "target_construct": "usage_context.moment_de_lecture_avant_de_dormir",
     "polarity": "absence_de_critere",
     "strength": "moderate",
     "stability": "evolving",
@@ -405,29 +414,9 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=se détendre",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=s'évader",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=ralentir",
-    "polarity": "positive",
+    "target_construct": "PREFERENCE.food.ritual",
+    "preference_value": "ouverture_avec_limites_non_nommees",
+    "polarity": "condition",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
@@ -435,6 +424,26 @@
    }
   ],
   "connaissances_ouvertes": [
+   {
+    "subject_label": "petits bistrots",
+    "relation": "style de restaurant qui lui fait plaisir",
+    "assertion_status": "inferred"
+   },
+   {
+    "subject_label": "plats mijotés",
+    "relation": "ce qu’elle aime y trouver",
+    "assertion_status": "inferred"
+   },
+   {
+    "subject_label": "fleurs coupées",
+    "relation": "surtout pas — ça la déprime de les regarder faner",
+    "assertion_status": "inferred"
+   },
+   {
+    "subject_label": "bijoux",
+    "relation": "très peu pour moi",
+    "assertion_status": "inferred"
+   },
    {
     "subject_label": "week-end surprise organisé par Thomas dans le Jura",
     "relation": "plus beau cadeau — il avait absolument tout prévu, elle n'a rien eu à décider",
@@ -449,41 +458,6 @@
     "subject_label": "Thomas",
     "relation": "évoqué",
     "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "orange vif",
-    "relation": "n’aime presque jamais porter ou avoir chez elle",
-    "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "couleurs fluo",
-    "relation": "n’aime presque jamais porter ou avoir chez elle",
-    "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "verts profonds",
-    "relation": "couleur qui lui fait du bien",
-    "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "bleus un peu gris",
-    "relation": "couleur qui lui fait du bien",
-    "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "blanc cassé",
-    "relation": "couleur qui lui fait du bien",
-    "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "fleurs coupées",
-    "relation": "surtout pas — ça la déprime de les regarder faner",
-    "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "bijoux",
-    "relation": "très peu pour moi",
-    "assertion_status": "inferred"
    }
   ],
   "faits": [
@@ -496,20 +470,16 @@
     "value": "Lire au lit le dimanche matin. Cuisiner des plats qui mijotent quand j’ai le temps. Marcher seule en ville avec un podcast."
    },
    {
-    "fact_type": "discovery.sensory.0261",
-    "value": "Les verts profonds et les bleus un peu gris. Le blanc cassé aussi."
+    "fact_type": "singularity.plus_beau_cadeau",
+    "value": "Un week-end surprise que Thomas avait organisé dans le Jura. Il avait absolument tout prévu, je n’ai rien eu à décider."
    },
    {
     "fact_type": "singularity.cadeaux_non",
     "value": "Surtout pas de fleurs coupées — ça me déprime de les regarder faner. Et les bijoux, très peu pour moi."
    },
    {
-    "fact_type": "singularity.plus_beau_cadeau",
-    "value": "Un week-end surprise que Thomas avait organisé dans le Jura. Il avait absolument tout prévu, je n’ai rien eu à décider."
-   },
-   {
-    "fact_type": "discovery.sensory.0262",
-    "value": "L’orange vif, et le fluo en général."
+    "fact_type": "discovery.FOO-07",
+    "value": "Les petits bistrots où le plat du jour a mijoté toute la matinée."
    }
   ]
  },
@@ -519,90 +489,6 @@
    "le refus porte sur le CHOIX fait sans elle, pas sur le matériel de sport"
   ],
   "preuves": [
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.nature.type_preference",
-    "preference_value": "environnement=montagne",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.nature.type_preference",
-    "preference_value": "environnement=foret",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "nature.disruptor.affluence_foule",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "sport.disruptor.reference_produit_inadaptee",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "sport.disruptor.taille_inadaptee",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "sport.disruptor.equipement_sans_usage_reel",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "practice_frequency:frequence_de_pratique_sportive_declaree_plusieurs_fois_par_semaine",
-    "polarity": "absence_de_critere",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_FUNCTIONAL",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_SERVICES",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
    {
     "target_family": "DRIVER",
     "target_construct": "DRV_RELIEF",
@@ -653,109 +539,6 @@
    {
     "target_family": "NEED",
     "target_construct": "NEED_REASSURANCE",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_GIVE_SERVICES",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_AUTONOMY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_FREEDOM",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_RHYTHM_RESPECT",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_FUNCTIONAL",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_UTILITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_MASTERY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "sport",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "trail en montagne",
-    "relationship": "passion",
-    "parent_domain": "sport fitness",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "low",
-    "assertion_status": "inferred"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "bricolage",
-    "relationship": "casual",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "low",
-    "assertion_status": "inferred"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_SERVICES",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_ANTICIPATION",
     "strength": "moderate",
     "stability": "contextual",
     "confidence": "high",
@@ -817,6 +600,200 @@
     "assertion_status": "explicit"
    },
    {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport.value_sought",
+    "preference_value": "performance",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport.value_sought",
+    "preference_value": "plein_air",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport.value_sought",
+    "preference_value": "progression",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "sport_practice",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport_practice.domain_importance",
+    "preference_value": "place du sport dans sa vie=passion",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport_practice.value_sought",
+    "preference_value": "progresser",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport_practice.value_sought",
+    "preference_value": "me_depasser",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport_practice.value_sought",
+    "preference_value": "etre_dehors",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport_practice.value_sought",
+    "preference_value": "preparer_un_objectif",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "nature",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.nature.domain_importance",
+    "preference_value": "place=interet_regulier",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "sport",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.gardening.domain_importance",
+    "preference_value": "place=faible",
+    "polarity": "rejet",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sport.domain_importance",
+    "preference_value": "intensite=high;modalite=passion",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_STRUCTURE",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_EXACTINGNESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "GRD_POOR_EXECUTION",
+    "severity": "HARD",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_MASTERY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "sport",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "trail en montagne",
+    "relationship": "passion",
+    "parent_domain": "sport fitness",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "low",
+    "assertion_status": "inferred"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "bricolage",
+    "relationship": "casual",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "low",
+    "assertion_status": "inferred"
+   },
+   {
     "target_family": "PROFILE",
     "target_construct": "IMPORTANCE_FUNCTIONAL",
     "stability": "contextual",
@@ -863,24 +840,85 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_STRUCTURE",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_EXACTINGNESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "GRD_POOR_EXECUTION",
-    "severity": "HARD",
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_GIVE_SERVICES",
     "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_AUTONOMY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_FREEDOM",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_RHYTHM_RESPECT",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_FUNCTIONAL",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_UTILITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_FUNCTIONAL",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_SERVICES",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_SERVICES",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ANTICIPATION",
+    "strength": "moderate",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -906,130 +944,56 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport.value_sought",
-    "preference_value": "performance",
-    "polarity": "positive",
+    "target_family": "GUARDRAIL",
+    "target_construct": "nature.disruptor.affluence_foule",
+    "polarity": "rejet",
+    "severity": "SOFT",
     "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport.value_sought",
-    "preference_value": "progression",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport.value_sought",
-    "preference_value": "plein_air",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "sport",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport.domain_importance",
-    "preference_value": "intensite=high;modalite=passion",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "nature",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.nature.domain_importance",
-    "preference_value": "place=interet_regulier",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport_practice.value_sought",
-    "preference_value": "progresser",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport_practice.value_sought",
-    "preference_value": "me_depasser",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport_practice.value_sought",
-    "preference_value": "preparer_un_objectif",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sport_practice.value_sought",
-    "preference_value": "etre_dehors",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
+    "stability": "contextual",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
     "target_family": "GUARDRAIL",
-    "target_construct": "sport_practice.gift_antipattern.materiel_de_sport_choisi_a_sa_place_elle_prefere_choisir_elle_meme",
+    "target_construct": "sport.disruptor.reference_produit_inadaptee",
     "polarity": "rejet",
     "severity": "SOFT",
     "strength": "moderate",
-    "stability": "evolving",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "sport.disruptor.equipement_sans_usage_reel",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "sport.disruptor.taille_inadaptee",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "practice_frequency:frequence_de_pratique_sportive_declaree_plusieurs_fois_par_semaine",
+    "polarity": "absence_de_critere",
+    "strength": "moderate",
+    "stability": "contextual",
     "confidence": "medium",
     "assertion_status": "explicit"
    }
   ],
   "connaissances_ouvertes": [
-   {
-    "subject_label": "matériel choisi à sa place",
-    "relation": "à éviter absolument — sans la bonne taille et le bon modèle, ça finit au placard",
-    "assertion_status": "inferred"
-   },
    {
     "subject_label": "prépare un 50 km",
     "relation": "objectif en cours — court trois fois par semaine",
@@ -1043,16 +1007,12 @@
   ],
   "faits": [
    {
-    "fact_type": "singularity.adore_faire",
-    "value": "Le trail en montagne, vraiment sérieusement — je cours trois fois par semaine et je prépare un 50 km. Et accessoirement je bricole un peu le week-end."
-   },
-   {
     "fact_type": "singularity.cadeaux_non",
     "value": "Du matériel de sport choisi sans me demander. La taille, la marque, le modèle : ça ne marche jamais."
    },
    {
-    "fact_type": "discovery.sportp.0507",
-    "value": "Du matériel choisi à ma place. Sans la bonne taille et le bon modèle, ça finit au placard."
+    "fact_type": "singularity.adore_faire",
+    "value": "Le trail en montagne, vraiment sérieusement — je cours trois fois par semaine et je prépare un 50 km. Et accessoirement je bricole un peu le week-end."
    }
   ]
  },
@@ -1063,234 +1023,8 @@
   ],
   "preuves": [
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.gift_openness",
-    "preference_value": "acceptabilite=conditionnee_a_la_connaissance_du_gout",
-    "polarity": "condition",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.gift_format",
-    "preference_value": "petit_bistrot_exceptionnel",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.gift_format",
-    "preference_value": "degustation",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sensory.type_preference",
-    "preference_value": "ambiance_sonore=silence",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "food.gift_antipattern.produits_tres_luxueux",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "food.gift_antipattern.coffrets_trop_generiques",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "reading.disruptor.livre_porte_par_un_effet_de_mode",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sensory.disruptor",
-    "preference_value": "foule=fatigue rapide",
-    "polarity": "rejet",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "PROFILE",
     "target_construct": "PROFILE_RELATIONALITY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_EXPERIENCE",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_QUALITY_TIME",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SHARED_EXPERIENCE",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "SOCIAL_ENERGY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_REFLECTIVENESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_AUTHENTICITY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SIMPLICITY",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_AUTHENTICITY",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_RHYTHM_RESPECT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "stress_response:withdraw_seek_calm",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_WORDS",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_TIMING",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "conflict_response:avoid_conflict",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "emotional_expression:with_trusted_few",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_AUTHENTICITY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SIMPLICITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_AUTHENTICITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_RELATIONALITY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_CONNECTION",
-    "strength": "moderate",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -1368,55 +1102,39 @@
     "assertion_status": "inferred"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.style",
-    "preference_value": "analytical",
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_AUTHENTICITY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SIMPLICITY",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_AESTHETIC",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_EXACTINGNESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "DRIVER",
-    "target_construct": "DRV_AESTHETIC",
+    "target_construct": "DRV_AUTHENTICITY",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_RHYTHM_RESPECT",
     "strength": "moderate",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_QUALITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "in_person",
+    "target_family": "BEHAVIOR",
+    "target_construct": "stress_response:withdraw_seek_calm",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
@@ -1457,54 +1175,228 @@
    },
    {
     "target_family": "INTEREST",
-    "target_construct": "cuisine",
+    "target_construct": "reading",
+    "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.domain_importance",
+    "preference_value": "eleve",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_format",
+    "preference_value": "marche_local",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.gift_openness",
+    "preference_value": "acceptabilite=conditionnee_a_une_reference_precise",
+    "polarity": "condition",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "food",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.domain_importance",
+    "preference_value": "intensite=unspecified;modalite=reconfort",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.value_sought",
+    "preference_value": "plaisirs_simples",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.drinks.type_preference",
+    "preference_value": "boissons",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.value_sought",
+    "preference_value": "partage_du_repas",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_antipattern",
+    "preference_value": "les_produits_tres_luxueux",
+    "polarity": "rejet",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_WORDS",
+    "strength": "moderate",
+    "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "CONTEXT",
-    "target_construct": "usage_context.moment_de_lecture_avant_de_dormir",
-    "polarity": "absence_de_critere",
+    "target_family": "DRIVER",
+    "target_construct": "DRV_TIMING",
     "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "CONTEXT",
-    "target_construct": "usage_context.moment_de_lecture_le_week_end",
-    "polarity": "absence_de_critere",
+    "target_family": "BEHAVIOR",
+    "target_construct": "conflict_response:avoid_conflict",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "emotional_expression:with_trusted_few",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_AUTHENTICITY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SIMPLICITY",
     "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_EXPERIENCE",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_QUALITY_TIME",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SHARED_EXPERIENCE",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "SOCIAL_ENERGY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_REFLECTIVENESS",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "l_ambiance",
-    "polarity": "positive",
+    "target_construct": "PREFERENCE.communication.style",
+    "preference_value": "analytical",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_AESTHETIC",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_EXACTINGNESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_AESTHETIC",
     "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "les_personnes_presentes",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "la_simplicite",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=apprendre",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -1533,9 +1425,86 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=comprendre le monde",
+    "target_construct": "PREFERENCE.food.domain_importance",
+    "preference_value": "intensite=low;modalite=fonctionnel_pratique",
+    "polarity": "absence_de_critere",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_QUALITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_AUTHENTICITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_RELATIONALITY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_CONNECTION",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_antipattern",
+    "preference_value": "les_coffrets_trop_generiques",
+    "polarity": "rejet",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "in_person",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "cuisine",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_format",
+    "preference_value": "visite_de_producteur",
     "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "CONTEXT",
+    "target_construct": "usage_context.aucun_moment_privilegie_lecture_possible_a_tout_moment",
+    "polarity": "absence_de_critere",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
@@ -1544,23 +1513,23 @@
   ],
   "connaissances_ouvertes": [
    {
-    "subject_label": "rien de clinquant",
-    "relation": "orientation de goût — rejette le clinquant",
-    "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "tons sourds : beige, gris perle, vert sauge",
-    "relation": "couleurs qui lui font du bien",
-    "assertion_status": "inferred"
-   },
-   {
     "subject_label": "restaurants où il faut crier pour s'entendre",
     "relation": "évite ou déteste — le bruit, pas les restaurants",
     "assertion_status": "inferred"
    },
    {
-    "subject_label": "tout ce qui brille ou qui est criard",
-    "relation": "n’aime presque jamais porter ou avoir chez elle",
+    "subject_label": "petites tables calmes",
+    "relation": "style de restaurant qui lui fait plaisir",
+    "assertion_status": "inferred"
+   },
+   {
+    "subject_label": "salons de thé",
+    "relation": "style de lieu qui lui fait plaisir",
+    "assertion_status": "inferred"
+   },
+   {
+    "subject_label": "rien de clinquant",
+    "relation": "orientation de goût — rejette le clinquant",
     "assertion_status": "inferred"
    }
   ],
@@ -1570,16 +1539,12 @@
     "value": "Les restaurants où il faut crier pour s’entendre."
    },
    {
-    "fact_type": "discovery.sensory.0261",
-    "value": "Les tons sourds : beige, gris perle, vert sauge."
-   },
-   {
     "fact_type": "singularity.marques_lieux",
     "value": "Les librairies de quartier. Le thé en vrac, pas en sachet. Rien de clinquant."
    },
    {
-    "fact_type": "discovery.sensory.0262",
-    "value": "Tout ce qui brille ou qui est criard."
+    "fact_type": "discovery.FOO-07",
+    "value": "Des petites tables calmes, où l’on s’entend parler. Les salons de thé aussi."
    }
   ]
  },
@@ -1590,79 +1555,32 @@
   ],
   "preuves": [
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.service_preference",
-    "preference_value": "niveau_de_devoilement=grandes_lignes_et_quelques_surprises",
-    "polarity": "positive",
-    "strength": "moderate",
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
+    "strength": "strong",
     "stability": "contextual",
-    "confidence": "medium",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "art.disruptor.affluence_foule",
-    "polarity": "rejet",
-    "severity": "SOFT",
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ATTENTIVENESS",
     "strength": "moderate",
     "stability": "contextual",
-    "confidence": "medium",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "art.disruptor.surcharge_informationnelle",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_EXPERIENCE",
     "stability": "contextual",
-    "confidence": "medium",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.creativity.gift_format",
-    "preference_value": "atelier_ou_experience",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "travel.disruptor.la_foule",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "travel.disruptor.un_programme_trop_charge",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "travel.disruptor.manque_de_temps_seul",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.type_preference",
-    "preference_value": "peinture",
+    "target_construct": "PREFERENCE.travel.type_preference",
+    "preference_value": "format_de_sejour=culturel",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -1671,8 +1589,8 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.type_preference",
-    "preference_value": "design",
+    "target_construct": "PREFERENCE.travel.type_preference",
+    "preference_value": "format_de_sejour=sedentaire_un_seul_lieu",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -1680,22 +1598,31 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "creativity.disruptor.cadeau_creatif_vecu_comme_une_obligation",
-    "polarity": "rejet",
-    "severity": "SOFT",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.type_preference",
+    "preference_value": "format_de_sejour=grand_voyage_lointain",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
+    "stability": "evolving",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "creativity.disruptor.materiel_trop_basique",
-    "polarity": "rejet",
-    "severity": "SOFT",
+    "target_family": "INTEREST",
+    "target_construct": "art",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.art.domain_importance",
+    "preference_value": "intensite=moderate;modalite=interet_regulier",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
@@ -1766,32 +1693,194 @@
     "assertion_status": "inferred"
    },
    {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
-    "strength": "strong",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.occasion_scope",
+    "preference_value": "recherche=decouverte_d_une_culture",
+    "polarity": "positive",
+    "strength": "moderate",
     "stability": "contextual",
-    "confidence": "high",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.occasion_scope",
+    "preference_value": "recherche=beaux_paysages",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.occasion_scope",
+    "preference_value": "recherche=prendre_son_temps",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.art.value_sought",
+    "preference_value": "valeur_recherchee=beaute",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.art.value_sought",
+    "preference_value": "valeur_recherchee=inspiration",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.creativity.aesthetic_universe",
+    "preference_value": "souhait_d_apprendre_ou_de_reprendre_une_pratique",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "reliure_ou_papeterie",
+    "polarity": "positive",
+    "parent_domain": "creativity",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.intensity_preference",
+    "preference_value": "rythme=une_activite_principale_et_liberte",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "creativity.disruptor.materiel_trop_expert",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "creativity.disruptor.copie_ou_objet_produit_en_masse",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.service_preference",
+    "preference_value": "niveau_de_devoilement=grandes_lignes_et_quelques_surprises",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "art.disruptor.affluence_foule",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "art.disruptor.duree_de_visite_elevee",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.type_preference",
+    "preference_value": "peinture",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.type_preference",
+    "preference_value": "impressionnisme",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.type_preference",
+    "preference_value": "design",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.creativity.gift_format",
+    "preference_value": "atelier_ou_experience",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
     "target_family": "DRIVER",
     "target_construct": "DRV_ATTENTIVENESS",
-    "strength": "moderate",
+    "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "SOCIAL_ENERGY",
+    "target_family": "BEHAVIOR",
+    "target_construct": "stress_response:internalize",
+    "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "written",
+    "target_family": "BEHAVIOR",
+    "target_construct": "decision_process:trust_instinct",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
@@ -1799,14 +1888,25 @@
    },
    {
     "target_family": "PROFILE",
-    "target_construct": "APPETENCE_EXPERIENCE",
+    "target_construct": "PROFILE_STRUCTURE",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_EXPERIENCE",
+    "target_family": "GUARDRAIL",
+    "target_construct": "GRD_TOO_INTIMATE",
+    "severity": "HARD",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "GRD_SENTIMENTAL_OVERLOAD",
+    "severity": "HARD",
+    "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -1866,32 +1966,16 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "NEED",
-    "target_construct": "NEED_SEEN_UNDERSTOOD",
-    "strength": "moderate",
+    "target_family": "PROFILE",
+    "target_construct": "SOCIAL_ENERGY",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_ATTENTIVENESS",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "stress_response:internalize",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "decision_process:trust_instinct",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "written",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
@@ -1899,25 +1983,7 @@
    },
    {
     "target_family": "PROFILE",
-    "target_construct": "PROFILE_STRUCTURE",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "GRD_TOO_INTIMATE",
-    "severity": "HARD",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "GRD_SENTIMENTAL_OVERLOAD",
-    "severity": "HARD",
-    "strength": "strong",
+    "target_construct": "APPETENCE_EXPERIENCE",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -1947,132 +2013,11 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.intensity_preference",
-    "preference_value": "rythme=une_activite_principale_et_liberte",
-    "polarity": "positive",
+    "target_family": "NEED",
+    "target_construct": "NEED_SEEN_UNDERSTOOD",
     "strength": "moderate",
     "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "art",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.domain_importance",
-    "preference_value": "intensite=moderate;modalite=interet_regulier",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "reliure_ou_papeterie",
-    "polarity": "positive",
-    "parent_domain": "creativity",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "calligraphie_ou_lettering",
-    "polarity": "positive",
-    "parent_domain": "creativity",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.type_preference",
-    "preference_value": "format_de_sejour=culturel",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.type_preference",
-    "preference_value": "format_de_sejour=sedentaire_un_seul_lieu",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.companions",
-    "preference_value": "accompagnement_desire=seul",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.value_sought",
-    "preference_value": "valeur_recherchee=beaute",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.value_sought",
-    "preference_value": "valeur_recherchee=emotion",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.value_sought",
-    "preference_value": "valeur_recherchee=inspiration",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.creativity.aesthetic_universe",
-    "preference_value": "creer_de_ses_mains",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.creativity.aesthetic_universe",
-    "preference_value": "apprendre_une_technique",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
+    "confidence": "high",
     "assertion_status": "explicit"
    }
   ],
@@ -2106,177 +2051,43 @@
   ],
   "preuves": [
    {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_GIVE_SURPRISE",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_LIGHTNESS",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_PLAYFULNESS",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.home.value_sought",
+    "preference_value": "recherche=transformation_continue",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.organised_for_me.surprise_level",
-    "preference_value": "full",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "deco",
+    "target_construct": "PREFERENCE.home.value_sought",
+    "preference_value": "recherche=objets_charges_de_souvenirs",
+    "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
-    "confidence": "high",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_OPENNESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_SURPRISE",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.home.sensory_preference",
+    "preference_value": "recherche=lumiere_abondante;registre=lumineux",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SURPRISE",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.home.value_sought",
+    "preference_value": "recherche=ordre_et_rangement",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "conflict_response:use_humor_to_defuse",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "emotional_expression:openly",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_AUTHENTICITY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SIMPLICITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_AUTHENTICITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_LOVED_MATTER",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_CHOSEN",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "brocantes",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "low",
-    "assertion_status": "inferred"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SURPRISE",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "stress_response:take_action",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "decision_process:trust_instinct",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_EXACTINGNESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "GRD_POOR_EXECUTION",
-    "severity": "HARD",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
@@ -2334,6 +2145,220 @@
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.home.type_preference",
+    "preference_value": "categorie:vaisselle",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.home.type_preference",
+    "preference_value": "categorie:ceramiques",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.home.type_preference",
+    "preference_value": "categorie:artisanat",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.home.gift_openness",
+    "preference_value": "acceptabilite=partielle;condition=categories_autorisees_non_precisees_ici",
+    "polarity": "condition",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_OPENNESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SURPRISE",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "stress_response:take_action",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "decision_process:trust_instinct",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_EXACTINGNESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "GRD_POOR_EXECUTION",
+    "severity": "HARD",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_GIVE_SURPRISE",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_LIGHTNESS",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_PLAYFULNESS",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_SURPRISE",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SURPRISE",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "conflict_response:use_humor_to_defuse",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "emotional_expression:openly",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.organised_for_me.surprise_level",
+    "preference_value": "full",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "deco",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_AUTHENTICITY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SIMPLICITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_AUTHENTICITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_LOVED_MATTER",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_CHOSEN",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "brocantes",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "low",
+    "assertion_status": "inferred"
    }
   ],
   "connaissances_ouvertes": [
@@ -2350,16 +2375,16 @@
   ],
   "faits": [
    {
-    "fact_type": "habit",
-    "value": "souvent un peu en retard, sans malice"
+    "fact_type": "singularity.cadeaux_non",
+    "value": "Tout ce qui prend de la place. Mon appartement est petit."
    },
    {
     "fact_type": "singularity.adore_faire",
     "value": "Les brocantes. Je ne cherche rien de précis, j’aime juste fouiller."
    },
    {
-    "fact_type": "singularity.cadeaux_non",
-    "value": "Tout ce qui prend de la place. Mon appartement est petit."
+    "fact_type": "habit",
+    "value": "souvent un peu en retard, sans malice"
    }
   ]
  },
@@ -2371,9 +2396,9 @@
   "preuves": [
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.gift_openness",
-    "preference_value": "acceptabilite=conditionnee_a_une_reference_precise",
-    "polarity": "condition",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=apprendre",
+    "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
@@ -2381,9 +2406,204 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.type_preference",
-    "preference_value": "impressionnisme",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=comprendre le monde",
     "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=réfléchir",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_EXACTINGNESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_PERSONALIZED_GIFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_PERSONALIZATION",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "conflict_response:address_directly",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "reading",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.domain_importance",
+    "preference_value": "eleve",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "art",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.art.domain_importance",
+    "preference_value": "intensite=high;modalite=passion",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.art.value_sought",
+    "preference_value": "valeur_recherchee=histoire",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.art.value_sought",
+    "preference_value": "valeur_recherchee=beaute",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.art.value_sought",
+    "preference_value": "valeur_recherchee=apprentissage",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.domain_importance",
+    "preference_value": "place=tres_elevee (passion declaree)",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "beaux_arts_peinture",
+    "polarity": "positive",
+    "parent_domain": "museum",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.aesthetic_universe",
+    "preference_value": "intensite=unspecified;univers=beaux_arts_peinture",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "design_arts_decoratifs",
+    "polarity": "positive",
+    "parent_domain": "museum",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.aesthetic_universe",
+    "preference_value": "intensite=unspecified;univers=design_arts_decoratifs",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "artisanat_metiers_d_art",
+    "polarity": "positive",
+    "parent_domain": "museum",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.aesthetic_universe",
+    "preference_value": "intensite=unspecified;univers=artisanat_metiers_d_art",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "CONTEXT",
+    "target_construct": "usage_context.aucun_moment_privilegie_lecture_possible_a_tout_moment",
+    "polarity": "absence_de_critere",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
@@ -2402,7 +2622,7 @@
    {
     "target_family": "PREFERENCE",
     "target_construct": "PREFERENCE.museum.type_preference",
-    "preference_value": "sculpture",
+    "preference_value": "impressionnisme",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -2410,85 +2630,46 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "reading.disruptor.livre_porte_par_un_effet_de_mode",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.gift_openness",
-    "preference_value": "format=livre_ou_catalogue",
-    "polarity": "condition",
+    "target_construct": "PREFERENCE.museum.type_preference",
+    "preference_value": "histoire",
+    "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "museum.disruptor.visite_trop_rapide_imposee_par_un_accompagnant",
-    "polarity": "rejet",
-    "severity": "SOFT",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.value_sought",
+    "preference_value": "moteur=approfondissement_d_un_sujet_passionnant",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
+    "stability": "evolving",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "art.disruptor.absence_de_mediation",
-    "polarity": "rejet",
-    "severity": "SOFT",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.museum.value_sought",
+    "preference_value": "moteur=pieces_exceptionnelles",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
+    "stability": "evolving",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "art.disruptor.scenographie_faible",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "art.disruptor.affluence_foule",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "museum.disruptor.affluence_foule",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_AESTHETIC",
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_GIVE_PERSONALIZED_GIFT",
+    "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
     "target_family": "PROFILE",
-    "target_construct": "PROFILE_SENSITIVITY",
+    "target_construct": "PROFILE_RELATIONALITY",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -2516,8 +2697,9 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_GIVE_PERSONALIZED_GIFT",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.style",
+    "preference_value": "analytical",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
@@ -2525,7 +2707,121 @@
    },
    {
     "target_family": "PROFILE",
-    "target_construct": "PROFILE_RELATIONALITY",
+    "target_construct": "IMPORTANCE_AESTHETIC",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_EXACTINGNESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_AESTHETIC",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_QUALITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "call",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_AESTHETIC",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_SENSITIVITY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_AESTHETIC",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_MASTERY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "stress_response:regain_control",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_REFLECTIVENESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "decision_process:research_thoroughly",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_STRUCTURE",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_EXACTINGNESS",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "GRD_POOR_EXECUTION",
+    "severity": "HARD",
+    "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -2585,44 +2881,6 @@
     "stability": "contextual",
     "confidence": "low",
     "assertion_status": "inferred"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_EXACTINGNESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_PERSONALIZED_GIFT",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_PERSONALIZATION",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "conflict_response:address_directly",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
    },
    {
     "target_family": "BEHAVIOR",
@@ -2687,122 +2945,6 @@
     "assertion_status": "inferred"
    },
    {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_AESTHETIC",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_MASTERY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "stress_response:regain_control",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_REFLECTIVENESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "decision_process:research_thoroughly",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_STRUCTURE",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_EXACTINGNESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "GRD_POOR_EXECUTION",
-    "severity": "HARD",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.style",
-    "preference_value": "analytical",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_AESTHETIC",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_EXACTINGNESS",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_AESTHETIC",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_QUALITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "call",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "INTEREST",
     "target_construct": "lecture",
     "strength": "moderate",
@@ -2812,177 +2954,39 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.value_sought",
-    "preference_value": "valeur_recherchee=histoire",
-    "polarity": "positive",
+    "target_construct": "PREFERENCE.reading.gift_openness",
+    "preference_value": "acceptabilite=conditionnee_a_une_reference_precise",
+    "polarity": "condition",
     "strength": "moderate",
     "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "art.disruptor.absence_de_mediation",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "GUARDRAIL",
+    "target_construct": "art.disruptor.scenographie_faible",
+    "polarity": "rejet",
+    "severity": "SOFT",
+    "strength": "moderate",
+    "stability": "contextual",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.value_sought",
-    "preference_value": "valeur_recherchee=apprentissage",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.value_sought",
-    "preference_value": "valeur_recherchee=beaute",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "CONTEXT",
-    "target_construct": "usage_context.aucun_moment_privilegie_lecture_possible_a_tout_moment",
-    "polarity": "absence_de_critere",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.value_sought",
-    "preference_value": "moteur=approfondissement_d_un_sujet_passionnant",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.value_sought",
-    "preference_value": "moteur=pieces_exceptionnelles",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.value_sought",
-    "preference_value": "moteur=calme_et_parenthese",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=apprendre",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=comprendre le monde",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=réfléchir",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "art",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.art.domain_importance",
-    "preference_value": "intensite=high;modalite=passion",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "beaux_arts_peinture",
-    "polarity": "positive",
-    "parent_domain": "museum",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.aesthetic_universe",
-    "preference_value": "intensite=unspecified;univers=beaux_arts_peinture",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "design_arts_decoratifs",
-    "polarity": "positive",
-    "parent_domain": "museum",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.aesthetic_universe",
-    "preference_value": "intensite=unspecified;univers=design_arts_decoratifs",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "INTEREST",
-    "target_construct": "histoire",
-    "polarity": "positive",
-    "parent_domain": "museum",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.museum.aesthetic_universe",
-    "preference_value": "intensite=unspecified;univers=histoire",
-    "polarity": "positive",
+    "target_construct": "PREFERENCE.museum.gift_openness",
+    "preference_value": "format=livre_ou_catalogue",
+    "polarity": "condition",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
@@ -2991,13 +2995,13 @@
   ],
   "connaissances_ouvertes": [
    {
-    "subject_label": "l'histoire de l'art était mon métier",
-    "relation": "ancien métier — se dit incollable",
+    "subject_label": "une bonne encre",
+    "relation": "aime",
     "assertion_status": "inferred"
    },
    {
-    "subject_label": "une bonne encre",
-    "relation": "aime",
+    "subject_label": "l'histoire de l'art était mon métier",
+    "relation": "ancien métier — se dit incollable",
     "assertion_status": "inferred"
    }
   ],
@@ -3020,79 +3024,80 @@
   "preuves": [
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.gift_format",
-    "preference_value": "brunch",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.gift_format",
-    "preference_value": "petit_bistrot_exceptionnel",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "GUARDRAIL",
-    "target_construct": "food.gift_antipattern.restaurants_gastronomiques",
+    "target_construct": "PREFERENCE.food.gift_antipattern",
+    "preference_value": "les_coffrets_trop_generiques",
     "polarity": "rejet",
-    "severity": "SOFT",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_SERVICES",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_ANTICIPATION",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.gift_antipattern",
+    "preference_value": "les_box",
+    "polarity": "rejet",
     "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "SOCIAL_ENERGY",
-    "stability": "contextual",
-    "confidence": "high",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.style",
-    "preference_value": "light_humorous",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
+    "target_construct": "PREFERENCE.food.value_sought",
+    "preference_value": "partage_du_repas",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_GIVE_SERVICES",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.hosting.value_sought",
+    "preference_value": "recevoir_des_proches",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_AUTONOMY",
-    "stability": "contextual",
-    "confidence": "high",
+    "target_family": "INTEREST",
+    "target_construct": "food",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.domain_importance",
+    "preference_value": "intensite=unspecified;modalite=partage_social",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "food",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.food.domain_importance",
+    "preference_value": "intensite=moderate_high;modalite=plaisir",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
@@ -3167,6 +3172,99 @@
     "assertion_status": "explicit"
    },
    {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_SERVICES",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ANTICIPATION",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "SOCIAL_ENERGY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.style",
+    "preference_value": "light_humorous",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_FUNCTIONAL",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_UTILITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "written",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_GIVE_SERVICES",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_AUTONOMY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_RHYTHM_RESPECT",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_FUNCTIONAL",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
     "target_family": "DRIVER",
     "target_construct": "DRV_TIMING",
     "strength": "strong",
@@ -3214,21 +3312,6 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "NEED",
-    "target_construct": "NEED_RHYTHM_RESPECT",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_FUNCTIONAL",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "PROFILE",
     "target_construct": "APPETENCE_OBJECT",
     "stability": "contextual",
@@ -3259,40 +3342,9 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_FUNCTIONAL",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_UTILITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "written",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "les_personnes_presentes",
+    "target_construct": "PREFERENCE.food.gift_format",
+    "preference_value": "chef_a_domicile",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -3301,8 +3353,8 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.food.value_sought",
-    "preference_value": "l_ambiance",
+    "target_construct": "PREFERENCE.food.gift_format",
+    "preference_value": "week_end_gastronomique",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -3312,8 +3364,8 @@
   ],
   "connaissances_ouvertes": [
    {
-    "subject_label": "je dis souvent oui alors que je pense non",
-    "relation": "aimerait qu'on le remarque",
+    "subject_label": "restaurants où l’on peut s’attarder",
+    "relation": "style de restaurant qui lui fait plaisir",
     "assertion_status": "inferred"
    },
    {
@@ -3322,27 +3374,27 @@
     "assertion_status": "inferred"
    },
    {
-    "subject_label": "bleu marine",
-    "relation": "couleur qui lui fait peut-être du bien — elle dit ne pas trop savoir",
+    "subject_label": "je dis souvent oui alors que je pense non",
+    "relation": "aimerait qu'on le remarque",
     "assertion_status": "inferred"
    }
   ],
   "faits": [
    {
+    "fact_type": "discovery.FOO-07",
+    "value": "Ceux où on peut rester des heures sans qu’on nous apporte l’addition."
+   },
+   {
     "fact_type": "functional_impact",
     "value": "La charge mentale m'épuise vite"
    },
    {
-    "fact_type": "discovery.sensory.0261",
-    "value": "Je ne sais pas trop. Le bleu marine, peut-être."
+    "fact_type": "singularity.remarquer",
+    "value": "Que je dis souvent oui alors que je pense non."
    },
    {
     "fact_type": "singularity.evite_deteste",
     "value": "Les dîners qui s’éternisent. Pas les dîners, hein — ceux qui s’éternisent."
-   },
-   {
-    "fact_type": "singularity.remarquer",
-    "value": "Que je dis souvent oui alors que je pense non."
    }
   ]
  },
@@ -3369,8 +3421,25 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "PROFILE",
-    "target_construct": "SOCIAL_ENERGY",
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "conflict_response:avoid_conflict",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "emotional_expression:keeps_to_self",
+    "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -3417,6 +3486,22 @@
     "target_family": "DRIVER",
     "target_construct": "DRV_UTILITY",
     "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "PROFILE_STRUCTURE",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.organised_for_me.surprise_level",
+    "preference_value": "none",
+    "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
@@ -3492,24 +3577,47 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
-    "strength": "moderate",
+    "target_family": "PROFILE",
+    "target_construct": "SOCIAL_ENERGY",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "BEHAVIOR",
-    "target_construct": "conflict_response:avoid_conflict",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "written",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "BEHAVIOR",
-    "target_construct": "emotional_expression:keeps_to_self",
+    "target_family": "PROFILE",
+    "target_construct": "IMPORTANCE_FUNCTIONAL",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_UTILITY",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "written",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
@@ -3560,62 +3668,6 @@
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "written",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "IMPORTANCE_FUNCTIONAL",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_UTILITY",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "written",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "PROFILE_STRUCTURE",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.organised_for_me.surprise_level",
-    "preference_value": "none",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
    }
   ],
   "connaissances_ouvertes": [
@@ -3640,22 +3692,58 @@
   "preuves": [
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.gift_openness",
-    "preference_value": "acceptabilite=conditionnee_a_la_connaissance_du_gout",
-    "polarity": "condition",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=ressentir des émotions",
+    "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "reading.disruptor.livre_porte_par_un_effet_de_mode",
-    "polarity": "rejet",
-    "severity": "SOFT",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.value_sought",
+    "preference_value": "fonction recherchée dans la lecture=réfléchir",
+    "polarity": "positive",
     "strength": "moderate",
-    "stability": "contextual",
+    "stability": "evolving",
     "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "reading",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.reading.domain_importance",
+    "preference_value": "regulier",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "CONTEXT",
+    "target_construct": "usage_context.moment_de_lecture_avant_de_dormir",
+    "polarity": "absence_de_critere",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ATTENTIVENESS",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
@@ -3730,69 +3818,6 @@
    {
     "target_family": "AFFECTION_LANGUAGE",
     "target_construct": "AFFECTION_RECEIVE_SYMBOLIC_GIFT",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SYMBOLISM",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "SOCIAL_ENERGY",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "written",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_SYMBOLISM",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.communication.channel",
-    "preference_value": "written",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PROFILE",
-    "target_construct": "APPETENCE_OBJECT",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_SYMBOLIC_GIFT",
     "strength": "moderate",
     "stability": "contextual",
     "confidence": "high",
@@ -3848,8 +3873,63 @@
     "assertion_status": "explicit"
    },
    {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_SYMBOLIC_GIFT",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
     "target_family": "DRIVER",
-    "target_construct": "DRV_ATTENTIVENESS",
+    "target_construct": "DRV_SYMBOLISM",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "SOCIAL_ENERGY",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "written",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PROFILE",
+    "target_construct": "APPETENCE_OBJECT",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "DRIVER",
+    "target_construct": "DRV_SYMBOLISM",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.communication.channel",
+    "preference_value": "written",
     "strength": "strong",
     "stability": "contextual",
     "confidence": "high",
@@ -3894,28 +3974,9 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=ressentir des émotions",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.reading.value_sought",
-    "preference_value": "fonction recherchée dans la lecture=réfléchir",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "CONTEXT",
-    "target_construct": "usage_context.moment_de_lecture_avant_de_dormir",
-    "polarity": "absence_de_critere",
+    "target_construct": "PREFERENCE.reading.gift_openness",
+    "preference_value": "acceptabilite=conditionnee_a_la_connaissance_du_gout",
+    "polarity": "condition",
     "strength": "moderate",
     "stability": "evolving",
     "confidence": "medium",
@@ -3924,24 +3985,24 @@
   ],
   "connaissances_ouvertes": [
    {
-    "subject_label": "bon d'achat",
-    "relation": "ne veut pas recevoir — c'est gentil mais ça veut dire qu'on n'a pas cherché",
+    "subject_label": "une lettre de quatre pages",
+    "relation": "plus beau cadeau reçu — elle l'a encore",
     "assertion_status": "inferred"
    },
    {
-    "subject_label": "une lettre de quatre pages",
-    "relation": "plus beau cadeau reçu — elle l'a encore",
+    "subject_label": "bon d'achat",
+    "relation": "ne veut pas recevoir — c'est gentil mais ça veut dire qu'on n'a pas cherché",
     "assertion_status": "inferred"
    }
   ],
   "faits": [
    {
-    "fact_type": "singularity.plus_beau_cadeau",
-    "value": "Une lettre. Quatre pages. Je l’ai encore."
-   },
-   {
     "fact_type": "singularity.cadeaux_non",
     "value": "Un bon d’achat. C’est gentil mais ça veut dire qu’on n’a pas cherché."
+   },
+   {
+    "fact_type": "singularity.plus_beau_cadeau",
+    "value": "Une lettre. Quatre pages. Je l’ai encore."
    }
   ]
  },
@@ -3953,8 +4014,8 @@
   "preuves": [
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.sensory.type_preference",
-    "preference_value": "ambiance_sonore=ambiance_vivante",
+    "target_construct": "PREFERENCE.travel.companions",
+    "preference_value": "accompagnement_desire=en_famille",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "evolving",
@@ -3963,8 +4024,97 @@
    },
    {
     "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.service_preference",
-    "preference_value": "niveau_de_devoilement=valider_destination_dates_hebergement",
+    "target_construct": "PREFERENCE.travel.occasion_scope",
+    "preference_value": "recherche=temps_avec_les_proches",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.occasion_scope",
+    "preference_value": "recherche=creation_de_souvenirs",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "INTEREST",
+    "target_construct": "wellbeing",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.wellbeing.domain_importance",
+    "preference_value": "place=plaisir_occasionnel",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.wellbeing.value_sought",
+    "preference_value": "recherche=presence_des_proches",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.wellbeing.value_sought",
+    "preference_value": "recherche=sommeil",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sensory.disruptor",
+    "preference_value": "foule=fatigue rapide",
+    "polarity": "rejet",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.wellbeing.facilitator",
+    "preference_value": "ce_qui_detend=voir_des_proches",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.wellbeing.facilitator",
+    "preference_value": "ce_qui_detend=ne_rien_avoir_a_organiser",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.travel.intensity_preference",
+    "preference_value": "rythme=equilibre_decouverte_repos",
     "polarity": "positive",
     "strength": "moderate",
     "stability": "contextual",
@@ -3973,7 +4123,7 @@
    },
    {
     "target_family": "GUARDRAIL",
-    "target_construct": "travel.disruptor.voyager_avec_les_mauvaises_personnes",
+    "target_construct": "wellbeing.disruptor.charge_d_organisation",
     "polarity": "rejet",
     "severity": "SOFT",
     "strength": "moderate",
@@ -3982,13 +4132,19 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "GUARDRAIL",
-    "target_construct": "travel.disruptor.un_manque_d_organisation",
-    "polarity": "rejet",
-    "severity": "SOFT",
-    "strength": "moderate",
+    "target_family": "DRIVER",
+    "target_construct": "DRV_ATTENTIVENESS",
+    "strength": "strong",
     "stability": "contextual",
-    "confidence": "medium",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "stress_response:internalize",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
     "assertion_status": "explicit"
    },
    {
@@ -4045,6 +4201,55 @@
     "target_construct": "bienetre",
     "strength": "moderate",
     "stability": "evolving",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "AFFECTION_LANGUAGE",
+    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "conflict_response:avoid_conflict",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "BEHAVIOR",
+    "target_construct": "emotional_expression:through_actions",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.gift.value_basis",
+    "preference_value": "intention_over_price",
+    "strength": "strong",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_LOVED_MATTER",
+    "strength": "moderate",
+    "stability": "contextual",
+    "confidence": "high",
+    "assertion_status": "explicit"
+   },
+   {
+    "target_family": "NEED",
+    "target_construct": "NEED_CHOSEN",
+    "strength": "moderate",
+    "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
    },
@@ -4110,19 +4315,13 @@
     "assertion_status": "explicit"
    },
    {
-    "target_family": "DRIVER",
-    "target_construct": "DRV_ATTENTIVENESS",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "stress_response:internalize",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
+    "target_family": "PREFERENCE",
+    "target_construct": "PREFERENCE.sensory.type_preference",
+    "preference_value": "ambiance_sonore=musique_douce",
+    "polarity": "positive",
+    "strength": "moderate",
+    "stability": "evolving",
+    "confidence": "medium",
     "assertion_status": "explicit"
    },
    {
@@ -4155,88 +4354,24 @@
     "stability": "contextual",
     "confidence": "high",
     "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.companions",
-    "preference_value": "accompagnement_desire=en_famille",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.type_preference",
-    "preference_value": "format_de_sejour=repos",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "evolving",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.travel.intensity_preference",
-    "preference_value": "rythme=equilibre_decouverte_repos",
-    "polarity": "positive",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "medium",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "AFFECTION_LANGUAGE",
-    "target_construct": "AFFECTION_RECEIVE_MICRO_ATTENTIONS",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "conflict_response:avoid_conflict",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "BEHAVIOR",
-    "target_construct": "emotional_expression:through_actions",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "PREFERENCE",
-    "target_construct": "PREFERENCE.gift.value_basis",
-    "preference_value": "intention_over_price",
-    "strength": "strong",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_LOVED_MATTER",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
-   },
-   {
-    "target_family": "NEED",
-    "target_construct": "NEED_CHOSEN",
-    "strength": "moderate",
-    "stability": "contextual",
-    "confidence": "high",
-    "assertion_status": "explicit"
    }
   ],
   "connaissances_ouvertes": [
+   {
+    "subject_label": "bleu nuit",
+    "relation": "couleur qui lui fait du bien",
+    "assertion_status": "inferred"
+   },
+   {
+    "subject_label": "blanc",
+    "relation": "couleur qui lui fait du bien",
+    "assertion_status": "inferred"
+   },
+   {
+    "subject_label": "jaune moutarde",
+    "relation": "couleur qu’elle n’aime presque jamais porter ou avoir chez elle",
+    "assertion_status": "inferred"
+   },
    {
     "subject_label": "qu'on se souvienne d'un détail que j'ai dit une seule fois, il y a longtemps",
     "relation": "ce qui la fait se sentir spéciale",
@@ -4246,25 +4381,24 @@
     "subject_label": "que mes parents voyagent un peu",
     "relation": "souhait pour ses parents, pas pour elle — « rien pour moi »",
     "assertion_status": "inferred"
-   },
-   {
-    "subject_label": "couleurs chaudes : terracotta, ocre",
-    "relation": "couleurs qui lui font du bien",
-    "assertion_status": "inferred"
    }
   ],
   "faits": [
-   {
-    "fact_type": "singularity.sentir_special",
-    "value": "Qu’on se souvienne d’un détail que j’ai dit une seule fois, il y a longtemps."
-   },
    {
     "fact_type": "singularity.envies_reves",
     "value": "Rien pour moi. J’aimerais surtout que mes parents voyagent un peu."
    },
    {
+    "fact_type": "singularity.sentir_special",
+    "value": "Qu’on se souvienne d’un détail que j’ai dit une seule fois, il y a longtemps."
+   },
+   {
     "fact_type": "discovery.sensory.0261",
-    "value": "Les couleurs chaudes : le terracotta, l’ocre."
+    "value": "Le bleu nuit, et le blanc."
+   },
+   {
+    "fact_type": "discovery.sensory.0262",
+    "value": "Le jaune moutarde."
    }
   ]
  }
