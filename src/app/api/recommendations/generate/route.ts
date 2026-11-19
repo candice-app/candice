@@ -5,6 +5,7 @@ import { chargerProfilAutorise, provenanceActuelle, encoreCouverte, type Provena
 import { createAdminClient } from '@/utils/supabase/admin';
 import { generateRecommendations } from '@/lib/recommendations/engine';
 import { lireRejetsDuProche, PORTEE_EXCLUSIONS_RECO } from '@/lib/recommendations/declarations-proche';
+import { lireGoutsDuProche } from '@/lib/recommendations/gouts-proche';
 import { generateProactiveQuestion } from '@/lib/recommendations/questions';
 import type { RecoInput, FeedbackEntry } from '@/lib/recommendations/types';
 import type { FaceResult } from '@/lib/attention/scoring';
@@ -147,6 +148,9 @@ export async function POST(req: NextRequest) {
   // et son résultat ne quitte jamais le serveur. Échoue FERMÉ : toute incertitude rend
   // zéro rejet, et aucune donnée du proche n'est employée.
   const declarations = await lireRejetsDuProche(admin as never, { piloteId: user.id, contactId });
+  // Ses goûts déclarés, seulement sous l'autorisation qui nomme cet usage (`reco:gouts`).
+  const gouts = await lireGoutsDuProche(admin as never, { piloteId: user.id, contactId });
+  if (gouts.autorise) console.info('[recommendations/generate] goûts du proche', { transmis: gouts.gouts.length, ecartes: gouts.ecartes });
 
   // La situation actuelle du proche, réduite au minimum nécessaire. Lue avec le client de
   // l'UTILISATEUR (ses propres notes, sous la RLS) — pas avec le client privilégié.
@@ -156,6 +160,11 @@ export async function POST(req: NextRequest) {
     contactId,
     situations,
     rejetsDuProche: declarations.rejets,
+    // Structurés, jamais dans le prompt. AUCUN JUGE n'est branché : tant que la décision n'est pas
+    // prise (un second appel au modèle peut-il recevoir ces refus ?), ils n'écartent rien, et
+    // le moteur le compte.
+    gardeFousDuProche: declarations.gardeFous,
+    goutsDuProche: gouts.gouts,
     contactName: c.name,
     contactFirstName,
     relationship: c.relationship,

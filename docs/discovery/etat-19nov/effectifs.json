@@ -42,19 +42,23 @@
  "contrats_ouverts": 58,
  "destinations_conditionnelles": {
   "total": 15,
-  "executees": 4,
-  "verbatim_seul": [
-   "CRE-06#1 SEGMENT_TECHNIQUE : stabilite_indeterminee_non_stockable",
-   "CRE-06#2 SEGMENT_STYLE : stabilite_indeterminee_non_stockable",
-   "CRE-06#3 SEGMENT_MATIERE : stabilite_indeterminee_non_stockable",
-   "comics.0422#1 OEUVRE_RESOLUE_APPRECIEE : resolution_d_entite_absente",
-   "pets.0403#1 SOUHAIT_AVEC_IDENTIFIANT : identifiant_requis_absent",
-   "podcast.0467#1 REFERENT_RESOLU : resolution_d_entite_absente",
-   "podcast.0467#2 RELATION_EXPLICITE_DISTINCTE : resolution_d_entite_absente",
-   "sensory2.1482#1 REFERENT_RESOLU : resolution_d_entite_absente",
-   "sensory2.1482#2 RELATION_EXPLICITE_DISTINCTE : resolution_d_entite_absente",
-   "sensory2.1487#1 ELEMENT_ESTHETIQUE : stabilite_indeterminee_non_stockable",
-   "sensory2.1487#2 ELEMENT_SENSORIEL : stabilite_indeterminee_non_stockable"
+  "executees": 15,
+  "exigences": [
+   "CRE-06#1 SEGMENT_TECHNIQUE : attitude rejet",
+   "CRE-06#2 SEGMENT_STYLE : attitude rejet",
+   "CRE-06#3 SEGMENT_MATIERE : attitude rejet",
+   "learning2.1459#1 SUJET_DECLARE : attitude interet",
+   "comics.0422#1 OEUVRE_RESOLUE_APPRECIEE : attitude appreciation explicite · référent oeuvre résolu",
+   "comics.0422#2 AUTEUR_MENTIONNE : attitude mention",
+   "drinks.2102#1 PROJECTION_DECLAREE : attitude projection",
+   "pets.0403#1 SOUHAIT_AVEC_IDENTIFIANT : attitude souhait · référent animal résolu",
+   "podcast.0467#1 REFERENT_RESOLU : attitude referent · référent episode résolu",
+   "podcast.0467#2 RELATION_EXPLICITE_DISTINCTE : attitude appreciation explicite · référent episode résolu · second segment distinct",
+   "sensory2.1482#1 REFERENT_RESOLU : attitude referent · référent lieu résolu",
+   "sensory2.1482#2 RELATION_EXPLICITE_DISTINCTE : attitude appreciation explicite · référent lieu résolu · second segment distinct",
+   "sensory2.1487#1 ELEMENT_ESTHETIQUE : attitude presence_voulue",
+   "sensory2.1487#2 ELEMENT_SENSORIEL : attitude presence_voulue",
+   "time.1566#1 PROJECTION_DECLAREE : attitude projection"
   ]
  },
  "enonces_a_parametre_non_servis": [

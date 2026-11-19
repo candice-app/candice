@@ -17,6 +17,10 @@ export interface RecoIdea {
   canal: RecoCanal;
   intensite: RecoIntensity;
   declencheur: string;
+  /** Domaine que l'idée DÉCLARE (liste fermée, garde-fous-discovery.ts). Sert au périmètre des garde-fous. */
+  categorie?: string | null;
+  /** Vrai si l'idée s'appuie sur ce que le proche a déclaré en privé (le modèle le dit ; le code le vérifie aussi). */
+  appuiPrive?: boolean;
   isBlindSpot?: boolean;
 }
 
@@ -62,6 +66,13 @@ export interface RecoInput {
    *  données ; la distinction entre « pas autorisé » et « rien déclaré » vit dans
    *  LectureDeclarations.motif, pas ici — le moteur n'a pas à la connaître. */
   rejetsDuProche?: readonly JournalRejection[];
+  /** Goûts et souhaits que le PROCHE a déclarés lui-même et autorisés pour cet usage (`reco:gouts`).
+   *  Ils entrent dans le prompt ; la justification des idées qu'ils inspirent est neutralisée. */
+  goutsDuProche?: readonly import('./gouts-proche').GoutDeclare[];
+  /** Garde-fous du Discovery, structurés. N'entrent dans AUCUN prompt de génération. */
+  gardeFousDuProche?: readonly import('./garde-fous-discovery').GardeFouStructure[];
+  /** Le juge du critère. Absent : aucun garde-fou du Discovery n'écarte d'idée (voir garde-fous-discovery.ts). */
+  jugeGardeFous?: import('./garde-fous-discovery').JugeDeGardeFous;
 
   // Context
   importantDates: { label: string; date: string }[];

@@ -3,6 +3,8 @@ import { nommeUnDetailConfidentiel } from '@/lib/memories/situations';
 import type { AttentionDim } from '@/lib/attention/scoring';
 import { vetoEnfreint } from './veto-text';
 import { candidateRejectedBy } from './rejection-match';
+import { appliquerGardeFous, CATEGORIES_D_IDEE } from './garde-fous-discovery';
+import { citeUneDeclaration, JUSTIFICATION_NEUTRE } from './gouts-proche';
 import type {
   RecoInput, RecoIdea, BlindSpotInsight, ContactRecommendations,
   KadenceProfile, RecoCanal,
@@ -298,6 +300,15 @@ export function buildContextString(input: RecoInput): string {
   // recommandation ne trahisse pas ce qu'il a réglé.
   lines.push(LIGNE_INCONNU_NON_ABSENT);
 
+  // ── CE QUE LE PROCHE A DIT AIMER, s'il a autorisé cet usage. Sa déclaration aide à choisir ;
+  //    elle ne doit jamais être répétée au pilote. La consigne le dit, et le code neutralise
+  //    de toute façon la justification des idées qui s'en inspirent.
+  const gouts = input.goutsDuProche ?? [];
+  if (gouts.length > 0) {
+    lines.push(`CE QUE ${input.contactFirstName.toUpperCase()} A DÉCLARÉ AIMER OU SOUHAITER (confié en privé, pour t'aider à choisir) : ${gouts.map((g) => g.libelle).join(' ; ')}`);
+    lines.push("Tu peux t'en inspirer. Tu ne dois JAMAIS le citer, ni dire ou laisser entendre que la personne l'a dit. Pour toute idée qui s'en inspire, mets \"appuiPrive\": true.");
+  }
+
   if (input.importantDates.length > 0) {
     const upcoming = input.importantDates.slice(0, 2).map((d) => `${d.label} (${d.date})`).join(', ');
     lines.push(`DATES IMPORTANTES PROCHES : ${upcoming}`);
@@ -374,6 +385,8 @@ Réponds uniquement avec un tableau JSON :
     "justification": "Phrase courte ancrée dans le profil (ex: '${'{'}prénom{'}'} est sensible aux petits gestes réguliers')",
     "dim": "MOT" | "SER" | "CAD_C" | "CAD_S" | "EXP" | "GES" | "SUR",
     "canal": "message" | "appel" | "en_personne" | "cadeau" | "service" | "experience",
+    "appuiPrive": true si l'idée s'inspire de ce que la personne a confié en privé, sinon false,
+    "categorie": le domaine de l'idée, UN SEUL parmi : ${CATEGORIES_D_IDEE.join(', ')} — ou "autre" si aucun ne convient,
     "intensite": "légère" | "modérée" | "forte",
     "declencheur": "Cette semaine" | "Ce soir" | "Dans 2-3 jours" | "Quand il/elle semble stressé(e)" | (autre formulation courte et chaleureuse)
   }
@@ -425,9 +438,27 @@ Respecte strictement les filtres durs. Ancre chaque idée sur un signal nommé. 
         ideas = ideas.filter((idea) => !nommeUnDetailConfidentiel(`${idea.title} ${idea.justification} ${idea.declencheur ?? ''}`, confidentielles));
       }
 
+      // LA JUSTIFICATION D'UNE IDÉE INSPIRÉE PAR UNE DÉCLARATION PRIVÉE NE RÉVÈLE RIEN. Elle est
+      // REMPLACÉE par une formule fixe — pas réécrite, et sans autre raison inventée — dès que
+      // le modèle dit s'en être inspiré, OU que la phrase reprend les mots d'une déclaration.
+      const goutsPrives = input.goutsDuProche ?? [];
+      if (goutsPrives.length > 0) {
+        ideas = ideas.map((idea) => (idea.appuiPrive === true || citeUneDeclaration(`${idea.justification} ${idea.declencheur ?? ''}`, goutsPrives)
+          ? { ...idea, justification: JUSTIFICATION_NEUTRE, appuiPrive: true } : { ...idea, appuiPrive: false }));
+      }
+
       const rejets = input.rejetsDuProche ?? [];
       if (rejets.length > 0) {
         ideas = ideas.filter((idea) => candidateRejectedBy(`${idea.title} ${idea.justification}`, rejets) === null);
+      }
+
+      // Les garde-fous du Discovery : périmètre vérifié sur les champs DÉCLARÉS de l'idée,
+      // critère rendu par un juge. Jamais un mot partagé. Sans juge, rien n'est écarté.
+      const gardeFous = input.gardeFousDuProche ?? [];
+      if (gardeFous.length > 0) {
+        const r = await appliquerGardeFous(ideas, gardeFous, input.jugeGardeFous);
+        ideas = r.gardees;
+        console.info('[recommendations] garde-fous du Discovery', r.bilan);   // des comptes, aucun libellé
       }
 
       if (blindSpot) {

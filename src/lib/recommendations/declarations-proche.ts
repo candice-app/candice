@@ -34,6 +34,7 @@
 // quitte jamais le serveur.
 import type { JournalRejection } from './rejection-match';
 import { isSelfDeclaredAct, type SourceType } from '../knowledge/sources';
+import { gardeFouDe, type GardeFouStructure } from './garde-fous-discovery';
 
 /** Portée de consentement : « mes déclarations peuvent ÉCARTER des idées me concernant ».
  *  Ne donne aucun droit de lecture, aucun usage positif, aucune restitution au pilote. */
@@ -53,13 +54,16 @@ export interface LectureDeclarations {
   /** Vide quand `autorise` est faux. Vide AUSSI quand la fiche est silencieuse : les deux
    *  cas se distinguent par `motif`, jamais par la longueur de cette liste. */
   readonly rejets: readonly JournalRejection[];
+  /** Garde-fous déclarés au Discovery, sous leur forme structurée (cible, périmètre, critère).
+   *  Ils ne s'apparient JAMAIS par mot : voir garde-fous-discovery.ts. */
+  readonly gardeFous: readonly GardeFouStructure[];
   /** Rejets présents sur son compte mais ÉCARTÉS faute de provenance déclarative, par
    *  motif. Sert au diagnostic ; ne porte aucun libellé, donc ne peut rien révéler. */
   readonly ecartesSansDeclaration: Readonly<Record<string, number>>;
 }
 
 const REFUS = (motif: MotifLecture): LectureDeclarations =>
-  ({ autorise: false, motif, rejets: [], ecartesSansDeclaration: {} });
+  ({ autorise: false, motif, rejets: [], gardeFous: [], ecartesSansDeclaration: {} });
 
 type Reponse = { data: Record<string, unknown>[] | null; error: unknown };
 interface Requete extends PromiseLike<Reponse> {
@@ -124,25 +128,27 @@ export async function lireRejetsDuProche(
   //      ici ; le filtre de PROVENANCE ne peut pas l'être, source_type vivant sur la source.
   const { data: lignes, error: eJournal } = await admin
     .from('knowledge_evidences')
-    .select('source_id, target_family, target_construct, entity_label, relation, severity, assertion_status')
+    .select('source_id, target_family, target_construct, entity_label, relation, severity, assertion_status, raw_information')
     .eq('user_id', procheUserId).eq('about_kind', 'account')
     .is('superseded_at', null);
   if (eJournal) return REFUS('lecture_impossible');
 
   const candidates = (lignes ?? []).filter((l) =>
     l.target_family === 'GUARDRAIL' || (l.target_family === 'ENTITY' && (l.relation === 'DISLIKE' || l.relation === 'AVOID')));
-  if (candidates.length === 0) return { autorise: true, motif: 'autorise', rejets: [], ecartesSansDeclaration: {} };
+  if (candidates.length === 0) return { autorise: true, motif: 'autorise', rejets: [], gardeFous: [], ecartesSansDeclaration: {} };
 
   // 4 ── LA PROVENANCE. source_type n'existe pas sur l'evidence : il se charge depuis la
   //      source. Une source introuvable rend la provenance INVÉRIFIABLE — on écarte la
   //      ligne plutôt que de la supposer déclarative.
   const sourceIds = [...new Set(candidates.map((l) => String(l.source_id)))];
   const { data: sources, error: eSources } = await admin
-    .from('knowledge_sources').select('id, source_type').in('id', sourceIds);
+    .from('knowledge_sources').select('id, source_type, question_code').in('id', sourceIds);
   if (eSources) return REFUS('lecture_impossible');
   const typeParSource = new Map((sources ?? []).map((s) => [String(s.id), s.source_type as SourceType]));
+  const questionParSource = new Map((sources ?? []).map((s) => [String(s.id), String(s.question_code ?? '')]));
 
   const rejets: JournalRejection[] = [];
+  const gardeFous: GardeFouStructure[] = [];
   const ecartes: Record<string, number> = {};
   const ecarter = (motif: string) => { ecartes[motif] = (ecartes[motif] ?? 0) + 1; };
 
@@ -160,14 +166,16 @@ export async function lireRejetsDuProche(
     }
     if (motif !== null) { ecarter(motif); continue; }
 
-    // UN GARDE-FOU DU DISCOVERY N'A PAS DE LIBELLÉ APPARIABLE. Son `target_construct` est un
-    // chemin technique (« shoe.gift_openness.cadeau_chaussures_refuse »), et l'appariement
-    // retire toute idée qui partage UN mot avec le libellé du rejet : ce chemin retirait donc
-    // toute idée contenant « cadeau », « attention », « une », « pas »… — et ne retirait pas
-    // les chaussures d'une idée qui ne dit pas « chaussures ». Tant que chaque garde-fou du
-    // Discovery ne porte pas ce qu'il écarte (décision de contenu, non prise), il n'écarte
-    // rien, et c'est COMPTÉ ici plutôt que de retirer des idées au hasard.
-    if (l.target_family === 'GUARDRAIL' && sourceType === 'discovery_closed') { ecarter('garde_fou_discovery_sans_objet_appariable'); continue; }
+    // UN GARDE-FOU DU DISCOVERY NE S'APPARIE PAS PAR MOT. Son chemin stocké est technique
+    // (« shoe.gift_openness.cadeau_chaussures_refuse ») : apparié mot à mot, il retirait toute
+    // idée contenant « cadeau ». Il est rendu sous sa forme STRUCTURÉE — cible, périmètre,
+    // critère — retrouvée par sa question et sa réponse. Une ligne que la matrice n'a pas pu
+    // traduire n'écarte rien, et elle est comptée.
+    if (l.target_family === 'GUARDRAIL' && sourceType === 'discovery_closed') {
+      const g = gardeFouDe(questionParSource.get(String(l.source_id)) ?? '', String(l.raw_information ?? ''));
+      if (g) gardeFous.push(g); else ecarter('garde_fou_discovery_non_traduit');
+      continue;
+    }
 
     if (l.target_family === 'GUARDRAIL') {
       rejets.push({
@@ -184,7 +192,7 @@ export async function lireRejetsDuProche(
   }
   return {
     autorise: true, motif: 'autorise',
-    rejets: rejets.filter((r) => r.label !== ''),
+    rejets: rejets.filter((r) => r.label !== ''), gardeFous,
     ecartesSansDeclaration: ecartes,
   };
 }

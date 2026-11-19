@@ -28,7 +28,9 @@ export const PREFIXE_USAGE_ALLERGIE = 'reco:allergie:';
 const clef = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 export const usageAllergie = (allergie: string) => `${PREFIXE_USAGE_ALLERGIE}${clef(allergie)}`;
 
-const USAGES_SIMPLES = new Set([USAGE_PROFIL, USAGE_REGIME, USAGE_ALCOOL, USAGE_MOBILITE, USAGE_REPONSES_LIBRES]);
+/** Ses goûts et souhaits déclarés peuvent INSPIRER une idée (usage positif, recommendations/gouts-proche.ts). */
+export const USAGE_GOUTS = 'reco:gouts';
+const USAGES_SIMPLES = new Set([USAGE_PROFIL, USAGE_REGIME, USAGE_ALCOOL, USAGE_MOBILITE, USAGE_REPONSES_LIBRES, USAGE_GOUTS]);
 /** Une portée d'usage bien formée. Tout le reste est refusé à l'écriture. */
 export function estUsageValide(p: string): boolean {
   return USAGES_SIMPLES.has(p) || /^reco:allergie:[a-z0-9_]{1,60}$/.test(p);
