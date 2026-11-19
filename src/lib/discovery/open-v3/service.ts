@@ -38,7 +38,9 @@ export { cleOption } from './cle-option';
 import { cleOption } from './cle-option';
 import { relationsAdmises, OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import aliasOptions from './alias-options.json';
-import { DESTINATIONS_PAR_QUESTION, executable, lireSegmentsParModele, validerSegments, type Destination } from './destinations';
+import { DESTINATIONS_PAR_QUESTION } from './destinations';
+import { ecrireDestinations, sourceLectureDestinations, type LecteurDeSegments, type ResultatDestinations } from './destinations-ecriture';
+export { sourceLectureDestinations, type LecteurDeSegments, type ResultatDestinations };
 import { libelleBranche } from './branches';
 import { poolDe, estPrioritaire } from './coexistence';
 
@@ -550,79 +552,6 @@ async function ecrireEnvieCulinaire(
   }));
   await persistKnowledge(client, { source, facts, openKnowledge });
   return { ecrite: facts.length > 0, contraintes: openKnowledge.length, ecartes: lecture.ecartes };
-}
-
-/* ────────────────────────────────────────────────────────────────────────────
- * ONGLET 17 — les destinations conditionnelles (voir destinations.ts).
- *
- * Une seule source de lecture, d'identifiant DÉRIVÉ de celle du verbatim : rejouer après une
- * panne retombe sur la même source. Elle existe aussi quand rien ne se déclenche — c'est elle
- * qui dit « lu, verbatim seul », et qui distingue ce cas d'une lecture qui n'a pas eu lieu.
- * ──────────────────────────────────────────────────────────────────────────── */
-export type LecteurDeSegments = (enonce: string, texte: string, destinations: readonly Destination[], barriere: string) => Promise<unknown>;
-export interface ResultatDestinations {
-  readonly dejaLue: boolean; readonly preuves: number; readonly faits: number;
-  /** Déclencheurs satisfaits mais dont la destination ne peut pas s'écrire, avec le motif. */
-  readonly nonExecutees: readonly { readonly declencheur: string; readonly motif: string }[];
-  readonly ecartes: readonly string[];
-}
-export function sourceLectureDestinations(verbatimSourceId: string): string {
-  return evidenceId('lecture-destinations', verbatimSourceId);
-}
-async function ecrireDestinations(
-  client: WriteClient,
-  input: { userId: string; question: QuestionV3; texte: string; barriere: string; verbatimSourceId: string; timestamp: string; lecteur?: LecteurDeSegments },
-): Promise<ResultatDestinations> {
-  const q = input.question;
-  const destinations = DESTINATIONS_PAR_QUESTION.get(q.id)!;
-  const about = accountAbout(asUserId(input.userId)); const ownerId = asUserId(input.userId);
-  const sourceId = sourceLectureDestinations(input.verbatimSourceId);
-  const dejaLue = await (client as unknown as {
-    from(t: string): { select(c: string): { eq(c: string, v: string): { maybeSingle(): Promise<{ data: unknown }> } } };
-  }).from('knowledge_sources').select('id').eq('id', sourceId).maybeSingle();
-  if (dejaLue.data) return { dejaLue: true, preuves: 0, faits: 0, nonExecutees: [], ecartes: [] };
-
-  const brut = await (input.lecteur ?? lireSegmentsParModele)(q.enonce, input.texte, destinations, input.barriere);   // LÈVE si le modèle est en panne
-  const { parDeclencheur, ecartes } = validerSegments(input.texte, brut, destinations);
-  const domaine = q.options.find((o) => o.domaine)?.domaine ?? q.branche;
-  const cle = (x: string) => x.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-  const evidences: Evidence[] = []; const facts: ReturnType<typeof createFact>[] = []; const nonExecutees: { declencheur: string; motif: string }[] = [];
-  const { asSubjectId } = await import('@/lib/knowledge/identity');
-  const { normalizeLabel } = await import('@/lib/knowledge/normalize');
-  for (const d of destinations) {
-    const passages = parDeclencheur.get(d.declencheur) ?? [];
-    if (passages.length === 0) continue;
-    const e = executable(d);
-    if (!e.ok) { nonExecutees.push({ declencheur: d.declencheur, motif: e.motif }); continue; }
-    for (const passage of passages) {
-      if (d.voie === 'FACT') {
-        const type = `discovery.fait.${cle(domaine)}.${cle(d.cle)}`;
-        facts.push(createFact({ about, ownerId, fact_id: factId(sourceId, type, passage), fact_type: type,
-          value: JSON.stringify({ valeur: passage, question: q.id, declencheur: d.declencheur }), source: sourceId, timestamp: input.timestamp,
-          // Les mots sont ceux de la personne ; c'est leur RANGEMENT qui est une lecture.
-          confidence: 'medium', user_confirmed: false, assertionStatus: 'inferred' }));
-      } else if (d.famille === 'INTEREST') {
-        const sujet = asSubjectId(normalizeLabel(passage));
-        evidences.push({
-          about, ownerId, source_id: sourceId, source_type: 'extraction_inferred', evidence_id: evidenceId(sourceId, `INTEREST:${sujet}`),
-          target_family: 'INTEREST', target_construct: sujet, subject: sujet, subjectLabel: passage, raw_information: passage,
-          // « ponctuellement » : le contrat fixe la stabilité à `contextual`, le rôle à `secondary`,
-          // et AUCUN degré d'engagement (pas de `relationship`). `strength` n'est pas ce degré :
-          // le journal exige une force sur toute preuve sans valeur, et la lecture d'un texte
-          // libre l'écrit partout à `moderate` (extract-free-text.ts).
-          strength: 'moderate', confidence: 'low', context: 'GLOBAL', stability: 'contextual', evidence_role: 'secondary',
-          assertionStatus: 'inferred', assertionBasis: 'self_report', timestamp: input.timestamp, version: JOURNAL_VERSION_STAMP,
-        } as unknown as Evidence);
-      } else nonExecutees.push({ declencheur: d.declencheur, motif: 'famille_non_prise_en_charge' });
-    }
-  }
-  await persistKnowledge(client, {
-    source: createSourceRecord({ about, ownerId, id: sourceId, sourceType: 'extraction_inferred', questionCode: `discovery.${q.id}`,
-      questionText: `Lecture par destinations conditionnelles (onglet 17) — ${q.id}`, rawText: input.texte, timestamp: input.timestamp }),
-    evidences, facts,
-  });
-  if (nonExecutees.length > 0) console.warn('[discovery] destinations non exécutées — verbatim seul', q.id, nonExecutees);
-  return { dejaLue: false, preuves: evidences.length, faits: facts.length, nonExecutees, ecartes };
 }
 
 /**

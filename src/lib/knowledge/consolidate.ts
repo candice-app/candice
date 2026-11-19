@@ -222,7 +222,12 @@ function computeGlobalStatus(
   return 'LOCAL_ONLY';
 }
 
-function computeStability(evidences: readonly Evidence[]): SignalStability {
+export function computeStability(toutes: readonly Evidence[]): SignalStability {
+  // Une preuve `undetermined` n'établit aucune stabilité : elle ne compte NI pour ni contre.
+  // Elle ne fait pas basculer un ensemble vers `contextual` (ce serait lui prêter un contexte),
+  // elle ne sert pas de seconde source pour atteindre `stable` (elle n'a rien dit de la durée),
+  // et seule, elle rend `unknown` — la valeur qui dit « on ne sait pas », déjà admise en base.
+  const evidences = toutes.filter((e) => e.stability !== 'undetermined');
   if (evidences.length === 0) return 'unknown';
   const set = new Set(evidences.map((e) => e.stability));
   if (set.has('evolving')) return 'evolving';

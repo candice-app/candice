@@ -76,7 +76,7 @@ export interface EvidenceBrute {
   readonly strength: 'weak' | 'moderate' | 'strong';
   readonly context: string;
   readonly raw_information: string;
-  readonly stability: 'stable' | 'evolving' | 'contextual' | 'temporary';
+  readonly stability: 'stable' | 'evolving' | 'contextual' | 'temporary' | 'undetermined';
   readonly severity?: 'SOFT' | 'HARD';
   readonly guardrailScope?: 'selection' | 'execution' | 'context';
   readonly relation?: string;

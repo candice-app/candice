@@ -28,6 +28,7 @@ const FAIT_DE_PROJET = 'discovery.reponse_de_projet';
 const MOTS_POLARITE: Record<string, string> = {
   factuelle: '', positive: '', rejet: 'écarté — ', condition: 'sous condition — ', absence_de_critere: 'sans préférence — ',
   souhait: 'souhaité, non pratiqué — ', intention: 'envisagé — ',
+  mention: 'seulement mentionné, aucune appréciation établie — ', projection: 'projection idéale déclarée, ni habitude ni goût établi — ',
 };
 
 export function faitsDiscoveryPourPortrait(faits: readonly FaitLu[]): FaitsPourPortrait {
@@ -37,13 +38,15 @@ export function faitsDiscoveryPourPortrait(faits: readonly FaitLu[]): FaitsPourP
   for (const f of faits) {
     if (f.factType === FAIT_DE_PROJET) { reponsesDeProjet++; continue; }
     if (!f.factType.startsWith(PREFIXE_FAIT)) { if (f.factType.startsWith('discovery.')) verbatims++; continue; }
-    let v: { valeur?: unknown; polarite?: unknown; question?: unknown; libelle?: unknown };
+    let v: { valeur?: unknown; polarite?: unknown; question?: unknown; libelle?: unknown; sens?: unknown };
     try { v = JSON.parse(f.value); } catch { illisibles++; continue; }
     const q = typeof v.question === 'string' ? questionParId(v.question) : undefined;
     if (!q || typeof v.valeur !== 'string') { illisibles++; continue; }   // question retirée de la banque : on ne devine pas son sens
     const cle = `${f.factType}|${v.valeur}`;
     const g = groupes.get(cle) ?? { enonce: q.enonce, libelle: typeof v.libelle === 'string' ? v.libelle : v.valeur, polarites: new Set<string>(), lu: false };
-    g.polarites.add(typeof v.polarite === 'string' ? v.polarite : 'factuelle');
+    // `sens` vient des destinations conditionnelles : une MENTION n'est pas un goût, une
+    // PROJECTION n'est ni une habitude ni une préférence. Le portrait le reçoit écrit en clair.
+    g.polarites.add(typeof v.sens === 'string' ? v.sens : typeof v.polarite === 'string' ? v.polarite : 'factuelle');
     if (f.assertionStatus !== 'explicit') g.lu = true;
     groupes.set(cle, g);
   }

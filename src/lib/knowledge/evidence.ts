@@ -41,7 +41,16 @@ import type {
 } from './vocabulary';
 
 /** Stabilité d'une evidence (HSG §5.2). Jamais `stable` par défaut sur info récente. */
-export type EvidenceStability = 'stable' | 'evolving' | 'contextual' | 'temporary';
+export type EvidenceStability = 'stable' | 'evolving' | 'contextual' | 'temporary' | 'undetermined';
+/**
+ * Vocabulaire FERMÉ, vérifié à l'écriture (rows.ts) comme par la base (migration 120).
+ *
+ * `undetermined` = la source N'ÉTABLIT PAS de stabilité : la personne a dit la chose, pas si elle
+ * dure. Ce n'est ni un défaut, ni une cinquième stabilité : c'est l'absence déclarée de l'une
+ * des quatre. Une preuve `undetermined` ne pèse donc sur AUCUN calcul de stabilité (voir
+ * consolidate.ts), et un ensemble qui n'en contient pas d'autres se consolide en `unknown`.
+ */
+export const EVIDENCE_STABILITIES: readonly EvidenceStability[] = ['stable', 'evolving', 'contextual', 'temporary', 'undetermined'];
 
 /** Rôle de l'evidence (décision 4). `secondary` ne porte jamais seule un `high`. */
 export type EvidenceRole = 'primary' | 'secondary';

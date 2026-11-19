@@ -4,6 +4,8 @@ import { getAuthClaims } from "@/utils/supabase/claims";
 import DashboardShell from "@/components/layout/DashboardShell";
 import DiscoveryFlow from "./DiscoveryFlow";
 import DiscoveryPortes from "./DiscoveryPortes";
+import DiscoveryClarifications, { type ClarificationAffichee } from "./DiscoveryClarifications";
+import { clarificationsOuvertes } from "@/lib/discovery/open-v3/destinations-ecriture";
 import { sujetsExplorables, sujetsChoisisPar, sujetsRefusesPar, projetsEnCours } from "@/lib/discovery/open-v3/service";
 import { libelleBranche } from "@/lib/discovery/open-v3/correspondances";
 import { proposerLot } from "@/lib/discovery/open-v3/reponse";
@@ -63,6 +65,15 @@ export default async function DiscoveryPage({
     console.error("[discovery] portes illisibles", e);
   }
 
+  // ── LES PRÉCISIONS DEMANDÉES : un référent qu'une réponse libre n'a pas identifié. Une lecture
+  //    qui échoue n'en affiche aucune, et l'erreur est tracée.
+  let clarifications: ClarificationAffichee[] = [];
+  try {
+    clarifications = (await clarificationsOuvertes(supabase as never, { userId })).map((c) => ({ id: c.id, enonce: c.enonce, nature: c.nature, passage: c.passage, raison: c.raison, choix: [...c.choix], saisieLibre: c.saisieLibre }));
+  } catch (e) {
+    console.error("[discovery] clarifications illisibles", e);
+  }
+
   return (
     <DashboardShell>
       <div className="content-col" data-page-ready="discovery">
@@ -70,6 +81,7 @@ export default async function DiscoveryPage({
         {/* `key` : après un choix de sujet ou de projet, la page est relue et le parcours repart
             de la question que le moteur choisit maintenant. */}
         <DiscoveryFlow key={initial?.question.question_key ?? "aucune"} initial={initial} mode={mode} skipIntro={!!sectionKey} />
+        {!sectionKey && <DiscoveryClarifications clarifications={clarifications} />}
         {portes && !sectionKey && <DiscoveryPortes sujets={portes.sujets} projets={[...portes.projets]} refuses={portes.refuses} />}
       </div>
     </DashboardShell>

@@ -120,7 +120,7 @@ export interface WriteContext extends KnowledgeScope {
   readonly sourceType: SourceType;
   readonly timestamp: string;
   readonly confidence?: 'high' | 'medium' | 'low';
-  readonly stability?: 'stable' | 'evolving' | 'contextual' | 'temporary';
+  readonly stability?: 'stable' | 'evolving' | 'contextual' | 'temporary' | 'undetermined';
 }
 
 export interface OptionWrite {

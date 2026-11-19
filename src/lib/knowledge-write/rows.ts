@@ -10,6 +10,7 @@
 
 import type { AboutRef, Evidence, Fact, OpenKnowledge, SourceRecord, Signal } from '../knowledge';
 import { constructIdentity, deriveAssertionStatus, signalKey } from '../knowledge';
+import { EVIDENCE_STABILITIES } from '../knowledge/evidence';
 
 /* ── knowledge_sources ── */
 export interface KnowledgeSourceRow {
@@ -103,6 +104,11 @@ function evidenceAssertion(e: Evidence): string {
 /** `about` n'est PAS lu de l'evidence : il est fourni par l'appelant (la persistance le
  *  dérive de la SOURCE, seule à en porter la référence). Rien à écraser, rien à diverger. */
 export function evidenceToRow(e: Evidence, about: AboutRef): KnowledgeEvidenceRow {
+  // Vocabulaire fermé, refusé ICI plutôt que par la base : l'erreur nomme la preuve fautive,
+  // et une valeur inconnue ne part jamais vers un journal dont la contrainte serait en retard.
+  if (!EVIDENCE_STABILITIES.includes(e.stability)) {
+    throw new Error(`evidence ${e.evidence_id} : stabilité « ${String(e.stability)} » hors vocabulaire (${EVIDENCE_STABILITIES.join(', ')})`);
+  }
   const base = {
     id: e.evidence_id,
     about_kind: about.kind,
