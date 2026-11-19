@@ -48,6 +48,8 @@ export interface Quotidien {
   options: { situation: string; libelle: string }[];
   /** Ce que la personne a déclaré : `true` coché, `false` « aucune ». Vide : rien déclaré. */
   declarees: Record<string, boolean>;
+  /** Date de la déclaration en cours (décision 8) : montrée, jamais tenue pour un changement. */
+  depuis?: string | null;
 }
 
 export default function DiscoveryPortes({ sujets, projets, refuses = [], quotidien = null }: { sujets: Sujet[]; projets: ProjetEnCours[]; refuses?: { branche: string; libelle: string }[]; quotidien?: Quotidien | null }) {
@@ -130,6 +132,7 @@ export default function DiscoveryPortes({ sujets, projets, refuses = [], quotidi
           {!modifier ? (
             <p style={{ ...texte, marginBottom: 0 }}>
               {aucune ? quotidien.aucune : quotidien.options.filter((o) => coches.includes(o.situation)).map((o) => o.libelle).join(" · ")}
+              {quotidien.depuis ? ` (indiqué le ${new Date(quotidien.depuis).toLocaleDateString("fr-FR")})` : ""}
               {" — "}
               <button type="button" onClick={() => setModifier(true)}
                 style={{ background: "none", border: "none", padding: 0, fontSize: 13, color: "var(--pine)", cursor: "pointer", textDecoration: "underline" }}>

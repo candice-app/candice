@@ -7,7 +7,6 @@ import { elementsAllergies } from "@/lib/profile/partage-elements";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import { createAdminClient } from "@/utils/supabase/admin";
 import V4Shell from "@/components/layout/V4Shell";
 import PartageClient from "./PartageClient";
 import { RevokeShareButton, RevokeLinkButton } from "./ManageActions";
@@ -44,12 +43,14 @@ export default async function PartagePage() {
     status: string; scope: string[] | null; consented_at: string | null; requested_at: string;
   }>;
 
-  const admin = createAdminClient();
-  const firstNameOf = async (userId: string | null): Promise<string> => {
-    if (!userId) return "Quelqu'un";
-    const { data: { user: u } } = await admin.auth.admin.getUserById(userId);
-    return (u?.user_metadata?.full_name as string | undefined)?.split(" ")[0] ?? "Quelqu'un";
-  };
+  // Les prénoms viennent de `prenoms_de_mes_partages()` (migration 122) : bornée dans la base à
+  // l'autre partie des partages de l'appelant, prénom seul. Plus aucun client privilégié ici.
+  const { data: prenomsRaw, error: ePrenoms } = await (supabase as unknown as {
+    rpc(f: string): Promise<{ data: { consent_id: string; prenom: string | null }[] | null; error: { message: string } | null }>;
+  }).rpc("prenoms_de_mes_partages");
+  if (ePrenoms) console.error("[moi/partage] prénoms illisibles", ePrenoms.message);
+  const prenoms = new Map((prenomsRaw ?? []).map((x) => [x.consent_id, x.prenom] as const));
+  const firstNameOf = async (consentId: string): Promise<string> => prenoms.get(consentId) ?? "Quelqu'un";
 
   const scopeLabel = (scope: string[] | null) =>
     (scope ?? []).includes(SCOPE_BLIND) ? "aveugle"
@@ -59,14 +60,14 @@ export default async function PartagePage() {
   const activeShares = await Promise.all(
     consents.filter(c => c.status === "active").map(async c => ({
       id: c.id,
-      firstName: await firstNameOf(c.proche_user_id),
+      firstName: await firstNameOf(c.id),
       scopeLabel: scopeLabel(c.scope),
     })),
   );
   const pendingRequests = await Promise.all(
     consents.filter(c => c.status === "pending").map(async c => ({
       id: c.id,
-      firstName: await firstNameOf(c.requested_by),
+      firstName: await firstNameOf(c.id),
     })),
   );
 

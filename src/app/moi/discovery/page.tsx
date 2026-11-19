@@ -8,7 +8,7 @@ import DiscoveryClarifications, { type ClarificationAffichee } from "./Discovery
 import { clarificationsOuvertes } from "@/lib/discovery/open-v3/destinations-ecriture";
 import DiscoveryEnvie from "./DiscoveryEnvie";
 import { envieAProposer } from "@/lib/discovery/open-v3/envie-carnet";
-import { sujetsExplorables, sujetsChoisisPar, sujetsRefusesPar, projetsEnCours, situationsDeclarees, ENTREE_QUOTIDIEN } from "@/lib/discovery/open-v3/service";
+import { sujetsExplorables, sujetsChoisisPar, sujetsRefusesPar, projetsEnCours, situationsDeclareesDatees, ENTREE_QUOTIDIEN } from "@/lib/discovery/open-v3/service";
 import { ENTREE_LARGE } from "@/lib/discovery/open-v3/entree";
 import DiscoveryEntree from "./DiscoveryEntree";
 import type { Quotidien } from "./DiscoveryPortes";
@@ -60,7 +60,7 @@ export default async function DiscoveryPage({
   try {
     const [choisis, projets, refuses, situations] = await Promise.all([
       sujetsChoisisPar(supabase as never, { userId }), projetsEnCours(supabase as never, { userId }), sujetsRefusesPar(supabase as never, { userId }),
-      situationsDeclarees(supabase as never, { userId }),
+      situationsDeclareesDatees(supabase as never, { userId }),
     ]);
     portes = {
       sujets: sujetsExplorables().map((s) => ({ ...s, choisi: choisis.includes(s.branche) })), projets,
@@ -68,7 +68,8 @@ export default async function DiscoveryPage({
       refuses: refuses.map((b) => ({ branche: b, libelle: libelleBranche(b) ?? "" })).filter((x) => x.libelle),
       // D2 : l'entrée « Ton quotidien », facultative ; ce qui a été déclaré y est relu tel quel.
       quotidien: { enonce: ENTREE_QUOTIDIEN.enonce, aide: ENTREE_QUOTIDIEN.aide, aucune: ENTREE_QUOTIDIEN.aucune,
-        options: ENTREE_QUOTIDIEN.options.map((o) => ({ ...o })), declarees: Object.fromEntries(situations) },
+        options: ENTREE_QUOTIDIEN.options.map((o) => ({ ...o })), declarees: Object.fromEntries([...situations].map(([k, v]) => [k, v.vraie])),
+        depuis: [...situations.values()].map((v) => v.depuis).sort().at(-1) ?? null },
     };
   } catch (e) {
     console.error("[discovery] portes illisibles", e);

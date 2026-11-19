@@ -13,7 +13,7 @@ import {
 // ── Types ────────────────────────────────────────────────────────────────────
 
 
-export interface QuestionOption { label: string; value: string; }
+export interface QuestionOption { label: string; value: string; /** ouvre une saisie libre (décision 7) */ saisie_libre?: boolean; /** groupe exclusif (décision 6) */ groupe?: string; }
 
 export interface DiscoveryQuestion {
   id: string;
@@ -21,6 +21,8 @@ export interface DiscoveryQuestion {
   dimension: string;
   subdimension: string | null;
   question_text: string;
+  /** D9 : l'entité dont parle la question (« À propos de : Patagonia »). */
+  referent?: string;
   question_type: 'chips_single' | 'chips_multi' | 'text';
   options: QuestionOption[] | null;
   sort_order: number;

@@ -14,10 +14,14 @@ import { cookiesDe, poster } from './_session-http.mts';
 
 const arg = (n: string) => process.argv[process.argv.indexOf(`--${n}`) + 1];
 const CODE = arg('code') as 'A' | 'B', SCHEMA = Number(arg('schema'));
-// L'ordre réel d'application : 112 → 115 → 113 → 114 → 116 → 118 → [déploiement] → 117.
-const RANG = [112, 115, 113, 114, 116, 118, 117].indexOf(SCHEMA);
-if (!['A', 'B'].includes(CODE) || RANG < 0) throw new Error('usage : --code A|B --schema 112|115|113|114|116|118|117');
-const a = (n: number) => RANG >= [112, 115, 113, 114, 116, 118, 117].indexOf(n); // « la migration n est appliquée »
+// L'ordre réel d'application (19 nov., 18h54 : la 115 est déjà appliquée en production) :
+// 112 → 115 → 113 → 114 → 116 → 118 → 119 → 120 → 121 → 122 → [déploiement] → 117.
+// `--sans 121,122` rejoue un RETOUR ARRIÈRE de ces migrations (fonctions retirées) sur l'état donné.
+const ORDRE = [112, 115, 113, 114, 116, 118, 119, 120, 121, 122, 117];
+const RANG = ORDRE.indexOf(SCHEMA);
+if (!['A', 'B'].includes(CODE) || RANG < 0) throw new Error(`usage : --code A|B --schema ${ORDRE.join('|')} [--sans 121,122]`);
+const SANS = process.argv.includes('--sans') ? arg('sans').split(',').map(Number) : [];
+const a = (n: number) => RANG >= ORDRE.indexOf(n) && !SANS.includes(n); // « la migration n est appliquée »
 
 const { url, anon, admin } = pileLocale();
 const v = verificateur();
@@ -144,7 +148,9 @@ const att = {
   propositionHttp: CODE === 'A' || a(113) ? 200 : 404,
   // Régler un usage : route absente de la version en ligne ; la branche a besoin du type créé par la 116.
   // Sans la 113, l'invitation de la branche n'a rattaché aucun compte : la route ne trouve pas de fiche (404).
-  usageHttp: CODE === 'A' ? 404 : a(116) ? 200 : a(113) ? 500 : 404,
+  // Depuis le 19 nov. (18h54), la route de la branche passe par `regler_usage` (migration 121), sans
+  // client privilégié : sans la 121, elle répond 503, FERMÉE ; sans la 113, la fiche n'est pas reliée (404).
+  usageHttp: CODE === 'A' ? 404 : !a(113) ? 404 : a(121) ? 200 : 503,
   // Enregistrer une recommandation : la branche écrit sa provenance, il lui faut les colonnes de la 118.
   recoEnregistree: CODE === 'A' || a(118),
   // Effacer un compte partie d'un consentement : corrigé par la 115.

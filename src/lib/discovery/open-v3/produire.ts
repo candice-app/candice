@@ -44,7 +44,7 @@ export type Production =
   | { readonly type: 'fait'; readonly fait: FaitBrut }
   /** Une CONNAISSANCE OUVERTE DÉCLARÉE (D8) : le libellé coché, tel quel, sous la relation que la
    *  question demandait. `portee: 'projet'` : rattachée au projet que nomme `projetDe`. */
-  | { readonly type: 'ouverte'; readonly ouverte: { readonly libelle: string; readonly relation: string; readonly portee: 'globale' | 'projet'; readonly projetDe?: string; readonly domaine: string } }
+  | { readonly type: 'ouverte'; readonly ouverte: { readonly libelle: string; readonly relation: string; readonly portee: 'globale' | 'projet'; readonly projetDe?: string; readonly domaine: string; readonly confidentielle?: boolean } }
   | { readonly type: 'rien'; readonly motif: MotifNonEcriture; readonly detail: string };
 
 export interface FaitBrut {
@@ -60,7 +60,7 @@ export const PREFIXE_FAIT = 'discovery.fait.';
 
 /** D11 : acteur, bénéficiaire et contexte d'une préférence de service, tels que l'énoncé les établit. */
 export const ROLES_DE_SERVICE = (rolesDeService as { questions: Record<string, { acteur: string; beneficiaire: string; contexte: string }> }).questions;
-const DECLAREES = (connaissancesDeclarees as { questions: Record<string, { relation: string; portee: 'globale' | 'projet'; projet_de?: string }> }).questions;
+const DECLAREES = (connaissancesDeclarees as { questions: Record<string, { relation: string; portee: 'globale' | 'projet'; projet_de?: string; confidentielle?: boolean }> }).questions;
 const SENS_EN_REVUE: ReadonlyMap<string, ReadonlySet<string>> = new Map((sensEnRevue as { lignes: { question: string; attributs: string[] }[] }).lignes.map((l) => [l.question, new Set(l.attributs)]));
 
 export type MotifNonEcriture =
@@ -203,7 +203,7 @@ export function produireDepuisOption(q: QuestionV3, o: OptionV3): Production {
       // connaissance ouverte. Les autres options fermées en OPEN_KNOWLEDGE restent sans émission.
       const d = DECLAREES[q.id];
       if (!d || !o.libelle.trim()) return rien('connaissance_ouverte', o.libelle);
-      return { type: 'ouverte', ouverte: { libelle: o.libelle, relation: d.relation, portee: d.portee, ...(d.projet_de ? { projetDe: d.projet_de } : {}), domaine: o.domaine ?? q.branche } };
+      return { type: 'ouverte', ouverte: { libelle: o.libelle, relation: d.relation, portee: d.portee, ...(d.projet_de ? { projetDe: d.projet_de } : {}), ...(d.confidentielle ? { confidentielle: true } : {}), domaine: o.domaine ?? q.branche } };
     }
     case 'FACT': {
       // LES 600 OPTIONS DE FAIT. La première version les renvoyait à un « producteur de faits »

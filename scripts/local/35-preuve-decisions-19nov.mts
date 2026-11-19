@@ -152,5 +152,34 @@ v.verifier(motifDExclusion(q937, e2) !== 'deja_posee', 'E2 : un nouveau séjour 
 const { count: hist10 } = await admin.from('knowledge_sources').select('id', { count: 'exact', head: true }).eq('user_id', T.userId).eq('branch_id', `projet:${lisbonne.id}`);
 v.verifier(hist10 === 1, 'E3 : la réponse donnée pour Lisbonne reste rattachée à Lisbonne (historique intact)');
 
+// ═══ F. Décisions de 18h54 : saisie libre, cadence exclusive, état sensible, D9 par entité ═══
+console.log('\n═══ F. Saisie libre, cadence, SOM-01, D9 ═══');
+const F = await compteLocal('d19-soir');
+const qSport = question('sportp.0504')!;
+let rf = await svc.enregistrerReponseFermee(F.client as never, { userId: F.userId, questionId: 'sportp.0504', clesOptions: cles('sportp.0504', 'Vélo', 'Autre'), precision: 'le padel', acteId: 'acte-f1' });
+const { data: fs } = await admin.from('knowledge_facts').select('fact_type, value').eq('source', rf.sourceId);
+v.verifier(fs?.length === 2 && fs.some((x) => x.fact_type === 'discovery.fait.sport_practice.pratique' && JSON.parse(x.value).valeur === 'le padel' && JSON.parse(x.value).saisie_libre === true), 'F1 : « Autre : le padel » → une pratique déclarée, mot pour mot, au même contrat que « Vélo »', JSON.stringify(fs));
+const { count: evSport } = await admin.from('knowledge_evidences').select('id', { count: 'exact', head: true }).eq('source_id', rf.sourceId);
+v.verifier(evSport === 0, 'F2 : ni goût, ni niveau, ni fréquence inventés');
+let refusF = ''; try { await svc.enregistrerReponseFermee(F.client as never, { userId: F.userId, questionId: 'sportp.0504', clesOptions: cles('sportp.0504', 'Autre'), acteId: 'acte-f2' }); } catch (e) { refusF = (e as Error).message; }
+v.verifier(/précise/.test(refusF), 'F3 : « Autre » sans précision est refusé, rien n’est écrit');
+let refusC = ''; try { await svc.enregistrerReponseFermee(F.client as never, { userId: F.userId, questionId: 'relation.0015', clesOptions: cles('relation.0015', 'Une fois par jour', 'Une fois par semaine'), acteId: 'acte-f3' }); } catch (e) { refusC = (e as Error).message; }
+v.verifier(/une seule réponse possible pour « cadence »/.test(refusC), 'F4 : deux cadences refusées');
+rf = await svc.enregistrerReponseFermee(F.client as never, { userId: F.userId, questionId: 'relation.0015', clesOptions: cles('relation.0015', 'Une fois par jour', 'Seulement si j’écris d’abord'), acteId: 'acte-f4' });
+v.verifier(rf.faitsEcrits === 2, 'F5 : une cadence ET la condition d’initiative coexistent');
+rf = await svc.enregistrerReponseFermee(F.client as never, { userId: F.userId, questionId: 'SOM-01', clesOptions: cles('SOM-01', 'J’ai du mal à m’endormir'), acteId: 'acte-f5' });
+const { data: som } = await admin.from('knowledge_facts').select('visibility_derived, ts').eq('source', rf.sourceId);
+v.verifier(som?.length === 1 && som[0].visibility_derived === 'internal_only' && !!som[0].ts, 'F6 : SOM-01 → état daté, interne (jamais au portrait ni à un tiers)', JSON.stringify(som));
+const cF = await cookiesDe(F.email, F.motDePasse);
+await dicter([{ units: [{ family: 'ENTITY', label: 'Patagonia', entityType: 'brand', relation: 'LOVE' }] }]);
+r = await poster('/api/discovery/recit', cF, { texte: 'J’adore Patagonia.' });
+let eF = (await lireEtat(F.client as never, { userId: F.userId })).etat;
+const ent = eF.entiteParQuestion?.get('brand.0268');
+v.verifier(!!ent && /patagonia/i.test(ent.libelle) && !eF.entiteParQuestion?.has('destination.0287'), 'F7 : « adore Patagonia » ouvre « Qu’est-ce que tu aimes surtout chez Patagonia ? », pas une question de voyage', JSON.stringify([...(eF.entiteParQuestion ?? [])]));
+const ro = await svc.enregistrerReponseOuverte(F.client as never, { userId: F.userId, questionId: 'brand.0268', texte: 'La durabilité des vestes.', acteId: 'acte-f6', entite: ent! });
+const { data: srcF } = await admin.from('knowledge_sources').select('branch_id').eq('id', ro.verbatimSourceId).single();
+eF = (await lireEtat(F.client as never, { userId: F.userId })).etat;
+v.verifier(srcF?.branch_id === `entite:${ent!.id}` && ro.rattacheeALEntite === ent!.id && !eF.entiteParQuestion?.has('brand.0268'), 'F8 : la réponse reste rattachée à Patagonia ; la question n’est pas reposée pour elle');
+
 console.log(`\n(application ${APP}, modèle simulé ${MODELE})`);
 v.bilan();

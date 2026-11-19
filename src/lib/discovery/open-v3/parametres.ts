@@ -36,14 +36,17 @@ export function genreQuiRemplit(q: QuestionV3): TypeDeProjet | null {
   return l && l.statut === 'executable' && l.source === 'projet' && l.genre ? l.genre : null;
 }
 /** La valeur du paramètre pour cette personne, maintenant — ou `null` : rien n'est supposé. */
-export function valeurDuParametre(q: QuestionV3, etat: Pick<EtatDiscovery, 'objetsDeProjet'>): string | null {
+export function valeurDuParametre(q: QuestionV3, etat: Pick<EtatDiscovery, 'objetsDeProjet' | 'entiteParQuestion'>): string | null {
+  // D9 : une question à propos d'une entité est remplie par CETTE entité (entites.ts).
+  const entite = etat.entiteParQuestion?.get(q.id);
+  if (entite) return entite.libelle;
   const genre = genreQuiRemplit(q);
   if (!genre) return null;
   const v = etat.objetsDeProjet?.get(`${poolDe(q.branche)}|${genre}`)?.trim();
   return v ? v : null;
 }
 /** L'énoncé tel qu'il sera lu. LÈVE si une accolade resterait : on ne sert jamais un gabarit. */
-export function enonceRempli(q: QuestionV3, etat: Pick<EtatDiscovery, 'objetsDeProjet'>): string {
+export function enonceRempli(q: QuestionV3, etat: Pick<EtatDiscovery, 'objetsDeProjet' | 'entiteParQuestion'>): string {
   if (parametresDe(q).length === 0) return q.enonce;
   const v = valeurDuParametre(q, etat);
   if (!v) throw new Error(`« ${q.id} » : paramètre sans valeur établie — la question ne doit pas être servie`);

@@ -123,6 +123,8 @@ export interface EtatDiscovery {
   readonly projetsCourants?: ReadonlyMap<string, { readonly id: string; readonly debut: string }>;
   /** D10 : question → préparations pour lesquelles elle a déjà été répondue ou passée. */
   readonly poseesParProjet?: ReadonlyMap<string, ReadonlySet<string>>;
+  /** D9 : question à propos d'une entité → l'entité pour laquelle elle peut être posée maintenant. */
+  readonly entiteParQuestion?: ReadonlyMap<string, { readonly id: string; readonly libelle: string }>;
 }
 
 /** Les situations de vie que des conditions du référentiel présument, et rien d'autre. */
@@ -150,6 +152,8 @@ export type Clause =
   /** « Situation déclarée : couple » (D2) : la personne a déclaré elle-même cette situation.
    *  N'apparaît que dans une LECTURE de condition. */
   | { readonly type: 'situation'; readonly situation: SituationDeVie }
+  /** « Entité déclarée pour cette question » (D9) : une entité du journal remplit la question. */
+  | { readonly type: 'entite' }
   | { readonly type: 'prose'; readonly texte: string };
 
 /** LES MARQUES DE SENSIBILITÉ DU RÉFÉRENTIEL. Il en écrit TROIS niveaux — « sensitivity:
@@ -262,6 +266,7 @@ const MOTIFS: ReadonlyArray<{ re: RegExp; lire: (m: RegExpMatchArray) => Clause 
   },
   // ── Formulations en prose, récurrentes et mécaniques ────────────────────────
   { re: /^information manquante$/i, lire: () => ({ type: 'information_manquante' }) },
+  { re: /^entit[ée] d[ée]clar[ée]e pour cette question$/i, lire: () => ({ type: 'entite' }) },
   {
     re: /^situation d[ée]clar[ée]e\s*:\s*(couple|enfants_au_quotidien|travail_a_domicile|activite_professionnelle)$/i,
     lire: (m) => ({ type: 'situation', situation: m[1].toLowerCase() as SituationDeVie }),
@@ -433,6 +438,8 @@ export interface ContexteQuestion {
   /** Une de ces informations est aussi écrite par une autre question : la savoir renseignée
    *  ne prouve pas que CETTE question a eu sa réponse. */
   readonly attributsPartages?: boolean;
+  /** D9 : l'identifiant de la question jugée (les clauses « entité » en dépendent). */
+  readonly questionId?: string;
   /** Le domaine commun aux générations de la branche (`poolDe`) : un projet vaut pour lui. */
   readonly pool?: string;
   /** La réponse dont cette question dépend, quand le référentiel en écrit une (`dependances.ts`). */
@@ -623,6 +630,11 @@ function evaluerClause(
       // fermait toute la cuisine à quelqu'un qui ne boit pas. Elle protège les questions QUI
       // PRÉSUMENT une consommation d'alcool — et celles-là seulement (décision du 19 nov.).
       return etat.sansAlcool && contexte.presumeAlcool ? 'fermer' : 'ouvrir';
+    case 'entite':
+      // D9 : une entité de SON journal, du bon type, avec une relation que la question présume, pour
+      // laquelle elle n'a pas encore été posée (entites.ts). Table non lue : indécidable.
+      if (!etat.entiteParQuestion || !contexte.questionId) return 'indecidable';
+      return etat.entiteParQuestion.has(contexte.questionId) ? 'ouvrir' : 'fermer';
     case 'situation':
       // D2 : seule une déclaration de la personne ouvre. Sans déclaration, la question n'est pas
       // posée (on ne présume pas un couple ou des enfants) ; l'entrée « Ton quotidien » le lui propose.

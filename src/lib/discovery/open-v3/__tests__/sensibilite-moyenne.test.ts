@@ -30,8 +30,9 @@ const toutOuvert = (sujetsChoisis: string[] = []): EtatDiscovery => {
 
 describe('les 32 questions de sensibilité moyenne', () => {
   it('elles sont 32, et toutes portent le mode d’ouverture écrit par la révision 3', () => {
-    // 32 dans la banque d'origine ; 2 de plus parmi les questions activées par la révision 6.
-    expect(moyennes.length).toBe(34);
+    // 32 dans la banque d'origine ; 2 de plus parmi les questions activées par la révision 6 ;
+    // SOM-01, activée sensible et ouverte sur démarche par la révision 8 (décision 3, 19 nov. 18h54).
+    expect(moyennes.length).toBe(35);
     for (const q of moyennes) {
       const c = analyserCondition(q.condition_emission);
       expect(c.sensible, q.id).toBe(true);
@@ -64,9 +65,20 @@ describe('les 32 questions de sensibilité moyenne', () => {
     const restantes = resultat.filter((r) => r.v !== 'ouvrir');
     // Celles qui ne s'ouvrent pas ne sont pas refusées par la sensibilité : leur condition
     // d'origine porte un nom de branche ou un fragment encore à résoudre (registre).
-    expect(restantes.every((r) => r.v === 'indecidable')).toBe(true);
+    expect(restantes.every((r) => r.v === 'indecidable' || r.id === 'SOM-01')).toBe(true);   // SOM-01 : fermée faute du tag (voir plus bas)
     expect(ouvertes.length).toBe(32);
-    expect(restantes.map((r) => r.id).sort()).toEqual(['drinks.2106', 'joys.1893']);
+    // SOM-01 attend le tag `CONTEXT.discovery.open.sleep`, que l'état écrit quand la branche Sommeil est
+    // ouverte (etat.ts, TAGS_ATTENDUS) : avec lui et la démarche, elle s'ouvre (test suivant).
+    expect(restantes.map((r) => r.id).sort()).toEqual(['SOM-01', 'drinks.2106', 'joys.1893']);
+  });
+  it('SOM-01 : ouverte par la démarche sur le sommeil, jamais sans', () => {
+    const q = BANQUE.find((x) => x.id === 'SOM-01')!;
+    const c = analyserCondition(q.condition_emission);
+    const ctx = { branche: q.branche, pool: poolDe(q.branche), attributs: ['x.y'], attributsPartages: true };
+    const base = toutOuvert([q.branche]);
+    const avec = { ...base, tags: new Map([...base.tags, ['CONTEXT.discovery.open.sleep', 'true']]) };
+    expect(evaluerCondition(c, avec, ctx)).toBe('ouvrir');
+    expect(evaluerCondition(c, { ...avec, sujetsChoisis: new Set() }, ctx)).not.toBe('ouvrir');
   });
 
   it('chaque branche concernée peut recevoir la démarche', () => {

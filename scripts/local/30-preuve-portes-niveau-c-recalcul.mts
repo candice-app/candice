@@ -142,10 +142,10 @@ console.log('\n══ 3. Faible place, refus explicite, recalcul');
   const cle = lot!.question.question_key;
   const passe = await repondre(cookie, { jeton: lot!.jeton, questionKey: cle, skip: true });
   v.verifier(passe.status === 200 && await preuves(c) === n0 && (await etatDe(c)).dejaPosees.has(cle), 'non-réponse : la question passée n’écrit rien et ne revient pas', cle);
-  // Question absente de la banque active (CRE-11 est restée en arbitrage — series.0094, l'exemple
-  // d'avant, a été rendue active par la révision 6) : d'aucun lot — refusée, rien d'écrit.
-  const archivee = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'CRE-11', answer: ['r1'] });
-  v.verifier(question('CRE-11') === undefined && archivee.status === 403 && await preuves(c) === n0, 'question retirée de la banque : refusée, aucune preuve écrite', `HTTP ${archivee.status} ${archivee.motif}`);
+  // Question absente de la banque active (sport.0188, retirée par la révision 8 le 19 nov. — CRE-11,
+  // l'exemple d'avant, est désormais active) : d'aucun lot — refusée, rien d'écrit.
+  const archivee = await repondre(cookie, { jeton: lot!.jeton, questionKey: 'sport.0188', answer: 'du vélo' });
+  v.verifier(question('sport.0188') === undefined && archivee.status === 403 && await preuves(c) === n0, 'question retirée de la banque : refusée, aucune preuve écrite', `HTTP ${archivee.status} ${archivee.motif}`);
 }
 
 // ── 4. DONNÉE INACCESSIBLE : le compte d'un autre

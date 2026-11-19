@@ -37,7 +37,7 @@ describe('la table est exhaustive et sans double emploi', () => {
     // questions « axe X » de la Réussite (D5, l'axe choisi à success.1711).
     const axes = BANQUE.filter((q) => /^Niveau B Réussite — axe /.test(q.condition_emission) && !analyserCondition(q.condition_emission).sensible).map((q) => q.id);
     expect(axes.length).toBeGreaterThan(20);
-    const ajouteesParDecision = ['CRE-17', ...axes];
+    const ajouteesParDecision = ['CRE-17', 'CRE-11', ...axes];   // CRE-11 : activée le 19 nov. (18h54)
     expect([...lues, ...nonLues].sort()).toEqual([...presentes, ...ajouteesParDecision].sort());
   });
   it('une hypothèse porte des choix ; une absence de lecture porte ce qui manque', () => {
@@ -58,6 +58,7 @@ describe('une lecture n’ouvre jamais plus que le texte', () => {
       projets: new Map(BANQUE.map((q) => [q.branche, new Set(['achat', 'sejour', 'cadeau', 'occasion', 'sortie', 'apprentissage', 'attention', 'experience'] as const)] as const)),
       optionsChoisies: new Map([...SELECTEURS_DE_LECTURE].map((s) => [s, new Set(question(s)!.options.map(cleOption))] as const)),
       situations: new Map(SITUATIONS_DE_VIE.map((x) => [x, true] as const)),
+      entiteParQuestion: new Map(T.lectures.map((l) => [l.question, { id: 'e', libelle: 'X' }] as const)),
     });
     const indecidables = T.lectures.filter((l) => verdictDe(question(l.question)!, tout) === 'indecidable').map((l) => l.question);
     expect(indecidables).toEqual([]);
@@ -272,5 +273,55 @@ describe('D5 : réussite, esthétique avancée, signature de valeur', () => {
     const six = (n: number) => new Map(Array.from({ length: n }, (_, k) => `value.${1516 + k}`).map((id) => [id, new Set([cleOption(question(id)!.options[0])])] as const));
     expect(v('value.1522', etat({ ...ouvert('value', 'B'), optionsChoisies: six(5) }))).toBe('fermer');
     expect(v('value.1522', etat({ ...ouvert('value', 'B'), optionsChoisies: six(6) }))).toBe('ouvrir');
+  });
+});
+
+describe('esthétique avancée (validée le 19 nov., 18h54) : seulement sur une réponse qui rend l’approfondissement pertinent', () => {
+  const b = ouvert('aesthetic', 'B');
+  const v = (id: string, ref: string, l: string) => verdictDe(question(id)!, etat({ ...b, optionsChoisies: new Map([[ref, cles(ref, l)]]) }));
+  it('« Je n’y ai jamais vraiment pensé » n’ouvre pas « beau ou pratique » ; « Oui, énormément » l’ouvre', () => {
+    expect(v('aesthetic.1966', 'aesthetic.1965', 'Je n’y ai jamais vraiment pensé')).toBe('fermer');
+    expect(v('aesthetic.1966', 'aesthetic.1965', 'Non, chaque domaine est indépendant')).toBe('fermer');
+    expect(v('aesthetic.1966', 'aesthetic.1965', 'Oui, énormément')).toBe('ouvrir');
+  });
+  it('une condition (« Cela dépend de l’histoire de l’objet ») n’ouvre pas le prestige', () => {
+    expect(v('aesthetic.1968', 'aesthetic.1956', 'Cela dépend de l’histoire de l’objet')).toBe('fermer');
+    expect(v('aesthetic.1968', 'aesthetic.1956', 'Les traces du temps')).toBe('ouvrir');
+  });
+  it('information déjà connue : fermée', () => {
+    const e = etat({ ...b, optionsChoisies: new Map([['aesthetic.1961', cles('aesthetic.1961', 'Très intemporel')]]), attributsConnus: new Set(['PREFERENCE.aesthetic.owned_item', 'aesthetic.owned_item', 'owned_item']) });
+    expect(verdictDe(question('aesthetic.1969')!, e)).not.toBe('ouvrir');
+  });
+});
+
+describe('D9 : une question « à propos de {X} » exige une entité déclarée, avec la relation que la question présume', async () => {
+  const { entitePour } = await import('../entites');
+  const { valeurDuParametre } = await import('../parametres');
+  const e = (id: string, type: string, relation: string, depuis = '2026-11-01') => ({ id, libelle: id, type, relation, depuis });
+  it('« veut visiter » ouvre ce qui attire dans une destination, pas ce qui a plu dans un lieu', () => {
+    const j = [e('Kyoto', 'destination', 'WANT_TO_VISIT')];
+    expect(entitePour('destination.0287', j, new Map())?.id).toBe('Kyoto');
+    expect(entitePour('place.0273', j, new Map())).toBeNull();
+  });
+  it('« aime » une marque ouvre « ce que tu aimes chez » ; « veut avoir » seulement la question du rapport', () => {
+    const j = [e('Patagonia', 'brand', 'WANT_TO_OWN')];
+    expect(entitePour('brand.0268', j, new Map())).toBeNull();
+    expect(entitePour('brand.0272', j, new Map())?.id).toBe('Patagonia');
+  });
+  it('aimer une activité n’établit pas une pratique : « ton niveau » reste fermé', () => {
+    expect(entitePour('activity.0282', [e('escalade', 'ENTITY_HOBBY', 'LOVE')], new Map())).toBeNull();
+  });
+  it('progression par (question, entité) : posée pour Patagonia, elle revient pour Hermès', () => {
+    const j = [e('Patagonia', 'brand', 'LOVE', '2026-11-02'), e('Hermès', 'brand', 'LIKE', '2026-11-01')];
+    expect(entitePour('brand.0268', j, new Map())?.id).toBe('Patagonia');
+    expect(entitePour('brand.0268', j, new Map([['brand.0268', new Set(['Patagonia'])]]))?.id).toBe('Hermès');
+  });
+  it('le moteur : sans entité, fermée ; avec, ouverte et remplie par son nom', () => {
+    const q = question('brand.0268')!;
+    expect(verdictDe(q, etat({ entiteParQuestion: new Map() }))).toBe('fermer');
+    const avec = etat({ entiteParQuestion: new Map([['brand.0268', { id: 'patagonia', libelle: 'Patagonia' }]]) });
+    expect(verdictDe(q, avec)).toBe('ouvrir');
+    expect(valeurDuParametre(q, avec)).toBe('Patagonia');
+    expect(verdictDe(q, etat({}))).toBe('indecidable');
   });
 });

@@ -21,6 +21,7 @@ import { SITUATIONS_DE_VIE } from './conditions';
 import { analyserCondition } from './conditions';
 import { BANQUE } from './banque';
 import { createFact } from '@/lib/knowledge/fact';
+import { INTERNAL_ONLY_POLICY } from '@/lib/knowledge/visibility';
 import { contexteDeProjet } from '@/lib/knowledge/read-journal';
 import { factId } from '@/lib/knowledge-write/ids';
 import { supersedeSources } from '@/lib/knowledge-write/supersede';
@@ -40,6 +41,7 @@ import type { Evidence } from '@/lib/knowledge/evidence';
  * ──────────────────────────────────────────────────────────────────────────── */
 export { cleOption } from './cle-option';
 import { cleOption } from './cle-option';
+import { groupeEnConflit, saisieLibreDe } from './reponses-structurees';
 import { createOpenKnowledge } from '@/lib/knowledge/open-knowledge';
 import { openKnowledgeId } from '@/lib/knowledge-write/ids';
 import { asSubjectId } from '@/lib/knowledge/identity';
@@ -64,6 +66,8 @@ export interface QuestionAServir {
   readonly dimension: string;
   /** Nom lisible de la branche, ou `null` : l'écran n'affiche alors rien. */
   readonly libelle: string | null;
+  /** D9 : l'entité dont parle la question, quand elle en parle. */
+  readonly referent?: string | null;
   readonly question_text: string;
   readonly question_type: 'chips_single' | 'chips_multi' | 'text';
   readonly options: readonly { readonly label: string; readonly value: string }[] | null;
@@ -73,7 +77,7 @@ export interface QuestionAServir {
   readonly motif: string;
 }
 
-function aServir(c: Choix, etat: Pick<EtatDiscovery, 'objetsDeProjet'> = {}): QuestionAServir {
+function aServir(c: Choix, etat: Pick<EtatDiscovery, 'objetsDeProjet' | 'entiteParQuestion'> = {}): QuestionAServir {
   const q = c.question;
   const type = q.forme === 'open' ? 'text'
     : q.forme === 'single' ? 'chips_single' : 'chips_multi';
@@ -85,6 +89,7 @@ function aServir(c: Choix, etat: Pick<EtatDiscovery, 'objetsDeProjet'> = {}): Qu
     libelle: libelleBranche(q.branche) ?? libelleDuPool(q.branche),
     // Un énoncé à paramètre est servi REMPLI, depuis sa source autorisée — ou n'est pas servi.
     question_text: enonceRempli(q, etat),
+    referent: etat.entiteParQuestion?.get(q.id)?.libelle ?? null,
     question_type: type,
     options: type === 'text' ? null : q.options.filter((o) => !estAliasMasque(q.id, o)).map((o) => ({ label: o.libelle, value: cleOption(o) })),
     locked_text: true,
@@ -140,14 +145,14 @@ export function sourceDeLActe(type: 'discovery_closed' | 'discovery_open', userI
   return evidenceId(type, `${userId}:${questionId}:acte:${acteId}`);
 }
 
-interface LigneSource { id: string; option_ref: string | null; raw_text: string | null; ts: string; source_type: string }
+interface LigneSource { id: string; option_ref: string | null; raw_text: string | null; ts: string; source_type: string; branch_id?: string | null }
 /** Toutes les sources d'une question pour ce compte et cette voie, vivantes ou non. */
 async function sourcesDeLaQuestion(client: WriteClient, userId: string, type: string, questionCode: string): Promise<LigneSource[]> {
   const lecture = client as unknown as {
     from(t: string): { select(c: string): { eq(c: string, v: string): { eq(c: string, v: string): { eq(c: string, v: string):
       Promise<{ data: LigneSource[] | null; error: { message: string } | null }> } } } };
   };
-  const { data, error } = await lecture.from('knowledge_sources').select('id, option_ref, raw_text, ts, source_type')
+  const { data, error } = await lecture.from('knowledge_sources').select('id, option_ref, raw_text, ts, source_type, branch_id')
     .eq('user_id', userId).eq('source_type', type).eq('question_code', questionCode);
   if (error) throw new Error(`lecture des réponses précédentes impossible : ${error.message}`);
   return data ?? [];
@@ -162,8 +167,12 @@ async function sourcesDeLaQuestion(client: WriteClient, userId: string, type: st
 async function reconcilierDernierMot(
   client: WriteClient, userId: string, type: 'discovery_closed' | 'discovery_open', questionCode: string, moi: string, timestamp: string,
   derivees: readonly string[] = [],
+  /** D10 : le dernier mot se compte DANS SA PORTÉE — la préparation (`projet:<id>`) ou l'entité
+   *  (`entite:<id>`) pour laquelle la question a été répondue, ou le général (null). Répondre pour
+   *  Kyoto ne supersède pas la réponse donnée pour Lisbonne. */
+  portee: string | null = null,
 ): Promise<{ readonly dernierMot: boolean }> {
-  const tous = await sourcesDeLaQuestion(client, userId, type, questionCode);
+  const tous = (await sourcesDeLaQuestion(client, userId, type, questionCode)).filter((x) => (x.branch_id ?? null) === portee);
   const rang = (x: LigneSource) => `${new Date(x.ts).toISOString()}|${x.id}`;
   const dernier = tous.reduce<LigneSource | null>((m, x) => (!m || rang(x) > rang(m) ? x : m), null);
   if (!dernier || dernier.id === moi) {
@@ -220,6 +229,10 @@ export async function enregistrerReponseFermee(
      *  concret). La réponse est alors rattachée au projet et n'écrit AUCUNE connaissance générale. */
     readonly projet?: Projet;
     readonly timestamp?: string;
+    /** La précision écrite avec l'option qui ouvre une saisie libre (reponses-structurees.json). */
+    readonly precision?: string;
+    /** D9 : l'entité pour laquelle la question est posée (sa réponse lui reste rattachée). */
+    readonly entite?: { readonly id: string; readonly libelle: string };
   },
 ): Promise<ResultatReponse> {
   const q = questionParId(input.questionId);
@@ -240,6 +253,15 @@ export async function enregistrerReponseFermee(
     choisies.push(o);
   }
 
+  // Décision 6 : une seule option par groupe exclusif (une cadence), les autres restent cumulables.
+  const conflit = groupeEnConflit(q, choisies.map((o) => o.libelle));
+  if (conflit) throw new ReponseInvalideError(`« ${q.id} » : une seule réponse possible pour « ${conflit} » — rien n'est écrit`);
+  // Décision 7 : la saisie libre n'est reçue qu'avec l'option qui l'ouvre, et elle est alors exigée.
+  const saisie = saisieLibreDe(q);
+  const precision = input.precision?.replace(/\s+/g, ' ').trim() ?? '';
+  const avecSaisie = !!saisie && choisies.some((o) => o.libelle === saisie.option);
+  if (precision && !avecSaisie) throw new ReponseInvalideError(`« ${q.id} » : une précision n'accompagne que l'option qui l'ouvre`);
+  if (avecSaisie && (!precision || precision.length > saisie!.longueur_max)) throw new ReponseInvalideError(`« ${q.id} » : précise ta réponse (${saisie!.longueur_max} caractères au plus)`);
   const timestamp = input.timestamp ?? new Date().toISOString();
   // ── L'IDENTITÉ D'UNE RÉPONSE EST CELLE DE L'ACTE, pas celle de son contenu.
   //
@@ -270,12 +292,12 @@ export async function enregistrerReponseFermee(
     about, ownerId: asUserId(input.userId), id: sourceId,
     sourceType: 'discovery_closed',
     questionText: q.enonce,
-    answerText: choisies.map((o) => o.libelle).join(' · '),
+    answerText: choisies.map((o) => (avecSaisie && o.libelle === saisie!.option ? `${o.libelle} : ${precision}` : o.libelle)).join(' · '),
     questionCode: q.id,
     // Les clés des options, telles que le navigateur les a renvoyées : de quoi reconnaître le
     // même acte, et relire ce qui a été coché sans dépendre de la progression.
     optionRef,
-    ...(input.projet ? { branchId: `projet:${input.projet.id}` } : {}),
+    ...(input.projet ? { branchId: `projet:${input.projet.id}` } : input.entite ? { branchId: `entite:${input.entite.id}` } : {}),
     timestamp,
   });
 
@@ -287,6 +309,7 @@ export async function enregistrerReponseFermee(
   // dernière réponse à la question qui le nomme. Introuvable : la raison est gardée « projet non
   // identifié » — jamais rattachée à la personne en général.
   const projetDe = new Map<string, string>();
+  const questionSensible = analyserCondition(q.condition_emission).sensible;
   for (const o of choisies) {
     const p = produireDepuisOption(q, o);
     // D8 et D11 : « ce projet » désigne le projet nommé à une question amont (dreams.1997).
@@ -298,6 +321,14 @@ export async function enregistrerReponseFermee(
     }
   }
   for (const o of choisies) {
+    // Décision 7 : « Autre » + sa précision = une pratique déclarée, mot pour mot, au contrat de la question.
+    if (avecSaisie && o.libelle === saisie!.option) {
+      facts.push(createFact({ about, ownerId: asUserId(input.userId), fact_id: factId(sourceId, saisie!.fait, `saisie:${precision}`),
+        fact_type: saisie!.fait, value: JSON.stringify({ valeur: precision, polarite: 'factuelle', question: q.id, libelle: o.libelle, saisie_libre: true }),
+        ...(input.projet ? { context: contexteDeProjet(input.projet.id) } : {}),
+        source: sourceId, timestamp, confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' }));
+      continue;
+    }
     const p = produireDepuisOption(q, o);
     if (p.type === 'ouverte') {
       const ctx = input.projet ? contexteDeProjet(input.projet.id) : p.ouverte.portee === 'projet' ? projetDe.get(p.ouverte.projetDe!)! : 'GLOBAL';
@@ -305,6 +336,7 @@ export async function enregistrerReponseFermee(
         about, ownerId: asUserId(input.userId), open_knowledge_id: openKnowledgeId(sourceId, `${q.id}:${cleOption(o)}`),
         type: 'descriptive', subject: asSubjectId(normalizeLabel(o.libelle)), subjectLabel: o.libelle, relation: p.ouverte.relation,
         context: ctx, source: sourceId, timestamp, confidence: 'high', assertionStatus: 'explicit',
+        ...(p.ouverte.confidentielle || questionSensible ? { sensitive: true } : {}),
       }));
       continue;
     }
@@ -335,6 +367,9 @@ export async function enregistrerReponseFermee(
         value: JSON.stringify({ valeur: p.fait.valeur, ...(p.fait.polarite ? { polarite: p.fait.polarite } : {}), ...(p.fait.stabilite ? { stabilite: p.fait.stabilite } : {}), question: q.id, libelle: o.libelle,
           ...(input.projet ? { projet: input.projet.id } : {}) }),
         ...(contexte ? { context: contexte } : {}),
+        // Une question SENSIBLE (SOM-01, décision 3 du 19 nov.) : le fait reste interne — jamais au
+        // portrait, jamais à un tiers. Un état daté n'est pas présenté comme actuel.
+        ...(questionSensible ? { visibility: INTERNAL_ONLY_POLICY } : {}),
         source: sourceId, timestamp, confidence: 'high', user_confirmed: true, assertionStatus: 'explicit' }));
       continue;
     }
@@ -383,7 +418,7 @@ export async function enregistrerReponseFermee(
   const issue = await persistKnowledge(client, { source, evidences, facts, openKnowledge: ouvertes });
   // LE DERNIER MOT COMPTE, et un seul. On relit APRÈS avoir écrit : deux actes arrivés en même
   // temps se voient alors l'un l'autre, et les deux requêtes concluent pareil.
-  await reconcilierDernierMot(client, input.userId, 'discovery_closed', q.id, sourceId, timestamp);
+  await reconcilierDernierMot(client, input.userId, 'discovery_closed', q.id, sourceId, timestamp, [], input.projet ? `projet:${input.projet.id}` : input.entite ? `entite:${input.entite.id}` : null);
   if (sansEmission.length > 0) {
     console.warn('[discovery] options sans émission', q.id, sansEmission);
   }
@@ -421,6 +456,8 @@ export interface ResultatOuverte {
   readonly extractionEnAttente: boolean;
   /** La réponse appartient à ce projet : aucune lecture générale n'en est faite. */
   readonly rattacheeAuProjet?: string;
+  /** D9 : la réponse appartient à cette entité : aucune lecture générale n'en est faite. */
+  readonly rattacheeALEntite?: string;
   /** Questions de l'onglet 17 : ce que leurs destinations ont écrit, et ce qui est resté au verbatim. */
   readonly destinations?: ResultatDestinations;
   /** `food2.0882A` seulement : ce que le contrat dédié a écrit. */
@@ -444,6 +481,9 @@ export async function enregistrerReponseOuverte(
     /** Lecteur de segments (onglet 17). Ne se passe qu'en essai ; par défaut, le modèle. */
     readonly lecteur?: LecteurDeSegments;
     readonly timestamp?: string;
+    /** D9 : l'entité pour laquelle la question est posée. Le verbatim lui est rattaché, comme à un
+     *  projet : aucune connaissance générale n'en est tirée. */
+    readonly entite?: { readonly id: string; readonly libelle: string };
   },
 ): Promise<ResultatOuverte> {
   const q = questionParId(input.questionId);
@@ -492,18 +532,18 @@ export async function enregistrerReponseOuverte(
     source: createSourceRecord({
       about, ownerId, id: verbatimSourceId, sourceType: 'discovery_open',
       questionCode: factType, questionText: q.enonce, rawText: texte, timestamp,
-      ...(input.projet ? { branchId: `projet:${input.projet.id}` } : {}),
+      ...(input.projet ? { branchId: `projet:${input.projet.id}` } : input.entite ? { branchId: `entite:${input.entite.id}` } : {}),
     }),
     facts: [createFact({
       about, ownerId, fact_id: factId(verbatimSourceId, factType, texte),
       fact_type: factType, value: texte, source: verbatimSourceId, timestamp,
-      ...(input.projet ? { context: `projet:${input.projet.id}` } : {}),
+      ...(input.projet ? { context: `projet:${input.projet.id}` } : input.entite ? { context: `entite:${input.entite.id}` } : {}),
       confidence: 'high', user_confirmed: true, assertionStatus: 'explicit',
     })],
   });
   // La requête jumelle du même acte a écrit le verbatim la première : elle seule le fait lire.
   if (issueVerbatim === 'replayed') return { verbatimEcrit: false, dejaFaite: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp };
-  const { dernierMot } = await reconcilierDernierMot(client, input.userId, 'discovery_open', factType, verbatimSourceId, timestamp, lecturesAnciennes);
+  const { dernierMot } = await reconcilierDernierMot(client, input.userId, 'discovery_open', factType, verbatimSourceId, timestamp, lecturesAnciennes, input.projet ? `projet:${input.projet.id}` : input.entite ? `entite:${input.entite.id}` : null);
   // Un acte arrivé en même temps est plus récent : c'est lui qui sera lu, pas celui-ci.
   if (!dernierMot) return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp };
 
@@ -512,6 +552,8 @@ export async function enregistrerReponseOuverte(
   if (input.projet && q.id !== CONTRAT_ENVIE_CULINAIRE) {
     return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp, rattacheeAuProjet: input.projet.id };
   }
+  // D9 : une réponse « à propos de {marque} » reste rattachée à cette marque ; rien de général n'en est tiré.
+  if (input.entite) return { verbatimEcrit: true, verbatimSourceId, preuvesExtraites: 0, extractionEnAttente: false, timestamp, rattacheeALEntite: input.entite.id };
 
   // ── 2. LA LECTURE PAR LE MODÈLE, et seulement maintenant. Son échec ne retire pas le
   //       verbatim, et il est SIGNALÉ : `extractionEnAttente` dit qu'il faudra rejouer.
@@ -835,14 +877,22 @@ export async function refuserSujet(
  *   · retirer tout (`coches: []`, `aucune: false`) revient à ne rien avoir déclaré.
  * ──────────────────────────────────────────────────────────────────────────── */
 export async function situationsDeclarees(client: ClientSujets, input: { readonly userId: string }): Promise<ReadonlyMap<SituationDeVie, boolean>> {
+  return new Map([...(await situationsDeclareesDatees(client, input))].map(([k, v]) => [k, v.vraie] as const));
+}
+/**
+ * La situation CONSIDÉRÉE ACTUELLE (la déclaration vivante), avec sa date et sa source — décision 8
+ * du 19 nov. (18h54) : l'âge d'une déclaration ne prouve pas que la situation a changé ; il est montré,
+ * pour que la personne la corrige simplement. L'historique (déclarations supersédées) reste en base.
+ */
+export async function situationsDeclareesDatees(client: ClientSujets, input: { readonly userId: string }): Promise<ReadonlyMap<SituationDeVie, { readonly vraie: boolean; readonly depuis: string; readonly source: string }>> {
   const lecture = client as unknown as {
     from(t: string): { select(c: string): { eq(c: string, v: string): { is(c: string, v: null):
-      Promise<{ data: { fact_type: string; value: string; about_id: string }[] | null; error: { message: string } | null }> } } };
+      Promise<{ data: { fact_type: string; value: string; about_id: string; ts: string; source: string }[] | null; error: { message: string } | null }> } } };
   };
-  const { data, error } = await lecture.from('knowledge_facts').select('fact_type, value, about_id').eq('user_id', input.userId).is('superseded_at', null);
+  const { data, error } = await lecture.from('knowledge_facts').select('fact_type, value, about_id, ts, source').eq('user_id', input.userId).is('superseded_at', null);
   if (error) throw new Error(`lecture de la situation impossible : ${error.message}`);
-  const m = new Map<SituationDeVie, boolean>();
-  for (const f of data ?? []) if (f.about_id === input.userId && f.fact_type === FAIT_SITUATION) { const l = lireSituation(f.value); if (l) m.set(l.situation, l.vraie); }
+  const m = new Map<SituationDeVie, { vraie: boolean; depuis: string; source: string }>();
+  for (const f of data ?? []) if (f.about_id === input.userId && f.fact_type === FAIT_SITUATION) { const l = lireSituation(f.value); if (l) m.set(l.situation, { vraie: l.vraie, depuis: f.ts, source: f.source }); }
   return m;
 }
 

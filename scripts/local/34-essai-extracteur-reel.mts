@@ -64,6 +64,31 @@ const CAS: Cas[] = [
   // ── Onglet 17, time.1566 et drinks.2102 (projection déclarée) ────────────────────────────────
   { id: 'projection', question: 'time.1566', texte: 'L’an prochain, j’aimerais prendre un mois entier pour marcher jusqu’à Compostelle.', attendu: 'un fait de projection', juger: (r) => r.faits.length >= 1 },
   { id: 'projection-autre', question: 'time.1566', texte: 'Ma sœur veut partir un mois à Compostelle.', attendu: 'rien (autre personne)', juger: RIEN },
+  // ── Couverture des 15 destinations (décision 10 du 19 nov., 18h54) : déclenchement ET interdit ──
+  // CRE-06 #3 matière (rejet) — et ce qui ne doit pas la déclencher (une matière aimée).
+  { id: 'rejet-matiere', question: 'CRE-06', texte: 'Je n’aime vraiment pas travailler le plastique.', attendu: 'un rejet de matière, undetermined', juger: (r) => r.preuves.length >= 1 && r.preuves.every((p) => p.includes('[rejet]')) },
+  { id: 'matiere-aimee', question: 'CRE-06', texte: 'J’aime beaucoup le lin et la laine.', attendu: 'rien (aucun rejet)', juger: RIEN },
+  // comics.0422 #1 œuvre appréciée (sans œuvre connue en base : clarification, jamais une œuvre inventée) · #2 auteur seulement mentionné.
+  { id: 'oeuvre-appreciee', question: 'comics.0422', texte: 'J’adore Blacksad.', attendu: 'œuvre non résolue en base vide → clarification, aucune œuvre inventée',
+    juger: (_r, brut) => ((brut as { destinations?: { clarifications: number; preuves: number } }).destinations?.clarifications ?? 0) >= 1 },
+  { id: 'auteur-mentionne', question: 'comics.0422', texte: 'On m’a parlé de Moebius, je ne connais pas.', attendu: 'rien d’appréciation (mention ou rien)', juger: (r) => !r.preuves.some((p) => p.toLowerCase().includes('moebius')) },
+  // drinks.2102 #1 projection — et l'habitude présente, qui n'en est pas une.
+  { id: 'boisson-projection', question: 'drinks.2102', texte: 'Un verre de vin nature sur une terrasse à Lisbonne, au coucher du soleil.', attendu: 'un fait de projection (ni habitude ni goût)', juger: (r) => r.faits.length >= 1 && !r.preuves.some((p) => p.startsWith('INTEREST')) },
+  { id: 'boisson-autre', question: 'drinks.2102', texte: 'Mon mari adore le whisky tourbé.', attendu: 'rien (autre personne)', juger: RIEN },
+  // pets.0403 #1 souhait pour SON animal : sans animal déclaré, rien n'est écrit d'office (clarification ou rien).
+  { id: 'souhait-animal', question: 'pets.0403', texte: 'Un nouveau panier pour Moka.', attendu: 'aucun animal déclaré en base → pas de souhait écrit sans identifiant', juger: (r) => r.faits.length === 0 || r.faits.every((f) => !f.includes('Moka') || f.includes('clarification')) },
+  { id: 'souhait-animal-autre', question: 'pets.0403', texte: 'Le chien de ma voisine aurait besoin d’un manteau.', attendu: 'rien (animal d’une autre personne)', juger: RIEN },
+  // podcast.0467 #1 épisode référent · #2 appréciation distincte du même épisode.
+  { id: 'episode', question: 'podcast.0467', texte: 'L’épisode de Transfert sur la disparition de Lucie m’a bouleversée.', attendu: 'épisode non résolu en base vide → clarification ; aucune appréciation écrite sur un référent inconnu',
+    juger: (_r, brut) => ((brut as { destinations?: { clarifications: number } }).destinations?.clarifications ?? 0) >= 1 },
+  { id: 'episode-nie', question: 'podcast.0467', texte: 'Aucun, je n’écoute pas de podcasts.', attendu: 'rien', juger: RIEN },
+  // sensory2.1482 #1 lieu référent · #2 appréciation distincte.
+  { id: 'lieu-bien-etre', question: 'sensory2.1482', texte: 'Les thermes de Bagnères-de-Bigorre, pour la chaleur de l’eau et le silence.', attendu: 'lieu non résolu → clarification ou référent ; aucune préférence générale inventée',
+    juger: (r, brut) => ((brut as { destinations?: { clarifications: number; preuves: number } }).destinations?.clarifications ?? 0) >= 1 || r.preuves.length >= 1 },
+  { id: 'lieu-autre', question: 'sensory2.1482', texte: 'Ma mère adore son spa à Biarritz.', attendu: 'rien (autre personne)', juger: RIEN },
+  // sensory2.1487 #1 élément esthétique · #2 élément sensoriel (présence voulue).
+  { id: 'lieu-ideal', question: 'sensory2.1487', texte: 'Beaucoup de bois clair, une grande baie vitrée, et l’odeur du feu de cheminée.', attendu: 'des éléments voulus (esthétique et sensoriel)', juger: (r) => r.preuves.length >= 2 },
+  { id: 'lieu-ideal-nie', question: 'sensory2.1487', texte: 'Surtout pas de moquette ni de musique d’ambiance.', attendu: 'aucune présence voulue écrite (ce sont des refus)', juger: (r) => !r.preuves.some((p) => !p.includes('[rejet]')) },
   // ── Contrat dédié food2.0882A (envie culinaire) ──────────────────────────────────────────────
   { id: 'envie', question: 'food2.0882A', texte: 'J’ai très envie de ramen tonkotsu en ce moment.', attendu: 'une envie, à proposer au Carnet (rien ajouté d’office)', juger: (r, brut) => (brut as { envie?: { ecrite: boolean } }).envie?.ecrite === true },
   { id: 'pas-envie', question: 'food2.0882A', texte: 'Rien de particulier, je mange de tout.', attendu: 'aucune envie', juger: (_r, brut) => (brut as { envie?: { ecrite: boolean } }).envie?.ecrite !== true },

@@ -40,7 +40,8 @@ describe('les options de fait écrivent un FAIT, tel que le contrat le dit', () 
     }
     // 600 dans les 2 225 questions d'origine, 158 dans les 56 questions activées par la révision 6.
     // + 11 le 19 nov. (D8) : learning2.1455 « ce qui déclenche l'envie d'apprendre » devient un fait déclaré.
-    expect(ecrites + incompletes.length).toBe(769);
+    // + 13 le 19 nov. (18h54) : SOM-01 (7 états déclarés) et relation.0015 (cadence, initiative, variation) activées.
+    expect(ecrites + incompletes.length).toBe(782);
     expect(ecrites).toBeGreaterThan(560);
     // Ce qui reste incomplet est listé dans l'état, pas avalé.
     expect(incompletes.length).toBeLessThan(40);
@@ -181,5 +182,47 @@ describe('D11 (M2) : acteur, bénéficiaire, contexte — établis ou explicitem
   });
   it('quand elle organise, le bénéficiaire n’est pas présumé', () => {
     const r = ROLES_DE_SERVICE['celebav.2175']; expect(r.beneficiaire).toBe('non_etabli');
+  });
+});
+
+describe('décisions du 19 nov. (18h54) : les cinq questions activées et la retirée', async () => {
+  const { produireDepuisOption } = await import('../produire');
+  const { question: q } = await import('../banque');
+  const { analyserCondition } = await import('../conditions');
+  const { groupeEnConflit, saisieLibreDe } = await import('../reponses-structurees');
+  const p = (id: string, l: string) => produireDepuisOption(q(id)!, q(id)!.options.find((o) => o.libelle === l)!);
+  it('CRE-11 : « Chez moi » est une préférence de lieu, jamais une pratique effective ; choix multiple', () => {
+    expect(q('CRE-11')!.forme).toBe('multi');
+    for (const l of ['Chez moi', 'En extérieur']) {
+      const r = p('CRE-11', l);
+      expect(r.type).toBe('evidence');
+      if (r.type === 'evidence') expect(r.evidence.target_construct).toBe('PREFERENCE.creativity.usage_context');
+    }
+    const c = p('CRE-11', 'Cela dépend de la technique');
+    expect(c.type === 'evidence' && c.evidence.polarity).toBe('condition');
+  });
+  it('SOM-01 : sensible et ouverte sur démarche seulement ; ses états sont datés (temporary)', () => {
+    const a = analyserCondition(q('SOM-01')!.condition_emission);
+    expect(a.ouvertureSurDemarche).toBe(true);
+    const r = p('SOM-01', 'J’ai du mal à m’endormir');
+    expect(r.type === 'fait' && r.fait.stabilite).toBe('temporary');
+  });
+  it('causes.1919 « À mon histoire personnelle » : connaissance ouverte confidentielle', () => {
+    const r = p('causes.1919', 'À mon histoire personnelle');
+    expect(r.type).toBe('ouverte');
+    if (r.type === 'ouverte') expect(r.ouverte.confidentielle).toBe(true);
+  });
+  it('flowers.2126 : soutien et réconfort sont des paramètres de la préparation', () => {
+    for (const l of ['Du soutien', 'Du réconfort']) expect(p('flowers.2126', l)).toMatchObject({ type: 'rien', motif: 'action_interface' });
+  });
+  it('relation.0015 : une seule cadence ; « Seulement si j’écris d’abord » cumulable', () => {
+    expect(groupeEnConflit(q('relation.0015')!, ['Une fois par jour', 'Une fois par semaine'])).toBe('cadence');
+    expect(groupeEnConflit(q('relation.0015')!, ['Une fois par jour', 'Seulement si j’écris d’abord', 'Cela dépend de la gravité'])).toBeNull();
+    const r = p('relation.0015', 'Seulement si j’écris d’abord');
+    expect(r.type === 'fait' && r.fait.factType).toBe('discovery.fait.relation.initiative_du_contact');
+  });
+  it('sport.0188 retirée ; sportp.0504 « Autre » ouvre une saisie au contrat « pratique déclarée »', () => {
+    expect(q('sport.0188')).toBeUndefined();
+    expect(saisieLibreDe(q('sportp.0504')!)).toMatchObject({ option: 'Autre', fait: 'discovery.fait.sport_practice.pratique' });
   });
 });

@@ -1,6 +1,6 @@
 
 ══ CODE A × SCHÉMA 117 ══
-{ "lien": false, "lienProuve": false, "demande": true, "analyseEntiereDirecte": false, "etatsDirects": false, "tiersLitFiche": false, "invitation": true, "lienConfirme": "non", "analyseAvantProposition": false, "propositionHttp": 200, "analyseApresAcceptation": true, "tiersLitAnalyse": false, "recoSansAutorisation": "rien", "usageHttp": 404, "recoApresAutorisation": "rien", "usageSeulOuvreAnalyse": false, "effacement": true, "autresIntacts": true }
+{ "lien": false, "lienProuve": false, "demande": true, "analyseEntiereDirecte": false, "etatsDirects": false, "tiersLitFiche": false, "invitation": true, "lienConfirme": "non", "analyseAvantProposition": false, "propositionHttp": 200, "analyseApresAcceptation": true, "tiersLitAnalyse": false, "recoSansAutorisation": "rien", "recoEnregistree": true, "usageHttp": 404, "recoApresAutorisation": "rien", "usageSeulOuvreAnalyse": false, "effacement": true, "autresIntacts": true }
   — jamais, quel que soit l’état —
   ✓ un tiers ne lit ni une fiche, ni une analyse
   ✓ le proche ne lit pas l’analyse du pilote avant qu’elle lui soit proposée et qu’il l’accepte
@@ -18,6 +18,7 @@
   ✓ proposer son analyse : HTTP 200
   ✓ analyse proposée puis acceptée : le proche la lit
   ✓ régler un usage : HTTP 404 (route absente de cette version)
+  ✓ recommandation enregistrée : oui
   ✓ effacer un compte partie d’un consentement : réussit
 
-16 vérifications passées, 0 en échec.
+17 vérifications passées, 0 en échec.

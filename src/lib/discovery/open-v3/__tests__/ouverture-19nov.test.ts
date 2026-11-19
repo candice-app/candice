@@ -184,7 +184,9 @@ describe('les protections ne se desserrent pas', () => {
     expect(prochainesQuestions(e, { combien: 50 }).choix.map((c) => c.question.id)).not.toContain('art.0128');
   });
   it('une question retirée de la banque active n’existe pas pour le moteur', () => {
-    expect(question('CRE-11')).toBeUndefined();   // toujours en arbitrage : absente de la banque active
+    // sport.0188 retirée le 19 nov. (18h54) : sportp.0504 couvre l'intention. CRE-11, elle, est activée.
+    expect(question('sport.0188')).toBeUndefined();
+    expect(question('children.2081')).toBeUndefined();   // toujours en arbitrage : absente de la banque active
   });
   it('« Ouverture branche X (voir onglet Branches) » : la question d’entrée se pose quand la branche est ouverte, jamais par défaut', () => {
     // La règle est dans la feuille Branches de la Banque V1.1 ; sa part exécutable : le domaine

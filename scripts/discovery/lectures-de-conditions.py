@@ -202,15 +202,22 @@ H('garden.0583', '« si la personne jardine réellement » : aucune réponse ne 
 # (dossier D5, à valider) : chaque question d’arbitrage s’ouvre au niveau B APRÈS la question
 # qu’elle approfondit — elle affine une réponse, elle ne vient pas avant.
 REPONDUE = lambda sel: opt(sel, *[o['libelle'] for o in Q[sel]['options']])
-D5 = 'règle proposée D5 (approfondit une réponse déjà donnée)'
-for i, ref, pourquoi in [
-    ('aesthetic.1966', 'aesthetic.1965', '« beau ou pratique » arbitre après « est-ce important que tes vêtements, ta maison… »'),
-    ('aesthetic.1967', 'aesthetic.1953', '« parfaitement beau, singulier, une histoire… » affine « quand tu trouves quelque chose beau, qu’est-ce qui te séduit »'),
-    ('aesthetic.1968', 'aesthetic.1956', '« le prestige augmente-t-il l’attrait » prolonge 1956, la question marquée « pont Signature de valeur »'),
-    ('aesthetic.1969', 'aesthetic.1961', '« rester fidèle ou renouveler » prolonge « intemporel, actuel, dans l’air du temps »'),
+# Validée par Estelle le 19 nov. (18h54), avec une exigence de plus : la réponse amont doit RENDRE
+# l'approfondissement pertinent, et une information doit manquer encore. Un passage (aucune réponse)
+# n'ouvre rien ; une réponse « jamais pensé », ou une condition (« cela dépend »), non plus.
+D5 = 'D5 validée (19 nov., 18h54) : après la question approfondie, sur une réponse qui le rend pertinent'
+for i, ref, retenues, pourquoi, exclues in [
+    ('aesthetic.1966', 'aesthetic.1965', ['Oui, énormément', 'Oui, dans l’ensemble', 'J’aime plusieurs univers différents'],
+     '« beau ou pratique » arbitre une place DÉCLARÉE de l’esthétique (1965)', ['« Non, chaque domaine est indépendant »', '« Je n’y ai jamais vraiment pensé »']),
+    ('aesthetic.1967', 'aesthetic.1953', [o['libelle'] for o in Q['aesthetic.1953']['options']],
+     '« parfaitement beau, singulier, une histoire… » affine ce qui la séduit (1953) — toutes ses réponses disent un attrait', []),
+    ('aesthetic.1968', 'aesthetic.1956', [o['libelle'] for o in Q['aesthetic.1956']['options'] if not o['libelle'].startswith('Cela dépend')],
+     '« le prestige augmente-t-il l’attrait » prolonge 1956 (« pont Signature de valeur »)', ['« Cela dépend de l’histoire de l’objet » (condition)']),
+    ('aesthetic.1969', 'aesthetic.1961', [o['libelle'] for o in Q['aesthetic.1961']['options']],
+     '« rester fidèle ou renouveler » prolonge « intemporel, actuel, dans l’air du temps » (1961)', []),
 ]:
-    E(i, f'Niveau B aesthetic ET {REPONDUE(ref)}', D5, pourquoi + ' (réponse quelconque à ' + ref + ').',
-      ['« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée'])
+    E(i, f"Niveau B aesthetic ET {opt(ref, *retenues)} ; ET information manquante", D5, pourquoi + '.',
+      ['« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit'] + [f'{x} : ne rend pas l’approfondissement pertinent' for x in exclues])
 # ═════ SITUATION DE VIE DÉCLARÉE — décision D2 d’Estelle (19 nov.) ════════════════════════════
 # « Réutilise une déclaration explicite, autorisée et suffisamment actuelle […]. Sinon, propose une
 # question d’entrée facultative et neutre. Ne déduis pas couple, parentalité ou activité
@@ -314,6 +321,9 @@ E('CRE-16', CERAMIQUE + ' ET ' + PRATIQUER + GARDES('creativity', False), D4,
 E('CRE-17', CERAMIQUE + ' ET ' + PRATIQUER + GARDES('creativity'), D4,
   'Même présupposé que CRE-16 (« pratiquer la céramique ») ; le niveau C, lui, reste exigé par la règle de la question (un projet du domaine).',
   ['« INTEREST.creativity=positive » seul (D4)', '« ceramics_goal produit par CRE-16 » : une réponse libre, qui ne dit pas en elle-même l’envie de pratiquer'])
+E('CRE-11', 'Branche craft ouverte ET ' + PRATIQUER + GARDES('creativity'), 'décision 2 (19 nov., 18h54) + D4',
+  '« Tu préfères pratiquer… » présume la pratique ou l’envie de pratiquer : craft.0614 « Je pratique moi-même… » ou « J’aimerais apprendre ou reprendre… ».',
+  ['« INTEREST.creativity=positive » seul (D4)'])
 E('CHS-13', opt('shoes.0341', 'Un petit talon', 'Un talon moyen', 'Un talon haut') + GARDES('shoe', False), D4,
   'L’énoncé présume le port de talons : un talon déclaré à shoes.0341.',
   ['« INTEREST.shoe=positive » seul : aimer les chaussures ne présume pas les talons (D4)', '« heel_interest produit par CHS-12 » : CHS-12 n’existe pas dans la banque', '« Cela dépend du modèle », « Une plateforme » : ne disent pas un talon', LIBRE])
@@ -332,6 +342,16 @@ for q in qs:
     E(q['id'], f"Niveau B success ET {opt('success.1711', AXES[m.group(1).strip()])}", 'axe choisi à success.1711 (D5)',
       f"« axe {m.group(1).strip()} » : « {AXES[m.group(1).strip()]} » coché à success.1711 — un sujet à développer, ni priorité ni trait.")
     AXES_LUS.append(q['id'])
+
+# ═════ D9 — « Entité {X} détectée et importante » (décision 9 du 19 nov., 18h54) ═══════════════
+# Lue « une entité DÉCLARÉE remplit cette question » : entites-de-questions.json dit, question par
+# question, quelles relations elle présume (veut visiter ≠ aime ≠ veut essayer). Pas de seuil
+# d'importance ; une mention sans relation n'ouvre rien.
+ENT = json.load(open(R / 'src/lib/discovery/open-v3/entites-de-questions.json'))
+for i, l in ENT['questions'].items():
+    E(i, 'Entité déclarée pour cette question', 'entité déclarée avec une relation que la question présume (D9)',
+      f"{l['pourquoi']} — relations admises : {', '.join(l['relations'])}.", ['« importante » : aucun score ; une relation déclarée, choisie question par question'])
+for i, pourquoi in ENT['fermees'].items(): S(i, pourquoi)
 
 # ═════ 7. SANS LECTURE — le moteur ne sait pas le constater ═══════════════════════════════════
 RECO = 'une recommandation EN PRÉPARATION pour cette personne : cela se passe chez le pilote, pas dans le Discovery de la personne'

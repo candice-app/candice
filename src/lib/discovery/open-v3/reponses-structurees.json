@@ -1,0 +1,11 @@
+{
+ "version": "2026-11-19.18h54",
+ "note": "Décisions 6 et 7 d'Estelle (19 nov., 18h54). GROUPES EXCLUSIFS : dans une question à choix multiple, les options d'un même groupe s'excluent (une seule cadence) ; les autres options restent cumulables (l'initiative, la variation). SAISIES LIBRES : l'option qui ouvre une saisie écrit la précision de la personne, mot pour mot, sous le contrat de la question — jamais un goût, un niveau ou une fréquence.",
+ "groupes_exclusifs": {
+  "relation.0015": { "cadence": ["Plusieurs fois par jour", "Une fois par jour", "Tous les deux ou trois jours", "Une fois par semaine"] }
+ },
+ "saisies_libres": {
+  "sportp.0504": { "option": "Autre", "fait": "discovery.fait.sport_practice.pratique", "longueur_max": 80,
+                   "contrat": "pratique déclarée, telle qu'écrite ; aucun goût, niveau ni fréquence" }
+ }
+}

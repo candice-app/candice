@@ -1,7 +1,7 @@
 {
  "version": "2026-11-19.2",
  "note": "Lectures des conditions en prose, relues. Seules les lignes « etablie » sont exécutées. Une lecture n’ouvre jamais plus que le texte. La condition d’origine est recopiée : si le classeur change, la lecture est refusée au chargement.",
- "source": "Conditions de la banque active (classeur Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_7.xlsx) ; options des questions citées ; sens des options de craft.0614 fixés par Estelle le 19 nov.",
+ "source": "Conditions de la banque active (classeur Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_8.xlsx) ; options des questions citées ; sens des options de craft.0614 fixés par Estelle le 19 nov.",
  "lectures": [
   {
    "question": "CHS-13",
@@ -15,6 +15,17 @@
     "« heel_interest produit par CHS-12 » : CHS-12 n’existe pas dans la banque",
     "« Cela dépend du modèle », « Une plateforme » : ne disent pas un talon",
     "« information manquante » : question à réponse libre, sans attribut nommé ; l’information manque tant que la question n’a pas été posée, ce que la sélection garantit"
+   ]
+  },
+  {
+   "question": "CRE-11",
+   "origine": "Tags ENTRANTS — ouvrir si `INTEREST.creativity=positive` (direct, confirmé ou renforcé par une réponse antérieure) ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant.",
+   "lue": "Branche craft ouverte ET Réponse à craft.0614 : Je pratique moi-même une ou plusieurs activités créatives | J’aimerais apprendre ou reprendre une pratique ; ET `DO_NOT_PROBE.creativity!=true` ; ET information manquante ; ET score de pertinence suffisant",
+   "statut": "etablie",
+   "critere": "décision 2 (19 nov., 18h54) + D4",
+   "justification": "« Tu préfères pratiquer… » présume la pratique ou l’envie de pratiquer : craft.0614 « Je pratique moi-même… » ou « J’aimerais apprendre ou reprendre… ».",
+   "non_repris": [
+    "« INTEREST.creativity=positive » seul (D4)"
    ]
   },
   {
@@ -67,47 +78,72 @@
    ]
   },
   {
+   "question": "activity.0281",
+   "origine": "Entité {activité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« ce que tu aimes dans » présume l'appréciation — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "activity.0284",
+   "origine": "Entité {activité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« progresser, t'équiper… » : un souhait d'essayer suffit — relations admises : LOVE, LIKE, WANT_TO_TRY.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
    "question": "aesthetic.1966",
    "origine": "Niveau B avancé Esthétique — arbitrages, uniquement si le profil mérite d’être précisé",
-   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1965 : Oui, énormément | Oui, dans l’ensemble | J’aime plusieurs univers différents | Non, chaque domaine est indépendant | Je n’y ai jamais vraiment pensé",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1965 : Oui, énormément | Oui, dans l’ensemble | J’aime plusieurs univers différents ; ET information manquante",
    "statut": "etablie",
-   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
-   "justification": "« beau ou pratique » arbitre après « est-ce important que tes vêtements, ta maison… » (réponse quelconque à aesthetic.1965).",
+   "critere": "D5 validée (19 nov., 18h54) : après la question approfondie, sur une réponse qui le rend pertinent",
+   "justification": "« beau ou pratique » arbitre une place DÉCLARÉE de l’esthétique (1965).",
    "non_repris": [
-    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit",
+    "« Non, chaque domaine est indépendant » : ne rend pas l’approfondissement pertinent",
+    "« Je n’y ai jamais vraiment pensé » : ne rend pas l’approfondissement pertinent"
    ]
   },
   {
    "question": "aesthetic.1967",
    "origine": "Niveau B avancé Esthétique",
-   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1953 : La ligne générale | Les proportions | La couleur | La matière | Les détails | L’originalité | L’élégance | L’histoire | L’harmonie de l’ensemble | Le caractère",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1953 : La ligne générale | Les proportions | La couleur | La matière | Les détails | L’originalité | L’élégance | L’histoire | L’harmonie de l’ensemble | Le caractère ; ET information manquante",
    "statut": "etablie",
-   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
-   "justification": "« parfaitement beau, singulier, une histoire… » affine « quand tu trouves quelque chose beau, qu’est-ce qui te séduit » (réponse quelconque à aesthetic.1953).",
+   "critere": "D5 validée (19 nov., 18h54) : après la question approfondie, sur une réponse qui le rend pertinent",
+   "justification": "« parfaitement beau, singulier, une histoire… » affine ce qui la séduit (1953) — toutes ses réponses disent un attrait.",
    "non_repris": [
-    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit"
    ]
   },
   {
    "question": "aesthetic.1968",
    "origine": "Niveau B avancé Esthétique — ponts Signature de valeur et Rapport à l’argent",
-   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1956 : Les objets parfaitement exécutés | Les objets simples et précis | Les légères irrégularités | Les traces du temps | Les objets volontairement bruts | Cela dépend de l’histoire de l’objet",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1956 : Les objets parfaitement exécutés | Les objets simples et précis | Les légères irrégularités | Les traces du temps | Les objets volontairement bruts ; ET information manquante",
    "statut": "etablie",
-   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
-   "justification": "« le prestige augmente-t-il l’attrait » prolonge 1956, la question marquée « pont Signature de valeur » (réponse quelconque à aesthetic.1956).",
+   "critere": "D5 validée (19 nov., 18h54) : après la question approfondie, sur une réponse qui le rend pertinent",
+   "justification": "« le prestige augmente-t-il l’attrait » prolonge 1956 (« pont Signature de valeur »).",
    "non_repris": [
-    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit",
+    "« Cela dépend de l’histoire de l’objet » (condition) : ne rend pas l’approfondissement pertinent"
    ]
   },
   {
    "question": "aesthetic.1969",
    "origine": "Niveau B avancé Esthétique",
-   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1961 : Très intemporel | Actuel mais durable | Dans l’air du temps | Très marqué par une époque | Singulier, même s’il risque de dater",
+   "lue": "Niveau B aesthetic ET Réponse à aesthetic.1961 : Très intemporel | Actuel mais durable | Dans l’air du temps | Très marqué par une époque | Singulier, même s’il risque de dater ; ET information manquante",
    "statut": "etablie",
-   "critere": "règle proposée D5 (approfondit une réponse déjà donnée)",
-   "justification": "« rester fidèle ou renouveler » prolonge « intemporel, actuel, dans l’air du temps » (réponse quelconque à aesthetic.1961).",
+   "critere": "D5 validée (19 nov., 18h54) : après la question approfondie, sur une réponse qui le rend pertinent",
+   "justification": "« rester fidèle ou renouveler » prolonge « intemporel, actuel, dans l’air du temps » (1961).",
    "non_repris": [
-    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit ; remplacé par la règle proposée"
+    "« uniquement si le profil mérite d’être précisé » (1966) : aucun critère écrit"
    ]
   },
   {
@@ -204,6 +240,61 @@
    "critere": "consigne, pas condition",
    "justification": "« part d’EXPÉRIENCES CONCRÈTES, car les personnes idéalisent souvent leur manière d’être en relation » dit COMMENT poser la question ou à qui (le Discovery n’est répondu que par la personne elle-même).",
    "non_repris": []
+  },
+  {
+   "question": "brand.0268",
+   "origine": "Entité {marque} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« ce que tu aimes chez » présume l'appréciation — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "brand.0269",
+   "origine": "Entité {marque} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« les produits qui te plaisent » présume l'appréciation — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "brand.0270",
+   "origine": "Entité {marque} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "nuance une appréciation déclarée — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "brand.0271",
+   "origine": "Entité {marque} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« une sensation proche » présume une sensation appréciée — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "brand.0272",
+   "origine": "Entité {marque} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "clarifie le rapport (achète, regarde, rêve) : un souhait d'avoir suffit — relations admises : LOVE, LIKE, WANT_TO_OWN.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
   },
   {
    "question": "causes.1936",
@@ -465,6 +556,50 @@
    "non_repris": []
   },
   {
+   "question": "creator.0277",
+   "origine": "Entité {entité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« ce qui te touche » présume l'appréciation — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "creator.0278",
+   "origine": "Entité {entité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« l'œuvre que tu préfères » présume l'appréciation — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "creator.0279",
+   "origine": "Entité {entité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« passion, nostalgie ou découverte » : la curiosité suffit — relations admises : LOVE, LIKE, CURIOUS.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "creator.0280",
+   "origine": "Entité {entité} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« une expérience, un objet, une référence » : un souhait suffit, sans prouver un attachement — relations admises : LOVE, LIKE, WANT_TO_OWN, WANT_TO_TRY.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
    "question": "daily2.1129",
    "origine": "À poser si le temps pour soi est valorisé (1128)",
    "lue": "Réponse à daily2.1128 : Oui, régulièrement | Oui, mais trop peu | Surtout le week-end | Seulement si je le planifie | Très rarement | Cela dépend des périodes",
@@ -589,6 +724,61 @@
    "critere": "question citée par son numéro",
    "justification": "« après 1144 » : un créneau a été désigné ; « ce temps » de l’énoncé est ce créneau.",
    "non_repris": []
+  },
+  {
+   "question": "destination.0286",
+   "origine": "Entité {destination} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« ce qui t'attire » : l'envie d'y aller ou l'appréciation — relations admises : WANT_TO_VISIT, LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "destination.0287",
+   "origine": "Entité {destination} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« tu aimerais y aller pour… » présume l'envie d'y aller — relations admises : WANT_TO_VISIT.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "destination.0288",
+   "origine": "Entité {destination} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« ce voyage » présume l'envie d'y aller — relations admises : WANT_TO_VISIT.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "destination.0289",
+   "origine": "Entité {destination} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« ce voyage » présume l'envie d'y aller — relations admises : WANT_TO_VISIT.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "destination.0290",
+   "origine": "Entité {destination} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« en profiter » présume l'envie d'y aller — relations admises : WANT_TO_VISIT.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
   },
   {
    "question": "dreams.2013",
@@ -1610,6 +1800,50 @@
    "critere": "préparation en cours nommée par le texte",
    "justification": "« Achat concret » → Achat concret",
    "non_repris": []
+  },
+  {
+   "question": "place.0273",
+   "origine": "Entité {lieu} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« ce qui t'a plu » présume un lieu connu et apprécié — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "place.0274",
+   "origine": "Entité {lieu} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "précise ce qui a plu — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "place.0275",
+   "origine": "Entité {lieu} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« y retourner » présume un lieu connu et apprécié — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
+  },
+  {
+   "question": "place.0276",
+   "origine": "Entité {lieu} détectée et importante",
+   "lue": "Entité déclarée pour cette question",
+   "statut": "etablie",
+   "critere": "entité déclarée avec une relation que la question présume (D9)",
+   "justification": "« un lieu comparable » présume un lieu apprécié — relations admises : LOVE, LIKE.",
+   "non_repris": [
+    "« importante » : aucun score ; une relation déclarée, choisie question par question"
+   ]
   },
   {
    "question": "podcast.0463",
@@ -2744,34 +2978,22 @@
    "manque": "la branche refonte THE-06 attend un tag `INTEREST.live_performance` que rien n’écrit sous ce nom ; THE-06B dépend de THE-06A et n’a pas encore d’options (« à écrire à partir du catalogue »)"
   },
   {
-   "question": "activity.0281",
-   "origine": "Entité {activité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
    "question": "activity.0282",
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+   "manque": "« ton niveau aujourd'hui » présume une PRATIQUE ; aucune relation d'entité ne l'établit (aimer n'est pas pratiquer)"
   },
   {
    "question": "activity.0283",
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "activity.0284",
-   "origine": "Entité {activité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+   "manque": "« le pratiques-tu réellement » présume une pratique ; même manque"
   },
   {
    "question": "activity.0285",
    "origine": "Entité {activité} détectée et importante",
    "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
+   "manque": "« du matériel » présume une pratique équipée ; même manque"
   },
   {
    "question": "animals.2147",
@@ -2822,36 +3044,6 @@
    "origine": "Niveau B Beauté — question IGNORÉE si non pertinente",
    "statut": "sans_lecture",
    "manque": "le critère de pertinence n’est pas écrit"
-  },
-  {
-   "question": "brand.0268",
-   "origine": "Entité {marque} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "brand.0269",
-   "origine": "Entité {marque} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "brand.0270",
-   "origine": "Entité {marque} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "brand.0271",
-   "origine": "Entité {marque} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "brand.0272",
-   "origine": "Entité {marque} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
   },
   {
    "question": "causes.1942",
@@ -2908,60 +3100,6 @@
    "origine": "Axe Pratiquant",
    "statut": "sans_lecture",
    "manque": "paramètre {activité} : la pratique déclarée une à une n’est recueillie par aucune réponse (parametres.json)"
-  },
-  {
-   "question": "creator.0277",
-   "origine": "Entité {entité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "creator.0278",
-   "origine": "Entité {entité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "creator.0279",
-   "origine": "Entité {entité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "creator.0280",
-   "origine": "Entité {entité} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "destination.0286",
-   "origine": "Entité {destination} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "destination.0287",
-   "origine": "Entité {destination} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "destination.0288",
-   "origine": "Entité {destination} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "destination.0289",
-   "origine": "Entité {destination} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "destination.0290",
-   "origine": "Entité {destination} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
   },
   {
    "question": "dreams.2012",
@@ -3217,30 +3355,6 @@
    "origine": "Niveau C Photographie, matériel expert",
    "statut": "sans_lecture",
    "manque": "une caractéristique de l’achat en préparation (catégorie, usage, personnalisation, mécanique, niveau de matériel) que la déclaration d’un achat ne recueille pas"
-  },
-  {
-   "question": "place.0273",
-   "origine": "Entité {lieu} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "place.0274",
-   "origine": "Entité {lieu} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "place.0275",
-   "origine": "Entité {lieu} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
-  },
-  {
-   "question": "place.0276",
-   "origine": "Entité {lieu} détectée et importante",
-   "statut": "sans_lecture",
-   "manque": "paramètre d’énoncé sans source établie (table des paramètres, parametres.json) : « détectée et importante » n’a pas de définition"
   },
   {
    "question": "podcast.0466",

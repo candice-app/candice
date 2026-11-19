@@ -23,22 +23,33 @@ function ChipsQuestion({
   disabled,
 }: {
   question: DiscoveryQuestion;
-  onAnswer: (v: string[]) => void;
+  onAnswer: (v: string[] | { choix: string[]; precision: string }) => void;
   onSkip: () => void;
   disabled: boolean;
 }) {
   const [selected, setSelected] = useState<string[]>([]);
+  const [precision, setPrecision] = useState("");
   const multi = question.question_type === "chips_multi";
   const options: QuestionOption[] = question.options ?? [];
+  // Décision 7 : l'option « Autre » qui ouvre une saisie ; décision 6 : une seule option par groupe.
+  const saisie = options.find((o) => o.saisie_libre && selected.includes(o.value)) ?? null;
+  const pret = selected.length > 0 && (!saisie || precision.trim().length > 0);
 
   function toggle(val: string) {
     if (multi) {
-      setSelected(prev =>
-        prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]
-      );
+      const groupe = options.find((o) => o.value === val)?.groupe;
+      setSelected(prev => {
+        if (prev.includes(val)) return prev.filter(v => v !== val);
+        const sansGroupe = groupe ? prev.filter((v) => options.find((o) => o.value === v)?.groupe !== groupe) : prev;
+        return [...sansGroupe, val];
+      });
     } else {
       setSelected([val]);
     }
+  }
+  function envoyer() {
+    if (!pret) return;
+    onAnswer(saisie ? { choix: selected, precision: precision.trim() } : selected);
   }
 
   return (
@@ -71,6 +82,13 @@ function ChipsQuestion({
           );
         })}
       </div>
+      {saisie && (
+        <label style={{ display: "block", marginTop: 16, fontSize: 13, color: "var(--ink-2)" }}>
+          Précise ta réponse
+          <input value={precision} onChange={(e) => setPrecision(e.target.value)} maxLength={80} disabled={disabled}
+            style={{ display: "block", width: "100%", marginTop: 6, padding: "11px 12px", borderRadius: 10, border: "0.5px solid rgba(23,62,49,.25)", background: "var(--canvas)", fontSize: 14, color: "var(--ink)" }} />
+        </label>
+      )}
       <div style={{ display: "flex", gap: 12, marginTop: 28 }}>
         <button
           onClick={onSkip}
@@ -87,17 +105,17 @@ function ChipsQuestion({
           Passer
         </button>
         <button
-          onClick={() => { if (selected.length > 0) onAnswer(selected); }}
-          disabled={disabled || selected.length === 0}
+          onClick={envoyer}
+          disabled={disabled || !pret}
           style={{
             flex: 1,
             padding: "12px 20px",
             borderRadius: 12,
             border: "none",
-            background: selected.length > 0 ? "var(--pine)" : "var(--line)",
+            background: pret ? "var(--pine)" : "var(--line)",
             fontSize: 14, fontWeight: 400,
-            color: selected.length > 0 ? "var(--canvas)" : "var(--ink-3)",
-            cursor: selected.length > 0 ? "pointer" : "not-allowed",
+            color: pret ? "var(--canvas)" : "var(--ink-3)",
+            cursor: pret ? "pointer" : "not-allowed",
             transition: "background 0.15s",
           }}
         >
@@ -608,6 +626,9 @@ export default function DiscoveryFlow({ initial, mode, skipIntro = false }: Prop
         </div>
       )}
 
+      {question.referent && (
+        <p style={{ fontSize: 13, fontWeight: 300, color: "var(--ink-3)", marginTop: 14, marginBottom: 0 }}>À propos de : {question.referent}</p>
+      )}
       {/* Question — hauteur minimale 2 lignes : le titre court d'une question
           suivante ne fait pas remonter les options (P1.7) */}
       <h2 style={{

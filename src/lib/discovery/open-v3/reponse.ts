@@ -15,6 +15,9 @@
 // connaissance et la progression — refait donc ce qui manquait et ne compte rien deux fois.
 import { question as questionParId, type QuestionV3 } from './banque';
 import { cleOption } from './cle-option';
+import { enonceRempli } from './parametres';
+import { QUESTIONS_D_ENTITE } from './entites';
+import { saisieLibreDe, groupeDe } from './reponses-structurees';
 import { verifierLot, signerLot, type Lot, LotIndisponibleError } from './lot';
 import { lireEtat } from './etat';
 import { motifDExclusion, requiertProjet } from './selection';
@@ -44,15 +47,23 @@ export interface QuestionPosee {
   readonly progress: { current: number; total: number } | null;
 }
 
-function poser(q: QuestionV3, lot: Lot, jeton: string, index: number, libelle?: string | null): QuestionPosee {
+function poser(q: QuestionV3, lot: Lot, jeton: string, index: number, libelle?: string | null, texte?: string, referent?: string | null): QuestionPosee {
   const type = q.forme === 'open' ? 'text' : q.forme === 'single' ? 'chips_single' : 'chips_multi';
   return {
     question: {
       id: q.id, question_key: q.id, dimension: q.branche, subdimension: null,
       // Texte du référentiel, revu et validé : JAMAIS reformulé par un modèle.
-      question_text: q.enonce, question_type: type,
+      // Un énoncé à paramètre est servi REMPLI (parametres.ts) — jamais une accolade à l'écran.
+      question_text: texte ?? q.enonce, question_type: type,
+      // D9 : l'entité dont parle la question (« À propos de : Patagonia »), affichée à part, sans
+      // toucher au texte validé.
+      ...(referent ? { referent } : {}),
       // Un alias masqué (onglet 6) n'est jamais affiché ; reçu, il vaut l'option canonique.
-      options: type === 'text' ? null : q.options.filter((o) => !estAliasMasque(q.id, o)).map((o) => ({ label: o.libelle, value: cleOption(o) })),
+      // Décisions 6 et 7 : une option peut appartenir à un groupe exclusif (une seule cadence), ou ouvrir
+      // une saisie libre (« Autre » : quel sport ?). L'écran s'y conforme ; le serveur le revérifie.
+      options: type === 'text' ? null : q.options.filter((o) => !estAliasMasque(q.id, o)).map((o) => ({ label: o.libelle, value: cleOption(o),
+        ...(saisieLibreDe(q)?.option === o.libelle ? { saisie_libre: true } : {}),
+        ...(groupeDe(q, o.libelle) ? { groupe: groupeDe(q, o.libelle)! } : {}) })),
       sort_order: 0, locked_text: true,
     },
     jeton, sessionId: lot.id, mode: lot.mode,
@@ -75,7 +86,7 @@ export async function proposerLot(
   if (retenues.length === 0) return { premiere: null, diagnostic, manques };
   const { lot, jeton } = signerLot({ userId: input.userId, cles: retenues.map((q) => q.question_key), mode: input.mode });
   const q = questionParId(retenues[0].question_key)!;
-  return { premiere: poser(q, lot, jeton, 0, retenues[0].libelle), diagnostic, manques };
+  return { premiere: poser(q, lot, jeton, 0, retenues[0].libelle, retenues[0].question_text, retenues[0].referent ?? null), diagnostic, manques };
 }
 
 export type MotifRefus =
@@ -131,14 +142,20 @@ export async function traiterReponse(
   if (!q) return refus(409, 'question_inconnue', 'cette question n’existe plus');
 
   // ── 3. LA FORME. Jugée ici, sans base, avant toute lecture.
-  let cles: string[] = []; let texte = '';
+  let cles: string[] = []; let texte = ''; let precision: string | undefined;
   if (!skip) {
     if (q.forme === 'open') {
       if (typeof input.answer !== 'string' || input.answer.trim().length === 0) return refus(400, 'forme_invalide', 'réponse vide');
       texte = input.answer.trim();
       if (texte.length > 4000) return refus(400, 'forme_invalide', 'réponse trop longue');
     } else {
-      const a = input.answer;
+      // Une réponse avec saisie libre arrive sous la forme { choix: [...], precision: "..." } (décision 7).
+      let a = input.answer;
+      if (a && typeof a === 'object' && !Array.isArray(a)) {
+        const o = a as { choix?: unknown; precision?: unknown };
+        if (!Array.isArray(o.choix) || typeof o.precision !== 'string' || o.precision.length > 400) return refus(400, 'forme_invalide', 'réponse illisible');
+        precision = o.precision; a = o.choix;
+      }
       if (!(typeof a === 'string' || (Array.isArray(a) && a.every((x) => typeof x === 'string')))) return refus(400, 'forme_invalide', 'réponse illisible');
       cles = [...new Set(typeof a === 'string' ? [a] : (a as string[]))];
       if (cles.length === 0) return refus(400, 'forme_invalide', 'aucune option reçue');
@@ -220,6 +237,20 @@ export async function traiterReponse(
     if (!projet && !skip) return refus(409, 'conditions_non_tenues', 'cette question n’est plus d’actualité — recharge la page');
   }
 
+  // ── 5 ter. D9 : L'ENTITÉ dont parle la question (« … chez {marque} ? »). La réponse, ou le passage,
+  //    lui est rattaché : la même question reviendra pour une autre entité, jamais pour celle-ci.
+  let entite: { id: string; libelle: string } | undefined;
+  if (QUESTIONS_D_ENTITE.has(q.id) && !renvoi) {
+    try {
+      const { etat } = await lireEtat(client, { userId: input.userId });
+      entite = etat.entiteParQuestion?.get(q.id);
+    } catch (e) {
+      console.error('[discovery/reponse] entités illisibles', e);
+      return refus(503, 'etat_illisible', 'la réponse n’a pas pu être vérifiée — rien n’est enregistré');
+    }
+    if (!entite && !skip) return refus(409, 'conditions_non_tenues', 'cette question n’est plus d’actualité — recharge la page');
+  }
+
   // ═════════ À PARTIR D'ICI ON ÉCRIT. Tout ce qui précède n'a fait que lire.
 
   // ── LE JOURNAL D'ABORD. S'il échoue, on ne marque RIEN : la question sera reposée.
@@ -227,10 +258,10 @@ export async function traiterReponse(
   if (!skip) {
     try {
       if (q.forme === 'open') {
-        const r = await enregistrerReponseOuverte(client, { userId: input.userId, questionId: q.id, texte, acteId: lot.id, timestamp: instant, ...(projet ? { projet } : {}) });
+        const r = await enregistrerReponseOuverte(client, { userId: input.userId, questionId: q.id, texte, acteId: lot.id, timestamp: instant, ...(projet ? { projet } : {}), ...(entite ? { entite } : {}) });
         nouvelActe = !r.dejaFaite; lectureEnAttente = r.extractionEnAttente; instant = r.timestamp;
       } else {
-        const r = await enregistrerReponseFermee(client, { userId: input.userId, questionId: q.id, clesOptions: cles, acteId: lot.id, timestamp: instant, ...(projet ? { projet } : {}) });
+        const r = await enregistrerReponseFermee(client, { userId: input.userId, questionId: q.id, clesOptions: cles, acteId: lot.id, timestamp: instant, ...(projet ? { projet } : {}), ...(entite ? { entite } : {}), ...(precision !== undefined ? { precision } : {}) });
         nouvelActe = !r.dejaFaite; instant = r.timestamp;
       }
     } catch (e) {
@@ -245,7 +276,7 @@ export async function traiterReponse(
   //    Un échec ici n'efface pas la connaissance ; le journal fait foi (voir etat.ts), et le
   //    renvoi de la requête la répare.
   const { error: eProg } = await marquerProgression(client, input.userId, q.id, skip
-    ? { is_filled: false, answer_data: projet ? { projet: projet.id } : null, answered_at: null, last_asked_at: instant, skipped_count: 1, status: 'skipped' }
+    ? { is_filled: false, answer_data: projet ? { projet: projet.id } : entite ? { entite: entite.id } : null, answered_at: null, last_asked_at: instant, skipped_count: 1, status: 'skipped' }
     : { is_filled: true, answer_data: q.forme === 'open' ? texte : cles, answered_at: instant, last_asked_at: instant, status: 'answered' });
   if (eProg) console.error('[discovery/reponse] progression non écrite (le journal fait foi)', q.id, eProg.message);
 
@@ -271,9 +302,11 @@ export async function traiterReponse(
     }
   }
   let suivant = Math.max(session.current_index, position + 1);
+  let etatSuivant: Awaited<ReturnType<typeof lireEtat>>['etat'] | null = null;
   try {
     if (suivant < lot.cles.length) {
       const { etat, manques } = await lireEtat(client, { userId: input.userId });
+      etatSuivant = etat;
       if (manques.some((m) => m.includes('progression illisible'))) throw new Error(manques.join(' ; '));
       while (suivant < lot.cles.length) {
         const qs = questionParId(lot.cles[suivant]);
@@ -294,5 +327,7 @@ export async function traiterReponse(
   if (eSess) console.error('[discovery/reponse] avancée du parcours non écrite', eSess.message);
 
   if (fini) return { ok: true, next: null, done: true, nouvelActe, lectureEnAttente };
-  return { ok: true, next: poser(questionParId(lot.cles[suivant])!, lot, jeton, suivant), done: false, nouvelActe, lectureEnAttente };
+  const qSuivante = questionParId(lot.cles[suivant])!;
+  return { ok: true, next: poser(qSuivante, lot, jeton, suivant, undefined, etatSuivant ? enonceRempli(qSuivante, etatSuivant) : undefined,
+    etatSuivant?.entiteParQuestion?.get(qSuivante.id)?.libelle ?? null), done: false, nouvelActe, lectureEnAttente };
 }

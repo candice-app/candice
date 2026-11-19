@@ -149,6 +149,17 @@
      "justification": "même objet ; l'échelle canonique distingue revenus, projets, souhait de réduire"
     }
    ]
+  },
+  {
+   "intention": "manière préférée de pratiquer une activité créative",
+   "canonique": "CRE-11",
+   "membres": [
+    {
+     "id": "craft.0623",
+     "equivalence": "identique",
+     "justification": "décision 2 d'Estelle (19 nov., 18h54) : CRE-11 canonique, correspondance historique explicite vers craft.0623 — même domaine (création), mêmes neuf options mot pour mot, même contexte (la pratique). Une réponse à craft.0623 garde le contrat de sa question ; elle évite de reposer CRE-11. sportp.0510 (sport, autres options) n'est PAS équivalente."
+    }
+   ]
   }
  ]
 }

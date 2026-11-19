@@ -1,4 +1,41 @@
-# Ordre de déploiement — migrations 113 à 119
+# Ordre de déploiement — mise à jour du 19 nov. (soir) : migrations 113 à 122
+
+**État de départ, selon Estelle (19 nov., 18h54)** : la 115 est déjà appliquée en production. Le commit
+réellement servi n'est pas confirmé. Le contrôle en lecture seule (`etat-production-lecture-seule.sql`)
+reste la première étape.
+
+| Étape | Action | Code qui tourne | Rejoué localement |
+|---|---|---|---|
+| 0 | Contrôle lecture seule de la production | A (non confirmé) | — |
+| 1 | **113** | A | A × 113 (18 nov.) |
+| 2 | **114** | A | A × 114 (18 nov.) |
+| 3 | **116** | A | A × 116 (18 nov.) |
+| 4 | **118** | A | A × 118 (18 nov.) |
+| 5 | **119** | A | inclus dans A × 122 |
+| 6 | **120** — stabilité non établie | A | inclus dans A × 122 |
+| 7 | **121** — réglage d'usage par le proche, sans client privilégié | A | inclus dans A × 122 |
+| 8 | **122** — prénoms des partages, sans client privilégié | A | A × 122 : 18/18 |
+| 9 | **Déploiement de B** (commit figé dans le paquet final) | A puis B | B × 122 : 18/18 |
+| 10 | **117** — en dernier | B | B × 117 : 18/18 |
+
+États ajoutés le 19 nov. au soir (sorties : `preuves-transition/`), modèle simulé :
+
+| État | Régler un usage | Lien de partage | Résultat |
+|---|---|---|---|
+| A × 122 — ancien code, toutes les migrations avant le déploiement (coexistence) | route absente (404) | marche | 18/18 |
+| B × 120 — nouveau code avant la 121 (déployé trop tôt) | **503, refusé fermé** | marche | 18/18 |
+| B × 122 — nouveau code avant la 117 | marche (200) | marche | 18/18 |
+| B × 117 — état final | marche | marche | 18/18 |
+| B × 117, 121 et 122 retirées (retour arrière des fonctions) | **503, refusé fermé** | marche | 18/18 |
+| A × 117 — retour à l'ancien code après la 117 | route absente | **suspendu, refusé fermé** (connu : 117-ROLLBACK) | 17/17 |
+
+Les invariants (« un tiers ne lit rien », « sans autorisation rien du proche ne part au modèle », etc.)
+tiennent dans les six états. Le retrait de la 122 n'est pas couvert par cette preuve : la page
+/moi/partage affiche alors « Quelqu'un » — établi par lecture du code, non rejoué.
+
+---
+
+# (Historique) Ordre de déploiement — migrations 113 à 119
 
 État de départ, relevé en production le 18 nov. à 15 h 26 (requête en lecture seule) : code `680f896`
 (« A »), schéma jusqu'à la 112, garde `5a0703b0…`, **0 consentement, 0 fiche reliée, 0 invitation

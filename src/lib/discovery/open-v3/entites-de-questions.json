@@ -1,0 +1,38 @@
+{
+ "version": "2026-11-19.D9",
+ "note": "D9 (19 nov.) et décision 9 (18h54). « Entité {X} détectée et importante » : une simple mention ne suffit pas. Le paramètre est rempli par une entité de SON journal, à son sujet, hors projet, du bon type, avec une relation DÉCLARÉE que la question présume — et chaque question nomme les siennes : « veut visiter » justifie de demander ce qui attire dans une destination, pas ce qui a plu dans un lieu ; « aime » n'établit pas une pratique. Aucun score d'importance. Une mention sans relation n'ouvre rien et ne déclenche pas de clarification (elle ne serait pas utile au parcours). La progression est tenue par (question, entité) ; la réponse reste rattachée à l'entité.",
+ "series": {
+  "marque":      { "types": ["brand", "ENTITY_BRAND"] },
+  "entité":      { "types": ["artist", "author", "ENTITY_ARTIST", "ENTITY_AUTHOR"] },
+  "destination": { "types": ["destination", "ENTITY_DESTINATION"] },
+  "lieu":        { "types": ["place", "restaurant", "hotel", "ENTITY_PLACE", "ENTITY_RESTAURANT", "ENTITY_HOTEL"] },
+  "activité":    { "types": ["ENTITY_HOBBY"] }
+ },
+ "questions": {
+  "brand.0268": { "serie": "marque", "relations": ["LOVE", "LIKE"], "pourquoi": "« ce que tu aimes chez » présume l'appréciation" },
+  "brand.0269": { "serie": "marque", "relations": ["LOVE", "LIKE"], "pourquoi": "« les produits qui te plaisent » présume l'appréciation" },
+  "brand.0270": { "serie": "marque", "relations": ["LOVE", "LIKE"], "pourquoi": "nuance une appréciation déclarée" },
+  "brand.0271": { "serie": "marque", "relations": ["LOVE", "LIKE"], "pourquoi": "« une sensation proche » présume une sensation appréciée" },
+  "brand.0272": { "serie": "marque", "relations": ["LOVE", "LIKE", "WANT_TO_OWN"], "pourquoi": "clarifie le rapport (achète, regarde, rêve) : un souhait d'avoir suffit" },
+  "creator.0277": { "serie": "entité", "relations": ["LOVE", "LIKE"], "pourquoi": "« ce qui te touche » présume l'appréciation" },
+  "creator.0278": { "serie": "entité", "relations": ["LOVE", "LIKE"], "pourquoi": "« l'œuvre que tu préfères » présume l'appréciation" },
+  "creator.0279": { "serie": "entité", "relations": ["LOVE", "LIKE", "CURIOUS"], "pourquoi": "« passion, nostalgie ou découverte » : la curiosité suffit" },
+  "creator.0280": { "serie": "entité", "relations": ["LOVE", "LIKE", "WANT_TO_OWN", "WANT_TO_TRY"], "pourquoi": "« une expérience, un objet, une référence » : un souhait suffit, sans prouver un attachement" },
+  "destination.0286": { "serie": "destination", "relations": ["WANT_TO_VISIT", "LOVE", "LIKE"], "pourquoi": "« ce qui t'attire » : l'envie d'y aller ou l'appréciation" },
+  "destination.0287": { "serie": "destination", "relations": ["WANT_TO_VISIT"], "pourquoi": "« tu aimerais y aller pour… » présume l'envie d'y aller" },
+  "destination.0288": { "serie": "destination", "relations": ["WANT_TO_VISIT"], "pourquoi": "« ce voyage » présume l'envie d'y aller" },
+  "destination.0289": { "serie": "destination", "relations": ["WANT_TO_VISIT"], "pourquoi": "« ce voyage » présume l'envie d'y aller" },
+  "destination.0290": { "serie": "destination", "relations": ["WANT_TO_VISIT"], "pourquoi": "« en profiter » présume l'envie d'y aller" },
+  "place.0273": { "serie": "lieu", "relations": ["LOVE", "LIKE"], "pourquoi": "« ce qui t'a plu » présume un lieu connu et apprécié" },
+  "place.0274": { "serie": "lieu", "relations": ["LOVE", "LIKE"], "pourquoi": "précise ce qui a plu" },
+  "place.0275": { "serie": "lieu", "relations": ["LOVE", "LIKE"], "pourquoi": "« y retourner » présume un lieu connu et apprécié" },
+  "place.0276": { "serie": "lieu", "relations": ["LOVE", "LIKE"], "pourquoi": "« un lieu comparable » présume un lieu apprécié" },
+  "activity.0281": { "serie": "activité", "relations": ["LOVE", "LIKE"], "pourquoi": "« ce que tu aimes dans » présume l'appréciation" },
+  "activity.0284": { "serie": "activité", "relations": ["LOVE", "LIKE", "WANT_TO_TRY"], "pourquoi": "« progresser, t'équiper… » : un souhait d'essayer suffit" }
+ },
+ "fermees": {
+  "activity.0282": "« ton niveau aujourd'hui » présume une PRATIQUE ; aucune relation d'entité ne l'établit (aimer n'est pas pratiquer)",
+  "activity.0283": "« le pratiques-tu réellement » présume une pratique ; même manque",
+  "activity.0285": "« du matériel » présume une pratique équipée ; même manque"
+ }
+}

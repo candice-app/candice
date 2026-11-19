@@ -8,6 +8,7 @@
 // sens de marche : une lecture qui échoue doit faire poser MOINS de questions, jamais plus.
 // On ne remplit donc aucun champ « par défaut optimiste ».
 import { lirePortrait, type Portrait } from '@/lib/knowledge/portrait';
+import { entitePour, QUESTIONS_D_ENTITE, type EntiteDuJournal } from './entites';
 import { clef, TYPES_DE_PROJET, SITUATIONS_DE_VIE, type EtatDiscovery, type TypeDeProjet, type SituationDeVie } from './conditions';
 export type { TypeDeProjet };
 import { SELECTEURS } from './dependances';
@@ -244,6 +245,9 @@ export async function lireEtat(
   const dejaPosees = new Set<string>();
   /** D10 : question → préparations POUR lesquelles elle a déjà été répondue ou passée. */
   const poseesParProjet = new Map<string, Set<string>>();
+  /** D10 par entité : question → entités pour lesquelles elle a déjà été répondue ou passée. */
+  const poseesParEntite = new Map<string, Set<string>>();
+  let progressionLue = true;
   const optionsChoisies = new Map<string, Set<string>>();
   // La dernière réponse fermée à chaque question (clés d'options) : sert à savoir si une question
   // d'orientation a reçu une réponse positive.
@@ -272,6 +276,8 @@ export async function lireEtat(
       // D10 : un passage donné POUR une préparation ne vaut que pour elle.
       const pj = !l.is_filled && l.answer_data && typeof l.answer_data === 'object' ? (l.answer_data as { projet?: unknown }).projet : undefined;
       if (typeof pj === 'string') poseesParProjet.set(l.question_key, new Set([...(poseesParProjet.get(l.question_key) ?? []), pj]));
+      const en = !l.is_filled && l.answer_data && typeof l.answer_data === 'object' ? (l.answer_data as { entite?: unknown }).entite : undefined;
+      if (typeof en === 'string') poseesParEntite.set(l.question_key, new Set([...(poseesParEntite.get(l.question_key) ?? []), en]));
       if (l.is_filled) {
         repondues.add(l.question_key);
         const b = BRANCHE_PAR_QUESTION.get(l.question_key);
@@ -282,6 +288,7 @@ export async function lireEtat(
     // SANS cette lecture, on ne sait pas ce qui a déjà été posé — et on reposerait des
     // questions déjà vues. On le signale, et l'appelant doit s'abstenir plutôt que risquer
     // de resservir la même question à quelqu'un.
+    progressionLue = false;
     manques.push(`progression illisible (${e instanceof Error ? e.message : String(e)}) — risque de reposer une question déjà vue`);
   }
 
@@ -306,6 +313,7 @@ export async function lireEtat(
       if (!BRANCHE_PAR_QUESTION.has(id)) continue;
       // D10 : une réponse rattachée à une préparation (`branch_id = projet:<id>`) est posée POUR elle.
       if (x.branch_id?.startsWith('projet:')) poseesParProjet.set(id, new Set([...(poseesParProjet.get(id) ?? []), x.branch_id.slice('projet:'.length)]));
+      if (x.branch_id?.startsWith('entite:')) poseesParEntite.set(id, new Set([...(poseesParEntite.get(id) ?? []), x.branch_id.slice('entite:'.length)]));
       const d = dernier.get(id);
       if (!d || new Date(x.ts).getTime() > new Date(d.ts).getTime()) dernier.set(id, { ts: x.ts, option_ref: x.option_ref });
     }
@@ -319,6 +327,7 @@ export async function lireEtat(
       if (d.option_ref) dernieresReponses.set(id, new Set(d.option_ref.split(',').filter(Boolean)));
     }
   } catch (e) {
+    progressionLue = false;
     manques.push(`progression illisible (réponses du journal : ${e instanceof Error ? e.message : String(e)}) — risque de reposer une question déjà vue`);
   }
 
@@ -433,8 +442,20 @@ export async function lireEtat(
     branchesOuvertes.add(b);
     if (!orienteePositivement(b)) orientationSeulement.add(b);
   }
+  // ── D9 : LES ENTITÉS DE SON JOURNAL qui peuvent remplir une question « à propos de {X} ». Seulement
+  //    à son sujet (le portrait l'est), hors projet, avec une relation déclarée (le journal n'écrit
+  //    pas d'entité pour une simple mention). Sans portrait ni progression lus : table absente.
+  let entiteParQuestion: Map<string, { id: string; libelle: string }> | undefined;
+  if (portrait && progressionLue) {
+    const entites: EntiteDuJournal[] = portrait.entities
+      .filter((e) => !e.contexts.some((c) => /^(projet|entite):/.test(String(c))))
+      .map((e) => ({ id: String(e.entity), libelle: e.entityLabel, type: String(e.entityType), relation: String(e.relation), depuis: e.lastUpdated ?? '' }));
+    entiteParQuestion = new Map();
+    for (const id of QUESTIONS_D_ENTITE) { const x = entitePour(id, entites, poseesParEntite); if (x) entiteParQuestion.set(id, { id: x.id, libelle: x.libelle }); }
+  }
   return {
     etat: {
+      ...(entiteParQuestion ? { entiteParQuestion } : {}),
       tags, nePasCreuser, branchesOuvertes, niveauParBranche,
       dejaPosees, attributsConnus, sansAlcool,
       // Aucun contexte de vie connu pour l'instant : les conditions qui en dépendent

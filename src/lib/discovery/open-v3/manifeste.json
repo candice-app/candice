@@ -1,15 +1,15 @@
 {
  "genere_par": "importer-open-v3 / 3",
- "genere_le": "2026-11-19T17:17:53+00:00",
- "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_7.xlsx",
- "sha256_classeur": "79e76afd6e50b2289f3a988809d823ce2d86268bf12e7a34ac3f25a0047f6eba",
- "questions_actives": 2281,
- "questions_en_arbitrage": 12,
- "questions_retirees": 114,
+ "genere_le": "2026-11-19T18:23:50+00:00",
+ "classeur": "Candice_Discovery_Referentiel_V5_OPEN_V3_REVISION_8.xlsx",
+ "sha256_classeur": "dc63ee51f7b65b2e251fc8443979d703aeb799ef734b70190e72336ce8435f03",
+ "questions_actives": 2286,
+ "questions_en_arbitrage": 6,
+ "questions_retirees": 115,
  "options_totales": 16200,
  "normalisations": {
-  "SINGLE · facultative": 78,
-  "MULTI · réponses multiples sans plafond arbitraire": 73,
+  "SINGLE · facultative": 77,
+  "MULTI · réponses multiples sans plafond arbitraire": 74,
   "OPEN · facultative": 48
  },
  "attributs_multi_familles": {

@@ -36,6 +36,7 @@ import { appartenance } from './equivalences';
 import { OUVERTES_ARCHIVEES } from './contrats-ouverts';
 import { PRESUMENT_L_ALCOOL } from './correspondances';
 import { coexistence, estPrioritaire, poolDe, type VerdictCoexistence } from './coexistence';
+import { QUESTIONS_D_ENTITE } from './entites';
 import { BANQUE, type QuestionV3 } from './banque';
 import { analyserCondition, evaluerCondition, type EtatDiscovery, type Verdict } from './conditions';
 
@@ -83,7 +84,7 @@ export function verdictDe(q: QuestionV3, etat: EtatDiscovery, partage: ReadonlyM
   const dep = DEPENDANCES.get(q.id);
   const dependance = dep && etat.questionsSignalees?.has(q.id) ? { ...dep, signalee: true } : dep;
   const propre = evaluerCondition(analyse, etat,
-    { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance, presumeAlcool });
+    { branche: q.branche, pool: poolDe(q.branche), attributs: vise.cles, attributsPartages: vise.partages, dependance, presumeAlcool, questionId: q.id });
   if (propre === 'fermer') return 'fermer';
   // ── UNE QUESTION DE NIVEAU C EXIGE « UN OBJET, UNE ACTION OU UNE OCCASION NOMMÉS » (politique
   //    de saturation du référentiel), quelle que soit la façon dont sa condition est écrite.
@@ -208,6 +209,9 @@ export type MotifDExclusion =
  * restent posées une fois. Sans lecture des préparations, on garde la règle stricte (une fois).
  */
 function dejaPoseePourCeQuiCompte(q: QuestionV3, etat: EtatDiscovery): boolean {
+  // D9 : une question à propos d'une entité n'est disponible que pour une entité pour laquelle elle
+  // n'a pas encore été posée (entites.ts) : c'est la disponibilité qui tient la progression.
+  if (QUESTIONS_D_ENTITE.has(q.id) && etat.entiteParQuestion) return false;
   const besoin = requiertProjet(q);
   if (!besoin || !etat.projetsCourants || !etat.poseesParProjet) return etat.dejaPosees.has(q.id);
   const pool = poolDe(q.branche);
