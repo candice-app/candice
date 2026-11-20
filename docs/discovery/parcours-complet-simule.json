@@ -1,8 +1,8 @@
 {
- "date": "2026-11-19T23:36:46.988Z",
+ "date": "2026-11-20T08:28:04.661Z",
  "commit": "copie de travail non versionnée (mode simulé)",
  "modifications_non_commitees_dans_src": true,
- "version_du_lecteur": 5,
+ "version_du_lecteur": 6,
  "modele_destinations": "claude-sonnet-4-6",
  "mode": "simule",
  "amont": "http://127.0.0.1:8787",

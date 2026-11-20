@@ -42,7 +42,9 @@ import { ENTITY_RELATIONS, type EntityRelation } from '@/lib/knowledge/vocabular
 // tolérées dans la copie. Corrige les écarts du premier passage réel (19 nov., 31/38).
 // v5 (20 nov., deuxième passage réel) : période ≠ portée ; attitude lue aussi dans le passage ;
 // technique ≠ matière ; épisode décrit ≠ épisode identifié.
-export const VERSION_LECTURE = 5;
+// v6 (20 nov., troisième passage réel) : les champs que le contrat d'une destination ne prévoit pas
+// (identite, relation, cible) sont écartés avant l'examen, au lieu de faire perdre le segment.
+export const VERSION_LECTURE = 6;
 
 export interface Destination {
   readonly question: string; readonly rang: string; readonly declencheur: string; readonly signification: string;
@@ -251,6 +253,23 @@ export interface SegmentExamine {
   readonly declencheur: string; readonly passage: string; readonly debut: number; readonly fin: number;
   readonly attitude: Attitude; readonly temps: Temps; readonly relation?: EntityRelation;
   readonly identite?: IdentiteDeclaree; readonly sens: SensLexical;
+  /** Champs rendus par le modèle que le contrat de cette destination ne prévoit pas : ni lus, ni
+   *  validés, ni écrits ; seulement nommés, pour la trace. */
+  readonly champsIgnores?: readonly ChampHorsContrat[];
+}
+export type ChampHorsContrat = 'identite' | 'relation' | 'cible';
+/* LES CHAMPS QU'UNE DESTINATION ADMET (20 nov., troisième passage réel). « Un verre de vin à Lisbonne »
+ * (drinks.2102, un FAIT de projection) : le modèle a ajouté identite.rattachement = « Portugal » et
+ * relation = WANT_TO_VISIT. Ces champs n'appartiennent pas au contrat d'une projection : les valider
+ * faisait perdre la projection ; les accepter aurait écrit une déduction. Ils sont donc ÉCARTÉS AVANT
+ * l'examen — jamais lus, jamais écrits — et nommés au relevé. Pour une destination qui les admet
+ * (référent à résoudre, entité), ils restent exigés et copiés à la lettre, comme avant. */
+export function champsAdmis(d: Destination): ReadonlySet<ChampHorsContrat> {
+  const ex = exigenceDe(d);
+  const admis = new Set<ChampHorsContrat>();
+  if (ex?.resolution) admis.add('identite');
+  if (d.famille === 'ENTITY') { admis.add('relation'); admis.add('cible'); }
+  return admis;
 }
 export interface Examen {
   readonly retenus: readonly SegmentExamine[];
@@ -304,10 +323,14 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
     if (!d) { refuser('declencheur_inconnu'); continue; }
     const ex = exigenceDe(d)!;
 
-    // 1 — la copie exacte, du passage et de chaque précision.
+    // 0 — les champs hors contrat sont écartés avant tout examen (ni lus, ni validés, ni écrits).
+    const admis = champsAdmis(d);
+    const champsIgnores = (['identite', 'relation', 'cible'] as const).filter((c) => s[c] !== undefined && s[c] !== null && !admis.has(c));
+
+    // 1 — la copie exacte, du passage et de chaque précision que le contrat admet.
     const pos = positionExacte(texte, passage);
     if (!pos) { refuser('copie_inexacte'); continue; }
-    const idBrute = (s.identite ?? null) as Record<string, unknown> | null;
+    const idBrute = (admis.has('identite') ? (s.identite ?? null) : null) as Record<string, unknown> | null;
     const precisions = [chaine(s.condition), chaine(s.limite), chaine(idBrute?.nom), chaine(idBrute?.rattachement)].filter((x): x is string => !!x);
     if (precisions.some((p) => !positionExacte(texte, p))) { refuser('precision_inexacte'); continue; }
 
@@ -362,7 +385,7 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
     }
     if (relation) {
       // 4 — la cible : le modèle la déclare, les mots la vérifient (épreuve 4).
-      const cible = chaine(s.cible);
+      const cible = admis.has('cible') ? chaine(s.cible) : undefined;
       if (cible === 'aspect') { refuser('appreciation_d_un_aspect'); continue; }
       if (cible !== 'referent') { refuser('cible_non_declaree'); continue; }
       if (!ex.secondSegment && ex.resolution) {
@@ -370,7 +393,7 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
         // pas sur un de ses aspects (« J'adore le dessin de Blacksad »).
         // Le référent est son NOM déclaré, pas le passage : un passage trop large (« J'adore le dessin
         // de Blacksad ») ne doit pas faire passer l'objet du verbe pour le référent.
-        const nomDeclare = chaine((s.identite as Record<string, unknown> | undefined)?.nom);
+        const nomDeclare = chaine(idBrute?.nom);
         const ref = nomDeclare ? positionExacte(texte, nomDeclare) : pos;
         if (!ref) { refuser('precision_inexacte'); continue; }
         const lu = cibleLexicale(texte, pos.debut, pos.fin, ex.resolution, { debut: ref.debut, fin: ref.fin, ...(nomDeclare ? { nom: nomDeclare } : {}) });
@@ -386,7 +409,8 @@ export function examinerSegments(texte: string, brut: unknown, destinations: rea
           ...(chaine(idBrute.ambigu) ? { ambigu: chaine(idBrute.ambigu)! } : {}) }
       : undefined;
     if (retenus.some((r) => r.declencheur === declencheur && r.debut === pos.debut && r.fin === pos.fin)) continue;
-    retenus.push({ declencheur, passage, debut: pos.debut, fin: pos.fin, attitude, temps, ...(relation ? { relation } : {}), ...(identite ? { identite } : {}), sens });
+    retenus.push({ declencheur, passage, debut: pos.debut, fin: pos.fin, attitude, temps, ...(relation ? { relation } : {}), ...(identite ? { identite } : {}), sens,
+      ...(champsIgnores.length ? { champsIgnores } : {}) });
   }
   return { retenus, ecartes };
 }
@@ -497,6 +521,7 @@ POUR CHAQUE PASSAGE, déclare ce que la phrase en dit :
 - temps : actuel · passe_revolu (« avant j'aimais… ») · futur_ou_souhait · hypothetique · indetermine.
 - condition : le passage exact de la condition, s'il y en a une (« sauf si c'est fait main ») ; sinon null.
 - limite : le passage exact qui restreint la portée (« pour les enfants », « au travail ») ; sinon null. Un repère de temps (« en ce moment », « depuis peu ») n'est PAS une limite : il se déclare dans « temps ». Une intensité (« un peu », « surtout ») non plus.
+- relation, cible et identite ne se déclarent QUE pour les déclencheurs qui les demandent (une œuvre, un épisode, un lieu ou un animal à identifier) ; pour une projection, un souhait, un intérêt ou un rejet, ne les rends pas. N'ajoute jamais un pays, une région, un auteur ou une envie que la réponse n'écrit pas.
 - relation (entités seulement) : ${ENTITY_RELATIONS.join(', ')} — seulement si la phrase l'exprime par ses mots. Un comportement (« je l'ai réécouté trois fois », « j'y retourne souvent ») n'est PAS une appréciation. « M'a marqué » non plus.
 - cible (entités seulement, obligatoire avec relation) : referent si l'appréciation porte sur le référent LUI-MÊME (« j'adore cet endroit », « j'ai adoré Blacksad », « je l'ai adoré ») ; aspect si elle porte sur une de ses parties ou qualités (« j'y ai adoré le silence », « j'adore le dessin de Blacksad », « la voix de l'animatrice »). Une appréciation d'un aspect n'est JAMAIS une relation envers le référent : déclare aspect, et ne la transporte pas sur lui.
 - Une technique (macramé, poterie, tricot, broderie, couture) n'est pas une matière (lin, laine, bois, cuir, plastique) : range chaque passage sous le déclencheur qui le nomme exactement ; dans le doute, ne le rends pas.

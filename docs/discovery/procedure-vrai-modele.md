@@ -42,7 +42,7 @@ Les rapports sont `docs/discovery/essai-extracteur-reel.json` et `docs/discovery
 Chaque rapport nomme :
 
 - le **commit testé**, et signale toute modification non commitée dans `src` ;
-- la **version du lecteur** (v5 depuis le 20 nov., deuxième paquet) ;
+- la **version du lecteur** (v6 depuis le 20 nov., troisième paquet) ;
 - les **modèles** appelés : destinations, extracteur libre et qualification pour le 34 ; modèles observés au relais pour le 37 ;
 - le **résultat de chaque cas**.
 
@@ -63,7 +63,8 @@ Aucune clé et aucun en-tête n'y figurent.
 Le lanceur réécrit `docs/discovery/essai-extracteur-reel.json` et `docs/discovery/parcours-complet-reel.json`. Ceux de chaque passage revu sont d'abord copiés dans `docs/discovery/passage-reel-<date>/` :
 
 - **19 nov.** sur 50e3c42 : `passage-reel-19nov/` ;
-- **20 nov.** sur 4cfb4d1 : `passage-reel-20nov/` (33/38 ; 6 passées, 1 en échec, interrompu).
+- **20 nov.** sur 4cfb4d1 : `passage-reel-20nov/` (33/38 ; 6 passées, 1 en échec, interrompu) ;
+- **20 nov.** sur eea2f38 : `passage-reel-20nov-eea2f38/` (37/38 ; 28 passées, 0 en échec, achevé).
 
 ## Après le passage
 
@@ -76,5 +77,5 @@ Je corrige ensuite les défauts observés, puis je te donne la commande qui rejo
 | Catégorie | Où | État |
 |---|---|---|
 | Logique éprouvée avec réponses simulées | tests ; scripts 33, 35, 36, 37 simulé, 39 | exécutée sur le paquet |
-| Lecture réellement observée du modèle | script 34 | 19 nov. sur 50e3c42 : **31/38**. 20 nov. sur 4cfb4d1 : **33/38**. Écarts corrigés au paquet suivant, **à rejouer** |
-| Parcours complet réellement exécuté | script 37 réel | 19 nov. sur 50e3c42 : **27/0**, cas négatif « céramique » vide. 20 nov. sur 4cfb4d1 : **6 passées, 1 en échec, interrompu** avant la recommandation. **À rejouer en entier** |
+| Lecture réellement observée du modèle | script 34 | 19 nov. sur 50e3c42 : **31/38**. 20 nov. sur 4cfb4d1 : **33/38**. 20 nov. sur eea2f38 : **37/38**. Dernier écart corrigé au paquet suivant, **à rejouer** |
+| Parcours complet réellement exécuté | script 37 réel | 19 nov. sur 50e3c42 : **27/0**, cas négatif « céramique » vide. 20 nov. sur 4cfb4d1 : **6 passées, 1 en échec, interrompu**. 20 nov. sur eea2f38 : **28 passées, 0 en échec, achevé**. **À rejouer en entier** sur chaque nouveau paquet |

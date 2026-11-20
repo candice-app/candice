@@ -1,0 +1,366 @@
+{
+ "date": "2026-11-20T08:11:52.675Z",
+ "commit": "eea2f384f42b3c0d385455d76c393c8ad9a20387",
+ "modifications_non_commitees_dans_src": false,
+ "version_du_lecteur": 5,
+ "modele_destinations": "claude-sonnet-4-6",
+ "mode": "reel",
+ "amont": "https://api.anthropic.com",
+ "parcours": [
+  {
+   "cle": "learning2.1437",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1438",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-04",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-06",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1439",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1440",
+   "acte": "réponse",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-05",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-14",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1441",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1442",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "LEA-15",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0235",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0236",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0237",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0238",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0240",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning.0241",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1456",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1457",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1458",
+   "acte": "passée",
+   "statut": 200
+  },
+  {
+   "cle": "learning2.1459",
+   "acte": "réponse",
+   "statut": 200
+  }
+ ],
+ "lecture_observee": [
+  {
+   "statut": 200,
+   "modele": "claude-sonnet-4-6",
+   "outil": "segments",
+   "rendu_par_le_modele": [
+    {
+     "nom": "segments",
+     "entree": {
+      "segments": [
+       {
+        "declencheur": "C1",
+        "passage": "la céramique japonaise",
+        "attitude": "interet",
+        "affirme": true,
+        "personne": "soi",
+        "temps": "actuel",
+        "condition": null,
+        "limite": null
+       },
+       {
+        "declencheur": "C1",
+        "passage": "l'histoire des cartes anciennes",
+        "attitude": "interet",
+        "affirme": true,
+        "personne": "soi",
+        "temps": "actuel",
+        "condition": null,
+        "limite": null
+       },
+       {
+        "declencheur": "C1",
+        "passage": "La chimie ne m'intéresse pas",
+        "attitude": "interet",
+        "affirme": false,
+        "personne": "soi",
+        "temps": "actuel",
+        "condition": null,
+        "limite": null
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "journal_de_B": [
+  {
+   "famille": "INTEREST",
+   "libelle": "Astronomie",
+   "statut": "explicit",
+   "polarite": "positive"
+  },
+  {
+   "famille": "INTEREST",
+   "libelle": "la céramique japonaise",
+   "statut": "inferred",
+   "polarite": null
+  },
+  {
+   "famille": "INTEREST",
+   "libelle": "l'histoire des cartes anciennes",
+   "statut": "inferred",
+   "polarite": null
+  }
+ ],
+ "generations": [
+  {
+   "etape": "sans autorisation",
+   "http": 200,
+   "appels": [
+    {
+     "statut": 200,
+     "outil": null,
+     "modele": "claude-sonnet-4-6",
+     "debut_consigne": "Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja",
+     "donnees_de_B": []
+    }
+   ],
+   "donnees_de_B_dans_l_envoi": [],
+   "ligne_des_gouts": null
+  },
+  {
+   "etape": "après accord",
+   "http": 200,
+   "appels": [
+    {
+     "statut": 200,
+     "outil": null,
+     "modele": "claude-sonnet-4-6",
+     "debut_consigne": "Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja",
+     "donnees_de_B": [
+      "Astronomie"
+     ]
+    }
+   ],
+   "donnees_de_B_dans_l_envoi": [
+    {
+     "libelle": "Astronomie",
+     "famille": "INTEREST",
+     "statut": "explicit"
+    }
+   ],
+   "ligne_des_gouts": "CE QUE PROCHE A DÉCLARÉ AIMER OU SOUHAITER (confié en privé, pour t'aider à choisir) : Astronomie"
+  },
+  {
+   "etape": "après retrait",
+   "http": 200,
+   "appels": [
+    {
+     "statut": 200,
+     "outil": null,
+     "modele": "claude-sonnet-4-6",
+     "debut_consigne": "Tu es Candice, un copilote relationnel premium. Tu génères des recommandations d'attention adaptées à chaque proche — ja",
+     "donnees_de_B": []
+    }
+   ],
+   "donnees_de_B_dans_l_envoi": [],
+   "ligne_des_gouts": null
+  }
+ ],
+ "modeles_observes_au_relais": [
+  "claude-sonnet-4-6"
+ ],
+ "statut": "acheve",
+ "etape_atteinte": "fin",
+ "etapes_prevues": [
+  "0 comptes",
+  "1–2 sélection et réponses",
+  "3 persistance et relecture",
+  "4a sans autorisation",
+  "4b accord",
+  "4c retrait",
+  "fin"
+ ],
+ "nature": "parcours ACHEVÉ (toutes les étapes, consentement et retrait compris), modèle RÉEL",
+ "resultats_par_cas": [
+  {
+   "libelle": "1 : B choisit d’explorer l’apprentissage (HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : les deux questions ont été SERVIES par le serveur et répondues (21 actes, tous HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : la lecture de la réponse libre est partie au modèle, statut 200",
+   "conforme": true
+  },
+  {
+   "libelle": "2 : ce que le modèle des destinations a reçu contient la réponse libre, telle qu’écrite",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : B relit son journal sous sa session (3 preuves)",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « Astronomie » : un intérêt EXPLICITE (sa déclaration)",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « la céramique japonaise » : un intérêt LU PAR MODÈLE (inféré), réellement écrit — condition du cas négatif 4b",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : « la chimie » (niée) n’est écrite comme aucun intérêt",
+   "conforme": true
+  },
+  {
+   "libelle": "3 : le portrait relit « Astronomie »",
+   "conforme": true
+  },
+  {
+   "libelle": "4a : la lecture des goûts (même fonction que la route) refuse : aucun consentement — pas une erreur",
+   "conforme": true
+  },
+  {
+   "libelle": "4a : AUCUNE donnée de B dans ce qui est parti au modèle (consigne et messages relus au relais)",
+   "conforme": true
+  },
+  {
+   "libelle": "4a : la recommandation enregistrée ne déclare aucune donnée de B",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : accord donné (HTTP 200, actif)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : « Astronomie » est éligible (déclarée par B, explicite)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : la réponse libre lue par modèle EXISTE et n’est PAS éligible (écartée : pas sa déclaration)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : « Astronomie » PART au modèle, dans la ligne des goûts déclarés",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : rien de ce qui part n’est une lecture par modèle (provenance : déclarations explicites seulement)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : aucune justification affichée ne cite la déclaration",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : la recommandation enregistrée porte sa provenance (reco:gouts, compte de B)",
+   "conforme": true
+  },
+  {
+   "libelle": "4b : les idées proposées portent la même provenance",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : retrait (HTTP 200, inactif)",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la recommandation tirée de ses goûts n’est plus restituée (vidée, à recalculer)",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : les idées seulement proposées qui en venaient sont retirées",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la fiche du pilote s’affiche (HTTP 200)",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : aucune des idées tirées de ses goûts n’apparaît sur la fiche",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la lecture des goûts refuse de nouveau",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : plus AUCUNE donnée de B dans ce qui part au modèle",
+   "conforme": true
+  },
+  {
+   "libelle": "4c : la nouvelle recommandation ne déclare aucune donnée de B",
+   "conforme": true
+  }
+ ]
+}

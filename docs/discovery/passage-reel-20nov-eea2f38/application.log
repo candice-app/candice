@@ -1,0 +1,49 @@
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://127.0.0.1:3100
+- Network:       http://127.0.0.1:3100
+- Environments: .env.local
+✓ Ready in 198ms
+✓ Running next.config.ts took 54ms
+- Experiments (use with caution):
+  · staleTimes
+
+ GET / 200 in 295ms (next.js: 54ms, proxy.ts: 110ms, application-code: 131ms)
+ GET / 200 in 33ms (next.js: 1.1ms, proxy.ts: 6ms, application-code: 26ms)
+ POST /api/discovery/sujet 200 in 230ms (next.js: 84ms, proxy.ts: 17ms, application-code: 129ms)
+ GET /api/discovery/lot?mode=full 200 in 102ms (next.js: 24ms, proxy.ts: 3ms, application-code: 75ms)
+ POST /api/discovery/answer 200 in 101ms (next.js: 36ms, proxy.ts: 2ms, application-code: 63ms)
+ POST /api/discovery/answer 200 in 58ms (next.js: 0.8ms, proxy.ts: 5ms, application-code: 53ms)
+ POST /api/discovery/answer 200 in 30ms (next.js: 1.0ms, proxy.ts: 4ms, application-code: 26ms)
+ POST /api/discovery/answer 200 in 17ms (next.js: 0.9ms, proxy.ts: 3ms, application-code: 13ms)
+ GET /api/discovery/lot?mode=full 200 in 46ms (next.js: 1.4ms, proxy.ts: 3ms, application-code: 41ms)
+ POST /api/discovery/answer 200 in 32ms (next.js: 0.9ms, proxy.ts: 2ms, application-code: 29ms)
+ POST /api/discovery/answer 200 in 50ms (next.js: 0.8ms, proxy.ts: 3ms, application-code: 47ms)
+ POST /api/discovery/answer 200 in 29ms (next.js: 1.4ms, proxy.ts: 2ms, application-code: 25ms)
+ POST /api/discovery/answer 200 in 18ms (next.js: 0.8ms, proxy.ts: 3ms, application-code: 15ms)
+ GET /api/discovery/lot?mode=full 200 in 44ms (next.js: 0.9ms, proxy.ts: 3ms, application-code: 40ms)
+ POST /api/discovery/answer 200 in 35ms (next.js: 0.7ms, proxy.ts: 1.7ms, application-code: 33ms)
+ POST /api/discovery/answer 200 in 28ms (next.js: 0.8ms, proxy.ts: 3ms, application-code: 24ms)
+ POST /api/discovery/answer 200 in 19ms (next.js: 0.8ms, proxy.ts: 3ms, application-code: 15ms)
+ GET /api/discovery/lot?mode=full 200 in 47ms (next.js: 1.0ms, proxy.ts: 2ms, application-code: 44ms)
+ POST /api/discovery/answer 200 in 43ms (next.js: 0.7ms, proxy.ts: 1.7ms, application-code: 41ms)
+ POST /api/discovery/answer 200 in 21ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 18ms)
+ GET /api/discovery/lot?mode=full 200 in 50ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 47ms)
+ POST /api/discovery/answer 200 in 47ms (next.js: 0.8ms, proxy.ts: 1.9ms, application-code: 45ms)
+ POST /api/discovery/answer 200 in 20ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 17ms)
+ GET /api/discovery/lot?mode=full 200 in 44ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 41ms)
+ POST /api/discovery/answer 200 in 46ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 43ms)
+ POST /api/discovery/answer 200 in 21ms (next.js: 1.8ms, proxy.ts: 3ms, application-code: 17ms)
+ GET /api/discovery/lot?mode=full 200 in 47ms (next.js: 1.1ms, proxy.ts: 2ms, application-code: 44ms)
+ POST /api/discovery/answer 200 in 44ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 41ms)
+ POST /api/discovery/answer 200 in 22ms (next.js: 1.1ms, proxy.ts: 3ms, application-code: 19ms)
+ GET /api/discovery/lot?mode=full 200 in 45ms (next.js: 0.7ms, proxy.ts: 2ms, application-code: 42ms)
+ POST /api/discovery/answer 200 in 52ms (next.js: 0.8ms, proxy.ts: 2ms, application-code: 49ms)
+[discovery] destinations : segments non écrits learning2.1459 [ 'SUJET_DECLARE:ecarte:non_affirme' ]
+ POST /api/discovery/answer 200 in 4.1s (next.js: 0.9ms, proxy.ts: 3ms, application-code: 4.1s)
+ POST /api/recommendations/generate 200 in 2.9s (next.js: 146ms, proxy.ts: 6ms, application-code: 2.7s)
+ POST /api/consent/exclusions 200 in 96ms (next.js: 76ms, proxy.ts: 4ms, application-code: 17ms)
+[recommendations/generate] goûts du proche { transmis: 1, ecartes: { pas_sa_declaration: 2 } }
+ POST /api/recommendations/generate 200 in 6.4s (next.js: 1.7ms, proxy.ts: 4ms, application-code: 6.4s)
+ POST /api/consent/exclusions 200 in 22ms (next.js: 1.7ms, proxy.ts: 4ms, application-code: 16ms)
+ GET /contacts/0a07878a-cc9c-4669-a7ab-6cf1694fa2ac 200 in 702ms (next.js: 551ms, proxy.ts: 3ms, application-code: 148ms)
+ POST /api/recommendations/generate 200 in 2.8s (next.js: 1.7ms, proxy.ts: 5ms, application-code: 2.8s)

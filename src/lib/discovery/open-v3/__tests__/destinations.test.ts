@@ -387,7 +387,7 @@ describe('lecteur v4 : codes de déclencheurs et variantes typographiques', asyn
     for (const d of ds) expect(c).not.toContain(`- ${d.declencheur} :`);
     const brut = decoderDeclencheurs({ segments: [{ declencheur: 'C1', passage: 'x' }, { declencheur: 'SUJET_DECLARED', passage: 'y' }, { declencheur: ds[0].declencheur, passage: 'z' }] }, ds) as { segments: { declencheur: string }[] };
     expect(brut.segments.map((s) => s.declencheur)).toEqual([ds[0].declencheur, 'SUJET_DECLARED', ds[0].declencheur]);
-    expect(VERSION_LECTURE).toBe(5);
+    expect(VERSION_LECTURE).toBe(6);
   });
   it('un code inconnu ou un nom déformé reste écarté (« declencheur_inconnu »)', () => {
     const e = examinerSegments('la géologie', decoderDeclencheurs({ segments: [{ declencheur: 'SUJET_DECLARED', passage: 'la géologie', attitude: 'interet', affirme: true, personne: 'soi', temps: 'actuel' }] }, ds), ds);
@@ -517,5 +517,57 @@ describe('lecteur v5 : un épisode décrit n’est pas un épisode identifié', 
       const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'podcast.0467', texte: T, acteId: 'lot-1', lecteur: lecteur(ep(passage, nom)) });
       expect(r.destinations, T).toMatchObject({ faits: 1, clarifications: 0 });
     }
+  });
+});
+
+/* ── Lecteur v6 (20 nov., troisième passage réel sur eea2f38) : boisson-projection ─────────────
+ * Sortie brute RÉELLE du modèle, gardée telle quelle comme fixture de régression. */
+describe('lecteur v6 : les champs hors contrat sont écartés, la projection est gardée', () => {
+  const T = 'Un verre de vin nature sur une terrasse à Lisbonne, au coucher du soleil.';
+  const RENDU_REEL_EEA2F38 = { segments: [{ declencheur: 'PROJECTION_DECLAREE', passage: 'Un verre de vin nature sur une terrasse à Lisbonne, au coucher du soleil.',
+    attitude: 'projection', affirme: true, personne: 'soi', temps: 'futur_ou_souhait', condition: null, limite: null,
+    identite: { nature: 'lieu', nom: 'Lisbonne', rattachement: 'Portugal' }, relation: 'WANT_TO_VISIT', cible: 'referent' }] };
+
+  it('le rendu réel fautif : retenu, sans identité ni relation, les champs écartés nommés', () => {
+    const e = examinerSegments(T, RENDU_REEL_EEA2F38, dest('drinks.2102'));
+    expect(e.ecartes).toEqual([]);
+    expect(e.retenus).toHaveLength(1);
+    expect(e.retenus[0].identite).toBeUndefined();
+    expect(e.retenus[0].relation).toBeUndefined();
+    expect(e.retenus[0].champsIgnores).toEqual(['identite', 'relation', 'cible']);
+  });
+  it('écrit UNIQUEMENT le fait de projection : ni Portugal, ni envie de visite, ni goût, ni habitude, ni entité', async () => {
+    const b = fausseBase();
+    const r = await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'drinks.2102', texte: T, acteId: 'lot-1', lecteur: async () => RENDU_REEL_EEA2F38 });
+    expect(preuves(b)).toEqual([]);
+    const f = faits(b);
+    expect(f).toHaveLength(1);
+    expect(String(f[0].fact_type)).toMatch(/\.moment_ideal_boisson$/);
+    expect(JSON.parse(String(f[0].value)).valeur).toBe(T);
+    const tout = JSON.stringify([b.tables.knowledge_facts, b.tables.knowledge_evidences ?? []]);
+    expect(tout).not.toMatch(/Portugal|WANT_TO_VISIT/);
+    expect((b.tables.knowledge_facts ?? []).some((x) => x.fact_type === FAIT_ENTITE)).toBe(false);
+    expect(r.destinations!.releve).toEqual([expect.objectContaining({ declencheur: 'PROJECTION_DECLAREE', issue: 'ecrit', champsIgnores: ['identite', 'relation', 'cible'] })]);
+    expect((b.tables.knowledge_facts ?? []).some((x) => x.fact_type === 'discovery.drinks.2102' && x.value === T)).toBe(true);
+  });
+  it('le découpage propre du même texte donne le même fait', async () => {
+    const b = fausseBase();
+    await enregistrerReponseOuverte(b.client, { userId: U, questionId: 'drinks.2102', texte: T, acteId: 'lot-1',
+      lecteur: lecteur(seg('PROJECTION_DECLAREE', T, 'projection', { temps: 'futur_ou_souhait' })) });
+    expect(faits(b)).toHaveLength(1);
+    expect(preuves(b)).toEqual([]);
+  });
+  it('la copie exacte reste exigée pour les champs DU contrat', () => {
+    // condition et limite appartiennent à toute lecture : une condition inventée écarte toujours.
+    expect(issue('drinks.2102', T, seg('PROJECTION_DECLAREE', T, 'projection', { temps: 'futur_ou_souhait', condition: 'si je suis en vacances' }))).toBe('precision_inexacte');
+    // une œuvre : son identité est du contrat ; un auteur inventé écarte le segment.
+    expect(issue('comics.0422', 'J’adore Blacksad.', seg('OEUVRE_RESOLUE_APPRECIEE', 'Blacksad', 'appreciation', { cible: 'referent', relation: 'LOVE', identite: { nature: 'oeuvre', nom: 'Blacksad', rattachement: 'Juan Díaz Canales' } }))).toBe('precision_inexacte');
+    // un lieu de bien-être : son identité est du contrat ; une localité inventée écarte le segment.
+    expect(issue('sensory2.1482', 'Les thermes de Barèges.', seg('REFERENT_RESOLU', 'Les thermes de Barèges', 'referent', { temps: 'passe_revolu', identite: { nature: 'lieu', nom: 'Les thermes de Barèges', rattachement: 'Hautes-Pyrénées' } }))).toBe('precision_inexacte');
+  });
+  it('une relation sur une destination qui n’est pas une entité n’est jamais lue (intérêt, rejet)', () => {
+    const e = examen('learning2.1459', 'La géologie.', seg('SUJET_DECLARE', 'La géologie', 'interet', { relation: 'LOVE', cible: 'referent' }));
+    expect(e.retenus[0]).toMatchObject({ champsIgnores: ['relation', 'cible'] });
+    expect(e.retenus[0].relation).toBeUndefined();
   });
 });

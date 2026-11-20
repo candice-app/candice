@@ -165,6 +165,8 @@ const faitRegistre = (c: Contexte, e: EntiteConnue, s: { debut: number; fin: num
 export interface LigneReleve {
   readonly declencheur: string; readonly debut: number | null; readonly fin: number | null;
   readonly issue: 'ecrit' | 'ecarte' | 'clarification' | 'non_ecrit'; readonly motif?: string;
+  /** Champs rendus par le modèle hors du contrat de la destination, écartés sans être lus. */
+  readonly champsIgnores?: readonly string[];
 }
 export interface ResultatDestinations {
   readonly dejaLue: boolean; readonly preuves: number; readonly faits: number;
@@ -212,7 +214,7 @@ export async function ecrireDestinations(
   const referents: { entite: EntiteConnue; segment: SegmentExamine }[] = [];
   const enregistrees = new Set<string>();
   const noter = (d: Destination, s: SegmentExamine, issue: LigneReleve['issue'], motif?: string) =>
-    releve.push({ declencheur: d.declencheur, debut: s.debut, fin: s.fin, issue, ...(motif ? { motif } : {}) });
+    releve.push({ declencheur: d.declencheur, debut: s.debut, fin: s.fin, issue, ...(motif ? { motif } : {}), ...(s.champsIgnores?.length ? { champsIgnores: s.champsIgnores } : {}) });
   const ajouter = (e: Ecritures) => { evidences.push(...e.evidences); facts.push(...e.facts); };
 
   for (const d of destinations.filter((x) => !exigenceDe(x)!.secondSegment)) {

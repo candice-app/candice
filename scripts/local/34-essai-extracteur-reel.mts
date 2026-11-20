@@ -108,7 +108,10 @@ const CAS: Cas[] = [
       || (((brut as { destinations?: { clarifications: number } }).destinations?.clarifications ?? 0) >= 1 && r.preuves.length === 0) },
   { id: 'auteur-mentionne', question: 'comics.0422', texte: 'On m’a parlé de Moebius, je ne connais pas.', attendu: 'rien d’appréciation (mention ou rien)', juger: (r) => !r.preuves.some((p) => p.toLowerCase().includes('moebius')) },
   // drinks.2102 #1 projection — et l'habitude présente, qui n'en est pas une.
-  { id: 'boisson-projection', question: 'drinks.2102', texte: 'Un verre de vin nature sur une terrasse à Lisbonne, au coucher du soleil.', attendu: 'un fait de projection (ni habitude ni goût)', juger: (r) => r.faits.length >= 1 && !r.preuves.some((p) => p.startsWith('INTEREST')) },
+  { id: 'boisson-projection', question: 'drinks.2102', texte: 'Un verre de vin nature sur une terrasse à Lisbonne, au coucher du soleil.', attendu: 'un seul fait de projection (moment_ideal_boisson) ; aucune preuve (ni goût, ni habitude, ni envie de visite) ; rien d’inventé (Portugal)',
+    // 20 nov. (troisième passage réel, eea2f38) : le modèle avait ajouté identite.rattachement « Portugal » et
+    // relation WANT_TO_VISIT ; la projection était perdue. Le jugement exige désormais le fait SEUL, et rien d'inventé.
+    juger: (r) => r.faits.length === 1 && r.faits[0].includes('moment_ideal_boisson') && r.preuves.length === 0 && !JSON.stringify(r).includes('Portugal') },
   { id: 'boisson-autre', question: 'drinks.2102', texte: 'Mon mari adore le whisky tourbé.', attendu: 'rien (autre personne)', juger: RIEN },
   // pets.0403 #1 souhait pour SON animal : sans animal déclaré, rien n'est écrit d'office (clarification ou rien).
   { id: 'souhait-animal', question: 'pets.0403', texte: 'Un nouveau panier pour Moka.', attendu: 'aucun animal déclaré en base → pas de souhait écrit sans identifiant', juger: (r) => r.faits.length === 0 || r.faits.every((f) => !f.includes('Moka') || f.includes('clarification')) },
